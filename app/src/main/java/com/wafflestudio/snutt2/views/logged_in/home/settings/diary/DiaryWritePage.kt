@@ -206,7 +206,7 @@ fun DiaryWriteScreen(
                             )
 
                             MoreTextItem(
-                                moreText = diaryWriteUiState.diaryWrite.moreText,
+                                moreText = moreTextState.value,
                                 onChange = { text -> moreTextState.value = text },
                             )
 
