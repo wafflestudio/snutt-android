@@ -182,7 +182,7 @@ fun HomePage() {
                             navController.navigate(NavigationDestination.PushPreferences)
                         },
                         onNavigateLectureDiary = {
-                            navController.navigate(NavigationDestination.LectureDiary)
+                            navController.navigate(NavigationDestination.LectureDiaryWrite)
                         },
                         onNavigateTeamInfo = {
                             navController.navigate(NavigationDestination.TeamInfo)

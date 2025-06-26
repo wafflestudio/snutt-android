@@ -252,13 +252,8 @@ fun TodayQuestionBox(
     ) {
         questions.forEach { (question, options) ->
             DiaryQuestionItem(true, question, options, localTodaySelectedState, onChange = { index ->
-                val today = localTodaySelectedState
-                localTodaySelectedState = List(today.size) { i ->
-                    if (i == index) {
-                        !today[i]
-                    } else {
-                        today[i]
-                    }
+                localTodaySelectedState = localTodaySelectedState.mapIndexed { i, value ->
+                    if (i == index) !value else value
                 }
             },)
 
