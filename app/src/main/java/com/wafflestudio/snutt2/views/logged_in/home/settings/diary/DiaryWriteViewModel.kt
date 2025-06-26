@@ -5,6 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.lecture_diary.DiaryRepository
 import com.wafflestudio.snutt2.domainmodel.DiaryWrite
 import com.wafflestudio.snutt2.lib.network.ApiOnError
+import com.wafflestudio.snutt2.lib.network.AuthError
+import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
+import com.wafflestudio.snutt2.lib.network.DomainError
+import com.wafflestudio.snutt2.lib.network.SignupError
+import com.wafflestudio.snutt2.lib.network.onFailure
+import com.wafflestudio.snutt2.lib.network.onSuccess
+import com.wafflestudio.snutt2.test.TestUiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DiaryWriteViewModel @Inject constructor(
     private val diaryRepository: DiaryRepository,
-    private val apiOnError: ApiOnError,
+    private val displayMessageResolver: DisplayMessageResolver
 ) : ViewModel() {
 
     private val _diaryWriteInit = MutableStateFlow<DiaryWriteUiState>(DiaryWriteUiState.Loading)
@@ -30,26 +37,35 @@ class DiaryWriteViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             _diaryWriteInit.value = DiaryWriteUiState.Loading
-            diaryRepository.getDiaryWriteInit().catch {
-                _diaryWriteInit.value = DiaryWriteUiState.Error
-            }.collect { data ->
-                _diaryWriteInit.value = DiaryWriteUiState.Success(data)
-            }
+            diaryRepository.getDiaryWriteInit()
+                .onSuccess { data ->
+                    _diaryWriteInit.emit(DiaryWriteUiState.Success(data))
+                }.onFailure {error ->
+                    _diaryWriteInit.emit(DiaryWriteUiState.Error)
+                    handleDiaryWriteError(error)
+                }
         }
     }
 
     fun saveDiaryWrite(diaryWriteData: DiaryWrite) {
         viewModelScope.launch {
-            runCatching {
-                diaryRepository.saveDiaryWrite(diaryWriteData)
-            }.onFailure { error ->
-                apiOnError.invoke(error)
-            }.onSuccess {
+            diaryRepository.saveDiaryWrite(diaryWriteData)
+                .onSuccess {
                 _diaryWriteUiEvent.emit(DiaryWriteUiEvent.NavigateToWriteMore)
+            }
+            .onFailure {
+                _diaryWriteInit.emit(DiaryWriteUiState.Error)
             }
         }
     }
+
+    private suspend fun handleDiaryWriteError(error: DomainError){
+        val displayMessage = displayMessageResolver.getDisplayMessage(error)
+        _diaryWriteUiEvent.emit(DiaryWriteUiEvent.ShowToast(displayMessage))
+    }
+
 }
+
 
 sealed interface DiaryWriteUiEvent {
     data class ShowToast(val message: String) : DiaryWriteUiEvent
