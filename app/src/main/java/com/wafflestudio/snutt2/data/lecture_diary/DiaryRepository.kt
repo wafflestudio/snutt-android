@@ -6,5 +6,5 @@ import com.wafflestudio.snutt2.lib.network.Result
 interface DiaryRepository {
     fun getDiaryWriteInit(): Result<DiaryWrite>
 
-    suspend fun saveDiaryWrite(diaryWriteData: DiaryWrite): Result<DiaryWrite>
+    suspend fun saveDiaryWrite(diaryWriteData: DiaryWrite): Result<Unit>
 }

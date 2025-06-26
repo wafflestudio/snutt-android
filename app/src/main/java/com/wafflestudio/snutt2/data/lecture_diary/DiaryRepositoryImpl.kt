@@ -15,7 +15,7 @@ class DiaryRepositoryImpl @Inject constructor(private val api: SNUTTRestApi) :
         return Result.Success(DiaryPreviewData.diaryWriteInit)
     }
 
-    override suspend fun saveDiaryWrite(diaryWriteData: DiaryWrite): Result<DiaryWrite> {
+    override suspend fun saveDiaryWrite(diaryWriteData: DiaryWrite): Result<Unit> {
         return Result.Fail(Unknown("")) // good
     }
 }
