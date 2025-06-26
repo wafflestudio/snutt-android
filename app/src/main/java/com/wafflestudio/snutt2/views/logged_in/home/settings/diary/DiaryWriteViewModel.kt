@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings.diary
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.lecture_diary.DiaryRepository
+import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.domainmodel.DiaryWrite
 import com.wafflestudio.snutt2.lib.network.AuthError
 import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
@@ -20,6 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DiaryWriteViewModel @Inject constructor(
     private val diaryRepository: DiaryRepository,
+    private val userRepository: UserRepository,
     private val displayMessageResolver: DisplayMessageResolver,
 ) : ViewModel() {
 
@@ -59,7 +61,7 @@ class DiaryWriteViewModel @Inject constructor(
         when (error) {
             is AuthError -> {
                 _diaryWriteUiEvent.emit(DiaryWriteUiEvent.ShowToast(displayMessage))
-                diaryRepository.clearToken()
+                userRepository.performLogout()
                 _diaryWriteUiEvent.emit(DiaryWriteUiEvent.NavigateToOnboard)
             }
             else -> {
