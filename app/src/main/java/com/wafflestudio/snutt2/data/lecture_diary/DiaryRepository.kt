@@ -7,4 +7,6 @@ interface DiaryRepository {
     fun getDiaryWriteInit(): Result<DiaryWrite>
 
     suspend fun saveDiaryWrite(diaryWriteData: DiaryWrite): Result<Unit>
+
+    suspend fun clearToken(): Result<Unit>
 }

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.lecture_diary.DiaryRepository
 import com.wafflestudio.snutt2.domainmodel.DiaryWrite
+import com.wafflestudio.snutt2.lib.network.AuthError
 import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
 import com.wafflestudio.snutt2.lib.network.DomainError
 import com.wafflestudio.snutt2.lib.network.onFailure
@@ -55,11 +56,21 @@ class DiaryWriteViewModel @Inject constructor(
 
     private suspend fun handleDiaryWriteError(error: DomainError) {
         val displayMessage = displayMessageResolver.getDisplayMessage(error)
-        _diaryWriteUiEvent.emit(DiaryWriteUiEvent.ShowToast(displayMessage))
+        when (error) {
+            is AuthError -> {
+                _diaryWriteUiEvent.emit(DiaryWriteUiEvent.ShowToast(displayMessage))
+                diaryRepository.clearToken()
+                _diaryWriteUiEvent.emit(DiaryWriteUiEvent.NavigateToOnboard)
+            }
+            else -> {
+                _diaryWriteUiEvent.emit(DiaryWriteUiEvent.ShowToast(displayMessage))
+            }
+        }
     }
 }
 
 sealed interface DiaryWriteUiEvent {
     data class ShowToast(val message: String) : DiaryWriteUiEvent
     data object NavigateToWriteMore : DiaryWriteUiEvent
+    data object NavigateToOnboard : DiaryWriteUiEvent
 }
