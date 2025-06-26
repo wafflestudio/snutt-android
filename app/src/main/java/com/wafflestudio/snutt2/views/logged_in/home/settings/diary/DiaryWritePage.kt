@@ -78,6 +78,9 @@ fun DiaryWriteRoute(
                 is DiaryWriteUiEvent.NavigateToWriteMore -> {
                     // TODO: 다음 화면으로 네비게이션
                 }
+                is DiaryWriteUiEvent.NavigateToOnboard -> {
+                    // TODO: onNavigateOnboard 호출
+                }
             }
         }
     }
