@@ -181,7 +181,6 @@ fun DiaryWriteScreen(
                         },
                         listOf(DiaryWriteQuestion("오늘 무엇을 했나요?", diaryWriteTodayOptions)),
                         todaySelected.value,
-                        {},
                     )
 
                     if (isTodayCompleted) {
@@ -242,7 +241,6 @@ fun TodayQuestionBox(
     onTodayComplete: (List<Boolean>) -> Unit,
     questions: List<DiaryWriteQuestion>,
     selectedState: List<Boolean>,
-    onChange: (Int) -> Unit,
 ) {
     var localTodaySelectedState by remember { mutableStateOf(selectedState) }
     Column(

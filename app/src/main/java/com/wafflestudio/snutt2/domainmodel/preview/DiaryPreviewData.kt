@@ -24,6 +24,6 @@ object DiaryPreviewData {
     )
     val diaryWriteNewInit = DiaryWrite(
         "알고리즘",
-        null, null, null,
+        null, null, "",
     )
 }
