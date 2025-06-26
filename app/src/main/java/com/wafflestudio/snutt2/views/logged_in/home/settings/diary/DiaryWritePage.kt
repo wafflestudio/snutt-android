@@ -36,6 +36,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -51,6 +52,7 @@ import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.domainmodel.DiaryWrite
 import com.wafflestudio.snutt2.domainmodel.preview.DiaryPreviewData
 import com.wafflestudio.snutt2.domainmodel.DiaryWriteQuestion
+import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import kotlinx.coroutines.delay
@@ -61,13 +63,22 @@ fun DiaryWriteRoute(
     modifier: Modifier = Modifier,
     diaryWriteViewModel: DiaryWriteViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
     val diaryWrite by diaryWriteViewModel.diaryWriteInit.collectAsState()
-    val navigationFlag by diaryWriteViewModel.navigationFlag.collectAsState()
 
-    LaunchedEffect(navigationFlag) {
-        if (navigationFlag) {
-            // TODO: 다음 화면으로 전환
-            diaryWriteViewModel.clearNavigationFlag()
+    LaunchedEffect(Unit) {
+        diaryWriteViewModel.diaryWriteUiEvent.collect { uiEvent ->
+            when (uiEvent) {
+                is DiaryWriteUiEvent.ShowToast -> {
+                    val message = uiEvent.message
+                    if (message.isNotEmpty()) {
+                        context.toast(message)
+                    }
+                }
+                is DiaryWriteUiEvent.NavigateToWriteMore -> {
+                    // TODO: 다음 화면으로 네비게이션
+                }
+            }
         }
     }
 

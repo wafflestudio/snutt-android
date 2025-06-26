@@ -6,8 +6,9 @@ import com.wafflestudio.snutt2.data.lecture_diary.DiaryRepository
 import com.wafflestudio.snutt2.domainmodel.DiaryWrite
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -23,8 +24,8 @@ class DiaryWriteViewModel @Inject constructor(
     private val _diaryWriteInit = MutableStateFlow<DiaryWriteUiState>(DiaryWriteUiState.Loading)
     val diaryWriteInit = _diaryWriteInit.asStateFlow()
 
-    private val _navigationFlag = MutableStateFlow(false)
-    val navigationFlag: StateFlow<Boolean> = _navigationFlag
+    private val _diaryWriteUiEvent: MutableSharedFlow<DiaryWriteUiEvent> = MutableSharedFlow(1)
+    val diaryWriteUiEvent: SharedFlow<DiaryWriteUiEvent> = _diaryWriteUiEvent
 
     init {
         viewModelScope.launch {
@@ -44,12 +45,13 @@ class DiaryWriteViewModel @Inject constructor(
             }.onFailure { error ->
                 apiOnError.invoke(error)
             }.onSuccess {
-                _navigationFlag.value = true
+                _diaryWriteUiEvent.emit(DiaryWriteUiEvent.NavigateToWriteMore)
             }
         }
     }
+}
 
-    fun clearNavigationFlag() {
-        _navigationFlag.value = false
-    }
+sealed interface DiaryWriteUiEvent {
+    data class ShowToast(val message: String) : DiaryWriteUiEvent
+    data object NavigateToWriteMore : DiaryWriteUiEvent
 }
