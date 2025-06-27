@@ -14,14 +14,15 @@ fun Exception.toDomainError(): DomainError {
                 ErrorCode.SERVER_FAULT -> ServerFault(displayMessage)
                 ErrorCode.NO_ADMIN_PRIVILEGE -> NoAdminPrivilege(displayMessage)
                 ErrorCode.UNKNOWN_APP -> UnknownApp(displayMessage)
-                ErrorCode.WRONG_API_KEY -> AuthError.WrongApiKey(displayMessage)
-                ErrorCode.NO_USER_TOKEN -> AuthError.NoUserToken(displayMessage)
-                ErrorCode.WRONG_USER_TOKEN -> AuthError.WrongUserToken(displayMessage)
+                ErrorCode.WRONG_API_KEY -> WrongApiKey(displayMessage)
+                ErrorCode.NO_USER_TOKEN -> NoUserToken(displayMessage)
+                ErrorCode.WRONG_USER_TOKEN -> WrongUserToken(displayMessage)
 
-                ErrorCode.INVALID_ID -> SignupError.InvalidId(displayMessage)
-                ErrorCode.INVALID_PASSWORD -> SignupError.InvalidPassword(displayMessage)
-                ErrorCode.DUPLICATE_ID -> SignupError.DuplicateId(displayMessage)
-                ErrorCode.USED_EMAIL -> SignupError.UsedEmail(displayMessage)
+                ErrorCode.INVALID_ID -> InvalidId(displayMessage)
+                ErrorCode.INVALID_PASSWORD -> InvalidPassword(displayMessage)
+                ErrorCode.DUPLICATE_ID -> DuplicateId(displayMessage)
+                ErrorCode.USED_EMAIL -> UsedEmail(displayMessage)
+                ErrorCode.WRONG_PASSWORD -> WrongPassword(displayMessage)
                 else -> Unknown(displayMessage)
             }
         }
