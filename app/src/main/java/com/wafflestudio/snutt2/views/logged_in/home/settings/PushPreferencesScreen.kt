@@ -32,6 +32,7 @@ import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 fun PushPreferencesRoute(
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit,
+    onNavigateOnboard: () -> Unit,
     viewModel: PushPreferencesViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -50,13 +51,16 @@ fun PushPreferencesRoute(
                         context.toast(message)
                     }
                 }
+                is PushPreferencesUiEvent.NavigateToOnboard -> {
+                    onNavigateOnboard()
+                }
             }
         }
     }
 
     PushPreferencesScreen(
         modifier = modifier,
-        onBackClick = onNavigateBack,
+        onClickBack = onNavigateBack,
         uiState = uiState,
         toggleUiState = viewModel::togglePushPreferences,
     )
@@ -65,7 +69,7 @@ fun PushPreferencesRoute(
 @Composable
 fun PushPreferencesScreen(
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit,
+    onClickBack: () -> Unit,
     uiState: PushPreferencesUiState,
     toggleUiState: (PushPreferenceType) -> Unit,
 ) {
@@ -76,7 +80,7 @@ fun PushPreferencesScreen(
     ) {
         SimpleTopBar(
             title = stringResource(R.string.settings_push_preferences_title),
-            onClickNavigateBack = onBackClick,
+            onClickNavigateBack = onClickBack,
         )
 
         when (uiState) {
@@ -142,7 +146,7 @@ fun PushPreferencesError() {
 @Preview(showBackground = true)
 fun PushPreferencesLoadingPreview() {
     PushPreferencesScreen(
-        onBackClick = {},
+        onClickBack = {},
         uiState = PushPreferencesUiState.Loading,
         toggleUiState = {},
     )
@@ -152,7 +156,7 @@ fun PushPreferencesLoadingPreview() {
 @Preview(showBackground = true)
 fun PushPreferencesErrorPreview() {
     PushPreferencesScreen(
-        onBackClick = {},
+        onClickBack = {},
         uiState = PushPreferencesUiState.Error,
         toggleUiState = {},
     )
@@ -162,7 +166,7 @@ fun PushPreferencesErrorPreview() {
 @Preview(showBackground = true)
 fun PushPreferencesSuccessPreview() {
     PushPreferencesScreen(
-        onBackClick = {},
+        onClickBack = {},
         uiState = PushPreferencesUiState.Success(
             PushPreferences(lectureUpdate = false, vacancyNotification = true),
         ),

@@ -4,7 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.domainmodel.PushPreferenceType
-import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsedHttpException
+import com.wafflestudio.snutt2.domainmodel.PushPreferences
+import com.wafflestudio.snutt2.lib.network.AuthError
+import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
+import com.wafflestudio.snutt2.lib.network.DomainError
+import com.wafflestudio.snutt2.lib.network.onFailure
+import com.wafflestudio.snutt2.lib.network.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,6 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PushPreferencesViewModel @Inject constructor(
     private val userRepository: UserRepository,
+    private val displayMessageResolver: DisplayMessageResolver,
 ) : ViewModel() {
     private val _pushPreferencesUiState =
         MutableStateFlow<PushPreferencesUiState>(PushPreferencesUiState.Loading)
@@ -26,14 +32,15 @@ class PushPreferencesViewModel @Inject constructor(
 
     fun loadPushPreferences() {
         viewModelScope.launch {
-            runCatching {
-                _pushPreferencesUiState.emit(PushPreferencesUiState.Success(userRepository.getPushPreferences()))
-            }.onFailure { e ->
-                if (e is ErrorParsedHttpException) {
-                    _pushPreferencesUiState.emit(PushPreferencesUiState.Error)
-                    _pushPreferencesUiEvent.emit(PushPreferencesUiEvent.ShowToast(e.errorDTO?.displayMessage ?: ""))
+            _pushPreferencesUiState.emit(PushPreferencesUiState.Loading)
+            userRepository.getPushPreferences()
+                .onSuccess { data ->
+                    _pushPreferencesUiState.emit(PushPreferencesUiState.Success(data))
                 }
-            }
+                .onFailure { error ->
+                    _pushPreferencesUiState.emit(PushPreferencesUiState.Error)
+                    handlePushPreferencesError(error)
+                }
         }
     }
 
@@ -51,16 +58,41 @@ class PushPreferencesViewModel @Inject constructor(
                         vacancyNotification = !currentPrefs.vacancyNotification,
                     )
                 }
-                _pushPreferencesUiState.emit(PushPreferencesUiState.Success(updatedPrefs))
-                runCatching {
-                    userRepository.postPushPreferences(updatedPrefs)
-                }.onFailure { e ->
-                    _pushPreferencesUiState.emit(PushPreferencesUiState.Error)
-                    if (e is ErrorParsedHttpException) {
-                        _pushPreferencesUiEvent.emit(PushPreferencesUiEvent.ShowToast(e.errorDTO?.displayMessage ?: ""))
+
+                userRepository.postPushPreferences(updatedPrefs)
+                    .onSuccess {
+                        _pushPreferencesUiState.emit(PushPreferencesUiState.Success(updatedPrefs))
                     }
-                }
+                    .onFailure { error ->
+                        _pushPreferencesUiState.emit(PushPreferencesUiState.Error)
+                        handlePushPreferencesError(error)
+                    }
             }
         }
     }
+
+    private suspend fun handlePushPreferencesError(error: DomainError) {
+        val displayMessage = displayMessageResolver.getDisplayMessage(error)
+        when (error) {
+            is AuthError -> {
+                _pushPreferencesUiEvent.emit(PushPreferencesUiEvent.ShowToast(displayMessage))
+                userRepository.postForceLogout()
+                _pushPreferencesUiEvent.emit(PushPreferencesUiEvent.NavigateToOnboard)
+            }
+            else -> {
+                _pushPreferencesUiEvent.emit(PushPreferencesUiEvent.ShowToast(displayMessage))
+            }
+        }
+    }
+}
+
+sealed interface PushPreferencesUiState {
+    data object Loading : PushPreferencesUiState
+    data class Success(val pushPreferences: PushPreferences) : PushPreferencesUiState
+    data object Error : PushPreferencesUiState
+}
+
+sealed interface PushPreferencesUiEvent {
+    data class ShowToast(val message: String) : PushPreferencesUiEvent
+    data object NavigateToOnboard : PushPreferencesUiEvent
 }

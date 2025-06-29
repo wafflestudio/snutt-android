@@ -7,9 +7,11 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.domainmodel.PushPreferences
 import com.wafflestudio.snutt2.domainmodel.toNetworkModel
+import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApiForGoogle
 import com.wafflestudio.snutt2.lib.network.dto.*
+import com.wafflestudio.snutt2.lib.network.toDomainError
 import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.lib.unwrap
 import com.wafflestudio.snutt2.model.TableLectureCustom
@@ -267,12 +269,22 @@ class UserRepositoryImpl @Inject constructor(
         ).accessToken
     }
 
-    override suspend fun getPushPreferences(): PushPreferences {
-        return api._getPushPreferences().toDomainModel()
+    override suspend fun getPushPreferences(): Result<PushPreferences> {
+        try {
+            val result = api._getPushPreferences().toDomainModel()
+            return Result.Success(result)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
     }
 
-    override suspend fun postPushPreferences(pushPreferences: PushPreferences) {
-        api._postPushPreferences(pushPreferences.toNetworkModel())
+    override suspend fun postPushPreferences(pushPreferences: PushPreferences): Result<Unit> {
+        try {
+            api._postPushPreferences(pushPreferences.toNetworkModel())
+            return Result.Success(Unit)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
     }
 
     /**
