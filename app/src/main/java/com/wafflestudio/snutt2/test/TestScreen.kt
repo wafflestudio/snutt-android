@@ -37,7 +37,7 @@ import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 fun TestRoute(
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit,
-    onNavigateOnBoard: () -> Unit,
+    onNavigateOnboard: () -> Unit,
     viewModel: TestViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -53,7 +53,7 @@ fun TestRoute(
                     }
                 }
                 is TestUiEvent.NavigateToOnboard -> {
-                    onNavigateOnBoard()
+                    onNavigateOnboard()
                 }
             }
         }
