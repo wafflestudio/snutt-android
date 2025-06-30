@@ -100,9 +100,9 @@ interface UserRepository {
         clientSecret: String,
     ): String?
 
-    suspend fun getPushPreferences(): PushPreferences
+    suspend fun getPushPreferences(): Result<PushPreferences>
 
-    suspend fun postPushPreferences(pushPreferences: PushPreferences)
+    suspend fun postPushPreferences(pushPreferences: PushPreferences): Result<Unit>
 
     /**
      * 소셜 로그인 관련.

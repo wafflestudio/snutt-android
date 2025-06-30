@@ -357,12 +357,22 @@ class UserRepositoryImpl @Inject constructor(
         ).accessToken
     }
 
-    override suspend fun getPushPreferences(): PushPreferences {
-        return api._getPushPreferences().toDomainModel()
+    override suspend fun getPushPreferences(): Result<PushPreferences> {
+        try {
+            val result = api._getPushPreferences().toDomainModel()
+            return Result.Success(result)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
     }
 
-    override suspend fun postPushPreferences(pushPreferences: PushPreferences) {
-        api._postPushPreferences(pushPreferences.toNetworkModel())
+    override suspend fun postPushPreferences(pushPreferences: PushPreferences): Result<Unit> {
+        try {
+            api._postPushPreferences(pushPreferences.toNetworkModel())
+            return Result.Success(Unit)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
     }
 
     /**
