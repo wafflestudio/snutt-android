@@ -18,7 +18,7 @@ data class TableState(
             TableDto.Default,
             TableTrimParam.Default,
             TableLectureCustom.Default,
-            null
+            null,
         )
     }
 }

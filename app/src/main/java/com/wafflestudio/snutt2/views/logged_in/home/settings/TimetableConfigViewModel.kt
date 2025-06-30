@@ -14,7 +14,6 @@ import com.wafflestudio.snutt2.model.TableLectureCustom
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TableState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -109,7 +108,7 @@ class TimetableConfigViewModel @Inject constructor(
     }
 
     val timeTableConfigUiState = combine(
-        _tableTrimParam, _compactMode, _tableLectureCustom, currentTableRepository.currentTable
+        _tableTrimParam, _compactMode, _tableLectureCustom, currentTableRepository.currentTable,
     ) { tableTrimParam, compactMode, tableLectureCustom, currentTable ->
         TimeTableConfigUiState(
             tableTrimParam,
@@ -119,8 +118,8 @@ class TimetableConfigViewModel @Inject constructor(
                 currentTable ?: TableDto.Default,
                 tableTrimParam,
                 tableLectureCustom,
-                null
-            )
+                null,
+            ),
         )
     }
         .stateIn(viewModelScope, SharingStarted.Eagerly, TimeTableConfigUiState.Default)
@@ -151,7 +150,7 @@ data class TimeTableConfigUiState(
             TableTrimParam.Default,
             false,
             TableLectureCustom.Default,
-            TableState.Default
+            TableState.Default,
         )
     }
 }

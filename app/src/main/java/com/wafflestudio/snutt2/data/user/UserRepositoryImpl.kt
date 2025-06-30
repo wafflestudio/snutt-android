@@ -328,7 +328,7 @@ class UserRepositoryImpl @Inject constructor(
         try {
             val prevTrimParam = storage.tableLectureCustom.get()
             storage.tableLectureCustom.update(
-                prevTrimParam.copy(title = prevTrimParam.title.not())
+                prevTrimParam.copy(title = prevTrimParam.title.not()),
             )
             return Result.Success(Unit)
         } catch (e: Exception) {
@@ -340,7 +340,7 @@ class UserRepositoryImpl @Inject constructor(
         try {
             val prevTrimParam = storage.tableLectureCustom.get()
             storage.tableLectureCustom.update(
-                prevTrimParam.copy(place = prevTrimParam.place.not())
+                prevTrimParam.copy(place = prevTrimParam.place.not()),
             )
             return Result.Success(Unit)
         } catch (e: Exception) {
@@ -352,7 +352,7 @@ class UserRepositoryImpl @Inject constructor(
         try {
             val prevTrimParam = storage.tableLectureCustom.get()
             storage.tableLectureCustom.update(
-                prevTrimParam.copy(lectureNumber = prevTrimParam.lectureNumber.not())
+                prevTrimParam.copy(lectureNumber = prevTrimParam.lectureNumber.not()),
             )
             return Result.Success(Unit)
         } catch (e: Exception) {
@@ -364,7 +364,7 @@ class UserRepositoryImpl @Inject constructor(
         try {
             val prevTrimParam = storage.tableLectureCustom.get()
             storage.tableLectureCustom.update(
-                prevTrimParam.copy(instructor = prevTrimParam.instructor.not())
+                prevTrimParam.copy(instructor = prevTrimParam.instructor.not()),
             )
             return Result.Success(Unit)
         } catch (e: Exception) {

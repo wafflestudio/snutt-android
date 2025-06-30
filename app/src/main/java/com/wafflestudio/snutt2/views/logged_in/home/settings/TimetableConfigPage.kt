@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
@@ -39,15 +38,10 @@ import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.logImpression
-import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
-import com.wafflestudio.snutt2.model.TableLectureCustomOptions
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.LocalTableState
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.TableState
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 import kotlinx.coroutines.launch
 import kotlin.math.max
@@ -409,7 +403,6 @@ private fun Label(
     }
 }
 
-
 @Preview
 @Composable
 fun TimetableConfigPagePreview() {
@@ -417,8 +410,8 @@ fun TimetableConfigPagePreview() {
         uiState = TimeTableConfigUiState.Default,
         onNavigateBack = {},
         onToggleAutoTrim = {},
-        onSetDayOfWeekRange = {_, _ -> },
-        onSetHourRange = {_, _ -> },
+        onSetDayOfWeekRange = { _, _ -> },
+        onSetHourRange = { _, _ -> },
         onToggleCompactMode = {},
         onToggleTitleVisible = {},
         onTogglePlaceVisible = {},
