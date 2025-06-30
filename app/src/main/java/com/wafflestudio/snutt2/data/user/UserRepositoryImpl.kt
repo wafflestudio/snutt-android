@@ -10,9 +10,11 @@ import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.domainmodel.toDataModel
 import com.wafflestudio.snutt2.domainmodel.toNetworkModel
 import com.wafflestudio.snutt2.lib.map
+import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApiForGoogle
 import com.wafflestudio.snutt2.lib.network.dto.*
+import com.wafflestudio.snutt2.lib.network.toDomainError
 import com.wafflestudio.snutt2.lib.preferences.model.toDomainModel
 import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.lib.unwrap
@@ -150,6 +152,70 @@ class UserRepositoryImpl @Inject constructor(
         )
     }
 
+    override suspend fun toggleForceFit(): Result<Unit> {
+        try {
+            val prevTrimParam = storage.tableTrimParam.get()
+            storage.tableTrimParam.update(
+                TableTrimParam(
+                    dayOfWeekFrom = prevTrimParam.dayOfWeekFrom,
+                    dayOfWeekTo = prevTrimParam.dayOfWeekTo,
+                    hourFrom = prevTrimParam.hourFrom,
+                    hourTo = prevTrimParam.hourTo,
+                    forceFitLectures = prevTrimParam.forceFitLectures.not(),
+                ).toDataModel(),
+            )
+            return Result.Success(Unit)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun setDayOfWeekRange(from: Int, to: Int): Result<Unit> {
+        try {
+            val prevTrimParam = storage.tableTrimParam.get()
+            storage.tableTrimParam.update(
+                TableTrimParam(
+                    dayOfWeekFrom = from,
+                    dayOfWeekTo = to,
+                    hourFrom = prevTrimParam.hourFrom,
+                    hourTo = prevTrimParam.hourTo,
+                    forceFitLectures = prevTrimParam.forceFitLectures,
+                ).toDataModel(),
+            )
+            return Result.Success(Unit)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun setHourRange(from: Int, to: Int): Result<Unit> {
+        try {
+            val prevTrimParam = storage.tableTrimParam.get()
+            storage.tableTrimParam.update(
+                TableTrimParam(
+                    dayOfWeekFrom = prevTrimParam.dayOfWeekFrom,
+                    dayOfWeekTo = prevTrimParam.dayOfWeekTo,
+                    hourFrom = from,
+                    hourTo = to,
+                    forceFitLectures = prevTrimParam.forceFitLectures,
+                ).toDataModel(),
+            )
+            return Result.Success(Unit)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun toggleCompactMode(): Result<Unit> {
+        try {
+            val compactMode = storage.compactMode.get()
+            storage.compactMode.update(compactMode.not())
+            return Result.Success(Unit)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
+
     override suspend fun performLogout() {
         LoginManager.getInstance().logOut()
         storage.clearLoginScope()
@@ -256,6 +322,54 @@ class UserRepositoryImpl @Inject constructor(
                 TableLectureCustomOptions.INSTRUCTOR -> storage.tableLectureCustom.get().copy(instructor = value)
             },
         )
+    }
+
+    override suspend fun toggleTitleVisible(): Result<Unit> {
+        try {
+            val prevTrimParam = storage.tableLectureCustom.get()
+            storage.tableLectureCustom.update(
+                prevTrimParam.copy(title = prevTrimParam.title.not())
+            )
+            return Result.Success(Unit)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun togglePlaceVisible(): Result<Unit> {
+        try {
+            val prevTrimParam = storage.tableLectureCustom.get()
+            storage.tableLectureCustom.update(
+                prevTrimParam.copy(place = prevTrimParam.place.not())
+            )
+            return Result.Success(Unit)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun toggleLectureNumberVisible(): Result<Unit> {
+        try {
+            val prevTrimParam = storage.tableLectureCustom.get()
+            storage.tableLectureCustom.update(
+                prevTrimParam.copy(lectureNumber = prevTrimParam.lectureNumber.not())
+            )
+            return Result.Success(Unit)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun toggleInstructorVisible(): Result<Unit> {
+        try {
+            val prevTrimParam = storage.tableLectureCustom.get()
+            storage.tableLectureCustom.update(
+                prevTrimParam.copy(instructor = prevTrimParam.instructor.not())
+            )
+            return Result.Success(Unit)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
     }
 
     override suspend fun setFirstBookmarkAlertShown() {

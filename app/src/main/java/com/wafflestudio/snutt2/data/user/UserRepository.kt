@@ -55,6 +55,14 @@ interface UserRepository {
         isAuto: Boolean? = null,
     )
 
+    suspend fun toggleForceFit(): Result<Unit>
+
+    suspend fun setDayOfWeekRange(from: Int, to: Int): Result<Unit>
+
+    suspend fun setHourRange(from: Int, to: Int): Result<Unit>
+
+    suspend fun toggleCompactMode(): Result<Unit>
+
     suspend fun getAccessToken(): String
 
     suspend fun performLogout()
@@ -86,6 +94,14 @@ interface UserRepository {
     suspend fun setCompactMode(compact: Boolean)
 
     suspend fun setTableLectureCustomOption(key: TableLectureCustomOptions, value: Boolean)
+
+    suspend fun toggleTitleVisible(): Result<Unit>
+
+    suspend fun togglePlaceVisible(): Result<Unit>
+
+    suspend fun toggleLectureNumberVisible(): Result<Unit>
+
+    suspend fun toggleInstructorVisible(): Result<Unit>
 
     suspend fun setFirstBookmarkAlertShown()
 
