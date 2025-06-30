@@ -1,6 +1,8 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings.diary
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -144,6 +146,7 @@ fun DiaryWriteScreen(
                     modifier = modifier
                         .fillMaxWidth()
                         .background(color = SNUTTColors.White)
+                        .border(width = 0.2.dp, color = SNUTTColors.EditTextUnderline)
                         .padding(top = 44.dp, bottom = 24.dp, start = 24.dp, end = 24.dp),
                     horizontalArrangement = Arrangement.End,
                 ) {
@@ -177,7 +180,10 @@ fun DiaryWriteScreen(
                             if (!isTodayCompleted) {
                                 scope.launch {
                                     delay(100)
-                                    scrollState.animateScrollTo(toScrollOffset.value)
+                                    scrollState.animateScrollTo(
+                                        toScrollOffset.value,
+                                        animationSpec = spring(Spring.DampingRatioLowBouncy, Spring.StiffnessLow),
+                                    )
                                 }
                             }
                             isTodayCompleted = true
