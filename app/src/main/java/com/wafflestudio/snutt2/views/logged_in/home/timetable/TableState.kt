@@ -12,4 +12,13 @@ data class TableState(
     val trimParam: TableTrimParam,
     val tableLectureCustomOptions: TableLectureCustom,
     val previewTheme: TableTheme?,
-)
+) {
+    companion object {
+        val Default = TableState(
+            TableDto.Default,
+            TableTrimParam.Default,
+            TableLectureCustom.Default,
+            null
+        )
+    }
+}
