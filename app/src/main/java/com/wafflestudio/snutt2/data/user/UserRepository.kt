@@ -6,7 +6,6 @@ import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.dto.GetSocialProvidersResults
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.model.TableLectureCustom
-import com.wafflestudio.snutt2.model.TableLectureCustomOptions
 import com.wafflestudio.snutt2.ui.ThemeMode
 import kotlinx.coroutines.flow.StateFlow
 
@@ -47,14 +46,6 @@ interface UserRepository {
 
     suspend fun postForceLogout()
 
-    suspend fun setTableTrim(
-        dayOfWeekFrom: Int? = null,
-        dayOfWeekTo: Int? = null,
-        hourFrom: Int? = null,
-        hourTo: Int? = null,
-        isAuto: Boolean? = null,
-    )
-
     suspend fun toggleForceFit(): Result<Unit>
 
     suspend fun setDayOfWeekRange(from: Int, to: Int): Result<Unit>
@@ -92,8 +83,6 @@ interface UserRepository {
     suspend fun verifyEmailCode(code: String)
 
     suspend fun setCompactMode(compact: Boolean)
-
-    suspend fun setTableLectureCustomOption(key: TableLectureCustomOptions, value: Boolean)
 
     suspend fun toggleTitleVisible(): Result<Unit>
 

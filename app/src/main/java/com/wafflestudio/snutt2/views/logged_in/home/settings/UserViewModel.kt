@@ -5,7 +5,6 @@ import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.model.TableLectureCustom
-import com.wafflestudio.snutt2.model.TableLectureCustomOptions
 import com.wafflestudio.snutt2.ui.ThemeMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -30,24 +29,8 @@ class UserViewModel @Inject constructor(
 
     val firstBookmarkAlert: StateFlow<Boolean> = userRepository.firstBookmarkAlert
 
-    suspend fun setHourRange(from: Int, to: Int) {
-        userRepository.setTableTrim(hourFrom = from, hourTo = to)
-    }
-
-    suspend fun setDayOfWeekRange(from: Int, to: Int) {
-        userRepository.setTableTrim(dayOfWeekFrom = from, dayOfWeekTo = to)
-    }
-
-    suspend fun setAutoTrim(enable: Boolean) {
-        userRepository.setTableTrim(isAuto = enable)
-    }
-
     suspend fun fetchUserInfo() {
         userRepository.fetchUserInfo()
-    }
-
-    suspend fun setTableLectureCustomOption(key: TableLectureCustomOptions, value: Boolean) {
-        userRepository.setTableLectureCustomOption(key, value)
     }
 
     suspend fun loginLocal(id: String, password: String) {
@@ -148,10 +131,6 @@ class UserViewModel @Inject constructor(
 
     suspend fun verifyEmailCode(code: String) {
         userRepository.verifyEmailCode(code)
-    }
-
-    suspend fun setCompactMode(compact: Boolean) {
-        userRepository.setCompactMode(compact)
     }
 
     suspend fun setFirstBookmarkAlertShown() {

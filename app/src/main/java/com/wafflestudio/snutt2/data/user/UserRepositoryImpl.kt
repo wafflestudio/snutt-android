@@ -19,7 +19,6 @@ import com.wafflestudio.snutt2.lib.preferences.model.toDomainModel
 import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.lib.unwrap
 import com.wafflestudio.snutt2.model.TableLectureCustom
-import com.wafflestudio.snutt2.model.TableLectureCustomOptions
 import com.wafflestudio.snutt2.ui.ThemeMode
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import kotlinx.coroutines.CoroutineScope
@@ -131,25 +130,6 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun getAccessToken(): String {
         return storage.accessToken.get()
-    }
-
-    override suspend fun setTableTrim(
-        dayOfWeekFrom: Int?,
-        dayOfWeekTo: Int?,
-        hourFrom: Int?,
-        hourTo: Int?,
-        isAuto: Boolean?,
-    ) {
-        val prevTrimParam = storage.tableTrimParam.get()
-        storage.tableTrimParam.update(
-            TableTrimParam(
-                dayOfWeekFrom = dayOfWeekFrom ?: prevTrimParam.dayOfWeekFrom,
-                dayOfWeekTo = dayOfWeekTo ?: prevTrimParam.dayOfWeekTo,
-                hourFrom = hourFrom ?: prevTrimParam.hourFrom,
-                hourTo = hourTo ?: prevTrimParam.hourTo,
-                forceFitLectures = isAuto ?: prevTrimParam.forceFitLectures,
-            ).toDataModel(),
-        )
     }
 
     override suspend fun toggleForceFit(): Result<Unit> {
@@ -311,17 +291,6 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun setCompactMode(compact: Boolean) {
         storage.compactMode.update(compact)
-    }
-
-    override suspend fun setTableLectureCustomOption(key: TableLectureCustomOptions, value: Boolean) {
-        storage.tableLectureCustom.update(
-            when (key) {
-                TableLectureCustomOptions.TITLE -> storage.tableLectureCustom.get().copy(title = value)
-                TableLectureCustomOptions.PLACE -> storage.tableLectureCustom.get().copy(place = value)
-                TableLectureCustomOptions.LECTURENUMBER -> storage.tableLectureCustom.get().copy(lectureNumber = value)
-                TableLectureCustomOptions.INSTRUCTOR -> storage.tableLectureCustom.get().copy(instructor = value)
-            },
-        )
     }
 
     override suspend fun toggleTitleVisible(): Result<Unit> {
