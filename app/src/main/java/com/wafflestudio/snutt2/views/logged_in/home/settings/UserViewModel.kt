@@ -2,10 +2,10 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import androidx.lifecycle.ViewModel
 import com.wafflestudio.snutt2.data.user.UserRepository
+import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.model.TableLectureCustom
 import com.wafflestudio.snutt2.model.TableLectureCustomOptions
-import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.ThemeMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*

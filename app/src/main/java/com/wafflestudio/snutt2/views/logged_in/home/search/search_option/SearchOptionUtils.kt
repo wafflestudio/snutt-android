@@ -2,8 +2,8 @@ package com.wafflestudio.snutt2.views.logged_in.home.search.search_option
 
 import android.content.Context
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.model.SearchTimeDto
-import com.wafflestudio.snutt2.model.TableTrimParam
 import kotlin.math.roundToInt
 
 fun List<List<Boolean>>.clusterToTimeBlocks(): List<SearchTimeDto> {

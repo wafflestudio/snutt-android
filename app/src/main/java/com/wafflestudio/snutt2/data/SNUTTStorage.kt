@@ -4,8 +4,8 @@ import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.network.NetworkLog
 import com.wafflestudio.snutt2.lib.network.dto.core.*
 import com.wafflestudio.snutt2.lib.preferences.context.*
+import com.wafflestudio.snutt2.lib.preferences.model.TableTrimParamData
 import com.wafflestudio.snutt2.model.TableLectureCustom
-import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.ui.ThemeMode
 import javax.inject.Inject
@@ -79,13 +79,13 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val tableTrimParam = PrefValue<TableTrimParam>(
+    val tableTrimParam = PrefValue<TableTrimParamData>(
         prefContext,
         PrefValueMetaData(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
             key = "table_trim_param",
-            type = TableTrimParam::class.java,
-            defaultValue = TableTrimParam.Default,
+            type = TableTrimParamData::class.java,
+            defaultValue = TableTrimParamData.Default,
         ),
     )
 

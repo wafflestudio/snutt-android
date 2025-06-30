@@ -6,15 +6,18 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.domainmodel.PushPreferences
+import com.wafflestudio.snutt2.domainmodel.TableTrimParam
+import com.wafflestudio.snutt2.domainmodel.toDataModel
 import com.wafflestudio.snutt2.domainmodel.toNetworkModel
+import com.wafflestudio.snutt2.lib.map
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApiForGoogle
 import com.wafflestudio.snutt2.lib.network.dto.*
+import com.wafflestudio.snutt2.lib.preferences.model.toDomainModel
 import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.lib.unwrap
 import com.wafflestudio.snutt2.model.TableLectureCustom
 import com.wafflestudio.snutt2.model.TableLectureCustomOptions
-import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.ThemeMode
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import kotlinx.coroutines.CoroutineScope
@@ -38,7 +41,9 @@ class UserRepositoryImpl @Inject constructor(
     override val user = storage.user.asStateFlow()
         .unwrap(externalScope)
 
-    override val tableTrimParam: StateFlow<TableTrimParam> = storage.tableTrimParam.asStateFlow()
+    override val tableTrimParam: StateFlow<TableTrimParam> = storage.tableTrimParam.asStateFlow().map(externalScope) {
+        it.toDomainModel()
+    }
 
     override val tableLectureCustomOption: StateFlow<TableLectureCustom> =
         storage.tableLectureCustom.asStateFlow()
@@ -141,7 +146,7 @@ class UserRepositoryImpl @Inject constructor(
                 hourFrom = hourFrom ?: prevTrimParam.hourFrom,
                 hourTo = hourTo ?: prevTrimParam.hourTo,
                 forceFitLectures = isAuto ?: prevTrimParam.forceFitLectures,
-            ),
+            ).toDataModel(),
         )
     }
 
