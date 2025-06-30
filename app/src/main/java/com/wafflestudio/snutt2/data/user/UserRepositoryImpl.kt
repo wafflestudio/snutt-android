@@ -6,6 +6,7 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.domainmodel.PushPreferences
+import com.wafflestudio.snutt2.domainmodel.TableLectureCustom
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.domainmodel.toDataModel
 import com.wafflestudio.snutt2.domainmodel.toNetworkModel
@@ -18,7 +19,6 @@ import com.wafflestudio.snutt2.lib.network.toDomainError
 import com.wafflestudio.snutt2.lib.preferences.model.toDomainModel
 import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.lib.unwrap
-import com.wafflestudio.snutt2.model.TableLectureCustom
 import com.wafflestudio.snutt2.ui.ThemeMode
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import kotlinx.coroutines.CoroutineScope
@@ -47,7 +47,9 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override val tableLectureCustomOption: StateFlow<TableLectureCustom> =
-        storage.tableLectureCustom.asStateFlow()
+        storage.tableLectureCustom.asStateFlow().map(externalScope) {
+            it.toDomainModel()
+        }
 
     override val accessToken = storage.accessToken.asStateFlow()
 

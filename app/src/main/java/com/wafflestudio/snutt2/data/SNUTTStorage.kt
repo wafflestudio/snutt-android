@@ -4,8 +4,8 @@ import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.network.NetworkLog
 import com.wafflestudio.snutt2.lib.network.dto.core.*
 import com.wafflestudio.snutt2.lib.preferences.context.*
+import com.wafflestudio.snutt2.lib.preferences.model.TableLectureCustomData
 import com.wafflestudio.snutt2.lib.preferences.model.TableTrimParamData
-import com.wafflestudio.snutt2.model.TableLectureCustom
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.ui.ThemeMode
 import javax.inject.Inject
@@ -89,13 +89,13 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val tableLectureCustom = PrefValue<TableLectureCustom>(
+    val tableLectureCustom = PrefValue<TableLectureCustomData>(
         prefContext,
         PrefValueMetaData(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
             key = "table_lecture_custom",
-            type = TableLectureCustom::class.java,
-            defaultValue = TableLectureCustom.Default,
+            type = TableLectureCustomData::class.java,
+            defaultValue = TableLectureCustomData.Default,
         ),
     )
 
