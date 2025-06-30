@@ -139,6 +139,11 @@ class TimetableConfigViewModel @Inject constructor(
     }
 }
 
+// TODO
+// 현재는 TableState가 TableTrimParam과 TableLectureCustom을 포함하고 있어 이 또한 중복이고
+// 사실 그러면 의미상 CompactMode도 포함해야 하는것이 아닌가라는 생각이 든다.
+// 이와 더불어 TableState와 CompactMode를 CompositionalLocal로 내려주고 있는데, 이 또한 개선해야 하지만
+// 많은 부분에 변화를 주어야 하고 Sheet에 대한 개선이 선행되어야 한다고 판단하여 일단 보류.
 data class TimeTableConfigUiState(
     val tableTrimParam: TableTrimParam,
     val compactMode: Boolean,
