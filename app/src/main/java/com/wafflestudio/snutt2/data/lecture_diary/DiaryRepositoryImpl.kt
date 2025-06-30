@@ -14,7 +14,7 @@ class DiaryRepositoryImpl @Inject constructor(
 ) :
     DiaryRepository {
     override fun getDiaryWriteInit(): Result<DiaryWrite> {
-        return Result.Success(DiaryPreviewData.diaryWriteInit)
+        return Result.Success(DiaryPreviewData.diaryWriteNewInit)
     }
 
     override suspend fun saveDiaryWrite(diaryWriteData: DiaryWrite): Result<Unit> {

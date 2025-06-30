@@ -172,12 +172,15 @@ fun DiaryWriteScreen(
                         .background(color = SNUTTColors.Gray),
                 ) {
                     TodayQuestionBox(
+                        isTodayCompleted,
                         { todaySelection ->
-                            isTodayCompleted = true
-                            scope.launch {
-                                delay(100)
-                                scrollState.animateScrollTo(toScrollOffset.value)
+                            if (!isTodayCompleted) {
+                                scope.launch {
+                                    delay(100)
+                                    scrollState.animateScrollTo(toScrollOffset.value)
+                                }
                             }
+                            isTodayCompleted = true
                             todaySelected.value = todaySelection
                             val questions = diaryWriteQuestionList(diaryWriteUiState.diaryWrite.lectureName, diaryWriteTodayOptions.zip(todaySelected.value).filter { it.second }.map { it.first })
                             questionSelected.value = List(questions.size) { i -> List(questions[i].options.size) { false } }
@@ -241,11 +244,16 @@ fun DiaryWriteScreen(
 
 @Composable
 fun TodayQuestionBox(
-    onTodayComplete: (List<Boolean>) -> Unit,
+    isTodayCompleted: Boolean,
+    onTodayChange: (List<Boolean>) -> Unit,
     questions: List<DiaryWriteQuestion>,
     selectedState: List<Boolean>,
 ) {
     var localTodaySelectedState by remember { mutableStateOf(selectedState) }
+
+    LaunchedEffect(localTodaySelectedState) {
+        if (isTodayCompleted) onTodayChange(localTodaySelectedState)
+    }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -259,20 +267,21 @@ fun TodayQuestionBox(
                     if (i == index) !value else value
                 }
             },)
-
-            Box(modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    "완료",
-                    style = SNUTTTypography.button.copy(fontSize = 14.sp, color = SNUTTColors.DarkMainBlue, fontWeight = FontWeight.SemiBold),
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .padding(horizontal = 12.dp, vertical = 4.dp)
-                        .clicks {
-                            if (localTodaySelectedState != selectedState) {
-                                onTodayComplete(localTodaySelectedState)
-                            }
-                        },
-                )
+            if (!isTodayCompleted) {
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        "완료",
+                        style = SNUTTTypography.button.copy(fontSize = 14.sp, color = SNUTTColors.DarkMainBlue, fontWeight = FontWeight.SemiBold),
+                        modifier = Modifier
+                            .align(Alignment.CenterEnd)
+                            .padding(horizontal = 12.dp, vertical = 4.dp)
+                            .clicks {
+                                if (localTodaySelectedState != selectedState) {
+                                    onTodayChange(localTodaySelectedState)
+                                }
+                            },
+                    )
+                }
             }
         }
     }
