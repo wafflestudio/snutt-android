@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -438,12 +439,13 @@ fun MoreTextItem(
                         if (moretext.length <= 200) {
                             onChange(moretext)
                         } else {
-                            onChange(moretext.take(200)) // 안전하게 200자까지 자름
+                            onChange(moretext.take(200))
                         }
                     },
                     hint = "오늘 수업에서 배운 내용, 느낀 점 등을 간단하게 적어보세요.",
                     underlineEnabled = false,
-                    modifier = Modifier.padding(vertical = 16.dp),
+                    modifier = Modifier.padding(vertical = 16.dp).height(120.dp),
+                    textStyle = SNUTTTypography.body1.copy(color = SNUTTColors.DarkerGray),
                 )
 
                 Text(
