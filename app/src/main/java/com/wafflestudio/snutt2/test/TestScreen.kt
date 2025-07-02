@@ -42,6 +42,7 @@ fun TestRoute(
 ) {
     val context = LocalContext.current
     val uiState by viewModel.testUiState.collectAsStateWithLifecycle()
+    val segmentPickerUiState by viewModel.segmentPickerUiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.testUiEvent.collect { uiEvent ->
@@ -62,11 +63,13 @@ fun TestRoute(
     TestScreen(
         modifier = modifier,
         uiState = uiState,
+        segmentPickerUiState = segmentPickerUiState,
         onClickBack = onNavigateBack,
         onFirstTestCase = viewModel::runApiWithoutToken,
         onSecondTestCase = {}, // 구현하려 했으나 번거로워서 일단 스킵
         onThirdTestCase = viewModel::registerLocal,
         onFourthTestCase = viewModel::getNotificationCount,
+        onSegmentPickerUiStateChange = viewModel::changeSegmentPickerUiState,
     )
 }
 
@@ -74,11 +77,13 @@ fun TestRoute(
 fun TestScreen(
     modifier: Modifier = Modifier,
     uiState: TestUiState,
+    segmentPickerUiState: String,
     onClickBack: () -> Unit,
     onFirstTestCase: () -> Unit,
     onSecondTestCase: () -> Unit,
     onThirdTestCase: (String, String, String) -> Unit,
     onFourthTestCase: () -> Unit,
+    onSegmentPickerUiStateChange: (String) -> Unit,
 ) {
     val text = when (uiState) {
         is TestUiState.Fail -> "실패"
@@ -144,6 +149,15 @@ fun TestScreen(
                 onClick = onFourthTestCase,
             )
 
+            Margin(height = 10.dp)
+
+            SegmentedPicker(
+                title = "testPicker",
+                options = listOf("option 1", "option 2", "option 3"),
+                selectedOption = segmentPickerUiState,
+                onOptionSelected = onSegmentPickerUiStateChange,
+            )
+
             // 리팩토링 과정에서 필요한 테스트가 있다면 지속적으로 추가
         }
     }
@@ -154,12 +168,14 @@ fun TestScreen(
 fun TestScreenPreview() {
     TestScreen(
         uiState = TestUiState.Fail,
+        segmentPickerUiState = "option 1",
         onClickBack = {},
         onFirstTestCase = {},
         onSecondTestCase = {},
         onThirdTestCase = { _, _, _ ->
         },
         onFourthTestCase = {},
+        onSegmentPickerUiStateChange = { _ -> },
     )
 }
 
