@@ -65,6 +65,9 @@ import kotlinx.coroutines.launch
 fun DiaryWriteRoute(
     modifier: Modifier = Modifier,
     diaryWriteViewModel: DiaryWriteViewModel = hiltViewModel(),
+    onNavigateBack: () -> Unit,
+    onNavigateOnboard: () -> Unit,
+    onNavigateDiaryWriteDone: () -> Unit,
 ) {
     val context = LocalContext.current
     val diaryWrite by diaryWriteViewModel.diaryWriteInit.collectAsState()
@@ -79,10 +82,10 @@ fun DiaryWriteRoute(
                     }
                 }
                 is DiaryWriteUiEvent.NavigateToWriteMore -> {
-                    // TODO: 다음 화면으로 네비게이션
+                    onNavigateDiaryWriteDone()
                 }
                 is DiaryWriteUiEvent.NavigateToOnboard -> {
-                    // TODO: onNavigateOnboard 호출
+                    onNavigateOnboard()
                 }
             }
         }
@@ -94,6 +97,7 @@ fun DiaryWriteRoute(
         onComplete = { diaryWriteData ->
             diaryWriteViewModel.saveDiaryWrite(diaryWriteData)
         },
+        onNavigateBack = onNavigateBack,
     )
 }
 
@@ -102,6 +106,7 @@ fun DiaryWriteScreen(
     modifier: Modifier = Modifier,
     diaryWriteUiState: DiaryWriteUiState,
     onComplete: (DiaryWrite) -> Unit,
+    onNavigateBack: () -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
@@ -166,7 +171,10 @@ fun DiaryWriteScreen(
                     ExitIcon(
                         modifier = Modifier
                             .padding(start = 57.dp)
-                            .width(24.dp),
+                            .width(24.dp)
+                            .clicks {
+                                onNavigateBack()
+                            },
                     )
                 }
                 Column(
@@ -475,6 +483,7 @@ fun DiaryWritePagePreview() {
     DiaryWriteScreen(
         diaryWriteUiState = DiaryWriteUiState.Success(previewData),
         onComplete = {},
+        onNavigateBack = {},
     )
 }
 

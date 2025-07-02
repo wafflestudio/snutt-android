@@ -421,8 +421,23 @@ class RootActivity : AppCompatActivity() {
         composableAnimated<NavigationDestination.SocialLink> { SocialLinkPage() }
         composableAnimated<NavigationDestination.PersonalInformationPolicy> { PersonalInformationPolicyPage() }
         composableAnimated<NavigationDestination.ThemeModeSelect> { ColorModeSelectPage() }
-        composableAnimated<NavigationDestination.LectureDiary> { DiaryListPage() }
-        composableAnimated<NavigationDestination.LectureDiaryWrite> { DiaryWriteRoute() }
+        if (BuildConfig.DEBUG) {
+            composableAnimated<NavigationDestination.LectureDiary> { DiaryListPage() }
+            composableAnimated<NavigationDestination.LectureDiaryWrite> {
+                DiaryWriteRoute(
+                    onNavigateBack = {
+                        if (navController.currentDestination?.hasRoute(NavigationDestination.LectureDiaryWrite::class) == true) {
+                            navController.popBackStack()
+                        } 
+                    },
+                    onNavigateOnboard = {
+                        navController.navigateAsOrigin(NavigationDestination.Onboard)
+                    },
+                    onNavigateDiaryWriteDone = {
+                    },
+                )
+            }
+        }
         composableAnimated<NavigationDestination.VacancyNotification> {
             val parentEntry = remember(it) {
                 navController.getBackStackEntry(NavigationDestination.Home)
