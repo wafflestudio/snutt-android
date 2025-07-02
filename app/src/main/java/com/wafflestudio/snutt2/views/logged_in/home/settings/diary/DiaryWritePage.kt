@@ -226,19 +226,34 @@ fun DiaryWriteScreen(
                                 modifier = Modifier
                                     .padding(top = 12.dp, start = 16.dp, end = 16.dp, bottom = 40.dp)
                                     .align(Alignment.End)
-                                    .background(color = SNUTTColors.MainBlue, shape = RoundedCornerShape(6.dp))
-                                    .padding(vertical = 12.dp, horizontal = 48.dp)
+                                    .background(
+                                        color = if (questionSelected.value.all { l -> l.any { it } }) {
+                                            SNUTTColors.MainBlue
+                                        } else {
+                                            SNUTTColors.TableGrid
+                                        },
+                                        shape = RoundedCornerShape(6.dp),
+                                    )
                                     .clicks {
-                                        onComplete(
-                                            DiaryWrite(
-                                                diaryWriteUiState.diaryWrite.lectureName,
-                                                todaySelected.value,
-                                                questionSelected.value,
-                                                moreTextState.value,
-                                            ),
-                                        )
-                                    },
-                                text = "다음", style = SNUTTTypography.button.copy(color = SNUTTColors.White, fontSize = 15.sp),
+                                        if (questionSelected.value.all { l -> l.any { it } }) {
+                                            onComplete(
+                                                DiaryWrite(
+                                                    diaryWriteUiState.diaryWrite.lectureName,
+                                                    todaySelected.value,
+                                                    questionSelected.value,
+                                                    moreTextState.value,
+                                                ),
+                                            )
+                                        }
+                                    }
+                                    .padding(vertical = 12.dp, horizontal = 48.dp),
+                                text = "다음",
+                                style =
+                                if (questionSelected.value.all { l -> l.any { it } }) {
+                                    SNUTTTypography.button.copy(color = SNUTTColors.White, fontSize = 15.sp)
+                                } else {
+                                    SNUTTTypography.button.copy(color = SNUTTColors.Gray20, fontSize = 15.sp)
+                                },
                             )
                         }
                     }
