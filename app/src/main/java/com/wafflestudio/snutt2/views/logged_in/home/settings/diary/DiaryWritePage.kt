@@ -434,7 +434,13 @@ fun MoreTextItem(
             ) {
                 EditText(
                     value = moreText ?: "",
-                    onValueChange = { moretext -> onChange(moretext) },
+                    onValueChange = { moretext ->
+                        if (moretext.length <= 200) {
+                            onChange(moretext)
+                        } else {
+                            onChange(moretext.take(200)) // 안전하게 200자까지 자름
+                        }
+                    },
                     hint = "오늘 수업에서 배운 내용, 느낀 점 등을 간단하게 적어보세요.",
                     underlineEnabled = false,
                     modifier = Modifier.padding(vertical = 16.dp),
@@ -442,7 +448,7 @@ fun MoreTextItem(
 
                 Text(
                     buildAnnotatedString {
-                        withStyle(style = SpanStyle(color = SNUTTColors.MainBlue)) { // TODO: 200자 넘으면 색깔 바꾸고, 더 못 입력하게
+                        withStyle(style = SpanStyle(color = SNUTTColors.MainBlue)) {
                             append("${moreText?.length ?: 0}")
                         }
                         withStyle(style = SpanStyle(color = SNUTTColors.EditTextLabel)) {
