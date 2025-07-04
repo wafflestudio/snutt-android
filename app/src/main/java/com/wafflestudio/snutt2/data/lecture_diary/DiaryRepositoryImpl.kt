@@ -18,6 +18,6 @@ class DiaryRepositoryImpl @Inject constructor(
     }
 
     override suspend fun saveDiaryWrite(diaryWriteData: DiaryWrite): Result<Unit> {
-        return Result.Fail(Unknown("")) // good
+        return Result.Success(Unit)// good
     }
 }

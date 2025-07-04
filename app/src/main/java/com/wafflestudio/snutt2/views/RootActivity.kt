@@ -68,6 +68,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
+import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryCompleteRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryListPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryWriteRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigRoute
@@ -434,7 +435,18 @@ class RootActivity : AppCompatActivity() {
                         navController.navigateAsOrigin(NavigationDestination.Onboard)
                     },
                     onNavigateDiaryWriteDone = {
+                        navController.navigate(NavigationDestination.LectureDiaryComplete)
                     },
+                )
+            }
+            composableAnimated<NavigationDestination.LectureDiaryComplete> {
+                DiaryCompleteRoute(
+                    onNavigateNextPage = {
+                        navController.navigateAsOrigin(NavigationDestination.LectureDiaryWrite) // TODO: 처리 필요
+                    },
+                    onNavigateHomePage = {
+                        navController.navigateAsOrigin(NavigationDestination.Home)
+                    }
                 )
             }
         }

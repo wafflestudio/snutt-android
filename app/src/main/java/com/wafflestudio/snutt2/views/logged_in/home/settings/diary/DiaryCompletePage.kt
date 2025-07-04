@@ -36,10 +36,14 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 @Composable
 fun DiaryCompleteRoute(
     modifier: Modifier = Modifier,
-    onNavigateBack: () -> Unit,
-    onNavigateOnboard: () -> Unit,
-    onNavigateDiaryWriteDone: () -> Unit,
+    onNavigateNextPage: () -> Unit,
+    onNavigateHomePage: () -> Unit,
 ) {
+    DiaryCompleteScreen(
+        diaryCompleteState = DiaryCompleteState.MoreDiary, // TODO: 처리 필요
+        onNavigateNextPage = onNavigateNextPage,
+        onNavigateHomePage = onNavigateHomePage
+    )
 }
 
 @Composable
@@ -83,6 +87,7 @@ fun DiaryCompleteScreen(
                             shape = RoundedCornerShape(30.dp),
                         )
                         .background(color = Color.Transparent, shape = RoundedCornerShape(30.dp))
+                        .clicks{onNavigateNextPage()}
                         .padding(start = 29.dp, end = 21.dp, top = 13.dp, bottom = 13.dp),
                 ) {
                     Row(
