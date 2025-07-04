@@ -446,7 +446,7 @@ class RootActivity : AppCompatActivity() {
                     },
                     onNavigateHomePage = {
                         navController.navigateAsOrigin(NavigationDestination.Home)
-                    }
+                    },
                 )
             }
         }
