@@ -428,7 +428,7 @@ class RootActivity : AppCompatActivity() {
                     onNavigateBack = {
                         if (navController.currentDestination?.hasRoute(NavigationDestination.LectureDiaryWrite::class) == true) {
                             navController.popBackStack()
-                        } 
+                        }
                     },
                     onNavigateOnboard = {
                         navController.navigateAsOrigin(NavigationDestination.Onboard)
