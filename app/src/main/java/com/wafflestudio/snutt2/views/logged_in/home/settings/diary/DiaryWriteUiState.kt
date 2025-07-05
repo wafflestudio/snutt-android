@@ -5,6 +5,8 @@ import com.wafflestudio.snutt2.domainmodel.DiaryWriteQuestion
 
 val diaryWriteTodayOptions = listOf("개강", "수업", "실기", "시험", "발표", "휴강", "종강", "드랍")
 
+val isCourseOverIdx = 6
+
 fun diaryWriteQuestionList(lectureName: String, today: List<String>): List<DiaryWriteQuestion> {
     return when {
         today.contains("개강") -> listOf(

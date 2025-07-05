@@ -67,10 +67,13 @@ fun DiaryWriteRoute(
     diaryWriteViewModel: DiaryWriteViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit,
     onNavigateOnboard: () -> Unit,
-    onNavigateDiaryWriteDone: () -> Unit,
+    onNavigateDiaryWriteDone: (Boolean) -> Unit,
 ) {
     val context = LocalContext.current
     val diaryWrite by diaryWriteViewModel.diaryWriteInit.collectAsState()
+    var isCourseOver by remember {
+        mutableStateOf(false)
+    }
 
     LaunchedEffect(Unit) {
         diaryWriteViewModel.diaryWriteUiEvent.collect { uiEvent ->
@@ -82,7 +85,7 @@ fun DiaryWriteRoute(
                     }
                 }
                 is DiaryWriteUiEvent.NavigateToWriteMore -> {
-                    onNavigateDiaryWriteDone()
+                    onNavigateDiaryWriteDone(isCourseOver)
                 }
                 is DiaryWriteUiEvent.NavigateToOnboard -> {
                     onNavigateOnboard()
@@ -98,6 +101,9 @@ fun DiaryWriteRoute(
             diaryWriteViewModel.saveDiaryWrite(diaryWriteData)
         },
         onNavigateBack = onNavigateBack,
+        handleIsCourseOver = { courseOver ->
+            isCourseOver = courseOver
+        },
     )
 }
 
@@ -107,6 +113,7 @@ fun DiaryWriteScreen(
     diaryWriteUiState: DiaryWriteUiState,
     onComplete: (DiaryWrite) -> Unit,
     onNavigateBack: () -> Unit,
+    handleIsCourseOver: (Boolean) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
@@ -197,6 +204,7 @@ fun DiaryWriteScreen(
                             }
                             isTodayCompleted = true
                             todaySelected.value = todaySelection
+                            handleIsCourseOver(todaySelected.value[isCourseOverIdx])
                             val questions = diaryWriteQuestionList(diaryWriteUiState.diaryWrite.lectureName, diaryWriteTodayOptions.zip(todaySelected.value).filter { it.second }.map { it.first })
                             questionSelected.value = List(questions.size) { i -> List(questions[i].options.size) { false } }
                         },
@@ -484,6 +492,7 @@ fun DiaryWritePagePreview() {
         diaryWriteUiState = DiaryWriteUiState.Success(previewData),
         onComplete = {},
         onNavigateBack = {},
+        handleIsCourseOver = {},
     )
 }
 

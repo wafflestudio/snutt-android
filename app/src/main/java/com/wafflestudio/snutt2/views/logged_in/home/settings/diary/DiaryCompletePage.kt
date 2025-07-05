@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings.diary
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -36,12 +37,19 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 @Composable
 fun DiaryCompleteRoute(
     modifier: Modifier = Modifier,
-    onNavigateNextPage: () -> Unit,
+    isCourseOver: Boolean,
+    onNavigateLectureReview: () -> Unit,
+    onNavigateDiaryWrite: () -> Unit,
     onNavigateHomePage: () -> Unit,
 ) {
+    Log.d("isCourseOVer", isCourseOver.toString())
+    val diaryCompleteState = when {
+        isCourseOver -> DiaryCompleteState.LectureReview
+        else -> DiaryCompleteState.MoreDiary
+    }
     DiaryCompleteScreen(
-        diaryCompleteState = DiaryCompleteState.MoreDiary, // TODO: 처리 필요
-        onNavigateNextPage = onNavigateNextPage,
+        diaryCompleteState = diaryCompleteState,
+        onNavigateNextPage = onNavigateDiaryWrite,
         onNavigateHomePage = onNavigateHomePage,
     )
 }

@@ -130,7 +130,7 @@ sealed interface NavigationDestination {
 
     @Serializable
     @DeepLinkPath("lecture_diary_complete")
-    data object LectureDiaryComplete : NavigationDestination
+    data class LectureDiaryComplete(val isCourseOver: Boolean) : NavigationDestination
 
     @Serializable
     @DeepLinkPath("friends")

@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.AnticipateInterpolator
@@ -434,15 +435,21 @@ class RootActivity : AppCompatActivity() {
                     onNavigateOnboard = {
                         navController.navigateAsOrigin(NavigationDestination.Onboard)
                     },
-                    onNavigateDiaryWriteDone = {
-                        navController.navigate(NavigationDestination.LectureDiaryComplete)
+                    onNavigateDiaryWriteDone = { isCourseOver ->
+                        navController.navigateAsOrigin(NavigationDestination.LectureDiaryComplete(isCourseOver))
                     },
                 )
             }
-            composableAnimated<NavigationDestination.LectureDiaryComplete> {
+            composableAnimated<NavigationDestination.LectureDiaryComplete> { entry ->
+                val isCourseOver = entry.arguments?.getBoolean("isCourseOver") ?: false
+                Log.d("args", entry.arguments.toString())
+                Log.d("isCourseOverArgs", entry.arguments?.getBoolean("isCourseOver").toString())
                 DiaryCompleteRoute(
-                    onNavigateNextPage = {
-                        navController.navigateAsOrigin(NavigationDestination.LectureDiaryWrite) // TODO: 처리 필요
+                    isCourseOver = isCourseOver,
+                    onNavigateDiaryWrite = {
+                        navController.navigateAsOrigin(NavigationDestination.LectureDiaryWrite)
+                    },
+                    onNavigateLectureReview = {
                     },
                     onNavigateHomePage = {
                         navController.navigateAsOrigin(NavigationDestination.Home)
