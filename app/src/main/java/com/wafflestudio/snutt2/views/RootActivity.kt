@@ -131,10 +131,8 @@ class RootActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
 
-        super.onCreate(null)
-
-        // Edge-to-Edge 활성화
         enableEdgeToEdge()
+        super.onCreate(null)
 
         FirebaseApp.initializeApp(this)
         setContentView(R.layout.activity_root)
