@@ -54,15 +54,13 @@ import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.deeplink.InstallInAppDeeplinkExecutor
 import com.wafflestudio.snutt2.lib.logging.AnalyticsLogger
 import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
-import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
-import com.wafflestudio.snutt2.lib.network.GlobalNetworkEvent
-import com.wafflestudio.snutt2.lib.network.GlobalNetworkEventHandler
 import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.navigation.getDeepLinkPath
 import com.wafflestudio.snutt2.react_native.ReactNativeBundleManager
+import com.wafflestudio.snutt2.test.TestRoute
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTheme
 import com.wafflestudio.snutt2.ui.isDarkMode
@@ -74,7 +72,8 @@ import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
-import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.LectureDiaryPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryListPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryWriteRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailRoute
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorPage
@@ -99,13 +98,6 @@ class RootActivity : AppCompatActivity() {
 
     private val homeViewModel: HomeViewModel by viewModels()
 
-    private val rootActivityViewModel: RootActivityViewModel by viewModels()
-
-    // 반드시 RootActivity의 멤버 변수로 두어야 하는데, 그렇지 않으면 Garbage Collector가 수거해버려서 나중에 null이 register 된다.
-    private val onGlobalNetworkEvent: (GlobalNetworkEvent) -> Unit = { event ->
-        rootActivityViewModel.onGlobalNetworkEvent(event)
-    }
-
     @Inject
     lateinit var popupState: PopupState
 
@@ -117,9 +109,6 @@ class RootActivity : AppCompatActivity() {
 
     @Inject
     lateinit var friendBundleManager: ReactNativeBundleManager
-
-    @Inject
-    lateinit var globalNetworkEventHandler: GlobalNetworkEventHandler
 
     @Inject
     lateinit var analyticsLogger: AnalyticsLogger
@@ -145,9 +134,6 @@ class RootActivity : AppCompatActivity() {
             }
             isInitialRefreshFinished = true
         }
-
-        globalNetworkEventHandler.register(onGlobalNetworkEvent)
-
         setUpContents(
             if (token.isEmpty()) {
                 NavigationDestination.Onboard
@@ -269,10 +255,27 @@ class RootActivity : AppCompatActivity() {
             LocalNavBottomSheetState provides navBottomSheetState,
             LocalAnalyticsLogger provides analyticsLogger,
         ) {
-            ObserveGlobalEvents(
-                navigateToImportantNotice = { navController.navigate(NavigationDestination.ImportantNotice) },
-                navigateToOnboard = { navController.navigateAsOrigin(NavigationDestination.Onboard) },
-            )
+            LaunchedEffect(Unit) {
+                lifecycleScope.launch {
+                    remoteConfig.noticeConfig.collect {
+                        if (it.visible) {
+                            navController.navigateAsOrigin(NavigationDestination.ImportantNotice)
+                        }
+                    }
+                }
+
+                // ApiOnError에서 WRONG_USER_TOKEN 시 로그아웃 하고 Onboard로 내비게이션하기 위한 코드.
+                // ApiOnError에서 UI 단 접근이 불가능하기 때문에, token.isEmpty()를 트리거로 하여 RootActivity에서 내비게이션한다.
+                // 다만 앱 켰을 때 Onboard로 두 번 연속 내비게이션하지 않기 위해 hasRoute를 검사한다.
+                // FIXME: 궁극적으로는 ApiOnError를 제거해야 한다.
+                lifecycleScope.launch {
+                    userViewModel.accessToken.collect { token ->
+                        if (token.isEmpty() && navController.currentDestination?.hasRoute(NavigationDestination.Tutorial::class) == false) {
+                            navController.navigateAsOrigin(NavigationDestination.Onboard)
+                        }
+                    }
+                }
+            }
 
             InstallInAppDeeplinkExecutor()
             ModalBottomSheetLayout(
@@ -342,54 +345,6 @@ class RootActivity : AppCompatActivity() {
                     }
 
                     settingComposables(navController)
-                }
-            }
-        }
-    }
-
-    @Composable
-    fun ObserveGlobalEvents(
-        navigateToImportantNotice: () -> Unit,
-        navigateToOnboard: () -> Unit,
-    ) {
-        LaunchedEffect(Unit) {
-            lifecycleScope.launch {
-                remoteConfig.noticeConfig.collect {
-                    if (it.visible) {
-                        navigateToImportantNotice()
-                    }
-                }
-            }
-
-            lifecycleScope.launch {
-                // 훗날 토스트 문구가 displayMessage로 통일되고 나면 개션의 여지 있음
-                rootActivityViewModel.globalNetworkUiEvent.collect { state ->
-                    when (state) {
-                        GlobalNetworkUiEvent.NetworkError -> toast(getString(R.string.error_no_network))
-                        GlobalNetworkUiEvent.NoAdminPrivilege -> toast(getString(R.string.error_no_admin_privilege))
-                        GlobalNetworkUiEvent.NoUserToken -> {
-                            toast(getString(R.string.error_no_user_token))
-                            try {
-                                userViewModel.performLogout()
-                            } catch (e: Exception) {
-                                toast(getString(R.string.error_signout_failed))
-                            }
-                            navigateToOnboard()
-                        }
-                        GlobalNetworkUiEvent.WrongUserToken -> {
-                            toast(getString(R.string.error_wrong_user_token))
-                            try {
-                                userViewModel.performLogout()
-                            } catch (e: Exception) {
-                                toast(getString(R.string.error_signout_failed))
-                            }
-                            navigateToOnboard()
-                        }
-                        GlobalNetworkUiEvent.ServerFault -> toast(getString(R.string.error_server_fault))
-                        GlobalNetworkUiEvent.UnknownApp -> toast(getString(R.string.error_unknown_app))
-                        GlobalNetworkUiEvent.UnknownError -> toast(getString(R.string.error_unknown))
-                        GlobalNetworkUiEvent.WrongApiKey -> toast(getString(R.string.error_wrong_api_key))
-                    }
                 }
             }
         }
@@ -480,13 +435,24 @@ class RootActivity : AppCompatActivity() {
         composableAnimated<NavigationDestination.SocialLink> { SocialLinkPage() }
         composableAnimated<NavigationDestination.PersonalInformationPolicy> { PersonalInformationPolicyPage() }
         composableAnimated<NavigationDestination.ThemeModeSelect> { ColorModeSelectPage() }
-        composableAnimated<NavigationDestination.LectureDiary> { LectureDiaryPage() }
+        composableAnimated<NavigationDestination.LectureDiary> { DiaryListPage() }
+        composableAnimated<NavigationDestination.LectureDiaryWrite> { DiaryWriteRoute() }
         composableAnimated<NavigationDestination.VacancyNotification> {
             val parentEntry = remember(it) {
                 navController.getBackStackEntry(NavigationDestination.Home)
             }
             val vacancyViewModel = hiltViewModel<VacancyViewModel>(parentEntry)
             VacancyPage(vacancyViewModel)
+        }
+        composableAnimated<NavigationDestination.PushPreferences> {
+            PushPreferencesRoute(
+                onNavigateBack = {
+                    if (navController.currentDestination?.hasRoute(NavigationDestination.PushPreferences::class) == true) {
+                        navController.popBackStack()
+                    }
+                },
+                onNavigateOnboard = { navController.navigateAsOrigin(NavigationDestination.Onboard) },
+            )
         }
         composableAnimated<NavigationDestination.ThemeMarket> {
             ThemeMarketRoute(
@@ -508,6 +474,19 @@ class RootActivity : AppCompatActivity() {
             )
         }
         if (BuildConfig.DEBUG) composableAnimated<NavigationDestination.NetworkLog> { NetworkLogPage() }
+
+        if (BuildConfig.DEBUG) {
+            composableAnimated<NavigationDestination.Test> {
+                TestRoute(
+                    onNavigateBack = {
+                        if (navController.currentDestination?.hasRoute(NavigationDestination.Test::class) == true) {
+                            navController.popBackStack()
+                        }
+                    },
+                    onNavigateOnboard = { navController.navigateAsOrigin(NavigationDestination.Onboard) },
+                )
+            }
+        }
     }
 
     // 안드 13 대응

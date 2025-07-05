@@ -105,6 +105,10 @@ sealed interface NavigationDestination {
     data object NetworkLog : NavigationDestination
 
     @Serializable
+    @DeepLinkPath("test")
+    data object Test : NavigationDestination
+
+    @Serializable
     @DeepLinkPath("vacancy")
     data object VacancyNotification : NavigationDestination
 
@@ -113,8 +117,16 @@ sealed interface NavigationDestination {
     data object ThemeMarket : NavigationDestination
 
     @Serializable
+    @DeepLinkPath("push_preferences")
+    data object PushPreferences : NavigationDestination
+
+    @Serializable
     @DeepLinkPath("lecture_diary")
     data object LectureDiary : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("lecture_diary_write")
+    data object LectureDiaryWrite : NavigationDestination
 
     @Serializable
     @DeepLinkPath("friends")

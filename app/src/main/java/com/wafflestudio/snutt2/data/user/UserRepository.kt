@@ -1,5 +1,7 @@
 package com.wafflestudio.snutt2.data.user
 
+import com.wafflestudio.snutt2.domainmodel.PushPreferences
+import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.dto.GetSocialProvidersResults
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.model.TableLectureCustom
@@ -92,6 +94,10 @@ interface UserRepository {
         clientId: String,
         clientSecret: String,
     ): String?
+
+    suspend fun getPushPreferences(): Result<PushPreferences>
+
+    suspend fun postPushPreferences(pushPreferences: PushPreferences): Result<Unit>
 
     /**
      * 소셜 로그인 관련.

@@ -19,3 +19,9 @@ data class DataWithState<TData : Any, TState : Any>(
 }
 
 typealias Selectable<T> = DataWithState<T, Boolean>
+
+fun <T : Any> List<Selectable<T>>.selectIndex(index: Int): List<Selectable<T>> {
+    return this.mapIndexed { i, data ->
+        data.copy(state = i == index)
+    }
+}

@@ -66,7 +66,6 @@
     <string name="error_vacancy_duplicate">이미 빈자리 알림을 받고 있는 강의입니다.</string>
     <string name="error_invalid_nickname">사용할 수 없는 닉네임입니다.</string>
     <string name="error_unknown">알수없는 에러입니다</string>
-    <string name="error_signout_failed">로그아웃에 실패하였습니다.</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="sign_up_app_bar_title">회원가입</string>
     <string name="sign_up_id_title">아이디</string>
@@ -429,9 +428,14 @@
     <string name="settings_app_report_detail_hint"> </string>
     <string name="settings_app_report_description">불편한 점이나 버그를 제보해주세요.\n더 나은 SNUTT를 위한 아이디어도 환영해요.</string>
     <string name="settings_personal_information_policy">개인정보처리방침</string>
+    <string name="settings_push_preferences_title">푸시알림 설정</string>
+    <string name="settings_push_preferences_lecture_update">강의 업데이트</string>
+    <string name="settings_push_preferences_vacancy">빈자리 알림</string>
     <string name="settings_item_vacancy">빈자리 알림</string>
     <string name="settings_item_theme_market">테마 마켓</string>
+    <string name="settings_item_push_preferences">푸시알림 설정</string>
     <string name="settings_item_lecture_diary">강의 일기장</string>
+    <string name="settings_item_write_lecture_diary">강의 일기장 쓰기</string>
     <string name="settings_service_info">서비스 약관</string>
     <string name="settings_version_info">버전 정보</string>
     <string name="settings_team_info">개발자 정보</string>

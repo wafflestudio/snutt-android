@@ -1,54 +1,126 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.*
+import com.wafflestudio.snutt2.components.compose.CustomDialog
+import com.wafflestudio.snutt2.components.compose.HorizontalMoreIcon
+import com.wafflestudio.snutt2.components.compose.PersonIcon
+import com.wafflestudio.snutt2.components.compose.RightArrowIcon
+import com.wafflestudio.snutt2.components.compose.TopBar
+import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.featureflag.FeatureFlag
-import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.onSurfaceVariant
-import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
-import kotlinx.coroutines.launch
 
 @Composable
-fun SettingsPage(
-    userViewModel: UserViewModel = hiltViewModel(),
+fun SettingsRoute(
+    viewModel: SettingsViewModel = hiltViewModel(),
+    onNavigateUserConfig: () -> Unit,
+    onNavigateThemeModeSelect: () -> Unit,
+    onNavigateTimeTableConfig: () -> Unit,
+    onNavigateThemeConfig: () -> Unit,
+    onNavigateVacancyNotification: () -> Unit,
+    onNavigateThemeMarket: () -> Unit,
+    onNavigatePushPreference: () -> Unit,
+    onNavigateLectureDiary: () -> Unit,
+    onNavigateTeamInfo: () -> Unit,
+    onNavigateAppReport: () -> Unit,
+    onNavigateOpenLicenses: () -> Unit,
+    onNavigateServiceInfo: () -> Unit,
+    onNavigatePersonalInformationPolicy: () -> Unit,
+    onNavigateNetworkLog: () -> Unit,
+    onNavigateTest: () -> Unit,
+    onNavigateOnboardAsOrigin: () -> Unit,
 ) {
-    val navController = LocalNavController.current
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-    val apiOnProgress = LocalApiOnProgress.current
-    val apiOnError = LocalApiOnError.current
-    val analyticsLogger = LocalAnalyticsLogger.current
-    val viewModel = hiltViewModel<UserViewModel>()
-    var logoutDialogState by remember { mutableStateOf(false) }
-    val themeMode by viewModel.themeMode.collectAsState()
-    val user by userViewModel.userInfo.collectAsState()
+    val uiState by viewModel.settingsUiState.collectAsState()
 
+    LaunchedEffect(Unit) {
+        viewModel.logoutFinishedUiEvent.collect {
+            onNavigateOnboardAsOrigin()
+        }
+    }
+
+    SettingsScreen(
+        uiState = uiState,
+        onClickUserConfig = onNavigateUserConfig,
+        onClickThemeModeSelect = onNavigateThemeModeSelect,
+        onClickTimeTableConfig = onNavigateTimeTableConfig,
+        onClickThemeConfig = onNavigateThemeConfig,
+        onClickVacancyNotification = onNavigateVacancyNotification,
+        onClickThemeMarket = onNavigateThemeMarket,
+        onClickPushPreference = onNavigatePushPreference,
+        onClickLectureDiary = onNavigateLectureDiary,
+        onClickTeamInfo = onNavigateTeamInfo,
+        onClickAppReport = onNavigateAppReport,
+        onClickOpenLicenses = onNavigateOpenLicenses,
+        onClickServiceInfo = onNavigateServiceInfo,
+        onClickPersonalInformationPolicy = onNavigatePersonalInformationPolicy,
+        onClickNetworkLog = onNavigateNetworkLog,
+        onClickTest = onNavigateTest,
+        onClickLogout = viewModel::showLogoutDialog,
+        onConfirmLogout = viewModel::performLogout,
+        onDismissLogout = viewModel::hideLogoutDialog,
+    )
+}
+
+@Composable
+fun SettingsScreen(
+    uiState: SettingsUiState,
+    onClickUserConfig: () -> Unit,
+    onClickThemeModeSelect: () -> Unit,
+    onClickTimeTableConfig: () -> Unit,
+    onClickThemeConfig: () -> Unit,
+    onClickVacancyNotification: () -> Unit,
+    onClickThemeMarket: () -> Unit,
+    onClickPushPreference: () -> Unit,
+    onClickLectureDiary: () -> Unit,
+    onClickTeamInfo: () -> Unit,
+    onClickAppReport: () -> Unit,
+    onClickOpenLicenses: () -> Unit,
+    onClickServiceInfo: () -> Unit,
+    onClickPersonalInformationPolicy: () -> Unit,
+    onClickNetworkLog: () -> Unit,
+    onClickTest: () -> Unit,
+    onClickLogout: () -> Unit,
+    onConfirmLogout: () -> Unit,
+    onDismissLogout: () -> Unit,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -85,14 +157,11 @@ fun SettingsPage(
                             .padding(end = 5.dp),
                     )
                 },
-                onClick = {
-                    navController.navigate(
-                        NavigationDestination.UserConfig,
-                    )
-                },
+                settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
+                onClick = onClickUserConfig,
             ) {
                 Text(
-                    text = user?.nickname.toString(),
+                    text = uiState.userName,
                     style = SNUTTTypography.body1.copy(
                         color = SNUTTColors.Black500,
                     ),
@@ -102,72 +171,62 @@ fun SettingsPage(
             SettingColumn {
                 SettingItem(
                     title = stringResource(R.string.settings_select_color_mode_title),
-                    onClick = {
-                        navController.navigate(
-                            NavigationDestination.ThemeModeSelect,
-                        )
-                    },
+                    settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
+                    onClick = onClickThemeModeSelect,
                 ) {
                     Text(
-                        text = themeMode.toString(),
+                        text = uiState.themeModeName,
                         style = SNUTTTypography.body1.copy(color = SNUTTColors.Black500),
                     )
                 }
                 SettingItem(
                     title = stringResource(R.string.timetable_settings_app_bar_title),
-                    onClick = {
-                        navController.navigate(
-                            NavigationDestination.TimeTableConfig,
-                        )
-                    },
+                    settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
+                    onClick = onClickTimeTableConfig,
                 )
                 SettingItem(
                     title = stringResource(R.string.settings_timetable_theme_config_title),
-                    onClick = {
-                        navController.navigate(
-                            NavigationDestination.ThemeConfig,
-                        )
-                    },
+                    settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
+                    onClick = onClickThemeConfig,
                 )
             }
             Margin(height = 10.dp)
             SettingColumn {
                 SettingItem(
                     title = stringResource(R.string.settings_item_vacancy),
+                    settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
                     hasNextPage = true,
-                    onClick = {
-                        navController.navigate(
-                            NavigationDestination.VacancyNotification,
-                        )
-                    },
+                    onClick = onClickVacancyNotification,
                 )
                 if (FeatureFlag.THEME_MARKET.isEnabled) {
                     SettingItem(
                         title = stringResource(R.string.settings_item_theme_market),
+                        settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
                         hasNextPage = true,
-                        onClick = {
-                            navController.navigate(
-                                NavigationDestination.ThemeMarket,
-                            )
-                        },
+                        onClick = onClickThemeMarket,
                     )
                 }
-                if (FeatureFlag.LECTURE_DIARY.isEnabled) {
-                    SettingItem(
-                        title = stringResource(R.string.settings_item_lecture_diary),
-                        hasNextPage = true,
-                        onClick = {
-                            navController.navigate(
-                                NavigationDestination.LectureDiary,
-                            )
-                        },
-                    )
+                SettingItem(
+                    title = stringResource(R.string.settings_item_push_preferences),
+                    hasNextPage = true,
+                    onClick = onClickPushPreference,
+                )
+                if (BuildConfig.DEBUG) {
+                    if (FeatureFlag.LECTURE_DIARY.isEnabled) {
+                        SettingItem(
+                            title = stringResource(R.string.settings_item_write_lecture_diary),
+                            settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
+                            hasNextPage = true,
+                            onClick = onClickLectureDiary,
+                        )
+                    }
                 }
             }
             Margin(height = 10.dp)
             SettingColumn {
                 SettingItem(
                     title = stringResource(R.string.settings_version_info),
+                    settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
                     hasNextPage = false,
                 ) {
                     Text(
@@ -177,85 +236,66 @@ fun SettingsPage(
                 }
                 SettingItem(
                     title = stringResource(R.string.settings_team_info),
-                    onClick = {
-                        navController.navigate(
-                            NavigationDestination.TeamInfo,
-                        )
-                    },
+                    settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
+                    onClick = onClickTeamInfo,
                 )
             }
             Margin(height = 10.dp)
             SettingItem(
                 title = stringResource(R.string.settings_app_report_title),
-                onClick = {
-                    navController.navigate(
-                        NavigationDestination.AppReport,
-                    )
-                },
+                settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
+                onClick = onClickAppReport,
             )
             Margin(height = 10.dp)
             SettingColumn {
                 SettingItem(
                     title = stringResource(R.string.settings_licenses_title),
-                    onClick = {
-                        navController.navigate(
-                            NavigationDestination.OpenLicenses,
-                        )
-                    },
+                    settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
+                    onClick = onClickOpenLicenses,
                 )
                 SettingItem(
                     title = stringResource(R.string.settings_service_info),
-                    onClick = {
-                        navController.navigate(
-                            NavigationDestination.ServiceInfo,
-                        )
-                    },
+                    settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
+                    onClick = onClickServiceInfo,
                 )
                 SettingItem(
                     title = stringResource(R.string.settings_personal_information_policy),
-                    onClick = {
-                        navController.navigate(
-                            NavigationDestination.PersonalInformationPolicy,
-                        )
-                    },
+                    settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
+                    onClick = onClickPersonalInformationPolicy,
                 )
             }
             Margin(height = 10.dp)
             SettingItem(
                 title = stringResource(R.string.settings_logout_title),
                 titleColor = SNUTTColors.Red,
-                onClick = {
-                    logoutDialogState = true
-                },
+                settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
+                onClick = onClickLogout,
             )
 
             if (BuildConfig.DEBUG) {
                 Margin(height = 10.dp)
                 SettingItem(
                     title = "네트워크 로그",
-                    onClick = {
-                        navController.navigate(NavigationDestination.NetworkLog)
-                    },
+                    settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
+                    onClick = onClickNetworkLog,
+                )
+            }
+
+            if (BuildConfig.DEBUG) {
+                Margin(height = 10.dp)
+                SettingItem(
+                    title = "리팩토링 테스트",
+                    onClick = onClickTest,
                 )
             }
             Margin(height = 10.dp)
         }
     }
 
-    if (logoutDialogState) {
+    if (uiState.showLogoutDialog) {
         CustomDialog(
-            onDismiss = { logoutDialogState = false },
-            onConfirm = {
-                scope.launch {
-                    launchSuspendApi(apiOnProgress, apiOnError) {
-                        analyticsLogger.logEvent(AnalyticsEvent.Logout)
-                        viewModel.forceLogout()
-                        viewModel.performLogout()
-                        logoutDialogState = false
-                        navController.navigateAsOrigin(NavigationDestination.Onboard)
-                    }
-                }
-            },
+            onDismiss = onDismissLogout,
+            onConfirm = onConfirmLogout,
             title = stringResource(R.string.settings_logout_title),
             positiveButtonText = stringResource(R.string.settings_logout_title),
         ) {
@@ -299,10 +339,10 @@ fun SettingItem(
     titleColor: Color = MaterialTheme.colors.onSurface,
     leadingIcon: @Composable () -> Unit = {},
     hasNextPage: Boolean = true,
+    settingPageNewBadgeTitles: List<String> = emptyList(),
     onClick: (() -> Unit)? = null,
     content: @Composable () -> Unit = {},
 ) {
-    val newSettingItems by LocalRemoteConfig.current.settingPageNewBadgeTitles.collectAsState(emptyList())
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -319,7 +359,7 @@ fun SettingItem(
                 color = titleColor,
             ),
         )
-        if (newSettingItems.contains(title)) {
+        if (settingPageNewBadgeTitles.contains(title)) {
             NewBadge(Modifier.padding(start = 5.dp))
         }
         Spacer(modifier = Modifier.weight(1f))
@@ -354,4 +394,12 @@ fun NewBadge(
                 ),
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SettingsPagePreview() {
+    SettingsScreen(
+        uiState = SettingsUiState("양주현", "다크", false, listOf("빈자리 알림")), onClickUserConfig = {}, onClickThemeModeSelect = {}, onClickTimeTableConfig = {}, onClickThemeConfig = {}, onClickVacancyNotification = {}, onClickThemeMarket = {}, onClickPushPreference = {}, onClickLectureDiary = {}, onClickTeamInfo = {}, onClickAppReport = {}, onClickOpenLicenses = {}, onClickServiceInfo = {}, onClickPersonalInformationPolicy = {}, onClickNetworkLog = {}, onClickTest = {}, onClickLogout = {}, onConfirmLogout = {}, onDismissLogout = {},
+    )
 }
