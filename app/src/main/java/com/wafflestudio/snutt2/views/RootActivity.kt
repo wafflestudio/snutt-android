@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.AnticipateInterpolator
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -16,18 +17,21 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.Surface
 import androidx.compose.material.navigation.BottomSheetNavigator
 import androidx.compose.material.navigation.ModalBottomSheetLayout
 import androidx.compose.material.navigation.bottomSheet
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.core.animation.doOnEnd
-import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -116,7 +120,9 @@ class RootActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
 
+        enableEdgeToEdge()
         super.onCreate(null)
+
         FirebaseApp.initializeApp(this)
         setContentView(R.layout.activity_root)
         parseDeeplinkExtra()
@@ -146,7 +152,15 @@ class RootActivity : AppCompatActivity() {
             val themeMode by userViewModel.themeMode.collectAsState()
             CompositionLocalProvider(LocalThemeState provides themeMode) {
                 SNUTTTheme {
-                    setUpUI(startDestination)
+                    // safeDrawingPadding(): targerSDK 35 대응
+                    // SDK 35에서 꽉 찬 화면이 default가 되면서, statusBar와 navigationBar에 맞게 padding을 줘야 한다.
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .safeDrawingPadding(),
+                    ) {
+                        setUpUI(startDestination)
+                    }
                 }
             }
         }
@@ -532,11 +546,8 @@ class RootActivity : AppCompatActivity() {
                  * 다르게 설정할 수 있기 때문에 여기서 직접 설정해 준다.
                  */
                 val isDarkMode = isDarkMode(this@RootActivity, themeMode)
-                val primaryColor = ContextCompat.getColor(this@RootActivity, if (isDarkMode) R.color.black_dark else R.color.white)
                 window.apply {
                     setBackgroundDrawableResource(if (isDarkMode) R.color.black_dark else R.color.white)
-                    statusBarColor = primaryColor
-                    navigationBarColor = primaryColor
                 }
                 WindowInsetsControllerCompat(window, window.decorView).apply {
                     isAppearanceLightStatusBars = isDarkMode.not()
