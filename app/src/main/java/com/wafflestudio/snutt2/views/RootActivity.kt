@@ -332,7 +332,7 @@ class RootActivity : AppCompatActivity() {
                         )
                     }
 
-                    settingComposables(navController)
+                    settingComposables(navController, homePageController)
                 }
             }
         }
@@ -406,7 +406,7 @@ class RootActivity : AppCompatActivity() {
         )
     }
 
-    private fun NavGraphBuilder.settingComposables(navController: NavController) {
+    private fun NavGraphBuilder.settingComposables(navController: NavController, homePageController: HomePageController) {
         composableAnimated<NavigationDestination.AppReport> { AppReportPage() }
         composableAnimated<NavigationDestination.OpenLicenses> { OpenSourceLicensePage() }
 
@@ -442,14 +442,14 @@ class RootActivity : AppCompatActivity() {
             }
             composableAnimated<NavigationDestination.LectureDiaryComplete> { entry ->
                 val isCourseOver = entry.arguments?.getBoolean("isCourseOver") ?: false
-                Log.d("args", entry.arguments.toString())
-                Log.d("isCourseOverArgs", entry.arguments?.getBoolean("isCourseOver").toString())
                 DiaryCompleteRoute(
                     isCourseOver = isCourseOver,
                     onNavigateDiaryWrite = {
                         navController.navigateAsOrigin(NavigationDestination.LectureDiaryWrite)
                     },
                     onNavigateLectureReview = {
+                        navController.navigateAsOrigin(NavigationDestination.Home)
+                        homePageController.update(HomeItem.Review())
                     },
                     onNavigateHomePage = {
                         navController.navigateAsOrigin(NavigationDestination.Home)

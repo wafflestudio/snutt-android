@@ -42,14 +42,17 @@ fun DiaryCompleteRoute(
     onNavigateDiaryWrite: () -> Unit,
     onNavigateHomePage: () -> Unit,
 ) {
-    Log.d("isCourseOVer", isCourseOver.toString())
     val diaryCompleteState = when {
         isCourseOver -> DiaryCompleteState.LectureReview
         else -> DiaryCompleteState.MoreDiary
     }
+    val onNavigateNextPage = when{
+        isCourseOver -> onNavigateLectureReview
+        else -> onNavigateHomePage
+    }
     DiaryCompleteScreen(
         diaryCompleteState = diaryCompleteState,
-        onNavigateNextPage = onNavigateDiaryWrite,
+        onNavigateNextPage = onNavigateNextPage,
         onNavigateHomePage = onNavigateHomePage,
     )
 }
