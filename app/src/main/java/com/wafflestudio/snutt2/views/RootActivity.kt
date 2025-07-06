@@ -6,7 +6,6 @@ import android.animation.ObjectAnimator
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.AnticipateInterpolator
@@ -449,7 +448,7 @@ class RootActivity : AppCompatActivity() {
                     },
                     onNavigateLectureReview = {
                         navController.navigateAsOrigin(NavigationDestination.Home)
-                        homePageController.update(HomeItem.Review())
+                        homePageController.update(HomeItem.Review(applicationContext.getString(R.string.review_base_url) + "/detail?id=53131")) // TODO: 이전 화면과 연결해서 적당한 위치로 보내기
                     },
                     onNavigateHomePage = {
                         navController.navigateAsOrigin(NavigationDestination.Home)

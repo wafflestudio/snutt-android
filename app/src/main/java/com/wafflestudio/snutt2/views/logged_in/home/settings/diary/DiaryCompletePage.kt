@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings.diary
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -46,7 +45,7 @@ fun DiaryCompleteRoute(
         isCourseOver -> DiaryCompleteState.LectureReview
         else -> DiaryCompleteState.MoreDiary
     }
-    val onNavigateNextPage = when{
+    val onNavigateNextPage = when {
         isCourseOver -> onNavigateLectureReview
         else -> onNavigateHomePage
     }
