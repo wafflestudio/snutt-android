@@ -72,6 +72,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
+import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryCompleteRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryListPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryWriteRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigRoute
@@ -344,7 +345,7 @@ class RootActivity : AppCompatActivity() {
                         )
                     }
 
-                    settingComposables(navController)
+                    settingComposables(navController, homePageController)
                 }
             }
         }
@@ -418,7 +419,7 @@ class RootActivity : AppCompatActivity() {
         )
     }
 
-    private fun NavGraphBuilder.settingComposables(navController: NavController) {
+    private fun NavGraphBuilder.settingComposables(navController: NavController, homePageController: HomePageController) {
         composableAnimated<NavigationDestination.AppReport> { AppReportPage() }
         composableAnimated<NavigationDestination.OpenLicenses> { OpenSourceLicensePage() }
 
@@ -435,8 +436,40 @@ class RootActivity : AppCompatActivity() {
         composableAnimated<NavigationDestination.SocialLink> { SocialLinkPage() }
         composableAnimated<NavigationDestination.PersonalInformationPolicy> { PersonalInformationPolicyPage() }
         composableAnimated<NavigationDestination.ThemeModeSelect> { ColorModeSelectPage() }
-        composableAnimated<NavigationDestination.LectureDiary> { DiaryListPage() }
-        composableAnimated<NavigationDestination.LectureDiaryWrite> { DiaryWriteRoute() }
+        if (BuildConfig.DEBUG) {
+            composableAnimated<NavigationDestination.LectureDiary> { DiaryListPage() }
+            composableAnimated<NavigationDestination.LectureDiaryWrite> {
+                DiaryWriteRoute(
+                    onNavigateBack = {
+                        if (navController.currentDestination?.hasRoute(NavigationDestination.LectureDiaryWrite::class) == true) {
+                            navController.popBackStack()
+                        }
+                    },
+                    onNavigateOnboard = {
+                        navController.navigateAsOrigin(NavigationDestination.Onboard)
+                    },
+                    onNavigateDiaryWriteDone = { isCourseOver ->
+                        navController.navigateAsOrigin(NavigationDestination.LectureDiaryComplete(isCourseOver))
+                    },
+                )
+            }
+            composableAnimated<NavigationDestination.LectureDiaryComplete> { entry ->
+                val isCourseOver = entry.arguments?.getBoolean("isCourseOver") ?: false
+                DiaryCompleteRoute(
+                    isCourseOver = isCourseOver,
+                    onNavigateDiaryWrite = {
+                        navController.navigateAsOrigin(NavigationDestination.LectureDiaryWrite)
+                    },
+                    onNavigateLectureReview = {
+                        navController.navigateAsOrigin(NavigationDestination.Home)
+                        homePageController.update(HomeItem.Review(applicationContext.getString(R.string.review_base_url) + "/detail?id=53131")) // TODO: 이전 화면과 연결해서 적당한 위치로 보내기
+                    },
+                    onNavigateHomePage = {
+                        navController.navigateAsOrigin(NavigationDestination.Home)
+                    },
+                )
+            }
+        }
         composableAnimated<NavigationDestination.VacancyNotification> {
             val parentEntry = remember(it) {
                 navController.getBackStackEntry(NavigationDestination.Home)
