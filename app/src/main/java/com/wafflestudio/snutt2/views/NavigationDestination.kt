@@ -129,6 +129,7 @@ sealed interface NavigationDestination {
     data class LectureDiaryWrite(
         val lectureId: String,
         val lectureName: String,
+        val lectureNumber: String?,
     ) : NavigationDestination
 
     @Serializable
@@ -137,6 +138,7 @@ sealed interface NavigationDestination {
         val isCourseOver: Boolean,
         val lectureId: String,
         val lectureName: String,
+        val lectureNumber: String?,
     ) : NavigationDestination
 
     @Serializable

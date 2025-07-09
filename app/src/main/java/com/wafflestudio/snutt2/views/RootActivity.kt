@@ -439,8 +439,9 @@ class RootActivity : AppCompatActivity() {
         if (BuildConfig.DEBUG) {
             composableAnimated<NavigationDestination.LectureDiary> { DiaryListPage() }
             composableAnimated<NavigationDestination.LectureDiaryWrite> { entry ->
-                val lectureId = entry.arguments?.getString("lectureId") ?: "53131" // TODO: NULL일때 에러 던지기
+                val lectureId = entry.arguments?.getString("lectureId") ?: "686e8d3c2afaf11b888e2722" // TODO: NULL일때 에러 던지기
                 val lectureName = entry.arguments?.getString("lectureName") ?: "알고리즘"
+                val lectureNumber = entry.arguments?.getString("lectureNumber") ?: "53131"
                 DiaryWriteRoute(
                     lectureId = lectureId,
                     lectureName = lectureName,
@@ -453,7 +454,7 @@ class RootActivity : AppCompatActivity() {
                         navController.navigateAsOrigin(NavigationDestination.Onboard)
                     },
                     onNavigateDiaryWriteDone = { isCourseOver ->
-                        navController.navigateAsOrigin(NavigationDestination.LectureDiaryComplete(isCourseOver, lectureId, lectureName))
+                        navController.navigateAsOrigin(NavigationDestination.LectureDiaryComplete(isCourseOver, lectureId, lectureName, lectureNumber))
                     },
                 )
             }
@@ -461,16 +462,17 @@ class RootActivity : AppCompatActivity() {
                 val isCourseOver = entry.arguments?.getBoolean("isCourseOver") ?: false
                 val lectureId = entry.arguments?.getString("lectureId")
                 val lectureName = entry.arguments?.getString("lectureName")
+                val lectureNumber = entry.arguments?.getString("lectureNumber")
                 DiaryCompleteRoute(
                     lectureId = lectureId,
                     lectureName = lectureName,
                     isCourseOver = isCourseOver,
-                    onNavigateDiaryWrite = { id, name ->
-                        navController.navigateAsOrigin(NavigationDestination.LectureDiaryWrite(id, name))
+                    onNavigateDiaryWrite = { id, name, number ->
+                        navController.navigateAsOrigin(NavigationDestination.LectureDiaryWrite(id, name, number))
                     },
                     onNavigateLectureReview = {
                         navController.navigateAsOrigin(NavigationDestination.Home)
-                        homePageController.update(HomeItem.Review(applicationContext.getString(R.string.review_base_url) + "/detail?id=$lectureId"))
+                        homePageController.update(HomeItem.Review(applicationContext.getString(R.string.review_base_url) + "/detail?id=$lectureNumber"))
                     },
                     onNavigateHomePage = {
                         navController.navigateAsOrigin(NavigationDestination.Home)

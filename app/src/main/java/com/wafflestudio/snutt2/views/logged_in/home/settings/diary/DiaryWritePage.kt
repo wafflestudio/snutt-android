@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings.diary
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -104,7 +103,7 @@ fun DiaryWriteRoute(
     val modifiedUiState = when (val state = diaryWrite) {
         is DiaryWriteUiState.Success -> {
             DiaryWriteUiState.Success(
-               state.diaryWrite.copy(lectureName = viewModelLectureName ?: state.diaryWrite.lectureName)
+                state.diaryWrite.copy(lectureName = viewModelLectureName ?: state.diaryWrite.lectureName),
             )
         }
         else -> state

@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings.diary
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -43,12 +42,10 @@ fun DiaryCompleteRoute(
     modifier: Modifier = Modifier,
     isCourseOver: Boolean,
     onNavigateLectureReview: (String) -> Unit,
-    onNavigateDiaryWrite: (String, String) -> Unit,
+    onNavigateDiaryWrite: (String, String, String?) -> Unit,
     onNavigateHomePage: () -> Unit,
     viewModel: DiaryWriteViewModel = hiltViewModel(),
 ) {
-
-
     val todayLectures by viewModel.todayLectureList.collectAsState(null)
     val writtenLectureIds by viewModel.writtenLectureIds.collectAsState()
     val unwrittenLecture = todayLectures
@@ -66,7 +63,8 @@ fun DiaryCompleteRoute(
             {
                 onNavigateDiaryWrite(
                     unwrittenLecture.id,
-                    unwrittenLecture.course_title
+                    unwrittenLecture.course_title,
+                    unwrittenLecture.lecture_number,
                 )
             }
         }
