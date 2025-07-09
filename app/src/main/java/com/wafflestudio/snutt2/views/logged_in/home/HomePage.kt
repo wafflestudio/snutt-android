@@ -182,7 +182,7 @@ fun HomePage() {
                             navController.navigate(NavigationDestination.PushPreferences)
                         },
                         onNavigateLectureDiary = {
-                            navController.navigate(NavigationDestination.LectureDiaryWrite)
+                            navController.navigate(NavigationDestination.LectureDiaryWrite("1234", "1234")) // 푸시 알림으로 트리거, 임시로 넣어둠
                         },
                         onNavigateTeamInfo = {
                             navController.navigate(NavigationDestination.TeamInfo)

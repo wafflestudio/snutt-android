@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings.diary
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -65,6 +66,8 @@ import kotlinx.coroutines.launch
 fun DiaryWriteRoute(
     modifier: Modifier = Modifier,
     diaryWriteViewModel: DiaryWriteViewModel = hiltViewModel(),
+    lectureId: String,
+    lectureName: String,
     onNavigateBack: () -> Unit,
     onNavigateOnboard: () -> Unit,
     onNavigateDiaryWriteDone: (Boolean) -> Unit,
@@ -76,6 +79,10 @@ fun DiaryWriteRoute(
     }
 
     LaunchedEffect(Unit) {
+        diaryWriteViewModel.setLectureData(
+            lectureId, lectureName,
+        )
+        Log.d("DEBUG", diaryWriteViewModel.lectureId.value.toString())
         diaryWriteViewModel.diaryWriteUiEvent.collect { uiEvent ->
             when (uiEvent) {
                 is DiaryWriteUiEvent.ShowToast -> {
