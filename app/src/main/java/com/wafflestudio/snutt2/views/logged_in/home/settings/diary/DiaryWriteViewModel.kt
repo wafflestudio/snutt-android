@@ -49,8 +49,8 @@ class DiaryWriteViewModel @Inject constructor(
     private val _lectureName = MutableStateFlow<String?>(savedStateHandle["lectureName"])
     val lectureName = _lectureName.asStateFlow()
 
-    private val _writtenLectureIds = MutableStateFlow<List<Int>>(listOf())
-    val writtenLecturesIds = _writtenLectureIds.asStateFlow()
+    private val _writtenLectureIds = MutableStateFlow<List<String>>(listOf())
+    val writtenLectureIds = _writtenLectureIds.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val todayLectureList: Flow<List<LectureDto>?> = flow {
@@ -103,6 +103,13 @@ class DiaryWriteViewModel @Inject constructor(
                     _diaryWriteInit.emit(DiaryWriteUiState.Error)
                     handleDiaryWriteError(error)
                 }
+        }
+        viewModelScope.launch {
+            diaryRepository.getTodayWrittenLectures().onSuccess { data ->
+                _writtenLectureIds.value = data
+            }.onFailure { error ->
+                handleDiaryWriteError(error)
+            }
         }
     }
 

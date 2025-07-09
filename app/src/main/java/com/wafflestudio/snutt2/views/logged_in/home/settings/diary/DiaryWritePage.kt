@@ -74,6 +74,7 @@ fun DiaryWriteRoute(
 ) {
     val context = LocalContext.current
     val diaryWrite by diaryWriteViewModel.diaryWriteInit.collectAsState()
+    val viewModelLectureName by diaryWriteViewModel.lectureName.collectAsState()
     var isCourseOver by remember {
         mutableStateOf(false)
     }
@@ -82,7 +83,6 @@ fun DiaryWriteRoute(
         diaryWriteViewModel.setLectureData(
             lectureId, lectureName,
         )
-        Log.d("DEBUG", diaryWriteViewModel.lectureId.value.toString())
         diaryWriteViewModel.diaryWriteUiEvent.collect { uiEvent ->
             when (uiEvent) {
                 is DiaryWriteUiEvent.ShowToast -> {
@@ -101,9 +101,18 @@ fun DiaryWriteRoute(
         }
     }
 
+    val modifiedUiState = when (val state = diaryWrite) {
+        is DiaryWriteUiState.Success -> {
+            DiaryWriteUiState.Success(
+               state.diaryWrite.copy(lectureName = viewModelLectureName ?: state.diaryWrite.lectureName)
+            )
+        }
+        else -> state
+    }
+
     DiaryWriteScreen(
         modifier = modifier,
-        diaryWriteUiState = diaryWrite,
+        diaryWriteUiState = modifiedUiState,
         onComplete = { diaryWriteData ->
             diaryWriteViewModel.saveDiaryWrite(diaryWriteData)
         },

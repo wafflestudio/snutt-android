@@ -47,16 +47,29 @@ fun DiaryCompleteRoute(
     onNavigateHomePage: () -> Unit,
     viewModel: DiaryWriteViewModel = hiltViewModel(),
 ) {
-    val diaryCompleteState = when {
-        isCourseOver -> DiaryCompleteState.LectureReview
-        else -> DiaryCompleteState.MoreDiary
-    }
+
 
     val todayLectures by viewModel.todayLectureList.collectAsState(null)
+    val writtenLectureIds by viewModel.writtenLectureIds.collectAsState()
+    val unwrittenLecture = todayLectures
+        ?.firstOrNull { it.id !in writtenLectureIds }
+
+    val diaryCompleteState = when {
+        isCourseOver -> DiaryCompleteState.LectureReview
+        unwrittenLecture != null -> DiaryCompleteState.MoreDiary
+        else -> DiaryCompleteState.NoMoreDiary
+    }
 
     val onNavigateNextPage: () -> Unit = when {
-        isCourseOver -> { { Log.d("DEBUG", lectureId.toString()); onNavigateLectureReview(lectureId ?: "53131") } }
-        todayLectures != null -> { { onNavigateDiaryWrite(lectureId ?: "1234", lectureName ?: "ㅁㄴㅇㄹ") } }
+        isCourseOver -> { { onNavigateLectureReview(lectureId ?: "53131") } }
+        unwrittenLecture != null -> {
+            {
+                onNavigateDiaryWrite(
+                    unwrittenLecture.id,
+                    unwrittenLecture.course_title
+                )
+            }
+        }
         else -> { {} }
     }
     DiaryCompleteScreen(

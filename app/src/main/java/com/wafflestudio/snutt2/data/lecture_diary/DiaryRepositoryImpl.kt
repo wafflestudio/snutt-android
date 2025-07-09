@@ -16,6 +16,10 @@ class DiaryRepositoryImpl @Inject constructor(
         return Result.Success(DiaryPreviewData.diaryWriteNewInit)
     }
 
+    override fun getTodayWrittenLectures(): Result<List<String>>{
+        return Result.Success(listOf("1234", "2345", "3456"))
+    }
+
     override suspend fun saveDiaryWrite(diaryWriteData: DiaryWrite): Result<Unit> {
         return Result.Success(Unit) // good
     }

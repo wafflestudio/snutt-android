@@ -465,8 +465,8 @@ class RootActivity : AppCompatActivity() {
                     lectureId = lectureId,
                     lectureName = lectureName,
                     isCourseOver = isCourseOver,
-                    onNavigateDiaryWrite = { lectureId, lectureName ->
-                        navController.navigateAsOrigin(NavigationDestination.LectureDiaryWrite(lectureId, lectureName))
+                    onNavigateDiaryWrite = { id, name ->
+                        navController.navigateAsOrigin(NavigationDestination.LectureDiaryWrite(id, name))
                     },
                     onNavigateLectureReview = {
                         navController.navigateAsOrigin(NavigationDestination.Home)
