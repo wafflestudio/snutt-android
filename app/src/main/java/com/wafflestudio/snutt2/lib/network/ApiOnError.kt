@@ -51,11 +51,6 @@ class ApiOnError @Inject constructor(
                 }
                 is ErrorParsedHttpException -> {
                     when (error.errorDTO?.code) {
-                        ErrorCode.SERVER_FAULT -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_server_fault),
-                            Toast.LENGTH_SHORT,
-                        ).show()
                         ErrorCode.INVALID_EMAIL -> Toast.makeText(
                             context,
                             context.getString(R.string.error_invalid_email),
