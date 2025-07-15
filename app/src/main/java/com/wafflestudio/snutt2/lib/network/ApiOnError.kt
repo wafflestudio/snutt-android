@@ -56,61 +56,6 @@ class ApiOnError @Inject constructor(
                             context.getString(R.string.error_invalid_email),
                             Toast.LENGTH_SHORT,
                         ).show()
-                        ErrorCode.NO_FB_ID_OR_TOKEN -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_no_fb_id_or_token),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.NO_YEAR_OR_SEMESTER -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_no_year_or_semester),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.NOT_ENOUGH_TO_CREATE_TIMETABLE -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_not_enough_to_create_timetable),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.NO_LECTURE_INPUT -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_no_lecture_input),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.NO_LECTURE_ID -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_no_lecture_id),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.ATTEMPT_TO_MODIFY_IDENTITY -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_attempt_to_modify_identity),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.NO_TIMETABLE_TITLE -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_no_timetable_title),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.NO_REGISTRATION_ID -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_no_registration_id),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.INVALID_TIMEMASK -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_invalid_timemask),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.INVALID_COLOR -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_invalid_color),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.NO_LECTURE_TITLE -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_no_lecture_title),
-                            Toast.LENGTH_SHORT,
-                        ).show()
                         ErrorCode.EXPIRED_PASSWORD_RESET_CODE -> Toast.makeText(
                             context,
                             context.getString(R.string.error_expired_verification_code),
@@ -302,13 +247,6 @@ class ApiOnError @Inject constructor(
                             context.getString(R.string.error_invalid_nickname),
                             Toast.LENGTH_SHORT,
                         ).show()
-                        ErrorCode.INVALID_TIME -> Toast.makeText(
-                            context,
-                            context.getString(
-                                R.string.error_lecture_time_overlap_single_lecture,
-                            ),
-                            Toast.LENGTH_SHORT,
-                        ).show()
                         else -> Toast.makeText(
                             context,
                             error.errorDTO?.displayMessage ?: context.getString(R.string.error_unknown),
@@ -340,17 +278,7 @@ object ErrorCode {
     const val INVALID_NICKNAME = 0x9C48
 
     /* 401 - Request was invalid */
-    const val NO_FB_ID_OR_TOKEN = 0x1001
-    const val NO_YEAR_OR_SEMESTER = 0x1002
-    const val NOT_ENOUGH_TO_CREATE_TIMETABLE = 0x1003
-    const val NO_LECTURE_INPUT = 0x1004
-    const val NO_LECTURE_ID = 0x1005
-    const val ATTEMPT_TO_MODIFY_IDENTITY = 0x1006
     const val NO_TIMETABLE_TITLE = 0x1007
-    const val NO_REGISTRATION_ID = 0x1008
-    const val INVALID_TIMEMASK = 0x1009
-    const val INVALID_COLOR = 0x100A
-    const val NO_LECTURE_TITLE = 0x100B
     const val INVALID_TIME = 0x100C
     const val EXPIRED_PASSWORD_RESET_CODE = 0x2010
     const val WRONG_PASSWORD_RESET_CODE = 0x2011
