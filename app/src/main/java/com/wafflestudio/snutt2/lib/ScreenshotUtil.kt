@@ -5,32 +5,42 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
-import android.view.View
 import androidx.core.content.FileProvider
 import com.facebook.FacebookSdk
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.SNUTTUtils.displayHeight
+import com.wafflestudio.snutt2.SNUTTUtils.displayWidth
+import com.wafflestudio.snutt2.components.view.TimetableView
+import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
+import com.wafflestudio.snutt2.model.TableTrimParam
 import java.io.File
 import java.io.FileOutputStream
 
-fun shareScreenshotFromView(
-    view: View,
+fun shareScreenshot(
+    table: TableDto,
+    tableTrimParam: TableTrimParam,
     context: Context,
-    topBarHeight: Int,
-    bannerHeight: Int,
-    timetableHeight: Int,
 ) {
+    val view = TimetableView(context)
+    view.theme = table.theme
+    view.lectures = table.lectureList
+    view.trimParam = tableTrimParam
+
+    val width = context.displayWidth.toInt()
+    val height = context.displayHeight.toInt()
+    view.measure(width, height)
+    view.layout(0, 0, width, height)
+
     val bitmap =
         Bitmap.createBitmap(
-            view.measuredWidth,
-            view.measuredHeight,
+            view.width,
+            view.height,
             Bitmap.Config.ARGB_8888,
         )
     val canvas = Canvas(bitmap)
     view.draw(canvas)
 
-    // FIXME: 이 방법의 문제점 -> 위아래를 잘라내야 한다.
-    val bitmapResized = Bitmap.createBitmap(bitmap, 0, topBarHeight + bannerHeight, bitmap.width, timetableHeight)
-    val uri = bitmapToUri(bitmapResized, context)
+    val uri = bitmapToUri(bitmap, context)
     val shareIntent: Intent = Intent().apply {
         action = Intent.ACTION_SEND
         putExtra(Intent.EXTRA_STREAM, uri)
