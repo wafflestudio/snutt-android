@@ -84,6 +84,7 @@ fun DiaryContentListItem() {
     )
     val widthInDp = with(LocalDensity.current) { textLayoutResult.size.width.toDp() }
     Column(
+        modifier = Modifier.padding(bottom = 16.dp),
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         Column(
