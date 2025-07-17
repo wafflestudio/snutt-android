@@ -51,35 +51,10 @@ class ApiOnError @Inject constructor(
                 }
                 is ErrorParsedHttpException -> {
                     when (error.errorDTO?.code) {
-                        ErrorCode.INVALID_EMAIL -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_invalid_email),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.EXPIRED_PASSWORD_RESET_CODE -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_expired_verification_code),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.WRONG_PASSWORD_RESET_CODE -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_wrong_verification_code),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.WRONG_API_KEY -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_wrong_api_key),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.NO_USER_TOKEN -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_no_user_token),
-                            Toast.LENGTH_SHORT,
-                        ).show()
                         ErrorCode.WRONG_USER_TOKEN -> {
                             Toast.makeText(
                                 context,
-                                context.getString(R.string.error_wrong_user_token),
+                                error.errorDTO.displayMessage,
                                 Toast.LENGTH_SHORT,
                             ).show()
                             CoroutineScope(Dispatchers.IO).launch {
@@ -89,7 +64,7 @@ class ApiOnError @Inject constructor(
                                     withContext(Dispatchers.Main) {
                                         Toast.makeText(
                                             context,
-                                            "로그아웃에 실패하였습니다.",
+                                            context.getString(R.string.error_logout_fail),
                                             Toast.LENGTH_SHORT,
                                         )
                                             .show()
@@ -97,29 +72,9 @@ class ApiOnError @Inject constructor(
                                 }
                             }
                         }
-                        ErrorCode.NO_ADMIN_PRIVILEGE -> Toast.makeText(
+                        ErrorCode.INVALID_EMAIL -> Toast.makeText(
                             context,
-                            context.getString(R.string.error_no_admin_privilege),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.WRONG_ID -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_wrong_id),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.WRONG_PASSWORD -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_wrong_password),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.WRONG_FB_TOKEN -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_wrong_fb_token),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.UNKNOWN_APP -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_unknown_app),
+                            context.getString(R.string.error_invalid_email),
                             Toast.LENGTH_SHORT,
                         ).show()
                         ErrorCode.INVALID_ID -> Toast.makeText(
@@ -280,8 +235,6 @@ object ErrorCode {
     /* 401 - Request was invalid */
     const val NO_TIMETABLE_TITLE = 0x1007
     const val INVALID_TIME = 0x100C
-    const val EXPIRED_PASSWORD_RESET_CODE = 0x2010
-    const val WRONG_PASSWORD_RESET_CODE = 0x2011
 
     /* 403 - Authorization-related */
     const val WRONG_API_KEY = 0x2000
@@ -290,8 +243,6 @@ object ErrorCode {
     const val NO_ADMIN_PRIVILEGE = 0x2003
     const val WRONG_ID = 0x2004
     const val WRONG_PASSWORD = 0x2005
-    const val WRONG_FB_TOKEN = 0x2006
-    const val UNKNOWN_APP = 0x2007
 
     /* 403 - Restrictions */
     const val INVALID_ID = 0x3000

@@ -13,7 +13,6 @@ fun Exception.toDomainError(): DomainError {
             return when (this.errorDTO?.code) {
                 ErrorCode.SERVER_FAULT -> ServerFault(displayMessage)
                 ErrorCode.NO_ADMIN_PRIVILEGE -> NoAdminPrivilege(displayMessage)
-                ErrorCode.UNKNOWN_APP -> UnknownApp(displayMessage)
                 ErrorCode.WRONG_API_KEY -> AuthError.WrongApiKey(displayMessage)
                 ErrorCode.NO_USER_TOKEN -> AuthError.NoUserToken(displayMessage)
                 ErrorCode.WRONG_USER_TOKEN -> AuthError.WrongUserToken(displayMessage)
