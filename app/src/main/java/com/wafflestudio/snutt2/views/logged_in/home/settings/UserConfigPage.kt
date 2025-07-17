@@ -174,9 +174,9 @@ fun UserConfigPage() {
 
         val onConfirm: () -> Unit = {
             if (id.isIdInvalid()) {
-                context.toast(context.getString(R.string.invalid_id))
+                context.toast(context.getString(R.string.error_invalid_id))
             } else if (password.isPasswordInvalid()) {
-                context.toast(context.getString(R.string.invalid_password))
+                context.toast(context.getString(R.string.error_invalid_password))
             } else if (password != passwordConfirm) {
                 context.toast(context.getString(R.string.settings_user_config_password_confirm_fail))
             } else {
@@ -235,7 +235,7 @@ fun UserConfigPage() {
 
     val checkAndPostPasswordChange: (String, String, String) -> Unit = { currentPassword, newPassword, newPasswordConfirm ->
         if (newPassword.isPasswordInvalid()) {
-            context.toast(context.getString(R.string.invalid_password))
+            context.toast(context.getString(R.string.error_invalid_password))
         } else if (newPassword != newPasswordConfirm) {
             context.toast(context.getString(R.string.settings_user_config_password_confirm_fail))
         } else {

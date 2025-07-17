@@ -262,7 +262,7 @@
     <string name="sign_up_password_confirm_invalid_toast">비밀번호가 일치하지 않습니다.</string>
     <string name="sign_up_facebook_login_failed_toast">페이스북 연동중 오류가 발생하였습니다</string>
     <string name="find_id_content">아이디를 찾기 위해\n연동된 이메일 주소가 필요합니다.</string>
-    <string name="find_id_wrong_email_format">올바른 형식의 이메일을 입력해주세요.</string>
+    <string name="find_id_wrong_email_format">이메일 형식이 올바르지 않습니다. 다시 입력해 주세요</string>
     <string name="find_id_send_email_success_message">\"%s\"로 아이디가 전송되었습니다.</string>
     <string name="find_password_title">비밀번호 재설정</string>
     <string name="find_password_back_login">로그인</string>
@@ -290,10 +290,6 @@
     <string name="find_password_enter_password_confirm_hint">비밀번호를 한번 더 입력하세요</string>
     <string name="find_password_enter_password_empty_alert">새 비밀번호를 입력해주세요.</string>
     <string name="find_password_enter_password_confirm_fail_alert">비밀번호가 일치하지 않습니다.\n다시 시도해주세요.</string>
-
-    <string name="invalid_id">아이디는 영문 혹은 숫자로 구성된 4~32자여야 합니다</string>
-    <string name="invalid_password">비밀번호는 영문과 숫자 모두를 포함하는 6~20자여야 합니다</string>
-    <string name="invalid_email">이메일 형식이 올바르지 않습니다.</string>
 
     <string name="find_password_enter_password_confirm_expired_alert">시간이 초과되어\n인증코드 재입력이 필요합니다.</string>
     <string name="find_password_enter_password_confirm_expired">만료</string>
