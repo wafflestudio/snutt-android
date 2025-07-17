@@ -20,13 +20,6 @@
     <string name="error_logout_fail">로그아웃에 실패하였습니다</string>
     <string name="error_invalid_id">아이디는 영문 혹은 숫자로 구성된 4~32자여야 합니다</string>
     <string name="error_invalid_password">비밀번호는 영문과 숫자 모두를 포함하는 6~20자여야 합니다</string>
-    <string name="error_tag_not_found">학기에 해당되는 테그를 찾을 수 없습니다</string>
-    <string name="error_timetable_not_found">없는 시간표입니다</string>
-    <string name="error_lecture_not_found">없는 강좌입니다</string>
-    <string name="error_ref_lecture_not_found">수강편람에서 찾을 수 없는 강좌입니다</string>
-    <string name="error_no_such_user_with_that_email">해당 이메일로 가입된 사용자가 없습니다.</string>
-    <string name="error_colorlist_not_found">색상 목록을 찾을 수 없습니다</string>
-    <string name="error_no_registered_email">등록된 이메일이 없습니다.</string>
     <string name="error_vacancy_previous_semester">해당 학기의 빈자리 알림 신청 기간이 종료되었습니다.</string>
     <string name="error_vacancy_duplicate">이미 빈자리 알림을 받고 있는 강의입니다.</string>
     <string name="error_invalid_nickname">사용할 수 없는 닉네임입니다.</string>

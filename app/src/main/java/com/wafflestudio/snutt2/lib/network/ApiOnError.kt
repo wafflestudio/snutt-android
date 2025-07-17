@@ -72,41 +72,6 @@ class ApiOnError @Inject constructor(
                                 }
                             }
                         }
-                        ErrorCode.TAG_NOT_FOUND -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_tag_not_found),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.TIMETABLE_NOT_FOUND -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_timetable_not_found),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.LECTURE_NOT_FOUND -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_lecture_not_found),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.REF_LECTURE_NOT_FOUND -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_ref_lecture_not_found),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.USER_NOT_FOUND -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_no_such_user_with_that_email),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.COLORLIST_NOT_FOUND -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_colorlist_not_found),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.EMAIL_NOT_FOUND -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_no_registered_email),
-                            Toast.LENGTH_SHORT,
-                        ).show()
                         ErrorCode.VACANCY_PREV_SEMESTER -> Toast.makeText(
                             context,
                             context.getString(R.string.error_vacancy_previous_semester),
@@ -178,13 +143,8 @@ object ErrorCode {
     const val EMAIL_NOT_VERIFIED = 0x3011
 
     /* 404 - NOT found */
-    const val TAG_NOT_FOUND = 0x4000
-    const val TIMETABLE_NOT_FOUND = 0x4001
-    const val LECTURE_NOT_FOUND = 0x4002
     const val REF_LECTURE_NOT_FOUND = 0x4003
     const val USER_NOT_FOUND = 0x4004
-    const val COLORLIST_NOT_FOUND = 0x4005
-    const val EMAIL_NOT_FOUND = 0x4006
 }
 
 @JsonClass(generateAdapter = true)
