@@ -72,86 +72,6 @@ class ApiOnError @Inject constructor(
                                 }
                             }
                         }
-                        ErrorCode.INVALID_EMAIL -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_invalid_email),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.INVALID_ID -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_invalid_id),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.INVALID_PASSWORD -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_invalid_password),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.DUPLICATE_ID -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_duplicate_id),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.DUPLICATE_TIMETABLE_TITLE -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_duplicate_timetable_title),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.DUPLICATE_LECTURE -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_duplicate_lecture),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.ALREADY_LOCAL_ACCOUNT -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_already_local_account),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.ALREADY_FB_ACCOUNT -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_already_fb_account),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.NOT_LOCAL_ACCOUNT -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_not_local_account),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.NOT_FB_ACCOUNT -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_not_fb_account),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.FB_ID_WITH_SOMEONE_ELSE -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_fb_id_with_someone_else),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.WRONG_SEMESTER -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_wrong_semester),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.NOT_CUSTOM_LECTURE -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_not_custom_lecture),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.LECTURE_TIME_OVERLAP -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_lecture_time_overlap),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.IS_CUSTOM_LECTURE -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_is_custom_lecture),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.EMAIL_NOT_VERIFIED -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_email_not_verified),
-                            Toast.LENGTH_SHORT,
-                        ).show()
                         ErrorCode.TAG_NOT_FOUND -> Toast.makeText(
                             context,
                             context.getString(R.string.error_tag_not_found),
@@ -226,11 +146,12 @@ object ErrorCode {
     const val SERVER_FAULT = 0x0000
 
     /* 400 - Bad request */
-    const val INVALID_EMAIL = 0x300F
     const val VACANCY_PREV_SEMESTER = 0x9C45
     const val VACANCY_DUPLICATE = 0x9FC4
     const val USED_EMAIL = 0x9FC5
     const val INVALID_NICKNAME = 0x9C48
+    const val ALREADY_LOCAL_ACCOUNT = 0x9C53
+    const val ALREADY_SOCIAL_ACCOUNT = 0x9C54
 
     /* 401 - Request was invalid */
     const val NO_TIMETABLE_TITLE = 0x1007
@@ -250,15 +171,10 @@ object ErrorCode {
     const val DUPLICATE_ID = 0x3002
     const val DUPLICATE_TIMETABLE_TITLE = 0x3003
     const val DUPLICATE_LECTURE = 0x3004
-    const val ALREADY_LOCAL_ACCOUNT = 0x3005
-    const val ALREADY_FB_ACCOUNT = 0x3006
-    const val NOT_LOCAL_ACCOUNT = 0x3007
-    const val NOT_FB_ACCOUNT = 0x3008
-    const val FB_ID_WITH_SOMEONE_ELSE = 0x3009
     const val WRONG_SEMESTER = 0x300A
-    const val NOT_CUSTOM_LECTURE = 0x300B
     const val LECTURE_TIME_OVERLAP = 0x300C
     const val IS_CUSTOM_LECTURE = 0x300D
+    const val INVALID_EMAIL = 0x300F
     const val EMAIL_NOT_VERIFIED = 0x3011
 
     /* 404 - NOT found */
