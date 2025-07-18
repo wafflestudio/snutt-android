@@ -37,6 +37,17 @@ fun CourseBookDto.toFormattedString(context: Context): String {
     return "${this.year}년 $semesterStr"
 }
 
+fun CourseBookDto.toAbbvString(): String {
+    val semesterStr = when (this.semester) {
+        1L -> "1"
+        2L -> "여름"
+        3L -> "2"
+        4L -> "겨울"
+        else -> ""
+    }
+    return "${this.year}-$semesterStr"
+}
+
 fun TagType.color(): androidx.compose.ui.graphics.Color {
     return when (this) {
         TagType.SORT_CRITERIA -> SNUTTColors.Gray30

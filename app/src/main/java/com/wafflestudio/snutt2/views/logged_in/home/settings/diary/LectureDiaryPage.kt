@@ -15,14 +15,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.components.compose.*
+import com.wafflestudio.snutt2.domainmodel.DiaryList
+import com.wafflestudio.snutt2.domainmodel.DiaryQuestionAnswer
+import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
+import com.wafflestudio.snutt2.lib.toAbbvString
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import java.time.LocalDate
 
 @Composable
-fun DiaryListPage() {
-    val semesters = listOf("24-1", "23-겨울", "23-2", "23-1", "23-겨울")
-    val diaries = listOf("1", "2", "3")
+fun DiaryListRoute() {
+}
+
+@Composable
+fun DiaryListScreen(
+    courseBookDtoList: List<CourseBookDto>,
+    diaryListUiState: DiaryListUiState,
+) {
     Box {
         Column(
             modifier = Modifier.background(SNUTTColors.White900),
@@ -41,7 +50,7 @@ fun DiaryListPage() {
                 contentPadding = PaddingValues(horizontal = 20.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                items(semesters) { semester ->
+                items(courseBookDtoList) { courseBook ->
                     Box(
                         modifier = Modifier
                             .background(SNUTTColors.SNUTTTheme, RoundedCornerShape(50))
@@ -49,16 +58,23 @@ fun DiaryListPage() {
                             .height(34.dp),
                         contentAlignment = Alignment.Center,
                     ) {
-                        Text(semester, color = SNUTTColors.White900, style = SNUTTTypography.subtitle1.copy(fontWeight = FontWeight.SemiBold))
+                        Text(courseBook.toAbbvString(), color = SNUTTColors.White900, style = SNUTTTypography.subtitle1.copy(fontWeight = FontWeight.SemiBold))
                     }
                 }
             }
-            LazyColumn() {
-                items(diaries) {
-                    DiaryListDateItem(
-                        date = LocalDate.of(24, 3, 20),
-                        listOf(),
-                    )
+            when (diaryListUiState) {
+                DiaryListUiState.Empty -> {}
+                DiaryListUiState.Error -> {}
+                DiaryListUiState.Loading -> {}
+                is DiaryListUiState.Success -> {
+                    LazyColumn {
+                        items(diaryListUiState.diaryList.diaryList.toList()) { (date, listOfDiaryListLectureItem) ->
+                            DiaryListDateItem(
+                                date = date,
+                                listOfDiaryListLectureItem,
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -68,5 +84,64 @@ fun DiaryListPage() {
 @Composable
 @Preview()
 fun DiaryListPagePreview() {
-    DiaryListPage()
+    DiaryListScreen(
+        courseBookDtoList = listOf(
+            CourseBookDto(semester = 3, year = 24),
+            CourseBookDto(semester = 2, year = 24),
+            CourseBookDto(semester = 1, year = 24),
+            CourseBookDto(semester = 4, year = 23),
+            CourseBookDto(semester = 3, year = 23),
+            CourseBookDto(semester = 2, year = 23),
+            CourseBookDto(semester = 1, year = 23),
+            CourseBookDto(semester = 4, year = 22),
+        ),
+        diaryListUiState = DiaryListUiState.Success(
+            diaryList = DiaryList(
+                courseBook = CourseBookDto(3, 24),
+                diaryList = mapOf(
+                    LocalDate.of(2024, 3, 20) to listOf(
+                        com.wafflestudio.snutt2.domainmodel.DiaryListLectureItem(
+                            lectureName = "시각디자인기초",
+                            content = listOf(
+                                DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
+                                DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
+                                DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
+                            ),
+                            moreText = "좋아요",
+                        ),
+                        com.wafflestudio.snutt2.domainmodel.DiaryListLectureItem(
+                            lectureName = "배구",
+                            content = listOf(
+                                DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
+                                DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
+                                DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
+                            ),
+                            moreText = "좋아요",
+                        ),
+
+                    ),
+                    LocalDate.of(2024, 3, 1) to listOf(
+                        com.wafflestudio.snutt2.domainmodel.DiaryListLectureItem(
+                            lectureName = "시각디자인기초",
+                            content = listOf(
+                                DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
+                                DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
+                                DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
+                            ),
+                            moreText = "좋아요",
+                        ),
+                        com.wafflestudio.snutt2.domainmodel.DiaryListLectureItem(
+                            lectureName = "배구",
+                            content = listOf(
+                                DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
+                                DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
+                                DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
+                            ),
+                            moreText = "좋아요",
+                        ),
+                    ),
+                ),
+            ),
+        ),
+    )
 }
