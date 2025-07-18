@@ -37,7 +37,7 @@ fun DiaryListScreen(
             modifier = Modifier.background(SNUTTColors.White900),
         ) {
             TopBar(
-                title = { Text("") },
+                title = { Text("강의 일기장") },
                 navigationIcon = {
                     ArrowBackIcon(
                         modifier = Modifier.size(30.dp),
