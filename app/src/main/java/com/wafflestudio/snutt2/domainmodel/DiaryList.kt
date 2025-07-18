@@ -11,7 +11,7 @@ data class DiaryQuestionAnswer(
 data class DiaryListLectureItem(
     val lectureName: String,
     val content: List<DiaryQuestionAnswer>,
-    val moreText: String,
+    val moreText: String?,
 )
 
 data class DiaryList(
