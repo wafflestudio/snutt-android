@@ -36,7 +36,7 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 
 @Composable
-fun DiaryListItem() {
+fun DiaryListDateItem() {
     var isSelected by remember { mutableStateOf(true) }
     Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -63,8 +63,8 @@ fun DiaryListItem() {
         }
         AnimatedVisibility(visible = isSelected) {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                DiaryContentListItem()
-                DiaryContentListItem()
+                DiaryListLectureItem()
+                DiaryListLectureItem()
             }
         }
     }
@@ -76,7 +76,7 @@ fun DiaryListItem() {
 }
 
 @Composable
-fun DiaryContentListItem() {
+fun DiaryListLectureItem() {
     val textMeasurer = rememberTextMeasurer()
     val textLayoutResult = textMeasurer.measure(
         text = AnnotatedString("남기고 싶은 말"),
@@ -139,5 +139,5 @@ fun DiaryContentListItem() {
 @Composable
 @Preview(showBackground = true)
 fun DiaryListItemPreview() {
-    DiaryListItem()
+    DiaryListDateItem()
 }

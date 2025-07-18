@@ -54,7 +54,7 @@ fun DiaryListPage() {
             }
             LazyColumn() {
                 items(diaries) {
-                    DiaryListItem()
+                    DiaryListDateItem()
                 }
             }
         }
