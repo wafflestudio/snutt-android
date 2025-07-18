@@ -57,7 +57,7 @@ fun DiaryListDateItem(
                 }
             }
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.clickable { isSelected = !isSelected }.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -65,7 +65,7 @@ fun DiaryListDateItem(
                     text = "시각디자인기초, 배구",
                     style = SNUTTTypography.body1, color = SNUTTColors.EditTextLabel,
                 )
-                ArrowDownIcon(modifier = Modifier.height(20.dp).clickable { isSelected = !isSelected }.rotate(if (isSelected) 180f else 0f))
+                ArrowDownIcon(modifier = Modifier.height(20.dp).rotate(if (isSelected) 180f else 0f))
             }
         }
         AnimatedVisibility(visible = isSelected) {
