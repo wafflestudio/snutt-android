@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import java.time.LocalDate
 
 @Composable
 fun DiaryListPage() {
@@ -54,7 +55,10 @@ fun DiaryListPage() {
             }
             LazyColumn() {
                 items(diaries) {
-                    DiaryListDateItem()
+                    DiaryListDateItem(
+                        date = LocalDate.of(24, 3, 20),
+                        listOf(),
+                    )
                 }
             }
         }
