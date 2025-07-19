@@ -4,7 +4,6 @@ import com.wafflestudio.snutt2.domainmodel.DiaryWrite
 import com.wafflestudio.snutt2.domainmodel.preview.DiaryPreviewData
 import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
-import com.wafflestudio.snutt2.lib.network.Unknown
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -14,10 +13,10 @@ class DiaryRepositoryImpl @Inject constructor(
 ) :
     DiaryRepository {
     override fun getDiaryWriteInit(): Result<DiaryWrite> {
-        return Result.Success(DiaryPreviewData.diaryWriteInit)
+        return Result.Success(DiaryPreviewData.diaryWriteNewInit)
     }
 
     override suspend fun saveDiaryWrite(diaryWriteData: DiaryWrite): Result<Unit> {
-        return Result.Fail(Unknown("")) // good
+        return Result.Success(Unit) // good
     }
 }
