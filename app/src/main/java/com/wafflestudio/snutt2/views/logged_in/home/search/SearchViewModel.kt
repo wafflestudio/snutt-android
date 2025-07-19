@@ -8,6 +8,7 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
+import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.concatenate
 import com.wafflestudio.snutt2.lib.flatMapToSearchTimeDto
@@ -19,7 +20,6 @@ import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.model.SearchTimeDto
-import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.model.TagType
 import com.wafflestudio.snutt2.views.logged_in.home.search.bookmark.SearchPageMode

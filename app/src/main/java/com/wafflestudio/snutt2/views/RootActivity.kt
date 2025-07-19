@@ -430,7 +430,18 @@ class RootActivity : AppCompatActivity() {
 
         composableAnimated<NavigationDestination.ServiceInfo> { ServiceInfoPage() }
         composableAnimated<NavigationDestination.TeamInfo> { TeamInfoPage() }
-        composableAnimated<NavigationDestination.TimeTableConfig> { TimetableConfigPage() }
+        composableAnimated<NavigationDestination.TimeTableConfig> {
+            TimetableConfigRoute(
+                onNavigateBack = {
+                    if (navController.currentDestination?.hasRoute(NavigationDestination.TimeTableConfig::class) == true) {
+                        navController.popBackStack()
+                    }
+                },
+                onNavigateOnboard = {
+                    navController.navigateAsOrigin(NavigationDestination.Onboard)
+                },
+            )
+        }
         composableAnimated<NavigationDestination.UserConfig> {
             UserConfigRoute(
                 onNavigateBack = {

@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -31,19 +32,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
+import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.logImpression
-import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
-import com.wafflestudio.snutt2.model.TableLectureCustomOptions
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.LocalTableState
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.TableState
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 import kotlinx.coroutines.launch
 import kotlin.math.max
@@ -51,30 +49,69 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 
 @Composable
-fun TimetableConfigPage() {
-    val navController = LocalNavController.current
-    val scope = rememberCoroutineScope()
-    val viewModel = hiltViewModel<UserViewModel>()
-    val timetableViewModel = hiltViewModel<TimetableViewModel>()
-    val trimParam by viewModel.trimParam.collectAsState()
-    val tableLectureCustomOptions by viewModel.tableLectureCustomOption.collectAsState()
-    val compactMode by viewModel.compactMode.collectAsState()
+fun TimetableConfigRoute(
+    modifier: Modifier = Modifier,
+    onNavigateBack: () -> Unit,
+    onNavigateOnboard: () -> Unit,
+    viewModel: TimetableConfigViewModel = hiltViewModel(),
+) {
+    val context = LocalContext.current
+    val uiState by viewModel.timeTableConfigUiState.collectAsStateWithLifecycle()
 
-    val table by timetableViewModel.currentTable.collectAsState()
-    val previewTheme by timetableViewModel.previewTheme.collectAsState()
+    LaunchedEffect(Unit) {
+        viewModel.timetableConfigUiEvent.collect { uiEvent ->
+            when (uiEvent) {
+                is TimetableConfigUiEvent.ShowToast -> {
+                    val message = uiEvent.message
+                    if (message.isNotEmpty()) {
+                        context.toast(message)
+                    }
+                }
+                is TimetableConfigUiEvent.NavigateToOnboard -> {
+                    onNavigateOnboard()
+                }
+            }
+        }
+    }
 
-    val tableState =
-        TableState(table ?: TableDto.Default, trimParam, tableLectureCustomOptions, previewTheme)
+    TimetableConfigScreen(
+        modifier = modifier,
+        uiState = uiState,
+        onNavigateBack = onNavigateBack,
+        onToggleAutoTrim = viewModel::toggleAutoTrim,
+        onSetDayOfWeekRange = viewModel::setDayOfWeekRange,
+        onSetHourRange = viewModel::setHourRange,
+        onToggleCompactMode = viewModel::toggleCompactMode,
+        onToggleTitleVisible = viewModel::toggleTitleVisible,
+        onTogglePlaceVisible = viewModel::togglePlaceVisible,
+        onToggleLectureNumberVisible = viewModel::toggleLectureNumberVisible,
+        onToggleInstructorVisible = viewModel::toggleInstructorVisible,
+    )
+}
 
+@Composable
+fun TimetableConfigScreen(
+    modifier: Modifier = Modifier,
+    uiState: TimeTableConfigUiState,
+    onNavigateBack: () -> Unit,
+    onToggleAutoTrim: () -> Unit,
+    onSetDayOfWeekRange: (Int, Int) -> Unit,
+    onSetHourRange: (Int, Int) -> Unit,
+    onToggleCompactMode: () -> Unit,
+    onToggleTitleVisible: () -> Unit,
+    onTogglePlaceVisible: () -> Unit,
+    onToggleLectureNumberVisible: () -> Unit,
+    onToggleInstructorVisible: () -> Unit,
+) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(SNUTTColors.SettingBackground)
             .logImpression(AnalyticsScreen.SettingsTimetable),
     ) {
         SimpleTopBar(
             title = stringResource(R.string.timetable_settings_app_bar_title),
-            onClickNavigateBack = { navController.popBackStack() },
+            onClickNavigateBack = onNavigateBack,
         )
         Column(
             modifier = Modifier
@@ -84,39 +121,29 @@ fun TimetableConfigPage() {
             SettingItem(
                 title = stringResource(R.string.settings_timetable_config_force_fit),
                 hasNextPage = false,
-                onClick = {
-                    scope.launch {
-                        viewModel.setAutoTrim(trimParam.forceFitLectures.not())
-                    }
-                },
+                onClick = onToggleAutoTrim,
             ) {
-                PoorSwitch(state = trimParam.forceFitLectures)
+                PoorSwitch(state = uiState.tableTrimParam.forceFitLectures)
             }
             Margin(height = 10.dp)
-            AnimatedVisibility(visible = trimParam.forceFitLectures.not()) {
+            AnimatedVisibility(visible = uiState.tableTrimParam.forceFitLectures.not()) {
                 Column {
                     RangeBarCell(title = stringResource(R.string.settings_timetable_config_week_day)) {
                         RangeBar(
-                            initStart = trimParam.dayOfWeekFrom,
-                            initEnd = trimParam.dayOfWeekTo,
+                            initStart = uiState.tableTrimParam.dayOfWeekFrom,
+                            initEnd = uiState.tableTrimParam.dayOfWeekTo,
                             labelArray = stringArrayResource(R.array.week_days),
-                        ) { start, end ->
-                            scope.launch {
-                                viewModel.setDayOfWeekRange(start, end)
-                            }
-                        }
+                            onChange = onSetDayOfWeekRange,
+                        )
                     }
                     Margin(height = 10.dp)
                     RangeBarCell(title = stringResource(R.string.settings_timetable_config_time)) {
                         RangeBar(
-                            initStart = trimParam.hourFrom,
-                            initEnd = trimParam.hourTo,
+                            initStart = uiState.tableTrimParam.hourFrom,
+                            initEnd = uiState.tableTrimParam.hourTo,
                             labelArray = Array(24) { it.toString() },
-                        ) { start, end ->
-                            scope.launch {
-                                viewModel.setHourRange(start, end)
-                            }
-                        }
+                            onChange = onSetHourRange,
+                        )
                     }
                     Margin(height = 10.dp)
                 }
@@ -124,20 +151,16 @@ fun TimetableConfigPage() {
             SettingItem(
                 title = stringResource(R.string.settings_compact_mode),
                 hasNextPage = false,
-                onClick = {
-                    scope.launch {
-                        viewModel.setCompactMode(compactMode.not())
-                    }
-                },
+                onClick = onToggleCompactMode,
             ) {
-                PoorSwitch(state = compactMode)
+                PoorSwitch(state = uiState.compactMode)
             }
             Row(
                 modifier = Modifier
                     .padding(horizontal = 20.dp, vertical = 3.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                if (compactMode) {
+                if (uiState.compactMode) {
                     Text(
                         text = stringResource(R.string.settings_compact_mode_message),
                         style = SNUTTTypography.subtitle2.copy(fontSize = 12.sp),
@@ -150,49 +173,33 @@ fun TimetableConfigPage() {
                 SettingItem(
                     title = stringResource(R.string.settings_timetable_lecture_custom_title),
                     hasNextPage = false,
-                    onClick = {
-                        scope.launch {
-                            viewModel.setTableLectureCustomOption(TableLectureCustomOptions.TITLE, tableLectureCustomOptions.title.not())
-                        }
-                    },
+                    onClick = onToggleTitleVisible,
                 ) {
-                    PoorSwitch(state = tableLectureCustomOptions.title)
+                    PoorSwitch(state = uiState.tableLectureCustom.title)
                 }
 
                 SettingItem(
                     title = stringResource(R.string.settings_timetable_lecture_custom_place),
                     hasNextPage = false,
-                    onClick = {
-                        scope.launch {
-                            viewModel.setTableLectureCustomOption(TableLectureCustomOptions.PLACE, tableLectureCustomOptions.place.not())
-                        }
-                    },
+                    onClick = onTogglePlaceVisible,
                 ) {
-                    PoorSwitch(state = tableLectureCustomOptions.place)
+                    PoorSwitch(state = uiState.tableLectureCustom.place)
                 }
 
                 SettingItem(
                     title = stringResource(R.string.settings_timetable_lecture_custom_lecture_number),
                     hasNextPage = false,
-                    onClick = {
-                        scope.launch {
-                            viewModel.setTableLectureCustomOption(TableLectureCustomOptions.LECTURENUMBER, tableLectureCustomOptions.lectureNumber.not())
-                        }
-                    },
+                    onClick = onToggleLectureNumberVisible,
                 ) {
-                    PoorSwitch(state = tableLectureCustomOptions.lectureNumber)
+                    PoorSwitch(state = uiState.tableLectureCustom.lectureNumber)
                 }
 
                 SettingItem(
                     title = stringResource(R.string.settings_timetable_lecture_custom_instructor),
                     hasNextPage = false,
-                    onClick = {
-                        scope.launch {
-                            viewModel.setTableLectureCustomOption(TableLectureCustomOptions.INSTRUCTOR, tableLectureCustomOptions.instructor.not())
-                        }
-                    },
+                    onClick = onToggleInstructorVisible,
                 ) {
-                    PoorSwitch(state = tableLectureCustomOptions.instructor)
+                    PoorSwitch(state = uiState.tableLectureCustom.instructor)
                 }
             }
             Text(
@@ -217,7 +224,7 @@ fun TimetableConfigPage() {
                     )
                     .align(Alignment.CenterHorizontally),
             ) {
-                CompositionLocalProvider(LocalTableState provides tableState) {
+                CompositionLocalProvider(LocalTableState provides uiState.tableState) {
                     TimeTable(selectedLecture = null, touchEnabled = false)
                 }
             }
@@ -399,5 +406,16 @@ private fun Label(
 @Preview
 @Composable
 fun TimetableConfigPagePreview() {
-    TimetableConfigPage()
+    TimetableConfigScreen(
+        uiState = TimeTableConfigUiState.Default,
+        onNavigateBack = {},
+        onToggleAutoTrim = {},
+        onSetDayOfWeekRange = { _, _ -> },
+        onSetHourRange = { _, _ -> },
+        onToggleCompactMode = {},
+        onToggleTitleVisible = {},
+        onTogglePlaceVisible = {},
+        onToggleLectureNumberVisible = {},
+        onToggleInstructorVisible = {},
+    )
 }

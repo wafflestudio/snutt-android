@@ -45,8 +45,8 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.MagicIcon
 import com.wafflestudio.snutt2.components.compose.ResetIcon
 import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.lib.trimByTrimParam
-import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
