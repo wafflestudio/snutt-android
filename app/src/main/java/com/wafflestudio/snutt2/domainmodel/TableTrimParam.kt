@@ -1,6 +1,7 @@
-package com.wafflestudio.snutt2.model
+package com.wafflestudio.snutt2.domainmodel
 
 import com.squareup.moshi.JsonClass
+import com.wafflestudio.snutt2.lib.preferences.model.TableTrimParamData
 
 @JsonClass(generateAdapter = true)
 data class TableTrimParam(
@@ -21,3 +22,11 @@ data class TableTrimParam(
             }
     }
 }
+
+fun TableTrimParam.toDataModel(): TableTrimParamData = TableTrimParamData(
+    dayOfWeekFrom = dayOfWeekFrom,
+    dayOfWeekTo = dayOfWeekTo,
+    hourFrom = hourFrom,
+    hourTo = hourTo,
+    forceFitLectures = forceFitLectures,
+)
