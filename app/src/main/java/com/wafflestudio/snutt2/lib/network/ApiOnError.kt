@@ -72,21 +72,6 @@ class ApiOnError @Inject constructor(
                                 }
                             }
                         }
-                        ErrorCode.VACANCY_PREV_SEMESTER -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_vacancy_previous_semester),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.VACANCY_DUPLICATE -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_vacancy_duplicate),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                        ErrorCode.INVALID_NICKNAME -> Toast.makeText(
-                            context,
-                            context.getString(R.string.error_invalid_nickname),
-                            Toast.LENGTH_SHORT,
-                        ).show()
                         else -> Toast.makeText(
                             context,
                             error.errorDTO?.displayMessage ?: context.getString(R.string.error_unknown),
@@ -110,19 +95,9 @@ class ApiOnError @Inject constructor(
 object ErrorCode {
     const val SERVER_FAULT = 0x0000
 
-    /* 400 - Bad request */
-    const val VACANCY_PREV_SEMESTER = 0x9C45
-    const val VACANCY_DUPLICATE = 0x9FC4
-    const val USED_EMAIL = 0x9FC5
-    const val INVALID_NICKNAME = 0x9C48
-    const val ALREADY_LOCAL_ACCOUNT = 0x9C53
-    const val ALREADY_SOCIAL_ACCOUNT = 0x9C54
-
-    /* 401 - Request was invalid */
     const val NO_TIMETABLE_TITLE = 0x1007
     const val INVALID_TIME = 0x100C
 
-    /* 403 - Authorization-related */
     const val WRONG_API_KEY = 0x2000
     const val NO_USER_TOKEN = 0x2001
     const val WRONG_USER_TOKEN = 0x2002
@@ -130,7 +105,6 @@ object ErrorCode {
     const val WRONG_ID = 0x2004
     const val WRONG_PASSWORD = 0x2005
 
-    /* 403 - Restrictions */
     const val INVALID_ID = 0x3000
     const val INVALID_PASSWORD = 0x3001
     const val DUPLICATE_ID = 0x3002
@@ -142,9 +116,16 @@ object ErrorCode {
     const val INVALID_EMAIL = 0x300F
     const val EMAIL_NOT_VERIFIED = 0x3011
 
-    /* 404 - NOT found */
     const val REF_LECTURE_NOT_FOUND = 0x4003
     const val USER_NOT_FOUND = 0x4004
+
+    const val VACANCY_PREV_SEMESTER = 0x9C45
+    const val INVALID_NICKNAME = 0x9C48
+    const val ALREADY_LOCAL_ACCOUNT = 0x9C53
+    const val ALREADY_SOCIAL_ACCOUNT = 0x9C54
+    const val VACANCY_DUPLICATE = 0x9FC4
+    const val USED_EMAIL = 0x9FC5
+    const val DUPLICATE_THEME_NAME = 0x9FC8
 }
 
 @JsonClass(generateAdapter = true)
