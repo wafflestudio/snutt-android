@@ -1,10 +1,12 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings.diary
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -14,22 +16,35 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.domainmodel.DiaryList
-import com.wafflestudio.snutt2.domainmodel.DiaryQuestionAnswer
+import com.wafflestudio.snutt2.domainmodel.preview.DiaryPreviewData
+import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.toAbbvString
+import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import java.time.LocalDate
 
 @Composable
-fun DiaryListRoute() {
+fun DiaryListRoute(
+    diaryListViewModel: DiaryListViewModel = hiltViewModel(),
+) {
+    val courseBookDtoList = diaryListViewModel.courseBookDtoList
+    val courseBookDtoIdx by diaryListViewModel._selectedCourseBookIdx.collectAsState()
+    val diaryList by diaryListViewModel.diaryListUiState.collectAsState()
+    DiaryListScreen(
+        courseBookDtoList?.mapIndexed { idx, courseBook -> courseBook.toDataWithState(idx == courseBookDtoIdx) },
+        { idx -> diaryListViewModel.clickCourseBook(idx) },
+        diaryList,
+    )
 }
 
 @Composable
 fun DiaryListScreen(
-    courseBookDtoList: List<CourseBookDto>,
+    selectableCourseBookDto: List<Selectable<CourseBookDto>>?,
+    onClickCourseBook: (Int) -> Unit,
     diaryListUiState: DiaryListUiState,
 ) {
     Box {
@@ -50,15 +65,18 @@ fun DiaryListScreen(
                 contentPadding = PaddingValues(horizontal = 20.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                items(courseBookDtoList) { courseBook ->
-                    Box(
-                        modifier = Modifier
-                            .background(SNUTTColors.SNUTTTheme, RoundedCornerShape(50))
-                            .padding(horizontal = 24.dp)
-                            .height(34.dp),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Text(courseBook.toAbbvString(), color = SNUTTColors.White900, style = SNUTTTypography.subtitle1.copy(fontWeight = FontWeight.SemiBold))
+                if (selectableCourseBookDto != null) {
+                    itemsIndexed(selectableCourseBookDto) { idx, (courseBook, isSelected) ->
+                        Box(
+                            modifier = Modifier
+                                .clicks { Log.d("idx", idx.toString()); onClickCourseBook(idx) }
+                                .background(if (isSelected) SNUTTColors.SNUTTTheme else SNUTTColors.LectureDiaryGray, RoundedCornerShape(50))
+                                .padding(horizontal = 24.dp)
+                                .height(34.dp),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(courseBook.toAbbvString(), color = if (isSelected) SNUTTColors.White900 else SNUTTColors.EditTextLabel, style = SNUTTTypography.subtitle1.copy(fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium))
+                        }
                     }
                 }
             }
@@ -84,63 +102,14 @@ fun DiaryListScreen(
 @Composable
 @Preview()
 fun DiaryListPagePreview() {
+    val courseBookDtoList = DiaryPreviewData.courseBookDtoList
     DiaryListScreen(
-        courseBookDtoList = listOf(
-            CourseBookDto(semester = 3, year = 24),
-            CourseBookDto(semester = 2, year = 24),
-            CourseBookDto(semester = 1, year = 24),
-            CourseBookDto(semester = 4, year = 23),
-            CourseBookDto(semester = 3, year = 23),
-            CourseBookDto(semester = 2, year = 23),
-            CourseBookDto(semester = 1, year = 23),
-            CourseBookDto(semester = 4, year = 22),
-        ),
+        selectableCourseBookDto = courseBookDtoList.mapIndexed { idx, courseBook -> courseBook.toDataWithState(idx == 0) },
+        {},
         diaryListUiState = DiaryListUiState.Success(
             diaryList = DiaryList(
                 courseBook = CourseBookDto(3, 24),
-                diaryList = mapOf(
-                    LocalDate.of(2024, 3, 20) to listOf(
-                        com.wafflestudio.snutt2.domainmodel.DiaryListLectureItem(
-                            lectureName = "시각디자인기초",
-                            content = listOf(
-                                DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
-                                DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
-                                DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
-                            ),
-                            moreText = "좋아요",
-                        ),
-                        com.wafflestudio.snutt2.domainmodel.DiaryListLectureItem(
-                            lectureName = "배구",
-                            content = listOf(
-                                DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
-                                DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
-                                DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
-                            ),
-                            moreText = "좋아요",
-                        ),
-
-                    ),
-                    LocalDate.of(2024, 3, 1) to listOf(
-                        com.wafflestudio.snutt2.domainmodel.DiaryListLectureItem(
-                            lectureName = "시각디자인기초",
-                            content = listOf(
-                                DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
-                                DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
-                                DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
-                            ),
-                            moreText = "좋아요",
-                        ),
-                        com.wafflestudio.snutt2.domainmodel.DiaryListLectureItem(
-                            lectureName = "배구",
-                            content = listOf(
-                                DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
-                                DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
-                                DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
-                            ),
-                            moreText = "좋아요",
-                        ),
-                    ),
-                ),
+                diaryList = DiaryPreviewData.diaryList,
             ),
         ),
     )
