@@ -29,16 +29,16 @@ interface UserRepository {
 
     suspend fun postSignUp(id: String, password: String, email: String)
 
-    suspend fun fetchUserInfo()
+    suspend fun fetchUserInfo(): Result<Unit>
 
     suspend fun patchUserInfo(nickname: String)
 
-    suspend fun deleteUserAccount()
+    suspend fun deleteUserAccount(): Result<Unit>
 
-    suspend fun putUserPassword(oldPassword: String, newPassword: String)
+    suspend fun putUserPassword(oldPassword: String, newPassword: String): Result<Unit>
 
     // 새로운 local_id 추가
-    suspend fun postUserPassword(id: String, password: String)
+    suspend fun postUserPassword(id: String, password: String): Result<Unit>
 
     suspend fun postFeedback(email: String, detail: String)
 

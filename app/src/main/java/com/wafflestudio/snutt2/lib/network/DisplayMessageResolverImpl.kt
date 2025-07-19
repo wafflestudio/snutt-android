@@ -16,9 +16,9 @@ class DisplayMessageResolverImpl @Inject constructor(
             is ServerFault -> context.getString(R.string.error_server_fault)
             is NoAdminPrivilege -> context.getString(R.string.error_no_admin_privilege)
             is UnknownApp -> context.getString(R.string.error_unknown_app)
-            is AuthError.WrongApiKey -> context.getString(R.string.error_wrong_api_key)
-            is AuthError.NoUserToken -> context.getString(R.string.error_no_user_token)
-            is AuthError.WrongUserToken -> context.getString(R.string.error_wrong_user_token)
+            is WrongApiKey -> context.getString(R.string.error_wrong_api_key)
+            is NoUserToken -> context.getString(R.string.error_no_user_token)
+            is WrongUserToken -> context.getString(R.string.error_wrong_user_token)
             is Unknown -> context.getString(R.string.error_unknown)
             else -> error.displayMessage
         }

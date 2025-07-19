@@ -71,9 +71,14 @@ class UserRepositoryImpl @Inject constructor(
         storage.accessToken.update(response.token)
     }
 
-    override suspend fun fetchUserInfo() {
-        val response = api._getUserInfo()
-        storage.user.update(response.toOptional())
+    override suspend fun fetchUserInfo(): Result<Unit> {
+        try {
+            val result = api._getUserInfo()
+            storage.user.update(result.toOptional())
+            return Result.Success(Unit)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
     }
 
     override suspend fun patchUserInfo(nickname: String) {
@@ -81,32 +86,47 @@ class UserRepositoryImpl @Inject constructor(
         storage.user.update(response.toOptional())
     }
 
-    override suspend fun deleteUserAccount() {
-        api._deleteUserAccount()
-        performLogout()
+    override suspend fun deleteUserAccount(): Result<Unit> {
+        try {
+            api._deleteUserAccount()
+            performLogout()
+            return Result.Success(Unit)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
     }
 
     override suspend fun putUserPassword(
         oldPassword: String,
         newPassword: String,
-    ) {
-        val response = api._putUserPassword(
-            PutUserPasswordParams(
-                newPassword = newPassword,
-                oldPassword = oldPassword,
-            ),
-        )
-        storage.accessToken.update(response.token)
+    ): Result<Unit> {
+        try {
+            val result = api._putUserPassword(
+                PutUserPasswordParams(
+                    newPassword = newPassword,
+                    oldPassword = oldPassword,
+                ),
+            )
+            storage.accessToken.update(result.token)
+            return Result.Success(Unit)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
     }
 
-    override suspend fun postUserPassword(id: String, password: String) {
-        val response = api._postUserPassword(
-            PostUserPasswordParams(
-                id = id,
-                password = password,
-            ),
-        )
-        storage.accessToken.update(response.token)
+    override suspend fun postUserPassword(id: String, password: String): Result<Unit> {
+        try {
+            val result = api._postUserPassword(
+                PostUserPasswordParams(
+                    id = id,
+                    password = password,
+                ),
+            )
+            storage.accessToken.update(result.token)
+            return Result.Success(Unit)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
     }
 
     override suspend fun postFeedback(email: String, detail: String) {
