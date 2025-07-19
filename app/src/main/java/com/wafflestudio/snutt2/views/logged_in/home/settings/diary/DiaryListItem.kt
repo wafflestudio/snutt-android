@@ -44,7 +44,7 @@ fun DiaryListDateItem(
     date: LocalDate,
     listOfDiaryListLectureItem: List<DiaryListLectureItem>,
 ) {
-    var isSelected by remember { mutableStateOf(true) }
+    var isSelected by remember { mutableStateOf(false) }
     Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Row(

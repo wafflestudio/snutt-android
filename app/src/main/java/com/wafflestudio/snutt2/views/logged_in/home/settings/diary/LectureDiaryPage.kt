@@ -32,7 +32,7 @@ fun DiaryListRoute(
     diaryListViewModel: DiaryListViewModel = hiltViewModel(),
 ) {
     val courseBookDtoList = diaryListViewModel.courseBookDtoList
-    val courseBookDtoIdx by diaryListViewModel._selectedCourseBookIdx.collectAsState()
+    val courseBookDtoIdx by diaryListViewModel.selectedCourseBookIdx.collectAsState()
     val diaryList by diaryListViewModel.diaryListUiState.collectAsState()
     DiaryListScreen(
         courseBookDtoList?.mapIndexed { idx, courseBook -> courseBook.toDataWithState(idx == courseBookDtoIdx) },

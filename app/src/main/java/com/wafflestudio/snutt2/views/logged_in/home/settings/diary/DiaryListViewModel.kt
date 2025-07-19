@@ -26,7 +26,7 @@ class DiaryListViewModel @Inject constructor(
 
     var courseBookDtoList: List<CourseBookDto>? = null
 
-    var _selectedCourseBookIdx = MutableStateFlow(0)
+    private var _selectedCourseBookIdx = MutableStateFlow(0)
     val selectedCourseBookIdx: StateFlow<Int> = _selectedCourseBookIdx.asStateFlow()
 
     fun clickCourseBook(idx: Int) {
