@@ -431,7 +431,24 @@ class RootActivity : AppCompatActivity() {
         composableAnimated<NavigationDestination.ServiceInfo> { ServiceInfoPage() }
         composableAnimated<NavigationDestination.TeamInfo> { TeamInfoPage() }
         composableAnimated<NavigationDestination.TimeTableConfig> { TimetableConfigPage() }
-        composableAnimated<NavigationDestination.UserConfig> { UserConfigPage() }
+        composableAnimated<NavigationDestination.UserConfig> {
+            UserConfigRoute(
+                onNavigateBack = {
+                    if (navController.currentDestination?.hasRoute(NavigationDestination.UserConfig::class) == true) {
+                        navController.popBackStack()
+                    }
+                },
+                onNavigateOnboard = {
+                    navController.navigateAsOrigin(NavigationDestination.Onboard)
+                },
+                onNavigateChangeNickname = {
+                    navController.navigate(NavigationDestination.ChangeNickname)
+                },
+                onNavigateSocialLink = {
+                    navController.navigate(NavigationDestination.SocialLink)
+                },
+            )
+        }
         composableAnimated<NavigationDestination.ChangeNickname> { ChangeNicknamePage() }
         composableAnimated<NavigationDestination.SocialLink> { SocialLinkPage() }
         composableAnimated<NavigationDestination.PersonalInformationPolicy> { PersonalInformationPolicyPage() }
