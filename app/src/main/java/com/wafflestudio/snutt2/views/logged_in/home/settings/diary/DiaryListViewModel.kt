@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.course_books.CourseBookRepository
 import com.wafflestudio.snutt2.data.lecture_diary.DiaryRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
-import com.wafflestudio.snutt2.domainmodel.DiaryList
 import com.wafflestudio.snutt2.domainmodel.preview.DiaryPreviewData
 import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
@@ -39,7 +38,7 @@ class DiaryListViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             courseBookDtoList = courseBookRepository.getCourseBook()
-            _diaryListUiState.value = DiaryListUiState.Success(DiaryList(courseBookDtoList!![_selectedCourseBookIdx.value], DiaryPreviewData.diaryList))
+            _diaryListUiState.value = DiaryListUiState.Success(DiaryPreviewData.diaryList)
         }
     }
 }

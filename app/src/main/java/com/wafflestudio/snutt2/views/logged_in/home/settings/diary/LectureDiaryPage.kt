@@ -18,7 +18,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.components.compose.*
-import com.wafflestudio.snutt2.domainmodel.DiaryList
 import com.wafflestudio.snutt2.domainmodel.preview.DiaryPreviewData
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
@@ -92,7 +91,7 @@ fun DiaryListScreen(
                 DiaryListUiState.Loading -> {}
                 is DiaryListUiState.Success -> {
                     LazyColumn {
-                        items(diaryListUiState.diaryList.diaryList.toList()) { (date, listOfDiaryListLectureItem) ->
+                        items(diaryListUiState.diaryList.toList()) { (date, listOfDiaryListLectureItem) ->
                             DiaryListDateItem(
                                 date = date,
                                 listOfDiaryListLectureItem,
@@ -114,10 +113,7 @@ fun DiaryListPagePreview() {
         selectableCourseBookDto = courseBookDtoList.mapIndexed { idx, courseBook -> courseBook.toDataWithState(idx == 0) },
         {},
         diaryListUiState = DiaryListUiState.Success(
-            diaryList = DiaryList(
-                courseBook = CourseBookDto(3, 24),
-                diaryList = DiaryPreviewData.diaryList,
-            ),
+            diaryList = DiaryPreviewData.diaryList,
         ),
     )
 }

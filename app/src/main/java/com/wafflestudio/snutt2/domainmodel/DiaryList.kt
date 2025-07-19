@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.domainmodel
 
-import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import java.time.LocalDate
 
 data class DiaryQuestionAnswer(
@@ -14,7 +13,4 @@ data class DiaryListLectureItem(
     val moreText: String?,
 )
 
-data class DiaryList(
-    val courseBook: CourseBookDto,
-    val diaryList: Map<LocalDate, List<DiaryListLectureItem>>,
-)
+typealias DiaryList = Map<LocalDate, List<DiaryListLectureItem>>
