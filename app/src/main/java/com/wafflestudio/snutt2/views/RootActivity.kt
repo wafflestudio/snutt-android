@@ -72,6 +72,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
+import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryCompleteRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryListPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryWriteRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigRoute
@@ -441,8 +442,6 @@ class RootActivity : AppCompatActivity() {
                 },
             )
         }
-        composableAnimated<NavigationDestination.UserConfig> { UserConfigPage() }
-        composableAnimated<NavigationDestination.TimeTableConfig> { TimetableConfigPage() }
         composableAnimated<NavigationDestination.UserConfig> {
             UserConfigRoute(
                 onNavigateBack = {
@@ -608,11 +607,8 @@ class RootActivity : AppCompatActivity() {
                  * 다르게 설정할 수 있기 때문에 여기서 직접 설정해 준다.
                  */
                 val isDarkMode = isDarkMode(this@RootActivity, themeMode)
-                val primaryColor = ContextCompat.getColor(this@RootActivity, if (isDarkMode) R.color.black_dark else R.color.white)
                 window.apply {
                     setBackgroundDrawableResource(if (isDarkMode) R.color.black_dark else R.color.white)
-                    statusBarColor = primaryColor
-                    navigationBarColor = primaryColor
                 }
                 WindowInsetsControllerCompat(window, window.decorView).apply {
                     isAppearanceLightStatusBars = isDarkMode.not()

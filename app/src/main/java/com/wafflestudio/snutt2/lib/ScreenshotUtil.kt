@@ -11,8 +11,8 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils.displayHeight
 import com.wafflestudio.snutt2.SNUTTUtils.displayWidth
 import com.wafflestudio.snutt2.components.view.TimetableView
+import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
-import com.wafflestudio.snutt2.model.TableTrimParam
 import java.io.File
 import java.io.FileOutputStream
 

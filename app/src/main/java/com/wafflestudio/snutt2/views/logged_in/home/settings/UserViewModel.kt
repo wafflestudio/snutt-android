@@ -29,22 +29,6 @@ class UserViewModel @Inject constructor(
 
     val firstBookmarkAlert: StateFlow<Boolean> = userRepository.firstBookmarkAlert
 
-    suspend fun setHourRange(from: Int, to: Int) {
-        userRepository.setTableTrim(hourFrom = from, hourTo = to)
-    }
-
-    suspend fun setDayOfWeekRange(from: Int, to: Int) {
-        userRepository.setTableTrim(dayOfWeekFrom = from, dayOfWeekTo = to)
-    }
-
-    suspend fun setAutoTrim(enable: Boolean) {
-        userRepository.setTableTrim(isAuto = enable)
-    }
-
-    suspend fun setTableLectureCustomOption(key: TableLectureCustomOptions, value: Boolean) {
-        userRepository.setTableLectureCustomOption(key, value)
-    }
-
     suspend fun fetchUserInfo() {
         userRepository.fetchUserInfo()
     }
