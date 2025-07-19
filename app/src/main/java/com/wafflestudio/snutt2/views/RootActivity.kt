@@ -437,7 +437,20 @@ class RootActivity : AppCompatActivity() {
         composableAnimated<NavigationDestination.PersonalInformationPolicy> { PersonalInformationPolicyPage() }
         composableAnimated<NavigationDestination.ThemeModeSelect> { ColorModeSelectPage() }
         if (BuildConfig.DEBUG) {
-            composableAnimated<NavigationDestination.LectureDiary> { DiaryListRoute() }
+            composableAnimated<NavigationDestination.LectureDiary> {
+                DiaryListRoute(
+                    onNavigateBack = {
+                        if (navController.currentDestination?.hasRoute(NavigationDestination.LectureDiary::class) == true) {
+                            navController.popBackStack()
+                        }
+                    },
+                    onNavigateOnboard = {
+                        navController.navigateAsOrigin(NavigationDestination.Onboard)
+                    },
+                    onNavigateDiaryWrite = {
+                    },
+                )
+            }
             composableAnimated<NavigationDestination.LectureDiaryWrite> {
                 DiaryWriteRoute(
                     onNavigateBack = {

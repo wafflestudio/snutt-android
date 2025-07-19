@@ -29,12 +29,17 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 
 @Composable
 fun DiaryListRoute(
+    modifier: Modifier = Modifier,
     diaryListViewModel: DiaryListViewModel = hiltViewModel(),
+    onNavigateBack: () -> Unit,
+    onNavigateOnboard: () -> Unit,
+    onNavigateDiaryWrite: (String) -> Unit,
 ) {
     val courseBookDtoList = diaryListViewModel.courseBookDtoList
     val courseBookDtoIdx by diaryListViewModel.selectedCourseBookIdx.collectAsState()
     val diaryList by diaryListViewModel.diaryListUiState.collectAsState()
     DiaryListScreen(
+        onNavigateBack,
         courseBookDtoList?.mapIndexed { idx, courseBook -> courseBook.toDataWithState(idx == courseBookDtoIdx) },
         { idx -> diaryListViewModel.clickCourseBook(idx) },
         diaryList,
@@ -43,6 +48,7 @@ fun DiaryListRoute(
 
 @Composable
 fun DiaryListScreen(
+    onNavigateBack: () -> Unit,
     selectableCourseBookDto: List<Selectable<CourseBookDto>>?,
     onClickCourseBook: (Int) -> Unit,
     diaryListUiState: DiaryListUiState,
@@ -55,7 +61,7 @@ fun DiaryListScreen(
                 title = { Text("강의 일기장") },
                 navigationIcon = {
                     ArrowBackIcon(
-                        modifier = Modifier.size(30.dp),
+                        modifier = Modifier.size(30.dp).clicks { onNavigateBack() },
                         colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                     )
                 },
@@ -104,6 +110,7 @@ fun DiaryListScreen(
 fun DiaryListPagePreview() {
     val courseBookDtoList = DiaryPreviewData.courseBookDtoList
     DiaryListScreen(
+        onNavigateBack = {},
         selectableCourseBookDto = courseBookDtoList.mapIndexed { idx, courseBook -> courseBook.toDataWithState(idx == 0) },
         {},
         diaryListUiState = DiaryListUiState.Success(
