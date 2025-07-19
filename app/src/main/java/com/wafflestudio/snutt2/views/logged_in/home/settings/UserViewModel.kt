@@ -42,10 +42,6 @@ class UserViewModel @Inject constructor(
         userRepository.setTableTrim(isAuto = enable)
     }
 
-    suspend fun fetchUserInfo() {
-        userRepository.fetchUserInfo()
-    }
-
     suspend fun setTableLectureCustomOption(key: TableLectureCustomOptions, value: Boolean) {
         userRepository.setTableLectureCustomOption(key, value)
     }
@@ -66,36 +62,12 @@ class UserViewModel @Inject constructor(
         userRepository.postLoginKakao(kakaoAccessToken)
     }
 
-    suspend fun addNewLocalId(id: String, password: String) {
-        userRepository.postUserPassword(id, password)
-    }
-
-    suspend fun changePassword(oldPassword: String, newPassword: String) {
-        userRepository.putUserPassword(oldPassword, newPassword)
-    }
-
     suspend fun changeNickname(nickname: String) {
         userRepository.patchUserInfo(nickname)
     }
 
-    suspend fun leave() {
-        userRepository.deleteUserAccount()
-    }
-
-    suspend fun getAccessToken(): String {
-        return userRepository.getAccessToken()
-    }
-
     suspend fun sendFeedback(email: String, detail: String) {
         return userRepository.postFeedback(email, detail)
-    }
-
-    suspend fun performLogout() {
-        userRepository.performLogout()
-    }
-
-    suspend fun forceLogout() {
-        userRepository.postForceLogout()
     }
 
     suspend fun registerPushToken() {
@@ -124,22 +96,6 @@ class UserViewModel @Inject constructor(
 
     suspend fun findIdByEmail(email: String) {
         userRepository.findIdByEmail(email)
-    }
-
-    suspend fun checkEmailById(id: String): String {
-        return userRepository.checkEmailById(id)
-    }
-
-    suspend fun sendPwResetCodeToEmail(email: String) {
-        userRepository.sendPwResetCodeToEmail(email)
-    }
-
-    suspend fun verifyPwResetCode(id: String, code: String) {
-        userRepository.verifyPwResetCode(id, code)
-    }
-
-    suspend fun resetPassword(id: String, password: String, code: String) {
-        userRepository.resetPassword(id, password, code)
     }
 
     suspend fun sendCodeToEmail(email: String) {
