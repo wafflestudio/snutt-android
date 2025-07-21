@@ -58,6 +58,7 @@ fun SettingsRoute(
     onNavigateVacancyNotification: () -> Unit,
     onNavigateThemeMarket: () -> Unit,
     onNavigatePushPreference: () -> Unit,
+    onNavigateLectureReminder: () -> Unit,
     onNavigateLectureDiary: () -> Unit,
     onNavigateTeamInfo: () -> Unit,
     onNavigateAppReport: () -> Unit,
@@ -85,6 +86,7 @@ fun SettingsRoute(
         onClickVacancyNotification = onNavigateVacancyNotification,
         onClickThemeMarket = onNavigateThemeMarket,
         onClickPushPreference = onNavigatePushPreference,
+        onClickLectureReminder = onNavigateLectureReminder,
         onClickLectureDiary = onNavigateLectureDiary,
         onClickTeamInfo = onNavigateTeamInfo,
         onClickAppReport = onNavigateAppReport,
@@ -109,6 +111,7 @@ fun SettingsScreen(
     onClickVacancyNotification: () -> Unit,
     onClickThemeMarket: () -> Unit,
     onClickPushPreference: () -> Unit,
+    onClickLectureReminder: () -> Unit,
     onClickLectureDiary: () -> Unit,
     onClickTeamInfo: () -> Unit,
     onClickAppReport: () -> Unit,
@@ -210,6 +213,11 @@ fun SettingsScreen(
                     title = stringResource(R.string.settings_item_push_preferences),
                     hasNextPage = true,
                     onClick = onClickPushPreference,
+                )
+                SettingItem(
+                    title = stringResource(R.string.settings_lecture_reminder_title),
+                    hasNextPage = true,
+                    onClick = onClickLectureReminder,
                 )
                 if (BuildConfig.DEBUG) {
                     if (FeatureFlag.LECTURE_DIARY.isEnabled) {
@@ -400,6 +408,6 @@ fun NewBadge(
 @Composable
 fun SettingsPagePreview() {
     SettingsScreen(
-        uiState = SettingsUiState("양주현", "다크", false, listOf("빈자리 알림")), onClickUserConfig = {}, onClickThemeModeSelect = {}, onClickTimeTableConfig = {}, onClickThemeConfig = {}, onClickVacancyNotification = {}, onClickThemeMarket = {}, onClickPushPreference = {}, onClickLectureDiary = {}, onClickTeamInfo = {}, onClickAppReport = {}, onClickOpenLicenses = {}, onClickServiceInfo = {}, onClickPersonalInformationPolicy = {}, onClickNetworkLog = {}, onClickTest = {}, onClickLogout = {}, onConfirmLogout = {}, onDismissLogout = {},
+        uiState = SettingsUiState("양주현", "다크", false, listOf("빈자리 알림")), onClickUserConfig = {}, onClickThemeModeSelect = {}, onClickTimeTableConfig = {}, onClickThemeConfig = {}, onClickVacancyNotification = {}, onClickThemeMarket = {}, onClickPushPreference = {}, onClickLectureReminder = {}, onClickLectureDiary = {}, onClickTeamInfo = {}, onClickAppReport = {}, onClickOpenLicenses = {}, onClickServiceInfo = {}, onClickPersonalInformationPolicy = {}, onClickNetworkLog = {}, onClickTest = {}, onClickLogout = {}, onConfirmLogout = {}, onDismissLogout = {},
     )
 }

@@ -181,6 +181,9 @@ fun HomePage() {
                         onNavigatePushPreference = {
                             navController.navigate(NavigationDestination.PushPreferences)
                         },
+                        onNavigateLectureReminder = {
+                            navController.navigate(NavigationDestination.LectureReminder)
+                        },
                         onNavigateLectureDiary = {
                             navController.navigate(NavigationDestination.LectureDiaryWrite)
                         },

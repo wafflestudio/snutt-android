@@ -15,14 +15,20 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.domainmodel.preview.PreviewData
+import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.test.SegmentedPicker
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -31,12 +37,34 @@ import com.wafflestudio.snutt2.ui.onSurfaceVariant
 @Composable
 fun LectureReminderRoute(
     modifier: Modifier = Modifier,
+    onNavigateBack: () -> Unit,
+    onNavigateOnboard: () -> Unit,
+    viewModel: LectureReminderViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
+    val uiState by viewModel.lectureReminderUiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.lectureReminderUiEvent.collect { uiEvent ->
+            when (uiEvent) {
+                is LectureReminderUiEvent.ShowToast -> {
+                    val message = uiEvent.message
+                    if (message.isNotEmpty()) {
+                        context.toast(message)
+                    }
+                }
+                is LectureReminderUiEvent.NavigateToOnboard -> {
+                    onNavigateOnboard()
+                }
+            }
+        }
+    }
+
     LectureReminderScreen(
         modifier = modifier,
-        uiState = LectureReminderUiState.Loading, // temp
-        onClickBack = {},
-        onChangeReminderOption = { _, _ -> },
+        uiState = uiState,
+        onClickBack = onNavigateBack,
+        onChangeReminderOption = viewModel::changeLectureReminderOption,
     )
 }
 
@@ -45,7 +73,7 @@ fun LectureReminderScreen(
     modifier: Modifier = Modifier,
     uiState: LectureReminderUiState,
     onClickBack: () -> Unit,
-    onChangeReminderOption: (String, LectureReminderOffset) -> Unit,
+    onChangeReminderOption: (String, LectureWithReminderOption) -> Unit,
 ) {
     val lectureReminderOptions = listOf(
         stringResource(R.string.settings_lecture_reminder_none),
@@ -96,7 +124,14 @@ fun LectureReminderScreen(
                                 options = lectureReminderOptions,
                                 selectedOption = lectureWithReminderOption.lectureReminderOffset.getString(),
                                 onOptionSelected = { offset ->
-                                    onChangeReminderOption(lectureWithReminderOption.lectureId, offset.getLectureReminderOffset())
+                                    onChangeReminderOption(
+                                        lectureWithReminderOption.lectureId,
+                                        LectureWithReminderOption(
+                                            lectureId = lectureWithReminderOption.lectureId,
+                                            lectureTitle = lectureWithReminderOption.lectureTitle,
+                                            lectureReminderOffset = offset.getLectureReminderOffset(),
+                                        ),
+                                    )
                                 },
                                 modifier = Modifier.background(SNUTTColors.White900),
                             )
