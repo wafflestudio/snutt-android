@@ -91,6 +91,9 @@ object SNUTTColors {
     val Colors.BannerBlue @Composable get() = if (isLight) Color(0xff26c1bb) else Color(0xff1ca6a0)
     val BannerBlue @Composable get() = MaterialTheme.colors.BannerBlue
 
+    val Colors.MilkMint @Composable get() = if (isLight) Color(0xffb2f6f3) else Color(0xffb2f6f3)
+    val MilkMint @Composable get() = MaterialTheme.colors.MilkMint
+
     val Transparent = Color(0x00000000)
 
     val Colors.Black050 @Composable get() = if (isLight) Color(0x0d000000) else Color(0x0dffffff)
@@ -113,6 +116,9 @@ object SNUTTColors {
 
     val Colors.Black600 @Composable get() = if (isLight) Color(0x99000000) else Color(0x99ffffff)
     val Black600 @Composable get() = MaterialTheme.colors.Black600
+
+    val Colors.Black800 @Composable get() = if (isLight) Color(0xcc000000) else Color(0xccffffff)
+    val Black800 @Composable get() = MaterialTheme.colors.Black800
 
     val Colors.Black900 @Composable get() = if (isLight) Color(0xff000000) else Color(0xffffffff)
     val Black900 @Composable get() = MaterialTheme.colors.Black900

@@ -60,6 +60,18 @@ class LectureReminderViewModel @Inject constructor(
                 .distinctUntilChanged()
                 .onEach { (lectureId, option) ->
                     tableRepository.updateTableLectureReminders(lectureId, option)
+                        .onSuccess {
+                            _lectureReminderUiEvent.emit(
+                                LectureReminderUiEvent.ShowSnackBarByEvent(
+                                    when (option.lectureReminderOffset) {
+                                        LectureReminderOffset.NONE -> LectureReminderEvent.LECTURE_REMINDER_UPDATE_SUCCESS_NONE
+                                        LectureReminderOffset.TEN_MINUTES_BEFORE -> LectureReminderEvent.LECTURE_REMINDER_UPDATE_SUCCESS_TEN_MINUTES_BEFORE
+                                        LectureReminderOffset.AT_START_TIME -> LectureReminderEvent.LECTURE_REMINDER_UPDATE_SUCCESS_AT_START_TIME
+                                        LectureReminderOffset.TEN_MINUTES_AFTER -> LectureReminderEvent.LECTURE_REMINDER_UPDATE_SUCCESS_TEN_MINUTES_AFTER
+                                    },
+                                ),
+                            )
+                        }
                         .onFailure { error ->
                             handleLectureReminderError(error)
                         }
@@ -119,6 +131,13 @@ enum class LectureReminderOffset {
 
 sealed interface LectureReminderUiEvent {
     data class ShowToast(val message: String) : LectureReminderUiEvent
-    data class ShowSnackBar(val message: String) : LectureReminderUiEvent
+    data class ShowSnackBarByEvent(val event: LectureReminderEvent) : LectureReminderUiEvent
     data object NavigateToOnboard : LectureReminderUiEvent
+}
+
+enum class LectureReminderEvent {
+    LECTURE_REMINDER_UPDATE_SUCCESS_NONE,
+    LECTURE_REMINDER_UPDATE_SUCCESS_TEN_MINUTES_BEFORE,
+    LECTURE_REMINDER_UPDATE_SUCCESS_AT_START_TIME,
+    LECTURE_REMINDER_UPDATE_SUCCESS_TEN_MINUTES_AFTER,
 }
