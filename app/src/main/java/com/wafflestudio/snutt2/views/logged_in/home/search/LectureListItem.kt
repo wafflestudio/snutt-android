@@ -385,6 +385,10 @@ fun LazyItemScope.LectureListItem(
                                         composableStates,
                                         message,
                                         forceAddApi = {
+                                            timetableViewModel.addLecture(
+                                                lecture = lectureDataWithState.item,
+                                                is_force = true,
+                                            )
                                             searchViewModel.toggleLectureSelection(
                                                 lectureDataWithState.item,
                                             )
