@@ -12,6 +12,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -82,14 +83,17 @@ fun UserConfigRoute(
         }
     }
 
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.resetToastMessage()
+        }
+    }
+
     UserConfigScreen(
         modifier = modifier,
         uiState = uiState,
         onNavigateBack = onNavigateBack,
-        onNavigateChangeNickname = {
-            onNavigateChangeNickname()
-            viewModel.resetToastMessage()
-        },
+        onNavigateChangeNickname = onNavigateChangeNickname,
         onCopyNicknameToClipboard = {
             copyToClipboard(
                 context = context,
@@ -106,10 +110,7 @@ fun UserConfigRoute(
         onClickLeave = viewModel::showLeaveDialog,
         onConfirmLeave = viewModel::leave,
         onDismissLeave = viewModel::hideLeaveDialog,
-        onNavigateSocialLink = {
-            onNavigateSocialLink()
-            viewModel.resetToastMessage()
-        },
+        onNavigateSocialLink = onNavigateSocialLink,
     )
 }
 
