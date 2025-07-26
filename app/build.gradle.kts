@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.firebase.appdistribution)
     alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.compose.compiler)
 }
 
 ktlint {
@@ -166,8 +167,6 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.bundles.accompanist)
     implementation(libs.facebook.login)
-    implementation(libs.licensesdialog)
-    implementation(libs.colorpickerview)
     implementation(libs.timber)
     implementation(libs.androidx.core.splashscreen)
 

@@ -1,27 +1,27 @@
 [versions]
 # Kotlin & Android
-kotlin = "1.9.0"
-androidGradle = "8.7.3"
+kotlin = "2.2.0"
+androidGradle = "8.11.1"
 
 # Build tools
-ktlintGradle = "11.5.1"
-hilt = "2.47"
+ktlintGradle = "11.6.1"
+hilt = "2.57"
 
 # Networking
 retrofit = "2.9.0"
-moshi = "1.14.0"
-okhttp = "4.9.2"
+moshi = "1.15.2"
+okhttp = "5.1.0"
 
 # Reactive
 rxjava = "3.1.0"
 rxkotlin = "3.0.1"
 
 # Jetpack Compose
-composeBom = "2025.03.00"
-composeMaterialNavigation = "1.8.0-rc02"
-navigation = "2.8.9"
-lifecycle = "2.6.1"
-hiltNavigationCompose = "1.0.0"
+composeBom = "2025.07.00"
+composeMaterialNavigation = "1.8.3"
+navigation = "2.9.2"
+lifecycle = "2.9.2"
+hiltNavigationCompose = "1.2.0"
 
 # Paging
 paging = "3.1.0"
@@ -29,43 +29,40 @@ pagingCompose = "1.0.0-alpha14"
 
 # Firebase
 firebaseBom = "28.1.0"
-googleServices = "4.3.15"
+googleServices = "4.4.3"
 firebaseAppdistribution = "4.0.0"
 firebaseCrashlytics = "2.9.9"
 
 # UI & Graphics
-coil = "2.1.0"
-accompanist = "0.20.3"
-colorpickerview = "2.2.3"
+coil = "2.7.0"
+accompanist = "0.36.0"
 splashscreen = "1.0.1"
 
 # Authentication
 facebookLogin = "15.0.1"
-googleAuth = "21.1.1"
-googleId = "1.1.0"
-kakaoSDK = "2.20.1"
+googleAuth = "21.4.0"
+googleId = "1.1.1"
+kakaoSDK = "2.21.5"
 
 # Maps
-naverMap = "3.17.0"
-naverMapCompose = "1.4.1"
+naverMap = "3.22.0"
+naverMapCompose = "1.8.2"
 
 # React Native
 reactAndroid = "0.72.3"
 hermesAndroid = "0.72.3"
 
 # Misc
-androidxCore = "1.10.1"
-appcompat = "1.6.1"
-material = "1.9.0"
-constraintlayout = "2.1.4"
+androidxCore = "1.16.0"
+appcompat = "1.7.1"
+material = "1.12.0"
+constraintlayout = "2.2.1"
 legacySupport = "1.0.0"
-licensesdialog = "2.1.0"
 timber = "5.0.1"
-gson = "2.10.1"
-kotlinxSerialization = "1.6.3"
-desugarJdkLibs = "1.2.2"
+gson = "2.13.1"
+kotlinxSerialization = "1.9.0"
+desugarJdkLibs = "2.1.5"
 junit = "4.13.2"
-junitJupiter = "5.10.3"
 
 [libraries]
 # Kotlin
@@ -135,8 +132,6 @@ coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 # UI Components
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanist" }
 accompanist-pager-indicators = { module = "com.google.accompanist:accompanist-pager-indicators", version.ref = "accompanist" }
-colorpickerview = { module = "com.github.skydoves:colorpickerview", version.ref = "colorpickerview" }
-licensesdialog = { module = "de.psdev.licensesdialog:licensesdialog", version.ref = "licensesdialog" }
 
 # Authentication
 facebook-login = { module = "com.facebook.android:facebook-login", version.ref = "facebookLogin" }
@@ -174,6 +169,7 @@ kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 firebase-appdistribution = { id = "com.google.firebase.appdistribution", version.ref = "firebaseAppdistribution" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlytics" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
 [bundles]
 retrofit = [
