@@ -71,4 +71,4 @@ jobs:
           ${{ secrets.secrets_xml_staging_core_network }}
           EOF
       - name: Build debug APK
-        run: ./gradlew assembleStagingDebug --stacktrace
+        run: ./gradlew assembleStagingDebug --stacktrace --info
