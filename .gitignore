@@ -155,3 +155,6 @@ fabric.properties
 
 node_modules/
 # End of https://www.toptal.com/developers/gitignore/api/androidstudio
+
+## RN aar 빌드 스크립트 임시작업폴더
+AARBuilder/
