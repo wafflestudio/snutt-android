@@ -96,6 +96,11 @@ fun ThemeConfigRoute(
             }
         },
         onNavigateToDetail = onNavigateToDetail,
+        onApply = {
+            launchSuspendApi(apiOnProgress, apiOnError) {
+                themeConfigViewModel.applyThemeToCurrentTable(it)
+            }
+        },
         onClickAddTheme = onClickAddTheme,
         onDuplicateTheme = {
             launchSuspendApi(apiOnProgress, apiOnError) {
@@ -119,6 +124,7 @@ fun ThemeConfigScreen(
     onNavigateBack: () -> Unit,
     onFetchThemes: suspend () -> Unit,
     onNavigateToDetail: (TableTheme) -> Unit,
+    onApply: suspend (TableTheme) -> Unit,
     onClickAddTheme: () -> Unit,
     onDuplicateTheme: suspend (TableTheme) -> Unit,
     onDeleteTheme: suspend (TableTheme) -> Unit,
@@ -177,6 +183,12 @@ fun ThemeConfigScreen(
                                     onClickDetail = {
                                         scope.launch {
                                             onNavigateToDetail(theme)
+                                            bottomSheet.hide()
+                                        }
+                                    },
+                                    onClickApply = {
+                                        scope.launch {
+                                            onApply(theme)
                                             bottomSheet.hide()
                                         }
                                     },

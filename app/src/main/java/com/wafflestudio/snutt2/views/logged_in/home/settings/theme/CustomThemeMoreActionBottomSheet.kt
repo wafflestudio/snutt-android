@@ -20,6 +20,7 @@ import com.wafflestudio.snutt2.components.compose.TrashIcon
 @Composable
 fun MyCustomThemeMoreActionBottomSheet(
     onClickDetail: () -> Unit,
+    onClickApply: () -> Unit,
     onClickDuplicate: () -> Unit,
     onClickDelete: () -> Unit,
     modifier: Modifier = Modifier,
@@ -39,6 +40,16 @@ fun MyCustomThemeMoreActionBottomSheet(
             },
             text = stringResource(R.string.custom_theme_action_detail_edit),
             onClick = { onClickDetail() },
+        )
+        MoreActionItem(
+            icon = {
+                PaletteIcon(
+                    modifier = Modifier.size(30.dp),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
+                )
+            },
+            text = stringResource(R.string.custom_theme_action_apply),
+            onClick = { onClickApply() },
         )
         MoreActionItem(
             icon = {
