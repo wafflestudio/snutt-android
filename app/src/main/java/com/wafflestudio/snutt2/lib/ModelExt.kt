@@ -3,12 +3,12 @@ package com.wafflestudio.snutt2.lib
 import android.content.Context
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domainmodel.CourseBook
+import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.model.SearchTimeDto
-import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.model.TagType
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import kotlin.math.ceil
