@@ -283,7 +283,7 @@ class RootActivity : AppCompatActivity() {
                 bottomSheetNavigator = bottomSheetNavigator,
                 sheetGesturesEnabled = false,
                 sheetShape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
-                scrimColor = SNUTTColors.Black.copy(alpha = 0.32f),
+                scrimColor = SNUTTColors.Black.copy(alpha = 0.35f),
             ) {
                 NavHost(
                     navController = navController,

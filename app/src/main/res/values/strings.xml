@@ -3,7 +3,7 @@
     <string name="privacy" translatable="false">privacy_policy</string>
     <string name="member" translatable="false">member</string>
 
-    <string name="send_report">문의사항 보내기</string>
+    <string name="send_report">문의사항 보내기~</string>
 
     <string name="api_google_server">https://oauth2.googleapis.com</string>
 
