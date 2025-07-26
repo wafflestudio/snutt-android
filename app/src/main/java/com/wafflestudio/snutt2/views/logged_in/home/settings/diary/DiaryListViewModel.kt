@@ -5,13 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.course_books.CourseBookRepository
 import com.wafflestudio.snutt2.data.lecture_diary.DiaryRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
-import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.preview.DiaryPreviewData
 import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
 import com.wafflestudio.snutt2.lib.network.dto.core.toCourseBook
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,13 +22,10 @@ class DiaryListViewModel @Inject constructor(
     private val displayMessageResolver: DisplayMessageResolver,
 ) : ViewModel() {
 
-    var courseBookList: List<CourseBook>? = null
-
-    private var _selectedCourseBookIdx = MutableStateFlow(0)
-    val selectedCourseBookIdx: StateFlow<Int> = _selectedCourseBookIdx.asStateFlow()
-
     fun clickCourseBook(idx: Int) {
-        _selectedCourseBookIdx.value = idx
+        if (_diaryListUiState.value is DiaryListUiState.Success) {
+            _diaryListUiState.value = (_diaryListUiState.value as DiaryListUiState.Success).copy(selectedCourseBookIdx = idx)
+        }
     }
 
     private val _diaryListUiState = MutableStateFlow<DiaryListUiState>(DiaryListUiState.Loading)
@@ -38,8 +33,8 @@ class DiaryListViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            courseBookList = courseBookRepository.getCourseBook().map { courseBookDto -> courseBookDto.toCourseBook() }
-            _diaryListUiState.value = DiaryListUiState.Success(DiaryPreviewData.diaryList)
+            val courseBookList = courseBookRepository.getCourseBook().map { courseBookDto -> courseBookDto.toCourseBook() }
+            _diaryListUiState.value = DiaryListUiState.Success(courseBookList, 0, DiaryPreviewData.diaryList)
         }
     }
 }
