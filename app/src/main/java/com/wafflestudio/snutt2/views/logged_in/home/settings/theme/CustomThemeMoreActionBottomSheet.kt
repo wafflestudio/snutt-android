@@ -78,6 +78,7 @@ fun MyCustomThemeMoreActionBottomSheet(
 @Composable
 fun MarketCustomThemeMoreActionBottomSheet(
     onClickDetail: () -> Unit,
+    onClickApply: () -> Unit,
     onClickDelete: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -96,6 +97,16 @@ fun MarketCustomThemeMoreActionBottomSheet(
             },
             text = stringResource(R.string.custom_theme_action_detail_view),
             onClick = { onClickDetail() },
+        )
+        MoreActionItem(
+            icon = {
+                TimetableIcon(
+                    modifier = Modifier.size(30.dp),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
+                )
+            },
+            text = stringResource(R.string.custom_theme_action_apply),
+            onClick = { onClickApply() },
         )
         MoreActionItem(
             icon = {
