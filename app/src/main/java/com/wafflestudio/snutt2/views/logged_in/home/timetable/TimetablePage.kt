@@ -33,13 +33,11 @@ import com.wafflestudio.snutt2.components.compose.IconWithAlertDot
 import com.wafflestudio.snutt2.components.compose.LectureListIcon
 import com.wafflestudio.snutt2.components.compose.NotificationIcon
 import com.wafflestudio.snutt2.components.compose.RingingAlarmIcon
-import com.wafflestudio.snutt2.components.compose.ShareIcon
 import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getCreditSumFromLectureList
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.logImpression
-import com.wafflestudio.snutt2.lib.shareScreenshot
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
@@ -115,18 +113,6 @@ fun TimetablePage(uncheckedNotification: Boolean) {
                     modifier = Modifier
                         .size(30.dp)
                         .clicks { navController.navigate(NavigationDestination.LecturesOfTable) },
-                )
-                ShareIcon(
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clicks {
-                            shareScreenshot(
-                                table,
-                                tableTrimParam,
-                                context,
-                            )
-                            analyticsLogger.logScreen(AnalyticsScreen.TimetableShare) // 안드로이드에는 TimetableShare 화면이 따로 없지만, iOS와의 통일성을 위해 공유 버튼 클릭 시 로깅한다.
-                        },
                 )
                 IconWithAlertDot(uncheckedNotification) { centerAlignedModifier ->
                     NotificationIcon(
