@@ -44,7 +44,7 @@ fun MyCustomThemeMoreActionBottomSheet(
         )
         MoreActionItem(
             icon = {
-                PaletteIcon(
+                TimetableIcon(
                     modifier = Modifier.size(30.dp),
                     colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
                 )
