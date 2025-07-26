@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.test
+package com.wafflestudio.snutt2.components.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -25,7 +25,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 
