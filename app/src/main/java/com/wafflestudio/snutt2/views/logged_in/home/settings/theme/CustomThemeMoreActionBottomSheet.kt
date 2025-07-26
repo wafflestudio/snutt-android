@@ -15,6 +15,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.DuplicateIcon
 import com.wafflestudio.snutt2.components.compose.MoreActionItem
 import com.wafflestudio.snutt2.components.compose.PaletteIcon
+import com.wafflestudio.snutt2.components.compose.TimetableIcon
 import com.wafflestudio.snutt2.components.compose.TrashIcon
 
 @Composable
@@ -105,6 +106,41 @@ fun MarketCustomThemeMoreActionBottomSheet(
             },
             text = stringResource(R.string.custom_theme_action_delete),
             onClick = { onClickDelete() },
+        )
+    }
+}
+
+@Composable
+fun BuiltInThemeClickBottomSheet(
+    onClickDetail: () -> Unit,
+    onClickApply: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+            .background(MaterialTheme.colors.surface)
+            .padding(vertical = 12.dp)
+            .fillMaxWidth(),
+    ) {
+        MoreActionItem(
+            icon = {
+                PaletteIcon(
+                    modifier = Modifier.size(30.dp),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
+                )
+            },
+            text = stringResource(R.string.custom_theme_action_detail_view),
+            onClick = { onClickDetail() },
+        )
+        MoreActionItem(
+            icon = {
+                TimetableIcon(
+                    modifier = Modifier.size(30.dp),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
+                )
+            },
+            text = stringResource(R.string.custom_theme_action_apply),
+            onClick = { onClickApply() },
         )
     }
 }

@@ -46,7 +46,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.AddIcon
-import com.wafflestudio.snutt2.components.compose.ArrowRight
 import com.wafflestudio.snutt2.components.compose.BottomSheet
 import com.wafflestudio.snutt2.components.compose.ComposableStatesWithScope
 import com.wafflestudio.snutt2.components.compose.CustomThemeMoreIcon
@@ -256,7 +255,27 @@ fun ThemeConfigScreen(
                 ThemesRow(
                     title = stringResource(R.string.theme_config_builtin_theme),
                     themes = builtInThemes,
-                    onClickItem = onNavigateToDetail,
+                    onClickItem = { theme ->
+                        scope.launch {
+                            bottomSheet.setSheetContent {
+                                BuiltInThemeClickBottomSheet(
+                                    onClickDetail = {
+                                        scope.launch {
+                                            onNavigateToDetail(theme)
+                                            bottomSheet.hide()
+                                        }
+                                    },
+                                    onClickApply = {
+                                        scope.launch {
+                                            onApply(theme)
+                                            bottomSheet.hide()
+                                        }
+                                    },
+                                )
+                            }
+                            bottomSheet.show()
+                        }
+                    },
                 )
                 Spacer(modifier = Modifier.height(25.dp))
                 ThemeGuideTexts(
@@ -392,12 +411,6 @@ private fun ThemeItem(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = SNUTTTypography.body2,
-            )
-            ArrowRight(
-                modifier = Modifier
-                    .size(10.dp)
-                    .offset(y = 1.dp),
-                colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.DarkGray else SNUTTColors.Gray2),
             )
         }
     }
