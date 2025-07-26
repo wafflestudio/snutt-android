@@ -52,6 +52,26 @@ Please request these files from the maintainer if needed.
    ```
 3. Build and run the project using JDK 17.
 
+### React Native AAR Libraries
+This project integrates with React Native components. To build the required AAR files:
+
+1. Make sure you have Node.js and npm installed.
+2. Run the AAR build script:
+   ```bash
+   chmod +x build_rn_aars.sh
+   ./build_rn_aars.sh
+   ```
+3. The script will generate AAR files in the `libs/` directory for the following libraries:
+   - `@react-native-async-storage/async-storage`
+   - `react-native-gesture-handler`
+   - `react-native-reanimated`
+   - `react-native-safe-area-context`
+   - `react-native-screens`
+   - `react-native-svg`
+   - `@react-native-picker/picker`
+
+**Note**: The script creates a temporary React Native project to build these libraries and automatically cleans up afterward.
+
 ### Deployment
 1. Create a `release-${version-code}` branch and modify the version code in `version.properties`.
 2. Upload the APK file to the Play Store.
