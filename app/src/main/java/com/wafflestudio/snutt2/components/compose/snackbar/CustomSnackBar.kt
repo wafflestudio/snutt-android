@@ -52,6 +52,247 @@ import com.wafflestudio.snutt2.components.compose.clicks
 import kotlinx.coroutines.delay
 import kotlin.math.max
 
+/**
+ * 안드로이드 Material 기본 제공 Snackbar 코드를 살짝 변형하여
+ * 커스텀 스타일, 커스텀 지속시간 설정을 가능하게 함
+ *
+ * CustomSnackBar를 사용하기 위해서는
+ * Scaffold, CustomSnackBarHostState, CustomSnackBar, CustomSnackBarDuration을 사용해야 함.
+ *
+ * CustomSnackBarDuration에서 inBetween이 fadeIn 및 fadeOut에 비해 충분히 크지 않은 경우,
+ * 여러 SnackBar가 연속적으로 나타나는 과정에서 애니메이션이 부자연스러울 수 있음.
+ *
+ * @sample com.wafflestudio.snutt2.components.compose.snackbar.SampleCustomSnackBarWithoutAction
+ *
+ * Action Label을 추가하고 싶다면, 아래와 같이 구현해야 함.
+ * @sample com.wafflestudio.snutt2.components.compose.snackbar.SampleCustomSnackBarWithAction
+ */
+@Composable
+fun CustomSnackBar(
+    modifier: Modifier = Modifier,
+    snackBarData: CustomSnackBarStatus,
+    shape: Shape = MaterialTheme.shapes.small,
+    backgroundColor: Color = SnackbarDefaults.backgroundColor,
+    contentStyle: TextStyle = LocalTextStyle.current,
+    actionLabelStyle: TextStyle = LocalTextStyle.current,
+    elevation: Dp = 0.dp,
+) {
+    var savedSnackBarData by remember { mutableStateOf<CustomSnackBarData>(CustomSnackBarHostState.CustomSnackBarDataDefault()) }
+    when (snackBarData) {
+        is CustomSnackBarStatus.InVisible -> {}
+        is CustomSnackBarStatus.FadeInOrBetween -> {
+            savedSnackBarData = snackBarData.data
+            CustomSnackBar(
+                modifier = modifier,
+                snackBarData = snackBarData.data,
+                shape = shape,
+                backgroundColor = backgroundColor,
+                contentStyle = contentStyle,
+                actionLabelStyle = actionLabelStyle,
+                elevation = elevation,
+            )
+        }
+        is CustomSnackBarStatus.FadeOut -> {
+            CustomSnackBar(
+                modifier = modifier,
+                snackBarData = savedSnackBarData,
+                shape = shape,
+                backgroundColor = backgroundColor,
+                contentStyle = contentStyle,
+                actionLabelStyle = actionLabelStyle,
+                elevation = elevation,
+            )
+        }
+    }
+}
+
+@Composable
+private fun CustomSnackBar(
+    modifier: Modifier = Modifier,
+    snackBarData: CustomSnackBarData,
+    shape: Shape = MaterialTheme.shapes.small,
+    backgroundColor: Color = SnackbarDefaults.backgroundColor,
+    contentStyle: TextStyle = LocalTextStyle.current,
+    actionLabelStyle: TextStyle = LocalTextStyle.current,
+    elevation: Dp = 6.dp,
+) {
+    val actionLabel = snackBarData.actionLabel
+    val actionComposable: (@Composable () -> Unit)? =
+        if (actionLabel != null) {
+            @Composable {
+                Text(
+                    modifier = Modifier.clicks {
+                        snackBarData.performAction()
+                    },
+                    text = actionLabel,
+                    style = actionLabelStyle,
+                )
+            }
+        } else {
+            null
+        }
+    CustomSnackBar(
+        modifier = modifier.padding(horizontal = 20.dp).padding(bottom = 16.dp),
+        content = {
+            Text(
+                text = snackBarData.message,
+                style = contentStyle,
+            )
+        },
+        action = actionComposable,
+        shape = shape,
+        backgroundColor = backgroundColor,
+        elevation = elevation,
+    )
+}
+
+@Composable
+private fun CustomSnackBar(
+    modifier: Modifier = Modifier,
+    action: @Composable (() -> Unit)? = null,
+    shape: Shape = MaterialTheme.shapes.small,
+    backgroundColor: Color = SnackbarDefaults.backgroundColor,
+    elevation: Dp = 6.dp,
+    content: @Composable () -> Unit,
+) {
+    Surface(
+        modifier = modifier,
+        shape = shape,
+        elevation = elevation,
+        color = backgroundColor,
+    ) {
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
+            val textStyle = MaterialTheme.typography.body2
+            ProvideTextStyle(value = textStyle) {
+                when {
+                    action == null -> CustomTextOnlySnackBar(content)
+                    else -> CustomOneRowSnackBar(content, action)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun CustomTextOnlySnackBar(content: @Composable () -> Unit) {
+    Layout({
+        Box(
+            modifier =
+                Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+        ) {
+            content()
+        }
+    },) { measurables, constraints ->
+        val textPlaceables = ArrayList<Placeable>(measurables.size)
+        var firstBaseline = AlignmentLine.Unspecified
+        var lastBaseline = AlignmentLine.Unspecified
+        var height = 0
+
+        measurables.fastForEach {
+            val placeable = it.measure(constraints)
+            textPlaceables.add(placeable)
+            if (
+                placeable[FirstBaseline] != AlignmentLine.Unspecified &&
+                (
+                        firstBaseline == AlignmentLine.Unspecified ||
+                                placeable[FirstBaseline] < firstBaseline
+                        )
+            ) {
+                firstBaseline = placeable[FirstBaseline]
+            }
+            if (
+                placeable[LastBaseline] != AlignmentLine.Unspecified &&
+                (
+                        lastBaseline == AlignmentLine.Unspecified ||
+                                placeable[LastBaseline] > lastBaseline
+                        )
+            ) {
+                lastBaseline = placeable[LastBaseline]
+            }
+            height = max(height, placeable.height)
+        }
+
+        val hasText =
+            firstBaseline != AlignmentLine.Unspecified && lastBaseline != AlignmentLine.Unspecified
+
+        val minHeight =
+            if (firstBaseline == lastBaseline || !hasText) {
+                SnackBarMinHeightOneLine
+            } else {
+                SnackBarMinHeightTwoLines
+            }
+        val containerHeight = max(minHeight.roundToPx(), height)
+        layout(constraints.maxWidth, containerHeight) {
+            textPlaceables.fastForEach {
+                val textPlaceY = (containerHeight - it.height) / 2
+                it.placeRelative(0, textPlaceY)
+            }
+        }
+    }
+}
+
+@Composable
+private fun CustomOneRowSnackBar(text: @Composable () -> Unit, action: @Composable () -> Unit) {
+    val textTag = "text"
+    val actionTag = "action"
+    Layout(
+        {
+            Box(Modifier.layoutId(textTag).padding(vertical = 12.dp)) { text() }
+            Box(Modifier.layoutId(actionTag)) { action() }
+        },
+        modifier = Modifier.padding(horizontal = 16.dp),
+    ) { measurables, constraints ->
+        val buttonPlaceable =
+            measurables.fastFirst { it.layoutId == actionTag }.measure(constraints)
+        val textMaxWidth =
+            (constraints.maxWidth - buttonPlaceable.width - TextEndExtraSpacing.roundToPx())
+                .coerceAtLeast(constraints.minWidth)
+        val textPlaceable =
+            measurables
+                .fastFirst { it.layoutId == textTag }
+                .measure(constraints.copy(minHeight = 0, maxWidth = textMaxWidth))
+
+        val firstTextBaseline = textPlaceable[FirstBaseline]
+        val lastTextBaseline = textPlaceable[LastBaseline]
+        val hasText =
+            firstTextBaseline != AlignmentLine.Unspecified &&
+                    lastTextBaseline != AlignmentLine.Unspecified
+        val isOneLine = firstTextBaseline == lastTextBaseline || !hasText
+        val buttonPlaceX = constraints.maxWidth - buttonPlaceable.width
+
+        val textPlaceY: Int
+        val containerHeight: Int
+        val buttonPlaceY: Int
+        if (isOneLine) {
+            val minContainerHeight = SnackBarMinHeightOneLine.roundToPx()
+            val contentHeight = buttonPlaceable.height
+            containerHeight = max(minContainerHeight, contentHeight)
+            textPlaceY = (containerHeight - textPlaceable.height) / 2
+            val buttonBaseline = buttonPlaceable[FirstBaseline]
+            buttonPlaceY =
+                buttonBaseline.let {
+                    if (it != AlignmentLine.Unspecified) {
+                        textPlaceY + firstTextBaseline - it
+                    } else {
+                        0
+                    }
+                }
+        } else {
+            val baselineOffset = HeightToFirstLine.roundToPx()
+            textPlaceY = baselineOffset - firstTextBaseline
+            val minContainerHeight = SnackBarMinHeightTwoLines.roundToPx()
+            val contentHeight = textPlaceY + textPlaceable.height
+            containerHeight = max(minContainerHeight, contentHeight)
+            buttonPlaceY = (containerHeight - buttonPlaceable.height) / 2
+        }
+
+        layout(constraints.maxWidth, containerHeight) {
+            textPlaceable.placeRelative(0, textPlaceY)
+            buttonPlaceable.placeRelative(buttonPlaceX, buttonPlaceY)
+        }
+    }
+}
+
 @Composable
 fun CustomSnackBarHost(
     hostState: CustomSnackBarHostState,
@@ -196,232 +437,6 @@ private fun customAnimatedScale(animation: AnimationSpec<Float>, visible: Boolea
         scale.animateTo(if (visible) 1f else 0.8f, animationSpec = animation)
     }
     return scale.asState()
-}
-
-@Composable
-fun CustomSnackBar(
-    modifier: Modifier = Modifier,
-    snackBarData: CustomSnackBarStatus,
-    shape: Shape = MaterialTheme.shapes.small,
-    backgroundColor: Color = SnackbarDefaults.backgroundColor,
-    contentStyle: TextStyle = LocalTextStyle.current,
-    actionLabelStyle: TextStyle = LocalTextStyle.current,
-    elevation: Dp = 0.dp,
-) {
-    var savedSnackBarData by remember { mutableStateOf<CustomSnackBarData>(CustomSnackBarHostState.CustomSnackBarDataDefault()) }
-    when (snackBarData) {
-        is CustomSnackBarStatus.InVisible -> {}
-        is CustomSnackBarStatus.FadeInOrBetween -> {
-            savedSnackBarData = snackBarData.data
-            CustomSnackBar(
-                modifier = modifier,
-                snackBarData = snackBarData.data,
-                shape = shape,
-                backgroundColor = backgroundColor,
-                contentStyle = contentStyle,
-                actionLabelStyle = actionLabelStyle,
-                elevation = elevation,
-            )
-        }
-        is CustomSnackBarStatus.FadeOut -> {
-            CustomSnackBar(
-                modifier = modifier,
-                snackBarData = savedSnackBarData,
-                shape = shape,
-                backgroundColor = backgroundColor,
-                contentStyle = contentStyle,
-                actionLabelStyle = actionLabelStyle,
-                elevation = elevation,
-            )
-        }
-    }
-}
-
-@Composable
-private fun CustomSnackBar(
-    modifier: Modifier = Modifier,
-    snackBarData: CustomSnackBarData,
-    shape: Shape = MaterialTheme.shapes.small,
-    backgroundColor: Color = SnackbarDefaults.backgroundColor,
-    contentStyle: TextStyle = LocalTextStyle.current,
-    actionLabelStyle: TextStyle = LocalTextStyle.current,
-    elevation: Dp = 6.dp,
-) {
-    val actionLabel = snackBarData.actionLabel
-    val actionComposable: (@Composable () -> Unit)? =
-        if (actionLabel != null) {
-            @Composable {
-                Text(
-                    modifier = Modifier.clicks {
-                        snackBarData.performAction()
-                    },
-                    text = actionLabel,
-                    style = actionLabelStyle,
-                )
-            }
-        } else {
-            null
-        }
-    CustomSnackBar(
-        modifier = modifier.padding(horizontal = 20.dp).padding(bottom = 16.dp),
-        content = {
-            Text(
-                text = snackBarData.message,
-                style = contentStyle,
-            )
-        },
-        action = actionComposable,
-        shape = shape,
-        backgroundColor = backgroundColor,
-        elevation = elevation,
-    )
-}
-
-@Composable
-private fun CustomSnackBar(
-    modifier: Modifier = Modifier,
-    action: @Composable (() -> Unit)? = null,
-    shape: Shape = MaterialTheme.shapes.small,
-    backgroundColor: Color = SnackbarDefaults.backgroundColor,
-    elevation: Dp = 6.dp,
-    content: @Composable () -> Unit,
-) {
-    Surface(
-        modifier = modifier,
-        shape = shape,
-        elevation = elevation,
-        color = backgroundColor,
-    ) {
-        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
-            val textStyle = MaterialTheme.typography.body2
-            ProvideTextStyle(value = textStyle) {
-                when {
-                    action == null -> CustomTextOnlySnackBar(content)
-                    else -> CustomOneRowSnackBar(content, action)
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun CustomTextOnlySnackBar(content: @Composable () -> Unit) {
-    Layout({
-        Box(
-            modifier =
-            Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-        ) {
-            content()
-        }
-    },) { measurables, constraints ->
-        val textPlaceables = ArrayList<Placeable>(measurables.size)
-        var firstBaseline = AlignmentLine.Unspecified
-        var lastBaseline = AlignmentLine.Unspecified
-        var height = 0
-
-        measurables.fastForEach {
-            val placeable = it.measure(constraints)
-            textPlaceables.add(placeable)
-            if (
-                placeable[FirstBaseline] != AlignmentLine.Unspecified &&
-                (
-                    firstBaseline == AlignmentLine.Unspecified ||
-                        placeable[FirstBaseline] < firstBaseline
-                    )
-            ) {
-                firstBaseline = placeable[FirstBaseline]
-            }
-            if (
-                placeable[LastBaseline] != AlignmentLine.Unspecified &&
-                (
-                    lastBaseline == AlignmentLine.Unspecified ||
-                        placeable[LastBaseline] > lastBaseline
-                    )
-            ) {
-                lastBaseline = placeable[LastBaseline]
-            }
-            height = max(height, placeable.height)
-        }
-
-        val hasText =
-            firstBaseline != AlignmentLine.Unspecified && lastBaseline != AlignmentLine.Unspecified
-
-        val minHeight =
-            if (firstBaseline == lastBaseline || !hasText) {
-                SnackBarMinHeightOneLine
-            } else {
-                SnackBarMinHeightTwoLines
-            }
-        val containerHeight = max(minHeight.roundToPx(), height)
-        layout(constraints.maxWidth, containerHeight) {
-            textPlaceables.fastForEach {
-                val textPlaceY = (containerHeight - it.height) / 2
-                it.placeRelative(0, textPlaceY)
-            }
-        }
-    }
-}
-
-@Composable
-private fun CustomOneRowSnackBar(text: @Composable () -> Unit, action: @Composable () -> Unit) {
-    val textTag = "text"
-    val actionTag = "action"
-    Layout(
-        {
-            Box(Modifier.layoutId(textTag).padding(vertical = 12.dp)) { text() }
-            Box(Modifier.layoutId(actionTag)) { action() }
-        },
-        modifier = Modifier.padding(horizontal = 16.dp),
-    ) { measurables, constraints ->
-        val buttonPlaceable =
-            measurables.fastFirst { it.layoutId == actionTag }.measure(constraints)
-        val textMaxWidth =
-            (constraints.maxWidth - buttonPlaceable.width - TextEndExtraSpacing.roundToPx())
-                .coerceAtLeast(constraints.minWidth)
-        val textPlaceable =
-            measurables
-                .fastFirst { it.layoutId == textTag }
-                .measure(constraints.copy(minHeight = 0, maxWidth = textMaxWidth))
-
-        val firstTextBaseline = textPlaceable[FirstBaseline]
-        val lastTextBaseline = textPlaceable[LastBaseline]
-        val hasText =
-            firstTextBaseline != AlignmentLine.Unspecified &&
-                lastTextBaseline != AlignmentLine.Unspecified
-        val isOneLine = firstTextBaseline == lastTextBaseline || !hasText
-        val buttonPlaceX = constraints.maxWidth - buttonPlaceable.width
-
-        val textPlaceY: Int
-        val containerHeight: Int
-        val buttonPlaceY: Int
-        if (isOneLine) {
-            val minContainerHeight = SnackBarMinHeightOneLine.roundToPx()
-            val contentHeight = buttonPlaceable.height
-            containerHeight = max(minContainerHeight, contentHeight)
-            textPlaceY = (containerHeight - textPlaceable.height) / 2
-            val buttonBaseline = buttonPlaceable[FirstBaseline]
-            buttonPlaceY =
-                buttonBaseline.let {
-                    if (it != AlignmentLine.Unspecified) {
-                        textPlaceY + firstTextBaseline - it
-                    } else {
-                        0
-                    }
-                }
-        } else {
-            val baselineOffset = HeightToFirstLine.roundToPx()
-            textPlaceY = baselineOffset - firstTextBaseline
-            val minContainerHeight = SnackBarMinHeightTwoLines.roundToPx()
-            val contentHeight = textPlaceY + textPlaceable.height
-            containerHeight = max(minContainerHeight, contentHeight)
-            buttonPlaceY = (containerHeight - buttonPlaceable.height) / 2
-        }
-
-        layout(constraints.maxWidth, containerHeight) {
-            textPlaceable.placeRelative(0, textPlaceY)
-            buttonPlaceable.placeRelative(buttonPlaceX, buttonPlaceY)
-        }
-    }
 }
 
 private val TextEndExtraSpacing = 8.dp
