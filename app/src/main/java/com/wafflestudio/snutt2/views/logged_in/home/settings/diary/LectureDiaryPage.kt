@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings.diary
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,9 +17,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.components.compose.*
+import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.preview.DiaryPreviewData
 import com.wafflestudio.snutt2.lib.Selectable
-import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
+import com.wafflestudio.snutt2.lib.network.dto.core.toCourseBook
 import com.wafflestudio.snutt2.lib.toAbbvString
 import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -34,7 +34,7 @@ fun DiaryListRoute(
     onNavigateOnboard: () -> Unit,
     onNavigateDiaryWrite: (String) -> Unit,
 ) {
-    val courseBookDtoList = diaryListViewModel.courseBookDtoList
+    val courseBookDtoList = diaryListViewModel.courseBookList
     val courseBookDtoIdx by diaryListViewModel.selectedCourseBookIdx.collectAsState()
     val diaryList by diaryListViewModel.diaryListUiState.collectAsState()
     DiaryListScreen(
@@ -48,7 +48,7 @@ fun DiaryListRoute(
 @Composable
 fun DiaryListScreen(
     onNavigateBack: () -> Unit,
-    selectableCourseBookDto: List<Selectable<CourseBookDto>>?,
+    selectableCourseBookDto: List<Selectable<CourseBook>>?,
     onClickCourseBook: (Int) -> Unit,
     diaryListUiState: DiaryListUiState,
 ) {
@@ -74,7 +74,7 @@ fun DiaryListScreen(
                     itemsIndexed(selectableCourseBookDto) { idx, (courseBook, isSelected) ->
                         Box(
                             modifier = Modifier
-                                .clicks { Log.d("idx", idx.toString()); onClickCourseBook(idx) }
+                                .clicks { onClickCourseBook(idx) }
                                 .background(if (isSelected) SNUTTColors.SNUTTTheme else SNUTTColors.LectureDiaryGray, RoundedCornerShape(50))
                                 .padding(horizontal = 24.dp)
                                 .height(34.dp),
@@ -107,7 +107,7 @@ fun DiaryListScreen(
 @Composable
 @Preview()
 fun DiaryListPagePreview() {
-    val courseBookDtoList = DiaryPreviewData.courseBookDtoList
+    val courseBookDtoList = DiaryPreviewData.courseBookDtoList.map { courseBookDto -> courseBookDto.toCourseBook() }
     DiaryListScreen(
         onNavigateBack = {},
         selectableCourseBookDto = courseBookDtoList.mapIndexed { idx, courseBook -> courseBook.toDataWithState(idx == 0) },

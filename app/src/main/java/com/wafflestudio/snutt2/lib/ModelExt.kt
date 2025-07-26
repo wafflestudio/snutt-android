@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.lib
 
 import android.content.Context
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
@@ -37,7 +38,7 @@ fun CourseBookDto.toFormattedString(context: Context): String {
     return "${this.year}년 $semesterStr"
 }
 
-fun CourseBookDto.toAbbvString(): String {
+fun CourseBook.toAbbvString(): String {
     val semesterStr = when (this.semester) {
         1L -> "1"
         2L -> "여름"
