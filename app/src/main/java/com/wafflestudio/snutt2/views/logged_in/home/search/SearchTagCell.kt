@@ -2,7 +2,11 @@ package com.wafflestudio.snutt2.views.logged_in.home.search
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
@@ -31,7 +35,7 @@ fun LazyItemScope.TagCell(
 ) {
     Row(
         modifier = Modifier
-            .animateItemPlacement()
+            .animateItem()
             .padding(horizontal = 5.dp)
             .height(30.dp)
             .background(color = tagDto.type.color(), shape = RoundedCornerShape(15.dp)),
