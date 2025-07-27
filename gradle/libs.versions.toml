@@ -1,0 +1,232 @@
+[versions]
+# Kotlin & Android
+kotlin = "2.2.0"
+androidGradle = "8.11.1"
+
+# Build tools
+ktlintGradle = "11.6.1"
+hilt = "2.57"
+
+# Networking
+retrofit = "2.9.0"
+moshi = "1.15.2"
+okhttp = "5.1.0"
+
+# Reactive
+rxjava = "3.1.0"
+rxkotlin = "3.0.1"
+
+# Jetpack Compose
+composeBom = "2025.07.00"
+composeMaterialNavigation = "1.8.3"
+navigation = "2.9.2"
+lifecycle = "2.9.2"
+hiltNavigationCompose = "1.2.0"
+
+# Paging
+paging = "3.1.0"
+pagingCompose = "1.0.0-alpha14"
+
+# Firebase
+firebaseBom = "28.1.0"
+googleServices = "4.4.3"
+firebaseAppdistribution = "4.0.0"
+firebaseCrashlytics = "2.9.9"
+
+# UI & Graphics
+coil = "2.7.0"
+accompanist = "0.36.0"
+splashscreen = "1.0.1"
+
+# Authentication
+facebookLogin = "15.0.1"
+googleAuth = "21.4.0"
+googleId = "1.1.1"
+kakaoSDK = "2.21.5"
+
+# Maps
+naverMap = "3.22.0"
+naverMapCompose = "1.8.2"
+
+# React Native
+reactAndroid = "0.72.3"
+hermesAndroid = "0.72.3"
+
+# Misc
+androidxCore = "1.16.0"
+appcompat = "1.7.1"
+material = "1.12.0"
+constraintlayout = "2.2.1"
+legacySupport = "1.0.0"
+timber = "5.0.1"
+gson = "2.13.1"
+kotlinxSerialization = "1.9.0"
+desugarJdkLibs = "2.1.5"
+junit = "4.13.2"
+
+[libraries]
+# Kotlin
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+
+# Android Core
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
+androidx-legacy-support = { module = "androidx.legacy:legacy-support-v4", version.ref = "legacySupport" }
+material = { module = "com.google.android.material:material", version.ref = "material" }
+androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "splashscreen" }
+
+# Networking
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+retrofit-adapter-rxjava3 = { module = "com.squareup.retrofit2:adapter-rxjava3", version.ref = "retrofit" }
+retrofit-converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "retrofit" }
+okhttp-logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp" }
+
+# JSON
+moshi = { module = "com.squareup.moshi:moshi", version.ref = "moshi" }
+moshi-kotlin = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshi" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+
+# Reactive
+rxjava = { module = "io.reactivex.rxjava3:rxjava", version.ref = "rxjava" }
+rxkotlin = { module = "io.reactivex.rxjava3:rxkotlin", version.ref = "rxkotlin" }
+
+# Dependency Injection
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
+hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
+
+# Navigation
+navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
+hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+
+# Compose BOM
+compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
+compose-runtime = { module = "androidx.compose.runtime:runtime" }
+compose-ui = { module = "androidx.compose.ui:ui" }
+compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
+compose-material = { module = "androidx.compose.material:material" }
+compose-material-navigation = { module = "androidx.compose.material:material-navigation", version.ref = "composeMaterialNavigation" }
+compose-foundation = { module = "androidx.compose.foundation:foundation" }
+compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout" }
+compose-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata" }
+compose-material-icons-core = { module = "androidx.compose.material:material-icons-core" }
+
+# Lifecycle
+lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
+lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
+
+# Paging
+paging-runtime-ktx = { module = "androidx.paging:paging-runtime-ktx", version.ref = "paging" }
+paging-compose = { module = "androidx.paging:paging-compose", version.ref = "pagingCompose" }
+
+# Firebase
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-messaging-ktx = { module = "com.google.firebase:firebase-messaging-ktx" }
+firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics-ktx" }
+firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics-ktx" }
+
+# Image Loading
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
+
+# UI Components
+accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanist" }
+accompanist-pager-indicators = { module = "com.google.accompanist:accompanist-pager-indicators", version.ref = "accompanist" }
+
+# Authentication
+facebook-login = { module = "com.facebook.android:facebook-login", version.ref = "facebookLogin" }
+google-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "googleAuth" }
+google-id = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleId" }
+kakao-share = { module = "com.kakao.sdk:v2-share", version.ref = "kakaoSDK" }
+kakao-user = { module = "com.kakao.sdk:v2-user", version.ref = "kakaoSDK" }
+
+# Maps
+naver-map = { module = "com.naver.maps:map-sdk", version.ref = "naverMap" }
+naver-map-compose = { module = "io.github.fornewid:naver-map-compose", version.ref = "naverMapCompose" }
+
+# React Native
+react-android = { module = "com.facebook.react:react-android", version.ref = "reactAndroid" }
+hermes-android = { module = "com.facebook.react:hermes-android", version.ref = "hermesAndroid" }
+
+# Serialization
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
+
+# Misc
+timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
+desugar-jdk-libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugarJdkLibs" }
+
+# Testing
+junit = { module = "junit:junit", version.ref = "junit" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "androidGradle" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+ktlint-idea = { id = "org.jlleitschuh.gradle.ktlint-idea", version.ref = "ktlintGradle" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlintGradle" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+firebase-appdistribution = { id = "com.google.firebase.appdistribution", version.ref = "firebaseAppdistribution" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlytics" }
+kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+
+[bundles]
+retrofit = [
+    "retrofit",
+    "retrofit-adapter-rxjava3",
+    "retrofit-converter-moshi",
+    "okhttp-logging-interceptor"
+]
+
+moshi = [
+    "moshi",
+    "moshi-kotlin"
+]
+
+rxjava = [
+    "rxjava",
+    "rxkotlin"
+]
+
+compose = [
+    "compose-runtime",
+    "compose-ui",
+    "compose-ui-tooling",
+    "compose-material",
+    "compose-foundation",
+    "compose-foundation-layout",
+    "compose-runtime-livedata",
+    "compose-material-icons-core"
+]
+
+lifecycle = [
+    "lifecycle-viewmodel-compose",
+    "lifecycle-runtime-compose"
+]
+
+firebase = [
+    "firebase-messaging-ktx",
+    "firebase-analytics-ktx",
+    "firebase-crashlytics-ktx"
+]
+
+accompanist = [
+    "accompanist-pager",
+    "accompanist-pager-indicators"
+]
+
+kakao = [
+    "kakao-share",
+    "kakao-user"
+]
+
+react-native = [
+    "react-android",
+    "hermes-android"
+]
+
+kotlin-core = [
+    "kotlin-stdlib",
+    "kotlin-reflect"
+]
