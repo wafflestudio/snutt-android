@@ -1,10 +1,15 @@
 package com.wafflestudio.snutt2.lib.network
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.firebase.crashlytics.internal.common.CrashlyticsCore
 import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsedHttpException
 import kotlinx.coroutines.CancellationException
 import okio.IOException
+import timber.log.Timber
 
 fun Exception.toDomainError(): DomainError {
+    Timber.e(this)
+
     return when (this) {
         is IOException -> NetworkDisconnect("")
         is CancellationException -> Nothing("")
@@ -26,6 +31,9 @@ fun Exception.toDomainError(): DomainError {
                 else -> Unknown(displayMessage)
             }
         }
-        else -> Unknown("")
+        else -> {
+            FirebaseCrashlytics.getInstance().recordException(this)
+            Unknown("")
+        }
     }
 }
