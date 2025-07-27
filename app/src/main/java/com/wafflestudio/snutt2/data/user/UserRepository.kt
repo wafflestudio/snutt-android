@@ -1,12 +1,11 @@
 package com.wafflestudio.snutt2.data.user
 
 import com.wafflestudio.snutt2.domainmodel.PushPreferences
+import com.wafflestudio.snutt2.domainmodel.TableLectureCustom
+import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.dto.GetSocialProvidersResults
 import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
-import com.wafflestudio.snutt2.model.TableLectureCustom
-import com.wafflestudio.snutt2.model.TableLectureCustomOptions
-import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.ThemeMode
 import kotlinx.coroutines.flow.StateFlow
 
@@ -30,16 +29,16 @@ interface UserRepository {
 
     suspend fun postSignUp(id: String, password: String, email: String)
 
-    suspend fun fetchUserInfo()
+    suspend fun fetchUserInfo(): Result<Unit>
 
     suspend fun patchUserInfo(nickname: String)
 
-    suspend fun deleteUserAccount()
+    suspend fun deleteUserAccount(): Result<Unit>
 
-    suspend fun putUserPassword(oldPassword: String, newPassword: String)
+    suspend fun putUserPassword(oldPassword: String, newPassword: String): Result<Unit>
 
     // 새로운 local_id 추가
-    suspend fun postUserPassword(id: String, password: String)
+    suspend fun postUserPassword(id: String, password: String): Result<Unit>
 
     suspend fun postFeedback(email: String, detail: String)
 
@@ -47,13 +46,13 @@ interface UserRepository {
 
     suspend fun postForceLogout()
 
-    suspend fun setTableTrim(
-        dayOfWeekFrom: Int? = null,
-        dayOfWeekTo: Int? = null,
-        hourFrom: Int? = null,
-        hourTo: Int? = null,
-        isAuto: Boolean? = null,
-    )
+    suspend fun toggleForceFit(): Result<Unit>
+
+    suspend fun setDayOfWeekRange(from: Int, to: Int): Result<Unit>
+
+    suspend fun setHourRange(from: Int, to: Int): Result<Unit>
+
+    suspend fun toggleCompactMode(): Result<Unit>
 
     suspend fun getAccessToken(): String
 
@@ -85,7 +84,13 @@ interface UserRepository {
 
     suspend fun setCompactMode(compact: Boolean)
 
-    suspend fun setTableLectureCustomOption(key: TableLectureCustomOptions, value: Boolean)
+    suspend fun toggleTitleVisible(): Result<Unit>
+
+    suspend fun togglePlaceVisible(): Result<Unit>
+
+    suspend fun toggleLectureNumberVisible(): Result<Unit>
+
+    suspend fun toggleInstructorVisible(): Result<Unit>
 
     suspend fun setFirstBookmarkAlertShown()
 

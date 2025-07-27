@@ -209,11 +209,13 @@ fun SettingsScreen(
                         onClick = onClickThemeMarket,
                     )
                 }
-                SettingItem(
-                    title = stringResource(R.string.settings_item_push_preferences),
-                    hasNextPage = true,
-                    onClick = onClickPushPreference,
-                )
+                if (FeatureFlag.PUSH_PREFERENCES.isEnabled) {
+                    SettingItem(
+                        title = stringResource(R.string.settings_item_push_preferences),
+                        hasNextPage = true,
+                        onClick = onClickPushPreference,
+                    )
+                }
                 SettingItem(
                     title = stringResource(R.string.settings_lecture_reminder_title),
                     hasNextPage = true,

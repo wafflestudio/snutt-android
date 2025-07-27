@@ -2,16 +2,17 @@ import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
-    id("com.android.application")
-    id("kotlin-android")
-    id("com.google.gms.google-services")
-    id("org.jlleitschuh.gradle.ktlint-idea")
-    id("org.jlleitschuh.gradle.ktlint")
-    id("dagger.hilt.android.plugin")
-    id("kotlin-kapt")
-    id("com.google.firebase.appdistribution")
-    id("com.google.firebase.crashlytics")
-    id("kotlinx-serialization")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.ktlint.idea)
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.firebase.appdistribution)
+    alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.compose.compiler)
 }
 
 ktlint {
@@ -39,7 +40,7 @@ android {
     defaultConfig {
         applicationId = "com.wafflestudio.snutt2"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
     }
 
     compileOptions {
@@ -122,99 +123,77 @@ android {
 }
 
 dependencies {
-    testImplementation("junit:junit:4.13.2")
-    implementation("androidx.legacy:legacy-support-v4:1.0.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    // Testing
+    testImplementation(libs.junit)
 
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.9.0")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:${Deps.Version.Kotlin}")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:${Deps.Version.Kotlin}")
+    // Android Core
+    implementation(libs.androidx.legacy.support)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.bundles.kotlin.core)
 
-    // Moshi
-    implementation("com.squareup.moshi:moshi:${Deps.Version.Moshi}")
-    implementation("com.squareup.moshi:moshi-kotlin:${Deps.Version.Moshi}")
+    // Networking
+    implementation(libs.bundles.moshi)
+    implementation(libs.bundles.retrofit)
 
-    // Retrofit
-    implementation("com.squareup.retrofit2:retrofit:${Deps.Version.Retrofit}")
-    implementation("com.squareup.retrofit2:adapter-rxjava3:${Deps.Version.Retrofit}")
-    implementation("com.squareup.retrofit2:converter-moshi:${Deps.Version.Retrofit}")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.9.2")
+    // Reactive
+    implementation(libs.bundles.rxjava)
 
-    // RxJava
-    implementation("io.reactivex.rxjava3:rxjava:${Deps.Version.RxJava}")
-    implementation("io.reactivex.rxjava3:rxkotlin:${Deps.Version.RxKotlin}")
+    // Dependency Injection
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
 
-    // Dagger Hilt
-    implementation("com.google.dagger:hilt-android:${Deps.Version.Hilt}")
-    kapt("com.google.dagger:hilt-android-compiler:${Deps.Version.Hilt}")
-
-    // AAC Navigation
-    implementation("androidx.navigation:navigation-compose:${Deps.Version.Navigation}")
+    // Navigation
+    implementation(libs.navigation.compose)
 
     // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:28.1.0"))
-    implementation("com.google.firebase:firebase-messaging-ktx")
-    implementation("com.google.firebase:firebase-analytics-ktx")
-    implementation("com.google.firebase:firebase-crashlytics-ktx")
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.bundles.firebase)
 
     // Paging
-    implementation("androidx.paging:paging-runtime-ktx:${Deps.Version.Paging}")
+    implementation(libs.paging.runtime.ktx)
 
     // Compose
-    // https://developer.android.com/develop/ui/compose/bom/bom-mapping
-    val composeBom = platform("androidx.compose:compose-bom:${Deps.Version.ComposeBom}")
+    val composeBom = platform(libs.compose.bom)
     implementation(composeBom)
-    implementation("androidx.compose.runtime:runtime")
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-tooling")
-    implementation("androidx.compose.material:material")
-    implementation("androidx.compose.material:material-navigation:${Deps.Version.ComposeMaterialNavigation}")
-    implementation("androidx.compose.foundation:foundation")
-    implementation("androidx.compose.foundation:foundation-layout")
-    implementation("androidx.compose.runtime:runtime-livedata")
-    implementation("androidx.compose.material:material-icons-core")
-    implementation("androidx.paging:paging-compose:${Deps.Version.PagingCompose}")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:${Deps.Version.Lifecycle}")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:${Deps.Version.Lifecycle}")
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation(libs.bundles.compose)
+    implementation(libs.compose.material.navigation)
+    implementation(libs.paging.compose)
+    implementation(libs.bundles.lifecycle)
+    implementation(libs.hilt.navigation.compose)
 
-    // misc
-    implementation("androidx.core:core-ktx:1.10.1")
-    implementation("com.google.accompanist:accompanist-pager:0.20.3")
-    implementation("com.google.accompanist:accompanist-pager-indicators:0.20.3")
-    implementation("com.facebook.android:facebook-login:15.0.1")
-    implementation("de.psdev.licensesdialog:licensesdialog:2.1.0")
-    implementation("com.github.skydoves:colorpickerview:2.2.3")
-    implementation("com.jakewharton.timber:timber:5.0.1")
-    implementation("androidx.core:core-splashscreen:1.0.1")
+    // UI & Misc
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.bundles.accompanist)
+    implementation(libs.facebook.login)
+    implementation(libs.timber)
+    implementation(libs.androidx.core.splashscreen)
 
-    // coil
-    implementation("io.coil-kt:coil-compose:2.1.0")
+    // Image Loading
+    implementation(libs.coil.compose)
 
-    // GSON
-    implementation("com.google.code.gson:gson:2.10.1")
+    // JSON
+    implementation(libs.gson)
 
-    // RN
-    implementation("com.facebook.react:react-android:0.72.3")
-    implementation("com.facebook.react:hermes-android:0.72.3")
+    // React Native
+    implementation(libs.bundles.react.native)
     implementation(fileTree(mapOf("dir" to "$rootDir/libs", "include" to listOf("*.aar"))))
 
-    // naver map
-    implementation("com.naver.maps:map-sdk:3.17.0")
-    implementation("io.github.fornewid:naver-map-compose:1.4.1")
+    // Maps
+    implementation(libs.naver.map)
+    implementation(libs.naver.map.compose)
 
-    // google login
-    implementation("com.google.android.gms:play-services-auth:21.1.1")
-    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.0")
+    // Authentication
+    implementation(libs.google.auth)
+    implementation(libs.google.id)
 
     // Kakao SDK
-    implementation("com.kakao.sdk:v2-share:${Deps.Version.KakaoSDK}")
-    implementation("com.kakao.sdk:v2-user:${Deps.Version.KakaoSDK}")
+    implementation(libs.bundles.kakao)
 
-    // Kotlin Serialization
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+    // Serialization
+    implementation(libs.kotlinx.serialization.json)
 
-    // minSdk 안 올리고 java.time 쓰기
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.2.2")
+    // Desugaring
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
 }
