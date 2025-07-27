@@ -100,10 +100,11 @@ fun LectureReminderRoute(
         snackbarHost = {
             CustomSnackBarHost(
                 hostState = snackBarHostState,
-                snackBar = {
+                snackBar = { data ->
                     val currentSnackBarData = snackBarHostState.currentSnackBarData
                     CustomSnackBar(
                         snackBarData = currentSnackBarData,
+                        passedData = data,
                         shape = RoundedCornerShape(10.dp),
                         backgroundColor = SNUTTColors.Black500,
                         contentStyle = SNUTTTypography.body1.copy(color = SNUTTColors.White, fontWeight = FontWeight.Medium),

@@ -71,6 +71,7 @@ import kotlin.math.max
 fun CustomSnackBar(
     modifier: Modifier = Modifier,
     snackBarData: CustomSnackBarStatus,
+    passedData: CustomSnackBarData? = null,
     shape: Shape = MaterialTheme.shapes.small,
     backgroundColor: Color = SnackbarDefaults.backgroundColor,
     contentStyle: TextStyle = LocalTextStyle.current,
@@ -78,13 +79,14 @@ fun CustomSnackBar(
     elevation: Dp = 0.dp,
 ) {
     var savedSnackBarData by remember { mutableStateOf<CustomSnackBarData>(CustomSnackBarHostState.CustomSnackBarDataDefault()) }
-    when (snackBarData) {
+    val modifiedSnackBarData = snackBarData.copy(passedData)
+    when (modifiedSnackBarData) {
         is CustomSnackBarStatus.InVisible -> {}
         is CustomSnackBarStatus.FadeInOrBetween -> {
-            savedSnackBarData = snackBarData.data
+            savedSnackBarData = modifiedSnackBarData.data
             CustomSnackBar(
                 modifier = modifier,
-                snackBarData = snackBarData.data,
+                snackBarData = modifiedSnackBarData.data,
                 shape = shape,
                 backgroundColor = backgroundColor,
                 contentStyle = contentStyle,
@@ -178,7 +180,7 @@ private fun CustomTextOnlySnackBar(content: @Composable () -> Unit) {
     Layout({
         Box(
             modifier =
-                Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+            Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
         ) {
             content()
         }
@@ -194,18 +196,18 @@ private fun CustomTextOnlySnackBar(content: @Composable () -> Unit) {
             if (
                 placeable[FirstBaseline] != AlignmentLine.Unspecified &&
                 (
-                        firstBaseline == AlignmentLine.Unspecified ||
-                                placeable[FirstBaseline] < firstBaseline
-                        )
+                    firstBaseline == AlignmentLine.Unspecified ||
+                        placeable[FirstBaseline] < firstBaseline
+                    )
             ) {
                 firstBaseline = placeable[FirstBaseline]
             }
             if (
                 placeable[LastBaseline] != AlignmentLine.Unspecified &&
                 (
-                        lastBaseline == AlignmentLine.Unspecified ||
-                                placeable[LastBaseline] > lastBaseline
-                        )
+                    lastBaseline == AlignmentLine.Unspecified ||
+                        placeable[LastBaseline] > lastBaseline
+                    )
             ) {
                 lastBaseline = placeable[LastBaseline]
             }
@@ -256,7 +258,7 @@ private fun CustomOneRowSnackBar(text: @Composable () -> Unit, action: @Composab
         val lastTextBaseline = textPlaceable[LastBaseline]
         val hasText =
             firstTextBaseline != AlignmentLine.Unspecified &&
-                    lastTextBaseline != AlignmentLine.Unspecified
+                lastTextBaseline != AlignmentLine.Unspecified
         val isOneLine = firstTextBaseline == lastTextBaseline || !hasText
         val buttonPlaceX = constraints.maxWidth - buttonPlaceable.width
 
