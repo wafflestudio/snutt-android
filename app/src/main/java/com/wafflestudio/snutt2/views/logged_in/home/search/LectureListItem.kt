@@ -6,15 +6,7 @@ import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
@@ -33,19 +25,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.AddCircleIcon
-import com.wafflestudio.snutt2.components.compose.BookmarkIcon
-import com.wafflestudio.snutt2.components.compose.ClockIcon
-import com.wafflestudio.snutt2.components.compose.ComposableStatesWithScope
-import com.wafflestudio.snutt2.components.compose.DetailIcon
-import com.wafflestudio.snutt2.components.compose.LocationIcon
-import com.wafflestudio.snutt2.components.compose.RemarkIcon
-import com.wafflestudio.snutt2.components.compose.RemoveCircleIcon
-import com.wafflestudio.snutt2.components.compose.RingingAlarmIcon
-import com.wafflestudio.snutt2.components.compose.StarIcon
-import com.wafflestudio.snutt2.components.compose.TagIcon
-import com.wafflestudio.snutt2.components.compose.ThickReviewIcon
-import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
@@ -59,13 +39,7 @@ import com.wafflestudio.snutt2.lib.logging.LectureActionReferrer
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
-import com.wafflestudio.snutt2.views.LocalApiOnError
-import com.wafflestudio.snutt2.views.LocalApiOnProgress
-import com.wafflestudio.snutt2.views.LocalBottomSheetState
-import com.wafflestudio.snutt2.views.LocalHomePageController
-import com.wafflestudio.snutt2.views.LocalNavController
-import com.wafflestudio.snutt2.views.launchSuspendApi
+import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.bookmark.showDeleteBookmarkDialog
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
@@ -120,8 +94,8 @@ fun LazyItemScope.LectureListItem(
 
     Column(
         modifier = Modifier
-            .animateItem(
-                placementSpec = spring(
+            .animateItemPlacement(
+                animationSpec = spring(
                     stiffness = Spring.StiffnessHigh,
                     visibilityThreshold = IntOffset.VisibilityThreshold,
                 ),
@@ -304,15 +278,12 @@ fun LazyItemScope.LectureListItem(
                         scope.launch {
                             launchSuspendApi(apiOnProgress, apiOnError) {
                                 if (isBookmarkPage) {
-                                    showDeleteBookmarkDialog(
-                                        composableStates,
-                                        onConfirm = {
-                                            searchViewModel.deleteBookmark(lectureDataWithState.item)
-                                            searchViewModel.toggleLectureSelection(
-                                                lectureDataWithState.item,
-                                            )
-                                        },
-                                    )
+                                    showDeleteBookmarkDialog(composableStates, onConfirm = {
+                                        searchViewModel.deleteBookmark(lectureDataWithState.item)
+                                        searchViewModel.toggleLectureSelection(
+                                            lectureDataWithState.item,
+                                        )
+                                    },)
                                 } else {
                                     if (bookmarked) {
                                         searchViewModel.deleteBookmark(lectureDataWithState.item)

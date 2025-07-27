@@ -1,20 +1,11 @@
 package com.wafflestudio.snutt2.views.logged_in.vacancy_noti
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.VisibilityThreshold
-import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
@@ -31,11 +22,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.ClockIcon
-import com.wafflestudio.snutt2.components.compose.LocationIcon
-import com.wafflestudio.snutt2.components.compose.RoundCheckbox
-import com.wafflestudio.snutt2.components.compose.TagIcon
-import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -67,9 +54,9 @@ fun LazyItemScope.VacancyListItem(
 
     Row(
         modifier = Modifier
-            .animateItem(
-                placementSpec = spring(
-                    stiffness = Spring.StiffnessHigh,
+            .animateItemPlacement(
+                animationSpec = spring(
+                    stiffness = Spring.StiffnessMediumLow,
                     visibilityThreshold = IntOffset.VisibilityThreshold,
                 ),
             )
@@ -121,8 +108,7 @@ fun LazyItemScope.VacancyListItem(
                         textAlign = TextAlign.Right,
                     )
                 }
-                Row(
-                    // 태그와 quota의 알 수 없는 수직 위치 때문에 쓴 꼼수
+                Row( // 태그와 quota의 알 수 없는 수직 위치 때문에 쓴 꼼수
                     modifier = Modifier
                         .padding(bottom = 6.dp, top = 2.dp)
                         .height(20.dp),
