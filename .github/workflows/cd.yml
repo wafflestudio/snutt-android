@@ -57,6 +57,8 @@ jobs:
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
       - name: Upload artifact to Firebase App Distribution
         run: ./gradlew appDistributionUploadLiveRelease
+        env:
+          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID_LIVE }}
       - name: Set Message
         run: |
           PROPERTY=$(head -n 1 version.properties)
@@ -122,6 +124,8 @@ jobs:
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
       - name: Upload artifact to Firebase App Distribution
         run: ./gradlew appDistributionUploadStagingRelease
+        env:
+          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID_STAGING }}
       - name: Slack Upload APK
         uses: MeilCli/slack-upload-file@v3
         with:
