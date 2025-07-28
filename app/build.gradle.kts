@@ -90,6 +90,7 @@ android {
                 artifactType = "APK"
                 testers = "urban"
                 serviceCredentialsFile = "gcp-service-account-staging.json"
+                appId = System.getenv("FIREBASE_APP_ID")
             }
         }
 
@@ -102,6 +103,7 @@ android {
             configure<com.google.firebase.appdistribution.gradle.AppDistributionExtension> {
                 artifactType = "AAB"
                 serviceCredentialsFile = "gcp-service-account-live.json"
+                appId = System.getenv("FIREBASE_APP_ID")
             }
         }
     }
