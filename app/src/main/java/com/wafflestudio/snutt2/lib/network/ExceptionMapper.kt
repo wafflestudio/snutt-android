@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.lib.network
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.google.firebase.crashlytics.internal.common.CrashlyticsCore
 import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsedHttpException
 import kotlinx.coroutines.CancellationException
 import okio.IOException
