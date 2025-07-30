@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -46,10 +45,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.AddIcon
-import com.wafflestudio.snutt2.components.compose.ArrowRight
 import com.wafflestudio.snutt2.components.compose.BottomSheet
 import com.wafflestudio.snutt2.components.compose.ComposableStatesWithScope
-import com.wafflestudio.snutt2.components.compose.CustomThemeMoreIcon
 import com.wafflestudio.snutt2.components.compose.QuestionCircleIcon
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.ThemeIcon
@@ -96,6 +93,11 @@ fun ThemeConfigRoute(
             }
         },
         onNavigateToDetail = onNavigateToDetail,
+        onApply = {
+            launchSuspendApi(apiOnProgress, apiOnError) {
+                themeConfigViewModel.applyThemeToCurrentTable(it)
+            }
+        },
         onClickAddTheme = onClickAddTheme,
         onDuplicateTheme = {
             launchSuspendApi(apiOnProgress, apiOnError) {
@@ -119,6 +121,7 @@ fun ThemeConfigScreen(
     onNavigateBack: () -> Unit,
     onFetchThemes: suspend () -> Unit,
     onNavigateToDetail: (TableTheme) -> Unit,
+    onApply: suspend (TableTheme) -> Unit,
     onClickAddTheme: () -> Unit,
     onDuplicateTheme: suspend (TableTheme) -> Unit,
     onDeleteTheme: suspend (TableTheme) -> Unit,
@@ -169,14 +172,19 @@ fun ThemeConfigScreen(
                 ThemesRow(
                     title = stringResource(R.string.theme_config_custom_theme),
                     themes = myCustomThemes,
-                    onClickItem = onNavigateToDetail,
-                    onClickMore = { theme ->
+                    onClickItem = { theme ->
                         scope.launch {
                             bottomSheet.setSheetContent {
                                 MyCustomThemeMoreActionBottomSheet(
                                     onClickDetail = {
                                         scope.launch {
                                             onNavigateToDetail(theme)
+                                            bottomSheet.hide()
+                                        }
+                                    },
+                                    onClickApply = {
+                                        scope.launch {
+                                            onApply(theme)
                                             bottomSheet.hide()
                                         }
                                     },
@@ -212,14 +220,19 @@ fun ThemeConfigScreen(
                     ThemesRow(
                         title = stringResource(R.string.theme_config_market_custom_theme),
                         themes = marketCustomThemes,
-                        onClickItem = onNavigateToDetail,
-                        onClickMore = { theme ->
+                        onClickItem = { theme ->
                             scope.launch {
                                 bottomSheet.setSheetContent {
                                     MarketCustomThemeMoreActionBottomSheet(
                                         onClickDetail = {
                                             scope.launch {
                                                 onNavigateToDetail(theme)
+                                                bottomSheet.hide()
+                                            }
+                                        },
+                                        onClickApply = {
+                                            scope.launch {
+                                                onApply(theme)
                                                 bottomSheet.hide()
                                             }
                                         },
@@ -244,7 +257,27 @@ fun ThemeConfigScreen(
                 ThemesRow(
                     title = stringResource(R.string.theme_config_builtin_theme),
                     themes = builtInThemes,
-                    onClickItem = onNavigateToDetail,
+                    onClickItem = { theme ->
+                        scope.launch {
+                            bottomSheet.setSheetContent {
+                                BuiltInThemeClickBottomSheet(
+                                    onClickDetail = {
+                                        scope.launch {
+                                            onNavigateToDetail(theme)
+                                            bottomSheet.hide()
+                                        }
+                                    },
+                                    onClickApply = {
+                                        scope.launch {
+                                            onApply(theme)
+                                            bottomSheet.hide()
+                                        }
+                                    },
+                                )
+                            }
+                            bottomSheet.show()
+                        }
+                    },
                 )
                 Spacer(modifier = Modifier.height(25.dp))
                 ThemeGuideTexts(
@@ -264,7 +297,6 @@ private fun ThemesRow(
     themes: List<TableTheme>,
     onClickItem: (TableTheme) -> Unit,
     modifier: Modifier = Modifier,
-    onClickMore: ((TableTheme) -> Unit)? = null,
     leadingItem: (@Composable () -> Unit)? = null,
 ) {
     SettingColumn(
@@ -296,9 +328,6 @@ private fun ThemesRow(
                     theme = theme,
                     onClick = {
                         onClickItem(theme)
-                    },
-                    onClickMore = onClickMore?.let {
-                        { it(theme) }
                     },
                 )
                 Spacer(modifier = Modifier.width(20.dp))
@@ -342,7 +371,6 @@ private fun ThemeItem(
     theme: TableTheme,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    onClickMore: (() -> Unit)? = null,
 ) {
     Column(
         modifier = modifier.clicks { onClick() },
@@ -355,16 +383,6 @@ private fun ThemeItem(
                     .size(80.dp)
                     .clip(RoundedCornerShape(6.dp)),
             )
-            onClickMore?.let {
-                CustomThemeMoreIcon(
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .offset(x = 8.dp, y = (-8).dp)
-                        .clicks {
-                            it()
-                        },
-                )
-            }
         }
         Spacer(modifier = Modifier.height(8.dp))
         Row(
@@ -380,12 +398,6 @@ private fun ThemeItem(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = SNUTTTypography.body2,
-            )
-            ArrowRight(
-                modifier = Modifier
-                    .size(10.dp)
-                    .offset(y = 1.dp),
-                colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.DarkGray else SNUTTColors.Gray2),
             )
         }
     }
@@ -452,7 +464,6 @@ private fun ThemesRowPreview() {
             title = "title",
             themes = List(5) { BuiltInTheme.fromCode(it) },
             onClickItem = {},
-            onClickMore = {},
             leadingItem = {
                 AddThemeItem(
                     onClick = {},
