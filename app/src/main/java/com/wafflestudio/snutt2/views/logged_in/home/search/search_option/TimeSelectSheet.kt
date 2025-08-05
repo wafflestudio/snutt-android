@@ -84,7 +84,8 @@ fun TimeSelectSheet(
             }
         }
         backgroundLectureTimes.forEach {
-            for (timeIndex in (it.startMinute - TableTrimParam.SearchOption.hourFrom * 60) / 30..(it.endMinute - TableTrimParam.SearchOption.hourFrom * 60) / 30) {
+            // endMinute에서 1을 빼주는데, endMinute이 30의 배수인 경우, 경계 값의 다음 block은 timeIndex에 포함되지 않아야하기 때문이다.
+            for (timeIndex in (it.startMinute - TableTrimParam.SearchOption.hourFrom * 60) / 30..(it.endMinute - TableTrimParam.SearchOption.hourFrom * 60 - 1) / 30) {
                 draggedTimeBlock[it.day][timeIndex].value = false
             }
         }
