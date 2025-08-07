@@ -49,4 +49,22 @@ class ThemeConfigViewModel @Inject constructor(
         if (theme !is CustomTheme) return
         themeRepository.copyTheme(theme.id)
     }
+
+    suspend fun applyThemeToCurrentTable(theme: TableTheme) {
+        val currentTable = currentTable.value ?: return
+        when (theme) {
+            is CustomTheme -> {
+                tableRepository.updateTableTheme(
+                    currentTable.id,
+                    theme.id,
+                )
+            }
+            is BuiltInTheme -> {
+                tableRepository.updateTableTheme(
+                    currentTable.id,
+                    theme.code,
+                )
+            }
+        }
+    }
 }

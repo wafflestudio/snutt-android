@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
@@ -40,18 +41,28 @@ fun LectureDetailItem(
     keyboardActions: KeyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
     labelVerticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
     content: @Composable () -> Unit = {
-        EditText(
-            value = value,
-            onValueChange = onValueChange,
-            enabled = enabled,
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = singleLine,
-            underlineEnabled = false,
-            textStyle = textStyle,
-            keyboardOptions = keyboardOptions,
-            keyboardActions = keyboardActions,
-            hint = hint,
-        )
+        if (enabled) {
+            EditText(
+                value = value,
+                onValueChange = onValueChange,
+                enabled = true,
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = singleLine,
+                underlineEnabled = false,
+                textStyle = textStyle,
+                keyboardOptions = keyboardOptions,
+                keyboardActions = keyboardActions,
+                hint = hint,
+            )
+        } else {
+            Text(
+                text = value.ifBlank { hint ?: "" },
+                style = textStyle.copy(color = SNUTTColors.Black600),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
     },
 ) {
     Row(
