@@ -20,13 +20,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.views.logged_in.home.settings.LectureReminderOffset
 
 /**
  * 여러 선택지 중 하나를 선택할 수 있는 UI 컴포넌트
@@ -38,11 +41,12 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
  * @param modifier 이 컴포저블에 적용할 Modifier
  */
 @Composable
-fun SegmentedPicker(
+fun <T> SegmentedPicker(
     title: String?,
-    options: List<String>,
-    selectedOption: String,
-    onOptionSelected: (String) -> Unit,
+    options: List<T>,
+    optionLabel: (T) -> String,
+    selectedOption: T,
+    onOptionSelected: (T) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -94,13 +98,13 @@ fun SegmentedPicker(
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
-                        text = option,
+                        text = optionLabel(option),
                         textAlign = TextAlign.Center,
                         style = SNUTTTypography.body2.copy(fontSize = 13.sp, fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium),
                     )
                 }
                 // 마지막 아이템이 아닐 경우에만 구분선 추가
-                if (index < options.lastIndex) {
+                if (index != options.lastIndex) {
                     Divider(
                         modifier = Modifier
                             .fillMaxHeight()
@@ -117,14 +121,28 @@ fun SegmentedPicker(
 @Preview(showBackground = true)
 @Composable
 fun SegmentedPickerPreview() {
-    val reminderOptions = listOf("없음", "10분 전", "수업 시작 시", "10분 후")
+    val lectureReminderOptions = listOf(
+        stringResource(R.string.settings_lecture_reminder_none),
+        stringResource(R.string.settings_lecture_reminder_ten_minutes_before),
+        stringResource(R.string.settings_lecture_reminder_at_start_time),
+        stringResource(R.string.settings_lecture_reminder_ten_minutes_after),
+    )
+
+    fun LectureReminderOffset.getString(): String = when (this) {
+        LectureReminderOffset.NONE -> lectureReminderOptions[0]
+        LectureReminderOffset.TEN_MINUTES_BEFORE -> lectureReminderOptions[1]
+        LectureReminderOffset.AT_START_TIME -> lectureReminderOptions[2]
+        LectureReminderOffset.TEN_MINUTES_AFTER -> lectureReminderOptions[3]
+    }
+
     Column(
         modifier = Modifier.width(374.dp),
     ) {
         SegmentedPicker(
             title = "강의 리마인더",
-            options = reminderOptions,
-            selectedOption = "없음",
+            options = LectureReminderOffset.entries,
+            optionLabel = { offset -> offset.getString() },
+            selectedOption = LectureReminderOffset.entries[0],
             onOptionSelected = { _ -> },
         )
     }

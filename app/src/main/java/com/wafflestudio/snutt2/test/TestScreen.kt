@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.components.compose.RightArrowIcon
-import com.wafflestudio.snutt2.components.compose.SegmentedPicker
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.android.toast
@@ -148,15 +147,6 @@ fun TestScreen(
                 title = "성공하는 경우 Test",
                 hasNextPage = false,
                 onClick = onFourthTestCase,
-            )
-
-            Margin(height = 10.dp)
-
-            SegmentedPicker(
-                title = "testPicker",
-                options = listOf("option 1", "option 2", "option 3"),
-                selectedOption = segmentPickerUiState,
-                onOptionSelected = onSegmentPickerUiStateChange,
             )
 
             // 리팩토링 과정에서 필요한 테스트가 있다면 지속적으로 추가

@@ -146,14 +146,6 @@ fun LectureReminderScreen(
         LectureReminderOffset.TEN_MINUTES_AFTER -> lectureReminderOptions[3]
     }
 
-    fun String.getLectureReminderOffset(): LectureReminderOffset = when (this) {
-        lectureReminderOptions[0] -> LectureReminderOffset.NONE
-        lectureReminderOptions[1] -> LectureReminderOffset.TEN_MINUTES_BEFORE
-        lectureReminderOptions[2] -> LectureReminderOffset.AT_START_TIME
-        lectureReminderOptions[3] -> LectureReminderOffset.TEN_MINUTES_AFTER
-        else -> LectureReminderOffset.NONE
-    }
-
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -178,15 +170,16 @@ fun LectureReminderScreen(
                         ) { lectureWithReminderOption ->
                             SegmentedPicker(
                                 title = lectureWithReminderOption.lectureTitle,
-                                options = lectureReminderOptions,
-                                selectedOption = lectureWithReminderOption.lectureReminderOffset.getString(),
+                                options = LectureReminderOffset.entries,
+                                optionLabel = { offset -> offset.getString() },
+                                selectedOption = lectureWithReminderOption.lectureReminderOffset,
                                 onOptionSelected = { offset ->
                                     onChangeReminderOption(
                                         lectureWithReminderOption.lectureId,
                                         LectureWithReminderOption(
                                             lectureId = lectureWithReminderOption.lectureId,
                                             lectureTitle = lectureWithReminderOption.lectureTitle,
-                                            lectureReminderOffset = offset.getLectureReminderOffset(),
+                                            lectureReminderOffset = offset,
                                         ),
                                     )
                                 },
