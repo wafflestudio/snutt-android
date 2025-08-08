@@ -67,6 +67,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun SearchPage(
     searchResultPagingItems: LazyPagingItems<DataWithState<LectureDto, LectureState>>,
+    searchResultListState: SearchResultListState,
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -244,6 +245,7 @@ fun SearchPage(
                     SearchPageMode.Search -> SearchResultList(
                         scope,
                         searchResultPagingItems,
+                        searchResultListState,
                         searchViewModel,
                         timetableViewModel,
                         tableListViewModel,
