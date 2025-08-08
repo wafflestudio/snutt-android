@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.views.logged_in.vacancy_noti
 import NavigationDestination
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDp
@@ -19,12 +20,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
@@ -59,6 +63,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -111,8 +116,8 @@ fun VacancyPage(
         derivedStateOf { vacancyViewModel.isEditMode && selectedLectures.size > 0 }
     }
     val transition = updateTransition(vacancyViewModel.isEditMode, label = "")
-    val collapsedContentHeight = (LocalConfiguration.current.screenHeightDp - 56).dp
-    val expandedContentHeight = (LocalConfiguration.current.screenHeightDp - 56 + 60).dp
+    val collapsedContentHeight = (LocalConfiguration.current.screenHeightDp - 56).dp - getSystemBarHeightForFix()
+    val expandedContentHeight = (LocalConfiguration.current.screenHeightDp - 56 + 60).dp - getSystemBarHeightForFix()
     val contentHeight by transition.animateDp(label = "") { isEditMode -> // 리스트+삭제버튼 길이(topbar 56dp, 삭제버튼 60dp)
         if (isEditMode) {
             collapsedContentHeight
@@ -327,6 +332,20 @@ fun VacancyPage(
             )
         }
     }
+}
+
+// '선택한 강의 삭제' 버튼 (= WebViewStyleButton)이 SDK 35 이상에서 보이지 않는 현상을 고치기 위한 임시 코드.
+// FIXME: VacancyPage를 리팩토링하면서, LocalConfiguration.current.screenHeightDp를 쓰지 않는 방향으로 바꿔야 한다.
+@Composable
+fun getSystemBarHeightForFix(): Dp {
+    if (Build.VERSION.SDK_INT < 35) return 0.dp
+
+    val density = LocalDensity.current
+    val navigationBarHeightByPx = WindowInsets.navigationBars.getBottom(density)
+    val navigationBarHeightByDp = with(density) { navigationBarHeightByPx.toDp() }
+    val statusBarHeightByPx = WindowInsets.statusBars.getTop(density)
+    val statusBarHeightByDp = with(density) { statusBarHeightByPx.toDp() }
+    return navigationBarHeightByDp + statusBarHeightByDp
 }
 
 fun LazyListState.isScrolledToEnd(): Boolean {
