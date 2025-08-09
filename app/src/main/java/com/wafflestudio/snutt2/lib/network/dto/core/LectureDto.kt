@@ -66,6 +66,13 @@ data class LectureDto(
             class_time_json = emptyList(),
         )
 
+        fun fromLecture(lecture: Lecture): LectureDto {
+            return when (lecture) {
+                is LocalLecture -> fromLocalLecture(lecture)
+                is SearchedLecture -> fromSearchedLecture(lecture)
+            }
+        }
+
         fun fromLocalLecture(localLecture: LocalLecture): LectureDto = LectureDto(
             id = localLecture.id,
             lecture_id = if (localLecture is SyllabusLecture) localLecture.originalLectureId else null,
@@ -97,6 +104,43 @@ data class LectureDto(
             registrationCount = 0L,
             wasFull = false,
             review = null,
+        )
+
+        fun fromSearchedLecture(searchedLecture: SearchedLecture): LectureDto = LectureDto(
+            id = searchedLecture.id,
+            lecture_id = null,
+            classification = searchedLecture.classification,
+            department = searchedLecture.department,
+            academic_year = searchedLecture.academicYear,
+            course_number = searchedLecture.courseNumber,
+            lecture_number = searchedLecture.lectureNumber,
+            course_title = searchedLecture.courseTitle,
+            credit = searchedLecture.credit,
+            class_time_json = searchedLecture.lectureSessions.map {
+                ClassTimeDto(
+                    // NOTE: DayOfWeek 는 1이 월요일이고, 우리 서버는 0이 월요일이다
+                    day = it.day.value - 1,
+                    place = it.place,
+                    id = it.id,
+                    startMinute = it.startTime.hour * 60 + it.startTime.minute,
+                    endMinute = it.endTime.hour * 60 + it.endTime.minute,
+                )
+            },
+            instructor = searchedLecture.instructor,
+            quota = searchedLecture.quota,
+            freshmanQuota = searchedLecture.freshmanQuota,
+            remark = searchedLecture.remark,
+            category = searchedLecture.category,
+            categoryPre2025 = searchedLecture.categoryPre2025,
+            colorIndex = 0L,
+            color = ColorDto(),
+            registrationCount = searchedLecture.registrationCount,
+            wasFull = searchedLecture.wasFull,
+            review = LectureReviewDto(
+                id = searchedLecture.reviewInfo.id,
+                rating = searchedLecture.reviewInfo.rating,
+                reviewCount = searchedLecture.reviewInfo.reviewCount,
+            ),
         )
     }
 

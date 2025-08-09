@@ -4,6 +4,7 @@ import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.vacancy_noti.VacancyRepository
+import com.wafflestudio.snutt2.domainmodel.Lecture
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -91,4 +92,18 @@ class VacancyViewModel @Inject constructor(
             vacancyRepository.setVacancyVisited()
         }
     }
+}
+
+sealed interface VacancyUiState {
+    data class Success(
+        val vacancyLectures: List<Lecture>,
+        val showIntroDialog: Boolean,
+        val isEditMode: Boolean,
+        val isRefreshing: Boolean,
+        val selectedLectures: List<String>,
+        val deleteEnabled: Boolean,
+    ) : VacancyUiState
+    data object Error : VacancyUiState
+    data object Loading : VacancyUiState
+    data class Empty(val showIntroDialog: Boolean) : VacancyUiState
 }
