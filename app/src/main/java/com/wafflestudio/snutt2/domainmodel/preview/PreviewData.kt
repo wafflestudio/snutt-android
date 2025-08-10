@@ -344,5 +344,5 @@ object PreviewData {
         ),
     )
 
-    val sampleLectures = sampleLectureDtos.map { it.toDomainModel() }
+    val sampleLectures = sampleLectureDtos.map { it.toSearchedLecture() }
 }

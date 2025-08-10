@@ -218,43 +218,45 @@ data class LectureDto(
         }
     }
 
-    fun toDomainModel(): Lecture {
-        if (this.review != null) {
-            return SearchedLecture(
+    fun toSearchedLecture(): SearchedLecture = SearchedLecture(
+        id = id,
+        courseTitle = course_title,
+        lectureSessions = class_time_json.map { (day, place, id, startMinute, endMinute) ->
+            LectureSession(
                 id = id,
-                courseTitle = course_title,
-                lectureSessions = class_time_json.map { (day, place, id, startMinute, endMinute) ->
-                    LectureSession(
-                        id = id,
-                        // NOTE: DayOfWeek 는 1이 월요일이고, 우리 서버는 0이 월요일이다
-                        day = DayOfWeek.of(day + 1),
-                        startTime = LocalTime.ofSecondOfDay(startMinute * 60L),
-                        endTime = LocalTime.ofSecondOfDay(endMinute * 60L),
-                        place = place,
-                    )
-                },
-                instructor = instructor,
-                credit = credit,
-                remark = remark,
-                classification = classification ?: "",
-                department = department ?: "",
-                academicYear = academic_year ?: "",
-                courseNumber = course_number ?: "",
-                lectureNumber = lecture_number ?: "",
-                category = category ?: "",
-                categoryPre2025 = categoryPre2025 ?: "",
-                quota = quota,
-                freshmanQuota = freshmanQuota ?: 0, // TODO
-                registrationCount = registrationCount,
-                wasFull = wasFull,
-                reviewInfo = LectureReviewInfo(
-                    id = review.id,
-                    rating = review.rating ?: 0.0,
-                    reviewCount = review.reviewCount ?: 0,
-                ),
+                // NOTE: DayOfWeek 는 1이 월요일이고, 우리 서버는 0이 월요일이다
+                day = DayOfWeek.of(day + 1),
+                startTime = LocalTime.ofSecondOfDay(startMinute * 60L),
+                endTime = LocalTime.ofSecondOfDay(endMinute * 60L),
+                place = place,
             )
+        },
+        instructor = instructor,
+        credit = credit,
+        remark = remark,
+        classification = classification ?: "",
+        department = department ?: "",
+        academicYear = academic_year ?: "",
+        courseNumber = course_number ?: "",
+        lectureNumber = lecture_number ?: "",
+        category = category ?: "",
+        categoryPre2025 = categoryPre2025 ?: "",
+        quota = quota,
+        freshmanQuota = freshmanQuota ?: 0, // TODO
+        registrationCount = registrationCount,
+        wasFull = wasFull,
+        reviewInfo = LectureReviewInfo(
+            id = review?.id ?: "",
+            rating = review?.rating ?: 0.0,
+            reviewCount = review?.reviewCount ?: 0,
+        ),
+    )
+
+    fun toDomainModel(): Lecture {
+        return if (this.review != null) {
+            this.toSearchedLecture()
         } else {
-            return this.toLocalLecture()
+            this.toLocalLecture()
         }
     }
 }

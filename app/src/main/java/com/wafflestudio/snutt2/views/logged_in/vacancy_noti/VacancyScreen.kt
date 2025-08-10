@@ -1,5 +1,8 @@
 package com.wafflestudio.snutt2.views.logged_in.vacancy_noti
 
+import android.content.Intent
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -13,6 +16,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,25 +29,34 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
@@ -64,18 +77,74 @@ import com.wafflestudio.snutt2.ui.SNUTTTheme
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
 import kotlinx.coroutines.launch
+import androidx.core.net.toUri
+import com.wafflestudio.snutt2.components.compose.SimpleTopBar
+import com.wafflestudio.snutt2.lib.android.toast
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 
 @Composable
 fun VacancyRoute(
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit,
     onNavigateOnboard: () -> Unit,
-    viewModel: VacancyViewModel = hiltViewModel(),
+    onShowDeleteModal: (ModalProperties) -> Unit,
+    onHideDeleteModal: () -> Unit,
+    viewModel: VacancyViewModelNew = hiltViewModel(),
 ) {
+    val context = LocalContext.current
+    val uiState by viewModel.vacancyUiState.collectAsState()
+    val sugangSNUUrl by viewModel.sugangSNUUrl.collectAsState("")
+
+    LaunchedEffect(Unit) {
+        viewModel.vacancyUiEvent.collect { uiEvent ->
+            when (uiEvent) {
+                is VacancyUiEvent.ShowToast -> {
+                    val message = uiEvent.message
+                    if (message.isNotEmpty()) {
+                        context.toast(message)
+                    }
+                }
+                is VacancyUiEvent.LoggedOut -> {
+                    onNavigateOnboard()
+                }
+            }
+        }
+    }
+
+    VacancyScreen(
+        modifier = modifier,
+        uiState = uiState,
+        onClickBack = {
+            when (val state = uiState) {
+                is VacancyUiState.Success -> {
+                    if (state.isEditMode) {
+                        viewModel.toggleEditMode()
+                    } else {
+                        onNavigateBack()
+                    }
+                }
+                else -> {
+                    onNavigateBack()
+                }
+            }
+        },
+        onShowIntroDialog = viewModel::showIntroDialog,
+        onHideIntroDialog = viewModel::hideIntroDialog,
+        onToggleEditMode = viewModel::toggleEditMode,
+        onFetchVacancyLectures = viewModel::fetchVacancyLectures,
+        onToggleLectureSelected = viewModel::toggleLectureSelected,
+        onShowDeleteModal = onShowDeleteModal,
+        onHideDeleteModal = onHideDeleteModal,
+        onDeleteSelectedLectures = viewModel::deleteSelectedLectures,
+        onOpenSugangSnu = {
+            sugangSNUUrl.takeIf { it.isNotEmpty() }?.let {
+                context.startActivity(Intent(Intent.ACTION_VIEW, it.toUri()))
+            }
+        },
+    )
 }
 
 @Composable
-@OptIn(ExperimentalMaterialApi::class)
 fun VacancyScreen(
     modifier: Modifier = Modifier,
     uiState: VacancyUiState,
@@ -83,7 +152,245 @@ fun VacancyScreen(
     onShowIntroDialog: () -> Unit,
     onHideIntroDialog: () -> Unit,
     onToggleEditMode: () -> Unit,
-    onRefreshVacancyLectures: () -> Unit,
+    onFetchVacancyLectures: () -> Unit,
+    onToggleLectureSelected: (String) -> Unit,
+    onShowDeleteModal: (ModalProperties) -> Unit,
+    onHideDeleteModal: () -> Unit,
+    onDeleteSelectedLectures: () -> Unit,
+    onOpenSugangSnu: () -> Unit,
+) {
+    BackHandler {
+        onClickBack()
+    }
+
+    when (uiState) {
+        VacancyUiState.Loading -> VacancyLoading(
+            modifier = modifier,
+            onClickBack = onClickBack,
+        )
+        VacancyUiState.Error -> VacancyError(
+            modifier = modifier,
+            onClickBack = onClickBack,
+        )
+        is VacancyUiState.Empty -> VacancyEmpty(
+            modifier = modifier,
+            uiState = uiState,
+            onClickBack = onClickBack,
+            onShowIntroDialog = onShowIntroDialog,
+            onHideIntroDialog = onHideIntroDialog,
+            onFetchVacancyLectures = onFetchVacancyLectures,
+            onOpenSugangSnu = onOpenSugangSnu,
+        )
+        is VacancyUiState.Success -> VacancySuccess(
+            modifier = modifier,
+            uiState = uiState,
+            onClickBack = onClickBack,
+            onShowIntroDialog = onShowIntroDialog,
+            onHideIntroDialog = onHideIntroDialog,
+            onToggleEditMode = onToggleEditMode,
+            onFetchVacancyLectures = onFetchVacancyLectures,
+            onToggleLectureSelected = onToggleLectureSelected,
+            onShowDeleteModal = onShowDeleteModal,
+            onHideDeleteModal = onHideDeleteModal,
+            onDeleteSelectedLectures = onDeleteSelectedLectures,
+            onOpenSugangSnu = onOpenSugangSnu,
+        )
+    }
+}
+
+@Composable
+fun VacancyLoading(
+    modifier: Modifier = Modifier,
+    onClickBack: () -> Unit,
+) {
+    Box(
+        modifier = Modifier.logImpression(AnalyticsScreen.Vacancy),
+    ) {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .background(SNUTTColors.SettingBackground),
+        ) {
+            SimpleTopBar(
+                title = stringResource(R.string.vacancy_app_bar_title),
+                onClickNavigateBack = onClickBack,
+            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colors.background),
+                contentAlignment = Alignment.Center,
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+    }
+}
+
+@Composable
+fun VacancyError(
+    modifier: Modifier = Modifier,
+    onClickBack: () -> Unit,
+) {
+    Box(
+        modifier = Modifier.logImpression(AnalyticsScreen.Vacancy),
+    ) {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .background(SNUTTColors.SettingBackground),
+        ) {
+            SimpleTopBar(
+                title = stringResource(R.string.vacancy_app_bar_title),
+                onClickNavigateBack = onClickBack,
+            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colors.background),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = stringResource(R.string.error_unknown),
+                    color = MaterialTheme.colors.onBackground,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+@OptIn(ExperimentalMaterialApi::class)
+fun VacancyEmpty(
+    modifier: Modifier = Modifier,
+    uiState: VacancyUiState.Empty,
+    onClickBack: () -> Unit,
+    onShowIntroDialog: () -> Unit,
+    onHideIntroDialog: () -> Unit,
+    onFetchVacancyLectures: () -> Unit,
+    onOpenSugangSnu: () -> Unit,
+) {
+    val pullRefreshState = rememberPullRefreshState(uiState.isRefreshing, onFetchVacancyLectures)
+    Box(
+        modifier = Modifier.logImpression(AnalyticsScreen.Vacancy),
+    ) {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .background(SNUTTColors.SettingBackground),
+        ) {
+            TopBar(
+                title = {
+                    Text(
+                        text = stringResource(R.string.vacancy_app_bar_title),
+                        style = SNUTTTypography.h2,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                    Spacer(modifier = Modifier.size(5.dp))
+                    QuestionCircleIcon(
+                        modifier = Modifier
+                            .size(18.dp)
+                            .clicks { onShowIntroDialog() },
+                    )
+                },
+                navigationIcon = {
+                    ArrowBackIcon(
+                        modifier = Modifier
+                            .size(30.dp)
+                            .clicks { onClickBack() },
+                        colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                    )
+                },
+            )
+
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxSize()
+                    .pullRefresh(pullRefreshState),
+            ) {
+                PullRefreshIndicator(
+                    refreshing = uiState.isRefreshing,
+                    state = pullRefreshState,
+                    modifier = Modifier.align(Alignment.TopCenter),
+                )
+            }
+        }
+
+        VacancyPlaceholder(
+            onClickDetail = onShowIntroDialog,
+            modifier = Modifier.align(Alignment.Center),
+        )
+
+        SugangSnuFloatingActionButton(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .offset((-27).dp, (-22).dp),
+            onClick = onOpenSugangSnu,
+        )
+
+        if (uiState.showIntroDialog) {
+            VacancyIntroDialog(
+                onDismiss = onHideIntroDialog,
+            )
+        }
+    }
+}
+
+@Composable
+fun VacancyPlaceholder(
+    onClickDetail: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Image(
+            painter = painterResource(if (isDarkMode()) R.drawable.img_vacancy_empty_dark else R.drawable.img_vacancy_empty),
+            contentDescription = null,
+            modifier = Modifier
+                .height(180.dp)
+                .fillMaxSize(),
+        )
+        Margin(height = 14.dp)
+        Row(
+            modifier = Modifier
+                .clicks { onClickDetail() },
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            QuestionCircleIcon(
+                modifier = Modifier.size(12.dp),
+                colorFilter = ColorFilter.tint(SNUTTColors.DARKER_GRAY),
+            )
+            Spacer(modifier = Modifier.width(2.dp))
+            Text(
+                text = stringResource(R.string.vacancy_empty_detail),
+                textDecoration = TextDecoration.Underline,
+                style = SNUTTTypography.subtitle2.copy(
+                    fontSize = 12.sp,
+                    color = SNUTTColors.DARKER_GRAY,
+                ),
+            )
+        }
+    }
+}
+
+@Composable
+@OptIn(ExperimentalMaterialApi::class)
+fun VacancySuccess(
+    modifier: Modifier = Modifier,
+    uiState: VacancyUiState.Success,
+    onClickBack: () -> Unit,
+    onShowIntroDialog: () -> Unit,
+    onHideIntroDialog: () -> Unit,
+    onToggleEditMode: () -> Unit,
+    onFetchVacancyLectures: () -> Unit,
     onToggleLectureSelected: (String) -> Unit,
     onShowDeleteModal: (ModalProperties) -> Unit,
     onHideDeleteModal: () -> Unit,
@@ -91,167 +398,159 @@ fun VacancyScreen(
     onOpenSugangSnu: () -> Unit,
 ) {
     val context = LocalContext.current
-
-    when (uiState) {
-        VacancyUiState.Loading -> {}
-        VacancyUiState.Error -> {}
-        is VacancyUiState.Empty -> {}
-        is VacancyUiState.Success -> {
-            val pullRefreshState = rememberPullRefreshState(uiState.isRefreshing, onRefreshVacancyLectures)
-            val density = LocalDensity.current
-            Box(
-                modifier = Modifier.logImpression(AnalyticsScreen.Vacancy),
-            ) {
-                Column(
-                    modifier = modifier
-                        .fillMaxSize()
-                        .background(SNUTTColors.SettingBackground),
-                ) {
-                    TopBar(
-                        title = {
-                            Text(
-                                text = stringResource(R.string.vacancy_app_bar_title),
-                                style = SNUTTTypography.h2,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                            )
-                            Spacer(modifier = Modifier.size(5.dp))
-                            QuestionCircleIcon(
-                                modifier = Modifier
-                                    .size(18.dp)
-                                    .clicks { onShowIntroDialog() },
-                            )
-                        },
-                        navigationIcon = {
-                            ArrowBackIcon(
-                                modifier = Modifier
-                                    .size(30.dp)
-                                    .clicks { onClickBack() },
-                                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
-                            )
-                        },
-                        actions = {
-                            Text(
-                                text = if (!uiState.isEditMode) {
-                                    stringResource(R.string.vacancy_app_bar_edit)
-                                } else {
-                                    stringResource(R.string.vacancy_app_bar_cancel)
-                                },
-                                style = SNUTTTypography.body1,
-                                modifier = Modifier
-                                    .clicks { onToggleEditMode() },
-                            )
-                        },
+    val density = LocalDensity.current
+    val pullRefreshState = rememberPullRefreshState(uiState.isRefreshing, onFetchVacancyLectures)
+    Box(
+        modifier = Modifier.logImpression(AnalyticsScreen.Vacancy),
+    ) {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .background(SNUTTColors.SettingBackground),
+        ) {
+            TopBar(
+                title = {
+                    Text(
+                        text = stringResource(R.string.vacancy_app_bar_title),
+                        style = SNUTTTypography.h2,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                     )
-
-                    Box(
+                    Spacer(modifier = Modifier.size(5.dp))
+                    QuestionCircleIcon(
                         modifier = Modifier
-                            .weight(1f)
-                            .fillMaxSize()
-                            .then(
-                                if (uiState.isEditMode.not()) {
-                                    Modifier.pullRefresh(pullRefreshState)
-                                } else {
-                                    Modifier
-                                },
-                            ),
+                            .size(18.dp)
+                            .clicks { onShowIntroDialog() },
+                    )
+                },
+                navigationIcon = {
+                    ArrowBackIcon(
+                        modifier = Modifier
+                            .size(30.dp)
+                            .clicks { onClickBack() },
+                        colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                    )
+                },
+                actions = {
+                    Text(
+                        text = if (!uiState.isEditMode) {
+                            stringResource(R.string.vacancy_app_bar_edit)
+                        } else {
+                            stringResource(R.string.vacancy_app_bar_cancel)
+                        },
+                        style = SNUTTTypography.body1,
+                        modifier = Modifier
+                            .clicks { onToggleEditMode() },
+                    )
+                },
+            )
+
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxSize()
+                    .then(
+                        if (uiState.isEditMode.not()) {
+                            Modifier.pullRefresh(pullRefreshState)
+                        } else {
+                            Modifier
+                        },
+                    ),
+            ) {
+                LazyColumn(
+                    modifier = Modifier
+                        .matchParentSize(),
+                ) {
+                    items(
+                        items = uiState.vacancyLectures,
+                        key = { it.id },
                     ) {
-                        LazyColumn(
-                            modifier = Modifier
-                                .matchParentSize(),
-                        ) {
-                            items(
-                                items = uiState.vacancyLectures,
-                                key = { it.id },
-                            ) {
-                                val lectureId = it.id
-                                VacancyListItem(
-                                    lectureDto = LectureDto.fromLecture(it), // FIXME: VacancyListItem이 LectureDto가 아닌 도메인 모델을 받게 하고 싶다.
-                                    editing = uiState.isEditMode,
-                                    checked = uiState.selectedLectures.contains(lectureId),
-                                    onClick = {
-                                        if (uiState.isEditMode) {
-                                            onToggleLectureSelected(lectureId)
-                                        }
-                                    },
-                                )
-                            }
-                        }
-                        PullRefreshIndicator(
-                            refreshing = uiState.isRefreshing,
-                            state = pullRefreshState,
-                            modifier = Modifier.align(Alignment.TopCenter),
+                        val lectureId = it.id
+                        VacancyListItem(
+                            lectureDto = LectureDto.fromLecture(it), // FIXME: VacancyListItem이 LectureDto가 아닌 도메인 모델을 받게 하고 싶다.
+                            editing = uiState.isEditMode,
+                            checked = uiState.selectedLectures.contains(lectureId),
+                            onClick = {
+                                if (uiState.isEditMode) {
+                                    onToggleLectureSelected(lectureId)
+                                }
+                            },
                         )
                     }
+                }
+                PullRefreshIndicator(
+                    refreshing = uiState.isRefreshing,
+                    state = pullRefreshState,
+                    modifier = Modifier.align(Alignment.TopCenter),
+                )
+            }
 
-                    AnimatedVisibility(
-                        visible = uiState.isEditMode,
-                        enter = slideInVertically { it } + fadeIn(),
-                        exit = slideOutVertically { it } + fadeOut(),
-                    ) {
-                        WebViewStyleButton(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            onClick = {
-                                onShowDeleteModal(
-                                    ModalProperties(
-                                        title = context.getString(R.string.vacancy_delete_selected_title),
-                                        positiveButton = context.getString(R.string.common_ok),
-                                        negativeButton = context.getString(R.string.common_cancel),
-                                        onDismiss = onHideDeleteModal,
-                                        onConfirm = {
-                                            onDeleteSelectedLectures()
-                                            onHideDeleteModal()
-                                        },
-                                        content = {
-                                            Text(
-                                                text = context.getString(R.string.vacancy_delete_selected_message),
-                                                style = SNUTTTypography.body1,
-                                            )
-                                        },
-                                    ),
-                                )
-                            },
-                            enabled = uiState.deleteEnabled,
-                            disabledColor = SNUTTColors.VacancyGray,
-                        ) {
-                            Text(
-                                text = stringResource(R.string.vacancy_delete_selected),
-                                color = SNUTTColors.AllWhite,
-                                style = SNUTTTypography.h3,
+            AnimatedContent(
+                targetState = uiState.isEditMode,
+            ) { isEditMode ->
+                if (isEditMode) {
+                    WebViewStyleButton(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        onClick = {
+                            onShowDeleteModal(
+                                ModalProperties(
+                                    title = context.getString(R.string.vacancy_delete_selected_title),
+                                    positiveButton = context.getString(R.string.common_ok),
+                                    negativeButton = context.getString(R.string.common_cancel),
+                                    onDismiss = onHideDeleteModal,
+                                    onConfirm = {
+                                        onDeleteSelectedLectures()
+                                        onHideDeleteModal()
+                                    },
+                                    content = {
+                                        Text(
+                                            text = context.getString(R.string.vacancy_delete_selected_message),
+                                            style = SNUTTTypography.body1,
+                                        )
+                                    },
+                                ),
                             )
-                        }
+                        },
+                        enabled = uiState.deleteEnabled,
+                        disabledColor = SNUTTColors.VacancyGray,
+                    ) {
+                        Text(
+                            text = stringResource(R.string.vacancy_delete_selected),
+                            color = SNUTTColors.AllWhite,
+                            style = SNUTTTypography.h3,
+                        )
                     }
                 }
-
-                AnimatedVisibility(
-                    visible = uiState.isEditMode.not(),
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .offset((-27).dp, (-22).dp),
-                    enter = slideInVertically {
-                        with(density) { 10.dp.roundToPx() }
-                    } + fadeIn(),
-                    exit = slideOutVertically {
-                        with(density) { 10.dp.roundToPx() }
-                    } + fadeOut(),
-                ) {
-                    SugangSnuFloatingActionButton2(
-                        onClick = onOpenSugangSnu,
-                    )
-                }
-                if (uiState.showIntroDialog) {
-                    VacancyIntroDialog2(
-                        onDismiss = onHideIntroDialog,
-                    )
-                }
             }
+        }
+
+        AnimatedVisibility(
+            visible = uiState.isEditMode.not(),
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .offset((-27).dp, (-22).dp),
+            enter = slideInVertically {
+                with(density) { 10.dp.roundToPx() }
+            } + fadeIn(),
+            exit = slideOutVertically {
+                with(density) { 10.dp.roundToPx() }
+            } + fadeOut(),
+        ) {
+            SugangSnuFloatingActionButton(
+                onClick = onOpenSugangSnu,
+            )
+        }
+        if (uiState.showIntroDialog) {
+            VacancyIntroDialog(
+                onDismiss = onHideIntroDialog,
+            )
         }
     }
 }
 
 @Composable
-fun VacancyIntroDialog2(
+fun VacancyIntroDialog(
     onDismiss: () -> Unit,
 ) {
     val scope = rememberCoroutineScope()
@@ -365,8 +664,8 @@ fun VacancyIntroDialog2(
 fun PagerIndicator(
     pagerState: PagerState,
     modifier: Modifier = Modifier,
-    activeColor: androidx.compose.ui.graphics.Color,
-    inactiveColor: androidx.compose.ui.graphics.Color,
+    activeColor: Color,
+    inactiveColor: Color,
 ) {
     Row(
         modifier = modifier,
@@ -379,7 +678,7 @@ fun PagerIndicator(
                     .size(6.dp)
                     .background(
                         if (pagerState.currentPage == index) activeColor else inactiveColor,
-                        shape = androidx.compose.foundation.shape.CircleShape,
+                        shape = CircleShape,
                     ),
             )
         }
@@ -387,7 +686,7 @@ fun PagerIndicator(
 }
 
 @Composable
-fun SugangSnuFloatingActionButton2(
+fun SugangSnuFloatingActionButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -413,6 +712,42 @@ fun SugangSnuFloatingActionButton2(
 
 @Composable
 @Preview(showBackground = true)
+fun VacancyScreenLoadingPreview() {
+    VacancyScreen(
+        uiState = VacancyUiState.Loading,
+        onClickBack = {},
+        onShowIntroDialog = {},
+        onHideIntroDialog = {},
+        onToggleEditMode = {},
+        onFetchVacancyLectures = {},
+        onToggleLectureSelected = { _ -> },
+        onShowDeleteModal = {},
+        onHideDeleteModal = {},
+        onDeleteSelectedLectures = {},
+        onOpenSugangSnu = {},
+    )
+}
+
+@Composable
+@Preview(showBackground = true)
+fun VacancyScreenErrorPreview() {
+    VacancyScreen(
+        uiState = VacancyUiState.Error,
+        onClickBack = {},
+        onShowIntroDialog = {},
+        onHideIntroDialog = {},
+        onToggleEditMode = {},
+        onFetchVacancyLectures = {},
+        onToggleLectureSelected = { _ -> },
+        onShowDeleteModal = {},
+        onHideDeleteModal = {},
+        onDeleteSelectedLectures = {},
+        onOpenSugangSnu = {},
+    )
+}
+
+@Composable
+@Preview(showBackground = true)
 fun VacancyScreenIntroPreview() {
     VacancyScreen(
         uiState = VacancyUiState.Success(
@@ -427,7 +762,7 @@ fun VacancyScreenIntroPreview() {
         onShowIntroDialog = {},
         onHideIntroDialog = {},
         onToggleEditMode = {},
-        onRefreshVacancyLectures = {},
+        onFetchVacancyLectures = {},
         onToggleLectureSelected = { _ -> },
         onShowDeleteModal = {},
         onHideDeleteModal = {},
@@ -452,7 +787,28 @@ fun VacancyScreenNormalModePreview() {
         onShowIntroDialog = {},
         onHideIntroDialog = {},
         onToggleEditMode = {},
-        onRefreshVacancyLectures = {},
+        onFetchVacancyLectures = {},
+        onToggleLectureSelected = { _ -> },
+        onShowDeleteModal = {},
+        onHideDeleteModal = {},
+        onDeleteSelectedLectures = {},
+        onOpenSugangSnu = {},
+    )
+}
+
+@Composable
+@Preview(showBackground = true)
+fun VacancyScreenEmptyPreview() {
+    VacancyScreen(
+        uiState = VacancyUiState.Empty(
+            showIntroDialog = false,
+            isRefreshing = false,
+        ),
+        onClickBack = {},
+        onShowIntroDialog = {},
+        onHideIntroDialog = {},
+        onToggleEditMode = {},
+        onFetchVacancyLectures = {},
         onToggleLectureSelected = { _ -> },
         onShowDeleteModal = {},
         onHideDeleteModal = {},
@@ -477,7 +833,7 @@ fun VacancyScreenEditModePreview() {
         onShowIntroDialog = {},
         onHideIntroDialog = {},
         onToggleEditMode = {},
-        onRefreshVacancyLectures = {},
+        onFetchVacancyLectures = {},
         onToggleLectureSelected = { _ -> },
         onShowDeleteModal = {},
         onHideDeleteModal = {},
@@ -502,7 +858,7 @@ fun VacancyScreenDeleteEnabledPreview() {
         onShowIntroDialog = {},
         onHideIntroDialog = {},
         onToggleEditMode = {},
-        onRefreshVacancyLectures = {},
+        onFetchVacancyLectures = {},
         onToggleLectureSelected = { _ -> },
         onShowDeleteModal = {},
         onHideDeleteModal = {},
@@ -515,6 +871,6 @@ fun VacancyScreenDeleteEnabledPreview() {
 @Composable
 private fun SugangSnuFloatingActionButtonPreview() {
     SNUTTTheme {
-        SugangSnuFloatingActionButton2({})
+        SugangSnuFloatingActionButton({})
     }
 }
