@@ -86,7 +86,7 @@ class LectureReminderViewModel @Inject constructor(
             is AuthError -> {
                 _lectureReminderUiEvent.emit(LectureReminderUiEvent.ShowToast(displayMessage))
                 userRepository.postForceLogout()
-                _lectureReminderUiEvent.emit(LectureReminderUiEvent.NavigateToOnboard)
+                _lectureReminderUiEvent.emit(LectureReminderUiEvent.LoggedOut)
             }
             else -> {
                 _lectureReminderUiEvent.emit(LectureReminderUiEvent.ShowToast(displayMessage))
@@ -132,7 +132,7 @@ enum class LectureReminderOffset {
 sealed interface LectureReminderUiEvent {
     data class ShowToast(val message: String) : LectureReminderUiEvent
     data class ShowSnackBarByEvent(val event: LectureReminderEvent) : LectureReminderUiEvent
-    data object NavigateToOnboard : LectureReminderUiEvent
+    data object LoggedOut : LectureReminderUiEvent
 }
 
 enum class LectureReminderEvent {

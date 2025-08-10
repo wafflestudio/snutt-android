@@ -89,7 +89,7 @@ fun LectureReminderRoute(
                         }
                     }
                 }
-                is LectureReminderUiEvent.NavigateToOnboard -> {
+                is LectureReminderUiEvent.LoggedOut -> {
                     onNavigateOnboard()
                 }
             }
