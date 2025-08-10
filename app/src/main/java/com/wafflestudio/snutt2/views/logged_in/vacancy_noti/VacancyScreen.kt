@@ -71,7 +71,6 @@ import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.domainmodel.preview.PreviewData
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.logImpression
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTheme
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -467,7 +466,7 @@ fun VacancySuccess(
                     ) {
                         val lectureId = it.id
                         VacancyListItem(
-                            lectureDto = LectureDto.fromLecture(it), // FIXME: VacancyListItem이 LectureDto가 아닌 도메인 모델을 받게 하고 싶다.
+                            lecture = it,
                             editing = uiState.isEditMode,
                             checked = uiState.selectedLectures.contains(lectureId),
                             onClick = {
