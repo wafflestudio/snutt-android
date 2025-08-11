@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.wafflestudio.snutt2.R
@@ -67,6 +68,7 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.search.*
+import com.wafflestudio.snutt2.views.logged_in.home.settings.LectureReminderOffset
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import kotlinx.coroutines.*
@@ -108,6 +110,9 @@ fun LectureDetailPage(
     var creditText by remember { mutableStateOf(editingLectureDetail.credit.toString()) }
     val editingLectureReview by vm.editingLectureReview.collectAsState()
     val semesterChange by searchViewModel.semesterChange.collectAsState(0)
+    val showLectureReminderPicker by vm.showLectureReminderPicker.collectAsStateWithLifecycle()
+    val currentLectureWithReminderOption by vm.currentLectureWithReminderOption.collectAsStateWithLifecycle()
+
     /* 현재 LectureDto 타입의 editingLectureDetail 플로우를 변경해 가면서 API 부를 때도 쓰고 화면에 정보 표시할 때도 쓰고 있는데,
      * credit은 Long 타입이라서 학점 입력하는 editText에 빈 문자열을 넣었을 때(=다 지웠을 때) 문제가 발생한다. 그래서 credit만 별도의 MutableState<String>을 둬서 운용한다.
      * 이때 다른 정보들은 editingLectureDetail 따라서 바뀌니까 모드가 바뀌어도 따로 할 게 없는데, 얘는 편집모드->일반모드로 바뀔 때 따로 변경해 줘야 한다. 그것이 아래의 코드.
@@ -166,6 +171,20 @@ fun LectureDetailPage(
                 this.webView.addJavascriptInterface(CloseBridge(onClose = { scope.launch { bottomSheet.hide() } }), "Snutt")
             }
         }
+
+    val lectureReminderOptions = listOf(
+        stringResource(R.string.settings_lecture_reminder_none),
+        stringResource(R.string.settings_lecture_reminder_ten_minutes_before),
+        stringResource(R.string.settings_lecture_reminder_at_start_time),
+        stringResource(R.string.settings_lecture_reminder_ten_minutes_after),
+    )
+
+    fun LectureReminderOffset.getString(): String = when (this) {
+        LectureReminderOffset.NONE -> lectureReminderOptions[0]
+        LectureReminderOffset.TEN_MINUTES_BEFORE -> lectureReminderOptions[1]
+        LectureReminderOffset.AT_START_TIME -> lectureReminderOptions[2]
+        LectureReminderOffset.TEN_MINUTES_AFTER -> lectureReminderOptions[3]
+    }
 
     ModalBottomSheetLayout(
         sheetContent = bottomSheet.content,
@@ -375,6 +394,21 @@ fun LectureDetailPage(
                                 }
                             }
                         }
+                    }
+                }
+                AnimatedVisibility(showLectureReminderPicker && (modeType !is ModeType.Editing)) {
+                    Column(
+                        modifier = Modifier
+                            .background(SNUTTColors.White900)
+                            .padding(vertical = 4.dp),
+                    ) {
+                        SegmentedPicker(
+                            title = stringResource(R.string.lecture_detail_lecture_reminder_title),
+                            options = LectureReminderOffset.entries,
+                            optionLabel = { offset -> offset.getString() },
+                            selectedOption = currentLectureWithReminderOption.lectureReminderOffset,
+                            onOptionSelected = {},
+                        )
                     }
                 }
                 AnimatedVisibility(isCustom.not() && (modeType !is ModeType.Editing)) {

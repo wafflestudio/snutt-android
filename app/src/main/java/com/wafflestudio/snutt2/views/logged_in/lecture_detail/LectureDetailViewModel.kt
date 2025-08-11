@@ -4,15 +4,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
+import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
 import com.wafflestudio.snutt2.lib.network.ApiOnError
+import com.wafflestudio.snutt2.lib.network.EOF
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureReviewDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
+import com.wafflestudio.snutt2.lib.network.onFailure
+import com.wafflestudio.snutt2.lib.network.onSuccess
 import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.TableTheme
+import com.wafflestudio.snutt2.views.logged_in.home.settings.LectureWithReminderOption
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -33,6 +38,7 @@ sealed class ModeType {
 class LectureDetailViewModel @Inject constructor(
     private val currentTableRepository: CurrentTableRepository,
     private val lectureSearchRepository: LectureSearchRepository,
+    private val tableRepository: TableRepository,
     private val apiOnError: ApiOnError,
     getCurrentTableThemeUseCase: GetCurrentTableThemeUseCase,
 ) : ViewModel() {
@@ -66,6 +72,12 @@ class LectureDetailViewModel @Inject constructor(
         }.getOrElse { emptyList() }
     }
 
+    private val _showLectureReminderPicker = MutableStateFlow(false)
+    val showLectureReminderPicker = _showLectureReminderPicker.asStateFlow()
+
+    private val _currentLectureWithReminderOption = MutableStateFlow(LectureWithReminderOption.Default)
+    val currentLectureWithReminderOption = _currentLectureWithReminderOption.asStateFlow()
+
     fun setEditMode(adding: Boolean = false) {
         viewModelScope.launch { _modeType.emit(ModeType.Editing(adding)) }
     }
@@ -75,6 +87,20 @@ class LectureDetailViewModel @Inject constructor(
         viewModelScope.launch {
             _modeType.emit(modeType)
             _editingLectureDetail.emit(fixedLectureDetail)
+
+            _showLectureReminderPicker.emit(false)
+            _currentLectureWithReminderOption.emit(LectureWithReminderOption.Default)
+            tableRepository.getTimetableLectureReminder(currentTable.value?.id ?: "", lecture?.id ?: "")
+                .onSuccess { data ->
+                    _showLectureReminderPicker.emit(true)
+                    _currentLectureWithReminderOption.emit(data)
+                }
+                .onFailure { error ->
+                    if (error is EOF) {
+                        _showLectureReminderPicker.emit(true)
+                        _currentLectureWithReminderOption.emit(LectureWithReminderOption.Default.copy(lectureId = lecture?.id ?: ""))
+                    }
+                }
         }
     }
 

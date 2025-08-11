@@ -343,6 +343,7 @@ object ErrorCode {
     const val VACANCY_DUPLICATE = 0x9FC4
     const val USED_EMAIL = 0x9FC5
     const val INVALID_NICKNAME = 0x9C48
+    const val PAST_SEMESTER = 0x9C58
 
     /* 401 - Request was invalid */
     const val NO_FB_ID_OR_TOKEN = 0x1001

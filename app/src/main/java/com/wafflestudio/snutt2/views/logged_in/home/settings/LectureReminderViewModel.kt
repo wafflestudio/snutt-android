@@ -123,7 +123,15 @@ data class LectureWithReminderOption(
     val lectureId: String,
     val lectureTitle: String,
     val lectureReminderOffset: LectureReminderOffset,
-)
+) {
+    companion object {
+        val Default = LectureWithReminderOption(
+            lectureId = "",
+            lectureTitle = "",
+            lectureReminderOffset = LectureReminderOffset.NONE,
+        )
+    }
+}
 
 enum class LectureReminderOffset {
     NONE, TEN_MINUTES_BEFORE, AT_START_TIME, TEN_MINUTES_AFTER

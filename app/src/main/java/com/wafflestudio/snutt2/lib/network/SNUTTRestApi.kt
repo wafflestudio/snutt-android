@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.lib.network
 
 import com.wafflestudio.snutt2.lib.network.dto.*
+import com.wafflestudio.snutt2.lib.network.dto.core.TimetableLectureReminderDto
 import retrofit2.http.*
 
 /**
@@ -102,6 +103,12 @@ interface SNUTTRestApi {
         @Path("id") id: String,
         @Path("lecture_id") lecture_id: String,
     ): ResetLectureResults
+
+    @GET("v1/tables/{timetableId}/lecture/{timetableLectureId}/reminder")
+    suspend fun _getTimetableLectureReminder(
+        @Path("timetableId") timetableId: String,
+        @Path("timetableLectureId") timetableLectureId: String,
+    ): TimetableLectureReminderDto
 
     @GET("/v1/course_books/official")
     suspend fun _getCoursebooksOfficial(

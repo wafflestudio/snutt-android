@@ -10,6 +10,8 @@ import com.wafflestudio.snutt2.lib.network.dto.PutTableParams
 import com.wafflestudio.snutt2.lib.network.dto.PutTableThemeParams
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
+import com.wafflestudio.snutt2.lib.network.dto.core.toDomainModel
+import com.wafflestudio.snutt2.lib.network.toDomainError
 import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.views.logged_in.home.settings.LectureReminderOffset
 import com.wafflestudio.snutt2.views.logged_in.home.settings.LectureWithReminderOption
@@ -131,5 +133,14 @@ class TableRepositoryImpl @Inject constructor(
             }
         }
         return Result.Success(Unit)
+    }
+
+    override suspend fun getTimetableLectureReminder(timetableId: String, lectureId: String): Result<LectureWithReminderOption> {
+        try {
+            val result = api._getTimetableLectureReminder(timetableId, lectureId)
+            return Result.Success(result.toDomainModel())
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
     }
 }

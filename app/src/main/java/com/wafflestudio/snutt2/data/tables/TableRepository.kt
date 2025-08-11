@@ -39,4 +39,6 @@ interface TableRepository {
 
     // TODO: 임시 코드
     suspend fun updateTableLectureReminders(lectureId: String, newOption: LectureWithReminderOption): Result<Unit>
+
+    suspend fun getTimetableLectureReminder(timetableId: String, lectureId: String): Result<LectureWithReminderOption>
 }
