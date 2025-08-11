@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.data.tables
 
 import android.util.Log
 import com.wafflestudio.snutt2.data.SNUTTStorage
+import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
 import com.wafflestudio.snutt2.domainmodel.preview.PreviewData
 import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
@@ -15,7 +16,6 @@ import com.wafflestudio.snutt2.lib.network.dto.core.toDomainModel
 import com.wafflestudio.snutt2.lib.network.toDomainError
 import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.views.logged_in.home.settings.LectureReminderOffset
-import com.wafflestudio.snutt2.views.logged_in.home.settings.LectureWithReminderOption
 import com.wafflestudio.snutt2.views.logged_in.home.settings.getIntOffset
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
