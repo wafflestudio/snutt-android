@@ -57,7 +57,7 @@ fun LectureDetailItem(
         } else {
             Text(
                 text = value.ifBlank { hint ?: "" },
-                style = textStyle.copy(color = SNUTTColors.Black600),
+                style = textStyle,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.fillMaxWidth(),
