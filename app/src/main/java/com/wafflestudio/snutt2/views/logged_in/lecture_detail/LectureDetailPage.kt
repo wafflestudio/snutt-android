@@ -417,6 +417,7 @@ fun LectureDetailPage(
                                     ),
                                 )
                             },
+                            description = stringResource(R.string.lecture_detail_lecture_reminder_description),
                         )
                     }
                 }

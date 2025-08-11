@@ -183,6 +183,7 @@ fun LectureReminderScreen(
                                         ),
                                     )
                                 },
+                                description = null,
                                 modifier = Modifier.background(SNUTTColors.White900),
                             )
                         }
