@@ -40,6 +40,7 @@ import com.wafflestudio.snutt2.components.compose.snackbar.dismiss
 import com.wafflestudio.snutt2.domainmodel.preview.PreviewData
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.components.compose.SegmentedPicker
+import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography

@@ -15,8 +15,8 @@ import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.network.dto.core.toDomainModel
 import com.wafflestudio.snutt2.lib.network.toDomainError
 import com.wafflestudio.snutt2.lib.toOptional
-import com.wafflestudio.snutt2.views.logged_in.home.settings.LectureReminderOffset
-import com.wafflestudio.snutt2.views.logged_in.home.settings.getIntOffset
+import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
+import com.wafflestudio.snutt2.domainmodel.getIntOffset
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 import javax.inject.Singleton

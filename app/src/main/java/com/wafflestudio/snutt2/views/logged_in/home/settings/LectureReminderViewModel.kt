@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
+import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
 import com.wafflestudio.snutt2.lib.debouncePerKey
 import com.wafflestudio.snutt2.lib.network.AuthError
@@ -118,16 +119,6 @@ sealed interface LectureReminderUiState {
     data object Loading : LectureReminderUiState
     data object Error : LectureReminderUiState
     data class Success(val data: Map<String, LectureWithReminderOption>) : LectureReminderUiState
-}
-
-enum class LectureReminderOffset {
-    NONE, TEN_MINUTES_BEFORE, AT_START_TIME, TEN_MINUTES_AFTER
-}
-
-fun LectureReminderOffset.getIntOffset(): Int = when (this) {
-    LectureReminderOffset.TEN_MINUTES_BEFORE -> -10
-    LectureReminderOffset.TEN_MINUTES_AFTER -> 10
-    else -> 0
 }
 
 sealed interface LectureReminderUiEvent {

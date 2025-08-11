@@ -8,7 +8,7 @@ import com.wafflestudio.snutt2.domainmodel.LectureSession
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
 import com.wafflestudio.snutt2.domainmodel.SyllabusLecture
 import com.wafflestudio.snutt2.domainmodel.domainModel
-import com.wafflestudio.snutt2.views.logged_in.home.settings.LectureReminderOffset
+import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
 import java.time.DayOfWeek
 import java.time.LocalTime
 
