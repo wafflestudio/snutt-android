@@ -69,6 +69,7 @@ import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.search.*
 import com.wafflestudio.snutt2.views.logged_in.home.settings.LectureReminderOffset
+import com.wafflestudio.snutt2.views.logged_in.home.settings.LectureWithReminderOption
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import kotlinx.coroutines.*
@@ -111,7 +112,7 @@ fun LectureDetailPage(
     val editingLectureReview by vm.editingLectureReview.collectAsState()
     val semesterChange by searchViewModel.semesterChange.collectAsState(0)
     val showLectureReminderPicker by vm.showLectureReminderPicker.collectAsStateWithLifecycle()
-    val currentLectureWithReminderOption by vm.currentLectureWithReminderOption.collectAsStateWithLifecycle()
+    val lectureWithReminderOption by vm.lectureWithReminderOption.collectAsStateWithLifecycle()
 
     /* 현재 LectureDto 타입의 editingLectureDetail 플로우를 변경해 가면서 API 부를 때도 쓰고 화면에 정보 표시할 때도 쓰고 있는데,
      * credit은 Long 타입이라서 학점 입력하는 editText에 빈 문자열을 넣었을 때(=다 지웠을 때) 문제가 발생한다. 그래서 credit만 별도의 MutableState<String>을 둬서 운용한다.
@@ -406,8 +407,16 @@ fun LectureDetailPage(
                             title = stringResource(R.string.lecture_detail_lecture_reminder_title),
                             options = LectureReminderOffset.entries,
                             optionLabel = { offset -> offset.getString() },
-                            selectedOption = currentLectureWithReminderOption.lectureReminderOffset,
-                            onOptionSelected = {},
+                            selectedOption = lectureWithReminderOption.lectureReminderOffset,
+                            onOptionSelected = { offset ->
+                                vm.changeLectureReminderOption(
+                                    LectureWithReminderOption(
+                                        lectureId = lectureWithReminderOption.lectureId,
+                                        lectureTitle = lectureWithReminderOption.lectureTitle,
+                                        lectureReminderOffset = offset,
+                                    ),
+                                )
+                            },
                         )
                     }
                 }

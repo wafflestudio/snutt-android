@@ -19,11 +19,16 @@ import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.TableTheme
 import com.wafflestudio.snutt2.views.logged_in.home.settings.LectureWithReminderOption
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -34,6 +39,7 @@ sealed class ModeType {
     object Viewing : ModeType()
 }
 
+@OptIn(FlowPreview::class)
 @HiltViewModel
 class LectureDetailViewModel @Inject constructor(
     private val currentTableRepository: CurrentTableRepository,
@@ -75,8 +81,18 @@ class LectureDetailViewModel @Inject constructor(
     private val _showLectureReminderPicker = MutableStateFlow(false)
     val showLectureReminderPicker = _showLectureReminderPicker.asStateFlow()
 
-    private val _currentLectureWithReminderOption = MutableStateFlow(LectureWithReminderOption.Default)
-    val currentLectureWithReminderOption = _currentLectureWithReminderOption.asStateFlow()
+    private val _lectureWithReminderOption = MutableStateFlow(LectureWithReminderOption.Default)
+    val lectureWithReminderOption = _lectureWithReminderOption.asStateFlow()
+
+    init {
+        lectureWithReminderOption
+            .debounce(200L)
+            .distinctUntilChanged()
+            .onEach { lectureWithReminderOption ->
+                putTimetableLectureReminder(lectureWithReminderOption)
+            }
+            .launchIn(viewModelScope)
+    }
 
     fun setEditMode(adding: Boolean = false) {
         viewModelScope.launch { _modeType.emit(ModeType.Editing(adding)) }
@@ -87,20 +103,7 @@ class LectureDetailViewModel @Inject constructor(
         viewModelScope.launch {
             _modeType.emit(modeType)
             _editingLectureDetail.emit(fixedLectureDetail)
-
-            _showLectureReminderPicker.emit(false)
-            _currentLectureWithReminderOption.emit(LectureWithReminderOption.Default)
-            tableRepository.getTimetableLectureReminder(currentTable.value?.id ?: "", lecture?.id ?: "")
-                .onSuccess { data ->
-                    _showLectureReminderPicker.emit(true)
-                    _currentLectureWithReminderOption.emit(data)
-                }
-                .onFailure { error ->
-                    if (error is EOF) {
-                        _showLectureReminderPicker.emit(true)
-                        _currentLectureWithReminderOption.emit(LectureWithReminderOption.Default.copy(lectureId = lecture?.id ?: ""))
-                    }
-                }
+            getTimetableLectureReminder(fixedLectureDetail)
         }
     }
 
@@ -156,6 +159,36 @@ class LectureDetailViewModel @Inject constructor(
         return originalLectureId?.let { lectureId ->
             currentTableRepository.getLectureReviewSummary(lectureId)
         }
+    }
+
+    private suspend fun getTimetableLectureReminder(lecture: LectureDto) {
+        _showLectureReminderPicker.emit(false)
+        _lectureWithReminderOption.emit(LectureWithReminderOption.Default)
+        tableRepository.getTimetableLectureReminder(currentTable.value?.id ?: "", lecture.id)
+            .onSuccess { data ->
+                _showLectureReminderPicker.emit(true)
+                _lectureWithReminderOption.emit(data)
+            }
+            .onFailure { error ->
+                if (error is EOF) {
+                    _showLectureReminderPicker.emit(true)
+                    _lectureWithReminderOption.emit(LectureWithReminderOption.Default.copy(lectureId = lecture.id))
+                }
+            }
+    }
+
+    fun changeLectureReminderOption(option: LectureWithReminderOption) {
+        viewModelScope.launch {
+            _lectureWithReminderOption.emit(option)
+        }
+    }
+
+    private suspend fun putTimetableLectureReminder(lectureWithReminderOption: LectureWithReminderOption) {
+        tableRepository.updateTimetableLectureReminder(
+            timetableId = currentTable.value?.id ?: "",
+            lectureId = lectureWithReminderOption.lectureId,
+            option = lectureWithReminderOption,
+        )
     }
 
     private fun buildPutLectureParams(): PutLectureParams {

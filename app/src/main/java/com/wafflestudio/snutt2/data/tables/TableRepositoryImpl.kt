@@ -8,6 +8,7 @@ import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.PostTableParams
 import com.wafflestudio.snutt2.lib.network.dto.PutTableParams
 import com.wafflestudio.snutt2.lib.network.dto.PutTableThemeParams
+import com.wafflestudio.snutt2.lib.network.dto.PutTimetableLectureReminderParams
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.network.dto.core.toDomainModel
@@ -15,6 +16,7 @@ import com.wafflestudio.snutt2.lib.network.toDomainError
 import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.views.logged_in.home.settings.LectureReminderOffset
 import com.wafflestudio.snutt2.views.logged_in.home.settings.LectureWithReminderOption
+import com.wafflestudio.snutt2.views.logged_in.home.settings.getIntOffset
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -120,7 +122,7 @@ class TableRepositoryImpl @Inject constructor(
         )
     }
 
-    // TODO: 임시 코드
+    // TODO: 임시 코드, 아래의 updateTimetableLectureReminder로 대체
     override suspend fun updateTableLectureReminders(lectureId: String, option: LectureWithReminderOption): Result<Unit> {
         when (option.lectureReminderOffset) {
             LectureReminderOffset.NONE -> {
@@ -139,6 +141,23 @@ class TableRepositoryImpl @Inject constructor(
         try {
             val result = api._getTimetableLectureReminder(timetableId, lectureId)
             return Result.Success(result.toDomainModel())
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun updateTimetableLectureReminder(timetableId: String, lectureId: String, option: LectureWithReminderOption): Result<LectureWithReminderOption> {
+        try {
+            val result = when (option.lectureReminderOffset) {
+                LectureReminderOffset.NONE -> {
+                    api._deleteTimetableLectureReminder(timetableId, lectureId)
+                    LectureWithReminderOption.Default
+                }
+                else -> {
+                    api._putTimetableLectureReminder(timetableId, lectureId, PutTimetableLectureReminderParams(option.lectureReminderOffset.getIntOffset())).toDomainModel()
+                }
+            }
+            return Result.Success(result)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
         }
