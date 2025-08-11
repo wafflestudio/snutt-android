@@ -58,7 +58,7 @@ fun LectureDetailItem(
             Text(
                 text = value.ifBlank { hint ?: "" },
                 style = textStyle,
-                maxLines = 1,
+                maxLines = if (singleLine) 1 else Int.MAX_VALUE,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.fillMaxWidth(),
             )
