@@ -34,7 +34,8 @@ fun LectureDetailItem(
     onValueChange: (String) -> Unit = {},
     hint: String? = stringResource(R.string.lecture_detail_hint_nothing),
     enabled: Boolean = false,
-    textStyle: TextStyle = SNUTTTypography.body1.copy(fontSize = 15.sp),
+    editable: Boolean = true,
+    textStyle: TextStyle = SNUTTTypography.body1.copy(fontSize = 15.sp, color = if (editable) SNUTTColors.Black900 else SNUTTColors.Gray600),
     focusManager: FocusManager = LocalFocusManager.current,
     singleLine: Boolean = true,
     keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
@@ -57,7 +58,7 @@ fun LectureDetailItem(
         } else {
             Text(
                 text = value.ifBlank { hint ?: "" },
-                style = textStyle,
+                style = if (value == "") textStyle.copy(color = SNUTTColors.Gray200) else textStyle,
                 maxLines = if (singleLine) 1 else Int.MAX_VALUE,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.fillMaxWidth(),
