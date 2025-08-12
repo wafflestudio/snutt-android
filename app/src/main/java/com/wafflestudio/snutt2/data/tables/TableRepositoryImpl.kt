@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.data.tables
 
-import android.util.Log
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
 import com.wafflestudio.snutt2.lib.network.Result
@@ -15,6 +14,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.toDomainModel
 import com.wafflestudio.snutt2.lib.network.toDomainError
 import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
+import com.wafflestudio.snutt2.domainmodel.TimetableLectureReminders
 import com.wafflestudio.snutt2.domainmodel.getIntOffset
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
@@ -114,12 +114,12 @@ class TableRepositoryImpl @Inject constructor(
         api._deletePrimaryTable(id)
     }
 
-    override suspend fun getPrimaryTableLectureReminders(): Result<List<LectureWithReminderOption>> {
+    override suspend fun getActiveLectureReminders(): Result<TimetableLectureReminders> {
         try {
             val activeLectureReminders = api._getActiveLectureReminders()
-            val activeTableLectures = api._getTableById(activeLectureReminders.timetableId).lectureList
+            val activeTable = api._getTableById(activeLectureReminders.timetableId)
             val activeLecturesWithReminderOption = activeLectureReminders.reminders.map { it.toDomainModel() }
-            val result = activeTableLectures.map { lectureDto ->
+            val result = activeTable.lectureList.map { lectureDto ->
                 val matchingOption = activeLecturesWithReminderOption.find { it.lectureId == lectureDto.id }
                 LectureWithReminderOption(
                     lectureId = lectureDto.id,
@@ -127,25 +127,10 @@ class TableRepositoryImpl @Inject constructor(
                     lectureReminderOffset = matchingOption?.lectureReminderOffset ?: LectureReminderOffset.NONE,
                 )
             }
-            return Result.Success(result)
+            return Result.Success(TimetableLectureReminders(activeTable.id, result))
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
         }
-    }
-
-    // TODO: 임시 코드, 아래의 updateTimetableLectureReminder로 대체
-    override suspend fun updateTableLectureReminders(lectureId: String, option: LectureWithReminderOption): Result<Unit> {
-        when (option.lectureReminderOffset) {
-            LectureReminderOffset.NONE -> {
-                // DELETE API 호출
-                Log.d("plgafhdtest", "DELETE API 호출: $lectureId, ${option.lectureTitle}, ${option.lectureReminderOffset}")
-            }
-            else -> {
-                // PUT API 호출
-                Log.d("plgafhdtest", "PUT API 호출: $lectureId, ${option.lectureTitle}, ${option.lectureReminderOffset}")
-            }
-        }
-        return Result.Success(Unit)
     }
 
     override suspend fun getTimetableLectureReminder(timetableId: String, lectureId: String): Result<LectureWithReminderOption> {

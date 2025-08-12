@@ -38,6 +38,8 @@ class LectureReminderViewModel @Inject constructor(
     private val _lectureReminderUiEvent: MutableSharedFlow<LectureReminderUiEvent> = MutableSharedFlow(replay = 1)
     val lectureReminderUiEvent = _lectureReminderUiEvent.asSharedFlow()
 
+    private val _currentTimetableId = MutableStateFlow("")
+
     init {
         loadInitialData()
         handleUpdateEvents()
@@ -45,9 +47,10 @@ class LectureReminderViewModel @Inject constructor(
 
     private fun loadInitialData() {
         viewModelScope.launch {
-            tableRepository.getPrimaryTableLectureReminders()
+            tableRepository.getActiveLectureReminders()
                 .onSuccess { data ->
-                    _lectureReminderUiState.emit(LectureReminderUiState.Success(data.associateBy { it.lectureId }))
+                    _currentTimetableId.emit(data.timetableId)
+                    _lectureReminderUiState.emit(LectureReminderUiState.Success(data.lectureReminders.associateBy { it.lectureId }))
                 }
                 .onFailure {
                     _lectureReminderUiState.emit(LectureReminderUiState.Error)
@@ -61,7 +64,7 @@ class LectureReminderViewModel @Inject constructor(
                 .debouncePerKey(200L) { (lectureId, _) -> lectureId } // lectureId가 Key로 사용되어 lectureId가 서로 다른 변경은 debounce 없이 collect 한다.
                 .distinctUntilChanged()
                 .onEach { (lectureId, option) ->
-                    tableRepository.updateTableLectureReminders(lectureId, option)
+                    tableRepository.updateTimetableLectureReminder(_currentTimetableId.value, lectureId, option)
                         .onSuccess {
                             _lectureReminderUiEvent.emit(
                                 LectureReminderUiEvent.ShowSnackBarByEvent(

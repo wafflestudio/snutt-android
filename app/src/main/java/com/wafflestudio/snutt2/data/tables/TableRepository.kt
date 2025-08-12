@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.data.tables
 
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
+import com.wafflestudio.snutt2.domainmodel.TimetableLectureReminders
 import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
@@ -34,10 +35,7 @@ interface TableRepository {
 
     suspend fun setTableNotPrimary(id: String)
 
-    suspend fun getPrimaryTableLectureReminders(): Result<List<LectureWithReminderOption>>
-
-    // TODO: 임시 코드, 아래의 updateTimetableLectureReminder로 대체
-    suspend fun updateTableLectureReminders(lectureId: String, option: LectureWithReminderOption): Result<Unit>
+    suspend fun getActiveLectureReminders(): Result<TimetableLectureReminders>
 
     suspend fun getTimetableLectureReminder(timetableId: String, lectureId: String): Result<LectureWithReminderOption>
 
