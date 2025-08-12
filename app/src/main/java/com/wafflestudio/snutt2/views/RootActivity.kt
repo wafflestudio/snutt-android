@@ -515,6 +515,16 @@ class RootActivity : AppCompatActivity() {
                 onNavigateOnboard = { navController.navigateAsOrigin(NavigationDestination.Onboard) },
             )
         }
+        composableAnimated<NavigationDestination.LectureReminder> {
+            LectureReminderRoute(
+                onNavigateBack = {
+                    if (navController.currentDestination?.hasRoute(NavigationDestination.LectureReminder::class) == true) {
+                        navController.popBackStack()
+                    }
+                },
+                onNavigateOnboard = { navController.navigateAsOrigin(NavigationDestination.Onboard) },
+            )
+        }
         composableAnimated<NavigationDestination.ThemeMarket> {
             ThemeMarketRoute(
                 onBackClick = { navController.popBackStack() },
