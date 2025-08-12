@@ -54,6 +54,9 @@ object SNUTTColors {
     val Colors.TextMed @Composable get() = if (isLight) Color(0xff8a898e) else Color(0xff8a898e)
     val TextMed @Composable get() = MaterialTheme.colors.TextMed
 
+    val Colors.SnackbarBackground @Composable get() = if (isLight) Color(0x80000000) else Color(0xcc505050)
+    val SnackbarBackground @Composable get() = MaterialTheme.colors.SnackbarBackground
+
     val DARKER_GRAY @Composable get() = Color(0xff777777)
 
     val Red = Color(0xffe54459)

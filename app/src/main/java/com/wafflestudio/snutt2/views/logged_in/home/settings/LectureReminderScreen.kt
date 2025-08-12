@@ -110,7 +110,7 @@ fun LectureReminderRoute(
                         snackBarData = currentSnackBarData,
                         passedData = data,
                         shape = RoundedCornerShape(10.dp),
-                        backgroundColor = SNUTTColors.Black500,
+                        backgroundColor = SNUTTColors.SnackbarBackground,
                         contentStyle = SNUTTTypography.body1.copy(color = SNUTTColors.White, fontWeight = FontWeight.Medium),
                         actionLabelStyle = SNUTTTypography.body1.copy(color = SNUTTColors.MilkMint, fontWeight = FontWeight.SemiBold),
                     )
