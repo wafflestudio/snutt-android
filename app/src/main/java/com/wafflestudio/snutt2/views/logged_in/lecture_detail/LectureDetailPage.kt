@@ -475,26 +475,17 @@ fun LectureDetailPage(
                         LectureDetailItem(
                             title = stringResource(R.string.lecture_detail_course_number),
                             value = editingLectureDetail.course_number ?: "",
-                            textStyle = SNUTTTypography.body1.copy(
-                                fontSize = 15.sp,
-                                color = if (modeType is ModeType.Editing) SNUTTColors.Gray200 else SNUTTColors.Black900,
-                            ),
+                            editable = false,
                         )
                         LectureDetailItem(
                             title = stringResource(R.string.lecture_detail_lecture_number),
                             value = editingLectureDetail.lecture_number ?: "",
-                            textStyle = SNUTTTypography.body1.copy(
-                                fontSize = 15.sp,
-                                color = if (modeType is ModeType.Editing) SNUTTColors.Gray200 else SNUTTColors.Black900,
-                            ),
+                            editable = false,
                         )
                         LectureDetailItem(
                             title = editingLectureDetail.getQuotaTitle(context),
                             value = editingLectureDetail.getFullQuota(),
-                            textStyle = SNUTTTypography.body1.copy(
-                                fontSize = 15.sp,
-                                color = if (modeType is ModeType.Editing) SNUTTColors.Gray200 else SNUTTColors.Black900,
-                            ),
+                            editable = false,
                         )
                     }
                     LectureDetailItem(
