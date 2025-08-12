@@ -438,9 +438,9 @@
     <string name="settings_lecture_reminder_ten_minutes_before">10분 전</string>
     <string name="settings_lecture_reminder_at_start_time">수업 시작 시</string>
     <string name="settings_lecture_reminder_ten_minutes_after">10분 후</string>
-    <string name="settings_lecture_reminder_update_success_ten_minutes_before">수업 시작 10분 전에 푸시알림을 보내드립니다.</string>
+    <string name="settings_lecture_reminder_update_success_ten_minutes_before">수업 시작 10분 전에 푸시 알림을 보내드립니다.</string>
     <string name="settings_lecture_reminder_update_success_at_start_time">수업이 시작하면 푸시 알림을 보내드립니다.</string>
-    <string name="settings_lecture_reminder_update_success_ten_minutes_after">수업 시작 10분 후에 푸시알림을 보내드립니다.</string>
+    <string name="settings_lecture_reminder_update_success_ten_minutes_after">수업 시작 10분 후에 푸시 알림을 보내드립니다.</string>
     <string name="settings_lecture_reminder_snackbar_navigate">보기</string>
     <string name="settings_lecture_reminder_guide">강의 리마인더를 설정하면 해당 시간에 푸시 알림을 받을 수 있어요. 최신 학기의 대표시간표 속 강의들에 적용 가능해요.</string>
     <string name="settings_item_vacancy">빈자리 알림</string>
