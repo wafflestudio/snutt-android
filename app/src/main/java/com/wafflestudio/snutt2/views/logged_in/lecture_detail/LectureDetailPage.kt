@@ -172,6 +172,13 @@ fun LectureDetailPage(
         }
     }
 
+    // 리팩토링을 한다면, 아래 코드는 필요가 없다. 지금은 LectureDetailPage가 dispose 될 때 LectureDetailViewModel은 여전히 살아있기 때문에 필요한 코드.
+    DisposableEffect(Unit) {
+        onDispose {
+            vm.dispose()
+        }
+    }
+
     /* 바텀시트 관련 */
     val bottomSheet = BottomSheet()
 

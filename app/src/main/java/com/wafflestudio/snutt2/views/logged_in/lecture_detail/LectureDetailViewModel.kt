@@ -26,6 +26,7 @@ import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.TableTheme
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -34,6 +35,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -97,14 +99,30 @@ class LectureDetailViewModel @Inject constructor(
     private val _lectureDetailUiEvent: MutableSharedFlow<LectureDetailUiEvent> = MutableSharedFlow(replay = 1)
     val lectureDetailUiEvent = _lectureDetailUiEvent.asSharedFlow()
 
-    init {
-        lectureWithReminderOption
+    // 여기부터 dispose(), 그리고 관련 코드는 리팩토링을 한다면 필요가 없다. 지금은 LectureDetailPage가 dispose 될 때 LectureDetailViewModel은 여전히 살아있기 때문에 필요한 코드.
+    private var lectureReminderJob: Job? = null
+
+    private fun init() {
+        lectureReminderJob = lectureWithReminderOption
+            .drop(1) // 이 또한 리팩토링을 한다면 필요가 없다.
             .debounce(200L)
             .distinctUntilChanged()
             .onEach { lectureWithReminderOption ->
                 putTimetableLectureReminder(lectureWithReminderOption)
             }
             .launchIn(viewModelScope)
+    }
+
+    fun dispose() {
+        lectureReminderJob?.cancel()
+        lectureReminderJob = null
+        resetUiEvent()
+    }
+
+    private fun resetUiEvent() {
+        viewModelScope.launch {
+            _lectureDetailUiEvent.emit(LectureDetailUiEvent.ShowToast(""))
+        }
     }
 
     fun setEditMode(adding: Boolean = false) {
@@ -114,9 +132,11 @@ class LectureDetailViewModel @Inject constructor(
     fun initializeEditingLectureDetail(lecture: LectureDto?, modeType: ModeType) {
         fixedLectureDetail = lecture ?: LectureDto.Default // null 문제 (reset에서 비롯됨)
         viewModelScope.launch {
+            lectureReminderJob?.cancel()
             _modeType.emit(modeType)
             _editingLectureDetail.emit(fixedLectureDetail)
             getTimetableLectureReminder(fixedLectureDetail)
+            init()
         }
     }
 
@@ -209,10 +229,9 @@ class LectureDetailViewModel @Inject constructor(
                     },
                 ),
             )
+        }.onFailure { error ->
+            handleLectureDetailError(error)
         }
-            .onFailure { error ->
-                handleLectureDetailError(error)
-            }
     }
 
     private fun buildPutLectureParams(): PutLectureParams {
