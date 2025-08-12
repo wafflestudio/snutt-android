@@ -154,14 +154,18 @@ fun LectureDetailPage(
                     if (message.isNotEmpty()) {
                         launch {
                             snackBarHostState.currentSnackBarData.dismiss()
-                            snackBarHostState.showSnackBar(
+                            val result = snackBarHostState.showSnackBar(
                                 message = message,
+                                actionLabel = context.getString(R.string.lecture_detail_lecture_reminder_snackbar_navigate),
                                 duration = CustomSnackBarDuration(
                                     fadeIn = 500L,
                                     inBetween = 3000L,
                                     fadeOut = 500L,
                                 ),
                             )
+                            if (result == SnackbarResult.ActionPerformed) {
+                                navController.navigate(NavigationDestination.LectureReminder)
+                            }
                         }
                     }
                 }
