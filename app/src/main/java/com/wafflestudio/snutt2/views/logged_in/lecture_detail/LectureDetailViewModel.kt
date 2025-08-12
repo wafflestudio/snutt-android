@@ -6,6 +6,7 @@ import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
+import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.EOF
@@ -20,9 +21,11 @@ import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.TableTheme
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -83,6 +86,9 @@ class LectureDetailViewModel @Inject constructor(
 
     private val _lectureWithReminderOption = MutableStateFlow(LectureWithReminderOption.Default)
     val lectureWithReminderOption = _lectureWithReminderOption.asStateFlow()
+
+    private val _lectureDetailUiEvent: MutableSharedFlow<LectureDetailUiEvent> = MutableSharedFlow(replay = 1)
+    val lectureDetailUiEvent = _lectureDetailUiEvent.asSharedFlow()
 
     init {
         lectureWithReminderOption
@@ -188,7 +194,18 @@ class LectureDetailViewModel @Inject constructor(
             timetableId = currentTable.value?.id ?: "",
             lectureId = lectureWithReminderOption.lectureId,
             option = lectureWithReminderOption,
-        )
+        ).onSuccess {
+            _lectureDetailUiEvent.emit(
+                LectureDetailUiEvent.ShowSnackBarByEvent(
+                    when (lectureWithReminderOption.lectureReminderOffset) {
+                        LectureReminderOffset.NONE -> LectureDetailEvent.LECTURE_REMINDER_UPDATE_SUCCESS_NONE
+                        LectureReminderOffset.TEN_MINUTES_BEFORE -> LectureDetailEvent.LECTURE_REMINDER_UPDATE_SUCCESS_TEN_MINUTES_BEFORE
+                        LectureReminderOffset.AT_START_TIME -> LectureDetailEvent.LECTURE_REMINDER_UPDATE_SUCCESS_AT_START_TIME
+                        LectureReminderOffset.TEN_MINUTES_AFTER -> LectureDetailEvent.LECTURE_REMINDER_UPDATE_SUCCESS_TEN_MINUTES_AFTER
+                    },
+                ),
+            )
+        }
     }
 
     private fun buildPutLectureParams(): PutLectureParams {
@@ -220,4 +237,15 @@ class LectureDetailViewModel @Inject constructor(
             class_time_json = _editingLectureDetail.value.class_time_json,
         )
     }
+}
+
+sealed interface LectureDetailUiEvent {
+    data class ShowSnackBarByEvent(val event: LectureDetailEvent) : LectureDetailUiEvent
+}
+
+enum class LectureDetailEvent {
+    LECTURE_REMINDER_UPDATE_SUCCESS_NONE,
+    LECTURE_REMINDER_UPDATE_SUCCESS_TEN_MINUTES_BEFORE,
+    LECTURE_REMINDER_UPDATE_SUCCESS_AT_START_TIME,
+    LECTURE_REMINDER_UPDATE_SUCCESS_TEN_MINUTES_AFTER,
 }

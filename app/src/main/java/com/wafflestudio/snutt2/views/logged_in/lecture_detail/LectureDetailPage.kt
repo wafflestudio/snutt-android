@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -43,6 +44,11 @@ import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.components.compose.embed_map.FoldableEmbedMap
+import com.wafflestudio.snutt2.components.compose.snackbar.CustomSnackBar
+import com.wafflestudio.snutt2.components.compose.snackbar.CustomSnackBarDuration
+import com.wafflestudio.snutt2.components.compose.snackbar.CustomSnackBarHost
+import com.wafflestudio.snutt2.components.compose.snackbar.CustomSnackBarHostState
+import com.wafflestudio.snutt2.components.compose.snackbar.dismiss
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
 import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
@@ -73,6 +79,7 @@ import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
 
 @OptIn(
     ExperimentalMaterialApi::class, ExperimentalNaverMapApi::class,
@@ -96,6 +103,7 @@ fun LectureDetailPage(
     val pageController = LocalHomePageController.current
     val composableStates = ComposableStatesWithScope(scope)
     val analyticsLogger = LocalAnalyticsLogger.current
+    val snackBarHostState = remember { CustomSnackBarHostState() }
 
     val userViewModel = hiltViewModel<UserViewModel>()
     val modeType by vm.modeType.collectAsState()
@@ -120,6 +128,37 @@ fun LectureDetailPage(
      */
     LaunchedEffect(modeType) {
         if (modeType !is ModeType.Editing) creditText = editingLectureDetail.credit.toString()
+    }
+
+    LaunchedEffect(Unit) {
+        vm.lectureDetailUiEvent.collect { uiEvent ->
+            when (uiEvent) {
+                is LectureDetailUiEvent.ShowSnackBarByEvent -> {
+                    val message = when (uiEvent.event) {
+                        LectureDetailEvent.LECTURE_REMINDER_UPDATE_SUCCESS_NONE -> ""
+                        LectureDetailEvent.LECTURE_REMINDER_UPDATE_SUCCESS_TEN_MINUTES_BEFORE,
+                        -> context.getString(R.string.settings_lecture_reminder_update_success_ten_minutes_before)
+                        LectureDetailEvent.LECTURE_REMINDER_UPDATE_SUCCESS_AT_START_TIME,
+                        -> context.getString(R.string.settings_lecture_reminder_update_success_at_start_time)
+                        LectureDetailEvent.LECTURE_REMINDER_UPDATE_SUCCESS_TEN_MINUTES_AFTER,
+                        -> context.getString(R.string.settings_lecture_reminder_update_success_ten_minutes_after)
+                    }
+                    if (message.isNotEmpty()) {
+                        launch {
+                            snackBarHostState.currentSnackBarData.dismiss()
+                            snackBarHostState.showSnackBar(
+                                message = message,
+                                duration = CustomSnackBarDuration(
+                                    fadeIn = 500L,
+                                    inBetween = 3000L,
+                                    fadeOut = 500L,
+                                ),
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /* 바텀시트 관련 */
@@ -187,566 +226,601 @@ fun LectureDetailPage(
         LectureReminderOffset.TEN_MINUTES_AFTER -> lectureReminderOptions[3]
     }
 
-    ModalBottomSheetLayout(
-        sheetContent = bottomSheet.content,
-        sheetState = bottomSheet.state,
-        sheetShape = RoundedCornerShape(topStartPercent = 5, topEndPercent = 5),
-        scrimColor = SNUTTColors.Black.copy(alpha = 0.32f),
-        sheetGesturesEnabled = false,
-//        onDismissScrim = {
-//            scope.launch { bottomSheet.hide() }
-//        }
-        // gesturesEnabled 가 없다! 그래서 드래그해서도 닫아진다..
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(SNUTTColors.Gray100)
-                .logImpression(
-                    if (editingLectureDetail.id.isEmpty()) { // 새 강의를 만드는 경우에는 LectureCreate으로 로깅하며, id가 empty인 것으로 판별한다.
-                        AnalyticsScreen.LectureCreate
-                    } else {
-                        AnalyticsScreen.LectureDetail(
-                            LectureDetailParameter(
-                                lectureId = editingLectureDetail.lecture_id ?: editingLectureDetail.id,
-                                referrer = referrer,
-                            ),
-                        )
-                    },
-                ),
-//                    .clicks { focusManager.clearFocus() }
-        ) {
-            TopBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.lecture_detail_app_bar_title),
-                        style = SNUTTTypography.h2,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
+    Scaffold(
+        snackbarHost = {
+            CustomSnackBarHost(
+                hostState = snackBarHostState,
+                snackBar = { data ->
+                    val currentSnackBarData = snackBarHostState.currentSnackBarData
+                    CustomSnackBar(
+                        snackBarData = currentSnackBarData,
+                        passedData = data,
+                        shape = RoundedCornerShape(10.dp),
+                        backgroundColor = SNUTTColors.Black500,
+                        contentStyle = SNUTTTypography.body1.copy(color = SNUTTColors.White, fontWeight = FontWeight.Medium),
+                        actionLabelStyle = SNUTTTypography.body1.copy(color = SNUTTColors.MilkMint, fontWeight = FontWeight.SemiBold),
                     )
-                },
-                navigationIcon = {
-                    ArrowBackIcon(
-                        modifier = Modifier
-                            .size(30.dp)
-                            .clicks {
-                                onBackPressed()
-                            },
-                        colorFilter = ColorFilter.tint(SNUTTColors.Black900),
-                    )
-                },
-                actions = {
-                    if (isCustom.not() && (modeType !is ModeType.Editing)) {
-                        RingingAlarmIcon(
-                            modifier = Modifier
-                                .size(30.dp)
-                                .clicks {
-                                    scope.launch {
-                                        launchSuspendApi(apiOnProgress, apiOnError) {
-                                            if (vacancyRegistered) {
-                                                vacancyViewModel.removeVacancyLecture(
-                                                    editingLectureDetail.lecture_id
-                                                        ?: editingLectureDetail.id,
-                                                )
-                                            } else {
-                                                analyticsLogger.logEvent(
-                                                    AnalyticsEvent.AddToVacancy(
-                                                        AddToVacancyParameter(
-                                                            lectureId = editingLectureDetail.lecture_id ?: editingLectureDetail.id,
-                                                            referrer = LectureActionReferrer.LectureDetail,
-                                                        ),
-                                                    ),
-                                                )
-                                                vacancyViewModel.addVacancyLecture(
-                                                    editingLectureDetail.lecture_id
-                                                        ?: editingLectureDetail.id,
-                                                )
-                                            }
-                                        }
-                                    }
-                                },
-                            colorFilter = ColorFilter.tint(SNUTTColors.Black900),
-                            marked = vacancyRegistered,
-                        )
-                        BookmarkIcon(
-                            modifier = Modifier
-                                .size(30.dp)
-                                .clicks {
-                                    scope.launch {
-                                        launchSuspendApi(apiOnProgress, apiOnError) {
-                                            if (isBookmarked) {
-                                                searchViewModel.deleteBookmark(
-                                                    editingLectureDetail,
-                                                )
-                                            } else {
-                                                analyticsLogger.logEvent(
-                                                    AnalyticsEvent.AddToBookmark(
-                                                        AddToBookmarkParameter(
-                                                            lectureId = editingLectureDetail.lecture_id ?: editingLectureDetail.id,
-                                                            referrer = LectureActionReferrer.LectureDetail,
-                                                        ),
-                                                    ),
-                                                )
-                                                searchViewModel.addBookmark(editingLectureDetail)
-                                            }
-                                            searchViewModel.getBookmarkList()
-                                        }
-                                    }
-                                },
-                            marked = isBookmarked,
-                        )
-                    }
-                    if (modeType != ModeType.Viewing) {
-                        Text(
-                            text = when (modeType) {
-                                is ModeType.Editing -> stringResource(R.string.lecture_detail_top_bar_complete)
-                                else -> stringResource(R.string.lecture_detail_top_bar_edit)
-                            },
-                            style = SNUTTTypography.body1,
-                            modifier = Modifier
-                                .clicks {
-                                    focusManager.clearFocus()
-                                    if (modeType == ModeType.Normal) {
-                                        vm.setEditMode()
-                                    } else {
-                                        checkLectureOverlap(
-                                            composableStates,
-                                            api = {
-                                                if ((modeType as ModeType.Editing).adding) {
-                                                    vm.createLecture()
-                                                    scope.launch(Dispatchers.Main) { navController.popBackStack() }
-                                                } else {
-                                                    vm.updateLecture()
-                                                }
-                                            },
-                                            onLectureOverlap = { message ->
-                                                showLectureOverlapDialog(composableStates, message, forceAddApi = {
-                                                    if ((modeType as ModeType.Editing).adding) {
-                                                        vm.createLecture(is_forced = true)
-                                                        scope.launch(Dispatchers.Main) { navController.popBackStack() }
-                                                    } else {
-                                                        vm.updateLecture(is_forced = true)
-                                                    }
-                                                },)
-                                            },
-                                        )
-                                    }
-                                },
-                        )
-                    }
                 },
             )
+        },
+    ) { padding ->
+        ModalBottomSheetLayout(
+            sheetContent = bottomSheet.content,
+            sheetState = bottomSheet.state,
+            sheetShape = RoundedCornerShape(topStartPercent = 5, topEndPercent = 5),
+            scrimColor = SNUTTColors.Black.copy(alpha = 0.32f),
+            sheetGesturesEnabled = false,
+            //        onDismissScrim = {
+            //            scope.launch { bottomSheet.hide() }
+            //        }
+            // gesturesEnabled 가 없다! 그래서 드래그해서도 닫아진다..
+        ) {
             Column(
                 modifier = Modifier
-                    .verticalScroll(scrollState)
-                    .padding(vertical = 10.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
+                    .fillMaxSize()
+                    .background(SNUTTColors.Gray100)
+                    .logImpression(
+                        if (editingLectureDetail.id.isEmpty()) { // 새 강의를 만드는 경우에는 LectureCreate으로 로깅하며, id가 empty인 것으로 판별한다.
+                            AnalyticsScreen.LectureCreate
+                        } else {
+                            AnalyticsScreen.LectureDetail(
+                                LectureDetailParameter(
+                                    lectureId = editingLectureDetail.lecture_id ?: editingLectureDetail.id,
+                                    referrer = referrer,
+                                ),
+                            )
+                        },
+                    ),
+                //                    .clicks { focusManager.clearFocus() }
             ) {
-                Column(
-                    modifier = Modifier
-                        .background(SNUTTColors.White900)
-                        .padding(vertical = 4.dp),
-                ) {
-                    LectureDetailItem(
-                        title = stringResource(R.string.lecture_detail_lecture_title),
-                        value = editingLectureDetail.course_title,
-                        onValueChange = { vm.editLectureDetail(editingLectureDetail.copy(course_title = it)) },
-                        hint = if (modeType is ModeType.Editing) stringResource(R.string.lecture_detail_lecture_title_hint) else stringResource(R.string.lecture_detail_hint_nothing),
-                        enabled = modeType is ModeType.Editing,
-                    )
-                    LectureDetailItem(
-                        title = stringResource(R.string.lecture_detail_instructor),
-                        value = editingLectureDetail.instructor,
-                        onValueChange = { vm.editLectureDetail(editingLectureDetail.copy(instructor = it)) },
-                        hint = if (modeType is ModeType.Editing) stringResource(R.string.lecture_detail_instructor_hint) else stringResource(R.string.lecture_detail_hint_nothing),
-                        enabled = modeType is ModeType.Editing,
-                    )
-                    if (modeType != ModeType.Viewing) {
-                        LectureDetailItem(
-                            title = stringResource(R.string.lecture_detail_color),
-                        ) {
-                            Row(
-                                modifier = Modifier.clicks(enabled = modeType != ModeType.Normal) {
-                                    navController.navigate(NavigationDestination.LectureColorSelector)
+                TopBar(
+                    title = {
+                        Text(
+                            text = stringResource(R.string.lecture_detail_app_bar_title),
+                            style = SNUTTTypography.h2,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    },
+                    navigationIcon = {
+                        ArrowBackIcon(
+                            modifier = Modifier
+                                .size(30.dp)
+                                .clicks {
+                                    onBackPressed()
                                 },
-                            ) {
-                                ColorBox(
-                                    if (tableColorTheme is CustomTheme) {
-                                        editingLectureDetail.color
-                                    } else {
-                                        if (editingLectureDetail.colorIndex == 0L) {
-                                            editingLectureDetail.color
+                            colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                        )
+                    },
+                    actions = {
+                        if (isCustom.not() && (modeType !is ModeType.Editing)) {
+                            RingingAlarmIcon(
+                                modifier = Modifier
+                                    .size(30.dp)
+                                    .clicks {
+                                        scope.launch {
+                                            launchSuspendApi(apiOnProgress, apiOnError) {
+                                                if (vacancyRegistered) {
+                                                    vacancyViewModel.removeVacancyLecture(
+                                                        editingLectureDetail.lecture_id
+                                                            ?: editingLectureDetail.id,
+                                                    )
+                                                } else {
+                                                    analyticsLogger.logEvent(
+                                                        AnalyticsEvent.AddToVacancy(
+                                                            AddToVacancyParameter(
+                                                                lectureId = editingLectureDetail.lecture_id ?: editingLectureDetail.id,
+                                                                referrer = LectureActionReferrer.LectureDetail,
+                                                            ),
+                                                        ),
+                                                    )
+                                                    vacancyViewModel.addVacancyLecture(
+                                                        editingLectureDetail.lecture_id
+                                                            ?: editingLectureDetail.id,
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    },
+                                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                                marked = vacancyRegistered,
+                            )
+                            BookmarkIcon(
+                                modifier = Modifier
+                                    .size(30.dp)
+                                    .clicks {
+                                        scope.launch {
+                                            launchSuspendApi(apiOnProgress, apiOnError) {
+                                                if (isBookmarked) {
+                                                    searchViewModel.deleteBookmark(
+                                                        editingLectureDetail,
+                                                    )
+                                                } else {
+                                                    analyticsLogger.logEvent(
+                                                        AnalyticsEvent.AddToBookmark(
+                                                            AddToBookmarkParameter(
+                                                                lectureId = editingLectureDetail.lecture_id ?: editingLectureDetail.id,
+                                                                referrer = LectureActionReferrer.LectureDetail,
+                                                            ),
+                                                        ),
+                                                    )
+                                                    searchViewModel.addBookmark(editingLectureDetail)
+                                                }
+                                                searchViewModel.getBookmarkList()
+                                            }
+                                        }
+                                    },
+                                marked = isBookmarked,
+                            )
+                        }
+                        if (modeType != ModeType.Viewing) {
+                            Text(
+                                text = when (modeType) {
+                                    is ModeType.Editing -> stringResource(R.string.lecture_detail_top_bar_complete)
+                                    else -> stringResource(R.string.lecture_detail_top_bar_edit)
+                                },
+                                style = SNUTTTypography.body1,
+                                modifier = Modifier
+                                    .clicks {
+                                        focusManager.clearFocus()
+                                        if (modeType == ModeType.Normal) {
+                                            vm.setEditMode()
                                         } else {
-                                            ColorDto(
-                                                fgColor = 0xffffff,
-                                                bgColor = (tableColorTheme as BuiltInTheme).getColorByIndex(
-                                                    editingLectureDetail.colorIndex,
-                                                ),
+                                            checkLectureOverlap(
+                                                composableStates,
+                                                api = {
+                                                    if ((modeType as ModeType.Editing).adding) {
+                                                        vm.createLecture()
+                                                        scope.launch(Dispatchers.Main) { navController.popBackStack() }
+                                                    } else {
+                                                        vm.updateLecture()
+                                                    }
+                                                },
+                                                onLectureOverlap = { message ->
+                                                    showLectureOverlapDialog(
+                                                        composableStates, message,
+                                                        forceAddApi = {
+                                                            if ((modeType as ModeType.Editing).adding) {
+                                                                vm.createLecture(is_forced = true)
+                                                                scope.launch(Dispatchers.Main) { navController.popBackStack() }
+                                                            } else {
+                                                                vm.updateLecture(is_forced = true)
+                                                            }
+                                                        },
+                                                    )
+                                                },
                                             )
                                         }
                                     },
-                                )
-                                Spacer(modifier = Modifier.weight(1f))
-                                AnimatedVisibility(visible = modeType is ModeType.Editing) {
-                                    ArrowRight(
-                                        modifier = Modifier.size(16.dp),
-                                        colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                            )
+                        }
+                    },
+                )
+                Column(
+                    modifier = Modifier
+                        .verticalScroll(scrollState)
+                        .padding(vertical = 10.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .background(SNUTTColors.White900)
+                            .padding(vertical = 4.dp),
+                    ) {
+                        LectureDetailItem(
+                            title = stringResource(R.string.lecture_detail_lecture_title),
+                            value = editingLectureDetail.course_title,
+                            onValueChange = { vm.editLectureDetail(editingLectureDetail.copy(course_title = it)) },
+                            hint = if (modeType is ModeType.Editing) stringResource(R.string.lecture_detail_lecture_title_hint) else stringResource(R.string.lecture_detail_hint_nothing),
+                            enabled = modeType is ModeType.Editing,
+                        )
+                        LectureDetailItem(
+                            title = stringResource(R.string.lecture_detail_instructor),
+                            value = editingLectureDetail.instructor,
+                            onValueChange = { vm.editLectureDetail(editingLectureDetail.copy(instructor = it)) },
+                            hint = if (modeType is ModeType.Editing) stringResource(R.string.lecture_detail_instructor_hint) else stringResource(R.string.lecture_detail_hint_nothing),
+                            enabled = modeType is ModeType.Editing,
+                        )
+                        if (modeType != ModeType.Viewing) {
+                            LectureDetailItem(
+                                title = stringResource(R.string.lecture_detail_color),
+                            ) {
+                                Row(
+                                    modifier = Modifier.clicks(enabled = modeType != ModeType.Normal) {
+                                        navController.navigate(NavigationDestination.LectureColorSelector)
+                                    },
+                                ) {
+                                    ColorBox(
+                                        if (tableColorTheme is CustomTheme) {
+                                            editingLectureDetail.color
+                                        } else {
+                                            if (editingLectureDetail.colorIndex == 0L) {
+                                                editingLectureDetail.color
+                                            } else {
+                                                ColorDto(
+                                                    fgColor = 0xffffff,
+                                                    bgColor = (tableColorTheme as BuiltInTheme).getColorByIndex(
+                                                        editingLectureDetail.colorIndex,
+                                                    ),
+                                                )
+                                            }
+                                        },
+                                    )
+                                    Spacer(modifier = Modifier.weight(1f))
+                                    AnimatedVisibility(visible = modeType is ModeType.Editing) {
+                                        ArrowRight(
+                                            modifier = Modifier.size(16.dp),
+                                            colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    AnimatedVisibility(showLectureReminderPicker && (modeType !is ModeType.Editing)) {
+                        Column(
+                            modifier = Modifier
+                                .background(SNUTTColors.White900)
+                                .padding(vertical = 4.dp),
+                        ) {
+                            SegmentedPicker(
+                                title = stringResource(R.string.lecture_detail_lecture_reminder_title),
+                                options = LectureReminderOffset.entries,
+                                optionLabel = { offset -> offset.getString() },
+                                selectedOption = lectureWithReminderOption.lectureReminderOffset,
+                                onOptionSelected = { offset ->
+                                    vm.changeLectureReminderOption(
+                                        LectureWithReminderOption(
+                                            lectureId = lectureWithReminderOption.lectureId,
+                                            lectureTitle = lectureWithReminderOption.lectureTitle,
+                                            lectureReminderOffset = offset,
+                                        ),
+                                    )
+                                },
+                                description = stringResource(R.string.lecture_detail_lecture_reminder_description),
+                            )
+                        }
+                    }
+                    AnimatedVisibility(isCustom.not() && (modeType !is ModeType.Editing)) {
+                        Column(
+                            modifier = Modifier
+                                .background(SNUTTColors.White900)
+                                .padding(vertical = 4.dp),
+                        ) {
+                            LectureDetailItem(
+                                title = stringResource(R.string.lecture_detail_review_rating),
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(2.dp),
+                                ) {
+                                    StarIcon(
+                                        filled = true,
+                                        modifier = Modifier
+                                            .size(18.dp)
+                                            .offset(y = 1.dp),
+                                        colorFilter = ColorFilter.tint(MaterialTheme.colors.secondary),
+                                    )
+                                    Spacer(modifier = Modifier.width(2.dp))
+                                    Text(
+                                        text = buildAnnotatedString {
+                                            withStyle(SpanStyle(color = SNUTTColors.Black900)) {
+                                                append(editingLectureReview?.ratingDisplayText ?: "--")
+                                                append(" ")
+                                            }
+                                            withStyle(SpanStyle(color = SNUTTColors.Gray2)) {
+                                                append(
+                                                    stringResource(
+                                                        R.string.lecture_detail_review_count,
+                                                        editingLectureReview?.reviewCount ?: 0,
+                                                    ),
+                                                )
+                                            }
+                                        },
+                                        style = MaterialTheme.typography.body1.copy(
+                                            fontSize = 15.sp,
+                                        ),
                                     )
                                 }
                             }
                         }
                     }
-                }
-                AnimatedVisibility(showLectureReminderPicker && (modeType !is ModeType.Editing)) {
                     Column(
                         modifier = Modifier
                             .background(SNUTTColors.White900)
                             .padding(vertical = 4.dp),
                     ) {
-                        SegmentedPicker(
-                            title = stringResource(R.string.lecture_detail_lecture_reminder_title),
-                            options = LectureReminderOffset.entries,
-                            optionLabel = { offset -> offset.getString() },
-                            selectedOption = lectureWithReminderOption.lectureReminderOffset,
-                            onOptionSelected = { offset ->
-                                vm.changeLectureReminderOption(
-                                    LectureWithReminderOption(
-                                        lectureId = lectureWithReminderOption.lectureId,
-                                        lectureTitle = lectureWithReminderOption.lectureTitle,
-                                        lectureReminderOffset = offset,
-                                    ),
-                                )
-                            },
-                            description = stringResource(R.string.lecture_detail_lecture_reminder_description),
-                        )
-                    }
-                }
-                AnimatedVisibility(isCustom.not() && (modeType !is ModeType.Editing)) {
-                    Column(
-                        modifier = Modifier
-                            .background(SNUTTColors.White900)
-                            .padding(vertical = 4.dp),
-                    ) {
-                        LectureDetailItem(
-                            title = stringResource(R.string.lecture_detail_review_rating),
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(2.dp),
-                            ) {
-                                StarIcon(
-                                    filled = true,
-                                    modifier = Modifier
-                                        .size(18.dp)
-                                        .offset(y = 1.dp),
-                                    colorFilter = ColorFilter.tint(MaterialTheme.colors.secondary),
-                                )
-                                Spacer(modifier = Modifier.width(2.dp))
-                                Text(
-                                    text = buildAnnotatedString {
-                                        withStyle(SpanStyle(color = SNUTTColors.Black900)) {
-                                            append(editingLectureReview?.ratingDisplayText ?: "--")
-                                            append(" ")
-                                        }
-                                        withStyle(SpanStyle(color = SNUTTColors.Gray2)) {
-                                            append(
-                                                stringResource(
-                                                    R.string.lecture_detail_review_count,
-                                                    editingLectureReview?.reviewCount ?: 0,
-                                                ),
-                                            )
-                                        }
-                                    },
-                                    style = MaterialTheme.typography.body1.copy(
-                                        fontSize = 15.sp,
-                                    ),
-                                )
-                            }
-                        }
-                    }
-                }
-                Column(
-                    modifier = Modifier
-                        .background(SNUTTColors.White900)
-                        .padding(vertical = 4.dp),
-                ) {
-                    if (isCustom.not()) {
-                        LectureDetailItem(
-                            title = stringResource(R.string.lecture_detail_department),
-                            value = editingLectureDetail.department ?: "",
-                            onValueChange = { vm.editLectureDetail(editingLectureDetail.copy(department = it)) },
-                            enabled = modeType is ModeType.Editing,
-                        )
-                        LectureDetailItem(
-                            title = stringResource(R.string.lecture_detail_academic_year),
-                            value = editingLectureDetail.academic_year ?: "",
-                            onValueChange = { vm.editLectureDetail(editingLectureDetail.copy(academic_year = it)) },
-                            enabled = modeType is ModeType.Editing,
-                        )
-                    }
-                    LectureDetailItem(
-                        title = stringResource(R.string.lecture_detail_credit),
-                        value = creditText,
-                        onValueChange = {
-                            creditText = it
-                            vm.editLectureDetail(editingLectureDetail.copy(credit = it.creditStringToLong()))
-                        },
-                        enabled = modeType is ModeType.Editing,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal, imeAction = ImeAction.Next),
-                        hint = "0",
-                    )
-                    if (isCustom.not()) {
-                        LectureDetailItem(
-                            title = stringResource(R.string.lecture_detail_classification),
-                            value = editingLectureDetail.classification ?: "",
-                            onValueChange = { vm.editLectureDetail(editingLectureDetail.copy(classification = it)) },
-                            enabled = modeType is ModeType.Editing,
-                        )
-                        LectureDetailItem(
-                            title = stringResource(R.string.lecture_detail_category),
-                            value = editingLectureDetail.category ?: "",
-                            onValueChange = { vm.editLectureDetail(editingLectureDetail.copy(category = it)) },
-                            enabled = modeType is ModeType.Editing,
-                        )
-                        if (semesterChange > 20250L) {
+                        if (isCustom.not()) {
                             LectureDetailItem(
-                                title = stringResource(R.string.lecture_detail_categoryPre2025),
-                                value = editingLectureDetail.categoryPre2025 ?: "",
-                                onValueChange = { vm.editLectureDetail(editingLectureDetail.copy(categoryPre2025 = it)) },
+                                title = stringResource(R.string.lecture_detail_department),
+                                value = editingLectureDetail.department ?: "",
+                                onValueChange = { vm.editLectureDetail(editingLectureDetail.copy(department = it)) },
+                                enabled = modeType is ModeType.Editing,
+                            )
+                            LectureDetailItem(
+                                title = stringResource(R.string.lecture_detail_academic_year),
+                                value = editingLectureDetail.academic_year ?: "",
+                                onValueChange = { vm.editLectureDetail(editingLectureDetail.copy(academic_year = it)) },
                                 enabled = modeType is ModeType.Editing,
                             )
                         }
                         LectureDetailItem(
-                            title = stringResource(R.string.lecture_detail_course_number),
-                            value = editingLectureDetail.course_number ?: "",
-                            editable = false,
+                            title = stringResource(R.string.lecture_detail_credit),
+                            value = creditText,
+                            onValueChange = {
+                                creditText = it
+                                vm.editLectureDetail(editingLectureDetail.copy(credit = it.creditStringToLong()))
+                            },
+                            enabled = modeType is ModeType.Editing,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal, imeAction = ImeAction.Next),
+                            hint = "0",
                         )
+                        if (isCustom.not()) {
+                            LectureDetailItem(
+                                title = stringResource(R.string.lecture_detail_classification),
+                                value = editingLectureDetail.classification ?: "",
+                                onValueChange = { vm.editLectureDetail(editingLectureDetail.copy(classification = it)) },
+                                enabled = modeType is ModeType.Editing,
+                            )
+                            LectureDetailItem(
+                                title = stringResource(R.string.lecture_detail_category),
+                                value = editingLectureDetail.category ?: "",
+                                onValueChange = { vm.editLectureDetail(editingLectureDetail.copy(category = it)) },
+                                enabled = modeType is ModeType.Editing,
+                            )
+                            if (semesterChange > 20250L) {
+                                LectureDetailItem(
+                                    title = stringResource(R.string.lecture_detail_categoryPre2025),
+                                    value = editingLectureDetail.categoryPre2025 ?: "",
+                                    onValueChange = { vm.editLectureDetail(editingLectureDetail.copy(categoryPre2025 = it)) },
+                                    enabled = modeType is ModeType.Editing,
+                                )
+                            }
+                            LectureDetailItem(
+                                title = stringResource(R.string.lecture_detail_course_number),
+                                value = editingLectureDetail.course_number ?: "",
+                                editable = false,
+                            )
+                            LectureDetailItem(
+                                title = stringResource(R.string.lecture_detail_lecture_number),
+                                value = editingLectureDetail.lecture_number ?: "",
+                                editable = false,
+                            )
+                            LectureDetailItem(
+                                title = editingLectureDetail.getQuotaTitle(context),
+                                value = editingLectureDetail.getFullQuota(),
+                                editable = false,
+                            )
+                        }
                         LectureDetailItem(
-                            title = stringResource(R.string.lecture_detail_lecture_number),
-                            value = editingLectureDetail.lecture_number ?: "",
-                            editable = false,
-                        )
-                        LectureDetailItem(
-                            title = editingLectureDetail.getQuotaTitle(context),
-                            value = editingLectureDetail.getFullQuota(),
-                            editable = false,
+                            title = stringResource(R.string.lecture_detail_remark),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = 40.dp)
+                                .padding(vertical = 10.dp),
+                            value = editingLectureDetail.remark,
+                            onValueChange = { vm.editLectureDetail(editingLectureDetail.copy(remark = it)) },
+                            enabled = modeType is ModeType.Editing,
+                            singleLine = false,
+                            keyboardOptions = KeyboardOptions.Default,
+                            keyboardActions = KeyboardActions.Default,
+                            hint = if (modeType is ModeType.Editing) stringResource(R.string.lecture_detail_remark_hint) else stringResource(R.string.lecture_detail_hint_nothing),
+                            labelVerticalAlignment = Alignment.Top,
                         )
                     }
-                    LectureDetailItem(
-                        title = stringResource(R.string.lecture_detail_remark),
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .heightIn(min = 40.dp)
-                            .padding(vertical = 10.dp),
-                        value = editingLectureDetail.remark,
-                        onValueChange = { vm.editLectureDetail(editingLectureDetail.copy(remark = it)) },
-                        enabled = modeType is ModeType.Editing,
-                        singleLine = false,
-                        keyboardOptions = KeyboardOptions.Default,
-                        keyboardActions = KeyboardActions.Default,
-                        hint = if (modeType is ModeType.Editing) stringResource(R.string.lecture_detail_remark_hint) else stringResource(R.string.lecture_detail_hint_nothing),
-                        labelVerticalAlignment = Alignment.Top,
-                    )
-                }
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(SNUTTColors.White900),
-                ) {
-                    Text(
-                        text = stringResource(R.string.lecture_detail_class_time),
-                        modifier = Modifier
-                            .padding(start = 20.dp, top = 10.dp, bottom = 14.dp),
-                        style = SNUTTTypography.body1.copy(color = SNUTTColors.Black600),
-                    )
-                    editingLectureDetail.class_time_json.forEachIndexed { idx, classTime ->
-                        LectureDetailTimeAndLocation(
-                            timeText = SNUTTStringUtils.getSingleClassTimeText(classTime),
-                            locationText = classTime.place,
-                            editTime = {
-                                bottomSheet.setSheetContent {
-                                    DayTimePickerSheet(
-                                        bottomSheet = bottomSheet,
-                                        classTime = classTime,
-                                        onDismiss = { scope.launch { bottomSheet.hide() } },
-                                        onConfirm = { editedClassTime ->
-                                            vm.editLectureDetail(
-                                                editingLectureDetail.copy(
-                                                    class_time_json = editingLectureDetail.class_time_json.toMutableList()
-                                                        .also {
-                                                            it[idx] = editedClassTime
-                                                        },
-                                                ),
-                                            )
-                                            scope.launch { bottomSheet.hide() }
-                                        },
-                                    )
-                                }
-                                scope.launch {
-                                    focusManager.clearFocus()
-                                    bottomSheet.show()
-                                }
-                            },
-                            onLocationTextChange = { changedLocation ->
-                                vm.editLectureDetail(
-                                    editingLectureDetail.copy(
-                                        class_time_json = editingLectureDetail.class_time_json.toMutableList()
-                                            .also {
-                                                it[idx] =
-                                                    classTime.copy(place = changedLocation)
+                            .background(SNUTTColors.White900),
+                    ) {
+                        Text(
+                            text = stringResource(R.string.lecture_detail_class_time),
+                            modifier = Modifier
+                                .padding(start = 20.dp, top = 10.dp, bottom = 14.dp),
+                            style = SNUTTTypography.body1.copy(color = SNUTTColors.Black600),
+                        )
+                        editingLectureDetail.class_time_json.forEachIndexed { idx, classTime ->
+                            LectureDetailTimeAndLocation(
+                                timeText = SNUTTStringUtils.getSingleClassTimeText(classTime),
+                                locationText = classTime.place,
+                                editTime = {
+                                    bottomSheet.setSheetContent {
+                                        DayTimePickerSheet(
+                                            bottomSheet = bottomSheet,
+                                            classTime = classTime,
+                                            onDismiss = { scope.launch { bottomSheet.hide() } },
+                                            onConfirm = { editedClassTime ->
+                                                vm.editLectureDetail(
+                                                    editingLectureDetail.copy(
+                                                        class_time_json = editingLectureDetail.class_time_json.toMutableList()
+                                                            .also {
+                                                                it[idx] = editedClassTime
+                                                            },
+                                                    ),
+                                                )
+                                                scope.launch { bottomSheet.hide() }
                                             },
-                                    ),
-                                )
-                            },
-                            onClickDeleteIcon = {
-                                showDeleteClassTimeDialog(composableStates, onConfirm = {
+                                        )
+                                    }
+                                    scope.launch {
+                                        focusManager.clearFocus()
+                                        bottomSheet.show()
+                                    }
+                                },
+                                onLocationTextChange = { changedLocation ->
                                     vm.editLectureDetail(
                                         editingLectureDetail.copy(
                                             class_time_json = editingLectureDetail.class_time_json.toMutableList()
                                                 .also {
-                                                    it.removeAt(idx)
-                                                },
-                                        ),
-                                    )
-                                },)
-                            },
-                            editMode = modeType is ModeType.Editing,
-                            visible = if (idx == editingLectureDetail.class_time_json.lastIndex) {
-                                classTimeAnimationState
-                            } else {
-                                MutableTransitionState(true)
-                            },
-                        )
-                    }
-                    AnimatedVisibility(
-                        visible = modeType is ModeType.Editing,
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(32.dp)
-                                .clicks {
-                                    classTimeAnimationState =
-                                        MutableTransitionState(false).apply {
-                                            targetState = true
-                                        }
-                                    vm.editLectureDetail(
-                                        editingLectureDetail.copy(
-                                            class_time_json = editingLectureDetail.class_time_json
-                                                .toMutableList()
-                                                .also {
-                                                    it.add(it.lastOrNull() ?: ClassTimeDto.Default)
+                                                    it[idx] =
+                                                        classTime.copy(place = changedLocation)
                                                 },
                                         ),
                                     )
                                 },
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Text(
-                                text = stringResource(R.string.lecture_detail_add_class_time),
-                                textAlign = TextAlign.Center,
-                                style = SNUTTTypography.body1.copy(color = SNUTTColors.Black600),
-                            )
-                        }
-                    }
-                    if (disableMapFeature.not()) {
-                        AnimatedVisibility(
-                            visible = modeType !is ModeType.Editing,
-                        ) {
-                            FoldableEmbedMap(
-                                modifier = Modifier.padding(vertical = 8.dp),
-                                buildings = editingLectureBuildings,
-                            )
-                        }
-                    }
-                }
-                AnimatedVisibility(
-                    visible = modeType !is ModeType.Editing,
-                ) {
-                    Column {
-                        if (isCustom) {
-                            Box(modifier = Modifier.background(Color.White)) {
-                                LectureDetailButton(
-                                    title = stringResource(R.string.lecture_detail_delete_button),
-                                    textStyle = SNUTTTypography.body1.copy(
-                                        fontSize = 15.sp,
-                                        color = SNUTTColors.Red,
-                                    ),
-                                ) {
-                                    showDeleteLectureDialog(composableStates, onConfirm = {
-                                        vm.removeLecture()
-                                        scope.launch(Dispatchers.Main) {
-                                            navController.popBackStack()
-                                        }
-                                    },)
-                                }
-                            }
-                        } else {
-                            Column(modifier = Modifier.background(SNUTTColors.White900)) {
-                                LectureDetailButton(title = stringResource(R.string.lecture_detail_syllabus_button)) {
-                                    scope.launch {
-                                        launchSuspendApi(apiOnProgress, apiOnError) {
-                                            vm.getCourseBookUrl().let { url ->
-                                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                                                context.startActivity(intent)
-                                            }
-                                        }
-                                        analyticsLogger.logScreen(
-                                            AnalyticsScreen.LectureSyllabus( // 안드로이드에는 LectureSyllabus 화면이 따로 없지만, iOS와의 통일성을 위해 강의계획서 버튼 클릭 시 로깅한다.
-                                                LectureSyllabusParameter(
-                                                    lectureId = editingLectureDetail.lecture_id ?: editingLectureDetail.id,
+                                onClickDeleteIcon = {
+                                    showDeleteClassTimeDialog(
+                                        composableStates,
+                                        onConfirm = {
+                                            vm.editLectureDetail(
+                                                editingLectureDetail.copy(
+                                                    class_time_json = editingLectureDetail.class_time_json.toMutableList()
+                                                        .also {
+                                                            it.removeAt(idx)
+                                                        },
                                                 ),
+                                            )
+                                        },
+                                    )
+                                },
+                                editMode = modeType is ModeType.Editing,
+                                visible = if (idx == editingLectureDetail.class_time_json.lastIndex) {
+                                    classTimeAnimationState
+                                } else {
+                                    MutableTransitionState(true)
+                                },
+                            )
+                        }
+                        AnimatedVisibility(
+                            visible = modeType is ModeType.Editing,
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(32.dp)
+                                    .clicks {
+                                        classTimeAnimationState =
+                                            MutableTransitionState(false).apply {
+                                                targetState = true
+                                            }
+                                        vm.editLectureDetail(
+                                            editingLectureDetail.copy(
+                                                class_time_json = editingLectureDetail.class_time_json
+                                                    .toMutableList()
+                                                    .also {
+                                                        it.add(it.lastOrNull() ?: ClassTimeDto.Default)
+                                                    },
                                             ),
                                         )
-                                    }
-                                }
-                                LectureDetailButton(title = stringResource(R.string.lecture_detail_review_button)) {
-                                    scope.launch {
-                                        val url = editingLectureReview?.getReviewUrl(context)
-                                        openReviewBottomSheet(
-                                            url = url,
-                                            reviewWebViewContainer = reviewBottomSheetReviewWebViewContainer,
-                                            bottomSheet = bottomSheet,
-                                            lectureId = editingLectureDetail.lecture_id ?: editingLectureDetail.id,
-                                            referrer = DetailScreenReferrer.LectureDetail,
+                                    },
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.lecture_detail_add_class_time),
+                                    textAlign = TextAlign.Center,
+                                    style = SNUTTTypography.body1.copy(color = SNUTTColors.Black600),
+                                )
+                            }
+                        }
+                        if (disableMapFeature.not()) {
+                            AnimatedVisibility(
+                                visible = modeType !is ModeType.Editing,
+                            ) {
+                                FoldableEmbedMap(
+                                    modifier = Modifier.padding(vertical = 8.dp),
+                                    buildings = editingLectureBuildings,
+                                )
+                            }
+                        }
+                    }
+                    AnimatedVisibility(
+                        visible = modeType !is ModeType.Editing,
+                    ) {
+                        Column {
+                            if (isCustom) {
+                                Box(modifier = Modifier.background(Color.White)) {
+                                    LectureDetailButton(
+                                        title = stringResource(R.string.lecture_detail_delete_button),
+                                        textStyle = SNUTTTypography.body1.copy(
+                                            fontSize = 15.sp,
+                                            color = SNUTTColors.Red,
+                                        ),
+                                    ) {
+                                        showDeleteLectureDialog(
+                                            composableStates,
+                                            onConfirm = {
+                                                vm.removeLecture()
+                                                scope.launch(Dispatchers.Main) {
+                                                    navController.popBackStack()
+                                                }
+                                            },
                                         )
                                     }
                                 }
-                            }
-                        }
-                    }
-                }
-                if (isCustom.not() && modeType != ModeType.Viewing) {
-                    Box(modifier = Modifier.background(Color.White)) {
-                        LectureDetailButton(
-                            title = if (modeType is ModeType.Editing) {
-                                stringResource(R.string.lecture_detail_reset_button)
                             } else {
-                                stringResource(
-                                    R.string.lecture_detail_delete_button,
-                                )
-                            },
-                            textStyle = SNUTTTypography.body1.copy(
-                                fontSize = 15.sp,
-                                color = SNUTTColors.Red,
-                            ),
-                        ) {
-                            if (modeType is ModeType.Editing) {
-                                showResetLectureDialog(composableStates, onConfirm = {
-                                    vm.resetLecture()
-                                },)
-                            } else {
-                                showDeleteLectureDialog(composableStates, onConfirm = {
-                                    vm.removeLecture()
-                                    scope.launch(Dispatchers.Main) {
-                                        navController.popBackStack()
+                                Column(modifier = Modifier.background(SNUTTColors.White900)) {
+                                    LectureDetailButton(title = stringResource(R.string.lecture_detail_syllabus_button)) {
+                                        scope.launch {
+                                            launchSuspendApi(apiOnProgress, apiOnError) {
+                                                vm.getCourseBookUrl().let { url ->
+                                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                                    context.startActivity(intent)
+                                                }
+                                            }
+                                            analyticsLogger.logScreen(
+                                                AnalyticsScreen.LectureSyllabus(
+                                                    // 안드로이드에는 LectureSyllabus 화면이 따로 없지만, iOS와의 통일성을 위해 강의계획서 버튼 클릭 시 로깅한다.
+                                                    LectureSyllabusParameter(
+                                                        lectureId = editingLectureDetail.lecture_id ?: editingLectureDetail.id,
+                                                    ),
+                                                ),
+                                            )
+                                        }
                                     }
-                                },)
+                                    LectureDetailButton(title = stringResource(R.string.lecture_detail_review_button)) {
+                                        scope.launch {
+                                            val url = editingLectureReview?.getReviewUrl(context)
+                                            openReviewBottomSheet(
+                                                url = url,
+                                                reviewWebViewContainer = reviewBottomSheetReviewWebViewContainer,
+                                                bottomSheet = bottomSheet,
+                                                lectureId = editingLectureDetail.lecture_id ?: editingLectureDetail.id,
+                                                referrer = DetailScreenReferrer.LectureDetail,
+                                            )
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
+                    if (isCustom.not() && modeType != ModeType.Viewing) {
+                        Box(modifier = Modifier.background(Color.White)) {
+                            LectureDetailButton(
+                                title = if (modeType is ModeType.Editing) {
+                                    stringResource(R.string.lecture_detail_reset_button)
+                                } else {
+                                    stringResource(
+                                        R.string.lecture_detail_delete_button,
+                                    )
+                                },
+                                textStyle = SNUTTTypography.body1.copy(
+                                    fontSize = 15.sp,
+                                    color = SNUTTColors.Red,
+                                ),
+                            ) {
+                                if (modeType is ModeType.Editing) {
+                                    showResetLectureDialog(
+                                        composableStates,
+                                        onConfirm = {
+                                            vm.resetLecture()
+                                        },
+                                    )
+                                } else {
+                                    showDeleteLectureDialog(
+                                        composableStates,
+                                        onConfirm = {
+                                            vm.removeLecture()
+                                            scope.launch(Dispatchers.Main) {
+                                                navController.popBackStack()
+                                            }
+                                        },
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    Margin(height = 30.dp)
                 }
-                Margin(height = 30.dp)
             }
         }
     }
