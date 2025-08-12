@@ -135,7 +135,9 @@ class LectureDetailViewModel @Inject constructor(
             lectureReminderJob?.cancel()
             _modeType.emit(modeType)
             _editingLectureDetail.emit(fixedLectureDetail)
-            getTimetableLectureReminder(fixedLectureDetail)
+            if (modeType !is ModeType.Editing) { // Editing으로 여는 것은 강의를 추가할 때 뿐이고, 이때는 아직 추가되지 않은 강의이므로 lecture reminder를 얻을 수 없다.
+                getTimetableLectureReminder(fixedLectureDetail)
+            }
             init()
         }
     }
