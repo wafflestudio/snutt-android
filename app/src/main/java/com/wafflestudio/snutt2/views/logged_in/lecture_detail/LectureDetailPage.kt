@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.lecture_detail
 
+import NavigationDestination
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.BackHandler
@@ -76,6 +77,7 @@ import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.*
 import com.wafflestudio.snutt2.views.logged_in.home.search.*
 import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
+import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import kotlinx.coroutines.*
@@ -133,6 +135,12 @@ fun LectureDetailPage(
     LaunchedEffect(Unit) {
         vm.lectureDetailUiEvent.collect { uiEvent ->
             when (uiEvent) {
+                is LectureDetailUiEvent.ShowToast -> {
+                    val message = uiEvent.message
+                    if (message.isNotEmpty()) {
+                        context.toast(message)
+                    }
+                }
                 is LectureDetailUiEvent.ShowSnackBarByEvent -> {
                     val message = when (uiEvent.event) {
                         LectureDetailEvent.LECTURE_REMINDER_UPDATE_SUCCESS_NONE -> ""
@@ -156,6 +164,9 @@ fun LectureDetailPage(
                             )
                         }
                     }
+                }
+                is LectureDetailUiEvent.LoggedOut -> {
+                    navController.navigateAsOrigin(NavigationDestination.Onboard)
                 }
             }
         }

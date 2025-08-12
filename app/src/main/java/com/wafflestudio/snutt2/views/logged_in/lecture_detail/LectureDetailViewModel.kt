@@ -5,11 +5,16 @@ import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
+import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
 import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
 import com.wafflestudio.snutt2.lib.network.ApiOnError
+import com.wafflestudio.snutt2.lib.network.AuthError
+import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
+import com.wafflestudio.snutt2.lib.network.DomainError
 import com.wafflestudio.snutt2.lib.network.EOF
+import com.wafflestudio.snutt2.lib.network.PastSemester
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
@@ -48,7 +53,9 @@ class LectureDetailViewModel @Inject constructor(
     private val currentTableRepository: CurrentTableRepository,
     private val lectureSearchRepository: LectureSearchRepository,
     private val tableRepository: TableRepository,
+    private val userRepository: UserRepository,
     private val apiOnError: ApiOnError,
+    private val displayMessageResolver: DisplayMessageResolver,
     getCurrentTableThemeUseCase: GetCurrentTableThemeUseCase,
 ) : ViewModel() {
     val currentTable: StateFlow<TableDto?> = currentTableRepository.currentTable
@@ -176,10 +183,7 @@ class LectureDetailViewModel @Inject constructor(
                 _lectureWithReminderOption.emit(data)
             }
             .onFailure { error ->
-                if (error is EOF) {
-                    _showLectureReminderPicker.emit(true)
-                    _lectureWithReminderOption.emit(LectureWithReminderOption.Default.copy(lectureId = lecture.id))
-                }
+                handleLectureDetailError(error)
             }
     }
 
@@ -206,6 +210,9 @@ class LectureDetailViewModel @Inject constructor(
                 ),
             )
         }
+            .onFailure { error ->
+                handleLectureDetailError(error)
+            }
     }
 
     private fun buildPutLectureParams(): PutLectureParams {
@@ -237,10 +244,32 @@ class LectureDetailViewModel @Inject constructor(
             class_time_json = _editingLectureDetail.value.class_time_json,
         )
     }
+
+    private suspend fun handleLectureDetailError(error: DomainError) {
+        val displayMessage = displayMessageResolver.getDisplayMessage(error)
+        when (error) {
+            is AuthError -> {
+                _lectureDetailUiEvent.emit(LectureDetailUiEvent.ShowToast(displayMessage))
+                userRepository.postForceLogout()
+                _lectureDetailUiEvent.emit(LectureDetailUiEvent.LoggedOut)
+            }
+            is EOF -> {
+                _showLectureReminderPicker.emit(true)
+                _lectureWithReminderOption.emit(LectureWithReminderOption.Default.copy(lectureId = fixedLectureDetail.id))
+            }
+            is PastSemester -> {
+            }
+            else -> {
+                _lectureDetailUiEvent.emit(LectureDetailUiEvent.ShowToast(displayMessage))
+            }
+        }
+    }
 }
 
 sealed interface LectureDetailUiEvent {
+    data class ShowToast(val message: String) : LectureDetailUiEvent
     data class ShowSnackBarByEvent(val event: LectureDetailEvent) : LectureDetailUiEvent
+    data object LoggedOut : LectureDetailUiEvent
 }
 
 enum class LectureDetailEvent {
