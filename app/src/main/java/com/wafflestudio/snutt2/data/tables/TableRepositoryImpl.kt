@@ -3,7 +3,6 @@ package com.wafflestudio.snutt2.data.tables
 import android.util.Log
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
-import com.wafflestudio.snutt2.domainmodel.preview.PreviewData
 import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.PostTableParams
@@ -115,11 +114,23 @@ class TableRepositoryImpl @Inject constructor(
         api._deletePrimaryTable(id)
     }
 
-    // TODO: 임시 코드
     override suspend fun getPrimaryTableLectureReminders(): Result<List<LectureWithReminderOption>> {
-        return Result.Success(
-            PreviewData.sampleLectureReminderOptions.values.toList(),
-        )
+        try {
+            val activeLectureReminders = api._getActiveLectureReminders()
+            val activeTableLectures = api._getTableById(activeLectureReminders.timetableId).lectureList
+            val activeLecturesWithReminderOption = activeLectureReminders.reminders.map { it.toDomainModel() }
+            val result = activeTableLectures.map { lectureDto ->
+                val matchingOption = activeLecturesWithReminderOption.find { it.lectureId == lectureDto.id }
+                LectureWithReminderOption(
+                    lectureId = lectureDto.id,
+                    lectureTitle = lectureDto.course_title,
+                    lectureReminderOffset = matchingOption?.lectureReminderOffset ?: LectureReminderOffset.NONE,
+                )
+            }
+            return Result.Success(result)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
     }
 
     // TODO: 임시 코드, 아래의 updateTimetableLectureReminder로 대체

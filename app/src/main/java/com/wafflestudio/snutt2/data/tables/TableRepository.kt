@@ -34,7 +34,6 @@ interface TableRepository {
 
     suspend fun setTableNotPrimary(id: String)
 
-    // TODO: 임시 코드
     suspend fun getPrimaryTableLectureReminders(): Result<List<LectureWithReminderOption>>
 
     // TODO: 임시 코드, 아래의 updateTimetableLectureReminder로 대체
