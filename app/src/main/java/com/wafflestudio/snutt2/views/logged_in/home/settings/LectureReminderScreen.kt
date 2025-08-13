@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
@@ -171,9 +172,19 @@ fun LectureReminderScreen(
                 Column {
                     SettingColumn(
                         modifier = Modifier.weight(1f, fill = false),
-                        title = stringResource(R.string.settings_lecture_reminder_my_reminders),
                     ) {
                         LazyColumn {
+                            item {
+                                Text(
+                                    text = stringResource(R.string.settings_lecture_reminder_my_reminders),
+                                    style = SNUTTTypography.body2.copy(
+                                        color = SNUTTColors.TextAlternative,
+                                    ),
+                                    modifier = Modifier
+                                        .padding(top = 24.dp, start = 30.dp, bottom = 8.dp),
+                                )
+                            }
+
                             items(
                                 items = uiState.data.values.toList(),
                                 key = { it.lectureId },
@@ -197,25 +208,28 @@ fun LectureReminderScreen(
                                     modifier = Modifier.background(SNUTTColors.White900),
                                 )
                             }
+
+                            item {
+                                val annotatedString = buildAnnotatedString {
+                                    append(stringResource(R.string.settings_lecture_reminder_guide_normal1))
+                                    withStyle(style = SpanStyle(fontWeight = FontWeight.SemiBold)) {
+                                        append(stringResource(R.string.settings_lecture_reminder_guide_bold1))
+                                    }
+                                    append(stringResource(R.string.settings_lecture_reminder_guide_normal2))
+                                }
+
+                                Text(
+                                    text = annotatedString,
+                                    style = SNUTTTypography.body2.copy(
+                                        color = SNUTTColors.TextMed,
+                                        fontSize = 13.sp,
+                                    ),
+                                    modifier = Modifier
+                                        .padding(16.dp),
+                                )
+                            }
                         }
                     }
-
-                    val annotatedString = buildAnnotatedString {
-                        append(stringResource(R.string.settings_lecture_reminder_guide_normal1))
-                        withStyle(style = SpanStyle(fontWeight = FontWeight.SemiBold)) {
-                            append(stringResource(R.string.settings_lecture_reminder_guide_bold1))
-                        }
-                        append(stringResource(R.string.settings_lecture_reminder_guide_normal2))
-                    }
-
-                    Text(
-                        text = annotatedString,
-                        style = SNUTTTypography.body2.copy(
-                            color = SNUTTColors.TextMed,
-                        ),
-                        modifier = Modifier
-                            .padding(16.dp),
-                    )
                 }
             }
         }

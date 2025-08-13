@@ -51,7 +51,10 @@ object SNUTTColors {
     val Colors.SettingBackground @Composable get() = if (isLight) Color(0xfff2f2f2) else Color(0xff1e1e1e)
     val SettingBackground @Composable get() = MaterialTheme.colors.SettingBackground
 
-    val Colors.TextMed @Composable get() = if (isLight) Color(0xff8a898e) else Color(0xff8a898e)
+    val Colors.TextAlternative @Composable get() = if (isLight) Color(0xff8a898e) else Color(0xff8a898e)
+    val TextAlternative @Composable get() = MaterialTheme.colors.TextAlternative
+
+    val Colors.TextMed @Composable get() = if (isLight) Color(0xffa6a6a6) else Color(0xffa6a6a6)
     val TextMed @Composable get() = MaterialTheme.colors.TextMed
 
     val Colors.SnackbarBackground @Composable get() = if (isLight) Color(0x80000000) else Color(0xcc505050)
