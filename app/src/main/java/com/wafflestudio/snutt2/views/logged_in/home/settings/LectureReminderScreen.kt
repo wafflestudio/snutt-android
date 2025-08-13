@@ -47,6 +47,8 @@ import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.launch
 
 @Composable
@@ -59,6 +61,7 @@ fun LectureReminderRoute(
     val context = LocalContext.current
     val uiState by viewModel.lectureReminderUiState.collectAsStateWithLifecycle()
     val snackBarHostState = remember { CustomSnackBarHostState() }
+    val hazeState = rememberHazeState()
 
     LaunchedEffect(Unit) {
         viewModel.lectureReminderUiEvent.collect { uiEvent ->
@@ -113,13 +116,14 @@ fun LectureReminderRoute(
                         backgroundColor = SNUTTColors.SnackbarBackground,
                         contentStyle = SNUTTTypography.body1.copy(color = SNUTTColors.White, fontWeight = FontWeight.Medium),
                         actionLabelStyle = SNUTTTypography.body1.copy(color = SNUTTColors.MilkMint, fontWeight = FontWeight.SemiBold),
+                        hazeState = hazeState,
                     )
                 },
             )
         },
     ) { padding ->
         LectureReminderScreen(
-            modifier = modifier,
+            modifier = modifier.hazeSource(hazeState),
             padding = padding,
             uiState = uiState,
             onClickBack = onNavigateBack,

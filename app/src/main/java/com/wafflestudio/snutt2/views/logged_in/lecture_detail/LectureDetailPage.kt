@@ -80,6 +80,8 @@ import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 
@@ -106,6 +108,7 @@ fun LectureDetailPage(
     val composableStates = ComposableStatesWithScope(scope)
     val analyticsLogger = LocalAnalyticsLogger.current
     val snackBarHostState = remember { CustomSnackBarHostState() }
+    val hazeState = rememberHazeState()
 
     val userViewModel = hiltViewModel<UserViewModel>()
     val modeType by vm.modeType.collectAsState()
@@ -261,6 +264,7 @@ fun LectureDetailPage(
                         backgroundColor = SNUTTColors.SnackbarBackground,
                         contentStyle = SNUTTTypography.body1.copy(color = SNUTTColors.White, fontWeight = FontWeight.Medium),
                         actionLabelStyle = SNUTTTypography.body1.copy(color = SNUTTColors.MilkMint, fontWeight = FontWeight.SemiBold),
+                        hazeState = hazeState,
                     )
                 },
             )
@@ -281,6 +285,7 @@ fun LectureDetailPage(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(SNUTTColors.Gray100)
+                    .hazeSource(hazeState)
                     .logImpression(
                         if (editingLectureDetail.id.isEmpty()) { // 새 강의를 만드는 경우에는 LectureCreate으로 로깅하며, id가 empty인 것으로 판별한다.
                             AnalyticsScreen.LectureCreate
