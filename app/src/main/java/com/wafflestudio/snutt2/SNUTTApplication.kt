@@ -42,12 +42,6 @@ class SNUTTApplication : Application(), ReactApplication {
             NaverMapSdk.NaverCloudPlatformClient(getString(R.string.naver_map_client_id))
     }
 
-    @OptIn(ExperimentalAnimationApi::class)
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        TimetableWidgetProvider.refreshWidget(applicationContext)
-    }
-
     override fun getReactNativeHost(): ReactNativeHost {
         return object : ReactNativeHost(this) {
             override fun getUseDeveloperSupport(): Boolean = BuildConfig.DEBUG

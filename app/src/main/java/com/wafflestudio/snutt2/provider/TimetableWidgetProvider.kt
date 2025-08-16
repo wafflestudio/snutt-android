@@ -8,6 +8,9 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.os.Build
+import android.os.Bundle
+import android.util.SizeF
 import android.view.View
 import android.widget.RemoteViews
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -42,40 +45,93 @@ TimetableWidgetProvider : AppWidgetProvider() {
         appWidgetIds: IntArray,
     ) {
         for (appWidgetId in appWidgetIds) {
-            val intent = Intent(context, RootActivity::class.java)
-            val pendingIntent =
-                PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-            val views = RemoteViews(context.packageName, R.layout.widget_timetable)
-            views.setOnClickPendingIntent(R.id.layout, pendingIntent)
-
-            // render views
-            val compactMode = userRepository.compactMode.value
-            val width = context.displayWidth.toInt()
-            val height = context.displayHeight.toInt()
-            views.setViewVisibility(R.id.placeholder, View.VISIBLE)
-            views.setViewVisibility(R.id.table, View.GONE)
-            currentLectureRepository.currentTable.value?.let { table ->
-                val tableView = TimetableView(context, compactMode)
-
-                tableView.theme = table.theme
-                tableView.lectures = table.lectureList
-                tableView.trimParam = userRepository.tableTrimParam.value
-
-                val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-                val canvas = Canvas(bitmap)
-
-                tableView.measure(width, height)
-                tableView.layout(0, 0, width, height)
-                tableView.draw(canvas)
-
-                views.setViewVisibility(R.id.placeholder, View.GONE)
-                views.setViewVisibility(R.id.table, View.VISIBLE)
-                views.setImageViewBitmap(R.id.table, bitmap)
-            }
-
+            val views = createResponsiveRemoteViews(context, appWidgetManager, appWidgetId)
             appWidgetManager.updateAppWidget(appWidgetId, views)
         }
         super.onUpdate(context, appWidgetManager, appWidgetIds)
+    }
+
+    override fun onAppWidgetOptionsChanged(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, newOptions: Bundle) {
+        // render views
+        val views = createResponsiveRemoteViews(context, appWidgetManager, appWidgetId)
+        appWidgetManager.updateAppWidget(appWidgetId, views)
+
+        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
+    }
+
+    private fun createResponsiveRemoteViews(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int): RemoteViews {
+        val dm = context.resources.displayMetrics
+        val options = appWidgetManager.getAppWidgetOptions(appWidgetId)
+
+        val sizes = options.getParcelableArrayList<SizeF>(AppWidgetManager.OPTION_APPWIDGET_SIZES)
+        val maxBitmapSize = context.displayWidth * context.displayHeight * 1.5
+        var scale = 1.0
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !sizes.isNullOrEmpty()) {
+            val totalBitmapSize = sizes.sumOf { size -> (size.width * dm.density * size.height * dm.density).toInt() }
+            while (totalBitmapSize / (scale * scale) > maxBitmapSize) {
+                scale++
+            }
+
+            return RemoteViews(sizes.associateWith {
+                createRemoteViews(context, (it.width * dm.density).toInt(), (it.height * dm.density).toInt(), scale)
+            })
+        } else {
+            // Before API Level 31
+            val minWidth = (options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH) * dm.density).toInt()
+            val maxWidth = (options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH) * dm.density).toInt()
+            val minHeight = (options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT) * dm.density).toInt()
+            val maxHeight = (options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT) * dm.density).toInt()
+
+            if (minWidth == maxWidth && minHeight == maxHeight) {
+                return createRemoteViews(context, minWidth, minHeight)
+            } else {
+                val totalBitmapSize = maxWidth * minHeight + minWidth * maxHeight
+                while (totalBitmapSize / (scale * scale) > maxBitmapSize) {
+                    scale++
+                }
+
+                return RemoteViews(createRemoteViews(context, maxWidth, minHeight, scale), createRemoteViews(context, minWidth, maxHeight, scale))
+            }
+        }
+    }
+    private fun createRemoteViews(context: Context, width: Int, height: Int, scale: Double = 1.0): RemoteViews {
+        val views = RemoteViews(context.packageName, R.layout.widget_timetable)
+        val intent = Intent(context, RootActivity::class.java)
+        val pendingIntent =
+            PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+        views.setOnClickPendingIntent(R.id.layout, pendingIntent)
+
+        views.setViewVisibility(R.id.placeholder, View.VISIBLE)
+        views.setViewVisibility(R.id.table, View.GONE)
+
+        // render views
+        val compactMode = userRepository.compactMode.value
+
+        views.setViewVisibility(R.id.placeholder, View.VISIBLE)
+        views.setViewVisibility(R.id.table, View.GONE)
+        currentLectureRepository.currentTable.value?.let { table ->
+            val tableView = TimetableView(context, compactMode)
+
+            tableView.theme = table.theme
+            tableView.lectures = table.lectureList
+            tableView.trimParam = userRepository.tableTrimParam.value
+
+            val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap)
+
+            tableView.measure(width, height)
+            tableView.layout(0, 0, width, height)
+            tableView.draw(canvas)
+
+            val resizedBitmap = Bitmap.createScaledBitmap(bitmap, (width / scale).toInt(), (height / scale).toInt(), false)
+
+            views.setViewVisibility(R.id.placeholder, View.GONE)
+            views.setViewVisibility(R.id.table, View.VISIBLE)
+            views.setImageViewBitmap(R.id.table, resizedBitmap)
+        }
+
+        return views
     }
 
     companion object {
