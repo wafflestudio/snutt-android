@@ -68,8 +68,8 @@ fun UserConfigRoute(
                 }
                 is UserConfigUiEvent.ShowToastByEvent -> {
                     val message = when (uiEvent.event) {
-                        UserConfigEvent.InvalidIdError -> context.getString(R.string.invalid_id)
-                        UserConfigEvent.InvalidPasswordError -> context.getString(R.string.invalid_password)
+                        UserConfigEvent.InvalidIdError -> context.getString(R.string.error_invalid_id)
+                        UserConfigEvent.InvalidPasswordError -> context.getString(R.string.error_invalid_password)
                         UserConfigEvent.PasswordMismatchError -> context.getString(R.string.settings_user_config_password_confirm_fail)
                         UserConfigEvent.ChangePasswordSuccess -> context.getString(R.string.settings_user_config_change_password_success)
                         UserConfigEvent.AddIdPasswordSuccess -> context.getString(R.string.settings_user_config_add_local_id_success)

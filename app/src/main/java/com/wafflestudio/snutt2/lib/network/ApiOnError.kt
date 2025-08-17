@@ -107,6 +107,7 @@ object ErrorCode {
     const val NO_USER_TOKEN = 0x2001
     const val WRONG_USER_TOKEN = 0x2002
     const val NO_ADMIN_PRIVILEGE = 0x2003
+    const val WRONG_PASSWORD = 0x2005
 
     const val INVALID_ID = 0x3000
     const val INVALID_PASSWORD = 0x3001
