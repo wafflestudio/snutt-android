@@ -151,6 +151,7 @@ class VacancyViewModelNew @Inject constructor(
 
     fun deleteSelectedLectures() {
         viewModelScope.launch {
+            toggleEditMode()
             _selectedLectures.forEach { lectureId ->
                 vacancyRepository.removeVacancyLectureNew(lectureId)
                     .onFailure { error ->
