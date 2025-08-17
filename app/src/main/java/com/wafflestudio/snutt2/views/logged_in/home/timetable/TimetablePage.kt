@@ -15,16 +15,12 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -37,13 +33,11 @@ import com.wafflestudio.snutt2.components.compose.IconWithAlertDot
 import com.wafflestudio.snutt2.components.compose.LectureListIcon
 import com.wafflestudio.snutt2.components.compose.NotificationIcon
 import com.wafflestudio.snutt2.components.compose.RingingAlarmIcon
-import com.wafflestudio.snutt2.components.compose.ShareIcon
 import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getCreditSumFromLectureList
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.logImpression
-import com.wafflestudio.snutt2.lib.shareScreenshotFromView
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
@@ -59,10 +53,11 @@ import kotlinx.coroutines.launch
 fun TimetablePage(uncheckedNotification: Boolean) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    val view = LocalView.current
+
     val navController = LocalNavController.current
     val drawerState = LocalDrawerState.current
     val table = LocalTableState.current.table
+    val tableTrimParam = LocalTableState.current.trimParam
     val remoteConfig = LocalRemoteConfig.current
     val composableStates = ComposableStatesWithScope(scope)
     val tableListViewModel = hiltViewModel<TableListViewModel>()
@@ -70,20 +65,12 @@ fun TimetablePage(uncheckedNotification: Boolean) {
     val vacancyNotificationBannerEnabled by remoteConfig.vacancyNotificationBannerEnabled.collectAsState(false)
     val analyticsLogger = LocalAnalyticsLogger.current
 
-    var timetableHeight by remember { mutableStateOf(0) }
-    var topBarHeight by remember { mutableStateOf(0) }
-    var bannerHeight by remember { mutableStateOf(0) }
-
     Column(
         modifier = Modifier
             .background(SNUTTColors.White900)
             .logImpression(AnalyticsScreen.TimetableHome),
     ) {
         TopBar(
-            // top bar 높이 측정
-            modifier = Modifier.onGloballyPositioned {
-                topBarHeight = it.size.height
-            },
             title = {
                 Text(
                     text = table.title,
@@ -127,20 +114,6 @@ fun TimetablePage(uncheckedNotification: Boolean) {
                         .size(30.dp)
                         .clicks { navController.navigate(NavigationDestination.LecturesOfTable) },
                 )
-                ShareIcon(
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clicks {
-                            shareScreenshotFromView(
-                                view,
-                                context,
-                                topBarHeight,
-                                if (vacancyNotificationBannerEnabled) bannerHeight else 0,
-                                timetableHeight,
-                            )
-                            analyticsLogger.logScreen(AnalyticsScreen.TimetableShare) // 안드로이드에는 TimetableShare 화면이 따로 없지만, iOS와의 통일성을 위해 공유 버튼 클릭 시 로깅한다.
-                        },
-                )
                 IconWithAlertDot(uncheckedNotification) { centerAlignedModifier ->
                     NotificationIcon(
                         modifier = centerAlignedModifier
@@ -156,15 +129,12 @@ fun TimetablePage(uncheckedNotification: Boolean) {
                 onClick = {
                     navController.navigate(NavigationDestination.VacancyNotification)
                 },
-                modifier = Modifier
-                    .onGloballyPositioned { bannerHeight = it.size.height },
             )
         }
         Box(
             modifier = Modifier
                 .weight(1f)
-                .fillMaxWidth()
-                .onGloballyPositioned { timetableHeight = it.size.height }, // timetable 높이 측정
+                .fillMaxWidth(),
         ) {
             TimeTable(selectedLecture = null)
         }

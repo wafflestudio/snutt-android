@@ -362,6 +362,7 @@
     <string name="timetable_settings_app_bar_title">시간표 설정</string>
     <string name="timetable_credit">(%d 학점)</string>
     <string name="home_drawer_table_title_change">이름 변경</string>
+    <string name="home_drawer_share_table_image">시간표 이미지 공유</string>
     <string name="home_drawer_table_theme_change">시간표 테마 설정</string>
     <string name="home_drawer_table_set_primary">학기 대표 시간표로 지정</string>
     <string name="home_drawer_table_set_not_primary">학기 대표 시간표 해제</string>
@@ -382,6 +383,17 @@
     <string name="settings_push_preferences_title">푸시알림 설정</string>
     <string name="settings_push_preferences_lecture_update">강의 업데이트</string>
     <string name="settings_push_preferences_vacancy">빈자리 알림</string>
+    <string name="settings_lecture_reminder_title">강의 리마인더</string>
+    <string name="settings_lecture_reminder_my_reminders">나의 리마인더</string>
+    <string name="settings_lecture_reminder_none">없음</string>
+    <string name="settings_lecture_reminder_ten_minutes_before">10분 전</string>
+    <string name="settings_lecture_reminder_at_start_time">수업 시작 시</string>
+    <string name="settings_lecture_reminder_ten_minutes_after">10분 후</string>
+    <string name="settings_lecture_reminder_update_success_ten_minutes_before">수업 시작 10분 전에 푸시알림을 보내드립니다.</string>
+    <string name="settings_lecture_reminder_update_success_at_start_time">수업이 시작하면 푸시 알림을 보내드립니다.</string>
+    <string name="settings_lecture_reminder_update_success_ten_minutes_after">수업 시작 10분 후에 푸시알림을 보내드립니다.</string>
+    <string name="settings_lecture_reminder_snackbar_navigate">보기</string>
+    <string name="settings_lecture_reminder_guide">강의 리마인더를 설정하면 해당 시간에 푸시 알림을 받을 수 있어요. 최신 학기의 대표시간표 속 강의들에 적용 가능해요.</string>
     <string name="settings_item_vacancy">빈자리 알림</string>
     <string name="settings_item_theme_market">테마 마켓</string>
     <string name="settings_item_push_preferences">푸시알림 설정</string>
@@ -530,6 +542,7 @@
     <string name="theme_create">새로운 테마</string>
     <string name="custom_theme_action_detail_edit">상세 수정</string>
     <string name="custom_theme_action_detail_view">상세 보기</string>
+    <string name="custom_theme_action_apply">현재 시간표에 적용</string>
     <string name="custom_theme_action_set_default">기본 테마로 지정</string>
     <string name="custom_theme_action_unset_default">기본 테마 해제</string>
     <string name="custom_theme_action_duplicate">테마 복제</string>
