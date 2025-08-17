@@ -97,7 +97,11 @@ class VacancyViewModelNew @Inject constructor(
         viewModelScope.launch {
             vacancyRepository.getVacancyLecturesNew()
                 .onSuccess { data ->
-                    _vacancyUiState.emit(VacancyUiStateTypes.Success)
+                    if (data.isEmpty()) {
+                        _vacancyUiState.emit(VacancyUiStateTypes.Empty)
+                    } else {
+                        _vacancyUiState.emit(VacancyUiStateTypes.Success)
+                    }
                     _vacancyLectures.emit(
                         data.sortedByDescending { it.wasFull && it.registrationCount < it.quota },
                     )
