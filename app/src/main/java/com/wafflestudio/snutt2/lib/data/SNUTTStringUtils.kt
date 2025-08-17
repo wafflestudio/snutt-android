@@ -78,9 +78,9 @@ object SNUTTStringUtils {
     private fun getClassTimeTextForLecture(session: LectureSession): String = buildString {
         append(session.day.getString())
         append("(")
-        append(session.startTime.getHourMintueString())
+        append(session.startTime.getHourMinuteString())
         append("~")
-        append(session.endTime.getHourMintueString())
+        append(session.endTime.getHourMinuteString())
         append(")")
     }
 
@@ -219,8 +219,8 @@ object SNUTTStringUtils {
 
     fun String.isIdInvalid(): Boolean = Regex("^[A-Za-z\\d]{4,32}\$").matches(this).not()
 
-    fun LocalTime.getHourMintueString(): String = buildString {
-        append("%02d:%02d".format(this@getHourMintueString.hour, this@getHourMintueString.minute))
+    fun LocalTime.getHourMinuteString(): String = buildString {
+        append("%02d:%02d".format(this@getHourMinuteString.hour, this@getHourMinuteString.minute))
     }
 
     fun DayOfWeek.getString(): String = when (this) {
