@@ -73,9 +73,11 @@ TimetableWidgetProvider : AppWidgetProvider() {
                 scale++
             }
 
-            return RemoteViews(sizes.associateWith {
-                createRemoteViews(context, (it.width * dm.density).toInt(), (it.height * dm.density).toInt(), scale)
-            })
+            return RemoteViews(
+                sizes.associateWith {
+                    createRemoteViews(context, (it.width * dm.density).toInt(), (it.height * dm.density).toInt(), scale)
+                },
+            )
         } else {
             // Before API Level 31
             val minWidth = (options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH) * dm.density).toInt()
