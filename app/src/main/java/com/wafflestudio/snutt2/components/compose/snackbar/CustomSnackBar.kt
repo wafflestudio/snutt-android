@@ -444,11 +444,14 @@ private fun customAnimatedOpacity(
 
 @Composable
 private fun customAnimatedScale(animation: AnimationSpec<Float>, visible: Boolean): State<Float> {
-    val scale = remember { Animatable(if (!visible) 1f else 0.8f) }
-    LaunchedEffect(visible) {
-        scale.animateTo(if (visible) 1f else 0.8f, animationSpec = animation)
-    }
-    return scale.asState()
+//    val scale = remember { Animatable(if (!visible) 1f else 0.8f) }
+//    LaunchedEffect(visible) {
+//        scale.animateTo(if (visible) 1f else 0.8f, animationSpec = animation)
+//    }
+//    return scale.asState()
+
+    // background blur 이동 현상 때문에 ScaleAnimation 삭제
+    return remember { mutableStateOf(1F) }
 }
 
 private val TextEndExtraSpacing = 8.dp
