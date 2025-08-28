@@ -25,9 +25,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
@@ -40,9 +44,12 @@ import com.wafflestudio.snutt2.components.compose.snackbar.dismiss
 import com.wafflestudio.snutt2.domainmodel.preview.PreviewData
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.components.compose.SegmentedPicker
+import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
+import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.ui.onSurfaceVariant
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.launch
 
 @Composable
@@ -55,6 +62,7 @@ fun LectureReminderRoute(
     val context = LocalContext.current
     val uiState by viewModel.lectureReminderUiState.collectAsStateWithLifecycle()
     val snackBarHostState = remember { CustomSnackBarHostState() }
+    val hazeState = rememberHazeState()
 
     LaunchedEffect(Unit) {
         viewModel.lectureReminderUiEvent.collect { uiEvent ->
@@ -106,16 +114,17 @@ fun LectureReminderRoute(
                         snackBarData = currentSnackBarData,
                         passedData = data,
                         shape = RoundedCornerShape(10.dp),
-                        backgroundColor = SNUTTColors.Black500,
+                        backgroundColor = SNUTTColors.SnackbarBackground,
                         contentStyle = SNUTTTypography.body1.copy(color = SNUTTColors.White, fontWeight = FontWeight.Medium),
                         actionLabelStyle = SNUTTTypography.body1.copy(color = SNUTTColors.MilkMint, fontWeight = FontWeight.SemiBold),
+                        hazeState = hazeState,
                     )
                 },
             )
         },
     ) { padding ->
         LectureReminderScreen(
-            modifier = modifier,
+            modifier = modifier.hazeSource(hazeState),
             padding = padding,
             uiState = uiState,
             onClickBack = onNavigateBack,
@@ -160,43 +169,68 @@ fun LectureReminderScreen(
             is LectureReminderUiState.Loading -> LectureReminderLoading()
             is LectureReminderUiState.Error -> LectureReminderError()
             is LectureReminderUiState.Success -> {
-                SettingColumn(
-                    title = stringResource(R.string.settings_lecture_reminder_my_reminders),
-                ) {
-                    LazyColumn {
-                        items(
-                            items = uiState.data.values.toList(),
-                            key = { it.lectureId },
-                        ) { lectureWithReminderOption ->
-                            SegmentedPicker(
-                                title = lectureWithReminderOption.lectureTitle,
-                                options = LectureReminderOffset.entries,
-                                optionLabel = { offset -> offset.getString() },
-                                selectedOption = lectureWithReminderOption.lectureReminderOffset,
-                                onOptionSelected = { offset ->
-                                    onChangeReminderOption(
-                                        lectureWithReminderOption.lectureId,
-                                        LectureWithReminderOption(
-                                            lectureId = lectureWithReminderOption.lectureId,
-                                            lectureTitle = lectureWithReminderOption.lectureTitle,
-                                            lectureReminderOffset = offset,
-                                        ),
-                                    )
-                                },
-                                modifier = Modifier.background(SNUTTColors.White900),
-                            )
+                Column {
+                    SettingColumn(
+                        modifier = Modifier.weight(1f, fill = false),
+                    ) {
+                        LazyColumn {
+                            item {
+                                Text(
+                                    text = stringResource(R.string.settings_lecture_reminder_my_reminders),
+                                    style = SNUTTTypography.body2.copy(
+                                        color = SNUTTColors.TextAlternative,
+                                    ),
+                                    modifier = Modifier
+                                        .padding(top = 24.dp, start = 30.dp, bottom = 8.dp),
+                                )
+                            }
+
+                            items(
+                                items = uiState.data.values.toList(),
+                                key = { it.lectureId },
+                            ) { lectureWithReminderOption ->
+                                SegmentedPicker(
+                                    title = lectureWithReminderOption.lectureTitle,
+                                    options = LectureReminderOffset.entries,
+                                    optionLabel = { offset -> offset.getString() },
+                                    selectedOption = lectureWithReminderOption.lectureReminderOffset,
+                                    onOptionSelected = { offset ->
+                                        onChangeReminderOption(
+                                            lectureWithReminderOption.lectureId,
+                                            LectureWithReminderOption(
+                                                lectureId = lectureWithReminderOption.lectureId,
+                                                lectureTitle = lectureWithReminderOption.lectureTitle,
+                                                lectureReminderOffset = offset,
+                                            ),
+                                        )
+                                    },
+                                    description = null,
+                                    modifier = Modifier.background(SNUTTColors.White900),
+                                )
+                            }
+
+                            item {
+                                val annotatedString = buildAnnotatedString {
+                                    append(stringResource(R.string.settings_lecture_reminder_guide_normal1))
+                                    withStyle(style = SpanStyle(fontWeight = FontWeight.SemiBold)) {
+                                        append(stringResource(R.string.settings_lecture_reminder_guide_bold1))
+                                    }
+                                    append(stringResource(R.string.settings_lecture_reminder_guide_normal2))
+                                }
+
+                                Text(
+                                    text = annotatedString,
+                                    style = SNUTTTypography.body2.copy(
+                                        color = SNUTTColors.TextMed,
+                                        fontSize = 13.sp,
+                                    ),
+                                    modifier = Modifier
+                                        .padding(16.dp),
+                                )
+                            }
                         }
                     }
                 }
-
-                Text(
-                    text = stringResource(R.string.settings_lecture_reminder_guide),
-                    style = SNUTTTypography.body2.copy(
-                        color = MaterialTheme.colors.onSurfaceVariant,
-                    ),
-                    modifier = Modifier
-                        .padding(start = 16.dp, top = 16.dp, end = 16.dp),
-                )
             }
         }
     }

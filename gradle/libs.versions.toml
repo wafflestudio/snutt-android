@@ -64,6 +64,9 @@ kotlinxSerialization = "1.9.0"
 desugarJdkLibs = "2.1.5"
 junit = "4.13.2"
 
+# Haze
+haze = "1.6.9"
+
 [libraries]
 # Kotlin
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
@@ -157,6 +160,9 @@ desugar-jdk-libs = { module = "com.android.tools:desugar_jdk_libs", version.ref 
 
 # Testing
 junit = { module = "junit:junit", version.ref = "junit" }
+
+# Haze
+haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradle" }
