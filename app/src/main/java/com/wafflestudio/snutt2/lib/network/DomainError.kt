@@ -12,6 +12,7 @@ data class NoUserToken(override val displayMessage: String) : AuthError // 사�
 data class WrongUserToken(override val displayMessage: String) : AuthError
 
 // 기타 오류
+data class EOF(override val displayMessage: String) : DomainError
 data class NetworkDisconnect(override val displayMessage: String) : DomainError
 data class ServerFault(override val displayMessage: String) : DomainError
 data class NoAdminPrivilege(override val displayMessage: String) : DomainError
@@ -25,9 +26,11 @@ data class Nothing(override val displayMessage: String) : DomainError
 sealed interface SignupError : DomainError
 sealed interface AddLocalIdError : DomainError
 sealed interface ChangePasswordError : DomainError
+sealed interface LectureReminderError : DomainError
 
 data class InvalidId(override val displayMessage: String) : SignupError, AddLocalIdError
 data class InvalidPassword(override val displayMessage: String) : SignupError, AddLocalIdError, ChangePasswordError
 data class DuplicateId(override val displayMessage: String) : SignupError, AddLocalIdError
 data class UsedEmail(override val displayMessage: String) : SignupError
 data class WrongPassword(override val displayMessage: String) : ChangePasswordError
+data class PastSemester(override val displayMessage: String) : LectureReminderError

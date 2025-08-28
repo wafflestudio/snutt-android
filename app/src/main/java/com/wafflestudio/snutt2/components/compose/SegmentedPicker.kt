@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.logged_in.home.settings.LectureReminderOffset
+import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
 
 /**
  * 여러 선택지 중 하나를 선택할 수 있는 UI 컴포넌트
@@ -38,6 +38,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.settings.LectureReminderOffs
  * @param options 선택 가능한 항목들의 문자열 리스트
  * @param selectedOption 현재 선택된 항목
  * @param onOptionSelected 사용자가 새로운 항목을 선택했을 때 호출되는 콜백 함수
+ * @param description 컴포넌트의 설명
  * @param modifier 이 컴포저블에 적용할 Modifier
  */
 @Composable
@@ -47,6 +48,7 @@ fun <T> SegmentedPicker(
     optionLabel: (T) -> String,
     selectedOption: T,
     onOptionSelected: (T) -> Unit,
+    description: String?,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -115,6 +117,14 @@ fun <T> SegmentedPicker(
                 }
             }
         }
+        if (!description.isNullOrEmpty()) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                modifier = Modifier.padding(horizontal = 4.dp),
+                text = description,
+                style = SNUTTTypography.subtitle1.copy(fontSize = 13.sp, fontWeight = FontWeight.Normal, color = SNUTTColors.TextMed),
+            )
+        }
     }
 }
 
@@ -144,6 +154,7 @@ fun SegmentedPickerPreview() {
             optionLabel = { offset -> offset.getString() },
             selectedOption = LectureReminderOffset.entries[0],
             onOptionSelected = { _ -> },
+            description = "학기가 시작됐을 때 해당 시간에 푸시 알림을 보내드립니다.",
         )
     }
 }
