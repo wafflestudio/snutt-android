@@ -63,6 +63,8 @@ class LectureDetailViewModel @Inject constructor(
 ) : ViewModel() {
     val currentTable: StateFlow<TableDto?> = currentTableRepository.currentTable
 
+    private val _table = MutableStateFlow<TableDto?>(null)
+    val table = _table.asStateFlow()
     val currentTableTheme: StateFlow<TableTheme> = getCurrentTableThemeUseCase()
         .stateIn(viewModelScope, SharingStarted.Eagerly, BuiltInTheme.SNUTT)
 
@@ -137,17 +139,18 @@ class LectureDetailViewModel @Inject constructor(
         fixedLectureDetail = lecture ?: LectureDto.Default // null 문제 (reset에서 비롯됨)
         viewModelScope.launch {
             lectureReminderJob?.cancel()
+            _table.emit(table)
             _modeType.emit(modeType)
             _editingLectureDetail.emit(fixedLectureDetail)
             if (modeType !is ModeType.Editing) { // Editing으로 여는 것은 강의를 추가할 때 뿐이고, 이때는 아직 추가되지 않은 강의이므로 lecture reminder를 얻을 수 없다.
-                getTimetableLectureReminder(fixedLectureDetail, table)
+                getTimetableLectureReminder(fixedLectureDetail)
             }
             init()
         }
     }
 
     fun abandonEditingLectureDetail() {
-        initializeEditingLectureDetail(fixedLectureDetail, ModeType.Normal)
+        initializeEditingLectureDetail(fixedLectureDetail, ModeType.Normal, _table.value)
     }
 
     fun editLectureDetail(editedLecture: LectureDto) {
@@ -158,7 +161,7 @@ class LectureDetailViewModel @Inject constructor(
         val param = buildPutLectureParams()
         param.isForced = is_forced
         currentTableRepository.updateLecture(_editingLectureDetail.value.id, param)
-        initializeEditingLectureDetail(_editingLectureDetail.value, ModeType.Normal)
+        initializeEditingLectureDetail(_editingLectureDetail.value, ModeType.Normal, _table.value)
     }
 
     suspend fun removeLecture() {
@@ -200,10 +203,11 @@ class LectureDetailViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getTimetableLectureReminder(lecture: LectureDto, table: TableDto? = null) {
+    private suspend fun getTimetableLectureReminder(lecture: LectureDto) {
         _showLectureReminderPicker.emit(false)
         _lectureWithReminderOption.emit(LectureWithReminderOption.Default)
         _enableLectureReminderPicker.emit(false)
+        val table = _table.value
         Log.d("table", table?.isPrimary.toString())
         if (table != null && lecture.class_time_json.isNotEmpty() && lecture.lecture_id != null) {
             tableRepository.getTimetableLectureReminder(currentTable.value?.id ?: "", lecture.id)
