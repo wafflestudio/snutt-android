@@ -94,6 +94,9 @@ class LectureDetailViewModel @Inject constructor(
     private val _showLectureReminderPicker = MutableStateFlow(false)
     val showLectureReminderPicker = _showLectureReminderPicker.asStateFlow()
 
+    private val _enableLectureReminderPicker = MutableStateFlow(false)
+    val enableLectureReminderPicker = _enableLectureReminderPicker.asStateFlow()
+
     private val _lectureWithReminderOption = MutableStateFlow(LectureWithReminderOption.Default)
     val lectureWithReminderOption = _lectureWithReminderOption.asStateFlow()
 
@@ -200,12 +203,14 @@ class LectureDetailViewModel @Inject constructor(
     private suspend fun getTimetableLectureReminder(lecture: LectureDto, table: TableDto? = null) {
         _showLectureReminderPicker.emit(false)
         _lectureWithReminderOption.emit(LectureWithReminderOption.Default)
-        Log.d("table", table.toString() + lecture.class_time_json.toString() + lecture.lecture_id.toString())
+        _enableLectureReminderPicker.emit(false)
+        Log.d("table", table?.isPrimary.toString())
         if (table != null && lecture.class_time_json.isNotEmpty() && lecture.lecture_id != null) {
             tableRepository.getTimetableLectureReminder(currentTable.value?.id ?: "", lecture.id)
                 .onSuccess { data ->
                     _showLectureReminderPicker.emit(true)
                     _lectureWithReminderOption.emit(data)
+                    _enableLectureReminderPicker.emit(table.isPrimary)
                 }
                 .onFailure { error ->
                     handleLectureDetailError(error)
