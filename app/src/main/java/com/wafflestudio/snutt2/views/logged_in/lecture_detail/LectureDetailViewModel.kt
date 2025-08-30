@@ -208,12 +208,13 @@ class LectureDetailViewModel @Inject constructor(
         if (table != null && lecture.class_time_json.isNotEmpty() && lecture.lecture_id != null) {
             tableRepository.getTimetableLectureReminder(currentTable.value?.id ?: "", lecture.id)
                 .onSuccess { data ->
+                    Log.d("data", data.toString())
                     _showLectureReminderPicker.emit(true)
-                    _lectureWithReminderOption.emit(data)
                     _enableLectureReminderPicker.emit(table.isPrimary)
+                    _lectureWithReminderOption.emit(data)
                 }
                 .onFailure { error ->
-                    handleLectureDetailError(error)
+                    handleLectureDetailError(error, table.isPrimary)
                 }
         }
     }
@@ -241,7 +242,7 @@ class LectureDetailViewModel @Inject constructor(
                 ),
             )
         }.onFailure { error ->
-            handleLectureDetailError(error)
+            handleLectureDetailError(error, false)
         }
     }
 
@@ -275,7 +276,7 @@ class LectureDetailViewModel @Inject constructor(
         )
     }
 
-    private suspend fun handleLectureDetailError(error: DomainError) {
+    private suspend fun handleLectureDetailError(error: DomainError, isTablePrimary: Boolean) {
         val displayMessage = displayMessageResolver.getDisplayMessage(error)
         when (error) {
             is AuthError -> {
@@ -285,6 +286,7 @@ class LectureDetailViewModel @Inject constructor(
             }
             is EOF -> {
                 _showLectureReminderPicker.emit(true)
+                _enableLectureReminderPicker.emit(isTablePrimary)
                 _lectureWithReminderOption.emit(LectureWithReminderOption.Default.copy(lectureId = fixedLectureDetail.id))
             }
             is PastSemester -> {

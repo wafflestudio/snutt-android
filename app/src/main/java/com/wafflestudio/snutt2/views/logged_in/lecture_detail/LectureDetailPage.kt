@@ -507,7 +507,7 @@ fun LectureDetailPage(
                                 description = (
                                     buildAnnotatedString {
                                         if (enableLectureReminderPicker) {
-                                            stringResource(R.string.lecture_detail_lecture_reminder_description)
+                                            append(stringResource(R.string.lecture_detail_lecture_reminder_description))
                                         } else {
                                             withStyle(style = SpanStyle(fontWeight = FontWeight.SemiBold)) {
                                                 append(stringResource(R.string.lecture_detail_lecture_reminder_guide_bold1))
