@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.lecture_detail
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
@@ -129,14 +130,14 @@ class LectureDetailViewModel @Inject constructor(
         viewModelScope.launch { _modeType.emit(ModeType.Editing(adding)) }
     }
 
-    fun initializeEditingLectureDetail(lecture: LectureDto?, modeType: ModeType) {
+    fun initializeEditingLectureDetail(lecture: LectureDto?, modeType: ModeType, table: TableDto? = null) {
         fixedLectureDetail = lecture ?: LectureDto.Default // null 문제 (reset에서 비롯됨)
         viewModelScope.launch {
             lectureReminderJob?.cancel()
             _modeType.emit(modeType)
             _editingLectureDetail.emit(fixedLectureDetail)
             if (modeType !is ModeType.Editing) { // Editing으로 여는 것은 강의를 추가할 때 뿐이고, 이때는 아직 추가되지 않은 강의이므로 lecture reminder를 얻을 수 없다.
-                getTimetableLectureReminder(fixedLectureDetail)
+                getTimetableLectureReminder(fixedLectureDetail, table)
             }
             init()
         }
@@ -196,17 +197,20 @@ class LectureDetailViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getTimetableLectureReminder(lecture: LectureDto) {
+    private suspend fun getTimetableLectureReminder(lecture: LectureDto, table: TableDto? = null) {
         _showLectureReminderPicker.emit(false)
         _lectureWithReminderOption.emit(LectureWithReminderOption.Default)
-        tableRepository.getTimetableLectureReminder(currentTable.value?.id ?: "", lecture.id)
-            .onSuccess { data ->
-                _showLectureReminderPicker.emit(true)
-                _lectureWithReminderOption.emit(data)
-            }
-            .onFailure { error ->
-                handleLectureDetailError(error)
-            }
+        Log.d("table", table.toString() + lecture.class_time_json.toString() + lecture.lecture_id.toString())
+        if (table != null && lecture.class_time_json.isNotEmpty() && lecture.lecture_id != null) {
+            tableRepository.getTimetableLectureReminder(currentTable.value?.id ?: "", lecture.id)
+                .onSuccess { data ->
+                    _showLectureReminderPicker.emit(true)
+                    _lectureWithReminderOption.emit(data)
+                }
+                .onFailure { error ->
+                    handleLectureDetailError(error)
+                }
+        }
     }
 
     fun changeLectureReminderOption(option: LectureWithReminderOption) {
