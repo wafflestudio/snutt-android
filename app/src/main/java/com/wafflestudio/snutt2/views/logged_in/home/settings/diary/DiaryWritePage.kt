@@ -26,6 +26,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -116,7 +117,7 @@ private fun DiaryWriteScreen(
     onCompleteSelectActivities: () -> Unit,
     onRestartSelectActivities: () -> Unit,
     onToggleAnswer: (questionIndex: Int, answerIndex: Int) -> Unit,
-    onSubmitDiary: () -> Unit,
+    onSubmitDiary: (comment: String) -> Unit,
     onClickBackButton: () -> Unit,
     onClickWriteNextButton: () -> Unit,
     onClickWriteReviewButton: () -> Unit,
@@ -154,7 +155,7 @@ private fun DiaryWriting(
     onCompleteSelectActivities: () -> Unit,
     onRestartSelectActivities: () -> Unit,
     onToggleAnswer: (questionIndex: Int, answerIndex: Int) -> Unit,
-    onSubmitDiary: () -> Unit,
+    onSubmitDiary: (comment: String) -> Unit,
     onClickBackButton: () -> Unit,
 ) {
     val scope = rememberCoroutineScope()
@@ -162,7 +163,7 @@ private fun DiaryWriting(
 
     val toScrollOffset =
         remember { mutableIntStateOf(0) }
-    val moreTextState = remember {
+    var commentText by remember {
         mutableStateOf(uiState.comment)
     }
 
@@ -239,10 +240,9 @@ private fun DiaryWriting(
                         onChange = onToggleAnswer,
                     )
                     MoreTextItem(
-                        moreText = moreTextState.value,
+                        moreText = commentText,
                         onChange = { text ->
-                            moreTextState.value =
-                                text
+                            commentText = text
                         },
                     )
                     Text(
@@ -265,7 +265,7 @@ private fun DiaryWriting(
                                 ),
                             )
                             .clicks(enabled = uiState.allQuestionAnswered()) {
-                                onSubmitDiary()
+                                onSubmitDiary(commentText)
                             }
                             .padding(
                                 vertical = 12.dp,

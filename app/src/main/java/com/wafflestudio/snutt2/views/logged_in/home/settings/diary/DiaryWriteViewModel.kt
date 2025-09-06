@@ -90,7 +90,9 @@ class DiaryWriteViewModel @Inject constructor(
         )
     }
 
-    fun saveDiaryWrite() {
+    // FIXME: comment 한 글자 한 글자 바뀌는 것도 전부 상태 hoist 하기 vs 로컬 상태로 뒀다가 한번에 제출하기
+    // 후자는 일관성이 깨지는 느낌이 있는데...
+    fun saveDiaryWrite(comment: String) {
         viewModelScope.launch {
             // TODO: 구현
 //            diaryRepository.saveDiaryWrite(diaryWriteData)
