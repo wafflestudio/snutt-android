@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.lib.contains
 import com.wafflestudio.snutt2.lib.getFittingTrimParam
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
@@ -45,7 +46,6 @@ import com.wafflestudio.snutt2.lib.toDayString
 import com.wafflestudio.snutt2.lib.trimByTrimParam
 import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.model.CustomTheme
-import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.LocalCompactState

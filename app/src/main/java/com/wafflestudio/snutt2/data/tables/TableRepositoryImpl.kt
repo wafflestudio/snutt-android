@@ -1,13 +1,21 @@
 package com.wafflestudio.snutt2.data.tables
 
 import com.wafflestudio.snutt2.data.SNUTTStorage
+import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
+import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.PostTableParams
 import com.wafflestudio.snutt2.lib.network.dto.PutTableParams
 import com.wafflestudio.snutt2.lib.network.dto.PutTableThemeParams
+import com.wafflestudio.snutt2.lib.network.dto.PutTimetableLectureReminderParams
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
+import com.wafflestudio.snutt2.lib.network.dto.core.toDomainModel
+import com.wafflestudio.snutt2.lib.network.toDomainError
 import com.wafflestudio.snutt2.lib.toOptional
+import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
+import com.wafflestudio.snutt2.domainmodel.TimetableLectureReminders
+import com.wafflestudio.snutt2.domainmodel.getIntOffset
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -104,5 +112,50 @@ class TableRepositoryImpl @Inject constructor(
 
     override suspend fun setTableNotPrimary(id: String) {
         api._deletePrimaryTable(id)
+    }
+
+    override suspend fun getActiveLectureReminders(): Result<TimetableLectureReminders> {
+        try {
+            val activeLectureReminders = api._getActiveLectureReminders()
+            val activeTable = api._getTableById(activeLectureReminders.timetableId)
+            val activeLecturesWithReminderOption = activeLectureReminders.reminders.map { it.toDomainModel() }
+            val result = activeTable.lectureList.map { lectureDto ->
+                val matchingOption = activeLecturesWithReminderOption.find { it.lectureId == lectureDto.id }
+                LectureWithReminderOption(
+                    lectureId = lectureDto.id,
+                    lectureTitle = lectureDto.course_title,
+                    lectureReminderOffset = matchingOption?.lectureReminderOffset ?: LectureReminderOffset.NONE,
+                )
+            }
+            return Result.Success(TimetableLectureReminders(activeTable.id, result))
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun getTimetableLectureReminder(timetableId: String, lectureId: String): Result<LectureWithReminderOption> {
+        try {
+            val result = api._getTimetableLectureReminder(timetableId, lectureId)
+            return Result.Success(result.toDomainModel())
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun updateTimetableLectureReminder(timetableId: String, lectureId: String, option: LectureWithReminderOption): Result<LectureWithReminderOption> {
+        try {
+            val result = when (option.lectureReminderOffset) {
+                LectureReminderOffset.NONE -> {
+                    api._deleteTimetableLectureReminder(timetableId, lectureId)
+                    LectureWithReminderOption.Default
+                }
+                else -> {
+                    api._putTimetableLectureReminder(timetableId, lectureId, PutTimetableLectureReminderParams(option.lectureReminderOffset.getIntOffset())).toDomainModel()
+                }
+            }
+            return Result.Success(result)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
     }
 }

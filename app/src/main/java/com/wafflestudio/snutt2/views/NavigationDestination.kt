@@ -121,6 +121,10 @@ sealed interface NavigationDestination {
     data object PushPreferences : NavigationDestination
 
     @Serializable
+    @DeepLinkPath("lecture_reminder")
+    data object LectureReminder : NavigationDestination
+
+    @Serializable
     @DeepLinkPath("lecture_diary")
     data object LectureDiary : NavigationDestination
 

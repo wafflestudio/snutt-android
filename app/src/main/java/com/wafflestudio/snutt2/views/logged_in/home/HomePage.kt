@@ -49,6 +49,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.popups.Popup
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewPage
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchPage
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.search.rememberSearchResultListState
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingsRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TableState
@@ -91,6 +92,7 @@ fun HomePage() {
     val reviewPageReviewWebViewContainer = remember { ReviewWebViewContainer(context, userViewModel.accessToken, isDarkMode) }
     // HomePage에서 collect 까지 해 줘야 탭 전환했을 때 검색 현황이 유지됨
     val searchResultPagingItems = searchViewModel.queryResults.collectAsLazyPagingItems()
+    val searchResultListState = rememberSearchResultListState(searchResultPagingItems)
 
     LaunchedEffect(Unit) {
         scope.launch(Dispatchers.IO) {
@@ -151,7 +153,7 @@ fun HomePage() {
             ) {
                 when (pageController.homePageState.value) {
                     HomeItem.Timetable -> TimetablePage(uncheckedNotification)
-                    HomeItem.Search -> SearchPage(searchResultPagingItems)
+                    HomeItem.Search -> SearchPage(searchResultPagingItems, searchResultListState)
                     is HomeItem.Review -> {
                         CompositionLocalProvider(LocalReviewWebView provides reviewPageReviewWebViewContainer) {
                             ReviewPage()
@@ -180,6 +182,9 @@ fun HomePage() {
                         },
                         onNavigatePushPreference = {
                             navController.navigate(NavigationDestination.PushPreferences)
+                        },
+                        onNavigateLectureReminder = {
+                            navController.navigate(NavigationDestination.LectureReminder)
                         },
                         onNavigateLectureDiary = {
                             navController.navigate(NavigationDestination.LectureDiaryWrite("686e8d3c2afaf11b888e2722", "융합 뭐시기", "1234")) // 푸시 알림으로 트리거, 임시로 넣어둠

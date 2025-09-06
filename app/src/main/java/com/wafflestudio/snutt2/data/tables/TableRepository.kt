@@ -1,5 +1,8 @@
 package com.wafflestudio.snutt2.data.tables
 
+import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
+import com.wafflestudio.snutt2.domainmodel.TimetableLectureReminders
+import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import kotlinx.coroutines.flow.StateFlow
@@ -31,4 +34,10 @@ interface TableRepository {
     suspend fun setTablePrimary(id: String)
 
     suspend fun setTableNotPrimary(id: String)
+
+    suspend fun getActiveLectureReminders(): Result<TimetableLectureReminders>
+
+    suspend fun getTimetableLectureReminder(timetableId: String, lectureId: String): Result<LectureWithReminderOption>
+
+    suspend fun updateTimetableLectureReminder(timetableId: String, lectureId: String, option: LectureWithReminderOption): Result<LectureWithReminderOption>
 }

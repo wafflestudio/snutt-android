@@ -45,8 +45,8 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.MagicIcon
 import com.wafflestudio.snutt2.components.compose.ResetIcon
 import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.lib.trimByTrimParam
-import com.wafflestudio.snutt2.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
@@ -56,6 +56,8 @@ import com.wafflestudio.snutt2.views.LocalTableState
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.DrawLectures
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.DrawTableGrid
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableCanvasObjects
+import kotlin.math.max
+import kotlin.math.min
 
 @Composable
 fun TimeSelectSheet(
@@ -83,8 +85,16 @@ fun TimeSelectSheet(
                 draggedTimeBlock[i][j].value = true
             }
         }
+
+        val offsetMinute = TableTrimParam.SearchOption.hourFrom * 60
+        val maxStartMinute = TableTrimParam.SearchOption.hourFrom * 60
+        val minEndMinute = (TableTrimParam.SearchOption.hourTo + 1) * 60 // TableTrimParam.SearchOption.hourTo가 22라는 것은 23:00까지 검색을 허용하겠다는 것이므로 1을 더해준다.
         backgroundLectureTimes.forEach {
-            for (timeIndex in (it.startMinute - TableTrimParam.SearchOption.hourFrom * 60) / 30..(it.endMinute - TableTrimParam.SearchOption.hourFrom * 60) / 30) {
+            // 아래 두 줄과 비슷한 기능을 하는 ClassTimeDto.trimByTrimParam 확장 함수가 있어서, 이걸 쓸 수 있는 방향으로 개선해도 좋을 듯 하다.
+            val startMinute = max(it.startMinute, maxStartMinute)
+            val endMinute = min(it.endMinute, minEndMinute)
+            for (timeMinute in startMinute until endMinute step 30) {
+                val timeIndex = (timeMinute - offsetMinute) / 30
                 draggedTimeBlock[it.day][timeIndex].value = false
             }
         }
