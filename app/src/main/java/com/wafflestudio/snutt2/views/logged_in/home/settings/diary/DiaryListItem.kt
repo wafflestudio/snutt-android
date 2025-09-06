@@ -32,8 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.components.compose.ArrowDownIcon
 import com.wafflestudio.snutt2.components.compose.TrashIcon
-import com.wafflestudio.snutt2.domainmodel.DiaryListLectureItem
-import com.wafflestudio.snutt2.domainmodel.DiaryQuestionAnswer
+import com.wafflestudio.snutt2.domainmodel.diary.DiaryListLectureItem
+import com.wafflestudio.snutt2.domainmodel.diary.DiaryQuestionAnswer
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import java.time.LocalDate
@@ -57,7 +57,9 @@ fun DiaryListDateItem(
                 }
             }
             Row(
-                modifier = Modifier.clickable { isSelected = !isSelected }.fillMaxWidth(),
+                modifier = Modifier
+                    .clickable { isSelected = !isSelected }
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -65,7 +67,11 @@ fun DiaryListDateItem(
                     text = "시각디자인기초, 배구",
                     style = SNUTTTypography.body1, color = SNUTTColors.EditTextLabel,
                 )
-                ArrowDownIcon(modifier = Modifier.height(20.dp).rotate(if (isSelected) 180f else 0f))
+                ArrowDownIcon(
+                    modifier = Modifier
+                        .height(20.dp)
+                        .rotate(if (isSelected) 180f else 0f),
+                )
             }
         }
         AnimatedVisibility(visible = isSelected) {
@@ -102,7 +108,8 @@ fun DiaryListLectureItem(
                 .background(
                     color = SNUTTColors.LectureDiaryGray,
                     shape = RoundedCornerShape(4.dp),
-                ).padding(top = 16.dp, bottom = 20.dp, start = 16.dp, end = 16.dp),
+                )
+                .padding(top = 16.dp, bottom = 20.dp, start = 16.dp, end = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Row(
@@ -116,13 +123,23 @@ fun DiaryListLectureItem(
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 diaryListLectureItem.content.forEach { diaryQuestionAnswer ->
                     Row {
-                        Text(modifier = Modifier.padding(end = 16.dp).width(widthInDp), text = diaryQuestionAnswer.question, style = SNUTTTypography.subtitle2)
+                        Text(
+                            modifier = Modifier
+                                .padding(end = 16.dp)
+                                .width(widthInDp),
+                            text = diaryQuestionAnswer.question, style = SNUTTTypography.subtitle2,
+                        )
                         Text(diaryQuestionAnswer.answer, style = SNUTTTypography.body1)
                     }
                 }
                 if (diaryListLectureItem.moreText != null) {
                     Row {
-                        Text(modifier = Modifier.padding(end = 16.dp).width(widthInDp), text = "남기고 싶은 말", style = SNUTTTypography.subtitle2)
+                        Text(
+                            modifier = Modifier
+                                .padding(end = 16.dp)
+                                .width(widthInDp),
+                            text = "남기고 싶은 말", style = SNUTTTypography.subtitle2,
+                        )
                         Text(diaryListLectureItem.moreText, style = SNUTTTypography.body1)
                     }
                 }
@@ -134,7 +151,8 @@ fun DiaryListLectureItem(
         ) {
             Text(
                 "수정하기",
-                modifier = Modifier.border(0.8.dp, color = SNUTTColors.EditTextUnderline, shape = RoundedCornerShape(17.dp))
+                modifier = Modifier
+                    .border(0.8.dp, color = SNUTTColors.EditTextUnderline, shape = RoundedCornerShape(17.dp))
                     .padding(vertical = 6.dp, horizontal = 16.dp),
                 style = SNUTTTypography.button.copy(fontSize = 13.sp),
             )
