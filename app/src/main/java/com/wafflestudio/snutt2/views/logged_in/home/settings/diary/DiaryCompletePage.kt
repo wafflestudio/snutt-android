@@ -10,13 +10,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,6 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -34,19 +34,44 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 
 @Composable
 fun DiaryCompleteRoute(
+    lectureId: String?,
+    lectureName: String?,
     modifier: Modifier = Modifier,
     isCourseOver: Boolean,
-    onNavigateLectureReview: () -> Unit,
-    onNavigateDiaryWrite: () -> Unit,
+    onNavigateLectureReview: (String) -> Unit,
+    onNavigateDiaryWrite: (String, String, String?) -> Unit,
     onNavigateHomePage: () -> Unit,
+    viewModel: DiaryWriteViewModel = hiltViewModel(),
 ) {
+    val todayLectures by viewModel.todayLectureList.collectAsState(null)
+    val writtenLectureIds by viewModel.writtenLectureIds.collectAsState()
+    val unwrittenLecture = todayLectures
+        ?.firstOrNull { it.id !in writtenLectureIds }
+
     val diaryCompleteState = when {
         isCourseOver -> DiaryCompleteState.LectureReview
-        else -> DiaryCompleteState.MoreDiary
+        unwrittenLecture != null -> DiaryCompleteState.MoreDiary
+        else -> DiaryCompleteState.NoMoreDiary
     }
-    val onNavigateNextPage = when {
-        isCourseOver -> onNavigateLectureReview
-        else -> onNavigateHomePage
+
+    val onNavigateNextPage: () -> Unit = when {
+        isCourseOver -> {
+            { onNavigateLectureReview(lectureId ?: "53131") }
+        }
+
+        unwrittenLecture != null -> {
+            {
+                onNavigateDiaryWrite(
+                    unwrittenLecture.id,
+                    unwrittenLecture.course_title,
+                    unwrittenLecture.lecture_number,
+                )
+            }
+        }
+
+        else -> {
+            {}
+        }
     }
     DiaryCompleteScreen(
         diaryCompleteState = diaryCompleteState,
@@ -63,7 +88,9 @@ fun DiaryCompleteScreen(
     onNavigateHomePage: () -> Unit,
 ) {
     Box(
-        modifier = Modifier.fillMaxSize().padding(start = 32.dp, end = 32.dp, bottom = 40.dp, top = 248.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(start = 32.dp, end = 32.dp, bottom = 40.dp, top = 248.dp),
     ) {
         Column(
             modifier = Modifier
@@ -118,7 +145,8 @@ fun DiaryCompleteScreen(
         }
 
         Text(
-            modifier = Modifier.clicks { onNavigateHomePage() }
+            modifier = Modifier
+                .clicks { onNavigateHomePage() }
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
                 .background(color = SNUTTColors.SNUTTTheme, shape = RoundedCornerShape(6.dp))
