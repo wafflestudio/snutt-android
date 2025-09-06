@@ -73,7 +73,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
 import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryCompleteRoute
-import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryListPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryListRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryWriteRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailRoute
@@ -465,7 +465,20 @@ class RootActivity : AppCompatActivity() {
         composableAnimated<NavigationDestination.PersonalInformationPolicy> { PersonalInformationPolicyPage() }
         composableAnimated<NavigationDestination.ThemeModeSelect> { ColorModeSelectPage() }
         if (BuildConfig.DEBUG) {
-            composableAnimated<NavigationDestination.LectureDiary> { DiaryListPage() }
+            composableAnimated<NavigationDestination.LectureDiary> {
+                DiaryListRoute(
+                    onNavigateBack = {
+                        if (navController.currentDestination?.hasRoute(NavigationDestination.LectureDiary::class) == true) {
+                            navController.popBackStack()
+                        }
+                    },
+                    onNavigateOnboard = {
+                        navController.navigateAsOrigin(NavigationDestination.Onboard)
+                    },
+                    onNavigateDiaryWrite = {
+                    },
+                )
+            }
             composableAnimated<NavigationDestination.LectureDiaryWrite> {
                 DiaryWriteRoute(
                     onNavigateBack = {
