@@ -237,7 +237,6 @@ object DiaryMockData {
                 },
             )
         },
-        comment = "",
     )
 
     val sampleWriteUiState = DiaryWriteUiState.Write(
@@ -248,7 +247,6 @@ object DiaryMockData {
             listOf("수업"),
             "컴퓨터프로그래밍",
         ),
-        comment = "오늘 배운 내용이 정말 유익했습니다. 특히 객체지향 프로그래밍의 개념을 이해하는데 도움이 되었어요.",
     )
 
     val sampleWriteUiStateSelecting =
@@ -268,6 +266,5 @@ object DiaryMockData {
                 ),
                 "데이터구조",
             ),
-            comment = "",
         )
 }

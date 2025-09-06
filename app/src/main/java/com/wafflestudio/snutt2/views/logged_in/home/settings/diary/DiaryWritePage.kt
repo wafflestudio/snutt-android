@@ -164,7 +164,7 @@ private fun DiaryWriting(
     val toScrollOffset =
         remember { mutableIntStateOf(0) }
     var commentText by remember {
-        mutableStateOf(uiState.comment)
+        mutableStateOf("")
     }
 
     Column {

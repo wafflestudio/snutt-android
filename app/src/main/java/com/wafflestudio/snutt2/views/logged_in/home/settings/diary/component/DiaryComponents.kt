@@ -365,7 +365,7 @@ fun DiaryQuestionPreview() {
 @Preview
 fun MoreTextPreview() {
     MoreTextItem(
-        moreText = DiaryMockData.sampleWriteUiState.comment,
+        moreText = "시험을 예고 없이 보니 주의하시기 바랍니다.",
         onChange = {},
     )
 }

@@ -11,7 +11,6 @@ sealed interface DiaryWriteUiState {
         val activities: List<Selectable<DiaryActivity>>,
         val activitySelectingState: ActivitySelectionState,
         val questions: List<DiaryQuestion>,
-        val comment: String,
     ) : DiaryWriteUiState {
         fun allQuestionAnswered(): Boolean =
             questions.all { question -> question.selectableAnswers.anySelected() }
