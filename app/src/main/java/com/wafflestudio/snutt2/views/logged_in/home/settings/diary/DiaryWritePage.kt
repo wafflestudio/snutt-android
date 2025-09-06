@@ -65,17 +65,23 @@ import kotlinx.coroutines.launch
 fun DiaryWriteRoute(
     modifier: Modifier = Modifier,
     diaryWriteViewModel: DiaryWriteViewModel = hiltViewModel(),
+    lectureId: String,
+    lectureName: String,
     onNavigateBack: () -> Unit,
     onNavigateOnboard: () -> Unit,
     onNavigateDiaryWriteDone: (Boolean) -> Unit,
 ) {
     val context = LocalContext.current
     val diaryWrite by diaryWriteViewModel.diaryWriteInit.collectAsState()
+    val viewModelLectureName by diaryWriteViewModel.lectureName.collectAsState()
     var isCourseOver by remember {
         mutableStateOf(false)
     }
 
     LaunchedEffect(Unit) {
+        diaryWriteViewModel.setLectureData(
+            lectureId, lectureName,
+        )
         diaryWriteViewModel.diaryWriteUiEvent.collect { uiEvent ->
             when (uiEvent) {
                 is DiaryWriteUiEvent.ShowToast -> {
@@ -94,9 +100,18 @@ fun DiaryWriteRoute(
         }
     }
 
+    val modifiedUiState = when (val state = diaryWrite) {
+        is DiaryWriteUiState.Success -> {
+            DiaryWriteUiState.Success(
+                state.diaryWrite.copy(lectureName = viewModelLectureName ?: state.diaryWrite.lectureName),
+            )
+        }
+        else -> state
+    }
+
     DiaryWriteScreen(
         modifier = modifier,
-        diaryWriteUiState = diaryWrite,
+        diaryWriteUiState = modifiedUiState,
         onComplete = { diaryWriteData ->
             diaryWriteViewModel.saveDiaryWrite(diaryWriteData)
         },

@@ -187,7 +187,7 @@ fun HomePage() {
                             navController.navigate(NavigationDestination.LectureReminder)
                         },
                         onNavigateLectureDiary = {
-                            navController.navigate(NavigationDestination.LectureDiary)
+                            navController.navigate(NavigationDestination.LectureDiaryWrite("686e8d3c2afaf11b888e2722", "융합 뭐시기", "1234")) // 푸시 알림으로 트리거, 임시로 넣어둠
                         },
                         onNavigateTeamInfo = {
                             navController.navigate(NavigationDestination.TeamInfo)
