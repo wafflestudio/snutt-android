@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -14,47 +15,82 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.components.compose.*
+import com.wafflestudio.snutt2.domainmodel.preview.DiaryPreviewData
+import com.wafflestudio.snutt2.lib.network.dto.core.toCourseBook
+import com.wafflestudio.snutt2.lib.toAbbvString
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 
 @Composable
-fun DiaryListPage() {
-    val semesters = listOf("24-1", "23-겨울", "23-2", "23-1", "23-겨울")
-    val diaries = listOf("1", "2", "3")
+fun DiaryListRoute(
+    modifier: Modifier = Modifier,
+    diaryListViewModel: DiaryListViewModel = hiltViewModel(),
+    onNavigateBack: () -> Unit,
+    onNavigateOnboard: () -> Unit,
+    onNavigateDiaryWrite: (String) -> Unit,
+) {
+    val diaryList by diaryListViewModel.diaryListUiState.collectAsState()
+    DiaryListScreen(
+        onNavigateBack,
+        { idx -> diaryListViewModel.clickCourseBook(idx) },
+        diaryList,
+    )
+}
+
+@Composable
+fun DiaryListScreen(
+    onNavigateBack: () -> Unit,
+    onClickCourseBook: (Int) -> Unit,
+    diaryListUiState: DiaryListUiState,
+) {
     Box {
         Column(
             modifier = Modifier.background(SNUTTColors.White900),
         ) {
             TopBar(
-                title = { Text("") },
+                title = { Text("강의 일기장") },
                 navigationIcon = {
                     ArrowBackIcon(
-                        modifier = Modifier.size(30.dp),
+                        modifier = Modifier.size(30.dp).clicks { onNavigateBack() },
                         colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                     )
                 },
             )
-            LazyRow(
-                modifier = Modifier.padding(top = 20.dp, bottom = 12.dp),
-                contentPadding = PaddingValues(horizontal = 20.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                items(semesters) { semester ->
-                    Box(
-                        modifier = Modifier
-                            .background(SNUTTColors.SNUTTTheme, RoundedCornerShape(50))
-                            .padding(horizontal = 24.dp)
-                            .height(34.dp),
-                        contentAlignment = Alignment.Center,
+
+            when (diaryListUiState) {
+                DiaryListUiState.Empty -> {}
+                DiaryListUiState.Error -> {}
+                DiaryListUiState.Loading -> {}
+                is DiaryListUiState.Success -> {
+                    LazyRow(
+                        modifier = Modifier.padding(top = 20.dp, bottom = 12.dp),
+                        contentPadding = PaddingValues(horizontal = 20.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
-                        Text(semester, color = SNUTTColors.White900, style = SNUTTTypography.subtitle1.copy(fontWeight = FontWeight.SemiBold))
+                        itemsIndexed(diaryListUiState.courseBookList) { idx, courseBook ->
+                            val isSelected = idx == diaryListUiState.selectedCourseBookIdx
+                            Box(
+                                modifier = Modifier
+                                    .clicks { onClickCourseBook(idx) }
+                                    .background(if (isSelected) SNUTTColors.SNUTTTheme else SNUTTColors.LectureDiaryGray, RoundedCornerShape(50))
+                                    .padding(horizontal = 24.dp)
+                                    .height(34.dp),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Text(courseBook.toAbbvString(), color = if (isSelected) SNUTTColors.White900 else SNUTTColors.EditTextLabel, style = SNUTTTypography.subtitle1.copy(fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium))
+                            }
+                        }
                     }
-                }
-            }
-            LazyColumn() {
-                items(diaries) {
-                    DiaryListItem()
+                    LazyColumn {
+                        items(diaryListUiState.diaryList.toList()) { (date, listOfDiaryListLectureItem) ->
+                            DiaryListDateItem(
+                                date = date,
+                                listOfDiaryListLectureItem,
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -62,7 +98,16 @@ fun DiaryListPage() {
 }
 
 @Composable
-@Preview()
+@Preview
 fun DiaryListPagePreview() {
-    DiaryListPage()
+    val courseBookList = DiaryPreviewData.courseBookDtoList.map { courseBookDto -> courseBookDto.toCourseBook() }
+    DiaryListScreen(
+        onNavigateBack = {},
+        {},
+        diaryListUiState = DiaryListUiState.Success(
+            courseBookList = courseBookList,
+            selectedCourseBookIdx = 0,
+            diaryList = DiaryPreviewData.diaryList,
+        ),
+    )
 }

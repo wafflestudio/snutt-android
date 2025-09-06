@@ -187,7 +187,7 @@ fun HomePage() {
                             navController.navigate(NavigationDestination.LectureReminder)
                         },
                         onNavigateLectureDiary = {
-                            navController.navigate(NavigationDestination.LectureDiaryWrite)
+                            navController.navigate(NavigationDestination.LectureDiary)
                         },
                         onNavigateTeamInfo = {
                             navController.navigate(NavigationDestination.TeamInfo)
