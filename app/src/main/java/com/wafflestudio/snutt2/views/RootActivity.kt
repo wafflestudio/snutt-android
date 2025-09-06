@@ -73,7 +73,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
 import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryCompleteRoute
-import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryListPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryListRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryWriteRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailRoute
@@ -465,11 +465,21 @@ class RootActivity : AppCompatActivity() {
         composableAnimated<NavigationDestination.PersonalInformationPolicy> { PersonalInformationPolicyPage() }
         composableAnimated<NavigationDestination.ThemeModeSelect> { ColorModeSelectPage() }
         if (BuildConfig.DEBUG) {
-            composableAnimated<NavigationDestination.LectureDiary> { DiaryListPage() }
-            composableAnimated<NavigationDestination.LectureDiaryWrite> { entry ->
-                val lectureId = entry.arguments?.getString("lectureId") ?: "686e8d3c2afaf11b888e2722" // TODO: NULL일때 에러 던지기
-                val lectureName = entry.arguments?.getString("lectureName") ?: "알고리즘"
-                val lectureNumber = entry.arguments?.getString("lectureNumber") ?: "53131"
+            composableAnimated<NavigationDestination.LectureDiary> {
+                DiaryListRoute(
+                    onNavigateBack = {
+                        if (navController.currentDestination?.hasRoute(NavigationDestination.LectureDiary::class) == true) {
+                            navController.popBackStack()
+                        }
+                    },
+                    onNavigateOnboard = {
+                        navController.navigateAsOrigin(NavigationDestination.Onboard)
+                    },
+                    onNavigateDiaryWrite = {
+                    },
+                )
+            }
+            composableAnimated<NavigationDestination.LectureDiaryWrite> {
                 DiaryWriteRoute(
                     lectureId = lectureId,
                     lectureName = lectureName,

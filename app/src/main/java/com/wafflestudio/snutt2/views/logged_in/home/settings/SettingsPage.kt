@@ -224,6 +224,12 @@ fun SettingsScreen(
                 if (BuildConfig.DEBUG) {
                     if (FeatureFlag.LECTURE_DIARY.isEnabled) {
                         SettingItem(
+                            title = stringResource(R.string.settings_item_lecture_diary),
+                            settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
+                            hasNextPage = true,
+                            onClick = onClickLectureDiary,
+                        )
+                        SettingItem(
                             title = stringResource(R.string.settings_item_write_lecture_diary),
                             settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
                             hasNextPage = true,
