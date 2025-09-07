@@ -189,7 +189,12 @@ fun HomePage() {
                             navController.navigate(NavigationDestination.LectureReminder)
                         },
                         onNavigateDiaryWrite = {
-                            navController.navigate(NavigationDestination.LectureDiaryWrite("686e8d3c2afaf11b888e2722")) // 푸시 알림으로 트리거, 임시로 넣어둠
+                            navController.navigate(
+                                NavigationDestination.LectureDiaryWrite(
+                                    lectureId = "686e8d3c2afaf11b888e2722",
+                                    edit = false,
+                                ),
+                            ) // 푸시 알림으로 트리거, 임시로 넣어둠
                         },
                         onNavigateDiaryHistory = {
                             navController.navigate(NavigationDestination.LectureDiaryHistory) // 푸시 알림으로 트리거, 임시로 넣어둠

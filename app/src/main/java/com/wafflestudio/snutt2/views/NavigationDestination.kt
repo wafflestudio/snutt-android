@@ -132,6 +132,7 @@ sealed interface NavigationDestination {
     @DeepLinkPath("lecture_diary_write")
     data class LectureDiaryWrite(
         val lectureId: String,
+        val edit: Boolean,
     ) : NavigationDestination
 
     @Serializable

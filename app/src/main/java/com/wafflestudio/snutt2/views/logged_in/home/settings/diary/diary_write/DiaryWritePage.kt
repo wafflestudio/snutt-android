@@ -73,6 +73,10 @@ fun DiaryWriteRoute(
                     }
                 }
 
+                is DiaryWriteUiEvent.Return -> {
+                    onNavigateBack()
+                }
+
                 is DiaryWriteUiEvent.ForceLogout -> {
                     onNavigateOnboard()
                 }
@@ -268,9 +272,11 @@ private fun DiaryWriting(
                                 vertical = 12.dp,
                                 horizontal = 48.dp,
                             ),
-                        text = "다음",
-                        style =
-                        if (uiState.allQuestionAnswered()) {
+                        text = when (uiState) {
+                            is DiaryWriteUiState.Write.New -> "다음"
+                            is DiaryWriteUiState.Write.Edit -> "수정하기"
+                        },
+                        style = if (uiState.allQuestionAnswered()) {
                             SNUTTTypography.button.copy(
                                 color = SNUTTColors.White,
                                 fontSize = 15.sp,

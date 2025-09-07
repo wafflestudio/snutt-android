@@ -37,7 +37,11 @@ class DiaryWriteViewModel @Inject constructor(
     init {
         // TODO: 구현
 //        val lectureId = savedStateHandle.get<String>("lectureId")
-        _uiState.value = DiaryMockData.initialWriteUiState
+        if (savedStateHandle.get<Boolean>("edit") == true) {
+            _uiState.value = DiaryMockData.editUiState
+        } else {
+            _uiState.value = DiaryMockData.initialWriteUiState
+        }
     }
 
     private val _uiEvent: MutableSharedFlow<DiaryWriteUiEvent> =
@@ -50,7 +54,7 @@ class DiaryWriteViewModel @Inject constructor(
         val state = _uiState.value
         if (state !is DiaryWriteUiState.Write) return
 
-        _uiState.value = state.copy(
+        _uiState.value = state.copyWith(
             activities = state.activities.toggleIndex(index),
             activitySelectingState = when (state.activitySelectingState) {
                 ActivitySelectionState.InitialSelecting -> ActivitySelectionState.InitialSelecting
@@ -69,7 +73,7 @@ class DiaryWriteViewModel @Inject constructor(
 
         // 로컬 변수 안 두면 이렇게 해야 하는데...
         _uiState.value =
-            (_uiState.value as? DiaryWriteUiState.Write)?.copy(activitySelectingState = newState)
+            (_uiState.value as? DiaryWriteUiState.Write)?.copyWith(activitySelectingState = newState)
                 ?: return
     }
 
@@ -77,7 +81,7 @@ class DiaryWriteViewModel @Inject constructor(
         val state = _uiState.value
         if (state !is DiaryWriteUiState.Write) return
 
-        _uiState.value = state.copy(
+        _uiState.value = state.copyWith(
             questions = state.questions.mapIndexed { index, question ->
                 if (index == questionIndex) {
                     question.copy(
@@ -102,7 +106,19 @@ class DiaryWriteViewModel @Inject constructor(
 //                .onFailure {
 //                    _diaryWriteInit.emit(DiaryWriteUiState.Error)
 //                }
-            _uiState.value = DiaryWriteUiState.Complete(DiaryNextAction.WriteReview)
+            when (_uiState.value) {
+                is DiaryWriteUiState.Write.New -> {
+                    _uiState.value = DiaryWriteUiState.Complete(DiaryNextAction.WriteReview)
+                }
+
+                is DiaryWriteUiState.Write.Edit -> {
+                    viewModelScope.launch {
+                        _uiEvent.emit(DiaryWriteUiEvent.Return)
+                    }
+                }
+
+                else -> {}
+            }
         }
     }
 
@@ -142,4 +158,5 @@ sealed interface DiaryWriteUiEvent {
 
     // TODO: 이름 컨벤션 논의
     data object ForceLogout : DiaryWriteUiEvent
+    data object Return : DiaryWriteUiEvent
 }

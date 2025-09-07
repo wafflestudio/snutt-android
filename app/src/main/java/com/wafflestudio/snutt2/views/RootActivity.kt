@@ -509,7 +509,12 @@ class RootActivity : AppCompatActivity() {
                         navController.navigateAsOrigin(NavigationDestination.Onboard)
                     },
                     onNavigateDiaryWrite = { lectureId ->
-                        navController.navigate(NavigationDestination.LectureDiaryWrite(lectureId))
+                        navController.navigate(
+                            NavigationDestination.LectureDiaryWrite(
+                                lectureId = lectureId,
+                                edit = true,
+                            ),
+                        )
                     },
                 )
             }
