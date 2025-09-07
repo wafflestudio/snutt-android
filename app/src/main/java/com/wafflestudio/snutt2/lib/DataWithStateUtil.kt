@@ -22,6 +22,10 @@ typealias Selectable<T> = DataWithState<T, Boolean>
 
 fun <T : Any> Selectable<T>.isSelected() = state
 
+fun <T : Any> Selectable<T>.toggle(): Selectable<T> {
+    return this.copy(state = !state)
+}
+
 fun <T : Any> List<Selectable<T>>.selectIndex(index: Int): List<Selectable<T>> {
     return this.mapIndexed { i, data ->
         data.copy(state = i == index)

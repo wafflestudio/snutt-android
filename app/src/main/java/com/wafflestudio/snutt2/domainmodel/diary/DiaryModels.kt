@@ -18,3 +18,15 @@ data class DiaryAnsweredQuestion(
     val questionId: String,
     val answerIndex: Int,
 )
+
+data class DiaryQuestionAnswer(
+    val question: String,
+    val answer: String,
+)
+
+data class DiarySummary(
+    val lectureId: String,
+    val lectureName: String,
+    val questionAnswers: List<DiaryQuestionAnswer>,
+    val comment: String?,
+)

@@ -84,12 +84,14 @@ fun HomePage() {
     val previewTheme by timetableViewModel.previewTheme.collectAsState()
     val trimParam by userViewModel.trimParam.collectAsState()
     val tableLectureCustomOptions by userViewModel.tableLectureCustomOption.collectAsState()
-    val tableState = TableState(table ?: TableDto.Default, trimParam, tableLectureCustomOptions, previewTheme)
+    val tableState =
+        TableState(table ?: TableDto.Default, trimParam, tableLectureCustomOptions, previewTheme)
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     var shouldShowPopup by remember { mutableStateOf(false) }
     var popupImageUri by remember { mutableStateOf("") }
     val isDarkMode = isDarkMode()
-    val reviewPageReviewWebViewContainer = remember { ReviewWebViewContainer(context, userViewModel.accessToken, isDarkMode) }
+    val reviewPageReviewWebViewContainer =
+        remember { ReviewWebViewContainer(context, userViewModel.accessToken, isDarkMode) }
     // HomePage에서 collect 까지 해 줘야 탭 전환했을 때 검색 현황이 유지됨
     val searchResultPagingItems = searchViewModel.queryResults.collectAsLazyPagingItems()
     val searchResultListState = rememberSearchResultListState(searchResultPagingItems)
@@ -186,8 +188,16 @@ fun HomePage() {
                         onNavigateLectureReminder = {
                             navController.navigate(NavigationDestination.LectureReminder)
                         },
-                        onNavigateLectureDiary = {
-                            navController.navigate(NavigationDestination.LectureDiaryWrite("686e8d3c2afaf11b888e2722", "융합 뭐시기", "1234")) // 푸시 알림으로 트리거, 임시로 넣어둠
+                        onNavigateDiaryWrite = {
+                            navController.navigate(
+                                NavigationDestination.LectureDiaryWrite(
+                                    lectureId = "686e8d3c2afaf11b888e2722",
+                                    edit = false,
+                                ),
+                            ) // 푸시 알림으로 트리거, 임시로 넣어둠
+                        },
+                        onNavigateDiaryHistory = {
+                            navController.navigate(NavigationDestination.LectureDiaryHistory) // 푸시 알림으로 트리거, 임시로 넣어둠
                         },
                         onNavigateTeamInfo = {
                             navController.navigate(NavigationDestination.TeamInfo)

@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_in.home.settings.diary
+package com.wafflestudio.snutt2.views.logged_in.home.settings.diary.diary_write
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -48,9 +48,6 @@ import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.component.DiaryActivitySelectSection
-import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.component.DiaryQuestionsSection
-import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.component.MoreTextItem
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -74,6 +71,10 @@ fun DiaryWriteRoute(
                     if (message.isNotEmpty()) {
                         context.toast(message)
                     }
+                }
+
+                is DiaryWriteUiEvent.Return -> {
+                    onNavigateBack()
                 }
 
                 is DiaryWriteUiEvent.ForceLogout -> {
@@ -271,9 +272,11 @@ private fun DiaryWriting(
                                 vertical = 12.dp,
                                 horizontal = 48.dp,
                             ),
-                        text = "다음",
-                        style =
-                        if (uiState.allQuestionAnswered()) {
+                        text = when (uiState) {
+                            is DiaryWriteUiState.Write.New -> "다음"
+                            is DiaryWriteUiState.Write.Edit -> "수정하기"
+                        },
+                        style = if (uiState.allQuestionAnswered()) {
                             SNUTTTypography.button.copy(
                                 color = SNUTTColors.White,
                                 fontSize = 15.sp,
@@ -382,7 +385,7 @@ private fun DiaryComplete(
 }
 
 @Composable
-@Preview
+@Preview(heightDp = 1030)
 private fun DiaryWritingPreview() {
     DiaryWriting(
         uiState = DiaryMockData.sampleWriteUiState,

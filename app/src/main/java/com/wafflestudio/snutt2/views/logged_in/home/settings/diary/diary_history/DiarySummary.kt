@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_in.home.settings.diary
+package com.wafflestudio.snutt2.views.logged_in.home.settings.diary.diary_history
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -16,10 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -32,19 +28,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.components.compose.ArrowDownIcon
 import com.wafflestudio.snutt2.components.compose.TrashIcon
-import com.wafflestudio.snutt2.domainmodel.diary.DiaryListLectureItem
+import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.domainmodel.diary.DiaryQuestionAnswer
+import com.wafflestudio.snutt2.domainmodel.diary.DiarySummary
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun DiaryListDateItem(
+fun DiarySummariesOfDay(
     date: LocalDate,
-    listOfDiaryListLectureItem: List<DiaryListLectureItem>,
+    listOfDiarySummary: List<DiarySummary>,
+    expanded: Boolean,
+    toggleExpended: () -> Unit,
+    onEditDiary: (lectureId: String) -> Unit,
+    onDeleteDiary: (lectureId: String) -> Unit,
 ) {
-    var isSelected by remember { mutableStateOf(false) }
     Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Row(
@@ -52,13 +52,16 @@ fun DiaryListDateItem(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Text(date.format(DateTimeFormatter.ofPattern("yyyy.M.d")), style = SNUTTTypography.h3.copy(fontSize = 15.sp))
+                    Text(
+                        date.format(DateTimeFormatter.ofPattern("yyyy.M.d")),
+                        style = SNUTTTypography.h3.copy(fontSize = 15.sp),
+                    )
                     Text("금", style = SNUTTTypography.h3.copy(fontSize = 15.sp))
                 }
             }
             Row(
                 modifier = Modifier
-                    .clickable { isSelected = !isSelected }
+                    .clickable { toggleExpended() }
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
@@ -70,14 +73,22 @@ fun DiaryListDateItem(
                 ArrowDownIcon(
                     modifier = Modifier
                         .height(20.dp)
-                        .rotate(if (isSelected) 180f else 0f),
+                        .rotate(if (expanded) 180f else 0f),
                 )
             }
         }
-        AnimatedVisibility(visible = isSelected) {
+        AnimatedVisibility(visible = expanded) {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                listOfDiaryListLectureItem.forEach { diaryListLectureItem ->
-                    DiaryListLectureItem(diaryListLectureItem)
+                listOfDiarySummary.forEach { diaryListLectureItem ->
+                    DiarySummary(
+                        diaryListLectureItem,
+                        onClickEditButton = {
+                            onEditDiary(diaryListLectureItem.lectureId)
+                        },
+                        onClickDeleteButton = {
+                            onDeleteDiary(diaryListLectureItem.lectureId)
+                        },
+                    )
                 }
             }
         }
@@ -90,8 +101,10 @@ fun DiaryListDateItem(
 }
 
 @Composable
-fun DiaryListLectureItem(
-    diaryListLectureItem: DiaryListLectureItem,
+private fun DiarySummary(
+    diarySummary: DiarySummary,
+    onClickEditButton: () -> Unit,
+    onClickDeleteButton: () -> Unit,
 ) {
     val textMeasurer = rememberTextMeasurer()
     val textLayoutResult = textMeasurer.measure(
@@ -117,11 +130,19 @@ fun DiaryListLectureItem(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(diaryListLectureItem.lectureName, style = SNUTTTypography.body1.copy(color = SNUTTColors.EditTextLabel))
-                TrashIcon(modifier = Modifier.size(28.dp, 28.dp), colorFilter = ColorFilter.tint(SNUTTColors.EditTextHint))
+                Text(
+                    diarySummary.lectureName,
+                    style = SNUTTTypography.body1.copy(color = SNUTTColors.EditTextLabel),
+                )
+                TrashIcon(
+                    modifier = Modifier
+                        .size(28.dp, 28.dp)
+                        .clicks { onClickDeleteButton() },
+                    colorFilter = ColorFilter.tint(SNUTTColors.EditTextHint),
+                )
             }
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                diaryListLectureItem.content.forEach { diaryQuestionAnswer ->
+                diarySummary.questionAnswers.forEach { diaryQuestionAnswer ->
                     Row {
                         Text(
                             modifier = Modifier
@@ -132,7 +153,7 @@ fun DiaryListLectureItem(
                         Text(diaryQuestionAnswer.answer, style = SNUTTTypography.body1)
                     }
                 }
-                if (diaryListLectureItem.moreText != null) {
+                if (diarySummary.comment != null) {
                     Row {
                         Text(
                             modifier = Modifier
@@ -140,7 +161,7 @@ fun DiaryListLectureItem(
                                 .width(widthInDp),
                             text = "남기고 싶은 말", style = SNUTTTypography.subtitle2,
                         )
-                        Text(diaryListLectureItem.moreText, style = SNUTTTypography.body1)
+                        Text(diarySummary.comment, style = SNUTTTypography.body1)
                     }
                 }
             }
@@ -152,7 +173,14 @@ fun DiaryListLectureItem(
             Text(
                 "수정하기",
                 modifier = Modifier
-                    .border(0.8.dp, color = SNUTTColors.EditTextUnderline, shape = RoundedCornerShape(17.dp))
+                    .border(
+                        0.8.dp,
+                        color = SNUTTColors.EditTextUnderline,
+                        shape = RoundedCornerShape(17.dp),
+                    )
+                    .clicks {
+                        onClickEditButton()
+                    }
                     .padding(vertical = 6.dp, horizontal = 16.dp),
                 style = SNUTTTypography.button.copy(fontSize = 13.sp),
             )
@@ -162,28 +190,66 @@ fun DiaryListLectureItem(
 
 @Composable
 @Preview(showBackground = true)
-fun DiaryListItemPreview() {
-    DiaryListDateItem(
+fun DiarySummariesOfDayFoldedPreview() {
+    DiarySummariesOfDay(
+        date = LocalDate.of(2025, 3, 20),
+        emptyList(),
+        false,
+        {},
+        {},
+        {},
+    )
+}
+
+@Composable
+@Preview(showBackground = true)
+fun DiarySummariesOfDayExpandedPreview() {
+    DiarySummariesOfDay(
         date = LocalDate.of(2025, 3, 20),
         listOf(
-            DiaryListLectureItem(
+            DiarySummary(
+                lectureId = "",
                 lectureName = "시각디자인기초",
-                content = listOf(
+                questionAnswers = listOf(
                     DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
                     DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
                     DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
                 ),
-                moreText = "좋아요",
+                comment = "좋아요",
             ),
-            DiaryListLectureItem(
+            DiarySummary(
+                lectureId = "",
                 lectureName = "배구",
-                content = listOf(
+                questionAnswers = listOf(
                     DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
                     DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
                     DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
                 ),
-                moreText = "좋아요",
+                comment = "좋아요",
             ),
         ),
+        true,
+        {},
+        {},
+        {},
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DiarySummaryPreview() {
+    DiarySummary(
+        DiarySummary(
+            lectureId = "",
+            lectureName = "배구",
+            questionAnswers = listOf(
+                DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
+                DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
+                DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
+            ),
+            comment = "좋아요",
+        ),
+        {},
+        {},
     )
 }
