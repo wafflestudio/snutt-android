@@ -26,7 +26,7 @@ class DiaryHistoryViewModel @Inject constructor(
         if (_diaryHistoryUiState.value is DiaryHistoryUiState.Success) {
             _diaryHistoryUiState.value =
                 (_diaryHistoryUiState.value as DiaryHistoryUiState.Success).copy(
-                    selectedCourseBookIdx = idx
+                    selectedCourseBookId = idx
                 )
         }
     }

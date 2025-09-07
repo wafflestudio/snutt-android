@@ -81,8 +81,8 @@ fun DiaryHistoryScreen(
                         contentPadding = PaddingValues(horizontal = 20.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
-                        itemsIndexed(diaryHistoryUiState.courseBookList) { idx, courseBook ->
-                            val isSelected = idx == diaryHistoryUiState.selectedCourseBookIdx
+                        itemsIndexed(diaryHistoryUiState.courseBooks) { idx, courseBook ->
+                            val isSelected = idx == diaryHistoryUiState.selectedCourseBookId
                             Box(
                                 modifier = Modifier
                                     .clicks { onClickCourseBook(idx) }
@@ -103,7 +103,7 @@ fun DiaryHistoryScreen(
                         }
                     }
                     LazyColumn {
-                        items(diaryHistoryUiState.diaryList.toList()) { (date, listOfDiaryListLectureItem) ->
+                        items(diaryHistoryUiState.diarySummariesByDate.toList()) { (date, listOfDiaryListLectureItem) ->
                             DiaryDaySummary(
                                 date = date,
                                 listOfDiaryListLectureItem,
@@ -125,9 +125,9 @@ fun DiaryListPagePreview() {
         onNavigateBack = {},
         {},
         diaryHistoryUiState = DiaryHistoryUiState.Success(
-            courseBookList = courseBookList,
-            selectedCourseBookIdx = 0,
-            diaryList = DiaryPreviewData.diaryList,
+            courseBooks = courseBookList,
+            selectedCourseBookId = 0,
+            diarySummariesByDate = DiaryPreviewData.diaryList,
         ),
     )
 }

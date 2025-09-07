@@ -32,8 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.components.compose.ArrowDownIcon
 import com.wafflestudio.snutt2.components.compose.TrashIcon
-import com.wafflestudio.snutt2.domainmodel.diary.DiaryListLectureItem
 import com.wafflestudio.snutt2.domainmodel.diary.DiaryQuestionAnswer
+import com.wafflestudio.snutt2.domainmodel.diary.DiarySummary
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import java.time.LocalDate
@@ -42,7 +42,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun DiaryDaySummary(
     date: LocalDate,
-    listOfDiaryListLectureItem: List<DiaryListLectureItem>,
+    listOfDiarySummary: List<DiarySummary>,
 ) {
     var isSelected by remember { mutableStateOf(false) }
     Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -79,7 +79,7 @@ fun DiaryDaySummary(
         }
         AnimatedVisibility(visible = isSelected) {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                listOfDiaryListLectureItem.forEach { diaryListLectureItem ->
+                listOfDiarySummary.forEach { diaryListLectureItem ->
                     DiarySummary(diaryListLectureItem)
                 }
             }
@@ -94,7 +94,7 @@ fun DiaryDaySummary(
 
 @Composable
 fun DiarySummary(
-    diaryListLectureItem: DiaryListLectureItem,
+    diarySummary: DiarySummary,
 ) {
     val textMeasurer = rememberTextMeasurer()
     val textLayoutResult = textMeasurer.measure(
@@ -121,7 +121,7 @@ fun DiarySummary(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    diaryListLectureItem.lectureName,
+                    diarySummary.lectureName,
                     style = SNUTTTypography.body1.copy(color = SNUTTColors.EditTextLabel)
                 )
                 TrashIcon(
@@ -130,7 +130,7 @@ fun DiarySummary(
                 )
             }
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                diaryListLectureItem.content.forEach { diaryQuestionAnswer ->
+                diarySummary.questionAnswers.forEach { diaryQuestionAnswer ->
                     Row {
                         Text(
                             modifier = Modifier
@@ -141,7 +141,7 @@ fun DiarySummary(
                         Text(diaryQuestionAnswer.answer, style = SNUTTTypography.body1)
                     }
                 }
-                if (diaryListLectureItem.moreText != null) {
+                if (diarySummary.comment != null) {
                     Row {
                         Text(
                             modifier = Modifier
@@ -149,7 +149,7 @@ fun DiarySummary(
                                 .width(widthInDp),
                             text = "남기고 싶은 말", style = SNUTTTypography.subtitle2,
                         )
-                        Text(diaryListLectureItem.moreText, style = SNUTTTypography.body1)
+                        Text(diarySummary.comment, style = SNUTTTypography.body1)
                     }
                 }
             }
@@ -179,23 +179,23 @@ fun DiaryListItemPreview() {
     DiaryDaySummary(
         date = LocalDate.of(2025, 3, 20),
         listOf(
-            DiaryListLectureItem(
+            DiarySummary(
                 lectureName = "시각디자인기초",
-                content = listOf(
+                questionAnswers = listOf(
                     DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
                     DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
                     DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
                 ),
-                moreText = "좋아요",
+                comment = "좋아요",
             ),
-            DiaryListLectureItem(
+            DiarySummary(
                 lectureName = "배구",
-                content = listOf(
+                questionAnswers = listOf(
                     DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
                     DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
                     DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
                 ),
-                moreText = "좋아요",
+                comment = "좋아요",
             ),
         ),
     )
