@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_in.home.settings.diary
+package com.wafflestudio.snutt2.views.logged_in.home.settings.diary.diary_write
 
 import com.wafflestudio.snutt2.domainmodel.diary.DiaryActivity
 import com.wafflestudio.snutt2.domainmodel.diary.DiaryQuestion
@@ -18,6 +18,10 @@ object DiaryMockData {
 
     val selectableActivities = activities.map { activity ->
         Selectable(activity, false)
+    }
+
+    val selectableActivitiesForEdit = activities.mapIndexed { idx, activity ->
+        Selectable(activity, idx % 2 == 0)
     }
 
     val selectableActivitiesSelected =
@@ -224,7 +228,7 @@ object DiaryMockData {
         }
     }
 
-    val initialWriteUiState = DiaryWriteUiState.Write(
+    val initialWriteUiState = DiaryWriteUiState.Write.New(
         lectureName = "컴퓨터프로그래밍",
         activitySelectingState = ActivitySelectionState.InitialSelecting,
         activities = selectableActivities,
@@ -239,7 +243,22 @@ object DiaryMockData {
         },
     )
 
-    val sampleWriteUiState = DiaryWriteUiState.Write(
+    val editUiState = DiaryWriteUiState.Write.Edit(
+        lectureName = "컴퓨터프로그래밍",
+        activitySelectingState = ActivitySelectionState.Complete,
+        activities = selectableActivitiesForEdit,
+        questions = getQuestionsForActivities(listOf()).map { question ->
+            DiaryQuestion(
+                question.id,
+                question.question,
+                question.selectableAnswers.mapIndexed { idx, answer ->
+                    Selectable(answer.item, idx == 0)
+                },
+            )
+        },
+    )
+
+    val sampleWriteUiState = DiaryWriteUiState.Write.New(
         lectureName = "컴퓨터프로그래밍",
         activitySelectingState = ActivitySelectionState.Complete,
         activities = selectableActivitiesSelected,
@@ -250,7 +269,7 @@ object DiaryMockData {
     )
 
     val sampleWriteUiStateSelecting =
-        DiaryWriteUiState.Write(
+        DiaryWriteUiState.Write.New(
             lectureName = "데이터구조",
             activitySelectingState = ActivitySelectionState.InitialSelecting,
             activities = activities.mapIndexed { index, activity ->
