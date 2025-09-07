@@ -72,6 +72,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
+import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.diary_history.DiaryHistoryRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.diary_write.DiaryWriteRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailRoute
@@ -495,6 +496,21 @@ class RootActivity : AppCompatActivity() {
                     },
                     onNavigateHome = { navController.navigateAsOrigin(NavigationDestination.Home) },
                     onNavigateReview = {},
+                )
+            }
+            composableAnimated<NavigationDestination.LectureDiaryHistory> { entry ->
+                DiaryHistoryRoute(
+                    onNavigateBack = {
+                        if (navController.currentDestination?.hasRoute(NavigationDestination.LectureDiaryHistory::class) == true) {
+                            navController.popBackStack()
+                        }
+                    },
+                    onNavigateOnboard = {
+                        navController.navigateAsOrigin(NavigationDestination.Onboard)
+                    },
+                    onNavigateDiaryWrite = { lectureId ->
+                        navController.navigate(NavigationDestination.LectureDiaryWrite(lectureId))
+                    },
                 )
             }
         }

@@ -270,17 +270,17 @@ private fun DiaryWriting(
                             ),
                         text = "다음",
                         style =
-                            if (uiState.allQuestionAnswered()) {
-                                SNUTTTypography.button.copy(
-                                    color = SNUTTColors.White,
-                                    fontSize = 15.sp,
-                                )
-                            } else {
-                                SNUTTTypography.button.copy(
-                                    color = SNUTTColors.Gray20,
-                                    fontSize = 15.sp,
-                                )
-                            },
+                        if (uiState.allQuestionAnswered()) {
+                            SNUTTTypography.button.copy(
+                                color = SNUTTColors.White,
+                                fontSize = 15.sp,
+                            )
+                        } else {
+                            SNUTTTypography.button.copy(
+                                color = SNUTTColors.Gray20,
+                                fontSize = 15.sp,
+                            )
+                        },
                     )
                 }
             }

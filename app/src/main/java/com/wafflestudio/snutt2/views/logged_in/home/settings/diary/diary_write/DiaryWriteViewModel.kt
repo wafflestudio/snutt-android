@@ -35,6 +35,8 @@ class DiaryWriteViewModel @Inject constructor(
         _uiState.asStateFlow()
 
     init {
+        // TODO: 구현
+//        val lectureId = savedStateHandle.get<String>("lectureId")
         _uiState.value = DiaryMockData.initialWriteUiState
     }
 

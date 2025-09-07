@@ -59,7 +59,8 @@ fun SettingsRoute(
     onNavigateThemeMarket: () -> Unit,
     onNavigatePushPreference: () -> Unit,
     onNavigateLectureReminder: () -> Unit,
-    onNavigateLectureDiary: () -> Unit,
+    onNavigateDiaryWrite: () -> Unit,
+    onNavigateDiaryHistory: () -> Unit,
     onNavigateTeamInfo: () -> Unit,
     onNavigateAppReport: () -> Unit,
     onNavigateOpenLicenses: () -> Unit,
@@ -87,7 +88,8 @@ fun SettingsRoute(
         onClickThemeMarket = onNavigateThemeMarket,
         onClickPushPreference = onNavigatePushPreference,
         onClickLectureReminder = onNavigateLectureReminder,
-        onClickLectureDiary = onNavigateLectureDiary,
+        onClickDiaryWrite = onNavigateDiaryWrite,
+        onClickDiaryHistory = onNavigateDiaryHistory,
         onClickTeamInfo = onNavigateTeamInfo,
         onClickAppReport = onNavigateAppReport,
         onClickOpenLicenses = onNavigateOpenLicenses,
@@ -112,7 +114,8 @@ fun SettingsScreen(
     onClickThemeMarket: () -> Unit,
     onClickPushPreference: () -> Unit,
     onClickLectureReminder: () -> Unit,
-    onClickLectureDiary: () -> Unit,
+    onClickDiaryWrite: () -> Unit,
+    onClickDiaryHistory: () -> Unit,
     onClickTeamInfo: () -> Unit,
     onClickAppReport: () -> Unit,
     onClickOpenLicenses: () -> Unit,
@@ -227,13 +230,13 @@ fun SettingsScreen(
                             title = stringResource(R.string.settings_item_lecture_diary),
                             settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
                             hasNextPage = true,
-                            onClick = onClickLectureDiary,
+                            onClick = onClickDiaryHistory,
                         )
                         SettingItem(
                             title = stringResource(R.string.settings_item_write_lecture_diary),
                             settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
                             hasNextPage = true,
-                            onClick = onClickLectureDiary,
+                            onClick = onClickDiaryWrite,
                         )
                     }
                 }
@@ -315,7 +318,10 @@ fun SettingsScreen(
             title = stringResource(R.string.settings_logout_title),
             positiveButtonText = stringResource(R.string.settings_logout_title),
         ) {
-            Text(text = stringResource(R.string.settings_logout_message), style = SNUTTTypography.body2)
+            Text(
+                text = stringResource(R.string.settings_logout_message),
+                style = SNUTTTypography.body2,
+            )
         }
     }
 }
@@ -416,6 +422,26 @@ fun NewBadge(
 @Composable
 fun SettingsPagePreview() {
     SettingsScreen(
-        uiState = SettingsUiState("양주현", "다크", false, listOf("빈자리 알림")), onClickUserConfig = {}, onClickThemeModeSelect = {}, onClickTimeTableConfig = {}, onClickThemeConfig = {}, onClickVacancyNotification = {}, onClickThemeMarket = {}, onClickPushPreference = {}, onClickLectureReminder = {}, onClickLectureDiary = {}, onClickTeamInfo = {}, onClickAppReport = {}, onClickOpenLicenses = {}, onClickServiceInfo = {}, onClickPersonalInformationPolicy = {}, onClickNetworkLog = {}, onClickTest = {}, onClickLogout = {}, onConfirmLogout = {}, onDismissLogout = {},
+        uiState = SettingsUiState("양주현", "다크", false, listOf("빈자리 알림")),
+        onClickUserConfig = {},
+        onClickThemeModeSelect = {},
+        onClickTimeTableConfig = {},
+        onClickThemeConfig = {},
+        onClickVacancyNotification = {},
+        onClickThemeMarket = {},
+        onClickPushPreference = {},
+        onClickLectureReminder = {},
+        onClickDiaryWrite = {},
+        onClickDiaryHistory = {},
+        onClickTeamInfo = {},
+        onClickAppReport = {},
+        onClickOpenLicenses = {},
+        onClickServiceInfo = {},
+        onClickPersonalInformationPolicy = {},
+        onClickNetworkLog = {},
+        onClickTest = {},
+        onClickLogout = {},
+        onConfirmLogout = {},
+        onDismissLogout = {},
     )
 }

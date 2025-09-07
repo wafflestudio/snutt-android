@@ -125,24 +125,13 @@ sealed interface NavigationDestination {
     data object LectureReminder : NavigationDestination
 
     @Serializable
-    @DeepLinkPath("lecture_diary")
-    data object LectureDiary : NavigationDestination
+    @DeepLinkPath("lecture_diary_history")
+    data object LectureDiaryHistory : NavigationDestination
 
     @Serializable
     @DeepLinkPath("lecture_diary_write")
     data class LectureDiaryWrite(
         val lectureId: String,
-        val lectureName: String,
-        val lectureNumber: String?,
-    ) : NavigationDestination
-
-    @Serializable
-    @DeepLinkPath("lecture_diary_complete")
-    data class LectureDiaryComplete(
-        val isCourseOver: Boolean,
-        val lectureId: String,
-        val lectureName: String,
-        val lectureNumber: String?,
     ) : NavigationDestination
 
     @Serializable

@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.domainmodel.preview
 import com.wafflestudio.snutt2.domainmodel.diary.DiaryQuestionAnswer
 import com.wafflestudio.snutt2.domainmodel.diary.DiarySummary
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
+import com.wafflestudio.snutt2.lib.toDataWithState
 import java.time.LocalDate
 
 object DiaryPreviewData {
@@ -20,6 +21,7 @@ object DiaryPreviewData {
     val diaryList = mapOf(
         LocalDate.of(2024, 3, 20) to listOf(
             DiarySummary(
+                lectureId = "aaaaa시각디자인기초",
                 lectureName = "시각디자인기초",
                 questionAnswers = listOf(
                     DiaryQuestionAnswer(
@@ -38,6 +40,7 @@ object DiaryPreviewData {
                 comment = "좋아요",
             ),
             DiarySummary(
+                lectureId = "bbbb배구",
                 lectureName = "배구",
                 questionAnswers = listOf(
                     DiaryQuestionAnswer(
@@ -56,9 +59,10 @@ object DiaryPreviewData {
                 comment = "오티 했어용. 교수님이 과제량 많다고 하셨는데 도움이 많이 될 것 같아 기대가 돼요. 수업 들으려고 과외도 끊었지 뭐에요 \uD83D\uDE2E\u200D\uD83D\uDCA8",
             ),
 
-            ),
+        ).toDataWithState(true),
         LocalDate.of(2024, 3, 19) to listOf(
             DiarySummary(
+                lectureId = "cccc시각디자인기초",
                 lectureName = "시각디자인기초",
                 questionAnswers = listOf(
                     DiaryQuestionAnswer(
@@ -77,6 +81,7 @@ object DiaryPreviewData {
                 comment = "오티 했어용. 교수님이 과제량 많다고 하셨는데 도움이 많이 될 것 같아 기대가 돼요. 수업 들으려고 과외도 끊었지 뭐에요 \uD83D\uDE2E\u200D\uD83D\uDCA8오티 했어용. 교수님이 과제량 많다고 하셨는데 도움이 많이 될 것 같아 기대가 돼요. 수업 들으려고 과외도 끊었지 뭐에요 \uD83D\uDE2E\u200D\uD83D\uDCA8",
             ),
             DiarySummary(
+                lectureId = "dddd배구",
                 lectureName = "배구",
                 questionAnswers = listOf(
                     DiaryQuestionAnswer(
@@ -94,6 +99,6 @@ object DiaryPreviewData {
                 ),
                 comment = "오티 했어용. 교수님이 과제량 많다고 하셨는데 도움이 많이 될 것 같아 기대가 돼요. 수업 들으려고 과외도 끊었지 뭐에요 \uD83D\uDE2E\u200D\uD83D\uDCA8",
             ),
-        ),
+        ).toDataWithState(false),
     )
 }
