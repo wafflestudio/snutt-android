@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.lib.network.call_adapter
+package com.wafflestudio.snutt2.lib.network.error
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -9,5 +9,5 @@ data class ErrorParsedHttpException(
     override val message: String?,
     val title: String?,
     val displayMessage: String?,
-    val ext: Map<String, String>?
+    val ext: Map<String, String>?,
 ) : Exception(message)

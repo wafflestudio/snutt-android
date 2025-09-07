@@ -2,14 +2,12 @@ package com.wafflestudio.snutt2.lib.network
 
 import android.content.Context
 import android.widget.Toast
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.lib.android.MessagingError
 import com.wafflestudio.snutt2.lib.android.runOnUiThread
-import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsedHttpException
+import com.wafflestudio.snutt2.lib.network.error.ErrorParsedHttpException
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -42,6 +40,7 @@ class ApiOnError @Inject constructor(
                         Toast.LENGTH_SHORT,
                     ).show()
                 }
+
                 is MessagingError -> {
                     Toast.makeText(
                         context,
@@ -49,12 +48,13 @@ class ApiOnError @Inject constructor(
                         Toast.LENGTH_SHORT,
                     ).show()
                 }
+
                 is ErrorParsedHttpException -> {
-                    when (error.errorDTO?.code) {
+                    when (error.code) {
                         ErrorCode.WRONG_USER_TOKEN -> {
                             Toast.makeText(
                                 context,
-                                error.errorDTO.displayMessage,
+                                error.displayMessage,
                                 Toast.LENGTH_SHORT,
                             ).show()
                             CoroutineScope(Dispatchers.IO).launch {
@@ -72,13 +72,16 @@ class ApiOnError @Inject constructor(
                                 }
                             }
                         }
+
                         else -> Toast.makeText(
                             context,
-                            error.errorDTO?.displayMessage ?: context.getString(R.string.error_unknown),
+                            error.displayMessage
+                                ?: context.getString(R.string.error_unknown),
                             Toast.LENGTH_SHORT,
                         ).show()
                     }
                 }
+
                 is kotlinx.coroutines.CancellationException -> {} // do nothing
                 else -> {
                     Toast.makeText(
@@ -116,11 +119,3 @@ object ErrorCode {
 
     const val USED_EMAIL = 0x9FC5
 }
-
-@JsonClass(generateAdapter = true)
-data class ErrorDTO(
-    @Json(name = "errcode") val code: Int? = null,
-    @Json(name = "message") val message: String? = null,
-    @Json(name = "displayMessage") val displayMessage: String? = null,
-    @Json(name = "ext") val ext: Map<String, String>? = null,
-)
