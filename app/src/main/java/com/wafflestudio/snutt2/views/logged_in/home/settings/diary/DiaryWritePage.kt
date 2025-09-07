@@ -273,17 +273,17 @@ private fun DiaryWriting(
                             ),
                         text = "다음",
                         style =
-                        if (uiState.allQuestionAnswered()) {
-                            SNUTTTypography.button.copy(
-                                color = SNUTTColors.White,
-                                fontSize = 15.sp,
-                            )
-                        } else {
-                            SNUTTTypography.button.copy(
-                                color = SNUTTColors.Gray20,
-                                fontSize = 15.sp,
-                            )
-                        },
+                            if (uiState.allQuestionAnswered()) {
+                                SNUTTTypography.button.copy(
+                                    color = SNUTTColors.White,
+                                    fontSize = 15.sp,
+                                )
+                            } else {
+                                SNUTTTypography.button.copy(
+                                    color = SNUTTColors.Gray20,
+                                    fontSize = 15.sp,
+                                )
+                            },
                     )
                 }
             }
@@ -382,7 +382,7 @@ private fun DiaryComplete(
 }
 
 @Composable
-@Preview
+@Preview(heightDp = 1030)
 private fun DiaryWritingPreview() {
     DiaryWriting(
         uiState = DiaryMockData.sampleWriteUiState,
