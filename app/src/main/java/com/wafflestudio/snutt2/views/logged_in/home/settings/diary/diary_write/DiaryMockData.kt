@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_in.home.settings.diary
+package com.wafflestudio.snutt2.views.logged_in.home.settings.diary.diary_write
 
 import com.wafflestudio.snutt2.domainmodel.diary.DiaryActivity
 import com.wafflestudio.snutt2.domainmodel.diary.DiaryQuestion

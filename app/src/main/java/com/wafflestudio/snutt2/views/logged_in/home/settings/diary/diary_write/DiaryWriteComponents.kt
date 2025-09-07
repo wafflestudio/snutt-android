@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_in.home.settings.diary.component
+package com.wafflestudio.snutt2.views.logged_in.home.settings.diary.diary_write
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -41,8 +41,6 @@ import com.wafflestudio.snutt2.domainmodel.diary.DiaryQuestion
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.ActivitySelectionState
-import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryMockData
 
 @Composable
 fun DiaryActivitySelectSection(

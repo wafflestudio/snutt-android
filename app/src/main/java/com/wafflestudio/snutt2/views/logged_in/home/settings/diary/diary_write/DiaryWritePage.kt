@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_in.home.settings.diary
+package com.wafflestudio.snutt2.views.logged_in.home.settings.diary.diary_write
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -48,9 +48,6 @@ import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.component.DiaryActivitySelectSection
-import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.component.DiaryQuestionsSection
-import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.component.MoreTextItem
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
