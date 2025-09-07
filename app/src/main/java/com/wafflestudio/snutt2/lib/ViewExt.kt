@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.lib.rx
+package com.wafflestudio.snutt2.lib
 
 import android.content.Context
 import android.util.TypedValue

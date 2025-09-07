@@ -26,7 +26,12 @@ ktlint {
         include("**/java/**")
     }
     // See https://github.com/pinterest/ktlint/issues/527
-    disabledRules.addAll("import-ordering", "no-wildcard-imports", "package-name", "argument-list-wrapping")
+    disabledRules.addAll(
+        "import-ordering",
+        "no-wildcard-imports",
+        "package-name",
+        "argument-list-wrapping",
+    )
 }
 
 val versionProps = Properties().apply {
@@ -138,9 +143,6 @@ dependencies {
     // Networking
     implementation(libs.bundles.moshi)
     implementation(libs.bundles.retrofit)
-
-    // Reactive
-    implementation(libs.bundles.rxjava)
 
     // Dependency Injection
     implementation(libs.hilt.android)
