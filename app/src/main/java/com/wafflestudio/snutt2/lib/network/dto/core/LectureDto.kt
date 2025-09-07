@@ -95,7 +95,7 @@ data class LectureDto(
             colorIndex = (localLecture.color as? BuiltInColor)?.colorIndex?.toLong() ?: 0L,
             color = ColorDto(
                 fgColor = localLecture.color.foreground.toArgb(),
-                localLecture.color.background.toArgb()
+                localLecture.color.background.toArgb(),
             ),
             registrationCount = 0L,
             wasFull = false,
