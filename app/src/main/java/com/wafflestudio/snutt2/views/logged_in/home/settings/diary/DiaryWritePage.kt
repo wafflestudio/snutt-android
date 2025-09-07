@@ -1,88 +1,73 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings.diary
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Divider
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.wafflestudio.snutt2.components.compose.ArrowDownIcon
-import com.wafflestudio.snutt2.components.compose.EditText
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.ExitIcon
 import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.domainmodel.DiaryWrite
-import com.wafflestudio.snutt2.domainmodel.preview.DiaryPreviewData
-import com.wafflestudio.snutt2.domainmodel.DiaryWriteQuestion
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.component.DiaryActivitySelectSection
+import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.component.DiaryQuestionsSection
+import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.component.MoreTextItem
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun DiaryWriteRoute(
     modifier: Modifier = Modifier,
-    diaryWriteViewModel: DiaryWriteViewModel = hiltViewModel(),
-    lectureId: String,
-    lectureName: String,
     onNavigateBack: () -> Unit,
     onNavigateOnboard: () -> Unit,
-    onNavigateDiaryWriteDone: (Boolean) -> Unit,
+    onNavigateHome: () -> Unit,
+    onNavigateReview: (lectureId: String) -> Unit,
+    viewModel: DiaryWriteViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
-    val diaryWrite by diaryWriteViewModel.diaryWriteInit.collectAsState()
-    val viewModelLectureName by diaryWriteViewModel.lectureName.collectAsState()
-    var isCourseOver by remember {
-        mutableStateOf(false)
-    }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        diaryWriteViewModel.setLectureData(
-            lectureId, lectureName,
-        )
-        diaryWriteViewModel.diaryWriteUiEvent.collect { uiEvent ->
+        viewModel.uiEvent.collect { uiEvent ->
             when (uiEvent) {
                 is DiaryWriteUiEvent.ShowToast -> {
                     val message = uiEvent.message
@@ -90,458 +75,333 @@ fun DiaryWriteRoute(
                         context.toast(message)
                     }
                 }
-                is DiaryWriteUiEvent.NavigateToWriteMore -> {
-                    onNavigateDiaryWriteDone(isCourseOver)
-                }
-                is DiaryWriteUiEvent.NavigateToOnboard -> {
+
+                is DiaryWriteUiEvent.ForceLogout -> {
                     onNavigateOnboard()
                 }
             }
         }
     }
 
-    val modifiedUiState = when (val state = diaryWrite) {
-        is DiaryWriteUiState.Success -> {
-            DiaryWriteUiState.Success(
-                state.diaryWrite.copy(lectureName = viewModelLectureName ?: state.diaryWrite.lectureName),
-            )
-        }
-        else -> state
-    }
-
     DiaryWriteScreen(
         modifier = modifier,
-        diaryWriteUiState = modifiedUiState,
-        onComplete = { diaryWriteData ->
-            diaryWriteViewModel.saveDiaryWrite(diaryWriteData)
+        uiState = uiState,
+        onToggleActivitySelection = viewModel::toggleActivitySelection,
+        onCompleteSelectActivities = {
+            viewModel.setSelectingActivitiesState(
+                ActivitySelectionState.Complete,
+            )
         },
-        onNavigateBack = onNavigateBack,
-        handleIsCourseOver = { courseOver ->
-            isCourseOver = courseOver
+        onRestartSelectActivities = {
+            viewModel.setSelectingActivitiesState(
+                ActivitySelectionState.ReSelecting,
+            )
         },
+        onToggleAnswer = viewModel::toggleAnswer,
+        onSubmitDiary = viewModel::saveDiaryWrite,
+        onClickBackButton = onNavigateBack,
+        onClickWriteNextButton = viewModel::writeNextDiary,
+        onClickWriteReviewButton = {
+            // TODO
+            // next ID는 어떻게 관리할지 고민..
+        },
+        onClickGoHomeButton = onNavigateHome,
     )
 }
 
 @Composable
-fun DiaryWriteScreen(
+private fun DiaryWriteScreen(
     modifier: Modifier = Modifier,
-    diaryWriteUiState: DiaryWriteUiState,
-    onComplete: (DiaryWrite) -> Unit,
-    onNavigateBack: () -> Unit,
-    handleIsCourseOver: (Boolean) -> Unit,
+    uiState: DiaryWriteUiState,
+    onToggleActivitySelection: (activityIndex: Int) -> Unit,
+    onCompleteSelectActivities: () -> Unit,
+    onRestartSelectActivities: () -> Unit,
+    onToggleAnswer: (questionIndex: Int, answerIndex: Int) -> Unit,
+    onSubmitDiary: (comment: String) -> Unit,
+    onClickBackButton: () -> Unit,
+    onClickWriteNextButton: () -> Unit,
+    onClickWriteReviewButton: () -> Unit,
+    onClickGoHomeButton: () -> Unit,
+) {
+    when (uiState) {
+        DiaryWriteUiState.Error -> {}
+        DiaryWriteUiState.Loading -> {}
+        is DiaryWriteUiState.Complete -> DiaryComplete(
+            modifier,
+            uiState,
+            onClickWriteNextButton,
+            onClickWriteReviewButton,
+            onClickGoHomeButton,
+        )
+
+        is DiaryWriteUiState.Write -> DiaryWriting(
+            modifier,
+            uiState,
+            onToggleActivitySelection,
+            onCompleteSelectActivities,
+            onRestartSelectActivities,
+            onToggleAnswer,
+            onSubmitDiary,
+            onClickBackButton,
+        )
+    }
+}
+
+@Composable
+private fun DiaryWriting(
+    modifier: Modifier = Modifier,
+    uiState: DiaryWriteUiState.Write,
+    onToggleActivitySelection: (activityIndex: Int) -> Unit,
+    onCompleteSelectActivities: () -> Unit,
+    onRestartSelectActivities: () -> Unit,
+    onToggleAnswer: (questionIndex: Int, answerIndex: Int) -> Unit,
+    onSubmitDiary: (comment: String) -> Unit,
+    onClickBackButton: () -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
-    when (diaryWriteUiState) {
-        DiaryWriteUiState.Error -> {}
-        DiaryWriteUiState.Loading -> {}
-        DiaryWriteUiState.Empty -> {}
-        is DiaryWriteUiState.Success -> {
-            var isTodayCompleted by remember {
-                mutableStateOf(
-                    when (diaryWriteUiState.diaryWrite.todayState) {
-                        null -> false
-                        else -> true
-                    },
-                )
-            }
-            val toScrollOffset = remember { mutableIntStateOf(0) }
 
-            val todaySelected = remember {
-                mutableStateOf(
-                    when (diaryWriteUiState.diaryWrite.todayState) {
-                        null -> List(diaryWriteTodayOptions.size) { false }
-                        else -> diaryWriteUiState.diaryWrite.todayState
-                    },
-                )
-            }
-            val questionSelected = remember {
-                mutableStateOf(
-                    when (diaryWriteUiState.diaryWrite.questionsState) {
-                        null -> listOf()
-                        else -> diaryWriteUiState.diaryWrite.questionsState
-                    },
-                )
-            }
-            val moreTextState = remember {
-                mutableStateOf(
-                    diaryWriteUiState.diaryWrite.moreText,
-                )
-            }
-
-            Column {
-                Row(
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .background(color = SNUTTColors.White)
-                        .border(width = 0.2.dp, color = SNUTTColors.EditTextUnderline)
-                        .padding(top = 44.dp, bottom = 24.dp, start = 24.dp, end = 24.dp),
-                    horizontalArrangement = Arrangement.End,
-                ) {
-                    Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text(
-                            text = "오늘 수강한 '${diaryWriteUiState.diaryWrite.lectureName}' 에 대한 의견을 남겨보세요.",
-                            style = SNUTTTypography.h3.copy(fontSize = 17.sp, lineHeight = 25.sp),
-                        )
-
-                        Text(
-                            text = "더보기 > 강의일기장에서 확인할 수 있어요.",
-                            style = SNUTTTypography.body1.copy(color = SNUTTColors.EditTextLabel),
-                        )
-                    }
-
-                    ExitIcon(
-                        modifier = Modifier
-                            .padding(start = 57.dp)
-                            .width(24.dp)
-                            .clicks {
-                                onNavigateBack()
-                            },
-                    )
-                }
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(scrollState)
-                        .background(color = SNUTTColors.Gray),
-                ) {
-                    TodayQuestionBox(
-                        isTodayCompleted,
-                        { todaySelection ->
-                            if (!isTodayCompleted) {
-                                scope.launch {
-                                    delay(100)
-                                    scrollState.animateScrollTo(
-                                        toScrollOffset.value,
-                                        animationSpec = spring(Spring.DampingRatioLowBouncy, Spring.StiffnessLow),
-                                    )
-                                }
-                            }
-                            isTodayCompleted = true
-                            todaySelected.value = todaySelection
-                            handleIsCourseOver(todaySelected.value[isCourseOverIdx])
-                            val questions = diaryWriteQuestionList(diaryWriteUiState.diaryWrite.lectureName, diaryWriteTodayOptions.zip(todaySelected.value).filter { it.second }.map { it.first })
-                            questionSelected.value = List(questions.size) { i -> List(questions[i].options.size) { false } }
-                        },
-                        listOf(DiaryWriteQuestion("오늘 무엇을 했나요?", diaryWriteTodayOptions)),
-                        todaySelected.value,
-                    )
-
-                    if (isTodayCompleted) {
-                        Column(
-                            modifier = Modifier.onGloballyPositioned { coordinates ->
-                                toScrollOffset.value = coordinates.positionInParent().y.toInt()
-                            },
-                        ) {
-                            DiaryQuestionBox(
-                                diaryWriteQuestionList(diaryWriteUiState.diaryWrite.lectureName, diaryWriteTodayOptions.zip(todaySelected.value).filter { it.second }.map { it.first }),
-                                questionSelected.value,
-                                onChange = { questionId, index ->
-                                    questionSelected.value = List(questionSelected.value.size) { i ->
-                                        if (i == questionId) {
-                                            List(questionSelected.value[i].size) { id ->
-                                                id == index
-                                            }
-                                        } else {
-                                            questionSelected.value[i]
-                                        }
-                                    }
-                                },
-                            )
-
-                            MoreTextItem(
-                                moreText = moreTextState.value,
-                                onChange = { text -> moreTextState.value = text },
-                            )
-
-                            Text(
-                                modifier = Modifier
-                                    .padding(top = 12.dp, start = 16.dp, end = 16.dp, bottom = 40.dp)
-                                    .align(Alignment.End)
-                                    .background(
-                                        color = if (questionSelected.value.all { l -> l.any { it } }) {
-                                            SNUTTColors.MainBlue
-                                        } else {
-                                            SNUTTColors.TableGrid
-                                        },
-                                        shape = RoundedCornerShape(6.dp),
-                                    )
-                                    .clicks {
-                                        if (questionSelected.value.all { l -> l.any { it } }) {
-                                            onComplete(
-                                                DiaryWrite(
-                                                    diaryWriteUiState.diaryWrite.lectureName,
-                                                    todaySelected.value,
-                                                    questionSelected.value,
-                                                    moreTextState.value,
-                                                ),
-                                            )
-                                        }
-                                    }
-                                    .padding(vertical = 12.dp, horizontal = 48.dp),
-                                text = "다음",
-                                style =
-                                if (questionSelected.value.all { l -> l.any { it } }) {
-                                    SNUTTTypography.button.copy(color = SNUTTColors.White, fontSize = 15.sp)
-                                } else {
-                                    SNUTTTypography.button.copy(color = SNUTTColors.Gray20, fontSize = 15.sp)
-                                },
-                            )
-                        }
-                    }
-                }
-            }
-        }
+    val toScrollOffset =
+        remember { mutableIntStateOf(0) }
+    var commentText by remember {
+        mutableStateOf("")
     }
-}
 
-@Composable
-fun TodayQuestionBox(
-    isTodayCompleted: Boolean,
-    onTodayChange: (List<Boolean>) -> Unit,
-    questions: List<DiaryWriteQuestion>,
-    selectedState: List<Boolean>,
-) {
-    var localTodaySelectedState by remember { mutableStateOf(selectedState) }
-
-    LaunchedEffect(localTodaySelectedState) {
-        if (isTodayCompleted) onTodayChange(localTodaySelectedState)
-    }
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 8.dp, start = 16.dp, end = 16.dp)
-            .background(color = SNUTTColors.White, shape = RoundedCornerShape(12.dp))
-            .padding(top = 24.dp, bottom = 20.dp, start = 20.dp, end = 20.dp),
-    ) {
-        questions.forEach { (question, options) ->
-            DiaryQuestionItem(true, question, options, localTodaySelectedState, onChange = { index ->
-                localTodaySelectedState = localTodaySelectedState.mapIndexed { i, value ->
-                    if (i == index) !value else value
-                }
-            },)
-            if (!isTodayCompleted) {
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    Text(
-                        "완료",
-                        style = SNUTTTypography.button.copy(fontSize = 14.sp, color = SNUTTColors.DarkMainBlue, fontWeight = FontWeight.SemiBold),
-                        modifier = Modifier
-                            .align(Alignment.CenterEnd)
-                            .padding(horizontal = 12.dp, vertical = 4.dp)
-                            .clicks {
-                                if (localTodaySelectedState != selectedState) {
-                                    onTodayChange(localTodaySelectedState)
-                                }
-                            },
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun DiaryQuestionBox(
-    questions: List<DiaryWriteQuestion>,
-    selectedState: List<List<Boolean>>,
-    onChange: (Int, Int) -> Unit,
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 8.dp, start = 16.dp, end = 16.dp)
-            .background(color = SNUTTColors.White, shape = RoundedCornerShape(12.dp))
-            .padding(top = 24.dp, bottom = 20.dp, start = 20.dp, end = 20.dp),
-    ) {
-        questions.forEachIndexed { questionIndex, (question, options) ->
-
-            DiaryQuestionItem(false, question, options, selectedState[questionIndex]) { index ->
-                onChange(questionIndex, index)
-            }
-
-            if (questionIndex != questions.lastIndex) {
-                Divider(color = SNUTTColors.Gray, modifier = Modifier.padding(vertical = 20.dp))
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-fun DiaryQuestionItem(
-    isDuplicate: Boolean,
-    question: String,
-    options: List<String>,
-    selectedState: List<Boolean>,
-    onChange: (Int) -> Unit,
-) {
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(question, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
-            Spacer(modifier = Modifier.padding(6.dp))
-            if (isDuplicate) Text("중복 가능", fontSize = 13.sp, color = SNUTTColors.EditTextLabel)
-        }
-
-        FlowRow(
-            maxItemsInEachRow = 3,
-        ) {
-            selectedState.forEachIndexed { index, isSelected ->
-                val option = options[index]
-                Text(
-                    text = option,
-                    style = SNUTTTypography.button.copy(
-                        fontSize = 14.sp,
-                        color = if (isSelected) SNUTTColors.DarkMainBlue else SNUTTColors.DarkerGray,
-                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                    ),
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .clicks {
-                            onChange(index)
-                        }
-                        .border(
-                            width = 0.6.dp,
-                            color = if (isSelected) SNUTTColors.MainBlue else SNUTTColors.TableGrid,
-                            shape = RoundedCornerShape(17.dp),
-                        )
-                        .then(
-                            if (isSelected) {
-                                Modifier.background(
-                                    color = SNUTTColors.MainBlue.copy(alpha = 0.06f),
-                                    shape = RoundedCornerShape(17.dp),
-                                )
-                            } else {
-                                Modifier
-                            },
-                        )
-                        .padding(horizontal = 24.dp, vertical = 8.dp),
-
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun MoreTextItem(
-    moreText: String?,
-    onChange: (String) -> Unit,
-) {
-    var isExpanded by remember { mutableStateOf(false) }
-    Column(
-        modifier = Modifier
-            .padding(top = 8.dp, start = 16.dp, end = 16.dp)
-            .background(color = SNUTTColors.White, shape = RoundedCornerShape(12.dp))
-            .padding(vertical = 16.dp, horizontal = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
+    Column {
         Row(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
-                .clicks { isExpanded = !isExpanded },
-            verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween,
+                .background(color = SNUTTColors.White)
+                .border(width = 0.2.dp, color = SNUTTColors.EditTextUnderline)
+                .padding(top = 44.dp, bottom = 24.dp, start = 24.dp, end = 24.dp),
+            horizontalArrangement = Arrangement.End,
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text("더 남기고 싶은 말을 작성해주세요.", style = SNUTTTypography.h4.copy(fontSize = 15.sp, fontWeight = FontWeight.SemiBold))
-                Text("선택", style = SNUTTTypography.subtitle2.copy(fontSize = 13.sp), lineHeight = 15.sp)
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Text(
+                    text = "오늘 수강한 '${uiState.lectureName}' 에 대한 의견을 남겨보세요.",
+                    style = SNUTTTypography.h3.copy(fontSize = 17.sp, lineHeight = 25.sp),
+                )
+
+                Text(
+                    text = "더보기 > 강의일기장에서 확인할 수 있어요.",
+                    style = SNUTTTypography.body1.copy(color = SNUTTColors.EditTextLabel),
+                )
             }
-            ArrowDownIcon(
+
+            ExitIcon(
                 modifier = Modifier
-                    .height(24.dp)
-                    .rotate(if (isExpanded) 180f else 0f),
+                    .padding(start = 57.dp)
+                    .width(24.dp)
+                    .clicks {
+                        onClickBackButton()
+                    },
             )
         }
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .background(color = SNUTTColors.Gray),
+        ) {
+            DiaryActivitySelectSection(
+                uiState.activitySelectingState,
+                onToggleActivitySelection,
+                onCompleteSelectActivities = {
+                    if (uiState.activitySelectingState.isSelecting()) {
+                        scope.launch {
+                            delay(100)
+                            scrollState.animateScrollTo(
+                                toScrollOffset.intValue,
+                                animationSpec = spring(
+                                    Spring.DampingRatioLowBouncy,
+                                    Spring.StiffnessLow,
+                                ),
+                            )
+                        }
+                    }
+                    onCompleteSelectActivities()
+                },
+                onRestartSelectActivities,
+                uiState.activities,
+            )
 
-        AnimatedVisibility(isExpanded) {
-            Column(
-                modifier = Modifier
-                    .drawBehind {
-                        drawLine(
-                            color = SNUTTColors.Gray,
-                            start = Offset(0f, 0f),
-                            end = Offset(size.width, 0f),
-                            strokeWidth = 0.8.dp.toPx(),
-                        )
+            if (uiState.activitySelectingState != ActivitySelectionState.InitialSelecting) {
+                Column(
+                    modifier = Modifier.onGloballyPositioned { coordinates ->
+                        toScrollOffset.intValue =
+                            coordinates.positionInParent().y.toInt()
                     },
-            ) {
-                EditText(
-                    value = moreText ?: "",
-                    onValueChange = { moretext ->
-                        if (moretext.length <= 200) {
-                            onChange(moretext)
+                ) {
+                    DiaryQuestionsSection(
+                        uiState.questions,
+                        onChange = onToggleAnswer,
+                    )
+                    MoreTextItem(
+                        moreText = commentText,
+                        onChange = { text ->
+                            commentText = text
+                        },
+                    )
+                    Text(
+                        modifier = Modifier
+                            .padding(
+                                top = 12.dp,
+                                start = 16.dp,
+                                end = 16.dp,
+                                bottom = 40.dp,
+                            )
+                            .align(Alignment.End)
+                            .background(
+                                color = if (uiState.allQuestionAnswered()) {
+                                    SNUTTColors.MainBlue
+                                } else {
+                                    SNUTTColors.TableGrid
+                                },
+                                shape = RoundedCornerShape(
+                                    6.dp,
+                                ),
+                            )
+                            .clicks(enabled = uiState.allQuestionAnswered()) {
+                                onSubmitDiary(commentText)
+                            }
+                            .padding(
+                                vertical = 12.dp,
+                                horizontal = 48.dp,
+                            ),
+                        text = "다음",
+                        style =
+                        if (uiState.allQuestionAnswered()) {
+                            SNUTTTypography.button.copy(
+                                color = SNUTTColors.White,
+                                fontSize = 15.sp,
+                            )
                         } else {
-                            onChange(moretext.take(200))
-                        }
-                    },
-                    hint = "오늘 수업에서 배운 내용, 느낀 점 등을 간단하게 적어보세요.",
-                    underlineEnabled = false,
-                    modifier = Modifier.padding(vertical = 16.dp).height(120.dp),
-                    textStyle = SNUTTTypography.body1.copy(color = SNUTTColors.DarkerGray),
-                )
-
-                Text(
-                    buildAnnotatedString {
-                        withStyle(style = SpanStyle(color = SNUTTColors.MainBlue)) {
-                            append("${moreText?.length ?: 0}")
-                        }
-                        withStyle(style = SpanStyle(color = SNUTTColors.EditTextLabel)) {
-                            append("/")
-                            append("200")
-                        }
-                    },
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .padding(top = 4.dp),
-                    style = SNUTTTypography.button.copy(fontSize = 15.sp, fontWeight = FontWeight.SemiBold),
-                )
+                            SNUTTTypography.button.copy(
+                                color = SNUTTColors.Gray20,
+                                fontSize = 15.sp,
+                            )
+                        },
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
+private fun DiaryComplete(
+    modifier: Modifier = Modifier,
+    uiState: DiaryWriteUiState.Complete,
+    onClickWriteNextButton: () -> Unit,
+    onClickWriteReviewButton: () -> Unit,
+    onClickGoHomeButton: () -> Unit,
+) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(SNUTTColors.White)
+            .padding(start = 32.dp, end = 32.dp, bottom = 40.dp, top = 248.dp),
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(horizontal = 45.dp)
+                .align(Alignment.TopCenter),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Image(
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_cat_complete),
+                contentDescription = "",
+            )
+            Text(
+                modifier = Modifier.padding(top = 24.dp),
+                text = "강의일기가 등록되었습니다.",
+                style = SNUTTTypography.h3.copy(fontSize = 15.sp, fontWeight = FontWeight.SemiBold),
+            )
+            Text(
+                modifier = Modifier.padding(top = 8.dp),
+                text = "작성한 강의일기는 더보기>강의일기장에서 확인할 수 있어요.",
+                style = SNUTTTypography.body1.copy(color = SNUTTColors.Black.copy(alpha = 0.5f)),
+                textAlign = TextAlign.Center,
+            )
+            if (uiState.nextAction != DiaryNextAction.Nothing) {
+                Box(
+                    modifier = Modifier
+                        .padding(top = 16.dp)
+                        .border(
+                            width = 1.dp,
+                            color = SNUTTColors.Gray,
+                            shape = RoundedCornerShape(30.dp),
+                        )
+                        .background(color = Color.Transparent, shape = RoundedCornerShape(30.dp))
+                        .clicks {
+                            when (uiState.nextAction) {
+                                DiaryNextAction.WriteNext -> onClickWriteNextButton()
+                                DiaryNextAction.WriteReview -> onClickWriteReviewButton()
+                                else -> {}
+                            }
+                        }
+                        .padding(start = 29.dp, end = 21.dp, top = 13.dp, bottom = 13.dp),
+                ) {
+                    Row(
+                        modifier = Modifier,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = when (uiState.nextAction) {
+                                DiaryNextAction.WriteNext -> "더 기록하기"
+                                DiaryNextAction.WriteReview -> "강의평 남기기"
+                                else -> ""
+                            },
+                            style = SNUTTTypography.button.copy(fontSize = 15.sp),
+                        )
+                        Icon(
+                            modifier = Modifier.size(20.dp, 20.dp),
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_right),
+                            contentDescription = "",
+                        )
+                    }
+                }
+            }
+        }
+
+        Text(
+            modifier = Modifier
+                .clicks { onClickGoHomeButton() }
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .background(color = SNUTTColors.SNUTTTheme, shape = RoundedCornerShape(6.dp))
+                .padding(12.dp),
+            text = "홈으로",
+            textAlign = TextAlign.Center,
+            style = SNUTTTypography.button.copy(color = SNUTTColors.White, fontSize = 15.sp),
+        )
+    }
+}
+
+@Composable
 @Preview
-fun DiaryWritePagePreview() {
-    val previewData = DiaryPreviewData.diaryWriteNewInit
-    DiaryWriteScreen(
-        diaryWriteUiState = DiaryWriteUiState.Success(previewData),
-        onComplete = {},
-        onNavigateBack = {},
-        handleIsCourseOver = {},
+private fun DiaryWritingPreview() {
+    DiaryWriting(
+        uiState = DiaryMockData.sampleWriteUiState,
+        onToggleActivitySelection = {},
+        onCompleteSelectActivities = {},
+        onRestartSelectActivities = {},
+        onToggleAnswer = { _, _ -> },
+        onSubmitDiary = {},
+        onClickBackButton = {},
     )
 }
 
 @Composable
-@Preview(showBackground = true)
-fun DiaryQuestionPreview() {
-    val previewData = DiaryPreviewData.diaryWriteQuestion
-    DiaryQuestionItem(
-        isDuplicate = false,
-        question = previewData.question,
-        options = previewData.options,
-        selectedState = listOf(true, false, true),
-        onChange = {},
-
-    )
-}
-
-@Composable
 @Preview
-fun DiaryQuestionBoxPreview() {
-    val previewData = DiaryPreviewData.diaryWriteInit
-    val todaySelected = previewData.todayState
-    DiaryQuestionBox(
-        questions = diaryWriteQuestionList(previewData.lectureName, diaryWriteTodayOptions.zip(todaySelected ?: List(8) { true }).filter { it.second }.map { it.first }),
-        selectedState = listOf(listOf(true, false, false), listOf(false, false, true), listOf(true, false, false)),
-        onChange = { a, b -> },
-    )
-}
-
-@Composable
-@Preview
-fun MoreTextPreview() {
-    MoreTextItem(
-        moreText = DiaryPreviewData.diaryWriteInit.moreText,
-        onChange = {},
+private fun DiaryCompletePreview() {
+    DiaryComplete(
+        uiState = DiaryWriteUiState.Complete(DiaryNextAction.WriteReview),
+        onClickGoHomeButton = {},
+        onClickWriteNextButton = {},
+        onClickWriteReviewButton = {},
     )
 }
