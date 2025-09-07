@@ -6,6 +6,6 @@ import com.wafflestudio.snutt2.lib.network.dto.core.TimetableLectureReminderDto
 
 @JsonClass(generateAdapter = true)
 data class GetActiveLectureRemindersResults(
-    @Json(name = "timetableId") val timetableId: String,
-    @Json(name = "reminders") val reminders: List<TimetableLectureReminderDto>,
+    @param:Json(name = "timetableId") val timetableId: String,
+    @param:Json(name = "reminders") val reminders: List<TimetableLectureReminderDto>,
 )

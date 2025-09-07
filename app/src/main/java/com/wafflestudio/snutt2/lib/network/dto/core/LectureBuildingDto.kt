@@ -7,11 +7,11 @@ import com.wafflestudio.snutt2.model.GeoCoordinate
 
 @JsonClass(generateAdapter = true)
 data class LectureBuildingDto(
-    @Json(name = "id") val id: String? = null,
-    @Json(name = "buildingNumber") val buildingNumber: String,
-    @Json(name = "buildingNameKor") val buildingNameKor: String? = null,
-    @Json(name = "buildingNameEng") val buildingNameEng: String? = null,
-    @Json(name = "locationInDMS") val locationInDMS: GeoCoordinate,
-    @Json(name = "locationInDecimal") val locationInDecimal: GeoCoordinate,
-    @Json(name = "campus") val campus: Campus,
+    @param:Json(name = "id") val id: String? = null,
+    @param:Json(name = "buildingNumber") val buildingNumber: String,
+    @param:Json(name = "buildingNameKor") val buildingNameKor: String? = null,
+    @param:Json(name = "buildingNameEng") val buildingNameEng: String? = null,
+    @param:Json(name = "locationInDMS") val locationInDMS: GeoCoordinate,
+    @param:Json(name = "locationInDecimal") val locationInDecimal: GeoCoordinate,
+    @param:Json(name = "campus") val campus: Campus,
 )

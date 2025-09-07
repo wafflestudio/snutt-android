@@ -22,7 +22,7 @@ import javax.inject.Singleton
  */
 @Singleton
 class ApiOnError @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val moshi: Moshi,
     private val userRepository: UserRepository,
 ) : (Throwable) -> Unit {

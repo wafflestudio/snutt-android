@@ -5,9 +5,9 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class GetSocialProvidersResults(
-    @Json(name = "local") val local: Boolean,
-    @Json(name = "facebook") val facebook: Boolean,
-    @Json(name = "google") val google: Boolean,
-    @Json(name = "kakao") val kakao: Boolean,
-    @Json(name = "apple") val apple: Boolean,
+    @param:Json(name = "local") val local: Boolean,
+    @param:Json(name = "facebook") val facebook: Boolean,
+    @param:Json(name = "google") val google: Boolean,
+    @param:Json(name = "kakao") val kakao: Boolean,
+    @param:Json(name = "apple") val apple: Boolean,
 )

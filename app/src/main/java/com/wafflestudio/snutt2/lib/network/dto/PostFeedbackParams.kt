@@ -5,6 +5,6 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class PostFeedbackParams(
-    @Json(name = "email") val email: String,
-    @Json(name = "message") val message: String,
+    @param:Json(name = "email") val email: String,
+    @param:Json(name = "message") val message: String,
 )

@@ -7,9 +7,9 @@ import com.wafflestudio.snutt2.R
 
 @JsonClass(generateAdapter = true)
 data class LectureReviewDto(
-    @Json(name = "evLectureId") val id: String,
-    @Json(name = "avgRating") val rating: Double? = null,
-    @Json(name = "evaluationCount") val reviewCount: Int? = null,
+    @param:Json(name = "evLectureId") val id: String,
+    @param:Json(name = "avgRating") val rating: Double? = null,
+    @param:Json(name = "evaluationCount") val reviewCount: Int? = null,
 ) {
     val ratingDisplayText get() = rating?.times(10)?.toInt()?.div(10.0)?.toString() ?: "--"
     val displayText get() = "$ratingDisplayText (${reviewCount ?: 0})"

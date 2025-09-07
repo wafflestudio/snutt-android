@@ -5,5 +5,5 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class DeleteSocialLinkResults(
-    @Json(name = "token") val token: String,
+    @param:Json(name = "token") val token: String,
 )
