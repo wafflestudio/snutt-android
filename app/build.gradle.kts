@@ -113,19 +113,10 @@ android {
         }
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
-        freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
-    }
-
     buildFeatures {
         compose = true
         viewBinding = true
         buildConfig = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
     }
 }
 
@@ -134,9 +125,6 @@ dependencies {
     testImplementation(libs.junit)
 
     // Android Core
-    implementation(libs.androidx.legacy.support)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.bundles.kotlin.core)
 
@@ -154,9 +142,6 @@ dependencies {
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
-
-    // Paging
-    implementation(libs.paging.runtime.ktx)
 
     // Compose
     val composeBom = platform(libs.compose.bom)

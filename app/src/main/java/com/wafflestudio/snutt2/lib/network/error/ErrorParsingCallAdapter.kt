@@ -38,7 +38,8 @@ private class ErrorParsingCall<T>(
             override fun onFailure(call: Call<T>, t: Throwable) {
                 callback.onFailure(call, t)
             }
-        },)
+        },
+        )
     }
 
     override fun execute(): Response<T> {

@@ -5,7 +5,6 @@ import android.widget.Toast
 import com.squareup.moshi.Moshi
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.user.UserRepository
-import com.wafflestudio.snutt2.lib.android.MessagingError
 import com.wafflestudio.snutt2.lib.android.runOnUiThread
 import com.wafflestudio.snutt2.lib.network.error.ErrorParsedHttpException
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -37,14 +36,6 @@ class ApiOnError @Inject constructor(
                     Toast.makeText(
                         context,
                         context.getString(R.string.error_no_network),
-                        Toast.LENGTH_SHORT,
-                    ).show()
-                }
-
-                is MessagingError -> {
-                    Toast.makeText(
-                        context,
-                        error.message,
                         Toast.LENGTH_SHORT,
                     ).show()
                 }

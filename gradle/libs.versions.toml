@@ -20,7 +20,6 @@ lifecycle = "2.9.2"
 hiltNavigationCompose = "1.2.0"
 
 # Paging
-paging = "3.1.0"
 pagingCompose = "1.0.0-alpha14"
 
 # Firebase
@@ -50,10 +49,7 @@ hermesAndroid = "0.72.3"
 
 # Misc
 androidxCore = "1.16.0"
-appcompat = "1.7.1"
 material = "1.12.0"
-constraintlayout = "2.2.1"
-legacySupport = "1.0.0"
 timber = "5.0.1"
 gson = "2.13.1"
 kotlinxSerialization = "1.9.0"
@@ -70,9 +66,6 @@ kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref =
 
 # Android Core
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
-androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
-androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
-androidx-legacy-support = { module = "androidx.legacy:legacy-support-v4", version.ref = "legacySupport" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "splashscreen" }
 
@@ -103,7 +96,6 @@ compose-material = { module = "androidx.compose.material:material" }
 compose-material-navigation = { module = "androidx.compose.material:material-navigation", version.ref = "composeMaterialNavigation" }
 compose-foundation = { module = "androidx.compose.foundation:foundation" }
 compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout" }
-compose-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata" }
 compose-material-icons-core = { module = "androidx.compose.material:material-icons-core" }
 
 # Lifecycle
@@ -111,7 +103,6 @@ lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel
 lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
 
 # Paging
-paging-runtime-ktx = { module = "androidx.paging:paging-runtime-ktx", version.ref = "paging" }
 paging-compose = { module = "androidx.paging:paging-compose", version.ref = "pagingCompose" }
 
 # Firebase
@@ -187,7 +178,6 @@ compose = [
     "compose-material",
     "compose-foundation",
     "compose-foundation-layout",
-    "compose-runtime-livedata",
     "compose-material-icons-core"
 ]
 

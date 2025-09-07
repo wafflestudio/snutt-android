@@ -2,17 +2,13 @@ package com.wafflestudio.snutt2.views
 
 import NavigationDestination
 import android.Manifest
-import android.animation.ObjectAnimator
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.view.View
-import android.view.ViewTreeObserver
-import android.view.animation.AnticipateInterpolator
+import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.*
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VisibilityThreshold
@@ -28,10 +24,8 @@ import androidx.compose.material.navigation.bottomSheet
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -46,6 +40,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
+import com.facebook.react.ReactActivity
 import com.google.firebase.FirebaseApp
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
@@ -93,7 +88,7 @@ import javax.inject.Inject
 
 @ExperimentalAnimationApi
 @AndroidEntryPoint
-class RootActivity : AppCompatActivity() {
+class RootActivity : ReactActivity() {
     private val userViewModel: UserViewModel by viewModels()
 
     private val homeViewModel: HomeViewModel by viewModels()
@@ -113,26 +108,24 @@ class RootActivity : AppCompatActivity() {
     @Inject
     lateinit var analyticsLogger: AnalyticsLogger
 
-    private var isInitialRefreshFinished = false
-
-    private val composeRoot by lazy { findViewById<ComposeView>(R.id.compose_root) }
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen()
+        val splashScreen = installSplashScreen()
+        var isLoading = true
+        splashScreen.setKeepOnScreenCondition { isLoading }
 
         enableEdgeToEdge()
         super.onCreate(null)
 
         FirebaseApp.initializeApp(this)
-        setContentView(R.layout.activity_root)
         parseDeeplinkExtra()
 
         val token = userViewModel.accessToken.value
+
         lifecycleScope.launch {
             if (token.isNotEmpty()) {
                 homeViewModel.refreshData()
             }
-            isInitialRefreshFinished = true
+            isLoading = false
         }
         setUpContents(
             if (token.isEmpty()) {
@@ -141,14 +134,13 @@ class RootActivity : AppCompatActivity() {
                 NavigationDestination.Home
             },
         )
-        setUpSplashScreen(composeRoot)
         setWindowAppearance()
         checkNotificationPermission()
         startUpdatingPushToken()
     }
 
     private fun setUpContents(startDestination: NavigationDestination) {
-        composeRoot.setContent {
+        setContent {
             val themeMode by userViewModel.themeMode.collectAsState()
             CompositionLocalProvider(LocalThemeState provides themeMode) {
                 SNUTTTheme {
@@ -164,36 +156,6 @@ class RootActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-
-    private fun setUpSplashScreen(rootView: View) {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.S) {
-            splashScreen.setOnExitAnimationListener { view ->
-                ObjectAnimator.ofFloat(view, View.ALPHA, 1f, 0f).run {
-                    interpolator = AnticipateInterpolator()
-                    duration = 200L
-                    doOnEnd { view.remove() }
-                    start()
-                }
-            }
-        }
-
-        rootView.viewTreeObserver.addOnPreDrawListener(
-            object : ViewTreeObserver.OnPreDrawListener {
-                override fun onPreDraw(): Boolean {
-                    return if (isInitialConditionsSatisfied()) {
-                        rootView.viewTreeObserver.removeOnPreDrawListener(this)
-                        true
-                    } else {
-                        false
-                    }
-                }
-            },
-        )
-    }
-
-    fun isInitialConditionsSatisfied(): Boolean {
-        return isInitialRefreshFinished
     }
 
     @Composable
@@ -311,7 +273,7 @@ class RootActivity : AppCompatActivity() {
                             navController.previousBackStackEntry?.destination?.hasRoute(
                                 NavigationDestination.LecturesOfTable::class,
                             ) == true
-                            -> DetailScreenReferrer.LectureList
+                                -> DetailScreenReferrer.LectureList
 
                             homePageController.homePageState.value == HomeItem.Timetable -> DetailScreenReferrer.Timetable
                             else -> null
