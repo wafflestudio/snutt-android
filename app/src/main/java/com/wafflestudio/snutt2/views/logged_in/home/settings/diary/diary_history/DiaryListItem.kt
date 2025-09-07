@@ -40,7 +40,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun DiaryListDateItem(
+fun DiaryDaySummary(
     date: LocalDate,
     listOfDiaryListLectureItem: List<DiaryListLectureItem>,
 ) {
@@ -80,7 +80,7 @@ fun DiaryListDateItem(
         AnimatedVisibility(visible = isSelected) {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 listOfDiaryListLectureItem.forEach { diaryListLectureItem ->
-                    DiaryListLectureItem(diaryListLectureItem)
+                    DiarySummary(diaryListLectureItem)
                 }
             }
         }
@@ -93,7 +93,7 @@ fun DiaryListDateItem(
 }
 
 @Composable
-fun DiaryListLectureItem(
+fun DiarySummary(
     diaryListLectureItem: DiaryListLectureItem,
 ) {
     val textMeasurer = rememberTextMeasurer()
@@ -176,7 +176,7 @@ fun DiaryListLectureItem(
 @Composable
 @Preview(showBackground = true)
 fun DiaryListItemPreview() {
-    DiaryListDateItem(
+    DiaryDaySummary(
         date = LocalDate.of(2025, 3, 20),
         listOf(
             DiaryListLectureItem(

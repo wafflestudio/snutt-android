@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class DiaryListViewModel @Inject constructor(
+class DiaryHistoryViewModel @Inject constructor(
     private val diaryRepository: DiaryRepository,
     private val userRepository: UserRepository,
     private val courseBookRepository: CourseBookRepository,
@@ -23,21 +23,24 @@ class DiaryListViewModel @Inject constructor(
 ) : ViewModel() {
 
     fun clickCourseBook(idx: Int) {
-        if (_diaryListUiState.value is DiaryListUiState.Success) {
-            _diaryListUiState.value =
-                (_diaryListUiState.value as DiaryListUiState.Success).copy(selectedCourseBookIdx = idx)
+        if (_diaryHistoryUiState.value is DiaryHistoryUiState.Success) {
+            _diaryHistoryUiState.value =
+                (_diaryHistoryUiState.value as DiaryHistoryUiState.Success).copy(
+                    selectedCourseBookIdx = idx
+                )
         }
     }
 
-    private val _diaryListUiState = MutableStateFlow<DiaryListUiState>(DiaryListUiState.Loading)
-    val diaryListUiState = _diaryListUiState.asStateFlow()
+    private val _diaryHistoryUiState =
+        MutableStateFlow<DiaryHistoryUiState>(DiaryHistoryUiState.Loading)
+    val diaryListUiState = _diaryHistoryUiState.asStateFlow()
 
     init {
         viewModelScope.launch {
             val courseBookList = courseBookRepository.getCourseBook()
                 .map { courseBookDto -> courseBookDto.toCourseBook() }
-            _diaryListUiState.value =
-                DiaryListUiState.Success(courseBookList, 0, DiaryPreviewData.diaryList)
+            _diaryHistoryUiState.value =
+                DiaryHistoryUiState.Success(courseBookList, 0, DiaryPreviewData.diaryList)
         }
     }
 }

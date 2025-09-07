@@ -34,26 +34,26 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 
 @Composable
-fun DiaryListRoute(
+fun DiaryHistoryRoute(
     modifier: Modifier = Modifier,
-    diaryListViewModel: DiaryListViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit,
     onNavigateOnboard: () -> Unit,
     onNavigateDiaryWrite: (String) -> Unit,
+    diaryHistoryViewModel: DiaryHistoryViewModel = hiltViewModel(),
 ) {
-    val diaryList by diaryListViewModel.diaryListUiState.collectAsState()
-    DiaryListScreen(
+    val diaryList by diaryHistoryViewModel.diaryListUiState.collectAsState()
+    DiaryHistoryScreen(
         onNavigateBack,
-        { idx -> diaryListViewModel.clickCourseBook(idx) },
+        { idx -> diaryHistoryViewModel.clickCourseBook(idx) },
         diaryList,
     )
 }
 
 @Composable
-fun DiaryListScreen(
+fun DiaryHistoryScreen(
     onNavigateBack: () -> Unit,
     onClickCourseBook: (Int) -> Unit,
-    diaryListUiState: DiaryListUiState,
+    diaryHistoryUiState: DiaryHistoryUiState,
 ) {
     Box {
         Column(
@@ -71,18 +71,18 @@ fun DiaryListScreen(
                 },
             )
 
-            when (diaryListUiState) {
-                DiaryListUiState.Empty -> {}
-                DiaryListUiState.Error -> {}
-                DiaryListUiState.Loading -> {}
-                is DiaryListUiState.Success -> {
+            when (diaryHistoryUiState) {
+                DiaryHistoryUiState.Empty -> {}
+                DiaryHistoryUiState.Error -> {}
+                DiaryHistoryUiState.Loading -> {}
+                is DiaryHistoryUiState.Success -> {
                     LazyRow(
                         modifier = Modifier.padding(top = 20.dp, bottom = 12.dp),
                         contentPadding = PaddingValues(horizontal = 20.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
-                        itemsIndexed(diaryListUiState.courseBookList) { idx, courseBook ->
-                            val isSelected = idx == diaryListUiState.selectedCourseBookIdx
+                        itemsIndexed(diaryHistoryUiState.courseBookList) { idx, courseBook ->
+                            val isSelected = idx == diaryHistoryUiState.selectedCourseBookIdx
                             Box(
                                 modifier = Modifier
                                     .clicks { onClickCourseBook(idx) }
@@ -103,8 +103,8 @@ fun DiaryListScreen(
                         }
                     }
                     LazyColumn {
-                        items(diaryListUiState.diaryList.toList()) { (date, listOfDiaryListLectureItem) ->
-                            DiaryListDateItem(
+                        items(diaryHistoryUiState.diaryList.toList()) { (date, listOfDiaryListLectureItem) ->
+                            DiaryDaySummary(
                                 date = date,
                                 listOfDiaryListLectureItem,
                             )
@@ -121,10 +121,10 @@ fun DiaryListScreen(
 fun DiaryListPagePreview() {
     val courseBookList =
         DiaryPreviewData.courseBookDtoList.map { courseBookDto -> courseBookDto.toCourseBook() }
-    DiaryListScreen(
+    DiaryHistoryScreen(
         onNavigateBack = {},
         {},
-        diaryListUiState = DiaryListUiState.Success(
+        diaryHistoryUiState = DiaryHistoryUiState.Success(
             courseBookList = courseBookList,
             selectedCourseBookIdx = 0,
             diaryList = DiaryPreviewData.diaryList,
