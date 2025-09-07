@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_in.home.settings.diary
+package com.wafflestudio.snutt2.views.logged_in.home.settings.diary.diary_history
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,7 +24,8 @@ class DiaryListViewModel @Inject constructor(
 
     fun clickCourseBook(idx: Int) {
         if (_diaryListUiState.value is DiaryListUiState.Success) {
-            _diaryListUiState.value = (_diaryListUiState.value as DiaryListUiState.Success).copy(selectedCourseBookIdx = idx)
+            _diaryListUiState.value =
+                (_diaryListUiState.value as DiaryListUiState.Success).copy(selectedCourseBookIdx = idx)
         }
     }
 
@@ -33,8 +34,10 @@ class DiaryListViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val courseBookList = courseBookRepository.getCourseBook().map { courseBookDto -> courseBookDto.toCourseBook() }
-            _diaryListUiState.value = DiaryListUiState.Success(courseBookList, 0, DiaryPreviewData.diaryList)
+            val courseBookList = courseBookRepository.getCourseBook()
+                .map { courseBookDto -> courseBookDto.toCourseBook() }
+            _diaryListUiState.value =
+                DiaryListUiState.Success(courseBookList, 0, DiaryPreviewData.diaryList)
         }
     }
 }

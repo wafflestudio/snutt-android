@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_in.home.settings.diary
+package com.wafflestudio.snutt2.views.logged_in.home.settings.diary.diary_history
 
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.diary.DiaryList

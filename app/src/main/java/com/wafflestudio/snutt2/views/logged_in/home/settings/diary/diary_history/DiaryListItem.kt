@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_in.home.settings.diary
+package com.wafflestudio.snutt2.views.logged_in.home.settings.diary.diary_history
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -52,7 +52,10 @@ fun DiaryListDateItem(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Text(date.format(DateTimeFormatter.ofPattern("yyyy.M.d")), style = SNUTTTypography.h3.copy(fontSize = 15.sp))
+                    Text(
+                        date.format(DateTimeFormatter.ofPattern("yyyy.M.d")),
+                        style = SNUTTTypography.h3.copy(fontSize = 15.sp)
+                    )
                     Text("금", style = SNUTTTypography.h3.copy(fontSize = 15.sp))
                 }
             }
@@ -117,8 +120,14 @@ fun DiaryListLectureItem(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(diaryListLectureItem.lectureName, style = SNUTTTypography.body1.copy(color = SNUTTColors.EditTextLabel))
-                TrashIcon(modifier = Modifier.size(28.dp, 28.dp), colorFilter = ColorFilter.tint(SNUTTColors.EditTextHint))
+                Text(
+                    diaryListLectureItem.lectureName,
+                    style = SNUTTTypography.body1.copy(color = SNUTTColors.EditTextLabel)
+                )
+                TrashIcon(
+                    modifier = Modifier.size(28.dp, 28.dp),
+                    colorFilter = ColorFilter.tint(SNUTTColors.EditTextHint)
+                )
             }
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 diaryListLectureItem.content.forEach { diaryQuestionAnswer ->
@@ -152,7 +161,11 @@ fun DiaryListLectureItem(
             Text(
                 "수정하기",
                 modifier = Modifier
-                    .border(0.8.dp, color = SNUTTColors.EditTextUnderline, shape = RoundedCornerShape(17.dp))
+                    .border(
+                        0.8.dp,
+                        color = SNUTTColors.EditTextUnderline,
+                        shape = RoundedCornerShape(17.dp)
+                    )
                     .padding(vertical = 6.dp, horizontal = 16.dp),
                 style = SNUTTTypography.button.copy(fontSize = 13.sp),
             )
