@@ -72,7 +72,6 @@ import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
-import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryCompleteRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryWriteRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailRoute
@@ -270,8 +269,13 @@ class RootActivity : AppCompatActivity() {
                 // FIXME: 궁극적으로는 ApiOnError를 제거해야 한다.
                 lifecycleScope.launch {
                     userViewModel.accessToken.collect { token ->
-                        if (token.isEmpty() && navController.currentDestination?.hasRoute(NavigationDestination.Tutorial::class) == false) {
-                            navController.navigateAsOrigin(NavigationDestination.Onboard)
+                        if (token.isEmpty() && navController.currentDestination?.hasRoute(
+                                NavigationDestination.Tutorial::class,
+                            ) == false
+                        ) {
+                            navController.navigateAsOrigin(
+                                NavigationDestination.Onboard,
+                            )
                         }
                     }
                 }
@@ -303,7 +307,11 @@ class RootActivity : AppCompatActivity() {
                             navController.getBackStackEntry(NavigationDestination.Home)
                         }
                         val referrer = when {
-                            navController.previousBackStackEntry?.destination?.hasRoute(NavigationDestination.LecturesOfTable::class) == true -> DetailScreenReferrer.LectureList
+                            navController.previousBackStackEntry?.destination?.hasRoute(
+                                NavigationDestination.LecturesOfTable::class,
+                            ) == true
+                            -> DetailScreenReferrer.LectureList
+
                             homePageController.homePageState.value == HomeItem.Timetable -> DetailScreenReferrer.Timetable
                             else -> null
                         }
@@ -323,10 +331,17 @@ class RootActivity : AppCompatActivity() {
                         val homeBackStackEntry = remember(backStackEntry) {
                             navController.getBackStackEntry(NavigationDestination.Home)
                         }
-                        val tableId = backStackEntry.toRoute<NavigationDestination.TimetableLecture>().tableId
-                        val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>(homeBackStackEntry)
-                        val tableListViewModel = hiltViewModel<TableListViewModel>(homeBackStackEntry)
-                        TimetableLectureDetailPage(tableId, lectureDetailViewModel, tableListViewModel)
+                        val tableId =
+                            backStackEntry.toRoute<NavigationDestination.TimetableLecture>().tableId
+                        val lectureDetailViewModel =
+                            hiltViewModel<LectureDetailViewModel>(homeBackStackEntry)
+                        val tableListViewModel =
+                            hiltViewModel<TableListViewModel>(homeBackStackEntry)
+                        TimetableLectureDetailPage(
+                            tableId,
+                            lectureDetailViewModel,
+                            tableListViewModel,
+                        )
                     }
 
                     composableAnimated<NavigationDestination.LectureColorSelector> {
@@ -418,12 +433,16 @@ class RootActivity : AppCompatActivity() {
         )
     }
 
-    private fun NavGraphBuilder.settingComposables(navController: NavController, homePageController: HomePageController) {
+    private fun NavGraphBuilder.settingComposables(
+        navController: NavController,
+        homePageController: HomePageController,
+    ) {
         composableAnimated<NavigationDestination.AppReport> { AppReportPage() }
         composableAnimated<NavigationDestination.OpenLicenses> { OpenSourceLicensePage() }
 
         composableAnimated<NavigationDestination.LicenseDetail> { backStackEntry ->
-            val licenseName = backStackEntry.toRoute<NavigationDestination.LicenseDetail>().licenseName
+            val licenseName =
+                backStackEntry.toRoute<NavigationDestination.LicenseDetail>().licenseName
             LicenseDetailPage(licenseName)
         }
 
@@ -465,12 +484,7 @@ class RootActivity : AppCompatActivity() {
         composableAnimated<NavigationDestination.ThemeModeSelect> { ColorModeSelectPage() }
         if (BuildConfig.DEBUG) {
             composableAnimated<NavigationDestination.LectureDiaryWrite> { entry ->
-                val lectureId = entry.arguments?.getString("lectureId") ?: "686e8d3c2afaf11b888e2722" // TODO: NULL일때 에러 던지기
-                val lectureName = entry.arguments?.getString("lectureName") ?: "알고리즘"
-                val lectureNumber = entry.arguments?.getString("lectureNumber") ?: "53131"
                 DiaryWriteRoute(
-                    lectureId = lectureId,
-                    lectureName = lectureName,
                     onNavigateBack = {
                         if (navController.currentDestination?.hasRoute(NavigationDestination.LectureDiaryWrite::class) == true) {
                             navController.popBackStack()
@@ -479,30 +493,8 @@ class RootActivity : AppCompatActivity() {
                     onNavigateOnboard = {
                         navController.navigateAsOrigin(NavigationDestination.Onboard)
                     },
-                    onNavigateDiaryWriteDone = { isCourseOver ->
-                        navController.navigateAsOrigin(NavigationDestination.LectureDiaryComplete(isCourseOver, lectureId, lectureName, lectureNumber))
-                    },
-                )
-            }
-            composableAnimated<NavigationDestination.LectureDiaryComplete> { entry ->
-                val isCourseOver = entry.arguments?.getBoolean("isCourseOver") ?: false
-                val lectureId = entry.arguments?.getString("lectureId")
-                val lectureName = entry.arguments?.getString("lectureName")
-                val lectureNumber = entry.arguments?.getString("lectureNumber")
-                DiaryCompleteRoute(
-                    lectureId = lectureId,
-                    lectureName = lectureName,
-                    isCourseOver = isCourseOver,
-                    onNavigateDiaryWrite = { id, name, number ->
-                        navController.navigateAsOrigin(NavigationDestination.LectureDiaryWrite(id, name, number))
-                    },
-                    onNavigateLectureReview = {
-                        navController.navigateAsOrigin(NavigationDestination.Home)
-                        homePageController.update(HomeItem.Review(applicationContext.getString(R.string.review_base_url) + "/detail?id=$lectureNumber"))
-                    },
-                    onNavigateHomePage = {
-                        navController.navigateAsOrigin(NavigationDestination.Home)
-                    },
+                    onNavigateHome = { navController.navigateAsOrigin(NavigationDestination.Home) },
+                    onNavigateReview = {},
                 )
             }
         }
@@ -543,8 +535,13 @@ class RootActivity : AppCompatActivity() {
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToDetail = { theme ->
                     when (theme) {
-                        is CustomTheme -> navController.navigate(NavigationDestination.ThemeDetail(themeId = theme.id))
-                        is BuiltInTheme -> navController.navigate(NavigationDestination.ThemeDetail(theme = theme.code))
+                        is CustomTheme -> navController.navigate(
+                            NavigationDestination.ThemeDetail(themeId = theme.id),
+                        )
+
+                        is BuiltInTheme -> navController.navigate(
+                            NavigationDestination.ThemeDetail(theme = theme.code),
+                        )
                     }
                 },
                 onClickAddTheme = {

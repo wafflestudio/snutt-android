@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.domainmodel
+package com.wafflestudio.snutt2.domainmodel.diary
 
 import java.time.LocalDate
 
