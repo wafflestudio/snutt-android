@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.lecture_detail
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
@@ -208,11 +207,9 @@ class LectureDetailViewModel @Inject constructor(
         _lectureWithReminderOption.emit(LectureWithReminderOption.Default)
         _enableLectureReminderPicker.emit(false)
         val table = _table.value
-        Log.d("table", table?.isPrimary.toString())
         if (table != null && lecture.class_time_json.isNotEmpty() && lecture.lecture_id != null) {
             tableRepository.getTimetableLectureReminder(currentTable.value?.id ?: "", lecture.id)
                 .onSuccess { data ->
-                    Log.d("data", data.toString())
                     _showLectureReminderPicker.emit(true)
                     _enableLectureReminderPicker.emit(table.isPrimary)
                     _lectureWithReminderOption.emit(data)
