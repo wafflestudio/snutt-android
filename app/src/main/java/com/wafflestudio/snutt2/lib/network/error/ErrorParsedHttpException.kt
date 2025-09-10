@@ -10,4 +10,5 @@ data class ErrorParsedHttpException(
     val title: String?,
     val displayMessage: String?,
     val ext: Map<String, String>?,
+    val displayTitle: String?,
 ) : Exception(message)
