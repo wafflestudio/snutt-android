@@ -27,6 +27,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
@@ -49,6 +50,10 @@ import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastMap
 import androidx.compose.ui.util.fastMapTo
 import com.wafflestudio.snutt2.components.compose.clicks
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.HazeStyle
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.delay
 import kotlin.math.max
 
@@ -76,6 +81,7 @@ fun CustomSnackBar(
     backgroundColor: Color = SnackbarDefaults.backgroundColor,
     contentStyle: TextStyle = LocalTextStyle.current,
     actionLabelStyle: TextStyle = LocalTextStyle.current,
+    hazeState: HazeState = rememberHazeState(),
     elevation: Dp = 0.dp,
 ) {
     var savedSnackBarData by remember { mutableStateOf<CustomSnackBarData>(CustomSnackBarHostState.CustomSnackBarDataDefault()) }
@@ -91,6 +97,7 @@ fun CustomSnackBar(
                 backgroundColor = backgroundColor,
                 contentStyle = contentStyle,
                 actionLabelStyle = actionLabelStyle,
+                hazeState = hazeState,
                 elevation = elevation,
             )
         }
@@ -102,6 +109,7 @@ fun CustomSnackBar(
                 backgroundColor = backgroundColor,
                 contentStyle = contentStyle,
                 actionLabelStyle = actionLabelStyle,
+                hazeState = hazeState,
                 elevation = elevation,
             )
         }
@@ -116,6 +124,7 @@ private fun CustomSnackBar(
     backgroundColor: Color = SnackbarDefaults.backgroundColor,
     contentStyle: TextStyle = LocalTextStyle.current,
     actionLabelStyle: TextStyle = LocalTextStyle.current,
+    hazeState: HazeState = rememberHazeState(),
     elevation: Dp = 6.dp,
 ) {
     val actionLabel = snackBarData.actionLabel
@@ -144,6 +153,7 @@ private fun CustomSnackBar(
         action = actionComposable,
         shape = shape,
         backgroundColor = backgroundColor,
+        hazeState = hazeState,
         elevation = elevation,
     )
 }
@@ -154,12 +164,12 @@ private fun CustomSnackBar(
     action: @Composable (() -> Unit)? = null,
     shape: Shape = MaterialTheme.shapes.small,
     backgroundColor: Color = SnackbarDefaults.backgroundColor,
+    hazeState: HazeState = rememberHazeState(),
     elevation: Dp = 6.dp,
     content: @Composable () -> Unit,
 ) {
     Surface(
-        modifier = modifier,
-        shape = shape,
+        modifier = modifier.clip(shape).hazeEffect(state = hazeState, style = HazeStyle(blurRadius = 4.dp, tint = null)),
         elevation = elevation,
         color = backgroundColor,
     ) {
@@ -299,7 +309,7 @@ private fun CustomOneRowSnackBar(text: @Composable () -> Unit, action: @Composab
 fun CustomSnackBarHost(
     hostState: CustomSnackBarHostState,
     modifier: Modifier = Modifier,
-    snackBar: @Composable (CustomSnackBarData) -> Unit = {
+    snackBar: @Composable (CustomSnackBarData) -> Unit = { it ->
         CustomSnackBar(snackBarData = it)
     },
 ) {
@@ -434,11 +444,14 @@ private fun customAnimatedOpacity(
 
 @Composable
 private fun customAnimatedScale(animation: AnimationSpec<Float>, visible: Boolean): State<Float> {
-    val scale = remember { Animatable(if (!visible) 1f else 0.8f) }
-    LaunchedEffect(visible) {
-        scale.animateTo(if (visible) 1f else 0.8f, animationSpec = animation)
-    }
-    return scale.asState()
+//    val scale = remember { Animatable(if (!visible) 1f else 0.8f) }
+//    LaunchedEffect(visible) {
+//        scale.animateTo(if (visible) 1f else 0.8f, animationSpec = animation)
+//    }
+//    return scale.asState()
+
+    // background blur 이동 현상 때문에 ScaleAnimation 삭제
+    return remember { mutableStateOf(1F) }
 }
 
 private val TextEndExtraSpacing = 8.dp

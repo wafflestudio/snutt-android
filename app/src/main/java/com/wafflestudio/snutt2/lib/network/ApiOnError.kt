@@ -99,6 +99,7 @@ object ErrorCode {
 
     const val LECTURE_TIME_OVERLAP = 0x300C
     const val INVALID_EMAIL = 0x300F
+    const val PAST_SEMESTER = 0x9C58
 
     // Client-Side 에러 코드 (추후 추가)
 

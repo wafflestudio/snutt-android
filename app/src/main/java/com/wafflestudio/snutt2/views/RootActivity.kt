@@ -72,9 +72,8 @@ import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
-import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryCompleteRoute
-import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryListPage
-import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryWriteRoute
+import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.diary_history.DiaryHistoryRoute
+import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.diary_write.DiaryWriteRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailRoute
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorPage
@@ -271,8 +270,13 @@ class RootActivity : AppCompatActivity() {
                 // FIXME: 궁극적으로는 ApiOnError를 제거해야 한다.
                 lifecycleScope.launch {
                     userViewModel.accessToken.collect { token ->
-                        if (token.isEmpty() && navController.currentDestination?.hasRoute(NavigationDestination.Tutorial::class) == false) {
-                            navController.navigateAsOrigin(NavigationDestination.Onboard)
+                        if (token.isEmpty() && navController.currentDestination?.hasRoute(
+                                NavigationDestination.Tutorial::class,
+                            ) == false
+                        ) {
+                            navController.navigateAsOrigin(
+                                NavigationDestination.Onboard,
+                            )
                         }
                     }
                 }
@@ -304,7 +308,11 @@ class RootActivity : AppCompatActivity() {
                             navController.getBackStackEntry(NavigationDestination.Home)
                         }
                         val referrer = when {
-                            navController.previousBackStackEntry?.destination?.hasRoute(NavigationDestination.LecturesOfTable::class) == true -> DetailScreenReferrer.LectureList
+                            navController.previousBackStackEntry?.destination?.hasRoute(
+                                NavigationDestination.LecturesOfTable::class,
+                            ) == true
+                            -> DetailScreenReferrer.LectureList
+
                             homePageController.homePageState.value == HomeItem.Timetable -> DetailScreenReferrer.Timetable
                             else -> null
                         }
@@ -324,10 +332,17 @@ class RootActivity : AppCompatActivity() {
                         val homeBackStackEntry = remember(backStackEntry) {
                             navController.getBackStackEntry(NavigationDestination.Home)
                         }
-                        val tableId = backStackEntry.toRoute<NavigationDestination.TimetableLecture>().tableId
-                        val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>(homeBackStackEntry)
-                        val tableListViewModel = hiltViewModel<TableListViewModel>(homeBackStackEntry)
-                        TimetableLectureDetailPage(tableId, lectureDetailViewModel, tableListViewModel)
+                        val tableId =
+                            backStackEntry.toRoute<NavigationDestination.TimetableLecture>().tableId
+                        val lectureDetailViewModel =
+                            hiltViewModel<LectureDetailViewModel>(homeBackStackEntry)
+                        val tableListViewModel =
+                            hiltViewModel<TableListViewModel>(homeBackStackEntry)
+                        TimetableLectureDetailPage(
+                            tableId,
+                            lectureDetailViewModel,
+                            tableListViewModel,
+                        )
                     }
 
                     composableAnimated<NavigationDestination.LectureColorSelector> {
@@ -419,12 +434,16 @@ class RootActivity : AppCompatActivity() {
         )
     }
 
-    private fun NavGraphBuilder.settingComposables(navController: NavController, homePageController: HomePageController) {
+    private fun NavGraphBuilder.settingComposables(
+        navController: NavController,
+        homePageController: HomePageController,
+    ) {
         composableAnimated<NavigationDestination.AppReport> { AppReportPage() }
         composableAnimated<NavigationDestination.OpenLicenses> { OpenSourceLicensePage() }
 
         composableAnimated<NavigationDestination.LicenseDetail> { backStackEntry ->
-            val licenseName = backStackEntry.toRoute<NavigationDestination.LicenseDetail>().licenseName
+            val licenseName =
+                backStackEntry.toRoute<NavigationDestination.LicenseDetail>().licenseName
             LicenseDetailPage(licenseName)
         }
 
@@ -465,8 +484,7 @@ class RootActivity : AppCompatActivity() {
         composableAnimated<NavigationDestination.PersonalInformationPolicy> { PersonalInformationPolicyPage() }
         composableAnimated<NavigationDestination.ThemeModeSelect> { ColorModeSelectPage() }
         if (BuildConfig.DEBUG) {
-            composableAnimated<NavigationDestination.LectureDiary> { DiaryListPage() }
-            composableAnimated<NavigationDestination.LectureDiaryWrite> {
+            composableAnimated<NavigationDestination.LectureDiaryWrite> { entry ->
                 DiaryWriteRoute(
                     onNavigateBack = {
                         if (navController.currentDestination?.hasRoute(NavigationDestination.LectureDiaryWrite::class) == true) {
@@ -476,24 +494,27 @@ class RootActivity : AppCompatActivity() {
                     onNavigateOnboard = {
                         navController.navigateAsOrigin(NavigationDestination.Onboard)
                     },
-                    onNavigateDiaryWriteDone = { isCourseOver ->
-                        navController.navigateAsOrigin(NavigationDestination.LectureDiaryComplete(isCourseOver))
-                    },
+                    onNavigateHome = { navController.navigateAsOrigin(NavigationDestination.Home) },
+                    onNavigateReview = {},
                 )
             }
-            composableAnimated<NavigationDestination.LectureDiaryComplete> { entry ->
-                val isCourseOver = entry.arguments?.getBoolean("isCourseOver") ?: false
-                DiaryCompleteRoute(
-                    isCourseOver = isCourseOver,
-                    onNavigateDiaryWrite = {
-                        navController.navigateAsOrigin(NavigationDestination.LectureDiaryWrite)
+            composableAnimated<NavigationDestination.LectureDiaryHistory> { entry ->
+                DiaryHistoryRoute(
+                    onNavigateBack = {
+                        if (navController.currentDestination?.hasRoute(NavigationDestination.LectureDiaryHistory::class) == true) {
+                            navController.popBackStack()
+                        }
                     },
-                    onNavigateLectureReview = {
-                        navController.navigateAsOrigin(NavigationDestination.Home)
-                        homePageController.update(HomeItem.Review(applicationContext.getString(R.string.review_base_url) + "/detail?id=53131")) // TODO: 이전 화면과 연결해서 적당한 위치로 보내기
+                    onNavigateOnboard = {
+                        navController.navigateAsOrigin(NavigationDestination.Onboard)
                     },
-                    onNavigateHomePage = {
-                        navController.navigateAsOrigin(NavigationDestination.Home)
+                    onNavigateDiaryWrite = { lectureId ->
+                        navController.navigate(
+                            NavigationDestination.LectureDiaryWrite(
+                                lectureId = lectureId,
+                                edit = true,
+                            ),
+                        )
                     },
                 )
             }
@@ -535,8 +556,13 @@ class RootActivity : AppCompatActivity() {
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToDetail = { theme ->
                     when (theme) {
-                        is CustomTheme -> navController.navigate(NavigationDestination.ThemeDetail(themeId = theme.id))
-                        is BuiltInTheme -> navController.navigate(NavigationDestination.ThemeDetail(theme = theme.code))
+                        is CustomTheme -> navController.navigate(
+                            NavigationDestination.ThemeDetail(themeId = theme.id),
+                        )
+
+                        is BuiltInTheme -> navController.navigate(
+                            NavigationDestination.ThemeDetail(theme = theme.code),
+                        )
                     }
                 },
                 onClickAddTheme = {

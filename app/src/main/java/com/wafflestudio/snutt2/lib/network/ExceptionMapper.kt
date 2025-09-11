@@ -5,11 +5,13 @@ import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsedHttpException
 import kotlinx.coroutines.CancellationException
 import okio.IOException
 import timber.log.Timber
+import java.io.EOFException
 
 fun Exception.toDomainError(): DomainError {
     Timber.e(this)
 
     return when (this) {
+        is EOFException -> EOF("", "")
         is IOException -> NetworkDisconnect("", "")
         is CancellationException -> Nothing("", "")
         is ErrorParsedHttpException -> {
@@ -27,12 +29,13 @@ fun Exception.toDomainError(): DomainError {
                 ErrorCode.DUPLICATE_ID -> DuplicateId(displayTitle, displayMessage)
                 ErrorCode.USED_EMAIL -> UsedEmail(displayTitle, displayMessage)
                 ErrorCode.WRONG_PASSWORD -> WrongPassword(displayTitle, displayMessage)
+                ErrorCode.PAST_SEMESTER -> PastSemester(displayTitle, displayMessage)
                 else -> Unknown(displayTitle, displayMessage)
             }
         }
         else -> {
             FirebaseCrashlytics.getInstance().recordException(this)
-            Unknown("", "")
+            Unknown("")
         }
     }
 }

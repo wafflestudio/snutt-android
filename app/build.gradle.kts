@@ -196,6 +196,9 @@ dependencies {
     // Serialization
     implementation(libs.kotlinx.serialization.json)
 
+    // Haze
+    implementation(libs.haze)
+
     // Desugaring
     coreLibraryDesugaring(libs.desugar.jdk.libs)
 }
