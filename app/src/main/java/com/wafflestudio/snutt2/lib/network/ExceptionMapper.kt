@@ -35,7 +35,7 @@ fun Exception.toDomainError(): DomainError {
         }
         else -> {
             FirebaseCrashlytics.getInstance().recordException(this)
-            Unknown("")
+            Unknown("", "")
         }
     }
 }
