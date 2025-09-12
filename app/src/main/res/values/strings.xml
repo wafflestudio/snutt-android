@@ -15,6 +15,7 @@
     <!--error-message-->
     <string name="popup_hide_message">당분간 보지 않기</string>
     <string name="popup_close_message">닫기</string>
+    <string name="error_title_no_network">네트워크 오류</string>
     <string name="error_no_network">네트워크가 불안정합니다. 잠시 후 다시 시도해주세요</string>
     <string name="error_no_timetable_title">시간표 이름이 주어지지 않았습니다</string>
     <string name="error_logout_fail">로그아웃에 실패하였습니다</string>
