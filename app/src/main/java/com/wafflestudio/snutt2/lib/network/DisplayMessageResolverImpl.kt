@@ -13,7 +13,7 @@ class DisplayMessageResolverImpl @Inject constructor(
     override fun getDisplayTitle(error: DomainError): String {
         return when (error) {
             is NetworkDisconnect -> context.getString(R.string.error_title_no_network)
-            is Unknown -> context.getString(R.string.error_title_unknown)
+            is Unknown -> ""
             else -> error.displayTitle
         }
     }
