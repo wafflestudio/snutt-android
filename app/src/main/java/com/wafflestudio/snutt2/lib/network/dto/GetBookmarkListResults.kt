@@ -6,7 +6,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 
 @JsonClass(generateAdapter = true)
 data class GetBookmarkListResults(
-    @Json(name = "year") val year: Long,
-    @Json(name = "semester") val semester: Long,
-    @Json(name = "lectures") val lectures: List<LectureDto>,
+    @param:Json(name = "year") val year: Long,
+    @param:Json(name = "semester") val semester: Long,
+    @param:Json(name = "lectures") val lectures: List<LectureDto>,
 )

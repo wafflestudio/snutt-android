@@ -1,7 +1,7 @@
 package com.wafflestudio.snutt2.lib.network
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsedHttpException
+import com.wafflestudio.snutt2.lib.network.error.ErrorParsedHttpException
 import kotlinx.coroutines.CancellationException
 import okio.IOException
 import timber.log.Timber
@@ -15,9 +15,9 @@ fun Exception.toDomainError(): DomainError {
         is IOException -> NetworkDisconnect("", "")
         is CancellationException -> Nothing("", "")
         is ErrorParsedHttpException -> {
-            val displayTitle = this.errorDTO?.displayTitle ?: ""
-            val displayMessage = this.errorDTO?.displayMessage ?: ""
-            return when (this.errorDTO?.code) {
+            val displayTitle = this.displayTitle ?: ""
+            val displayMessage = this.displayMessage ?: ""
+            return when (this.code) {
                 ErrorCode.SERVER_FAULT -> ServerFault(displayTitle, displayMessage)
                 ErrorCode.NO_ADMIN_PRIVILEGE -> NoAdminPrivilege(displayTitle, displayMessage)
                 ErrorCode.WRONG_API_KEY -> WrongApiKey(displayTitle, displayMessage)
@@ -33,6 +33,7 @@ fun Exception.toDomainError(): DomainError {
                 else -> Unknown(displayTitle, displayMessage)
             }
         }
+
         else -> {
             FirebaseCrashlytics.getInstance().recordException(this)
             Unknown("", "")

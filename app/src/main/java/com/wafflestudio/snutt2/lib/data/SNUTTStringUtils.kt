@@ -5,9 +5,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
-import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.model.SearchTimeDto
-import timber.log.Timber
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDateTime
@@ -15,21 +13,6 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 object SNUTTStringUtils {
-    fun getFullSemester(tableDto: TableDto): String {
-        val yearString = tableDto.year.toString()
-        val semesterString = when (tableDto.semester) {
-            1L -> "1"
-            2L -> "S"
-            3L -> "2"
-            4L -> "W"
-            else -> {
-                Timber.e("semester is out of range!!")
-                ""
-            }
-        }
-        return "$yearString-$semesterString"
-    }
-
     /**
      * 강의의 모든 classTime을 text로 변환
      * ex) 월, 수 09:30 ~ 10:45 이면 -> "월(09:30~10:45), 수(09:30~10:45)"
@@ -39,7 +22,10 @@ object SNUTTStringUtils {
             return "(없음)"
         }
 
-        return lectureDto.class_time_json.joinToString(", ", transform = ::getClassTimeTextForLecture)
+        return lectureDto.class_time_json.joinToString(
+            ", ",
+            transform = ::getClassTimeTextForLecture,
+        )
     }
 
     /**
@@ -163,7 +149,8 @@ object SNUTTStringUtils {
         return this.isEmpty() || regex.matches(this).not()
     }
 
-    fun String.isPasswordInvalid(): Boolean = Regex("^(?=.*\\d)(?=.*[a-zA-Z])\\S{6,20}\$").matches(this).not()
+    fun String.isPasswordInvalid(): Boolean =
+        Regex("^(?=.*\\d)(?=.*[a-zA-Z])\\S{6,20}\$").matches(this).not()
 
     fun String.isIdInvalid(): Boolean = Regex("^[A-Za-z\\d]{4,32}\$").matches(this).not()
 }

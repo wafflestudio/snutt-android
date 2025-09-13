@@ -6,7 +6,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 
 @JsonClass(generateAdapter = true)
 data class GetColorListResults(
-    @Json(name = "message") val message: String,
-    @Json(name = "colors") val colors: List<ColorDto>,
-    @Json(name = "names") val names: List<String>,
+    @param:Json(name = "message") val message: String,
+    @param:Json(name = "colors") val colors: List<ColorDto>,
+    @param:Json(name = "names") val names: List<String>,
 )

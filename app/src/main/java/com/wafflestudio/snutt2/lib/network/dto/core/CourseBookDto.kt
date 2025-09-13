@@ -6,8 +6,8 @@ import com.wafflestudio.snutt2.domainmodel.CourseBook
 
 @JsonClass(generateAdapter = true)
 data class CourseBookDto(
-    @Json(name = "semester") val semester: Long,
-    @Json(name = "year") val year: Long,
+    @param:Json(name = "semester") val semester: Long,
+    @param:Json(name = "year") val year: Long,
 ) : Comparable<CourseBookDto> {
     override fun compareTo(other: CourseBookDto): Int {
         if (year > other.year) {

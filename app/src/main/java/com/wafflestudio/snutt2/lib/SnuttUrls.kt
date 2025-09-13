@@ -7,7 +7,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SnuttUrls @Inject constructor(@ApplicationContext private val context: Context) {
+class SnuttUrls @Inject constructor(@param:ApplicationContext private val context: Context) {
 
     fun getReviewMain(): String = context.getString(R.string.review_base_url)
 
