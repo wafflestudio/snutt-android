@@ -10,6 +10,13 @@ import javax.inject.Inject
 class DisplayMessageResolverImpl @Inject constructor(
     @param:ApplicationContext private val context: Context,
 ) : DisplayMessageResolver {
+    override fun getDisplayTitle(error: DomainError): String {
+        return when (error) {
+            is NetworkDisconnect -> context.getString(R.string.error_title_no_network)
+            is Unknown -> ""
+            else -> error.displayTitle
+        }
+    }
     override fun getDisplayMessage(error: DomainError): String {
         return when (error) {
             is NetworkDisconnect -> context.getString(R.string.error_no_network)
