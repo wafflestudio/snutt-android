@@ -5,5 +5,5 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class PostBookmarkParams(
-    @Json(name = "lecture_id") val id: String,
+    @param:Json(name = "lecture_id") val id: String,
 )
