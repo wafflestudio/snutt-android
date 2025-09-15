@@ -11,7 +11,7 @@ import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
 import com.wafflestudio.snutt2.lib.logging.ReviewDetailParameter
 import com.wafflestudio.snutt2.lib.logging.compose.BottomSheetLoggingEffect
 import com.wafflestudio.snutt2.lib.network.ErrorCode
-import com.wafflestudio.snutt2.lib.network.call_adapter.ErrorParsedHttpException
+import com.wafflestudio.snutt2.lib.network.error.ErrorParsedHttpException
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalReviewWebView
 import com.wafflestudio.snutt2.views.launchSuspendApi
@@ -61,12 +61,13 @@ fun checkLectureOverlap(
         } catch (e: Exception) {
             when (e) {
                 is ErrorParsedHttpException -> {
-                    if (e.errorDTO?.code == ErrorCode.LECTURE_TIME_OVERLAP) {
-                        onLectureOverlap(e.errorDTO.displayMessage ?: "")
+                    if (e.code == ErrorCode.LECTURE_TIME_OVERLAP) {
+                        onLectureOverlap(e.displayMessage ?: "")
                     } else {
                         apiOnError(e)
                     }
                 }
+
                 else -> apiOnError(e)
             }
         } finally {

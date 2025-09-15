@@ -33,13 +33,13 @@ object SNUTTColors {
     val Colors.Gray600 @Composable get() = if (isLight) Color(0xff777777) else Color(0xffffffff)
     val Gray600 @Composable get() = MaterialTheme.colors.Gray600
 
-    val Colors.FillTertiary @Composable get() = if (isLight) Color(0x1f767680) else Color(0x3d767680)
+    val Colors.FillTertiary @Composable get() = if (isLight) Color(0x1f767680) else Color(0xff3c3c3c)
     val FillTertiary @Composable get() = MaterialTheme.colors.FillTertiary
 
-    val Colors.SeparatorTransparency @Composable get() = if (isLight) Color(0x5c3c3c43) else Color(0xa6545458)
+    val Colors.SeparatorTransparency @Composable get() = if (isLight) Color(0x5c3c3c43) else Color(0xff505050)
     val SeparatorTransparency @Composable get() = MaterialTheme.colors.SeparatorTransparency
 
-    val Colors.BackgroundPrimary @Composable get() = if (isLight) Color(0xffffffff) else Color(0xff636366)
+    val Colors.BackgroundPrimary @Composable get() = if (isLight) Color(0xffffffff) else Color(0xff777777)
     val BackgroundPrimary @Composable get() = MaterialTheme.colors.BackgroundPrimary
 
     val Colors.MoreTabBackground @Composable get() = if (isLight) Color(0xfff2f2f7) else Color(0xff505050)
@@ -50,6 +50,15 @@ object SNUTTColors {
 
     val Colors.SettingBackground @Composable get() = if (isLight) Color(0xfff2f2f2) else Color(0xff1e1e1e)
     val SettingBackground @Composable get() = MaterialTheme.colors.SettingBackground
+
+    val Colors.TextAlternative @Composable get() = if (isLight) Color(0xff8a898e) else Color(0xffb3b3b3)
+    val TextAlternative @Composable get() = MaterialTheme.colors.TextAlternative
+
+    val Colors.TextMed @Composable get() = if (isLight) Color(0xffa6a6a6) else Color(0xff8a898e)
+    val TextMed @Composable get() = MaterialTheme.colors.TextMed
+
+    val Colors.SnackbarBackground @Composable get() = if (isLight) Color(0x80000000) else Color(0xcc505050)
+    val SnackbarBackground @Composable get() = MaterialTheme.colors.SnackbarBackground
 
     val DARKER_GRAY @Composable get() = Color(0xff777777)
 

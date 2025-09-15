@@ -5,9 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.res.Configuration
 import android.os.Build
-import androidx.compose.animation.ExperimentalAnimationApi
 import com.facebook.hermes.reactexecutor.HermesExecutorFactory
 import com.facebook.react.ReactApplication
 import com.facebook.react.ReactNativeHost
@@ -23,7 +21,6 @@ import com.swmansion.gesturehandler.RNGestureHandlerPackage
 import com.swmansion.reanimated.ReanimatedPackage
 import com.swmansion.rnscreens.RNScreensPackage
 import com.th3rdwave.safeareacontext.SafeAreaContextPackage
-import com.wafflestudio.snutt2.provider.TimetableWidgetProvider
 import com.wafflestudio.snutt2.react_native.event.RNEventEmitterPackage
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
@@ -40,12 +37,6 @@ class SNUTTApplication : Application(), ReactApplication {
         Timber.plant(Timber.DebugTree())
         NaverMapSdk.getInstance(this).client =
             NaverMapSdk.NaverCloudPlatformClient(getString(R.string.naver_map_client_id))
-    }
-
-    @OptIn(ExperimentalAnimationApi::class)
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        TimetableWidgetProvider.refreshWidget(applicationContext)
     }
 
     override fun getReactNativeHost(): ReactNativeHost {

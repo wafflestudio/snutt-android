@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class PostResetPasswordParams(
-    @Json(name = "user_id") val id: String,
-    @Json(name = "password") val password: String,
-    @Json(name = "code") val code: String,
+    @param:Json(name = "user_id") val id: String,
+    @param:Json(name = "password") val password: String,
+    @param:Json(name = "code") val code: String,
 )

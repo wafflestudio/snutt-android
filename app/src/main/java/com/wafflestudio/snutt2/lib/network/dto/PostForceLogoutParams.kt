@@ -5,6 +5,6 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class PostForceLogoutParams(
-    @Json(name = "user_id") val userId: String,
-    @Json(name = "registration_id") val registrationId: String,
+    @param:Json(name = "user_id") val userId: String,
+    @param:Json(name = "registration_id") val registrationId: String,
 )

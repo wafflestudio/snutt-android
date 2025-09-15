@@ -88,7 +88,7 @@ fun NewPasswordStep(
                 errorDialogTitle = context.getString(R.string.find_password_enter_password_confirm_fail_alert)
                 showErrorDialog = true
             } else if (newPasswordField.isPasswordInvalid()) {
-                errorDialogTitle = context.getString(R.string.invalid_password)
+                errorDialogTitle = context.getString(R.string.error_invalid_password)
                 showErrorDialog = true
             } else {
                 onSubmit(newPasswordField)

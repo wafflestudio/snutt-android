@@ -67,9 +67,9 @@ fun SignUpPage() {
     val handleLocalSignUp = {
         val isPasswordConfirmPassed = (passwordConfirmField == passwordField)
         if (idField.isIdInvalid()) {
-            context.toast(context.getString(R.string.invalid_id))
+            context.toast(context.getString(R.string.error_invalid_id))
         } else if (passwordField.isPasswordInvalid()) {
-            context.toast(context.getString(R.string.invalid_password))
+            context.toast(context.getString(R.string.error_invalid_password))
         } else if (isPasswordConfirmPassed.not()) {
             context.toast(context.getString(R.string.sign_up_password_confirm_invalid_toast))
         } else {

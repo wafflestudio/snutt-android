@@ -1,18 +1,17 @@
 package com.wafflestudio.snutt2.domainmodel.preview
 
-import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
-
 import androidx.compose.ui.graphics.Color
 import com.wafflestudio.snutt2.domainmodel.CustomColor
+import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
 import com.wafflestudio.snutt2.domainmodel.LectureSession
+import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
 import com.wafflestudio.snutt2.domainmodel.SyllabusLecture
 import com.wafflestudio.snutt2.domainmodel.domainModel
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureReviewDto
-import com.wafflestudio.snutt2.views.logged_in.home.settings.LectureReminderOffset
-import com.wafflestudio.snutt2.views.logged_in.home.settings.LectureWithReminderOption
+import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 import java.time.DayOfWeek
 import java.time.LocalTime
 
@@ -108,7 +107,11 @@ object PreviewData {
         "2" to LectureWithReminderOption("2", "이산수학", LectureReminderOffset.TEN_MINUTES_BEFORE),
         "3" to LectureWithReminderOption("3", "대학 글쓰기1", LectureReminderOffset.AT_START_TIME),
         "4" to LectureWithReminderOption("4", "통계학", LectureReminderOffset.TEN_MINUTES_AFTER),
-        "5" to LectureWithReminderOption("5", "이름긴강의이름긴강의이름긴강의이름긴강의이름긴강의이름긴강의이름긴강의이름긴강의이름긴강의이름긴강의", LectureReminderOffset.TEN_MINUTES_AFTER),
+        "5" to LectureWithReminderOption(
+            "5",
+            "이름긴강의이름긴강의이름긴강의이름긴강의이름긴강의이름긴강의이름긴강의이름긴강의이름긴강의이름긴강의",
+            LectureReminderOffset.TEN_MINUTES_AFTER,
+        ),
         "6" to LectureWithReminderOption("6", "대학 글쓰기12", LectureReminderOffset.TEN_MINUTES_AFTER),
         "7" to LectureWithReminderOption("7", "대학 글쓰기123", LectureReminderOffset.TEN_MINUTES_AFTER),
         "8" to LectureWithReminderOption("8", "이산수학2", LectureReminderOffset.TEN_MINUTES_AFTER),

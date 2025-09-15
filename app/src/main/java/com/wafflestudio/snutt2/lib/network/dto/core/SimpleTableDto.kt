@@ -5,13 +5,13 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class SimpleTableDto(
-    @Json(name = "_id") val id: String,
-    @Json(name = "year") val year: Long,
-    @Json(name = "semester") val semester: Long,
-    @Json(name = "title") val title: String,
-    @Json(name = "updated_at") val updatedAt: String,
-    @Json(name = "total_credit") val totalCredit: Long?,
-    @Json(name = "isPrimary") val isPrimary: Boolean = false,
+    @param:Json(name = "_id") val id: String,
+    @param:Json(name = "year") val year: Long,
+    @param:Json(name = "semester") val semester: Long,
+    @param:Json(name = "title") val title: String,
+    @param:Json(name = "updated_at") val updatedAt: String,
+    @param:Json(name = "total_credit") val totalCredit: Long?,
+    @param:Json(name = "isPrimary") val isPrimary: Boolean = false,
 ) {
     companion object {
         val Default = SimpleTableDto(
