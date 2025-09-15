@@ -38,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -98,6 +99,7 @@ fun LectureDetailPage(
     searchViewModel: SearchViewModel = hiltViewModel(),
     vacancyViewModel: VacancyViewModel = hiltViewModel(),
     onCloseViewMode: (scope: CoroutineScope) -> Unit = {},
+    FloatingButton: (@Composable () -> Unit)? = null,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -269,6 +271,7 @@ fun LectureDetailPage(
                 snackBar = { data ->
                     val currentSnackBarData = snackBarHostState.currentSnackBarData
                     CustomSnackBar(
+                        modifier = Modifier.zIndex(10F),
                         snackBarData = currentSnackBarData,
                         passedData = data,
                         shape = RoundedCornerShape(10.dp),
@@ -291,12 +294,12 @@ fun LectureDetailPage(
             //            scope.launch { bottomSheet.hide() }
             //        }
             // gesturesEnabled 가 없다! 그래서 드래그해서도 닫아진다..
+            modifier = Modifier.hazeSource(hazeState),
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(SNUTTColors.Gray100)
-                    .hazeSource(hazeState)
                     .logImpression(
                         if (editingLectureDetail.id.isEmpty()) { // 새 강의를 만드는 경우에는 LectureCreate으로 로깅하며, id가 empty인 것으로 판별한다.
                             AnalyticsScreen.LectureCreate
@@ -872,6 +875,7 @@ fun LectureDetailPage(
                     Margin(height = 30.dp)
                 }
             }
+            FloatingButton?.invoke()
         }
     }
 }
