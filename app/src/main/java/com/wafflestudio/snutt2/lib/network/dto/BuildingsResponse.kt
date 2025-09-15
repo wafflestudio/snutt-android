@@ -6,6 +6,6 @@ import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
 
 @JsonClass(generateAdapter = true)
 data class BuildingsResponse(
-    @Json(name = "content") val content: List<LectureBuildingDto>,
-    @Json(name = "totalCount") val totalCount: Int,
+    @param:Json(name = "content") val content: List<LectureBuildingDto>,
+    @param:Json(name = "totalCount") val totalCount: Int,
 )

@@ -5,5 +5,5 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class DeleteFirebaseTokenResults(
-    @Json(name = "message") val message: String,
+    @param:Json(name = "message") val message: String,
 )

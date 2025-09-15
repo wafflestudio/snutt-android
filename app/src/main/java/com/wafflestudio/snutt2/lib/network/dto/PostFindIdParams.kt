@@ -5,5 +5,5 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class PostFindIdParams(
-    @Json(name = "email") val email: String,
+    @param:Json(name = "email") val email: String,
 )
