@@ -101,7 +101,7 @@ class LectureDetailViewModel @Inject constructor(
     private val _lectureWithReminderOption = MutableStateFlow(LectureWithReminderOption.Default)
     val lectureWithReminderOption = _lectureWithReminderOption.asStateFlow()
 
-    private val _lectureDetailUiEvent: MutableSharedFlow<LectureDetailUiEvent> = MutableSharedFlow(replay = 1)
+    private val _lectureDetailUiEvent: MutableSharedFlow<LectureDetailUiEvent> = MutableSharedFlow(replay = 0)
     val lectureDetailUiEvent = _lectureDetailUiEvent.asSharedFlow()
 
     // 여기부터 dispose(), 그리고 관련 코드는 리팩토링을 한다면 필요가 없다. 지금은 LectureDetailPage가 dispose 될 때 LectureDetailViewModel은 여전히 살아있기 때문에 필요한 코드.
@@ -201,8 +201,7 @@ class LectureDetailViewModel @Inject constructor(
             currentTableRepository.getLectureReviewSummary(lectureId)
         }
     }
-
-    private suspend fun getTimetableLectureReminder(lecture: LectureDto) {
+    suspend fun getTimetableLectureReminder(lecture: LectureDto = fixedLectureDetail) {
         _showLectureReminderPicker.emit(false)
         _lectureWithReminderOption.emit(LectureWithReminderOption.Default)
         _enableLectureReminderPicker.emit(false)
