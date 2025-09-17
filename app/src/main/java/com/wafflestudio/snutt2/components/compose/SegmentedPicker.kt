@@ -21,6 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,7 +50,8 @@ fun <T> SegmentedPicker(
     optionLabel: (T) -> String,
     selectedOption: T,
     onOptionSelected: (T) -> Unit,
-    description: String?,
+    description: AnnotatedString?,
+    enabled: Boolean = true,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -96,13 +99,13 @@ fun <T> SegmentedPicker(
                                 Modifier
                             },
                         )
-                        .clicks { onOptionSelected(option) },
+                        .clicks { if (enabled) onOptionSelected(option) },
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
                         text = optionLabel(option),
                         textAlign = TextAlign.Center,
-                        style = SNUTTTypography.body2.copy(fontSize = 13.sp, fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium),
+                        style = SNUTTTypography.body2.copy(fontSize = 13.sp, fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium, color = if (enabled || isSelected) SNUTTColors.Black else SNUTTColors.Gray30),
                     )
                 }
                 // 마지막 아이템이 아닐 경우에만 구분선 추가
@@ -154,7 +157,39 @@ fun SegmentedPickerPreview() {
             optionLabel = { offset -> offset.getString() },
             selectedOption = LectureReminderOffset.entries[0],
             onOptionSelected = { _ -> },
-            description = "학기가 시작됐을 때 해당 시간에 푸시 알림을 보내드립니다.",
+            description = buildAnnotatedString { append("학기가 시작됐을 때 해당 시간에 푸시 알림을 보내드립니다.") },
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun UnabledSegmentPickerPreview() {
+    val lectureReminderOptions = listOf(
+        stringResource(R.string.settings_lecture_reminder_none),
+        stringResource(R.string.settings_lecture_reminder_ten_minutes_before),
+        stringResource(R.string.settings_lecture_reminder_at_start_time),
+        stringResource(R.string.settings_lecture_reminder_ten_minutes_after),
+    )
+
+    fun LectureReminderOffset.getString(): String = when (this) {
+        LectureReminderOffset.NONE -> lectureReminderOptions[0]
+        LectureReminderOffset.TEN_MINUTES_BEFORE -> lectureReminderOptions[1]
+        LectureReminderOffset.AT_START_TIME -> lectureReminderOptions[2]
+        LectureReminderOffset.TEN_MINUTES_AFTER -> lectureReminderOptions[3]
+    }
+
+    Column(
+        modifier = Modifier.width(374.dp),
+    ) {
+        SegmentedPicker(
+            title = "강의 리마인더",
+            options = LectureReminderOffset.entries,
+            optionLabel = { offset -> offset.getString() },
+            selectedOption = LectureReminderOffset.entries[0],
+            onOptionSelected = { _ -> },
+            description = buildAnnotatedString { append("최신 학기의 대표시간표 속 강의들에 적용 가능해요.") },
+            enabled = false,
         )
     }
 }

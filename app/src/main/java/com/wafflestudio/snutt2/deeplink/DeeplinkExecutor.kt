@@ -86,6 +86,7 @@ fun InstallInAppDeeplinkExecutor() {
         homePageLectureDetailViewModel.initializeEditingLectureDetail(
             lectureToShow.copy(review = lectureReview),
             ModeType.Viewing,
+            homePageTableListViewModel.searchTableById(timetableId),
         )
         withContext(Dispatchers.Main) {
             navController.navigate(NavigationDestination.TimetableLecture(timetableId))

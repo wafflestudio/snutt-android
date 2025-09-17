@@ -492,6 +492,8 @@
     <string name="lecture_detail_quota_info_content">정원은 재학생 정원과 신입생 정원으로 구분되어 있습니다.\n정원(재학생)이 25(5)인 경우 강의의 총 정원 25석 중 재학생은 5석만 신청할 수 있고, 나머지 20석은 신입생만 신청할 수 있습니다. </string>
     <string name="lecture_detail_lecture_reminder_title">강의 리마인더</string>
     <string name="lecture_detail_lecture_reminder_description">학기가 시작됐을 때 해당 시간에 푸시 알림을 보내드립니다.</string>
+    <string name="lecture_detail_lecture_reminder_guide_bold1">최신 학기의 대표시간표 속 강의들</string>
+    <string name="lecture_detail_lecture_reminder_guide_normal1">에 적용 가능해요.</string>
     <string name="lecture_detail_lecture_reminder_snackbar_navigate">보기</string>
     <string name="feedback_empty_detail_warning">내용을 입력해 주세요.</string>
     <string name="feedback_invalid_email_warning">이메일을 올바르게 입력해 주세요.</string>

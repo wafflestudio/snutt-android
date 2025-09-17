@@ -62,6 +62,8 @@ class LectureDetailViewModel @Inject constructor(
 ) : ViewModel() {
     val currentTable: StateFlow<TableDto?> = currentTableRepository.currentTable
 
+    private val _table = MutableStateFlow<TableDto?>(null)
+    val table = _table.asStateFlow()
     val currentTableTheme: StateFlow<TableTheme> = getCurrentTableThemeUseCase()
         .stateIn(viewModelScope, SharingStarted.Eagerly, BuiltInTheme.SNUTT)
 
@@ -93,10 +95,13 @@ class LectureDetailViewModel @Inject constructor(
     private val _showLectureReminderPicker = MutableStateFlow(false)
     val showLectureReminderPicker = _showLectureReminderPicker.asStateFlow()
 
+    private val _enableLectureReminderPicker = MutableStateFlow(false)
+    val enableLectureReminderPicker = _enableLectureReminderPicker.asStateFlow()
+
     private val _lectureWithReminderOption = MutableStateFlow(LectureWithReminderOption.Default)
     val lectureWithReminderOption = _lectureWithReminderOption.asStateFlow()
 
-    private val _lectureDetailUiEvent: MutableSharedFlow<LectureDetailUiEvent> = MutableSharedFlow(replay = 1)
+    private val _lectureDetailUiEvent: MutableSharedFlow<LectureDetailUiEvent> = MutableSharedFlow(replay = 0)
     val lectureDetailUiEvent = _lectureDetailUiEvent.asSharedFlow()
 
     // 여기부터 dispose(), 그리고 관련 코드는 리팩토링을 한다면 필요가 없다. 지금은 LectureDetailPage가 dispose 될 때 LectureDetailViewModel은 여전히 살아있기 때문에 필요한 코드.
@@ -129,10 +134,11 @@ class LectureDetailViewModel @Inject constructor(
         viewModelScope.launch { _modeType.emit(ModeType.Editing(adding)) }
     }
 
-    fun initializeEditingLectureDetail(lecture: LectureDto?, modeType: ModeType) {
+    fun initializeEditingLectureDetail(lecture: LectureDto?, modeType: ModeType, table: TableDto? = null) {
         fixedLectureDetail = lecture ?: LectureDto.Default // null 문제 (reset에서 비롯됨)
         viewModelScope.launch {
             lectureReminderJob?.cancel()
+            _table.emit(table)
             _modeType.emit(modeType)
             _editingLectureDetail.emit(fixedLectureDetail)
             if (modeType !is ModeType.Editing) { // Editing으로 여는 것은 강의를 추가할 때 뿐이고, 이때는 아직 추가되지 않은 강의이므로 lecture reminder를 얻을 수 없다.
@@ -143,7 +149,7 @@ class LectureDetailViewModel @Inject constructor(
     }
 
     fun abandonEditingLectureDetail() {
-        initializeEditingLectureDetail(fixedLectureDetail, ModeType.Normal)
+        initializeEditingLectureDetail(fixedLectureDetail, ModeType.Normal, _table.value)
     }
 
     fun editLectureDetail(editedLecture: LectureDto) {
@@ -154,7 +160,7 @@ class LectureDetailViewModel @Inject constructor(
         val param = buildPutLectureParams()
         param.isForced = is_forced
         currentTableRepository.updateLecture(_editingLectureDetail.value.id, param)
-        initializeEditingLectureDetail(_editingLectureDetail.value, ModeType.Normal)
+        initializeEditingLectureDetail(_editingLectureDetail.value, ModeType.Normal, _table.value)
     }
 
     suspend fun removeLecture() {
@@ -195,18 +201,22 @@ class LectureDetailViewModel @Inject constructor(
             currentTableRepository.getLectureReviewSummary(lectureId)
         }
     }
-
-    private suspend fun getTimetableLectureReminder(lecture: LectureDto) {
+    suspend fun getTimetableLectureReminder(lecture: LectureDto = fixedLectureDetail) {
         _showLectureReminderPicker.emit(false)
         _lectureWithReminderOption.emit(LectureWithReminderOption.Default)
-        tableRepository.getTimetableLectureReminder(currentTable.value?.id ?: "", lecture.id)
-            .onSuccess { data ->
-                _showLectureReminderPicker.emit(true)
-                _lectureWithReminderOption.emit(data)
-            }
-            .onFailure { error ->
-                handleLectureDetailError(error)
-            }
+        _enableLectureReminderPicker.emit(false)
+        val table = _table.value
+        if (table != null && lecture.class_time_json.isNotEmpty() && lecture.lecture_id != null) {
+            tableRepository.getTimetableLectureReminder(currentTable.value?.id ?: "", lecture.id)
+                .onSuccess { data ->
+                    _showLectureReminderPicker.emit(true)
+                    _enableLectureReminderPicker.emit(table.isPrimary)
+                    _lectureWithReminderOption.emit(data)
+                }
+                .onFailure { error ->
+                    handleLectureDetailError(error, table.isPrimary)
+                }
+        }
     }
 
     fun changeLectureReminderOption(option: LectureWithReminderOption) {
@@ -232,7 +242,7 @@ class LectureDetailViewModel @Inject constructor(
                 ),
             )
         }.onFailure { error ->
-            handleLectureDetailError(error)
+            handleLectureDetailError(error, false)
         }
     }
 
@@ -266,7 +276,7 @@ class LectureDetailViewModel @Inject constructor(
         )
     }
 
-    private suspend fun handleLectureDetailError(error: DomainError) {
+    private suspend fun handleLectureDetailError(error: DomainError, isTablePrimary: Boolean) {
         val displayMessage = displayMessageResolver.getDisplayMessage(error)
         when (error) {
             is AuthError -> {
@@ -276,6 +286,7 @@ class LectureDetailViewModel @Inject constructor(
             }
             is EOF -> {
                 _showLectureReminderPicker.emit(true)
+                _enableLectureReminderPicker.emit(isTablePrimary)
                 _lectureWithReminderOption.emit(LectureWithReminderOption.Default.copy(lectureId = fixedLectureDetail.id))
             }
             is PastSemester -> {

@@ -107,7 +107,7 @@ private fun DrawClickEventDetector(lectures: List<LectureDto>, fittedTrimParam: 
     var canvasSize by remember { mutableStateOf(Size.Zero) }
     val hourLabelWidth = TimetableCanvasObjects.hourLabelWidth
     val dayLabelHeight = TimetableCanvasObjects.dayLabelHeight
-
+    val table = LocalTableState.current.table
     Canvas(
         modifier = Modifier
             .fillMaxSize()
@@ -128,6 +128,7 @@ private fun DrawClickEventDetector(lectures: List<LectureDto>, fittedTrimParam: 
                             lectureDetailViewModel.initializeEditingLectureDetail(
                                 lecture,
                                 ModeType.Normal,
+                                table,
                             )
                             navigator.navigate(NavigationDestination.LectureDetail) {
                                 launchSingleTop = true
