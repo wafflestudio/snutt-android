@@ -61,17 +61,6 @@ fun TimetableLectureDetailPage(
                 }
             },
         )
-//        if (tableId != null) {
-//            FloatingButton(
-//                modifier = Modifier.align(Alignment.BottomCenter),
-//                onClick = {
-//                    scope.launch {
-//                        tableListViewModel.changeSelectedTable(tableId)
-//                        navController.navigateAsOrigin(NavigationDestination.Home)
-//                    }
-//                },
-//            )
-//        }
     }
 }
 
