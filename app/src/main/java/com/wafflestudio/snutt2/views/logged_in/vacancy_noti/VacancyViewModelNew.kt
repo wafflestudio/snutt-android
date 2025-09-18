@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -45,8 +46,6 @@ class VacancyViewModelNew @Inject constructor(
 
     private val _vacancyUiEvent: MutableSharedFlow<VacancyUiEvent> = MutableSharedFlow(replay = 1)
     val vacancyUiEvent = _vacancyUiEvent.asSharedFlow()
-
-    val sugangSNUUrl = remoteConfig.sugangSNUUrl
     val vacancyUiState: StateFlow<VacancyUiState> = combine(
         _vacancyUiState,
         _isEditMode,
@@ -164,6 +163,15 @@ class VacancyViewModelNew @Inject constructor(
         }
     }
 
+    fun openSugangSnu() {
+        viewModelScope.launch {
+            remoteConfig.sugangSNUUrl.firstOrNull()?.let { url ->
+                _vacancyUiEvent.emit(VacancyUiEvent.OpenWebPage(url))
+            }
+            // FIXME: sugangSNUUrl 를 불러오지 못했을 때 유저에게 피드백이 필요할까? (에러 토스트라던지)
+        }
+    }
+
     private suspend fun handleVacancyError(error: DomainError) {
         val displayMessage = displayMessageResolver.getDisplayMessage(error)
         when (error) {
@@ -204,6 +212,7 @@ sealed interface VacancyUiState {
 sealed interface VacancyUiEvent {
     data class ShowToast(val message: String) : VacancyUiEvent
     data object LoggedOut : VacancyUiEvent
+    data class OpenWebPage(val url: String) : VacancyUiEvent
 }
 
 // combine은 기본적으로 5개까지만 지원한다.

@@ -94,7 +94,6 @@ fun VacancyRoute(
 ) {
     val context = LocalContext.current
     val uiState by viewModel.vacancyUiState.collectAsState()
-    val sugangSNUUrl by viewModel.sugangSNUUrl.collectAsState("")
 
     LaunchedEffect(Unit) {
         viewModel.vacancyUiEvent.collect { uiEvent ->
@@ -108,6 +107,10 @@ fun VacancyRoute(
 
                 is VacancyUiEvent.LoggedOut -> {
                     onNavigateOnboard()
+                }
+
+                is VacancyUiEvent.OpenWebPage -> {
+                    context.startActivity(Intent(Intent.ACTION_VIEW, uiEvent.url.toUri()))
                 }
             }
         }
@@ -139,11 +142,7 @@ fun VacancyRoute(
         onShowDeleteModal = onShowDeleteModal,
         onHideDeleteModal = onHideDeleteModal,
         onDeleteSelectedLectures = viewModel::deleteSelectedLectures,
-        onOpenSugangSnu = {
-            sugangSNUUrl.takeIf { it.isNotEmpty() }?.let {
-                context.startActivity(Intent(Intent.ACTION_VIEW, it.toUri()))
-            }
-        },
+        onOpenSugangSnu = viewModel::openSugangSnu,
     )
 }
 
@@ -854,7 +853,7 @@ fun VacancyScreenDeleteEnabledPreview() {
         uiState = VacancyUiState.Success(
             vacancyLectures = PreviewData.sampleLectures.mapIndexed { index, it ->
                 it.toDataWithState(
-                    index < 3
+                    index < 3,
                 )
             },
             isEditMode = true,
