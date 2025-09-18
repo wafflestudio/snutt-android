@@ -137,7 +137,7 @@ fun VacancyRoute(
         onShowIntroDialog = viewModel::showIntroDialog,
         onHideIntroDialog = viewModel::hideIntroDialog,
         onToggleEditMode = viewModel::toggleEditMode,
-        onFetchVacancyLectures = viewModel::fetchVacancyLectures,
+        onReloadVacancyLectures = viewModel::reloadVacancyLectures,
         onToggleLectureSelected = viewModel::toggleLectureSelected,
         onShowDeleteModal = onShowDeleteModal,
         onHideDeleteModal = onHideDeleteModal,
@@ -154,7 +154,7 @@ fun VacancyScreen(
     onShowIntroDialog: () -> Unit,
     onHideIntroDialog: () -> Unit,
     onToggleEditMode: () -> Unit,
-    onFetchVacancyLectures: () -> Unit,
+    onReloadVacancyLectures: () -> Unit,
     onToggleLectureSelected: (String) -> Unit,
     onShowDeleteModal: (ModalProperties) -> Unit,
     onHideDeleteModal: () -> Unit,
@@ -182,7 +182,7 @@ fun VacancyScreen(
             onClickBack = onClickBack,
             onShowIntroDialog = onShowIntroDialog,
             onHideIntroDialog = onHideIntroDialog,
-            onFetchVacancyLectures = onFetchVacancyLectures,
+            onReloadVacancyLectures = onReloadVacancyLectures,
             onOpenSugangSnu = onOpenSugangSnu,
         )
 
@@ -193,7 +193,7 @@ fun VacancyScreen(
             onShowIntroDialog = onShowIntroDialog,
             onHideIntroDialog = onHideIntroDialog,
             onToggleEditMode = onToggleEditMode,
-            onFetchVacancyLectures = onFetchVacancyLectures,
+            onReloadVacancyLectures = onReloadVacancyLectures,
             onToggleLectureSelected = onToggleLectureSelected,
             onShowDeleteModal = onShowDeleteModal,
             onHideDeleteModal = onHideDeleteModal,
@@ -276,10 +276,10 @@ fun VacancyEmpty(
     onClickBack: () -> Unit,
     onShowIntroDialog: () -> Unit,
     onHideIntroDialog: () -> Unit,
-    onFetchVacancyLectures: () -> Unit,
+    onReloadVacancyLectures: () -> Unit,
     onOpenSugangSnu: () -> Unit,
 ) {
-    val pullRefreshState = rememberPullRefreshState(uiState.isRefreshing, onFetchVacancyLectures)
+    val pullRefreshState = rememberPullRefreshState(uiState.isRefreshing, onReloadVacancyLectures)
     Box(
         modifier = Modifier.logImpression(AnalyticsScreen.Vacancy),
     ) {
@@ -395,7 +395,7 @@ fun VacancySuccess(
     onShowIntroDialog: () -> Unit,
     onHideIntroDialog: () -> Unit,
     onToggleEditMode: () -> Unit,
-    onFetchVacancyLectures: () -> Unit,
+    onReloadVacancyLectures: () -> Unit,
     onToggleLectureSelected: (String) -> Unit,
     onShowDeleteModal: (ModalProperties) -> Unit,
     onHideDeleteModal: () -> Unit,
@@ -404,7 +404,7 @@ fun VacancySuccess(
 ) {
     val context = LocalContext.current
     val density = LocalDensity.current
-    val pullRefreshState = rememberPullRefreshState(uiState.isRefreshing, onFetchVacancyLectures)
+    val pullRefreshState = rememberPullRefreshState(uiState.isRefreshing, onReloadVacancyLectures)
     Box(
         modifier = Modifier.logImpression(AnalyticsScreen.Vacancy),
     ) {
@@ -726,7 +726,7 @@ fun VacancyScreenLoadingPreview() {
         onShowIntroDialog = {},
         onHideIntroDialog = {},
         onToggleEditMode = {},
-        onFetchVacancyLectures = {},
+        onReloadVacancyLectures = {},
         onToggleLectureSelected = { _ -> },
         onShowDeleteModal = {},
         onHideDeleteModal = {},
@@ -744,7 +744,7 @@ fun VacancyScreenErrorPreview() {
         onShowIntroDialog = {},
         onHideIntroDialog = {},
         onToggleEditMode = {},
-        onFetchVacancyLectures = {},
+        onReloadVacancyLectures = {},
         onToggleLectureSelected = { _ -> },
         onShowDeleteModal = {},
         onHideDeleteModal = {},
@@ -768,7 +768,7 @@ fun VacancyScreenIntroPreview() {
         onShowIntroDialog = {},
         onHideIntroDialog = {},
         onToggleEditMode = {},
-        onFetchVacancyLectures = {},
+        onReloadVacancyLectures = {},
         onToggleLectureSelected = { _ -> },
         onShowDeleteModal = {},
         onHideDeleteModal = {},
@@ -792,7 +792,7 @@ fun VacancyScreenNormalModePreview() {
         onShowIntroDialog = {},
         onHideIntroDialog = {},
         onToggleEditMode = {},
-        onFetchVacancyLectures = {},
+        onReloadVacancyLectures = {},
         onToggleLectureSelected = { _ -> },
         onShowDeleteModal = {},
         onHideDeleteModal = {},
@@ -813,7 +813,7 @@ fun VacancyScreenEmptyPreview() {
         onShowIntroDialog = {},
         onHideIntroDialog = {},
         onToggleEditMode = {},
-        onFetchVacancyLectures = {},
+        onReloadVacancyLectures = {},
         onToggleLectureSelected = { _ -> },
         onShowDeleteModal = {},
         onHideDeleteModal = {},
@@ -837,7 +837,7 @@ fun VacancyScreenEditModePreview() {
         onShowIntroDialog = {},
         onHideIntroDialog = {},
         onToggleEditMode = {},
-        onFetchVacancyLectures = {},
+        onReloadVacancyLectures = {},
         onToggleLectureSelected = { _ -> },
         onShowDeleteModal = {},
         onHideDeleteModal = {},
@@ -865,7 +865,7 @@ fun VacancyScreenDeleteEnabledPreview() {
         onShowIntroDialog = {},
         onHideIntroDialog = {},
         onToggleEditMode = {},
-        onFetchVacancyLectures = {},
+        onReloadVacancyLectures = {},
         onToggleLectureSelected = { _ -> },
         onShowDeleteModal = {},
         onHideDeleteModal = {},

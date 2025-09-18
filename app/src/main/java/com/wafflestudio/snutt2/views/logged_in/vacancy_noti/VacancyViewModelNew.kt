@@ -17,15 +17,11 @@ import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.lib.toggleWhen
 import com.wafflestudio.snutt2.lib.unselectAll
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -36,129 +32,140 @@ class VacancyViewModelNew @Inject constructor(
     private val displayMessageResolver: DisplayMessageResolver,
     private val remoteConfig: RemoteConfig,
 ) : ViewModel() {
-    private val _vacancyUiState = MutableStateFlow(VacancyUiStateTypes.Loading)
-    private val _isEditMode = MutableStateFlow(false)
-    private val _vacancyLecturesWithSelection =
-        MutableStateFlow<List<Selectable<SearchedLecture>>>(listOf())
-    private val _isRefreshing = MutableStateFlow(false)
-    private val _firstVacancyVisit = vacancyRepository.firstVacancyVisit
-    private val _showIntroDialog = MutableStateFlow(false)
-
     private val _vacancyUiEvent: MutableSharedFlow<VacancyUiEvent> = MutableSharedFlow(replay = 1)
-    val vacancyUiEvent = _vacancyUiEvent.asSharedFlow()
-    val vacancyUiState: StateFlow<VacancyUiState> = combine(
-        _vacancyUiState,
-        _isEditMode,
-        _vacancyLecturesWithSelection,
-        _isRefreshing,
-        _firstVacancyVisit,
-        _showIntroDialog,
-    ) { vacancyUiState, isEditMode, vacancyLecturesWithSelection, isRefreshing, firstVacancyVisit, showIntroDialog ->
-        val showIntroDialogCombine = when {
-            firstVacancyVisit -> true
-            showIntroDialog -> true
-            else -> false
-        }
-        when (vacancyUiState) {
-            VacancyUiStateTypes.Loading -> VacancyUiState.Loading
-            VacancyUiStateTypes.Error -> VacancyUiState.Error
-            VacancyUiStateTypes.Empty -> VacancyUiState.Empty(
-                showIntroDialog = showIntroDialogCombine,
-                isRefreshing = isRefreshing,
-            )
+    private val _vacancyUiState = MutableStateFlow<VacancyUiState>(VacancyUiState.Loading)
 
-            VacancyUiStateTypes.Success -> VacancyUiState.Success(
-                vacancyLectures = vacancyLecturesWithSelection,
-                showIntroDialog = showIntroDialogCombine,
-                isEditMode = isEditMode,
-                isRefreshing = isRefreshing,
-                deleteButtonEnabled = isEditMode && vacancyLecturesWithSelection.anySelected(),
-            )
-        }
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.Eagerly,
-        VacancyUiState.Loading,
-    )
+    val vacancyUiEvent = _vacancyUiEvent.asSharedFlow()
+    val vacancyUiState = _vacancyUiState.asStateFlow()
 
     init {
-        loadVacancyLectures()
-    }
+        if (vacancyRepository.firstVacancyVisit.value) {
+            showIntroDialog()
+        }
 
-    fun fetchVacancyLectures() {
         viewModelScope.launch {
-            _isRefreshing.emit(true)
             loadVacancyLectures()
-            _isRefreshing.emit(false)
         }
     }
 
-    private fun loadVacancyLectures() {
+    // NOTE: loadVacancyLectures + refresh 효과 상태 관기
+    fun reloadVacancyLectures() {
         viewModelScope.launch {
-            vacancyRepository.getVacancyLecturesNew()
-                .onSuccess { data ->
-                    if (data.isEmpty()) {
-                        _vacancyUiState.emit(VacancyUiStateTypes.Empty)
-                    } else {
-                        _vacancyUiState.emit(VacancyUiStateTypes.Success)
-                    }
-                    _vacancyLecturesWithSelection.emit(
-                        data
-                            .sortedByDescending { it.wasFull && it.registrationCount < it.quota }
-                            .map { it.toDataWithState(true) },
+            _vacancyUiState.value = _vacancyUiState.value.copyWithRefreshing(true)
+            loadVacancyLectures()
+            _vacancyUiState.value = _vacancyUiState.value.copyWithRefreshing(false)
+        }
+    }
+
+    private suspend fun loadVacancyLectures() {
+        vacancyRepository.getVacancyLecturesNew()
+            .onSuccess { data ->
+                if (data.isEmpty()) {
+                    _vacancyUiState.emit(
+                        VacancyUiState.Empty(
+                            showIntroDialog = false,
+                            isRefreshing = false,
+                        ),
+                    )
+                } else {
+                    _vacancyUiState.emit(
+                        VacancyUiState.Success(
+                            vacancyLectures = data
+                                .sortedByDescending { it.wasFull && it.registrationCount < it.quota }
+                                .map { it.toDataWithState(false) },
+                            showIntroDialog = false,
+                            isEditMode = false,
+                            isRefreshing = false,
+                            deleteButtonEnabled = false,
+                        ),
                     )
                 }
-                .onFailure { error ->
-                    _vacancyUiState.emit(VacancyUiStateTypes.Error)
-                    handleVacancyError(error)
-                }
-        }
+            }
+            .onFailure { error ->
+                _vacancyUiState.value = VacancyUiState.Error
+                handleVacancyError(error)
+            }
     }
 
     fun showIntroDialog() {
-        viewModelScope.launch {
-            _showIntroDialog.emit(true)
+        val state = _vacancyUiState.value
+        when (state) {
+            is VacancyUiState.Success -> {
+                _vacancyUiState.value = state.copy(showIntroDialog = true)
+            }
+
+            is VacancyUiState.Empty -> {
+                _vacancyUiState.value = state.copy(showIntroDialog = true)
+            }
+
+            else -> {}
         }
     }
 
     fun hideIntroDialog() {
-        viewModelScope.launch {
-            setVacancyVisited()
-            _showIntroDialog.emit(false)
-        }
-    }
-
-    private fun setVacancyVisited() {
-        viewModelScope.launch {
-            if (_firstVacancyVisit.value) {
-                vacancyRepository.setVacancyVisited()
+        val state = _vacancyUiState.value
+        when (state) {
+            is VacancyUiState.Success -> {
+                _vacancyUiState.value = state.copy(showIntroDialog = false)
             }
+
+            is VacancyUiState.Empty -> {
+                _vacancyUiState.value = state.copy(showIntroDialog = false)
+            }
+
+            else -> {}
+        }
+        viewModelScope.launch {
+            vacancyRepository.setVacancyVisited()
+            // TODO: 에러 처리?
         }
     }
 
     fun toggleEditMode() {
-        viewModelScope.launch {
-            _isEditMode.emit(_isEditMode.value.not())
-            _vacancyLecturesWithSelection.value = _vacancyLecturesWithSelection.value.unselectAll()
+        val state = _vacancyUiState.value
+        when (state) {
+            is VacancyUiState.Success -> {
+                _vacancyUiState.value = state.copy(
+                    isEditMode = state.isEditMode.not(),
+                    vacancyLectures = state.vacancyLectures.unselectAll(),
+                )
+            }
+
+            else -> {}
         }
     }
 
     fun toggleLectureSelected(lectureId: String) {
-        _vacancyLecturesWithSelection.value = _vacancyLecturesWithSelection.value.toggleWhen {
-            it.id === lectureId
+        val state = _vacancyUiState.value
+        when (state) {
+            is VacancyUiState.Success -> {
+                val newVacancyLecturesState =
+                    state.vacancyLectures.toggleWhen { it.id == lectureId }
+
+                _vacancyUiState.value = state.copy(
+                    vacancyLectures = newVacancyLecturesState,
+                    deleteButtonEnabled = newVacancyLecturesState.anySelected(),
+                )
+            }
+
+            else -> {}
         }
     }
 
     fun deleteSelectedLectures() {
+        val state = _vacancyUiState.value
+        if (state !is VacancyUiState.Success) return
+
         viewModelScope.launch {
+            state.vacancyLectures.filter { it.state }.map { it.item.id }.forEach {
+                // FIXME: 이렇게 하면 리스트에서 여러 번 실패할 때 handleVacancyError 도 와바바박 되는 거 아닌가?
+                vacancyRepository.removeVacancyLectureNew(it)
+                    .onFailure { error ->
+                        handleVacancyError(error)
+                    }
+            }
+            // FIXME: 전체 리스트에 대해 성공했을 때만 아래 두 동작을 하고 싶은데, List<Result> 에 대한 유틸이 있으면 좋겠다.
             toggleEditMode()
-            _vacancyLecturesWithSelection.value.filter { it.state }.map { it.item.id }
-                .forEach { lectureId ->
-                    vacancyRepository.removeVacancyLectureNew(lectureId)
-                        .onFailure { error ->
-                            handleVacancyError(error)
-                        }
-                }
             loadVacancyLectures()
         }
     }
@@ -188,10 +195,6 @@ class VacancyViewModelNew @Inject constructor(
     }
 }
 
-private enum class VacancyUiStateTypes {
-    Loading, Error, Empty, Success
-}
-
 sealed interface VacancyUiState {
     data class Success(
         val vacancyLectures: List<Selectable<SearchedLecture>>,
@@ -215,21 +218,10 @@ sealed interface VacancyUiEvent {
     data class OpenWebPage(val url: String) : VacancyUiEvent
 }
 
-// combine은 기본적으로 5개까지만 지원한다.
-fun <T1, T2, T3, T4, T5, T6, R> combine(
-    flow1: Flow<T1>,
-    flow2: Flow<T2>,
-    flow3: Flow<T3>,
-    flow4: Flow<T4>,
-    flow5: Flow<T5>,
-    flow6: Flow<T6>,
-    transform: suspend (T1, T2, T3, T4, T5, T6) -> R,
-): Flow<R> = combine(
-    combine(flow1, flow2, flow3, ::Triple),
-    combine(flow4, flow5, flow6, ::Triple),
-) { triple1, triple2 ->
-    transform(
-        triple1.first, triple1.second, triple1.third,
-        triple2.first, triple2.second, triple2.third,
-    )
+// FIXME: 그냥 그때그때 분기하기 vs 이렇게 유틸 만들기 뭐가 나을까?
+private fun VacancyUiState.copyWithRefreshing(isRefreshing: Boolean): VacancyUiState = when (this) {
+    is VacancyUiState.Success -> copy(isRefreshing = isRefreshing)
+    is VacancyUiState.Empty -> copy(isRefreshing = isRefreshing)
+    is VacancyUiState.Error -> this
+    is VacancyUiState.Loading -> this
 }
