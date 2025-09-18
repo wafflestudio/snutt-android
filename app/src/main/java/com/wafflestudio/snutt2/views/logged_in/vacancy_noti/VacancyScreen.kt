@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.vacancy_noti
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
@@ -58,28 +59,29 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.ArrowBackIcon
 import com.wafflestudio.snutt2.components.compose.ModalProperties
 import com.wafflestudio.snutt2.components.compose.QuestionCircleIcon
 import com.wafflestudio.snutt2.components.compose.RightArrowIcon
+import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.TipCloseIcon
 import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.WebViewStyleButton
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.domainmodel.preview.PreviewData
+import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.logImpression
+import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTheme
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
-import kotlinx.coroutines.launch
-import androidx.core.net.toUri
-import com.wafflestudio.snutt2.components.compose.SimpleTopBar
-import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
+import kotlinx.coroutines.launch
 
 @Composable
 fun VacancyRoute(
@@ -103,6 +105,7 @@ fun VacancyRoute(
                         context.toast(message)
                     }
                 }
+
                 is VacancyUiEvent.LoggedOut -> {
                     onNavigateOnboard()
                 }
@@ -122,6 +125,7 @@ fun VacancyRoute(
                         onNavigateBack()
                     }
                 }
+
                 else -> {
                     onNavigateBack()
                 }
@@ -167,10 +171,12 @@ fun VacancyScreen(
             modifier = modifier,
             onClickBack = onClickBack,
         )
+
         VacancyUiState.Error -> VacancyError(
             modifier = modifier,
             onClickBack = onClickBack,
         )
+
         is VacancyUiState.Empty -> VacancyEmpty(
             modifier = modifier,
             uiState = uiState,
@@ -180,6 +186,7 @@ fun VacancyScreen(
             onFetchVacancyLectures = onFetchVacancyLectures,
             onOpenSugangSnu = onOpenSugangSnu,
         )
+
         is VacancyUiState.Success -> VacancySuccess(
             modifier = modifier,
             uiState = uiState,
@@ -462,14 +469,14 @@ fun VacancySuccess(
                 ) {
                     items(
                         items = uiState.vacancyLectures,
-                        key = { it.id },
+                        key = { it.item.id },
                     ) {
-                        val lectureId = it.id
+                        val lectureId = it.item.id
                         VacancyListItem(
                             lecture = it,
                             editing = uiState.isEditMode,
-                            checked = uiState.selectedLectures.contains(lectureId),
                             onClick = {
+                                // FIXME: 이런 로직도 다 ViewModel 로 넘기기
                                 if (uiState.isEditMode) {
                                     onToggleLectureSelected(lectureId)
                                 }
@@ -511,7 +518,7 @@ fun VacancySuccess(
                                 ),
                             )
                         },
-                        enabled = uiState.deleteEnabled,
+                        enabled = uiState.deleteButtonEnabled,
                         disabledColor = SNUTTColors.VacancyGray,
                     ) {
                         Text(
@@ -548,6 +555,7 @@ fun VacancySuccess(
     }
 }
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun VacancyIntroDialog(
     onDismiss: () -> Unit,
@@ -556,7 +564,8 @@ fun VacancyIntroDialog(
     val pagerState = rememberPagerState(initialPage = 0, pageCount = { 4 })
 
     BoxWithConstraints {
-        val width = maxWidth.times(0.8f) // NOTE: Dialog의 width는 기본적으로 maxWidth * 0.82 정도라서, 그 이상의 값은 의미가 없다.
+        val width =
+            maxWidth.times(0.8f) // NOTE: Dialog의 width는 기본적으로 maxWidth * 0.82 정도라서, 그 이상의 값은 의미가 없다.
         val height = width * (640f / 600)
         Dialog(onDismissRequest = onDismiss) {
             Surface(elevation = 10.dp) {
@@ -750,12 +759,11 @@ fun VacancyScreenErrorPreview() {
 fun VacancyScreenIntroPreview() {
     VacancyScreen(
         uiState = VacancyUiState.Success(
-            vacancyLectures = PreviewData.sampleLectures,
+            vacancyLectures = PreviewData.sampleLectures.map { it.toDataWithState(false) },
             isEditMode = false,
             showIntroDialog = true,
             isRefreshing = false,
-            selectedLectures = emptyList(),
-            deleteEnabled = false,
+            deleteButtonEnabled = false,
         ),
         onClickBack = {},
         onShowIntroDialog = {},
@@ -775,12 +783,11 @@ fun VacancyScreenIntroPreview() {
 fun VacancyScreenNormalModePreview() {
     VacancyScreen(
         uiState = VacancyUiState.Success(
-            vacancyLectures = PreviewData.sampleLectures,
+            vacancyLectures = PreviewData.sampleLectures.map { it.toDataWithState(false) },
             isEditMode = false,
             showIntroDialog = false,
             isRefreshing = false,
-            selectedLectures = emptyList(),
-            deleteEnabled = false,
+            deleteButtonEnabled = false,
         ),
         onClickBack = {},
         onShowIntroDialog = {},
@@ -821,12 +828,11 @@ fun VacancyScreenEmptyPreview() {
 fun VacancyScreenEditModePreview() {
     VacancyScreen(
         uiState = VacancyUiState.Success(
-            vacancyLectures = PreviewData.sampleLectures,
+            vacancyLectures = PreviewData.sampleLectures.map { it.toDataWithState(false) },
             isEditMode = true,
             showIntroDialog = false,
             isRefreshing = false,
-            selectedLectures = emptyList(),
-            deleteEnabled = false,
+            deleteButtonEnabled = false,
         ),
         onClickBack = {},
         onShowIntroDialog = {},
@@ -846,12 +852,15 @@ fun VacancyScreenEditModePreview() {
 fun VacancyScreenDeleteEnabledPreview() {
     VacancyScreen(
         uiState = VacancyUiState.Success(
-            vacancyLectures = PreviewData.sampleLectures,
+            vacancyLectures = PreviewData.sampleLectures.mapIndexed { index, it ->
+                it.toDataWithState(
+                    index < 3
+                )
+            },
             isEditMode = true,
             showIntroDialog = false,
             isRefreshing = false,
-            selectedLectures = PreviewData.sampleLectures.take(3).map { it.id },
-            deleteEnabled = true,
+            deleteButtonEnabled = true,
         ),
         onClickBack = {},
         onShowIntroDialog = {},
