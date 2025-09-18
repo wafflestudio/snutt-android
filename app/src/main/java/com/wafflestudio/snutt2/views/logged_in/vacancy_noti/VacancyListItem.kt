@@ -36,33 +36,33 @@ import com.wafflestudio.snutt2.components.compose.LocationIcon
 import com.wafflestudio.snutt2.components.compose.RoundCheckbox
 import com.wafflestudio.snutt2.components.compose.TagIcon
 import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.domainmodel.SearchedLecture
+import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LazyItemScope.VacancyListItem(
-    lectureDto: LectureDto,
+    lecture: Selectable<SearchedLecture>,
     editing: Boolean = false,
-    checked: Boolean = false,
     onClick: () -> Unit = {},
 ) {
-    val hasVacancy = lectureDto.wasFull && lectureDto.registrationCount < lectureDto.quota
-    val lectureTitle = lectureDto.course_title
+    val hasVacancy = lecture.item.wasFull && lecture.item.registrationCount < lecture.item.quota
+    val lectureTitle = lecture.item.courseTitle
     val instructorCreditText = stringResource(
         R.string.search_result_item_instructor_credit_text,
-        lectureDto.instructor,
-        lectureDto.credit,
+        lecture.item.instructor,
+        lecture.item.credit,
     )
     val quotaText = stringResource(
         R.string.vacancy_item_quota_text,
-        lectureDto.registrationCount,
-        lectureDto.quota,
+        lecture.item.registrationCount,
+        lecture.item.quota,
     )
-    val tagText = SNUTTStringUtils.getLectureTagText(lectureDto)
-    val classTimeText = SNUTTStringUtils.getSimplifiedClassTimeForLecture(lectureDto)
+    val tagText = SNUTTStringUtils.getLectureTagText(lecture.item)
+    val classTimeText = SNUTTStringUtils.getSimplifiedClassTimeForLecture(lecture.item)
     val backgroundColor = if (hasVacancy) SNUTTColors.VacancyRedBg else SNUTTColors.White900
 
     Row(
@@ -81,7 +81,7 @@ fun LazyItemScope.VacancyListItem(
     ) {
         AnimatedVisibility(editing) {
             RoundCheckbox(
-                checked = checked,
+                checked = lecture.state,
                 onCheckedChange = { onClick() },
                 modifier = Modifier.padding(end = 20.dp),
             )
@@ -115,7 +115,10 @@ fun LazyItemScope.VacancyListItem(
                     }
                     Text(
                         text = instructorCreditText,
-                        style = SNUTTTypography.body2.copy(fontSize = 13.sp, fontWeight = FontWeight.Normal),
+                        style = SNUTTTypography.body2.copy(
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Normal,
+                        ),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         textAlign = TextAlign.Right,
@@ -142,14 +145,21 @@ fun LazyItemScope.VacancyListItem(
                         Spacer(modifier = Modifier.width(7.dp))
                         Text(
                             text = tagText,
-                            style = SNUTTTypography.body2.copy(fontSize = 13.sp, fontWeight = FontWeight.Normal),
+                            style = SNUTTTypography.body2.copy(
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Normal,
+                            ),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                         )
                     }
                     Text(
                         text = quotaText,
-                        style = SNUTTTypography.body2.copy(color = SNUTTColors.VacancyBlue, fontSize = 13.sp, fontWeight = FontWeight.Normal),
+                        style = SNUTTTypography.body2.copy(
+                            color = SNUTTColors.VacancyBlue,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Normal,
+                        ),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
@@ -164,7 +174,10 @@ fun LazyItemScope.VacancyListItem(
                     Spacer(modifier = Modifier.width(7.dp))
                     Text(
                         text = classTimeText,
-                        style = SNUTTTypography.body2.copy(fontSize = 13.sp, fontWeight = FontWeight.Normal),
+                        style = SNUTTTypography.body2.copy(
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Normal,
+                        ),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
@@ -175,8 +188,11 @@ fun LazyItemScope.VacancyListItem(
                     )
                     Spacer(modifier = Modifier.width(7.dp))
                     Text(
-                        text = SNUTTStringUtils.getSimplifiedLocation(lectureDto),
-                        style = SNUTTTypography.body2.copy(fontSize = 13.sp, fontWeight = FontWeight.Normal),
+                        text = SNUTTStringUtils.getSimplifiedLocation(lecture.item),
+                        style = SNUTTTypography.body2.copy(
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Normal,
+                        ),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
