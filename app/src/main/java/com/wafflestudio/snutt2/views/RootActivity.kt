@@ -78,7 +78,7 @@ import com.wafflestudio.snutt2.views.logged_in.lecture_detail.deeplink.Timetable
 import com.wafflestudio.snutt2.views.logged_in.notifications.NotificationRoute
 import com.wafflestudio.snutt2.views.logged_in.table_lectures.TableLecturesRoute
 import com.wafflestudio.snutt2.views.logged_in.thememarket.ThemeMarketRoute
-import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyPage
+import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyRoute
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import com.wafflestudio.snutt2.views.logged_out.*
 import com.wafflestudio.snutt2.views.logged_out.reset_password.ResetPasswordPage
@@ -322,7 +322,7 @@ class RootActivity : ReactActivity() {
                         )
                     }
 
-                    settingComposables(navController, homePageController)
+                    settingComposables(navController, homePageController, dialogState)
                 }
             }
         }
@@ -399,6 +399,7 @@ class RootActivity : ReactActivity() {
     private fun NavGraphBuilder.settingComposables(
         navController: NavController,
         homePageController: HomePageController,
+        modalState: ModalState,
     ) {
         composableAnimated<NavigationDestination.AppReport> { AppReportPage() }
         composableAnimated<NavigationDestination.OpenLicenses> { OpenSourceLicensePage() }
@@ -482,11 +483,26 @@ class RootActivity : ReactActivity() {
             }
         }
         composableAnimated<NavigationDestination.VacancyNotification> {
-            val parentEntry = remember(it) {
-                navController.getBackStackEntry(NavigationDestination.Home)
-            }
-            val vacancyViewModel = hiltViewModel<VacancyViewModel>(parentEntry)
-            VacancyPage(vacancyViewModel)
+            VacancyRoute(
+                onNavigateBack = {
+                    if (navController.currentDestination?.hasRoute(NavigationDestination.VacancyNotification::class) == true) {
+                        navController.popBackStack()
+                    }
+                },
+                onNavigateOnboard = { navController.navigateAsOrigin(NavigationDestination.Onboard) },
+                onShowDeleteModal = { modalProperties ->
+                    modalState.set(
+                        title = modalProperties.title,
+                        positiveButton = modalProperties.positiveButton,
+                        negativeButton = modalProperties.negativeButton,
+                        onDismiss = modalProperties.onDismiss,
+                        onConfirm = modalProperties.onConfirm,
+                        width = modalProperties.width,
+                        content = modalProperties.content,
+                    ).show()
+                },
+                onHideDeleteModal = modalState::hide,
+            )
         }
         composableAnimated<NavigationDestination.PushPreferences> {
             PushPreferencesRoute(
