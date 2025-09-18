@@ -38,7 +38,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
@@ -83,7 +87,6 @@ import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 
 @OptIn(
     ExperimentalMaterialApi::class, ExperimentalNaverMapApi::class,
@@ -96,6 +99,7 @@ fun LectureDetailPage(
     searchViewModel: SearchViewModel = hiltViewModel(),
     vacancyViewModel: VacancyViewModel = hiltViewModel(),
     onCloseViewMode: (scope: CoroutineScope) -> Unit = {},
+    FloatingButton: (@Composable () -> Unit)? = null,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -126,7 +130,8 @@ fun LectureDetailPage(
     val semesterChange by searchViewModel.semesterChange.collectAsState(0)
     val showLectureReminderPicker by vm.showLectureReminderPicker.collectAsStateWithLifecycle()
     val lectureWithReminderOption by vm.lectureWithReminderOption.collectAsStateWithLifecycle()
-
+    val enableLectureReminderPicker by vm.enableLectureReminderPicker.collectAsStateWithLifecycle()
+    val lifecycleOwner = LocalLifecycleOwner.current
     /* 현재 LectureDto 타입의 editingLectureDetail 플로우를 변경해 가면서 API 부를 때도 쓰고 화면에 정보 표시할 때도 쓰고 있는데,
      * credit은 Long 타입이라서 학점 입력하는 editText에 빈 문자열을 넣었을 때(=다 지웠을 때) 문제가 발생한다. 그래서 credit만 별도의 MutableState<String>을 둬서 운용한다.
      * 이때 다른 정보들은 editingLectureDetail 따라서 바뀌니까 모드가 바뀌어도 따로 할 게 없는데, 얘는 편집모드->일반모드로 바뀔 때 따로 변경해 줘야 한다. 그것이 아래의 코드.
@@ -136,6 +141,7 @@ fun LectureDetailPage(
     }
 
     LaunchedEffect(Unit) {
+        vm.getTimetableLectureReminder()
         vm.lectureDetailUiEvent.collect { uiEvent ->
             when (uiEvent) {
                 is LectureDetailUiEvent.ShowToast -> {
@@ -181,8 +187,15 @@ fun LectureDetailPage(
 
     // 리팩토링을 한다면, 아래 코드는 필요가 없다. 지금은 LectureDetailPage가 dispose 될 때 LectureDetailViewModel은 여전히 살아있기 때문에 필요한 코드.
     DisposableEffect(Unit) {
+        val observer = LifecycleEventObserver { owner, event ->
+            val destination = navController.currentBackStackEntry?.destination?.route
+            if (event == Lifecycle.Event.ON_STOP && destination == "NavigationDestination.Home") {
+                vm.dispose()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
         onDispose {
-            vm.dispose()
+            lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
 
@@ -258,6 +271,7 @@ fun LectureDetailPage(
                 snackBar = { data ->
                     val currentSnackBarData = snackBarHostState.currentSnackBarData
                     CustomSnackBar(
+                        modifier = Modifier.zIndex(10F),
                         snackBarData = currentSnackBarData,
                         passedData = data,
                         shape = RoundedCornerShape(10.dp),
@@ -280,12 +294,12 @@ fun LectureDetailPage(
             //            scope.launch { bottomSheet.hide() }
             //        }
             // gesturesEnabled 가 없다! 그래서 드래그해서도 닫아진다..
+            modifier = Modifier.hazeSource(hazeState),
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(SNUTTColors.Gray100)
-                    .hazeSource(hazeState)
                     .logImpression(
                         if (editingLectureDetail.id.isEmpty()) { // 새 강의를 만드는 경우에는 LectureCreate으로 로깅하며, id가 empty인 것으로 판별한다.
                             AnalyticsScreen.LectureCreate
@@ -504,7 +518,19 @@ fun LectureDetailPage(
                                         ),
                                     )
                                 },
-                                description = stringResource(R.string.lecture_detail_lecture_reminder_description),
+                                description = (
+                                    buildAnnotatedString {
+                                        if (enableLectureReminderPicker) {
+                                            append(stringResource(R.string.lecture_detail_lecture_reminder_description))
+                                        } else {
+                                            withStyle(style = SpanStyle(fontWeight = FontWeight.SemiBold)) {
+                                                append(stringResource(R.string.lecture_detail_lecture_reminder_guide_bold1))
+                                            }
+                                            append(stringResource(R.string.lecture_detail_lecture_reminder_guide_normal1))
+                                        }
+                                    }
+                                    ),
+                                enabled = enableLectureReminderPicker,
                             )
                         }
                     }
@@ -849,6 +875,7 @@ fun LectureDetailPage(
                     Margin(height = 30.dp)
                 }
             }
+            FloatingButton?.invoke()
         }
     }
 }

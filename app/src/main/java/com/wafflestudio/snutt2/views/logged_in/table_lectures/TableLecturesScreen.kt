@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.table_lectures
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -72,7 +73,8 @@ fun TableLecturesRoute(
         uiState = TableLecturesUIState(lectures),
         onClickLecture = { lecture ->
             // FIXME: 임시 코드
-            lectureDetailViewModel.initializeEditingLectureDetail(LectureDto.fromLocalLecture(lecture), ModeType.Normal)
+            Log.d("table", viewModel.currentTable.value.toString())
+            lectureDetailViewModel.initializeEditingLectureDetail(LectureDto.fromLocalLecture(lecture), ModeType.Normal, viewModel.currentTable.value)
             navController.navigate(NavigationDestination.LectureDetail) {
                 launchSingleTop = true
             }
