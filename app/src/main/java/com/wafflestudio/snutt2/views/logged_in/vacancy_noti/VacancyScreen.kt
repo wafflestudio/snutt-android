@@ -467,7 +467,7 @@ fun VacancySuccess(
                         .matchParentSize(),
                 ) {
                     items(
-                        items = uiState.vacancyLectures,
+                        items = uiState.vacancyLecturesWithSelection,
                         key = { it.item.id },
                     ) {
                         val lectureId = it.item.id
@@ -758,7 +758,7 @@ fun VacancyScreenErrorPreview() {
 fun VacancyScreenIntroPreview() {
     VacancyScreen(
         uiState = VacancyUiState.Success(
-            vacancyLectures = PreviewData.sampleLectures.map { it.toDataWithState(false) },
+            vacancyLecturesWithSelection = PreviewData.sampleLectures.map { it.toDataWithState(false) },
             isEditMode = false,
             showIntroDialog = true,
             isRefreshing = false,
@@ -782,7 +782,7 @@ fun VacancyScreenIntroPreview() {
 fun VacancyScreenNormalModePreview() {
     VacancyScreen(
         uiState = VacancyUiState.Success(
-            vacancyLectures = PreviewData.sampleLectures.map { it.toDataWithState(false) },
+            vacancyLecturesWithSelection = PreviewData.sampleLectures.map { it.toDataWithState(false) },
             isEditMode = false,
             showIntroDialog = false,
             isRefreshing = false,
@@ -827,7 +827,7 @@ fun VacancyScreenEmptyPreview() {
 fun VacancyScreenEditModePreview() {
     VacancyScreen(
         uiState = VacancyUiState.Success(
-            vacancyLectures = PreviewData.sampleLectures.map { it.toDataWithState(false) },
+            vacancyLecturesWithSelection = PreviewData.sampleLectures.map { it.toDataWithState(false) },
             isEditMode = true,
             showIntroDialog = false,
             isRefreshing = false,
@@ -851,7 +851,7 @@ fun VacancyScreenEditModePreview() {
 fun VacancyScreenDeleteEnabledPreview() {
     VacancyScreen(
         uiState = VacancyUiState.Success(
-            vacancyLectures = PreviewData.sampleLectures.mapIndexed { index, it ->
+            vacancyLecturesWithSelection = PreviewData.sampleLectures.mapIndexed { index, it ->
                 it.toDataWithState(
                     index < 3,
                 )

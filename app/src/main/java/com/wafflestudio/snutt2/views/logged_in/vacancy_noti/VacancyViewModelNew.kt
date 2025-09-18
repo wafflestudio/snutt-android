@@ -70,7 +70,7 @@ class VacancyViewModelNew @Inject constructor(
                 } else {
                     _vacancyUiState.emit(
                         VacancyUiState.Success(
-                            vacancyLectures = data
+                            vacancyLecturesWithSelection = data
                                 .sortedByDescending { it.wasFull && it.registrationCount < it.quota }
                                 .map { it.toDataWithState(false) },
                             showIntroDialog = false,
@@ -127,7 +127,7 @@ class VacancyViewModelNew @Inject constructor(
             is VacancyUiState.Success -> {
                 _vacancyUiState.value = state.copy(
                     isEditMode = state.isEditMode.not(),
-                    vacancyLectures = state.vacancyLectures.unselectAll(),
+                    vacancyLecturesWithSelection = state.vacancyLecturesWithSelection.unselectAll(),
                 )
             }
 
@@ -140,10 +140,10 @@ class VacancyViewModelNew @Inject constructor(
         when (state) {
             is VacancyUiState.Success -> {
                 val newVacancyLecturesState =
-                    state.vacancyLectures.toggleWhen { it.id == lectureId }
+                    state.vacancyLecturesWithSelection.toggleWhen { it.id == lectureId }
 
                 _vacancyUiState.value = state.copy(
-                    vacancyLectures = newVacancyLecturesState,
+                    vacancyLecturesWithSelection = newVacancyLecturesState,
                     deleteButtonEnabled = newVacancyLecturesState.anySelected(),
                 )
             }
@@ -157,7 +157,7 @@ class VacancyViewModelNew @Inject constructor(
         if (state !is VacancyUiState.Success) return
 
         viewModelScope.launch {
-            state.vacancyLectures.filter { it.state }.map { it.item.id }.forEach {
+            state.vacancyLecturesWithSelection.filter { it.state }.map { it.item.id }.forEach {
                 // FIXME: 이렇게 하면 리스트에서 여러 번 실패할 때 handleVacancyError 도 와바바박 되는 거 아닌가?
                 vacancyRepository.removeVacancyLectureNew(it)
                     .onFailure { error ->
@@ -197,7 +197,7 @@ class VacancyViewModelNew @Inject constructor(
 
 sealed interface VacancyUiState {
     data class Success(
-        val vacancyLectures: List<Selectable<SearchedLecture>>,
+        val vacancyLecturesWithSelection: List<Selectable<SearchedLecture>>,
         val showIntroDialog: Boolean,
         val isEditMode: Boolean,
         val isRefreshing: Boolean,
