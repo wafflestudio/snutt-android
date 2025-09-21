@@ -10,6 +10,7 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import androidx.compose.ui.graphics.toArgb
 import androidx.core.content.res.ResourcesCompat
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.SNUTTStorage
@@ -253,7 +254,7 @@ class TimetableView : View {
                 } else {
                     BuiltInTheme.fromCode(theme).getColorByIndex(
                         lecture.colorIndex,
-                    )
+                    ).toArgb()
                 },
                 if (lecture.colorIndex == 0L && lecture.color.fgColor != null) {
                     lecture.color.fgColor!!
@@ -361,10 +362,10 @@ class TimetableView : View {
     private fun invalidateTrimParam() {
         fittedTrimParam = if (trimParam.forceFitLectures) {
             (
-                    selectedLecture?.let {
-                        lectures + it
-                    } ?: lectures
-                    ).getFittingTrimParam(TableTrimParam.Default)
+                selectedLecture?.let {
+                    lectures + it
+                } ?: lectures
+                ).getFittingTrimParam(TableTrimParam.Default)
         } else {
             trimParam
         }

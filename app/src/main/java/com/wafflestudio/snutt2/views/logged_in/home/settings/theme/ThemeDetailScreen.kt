@@ -38,7 +38,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -57,9 +56,10 @@ import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.components.compose.rememberModalState
 import com.wafflestudio.snutt2.components.compose.showColorPickerDialog
+import com.wafflestudio.snutt2.domainmodel.CustomColor
+import com.wafflestudio.snutt2.domainmodel.LectureColor
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.logImpression
-import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTheme
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -154,7 +154,7 @@ fun ThemeDetailScreen(
     onToggleColorExpanded: (Int) -> Unit,
     onDuplicateColor: (Int) -> Unit,
     onRemoveColor: (Int) -> Unit,
-    onUpdateColor: (Int, Int, Int) -> Unit,
+    onUpdateColor: (Int, foreground: Color, background: Color) -> Unit,
     onAddColor: () -> Unit,
 ) {
     when (themeDetailUiState) {
@@ -340,14 +340,14 @@ private fun ThemeDetailItem(
 private fun ThemeColorRow(
     index: Int,
     isEditable: Boolean,
-    color: ColorDto,
+    color: LectureColor,
     isExpanded: Boolean,
     isDuplicateEnabled: Boolean,
     isRemoveEnabled: Boolean,
     onToggleColorExpanded: (Int) -> Unit,
     onDuplicateColor: (Int) -> Unit,
     onRemoveColor: (Int) -> Unit,
-    onUpdateColor: (Int, Int, Int) -> Unit,
+    onUpdateColor: (Int, foreground: Color, background: Color) -> Unit,
 ) {
     val navBottomSheetState = LocalNavBottomSheetState.current
     val state = remember {
@@ -363,7 +363,13 @@ private fun ThemeColorRow(
         Column {
             ThemeDetailItem(
                 title = stringResource(R.string.theme_detail_color_item, index + 1),
-                titleColor = if (isEditable) MaterialTheme.colors.onSurfaceVariant else MaterialTheme.colors.onSurfaceVariant.copy(alpha = 0.5f),
+                titleColor = if (isEditable) {
+                    MaterialTheme.colors.onSurfaceVariant
+                } else {
+                    MaterialTheme.colors.onSurfaceVariant.copy(
+                        alpha = 0.5f,
+                    )
+                },
                 modifier = Modifier.clicks {
                     if (isEditable) {
                         onToggleColorExpanded(index)
@@ -411,20 +417,20 @@ private fun ThemeColorRow(
                 exit = shrinkVertically(),
             ) {
                 ColorEditItem(
-                    fgColor = Color(color.fgColor ?: 0xffffff),
-                    bgColor = Color(color.bgColor ?: 0xffffff),
+                    fgColor = color.foreground,
+                    bgColor = color.background,
                     onFgColorPicked = { pickedColor ->
                         onUpdateColor(
                             index,
-                            pickedColor.toArgb(),
-                            color.bgColor ?: 0xffffff,
+                            pickedColor,
+                            color.background,
                         )
                     },
                     onBgColorPicked = { pickedColor ->
                         onUpdateColor(
                             index,
-                            color.fgColor ?: 0xffffff,
-                            pickedColor.toArgb(),
+                            color.foreground,
+                            pickedColor,
                         )
                     },
                 )
@@ -585,7 +591,7 @@ private fun ThemeColorRowPreview() {
             ThemeColorRow(
                 index = 0,
                 isEditable = true,
-                color = ColorDto("#ffffff", "#1BD0C8"),
+                color = CustomColor.Default,
                 isExpanded = true,
                 isDuplicateEnabled = true,
                 isRemoveEnabled = true,

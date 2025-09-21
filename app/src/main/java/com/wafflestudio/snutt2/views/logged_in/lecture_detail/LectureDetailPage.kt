@@ -92,10 +92,12 @@ import com.wafflestudio.snutt2.components.compose.snackbar.CustomSnackBarDuratio
 import com.wafflestudio.snutt2.components.compose.snackbar.CustomSnackBarHost
 import com.wafflestudio.snutt2.components.compose.snackbar.CustomSnackBarHostState
 import com.wafflestudio.snutt2.components.compose.snackbar.dismiss
+import com.wafflestudio.snutt2.domainmodel.BuiltInColor
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.CustomTheme
 import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
+import com.wafflestudio.snutt2.domainmodel.toCustomColor
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
@@ -113,7 +115,6 @@ import com.wafflestudio.snutt2.lib.logging.LectureDetailParameter
 import com.wafflestudio.snutt2.lib.logging.LectureSyllabusParameter
 import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
-import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -209,13 +210,13 @@ fun LectureDetailPage(
                     val message = when (uiEvent.event) {
                         LectureDetailEvent.LECTURE_REMINDER_UPDATE_SUCCESS_NONE -> ""
                         LectureDetailEvent.LECTURE_REMINDER_UPDATE_SUCCESS_TEN_MINUTES_BEFORE,
-                            -> context.getString(R.string.settings_lecture_reminder_update_success_ten_minutes_before)
+                        -> context.getString(R.string.settings_lecture_reminder_update_success_ten_minutes_before)
 
                         LectureDetailEvent.LECTURE_REMINDER_UPDATE_SUCCESS_AT_START_TIME,
-                            -> context.getString(R.string.settings_lecture_reminder_update_success_at_start_time)
+                        -> context.getString(R.string.settings_lecture_reminder_update_success_at_start_time)
 
                         LectureDetailEvent.LECTURE_REMINDER_UPDATE_SUCCESS_TEN_MINUTES_AFTER,
-                            -> context.getString(R.string.settings_lecture_reminder_update_success_ten_minutes_after)
+                        -> context.getString(R.string.settings_lecture_reminder_update_success_ten_minutes_after)
                     }
                     if (message.isNotEmpty()) {
                         launch {
@@ -311,7 +312,7 @@ fun LectureDetailPage(
             ReviewWebViewContainer(context, userViewModel.accessToken, isDarkMode).apply {
                 this.webView.addJavascriptInterface(
                     CloseBridge(onClose = { scope.launch { bottomSheet.hide() } }),
-                    "Snutt"
+                    "Snutt",
                 )
             }
         }
@@ -344,11 +345,11 @@ fun LectureDetailPage(
                         backgroundColor = SNUTTColors.SnackbarBackground,
                         contentStyle = SNUTTTypography.body1.copy(
                             color = SNUTTColors.White,
-                            fontWeight = FontWeight.Medium
+                            fontWeight = FontWeight.Medium,
                         ),
                         actionLabelStyle = SNUTTTypography.body1.copy(
                             color = SNUTTColors.MilkMint,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
                         ),
                         hazeState = hazeState,
                     )
@@ -529,13 +530,17 @@ fun LectureDetailPage(
                             onValueChange = {
                                 vm.editLectureDetail(
                                     editingLectureDetail.copy(
-                                        course_title = it
-                                    )
+                                        course_title = it,
+                                    ),
                                 )
                             },
-                            hint = if (modeType is ModeType.Editing) stringResource(R.string.lecture_detail_lecture_title_hint) else stringResource(
-                                R.string.lecture_detail_hint_nothing
-                            ),
+                            hint = if (modeType is ModeType.Editing) {
+                                stringResource(R.string.lecture_detail_lecture_title_hint)
+                            } else {
+                                stringResource(
+                                    R.string.lecture_detail_hint_nothing,
+                                )
+                            },
                             enabled = modeType is ModeType.Editing,
                         )
                         LectureDetailItem(
@@ -544,13 +549,17 @@ fun LectureDetailPage(
                             onValueChange = {
                                 vm.editLectureDetail(
                                     editingLectureDetail.copy(
-                                        instructor = it
-                                    )
+                                        instructor = it,
+                                    ),
                                 )
                             },
-                            hint = if (modeType is ModeType.Editing) stringResource(R.string.lecture_detail_instructor_hint) else stringResource(
-                                R.string.lecture_detail_hint_nothing
-                            ),
+                            hint = if (modeType is ModeType.Editing) {
+                                stringResource(R.string.lecture_detail_instructor_hint)
+                            } else {
+                                stringResource(
+                                    R.string.lecture_detail_hint_nothing,
+                                )
+                            },
                             enabled = modeType is ModeType.Editing,
                         )
                         if (modeType != ModeType.Viewing) {
@@ -564,16 +573,17 @@ fun LectureDetailPage(
                                 ) {
                                     ColorBox(
                                         if (tableColorTheme is CustomTheme) {
-                                            editingLectureDetail.color
+                                            editingLectureDetail.color.toCustomColor()
                                         } else {
                                             if (editingLectureDetail.colorIndex == 0L) {
-                                                editingLectureDetail.color
+                                                editingLectureDetail.color.toCustomColor()
                                             } else {
-                                                ColorDto(
-                                                    fgColor = 0xffffff,
-                                                    bgColor = (tableColorTheme as BuiltInTheme).getColorByIndex(
+                                                BuiltInColor(
+                                                    foreground = Color.White,
+                                                    background = (tableColorTheme as BuiltInTheme).getColorByIndex(
                                                         editingLectureDetail.colorIndex,
                                                     ),
+                                                    colorIndex = editingLectureDetail.colorIndex,
                                                 )
                                             }
                                         },
@@ -610,17 +620,17 @@ fun LectureDetailPage(
                                     )
                                 },
                                 description = (
-                                        buildAnnotatedString {
-                                            if (enableLectureReminderPicker) {
-                                                append(stringResource(R.string.lecture_detail_lecture_reminder_description))
-                                            } else {
-                                                withStyle(style = SpanStyle(fontWeight = FontWeight.SemiBold)) {
-                                                    append(stringResource(R.string.lecture_detail_lecture_reminder_guide_bold1))
-                                                }
-                                                append(stringResource(R.string.lecture_detail_lecture_reminder_guide_normal1))
+                                    buildAnnotatedString {
+                                        if (enableLectureReminderPicker) {
+                                            append(stringResource(R.string.lecture_detail_lecture_reminder_description))
+                                        } else {
+                                            withStyle(style = SpanStyle(fontWeight = FontWeight.SemiBold)) {
+                                                append(stringResource(R.string.lecture_detail_lecture_reminder_guide_bold1))
                                             }
+                                            append(stringResource(R.string.lecture_detail_lecture_reminder_guide_normal1))
                                         }
-                                        ),
+                                    }
+                                    ),
                                 enabled = enableLectureReminderPicker,
                             )
                         }
@@ -650,7 +660,7 @@ fun LectureDetailPage(
                                         text = buildAnnotatedString {
                                             withStyle(SpanStyle(color = SNUTTColors.Black900)) {
                                                 append(
-                                                    editingLectureReview?.ratingDisplayText ?: "--"
+                                                    editingLectureReview?.ratingDisplayText ?: "--",
                                                 )
                                                 append(" ")
                                             }
@@ -683,8 +693,8 @@ fun LectureDetailPage(
                                 onValueChange = {
                                     vm.editLectureDetail(
                                         editingLectureDetail.copy(
-                                            department = it
-                                        )
+                                            department = it,
+                                        ),
                                     )
                                 },
                                 enabled = modeType is ModeType.Editing,
@@ -695,8 +705,8 @@ fun LectureDetailPage(
                                 onValueChange = {
                                     vm.editLectureDetail(
                                         editingLectureDetail.copy(
-                                            academic_year = it
-                                        )
+                                            academic_year = it,
+                                        ),
                                     )
                                 },
                                 enabled = modeType is ModeType.Editing,
@@ -712,7 +722,7 @@ fun LectureDetailPage(
                             enabled = modeType is ModeType.Editing,
                             keyboardOptions = KeyboardOptions(
                                 keyboardType = KeyboardType.Decimal,
-                                imeAction = ImeAction.Next
+                                imeAction = ImeAction.Next,
                             ),
                             hint = "0",
                         )
@@ -723,8 +733,8 @@ fun LectureDetailPage(
                                 onValueChange = {
                                     vm.editLectureDetail(
                                         editingLectureDetail.copy(
-                                            classification = it
-                                        )
+                                            classification = it,
+                                        ),
                                     )
                                 },
                                 enabled = modeType is ModeType.Editing,
@@ -735,8 +745,8 @@ fun LectureDetailPage(
                                 onValueChange = {
                                     vm.editLectureDetail(
                                         editingLectureDetail.copy(
-                                            category = it
-                                        )
+                                            category = it,
+                                        ),
                                     )
                                 },
                                 enabled = modeType is ModeType.Editing,
@@ -748,8 +758,8 @@ fun LectureDetailPage(
                                     onValueChange = {
                                         vm.editLectureDetail(
                                             editingLectureDetail.copy(
-                                                categoryPre2025 = it
-                                            )
+                                                categoryPre2025 = it,
+                                            ),
                                         )
                                     },
                                     enabled = modeType is ModeType.Editing,
@@ -783,9 +793,13 @@ fun LectureDetailPage(
                             singleLine = false,
                             keyboardOptions = KeyboardOptions.Default,
                             keyboardActions = KeyboardActions.Default,
-                            hint = if (modeType is ModeType.Editing) stringResource(R.string.lecture_detail_remark_hint) else stringResource(
-                                R.string.lecture_detail_hint_nothing
-                            ),
+                            hint = if (modeType is ModeType.Editing) {
+                                stringResource(R.string.lecture_detail_remark_hint)
+                            } else {
+                                stringResource(
+                                    R.string.lecture_detail_hint_nothing,
+                                )
+                            },
                             labelVerticalAlignment = Alignment.Top,
                         )
                     }
@@ -880,7 +894,7 @@ fun LectureDetailPage(
                                                     .toMutableList()
                                                     .also {
                                                         it.add(
-                                                            it.lastOrNull() ?: ClassTimeDto.Default
+                                                            it.lastOrNull() ?: ClassTimeDto.Default,
                                                         )
                                                     },
                                             ),
@@ -1110,7 +1124,7 @@ private fun LectureDetailTimeAndLocation(
                 ) {
                     TipCloseIcon(
                         modifier = Modifier.size(16.dp),
-                        colorFilter = ColorFilter.tint(SNUTTColors.Black900)
+                        colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                     )
                 }
             }

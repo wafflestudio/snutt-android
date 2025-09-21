@@ -3,14 +3,14 @@ package com.wafflestudio.snutt2.domainmodel
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.wafflestudio.snutt2.lib.Selectable
-import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
+import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.isDarkMode
 
 sealed class TableTheme(
     open val name: String,
-    private val lightColors: List<ColorDto>,
-    private val darkColors: List<ColorDto>,
+    private val lightColors: List<LectureColor>,
+    private val darkColors: List<LectureColor>,
 ) {
     fun getColors(isDarkMode: Boolean) = if (isDarkMode) {
         darkColors
@@ -39,7 +39,7 @@ class CustomTheme(
     val id: String,
     override val name: String,
     val isFromMarket: Boolean,
-    colors: List<ColorDto>,
+    colors: List<LectureColor>,
 ) : TableTheme(
     name = name,
     lightColors = colors,
@@ -52,7 +52,12 @@ class CustomTheme(
             id = "",
             name = "새 테마",
             isFromMarket = false,
-            colors = listOf(ColorDto(fgColor = 0xffffff, bgColor = 0x1bd0c8)),
+            colors = listOf(
+                CustomColor(
+                    foreground = SNUTTColors.White,
+                    background = SNUTTColors.MainBlue,
+                ),
+            ),
         )
     }
 }
@@ -60,20 +65,20 @@ class CustomTheme(
 class BuiltInTheme(
     val code: Int,
     override val name: String,
-    lightColors: List<ColorDto>,
-    darkColors: List<ColorDto>,
+    lightColors: List<BuiltInColor>,
+    darkColors: List<BuiltInColor>,
 ) : TableTheme(
     name = name,
     lightColors = lightColors,
     darkColors = darkColors,
 ) {
-    fun getColorByIndex(colorIndex: Long): Int {
-        return getColors(false)[colorIndex.toInt() - 1].bgColor ?: 0xffffff
+    fun getColorByIndex(colorIndex: Long): Color {
+        return getColors(false)[colorIndex.toInt() - 1].background
     }
 
     @Composable
     fun getColorByIndexComposable(colorIndex: Long): Color {
-        return Color(getColors(isDarkMode())[colorIndex.toInt() - 1].bgColor ?: 0xffffff)
+        return getColors(isDarkMode())[colorIndex.toInt() - 1].background
     }
 
     companion object {
@@ -81,156 +86,156 @@ class BuiltInTheme(
             code = 0,
             name = "SNUTT",
             lightColors = listOf(
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#E54459"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#F58D3D"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#FAC42D"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#A6D930"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#2BC267"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#1BD0C8"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#1D99E8"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#4F48C4"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#AF56B3"),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFE54459), 0),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFF58D3D), 1),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFFAC42D), 2),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFA6D930), 3),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF2BC267), 4),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF1BD0C8), 5),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF1D99E8), 6),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF4F48C4), 7),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFAF56B3), 8),
             ),
             darkColors = listOf(
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#D95F71"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#DF6E3C"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#E68937"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#95B03E"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#419343"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#5BA0D7"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#58C1B7"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#3E35A7"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#783891"),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFD95F71), 0),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFDF6E3C), 1),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFE68937), 2),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF95B03E), 3),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF419343), 4),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF5BA0D7), 5),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF58C1B7), 6),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF3E35A7), 7),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF783891), 8),
             ),
         )
         val MODERN = BuiltInTheme(
             code = 1,
             name = "모던",
             lightColors = listOf(
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#F0652A"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#F5AD3E"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#998F36"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#89C291"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#266F55"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#13808F"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#366689"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#432920"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#D82F3D"),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFF0652A), 0),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFF5AD3E), 1),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF998F36), 2),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF89C291), 3),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF266F55), 4),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF13808F), 5),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF366689), 6),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF432920), 7),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFD82F3D), 8),
             ),
             darkColors = listOf(
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#BB592F"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#E08B45"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#B4B194"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#5B967C"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#266F55"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#13808F"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#426586"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#5C4335"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#AD2F31"),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFBB592F), 0),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFE08B45), 1),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFB4B194), 2),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF5B967C), 3),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF266F55), 4),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF13808F), 5),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF426586), 6),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF5C4335), 7),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFAD2F31), 8),
             ),
         )
         val AUTUMN = BuiltInTheme(
             code = 2,
             name = "가을",
             lightColors = listOf(
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#B82E31"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#DB701C"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#EAA32A"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#C6C013"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#3A856E"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#19B2AC"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#3994CE"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#3F3A9C"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#924396"),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFB82E31), 0),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFDB701C), 1),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFEAA32A), 2),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFC6C013), 3),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF3A856E), 4),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF19B2AC), 5),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF3994CE), 6),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF3F3A9C), 7),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF924396), 8),
             ),
             darkColors = listOf(
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#A93A36"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#D56738"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#CC973F"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#A0942F"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#4E8370"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#29625A"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#4171A2"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#4F48C4"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#783891"),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFA93A36), 0),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFD56738), 1),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFCC973F), 2),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFA0942F), 3),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF4E8370), 4),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF29625A), 5),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF4171A2), 6),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF4F48C4), 7),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF783891), 8),
             ),
         )
         val CHERRY = BuiltInTheme(
             code = 3,
             name = "벚꽃",
             lightColors = listOf(
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#FD79A8"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#FEC9DD"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#FEB0CC"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#FE93BF"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#E9B1D0"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#C67D97"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#BB8EA7"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#BDB4BF"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#E16597"),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFFD79A8), 0),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFFEC9DD), 1),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFFEB0CC), 2),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFFE93BF), 3),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFE9B1D0), 4),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFC67D97), 5),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFBB8EA7), 6),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFBDB4BF), 7),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFE16597), 8),
             ),
             darkColors = listOf(
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#A43C58"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#7C164F"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#99446E"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#A77085"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#B290B8"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#BDB4BF"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#BB8EA7"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#736C75"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#C76F92"),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFA43C58), 0),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF7C164F), 1),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF99446E), 2),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFA77085), 3),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFB290B8), 4),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFBDB4BF), 5),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFBB8EA7), 6),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF736C75), 7),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFC76F92), 8),
             ),
         )
         val ICE = BuiltInTheme(
             code = 4,
             name = "얼음",
             lightColors = listOf(
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#AABDCF"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#C0E9E8"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#66B6CA"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#015F95"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#A8D0DB"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#458ED0"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#62A9D1"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#20363D"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#6D8A96"),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFAABDCF), 0),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFC0E9E8), 1),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF66B6CA), 2),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF015F95), 3),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFA8D0DB), 4),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF458ED0), 5),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF62A9D1), 6),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF20363D), 7),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF6D8A96), 8),
             ),
             darkColors = listOf(
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#014D79"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#788DA4"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#AEC1C9"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#48595B"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#1C6C8E"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#64909C"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#88B1C6"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#44576B"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#757C80"),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF014D79), 0),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF788DA4), 1),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFAEC1C9), 2),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF48595B), 3),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF1C6C8E), 4),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF64909C), 5),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF88B1C6), 6),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF44576B), 7),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF757C80), 8),
             ),
         )
         val GRASS = BuiltInTheme(
             code = 5,
             name = "잔디",
             lightColors = listOf(
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#4FBEAA"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#9FC1A4"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#5A8173"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#84AEB1"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#266F55"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#D0E0C4"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#59886D"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#476060"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#3D7068"),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF4FBEAA), 0),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF9FC1A4), 1),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF5A8173), 2),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF84AEB1), 3),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF266F55), 4),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFD0E0C4), 5),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF59886D), 6),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF476060), 7),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF3D7068), 8),
             ),
             darkColors = listOf(
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#2D5A45"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#429587"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#86A99A"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#597B6A"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#42635B"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#586C5D"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#324845"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#AAB6B1"),
-                ColorDto(fgRaw = "#FFFFFF", bgRaw = "#747877"),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF2D5A45), 0),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF429587), 1),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF86A99A), 2),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF597B6A), 3),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF42635B), 4),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF586C5D), 5),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF324845), 6),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFFAAB6B1), 7),
+                BuiltInColor(foreground = Color(0xFFFFFFFF), background = Color(0xFF747877), 8),
             ),
         )
 
@@ -250,7 +255,7 @@ class BuiltInTheme(
 
 data class EditingTheme(
     val name: String,
-    val colors: List<Selectable<ColorDto>>,
+    val colors: List<Selectable<LectureColor>>,
     private val originalTheme: TableTheme,
     private val isDarkMode: Boolean,
 ) {
@@ -262,7 +267,7 @@ data class EditingTheme(
     fun hasChange(): Boolean {
         return if (originalTheme.isEditable) {
             name != originalTheme.name ||
-                    colors.map { it.item } != originalTheme.getColors(isDarkMode)
+                colors.map { it.item } != originalTheme.getColors(isDarkMode)
         } else {
             false
         }

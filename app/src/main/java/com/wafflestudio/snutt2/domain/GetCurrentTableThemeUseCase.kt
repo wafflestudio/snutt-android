@@ -15,7 +15,7 @@ class GetCurrentTableThemeUseCase @Inject constructor(
     operator fun invoke(): Flow<TableTheme> {
         return combine(
             currentTableRepository.currentTable,
-            themeRepository.customThemes
+            themeRepository.customThemes,
         ) { table, _ ->
             table?.themeId?.let { themeId ->
                 themeRepository.getTheme(themeId)

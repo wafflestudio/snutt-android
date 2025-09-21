@@ -24,7 +24,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,9 +36,12 @@ import com.wafflestudio.snutt2.components.compose.ColorCircle
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.components.compose.showColorPickerDialog
+import com.wafflestudio.snutt2.domainmodel.BuiltInColor
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
+import com.wafflestudio.snutt2.domainmodel.CustomColor
 import com.wafflestudio.snutt2.domainmodel.CustomTheme
-import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
+import com.wafflestudio.snutt2.domainmodel.LectureColor
+import com.wafflestudio.snutt2.domainmodel.toCustomColor
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
@@ -61,22 +63,24 @@ fun LectureColorSelectorPage(
     var customFgColor by remember {
         mutableStateOf(
             Color(
-                lectureState.color.fgColor?.toLong() ?: 0xffffffff
-            )
+                lectureState.color.fgColor?.toLong() ?: 0xffffffff,
+            ),
         )
     }
     var customBgColor by remember {
         mutableStateOf(
             Color(
-                lectureState.color.bgColor?.toLong() ?: 0xffffffff
-            )
+                lectureState.color.bgColor?.toLong() ?: 0xffffffff,
+            ),
         )
     }
     val isDarkMode = isDarkMode()
 
     var selectedIndex by remember { // -1: 커스텀 색상.  0,1,2...: 선택된 색상의 0-based 인덱스
         if (theme is CustomTheme) {
-            mutableIntStateOf(theme.getColors(isDarkMode).indexOf(lectureState.color))
+            mutableIntStateOf(
+                theme.getColors(isDarkMode).indexOf(lectureState.color.toCustomColor()),
+            )
         } else {
             mutableIntStateOf(lectureState.colorIndex.toInt() - 1)
         }
@@ -88,18 +92,18 @@ fun LectureColorSelectorPage(
                 lectureState.copy(
                     colorIndex = 0,
                     color = if (selectedIndex == -1) {
-                        ColorDto(customFgColor.toArgb(), customBgColor.toArgb())
+                        CustomColor(customFgColor, customBgColor).toColorDto()
                     } else {
-                        theme.getColors(isDarkMode)[selectedIndex]
+                        theme.getColors(isDarkMode)[selectedIndex].toColorDto()
                     },
                 )
             } else {
                 lectureState.copy(
                     colorIndex = selectedIndex.toLong() + 1,
                     color = if (selectedIndex == -1) {
-                        ColorDto(customFgColor.toArgb(), customBgColor.toArgb())
+                        CustomColor(customFgColor, customBgColor).toColorDto()
                     } else {
-                        ColorDto()
+                        CustomColor(Color.White, Color.White).toColorDto()
                     },
                 )
             },
@@ -135,9 +139,10 @@ fun LectureColorSelectorPage(
             }
         } else {
             for (colorIndex in 1L..9L) ColorItem(
-                color = ColorDto(
-                    fgColor = 0xffffff,
-                    bgColor = (theme as BuiltInTheme).getColorByIndex(colorIndex),
+                color = BuiltInColor(
+                    foreground = Color(0xffffffff),
+                    background = (theme as BuiltInTheme).getColorByIndex(colorIndex),
+                    colorIndex,
                 ),
                 title = "${theme.name} $colorIndex",
                 isSelected = colorIndex.toInt() - 1 == selectedIndex,
@@ -147,7 +152,7 @@ fun LectureColorSelectorPage(
 
             Column {
                 ColorItem(
-                    color = ColorDto(customFgColor.toArgb(), customBgColor.toArgb()),
+                    color = CustomColor(customFgColor, customBgColor),
                     title = stringResource(R.string.lecture_color_selector_page_custom_color),
                     isSelected = selectedIndex == -1,
                     onClick = {
@@ -223,7 +228,7 @@ fun LectureColorSelectorPage(
 
 @Composable
 fun ColorItem(
-    color: ColorDto,
+    color: LectureColor,
     title: String,
     isSelected: Boolean,
     onClick: () -> Unit,
@@ -245,7 +250,7 @@ fun ColorItem(
         if (isSelected) {
             CheckedIcon(
                 modifier = Modifier.size(20.dp),
-                colorFilter = ColorFilter.tint(SNUTTColors.Black500)
+                colorFilter = ColorFilter.tint(SNUTTColors.Black500),
             )
         } else {
             Spacer(modifier = Modifier.width(20.dp))

@@ -4,6 +4,7 @@ import com.squareup.moshi.JsonClass
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.CustomTheme
 import com.wafflestudio.snutt2.domainmodel.TableTheme
+import com.wafflestudio.snutt2.domainmodel.toCustomColor
 
 @JsonClass(generateAdapter = true)
 data class ThemeDto(
@@ -20,7 +21,7 @@ data class ThemeDto(
             CustomTheme(
                 id = id!!,
                 name = name ?: "",
-                colors = colors ?: emptyList(),
+                colors = colors?.map { it.toCustomColor() } ?: emptyList(),
                 isFromMarket = status == "DOWNLOADED",
             )
         } else {

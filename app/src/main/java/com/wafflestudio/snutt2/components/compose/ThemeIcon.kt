@@ -15,15 +15,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
+import com.wafflestudio.snutt2.domainmodel.CustomColor
 import com.wafflestudio.snutt2.domainmodel.CustomTheme
 import com.wafflestudio.snutt2.domainmodel.TableTheme
-import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.isDarkMode
 import kotlin.random.Random
@@ -37,7 +36,7 @@ fun ThemeIcon(
         Row(
             modifier = modifier,
         ) {
-            val colors = theme.getColors(isDarkMode()).map { Color(it.bgColor!!) }
+            val colors = theme.getColors(isDarkMode()).map { it.background }
             when (colors.size) {
                 1 -> {
                     Box(
@@ -307,9 +306,9 @@ fun ThemeIconPreview() {
                 theme = CustomTheme(
                     id = "", name = "",
                     colors = List(it) {
-                        ColorDto(
-                            fgColor = SNUTTColors.White.toArgb(),
-                            bgColor = Random.nextInt(0x0, 0xffffff),
+                        CustomColor(
+                            foreground = SNUTTColors.White,
+                            background = Color(Random.nextInt(0x0, 0xffffff)),
                         )
                     },
                     isFromMarket = false,

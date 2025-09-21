@@ -71,7 +71,7 @@ fun TimeTable(
                     it.mapIndexed { idx, lecture ->
                         lecture.copy(
                             colorIndex = 0,
-                            color = colors[idx % colors.size],
+                            color = colors[idx % colors.size].toColorDto(),
                         )
                     }
                 } else {
@@ -248,13 +248,13 @@ fun DrawLectures(lectures: List<LectureDto>, fittedTrimParam: TableTrimParam) {
                     lectureNumber = lecture.lecture_number.orEmpty(),
                     instructorName = lecture.instructor,
                     bgColor =
-                        if (lecture.colorIndex == 0L && lecture.color.bgColor != null) {
-                            lecture.color.bgColor!!
-                        } else {
-                            BuiltInTheme.fromCode(code).getColorByIndexComposable(
-                                lecture.colorIndex,
-                            ).toArgb()
-                        },
+                    if (lecture.colorIndex == 0L && lecture.color.bgColor != null) {
+                        lecture.color.bgColor!!
+                    } else {
+                        BuiltInTheme.fromCode(code).getColorByIndexComposable(
+                            lecture.colorIndex,
+                        ).toArgb()
+                    },
                     fgColor = if (lecture.colorIndex == 0L && lecture.color.fgColor != null) {
                         lecture.color.fgColor!!
                     } else {
@@ -339,19 +339,19 @@ private fun DrawClassTime(
                                 listOf(
                                     LectureCellInfo.titleTextLayout(
                                         courseTitle,
-                                        tableLectureCustomOptions.title
+                                        tableLectureCustomOptions.title,
                                     ),
                                     LectureCellInfo.placeTextLayout(
                                         classTime.place,
-                                        tableLectureCustomOptions.place
+                                        tableLectureCustomOptions.place,
                                     ),
                                     LectureCellInfo.lectureNumberTextLayout(
                                         lectureNumber,
-                                        tableLectureCustomOptions.lectureNumber
+                                        tableLectureCustomOptions.lectureNumber,
                                     ),
                                     LectureCellInfo.instructorNameTextLayout(
                                         instructorName,
-                                        tableLectureCustomOptions.instructor
+                                        tableLectureCustomOptions.instructor,
                                     ),
                                 ),
                                 textMeasurer,
