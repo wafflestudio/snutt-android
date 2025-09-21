@@ -138,7 +138,7 @@ class LectureDetailViewModel @Inject constructor(
     fun initializeEditingLectureDetail(
         lecture: LectureDto?,
         modeType: ModeType,
-        table: TableDto? = null
+        table: TableDto? = null,
     ) {
         fixedLectureDetail = lecture ?: LectureDto.Default // null 문제 (reset에서 비롯됨)
         viewModelScope.launch {
