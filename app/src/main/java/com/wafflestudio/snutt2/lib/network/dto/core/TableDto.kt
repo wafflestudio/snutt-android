@@ -2,7 +2,7 @@ package com.wafflestudio.snutt2.lib.network.dto.core
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import com.wafflestudio.snutt2.model.BuiltInTheme
+import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 
 @JsonClass(generateAdapter = true)
 data class TableDto(

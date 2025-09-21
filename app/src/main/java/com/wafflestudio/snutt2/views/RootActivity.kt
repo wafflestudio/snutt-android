@@ -47,12 +47,12 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.deeplink.InstallInAppDeeplinkExecutor
+import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
+import com.wafflestudio.snutt2.domainmodel.CustomTheme
 import com.wafflestudio.snutt2.lib.logging.AnalyticsLogger
 import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
-import com.wafflestudio.snutt2.model.BuiltInTheme
-import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.navigation.getDeepLinkPath
 import com.wafflestudio.snutt2.react_native.ReactNativeBundleManager
 import com.wafflestudio.snutt2.test.TestRoute
@@ -273,7 +273,7 @@ class RootActivity : ReactActivity() {
                             navController.previousBackStackEntry?.destination?.hasRoute(
                                 NavigationDestination.LecturesOfTable::class,
                             ) == true
-                            -> DetailScreenReferrer.LectureList
+                                -> DetailScreenReferrer.LectureList
 
                             homePageController.homePageState.value == HomeItem.Timetable -> DetailScreenReferrer.Timetable
                             else -> null

@@ -20,10 +20,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
+import com.wafflestudio.snutt2.domainmodel.CustomTheme
+import com.wafflestudio.snutt2.domainmodel.TableTheme
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
-import com.wafflestudio.snutt2.model.BuiltInTheme
-import com.wafflestudio.snutt2.model.CustomTheme
-import com.wafflestudio.snutt2.model.TableTheme
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.isDarkMode
 import kotlin.random.Random

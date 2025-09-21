@@ -1,8 +1,8 @@
 package com.wafflestudio.snutt2.data.themes
 
+import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
+import com.wafflestudio.snutt2.domainmodel.CustomTheme
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
-import com.wafflestudio.snutt2.model.BuiltInTheme
-import com.wafflestudio.snutt2.model.CustomTheme
 import kotlinx.coroutines.flow.StateFlow
 
 interface ThemeRepository {

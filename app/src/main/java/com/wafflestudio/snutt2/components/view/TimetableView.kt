@@ -13,6 +13,7 @@ import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.SNUTTStorage
+import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.lib.contains
 import com.wafflestudio.snutt2.lib.dp
@@ -22,7 +23,6 @@ import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.roundToCompact
 import com.wafflestudio.snutt2.lib.sp
 import com.wafflestudio.snutt2.lib.toDayString
-import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.ui.isSystemDarkMode
 import kotlin.math.max
 import kotlin.math.min
@@ -361,10 +361,10 @@ class TimetableView : View {
     private fun invalidateTrimParam() {
         fittedTrimParam = if (trimParam.forceFitLectures) {
             (
-                selectedLecture?.let {
-                    lectures + it
-                } ?: lectures
-                ).getFittingTrimParam(TableTrimParam.Default)
+                    selectedLecture?.let {
+                        lectures + it
+                    } ?: lectures
+                    ).getFittingTrimParam(TableTrimParam.Default)
         } else {
             trimParam
         }

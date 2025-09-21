@@ -1,9 +1,9 @@
 package com.wafflestudio.snutt2.lib.network.dto.core
 
 import com.squareup.moshi.JsonClass
-import com.wafflestudio.snutt2.model.BuiltInTheme
-import com.wafflestudio.snutt2.model.CustomTheme
-import com.wafflestudio.snutt2.model.TableTheme
+import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
+import com.wafflestudio.snutt2.domainmodel.CustomTheme
+import com.wafflestudio.snutt2.domainmodel.TableTheme
 
 @JsonClass(generateAdapter = true)
 data class ThemeDto(

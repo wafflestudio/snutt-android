@@ -1,6 +1,7 @@
-package com.wafflestudio.snutt2.model
+package com.wafflestudio.snutt2.domainmodel
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
@@ -71,8 +72,8 @@ class BuiltInTheme(
     }
 
     @Composable
-    fun getColorByIndexComposable(colorIndex: Long): androidx.compose.ui.graphics.Color {
-        return androidx.compose.ui.graphics.Color(getColors(isDarkMode())[colorIndex.toInt() - 1].bgColor ?: 0xffffff)
+    fun getColorByIndexComposable(colorIndex: Long): Color {
+        return Color(getColors(isDarkMode())[colorIndex.toInt() - 1].bgColor ?: 0xffffff)
     }
 
     companion object {
@@ -261,7 +262,7 @@ data class EditingTheme(
     fun hasChange(): Boolean {
         return if (originalTheme.isEditable) {
             name != originalTheme.name ||
-                colors.map { it.item } != originalTheme.getColors(isDarkMode)
+                    colors.map { it.item } != originalTheme.getColors(isDarkMode)
         } else {
             false
         }
