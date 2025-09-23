@@ -2,9 +2,9 @@ package com.wafflestudio.snutt2.views.logged_in.home.timetable
 
 import androidx.compose.runtime.Stable
 import com.wafflestudio.snutt2.domainmodel.TableLectureCustom
+import com.wafflestudio.snutt2.domainmodel.TableTheme
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
-import com.wafflestudio.snutt2.model.TableTheme
 
 @Stable
 data class TableState(

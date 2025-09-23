@@ -7,8 +7,10 @@ import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
+import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
+import com.wafflestudio.snutt2.domainmodel.TableTheme
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.AuthError
 import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
@@ -22,8 +24,6 @@ import com.wafflestudio.snutt2.lib.network.dto.core.LectureReviewDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.network.onFailure
 import com.wafflestudio.snutt2.lib.network.onSuccess
-import com.wafflestudio.snutt2.model.BuiltInTheme
-import com.wafflestudio.snutt2.model.TableTheme
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
@@ -101,7 +101,8 @@ class LectureDetailViewModel @Inject constructor(
     private val _lectureWithReminderOption = MutableStateFlow(LectureWithReminderOption.Default)
     val lectureWithReminderOption = _lectureWithReminderOption.asStateFlow()
 
-    private val _lectureDetailUiEvent: MutableSharedFlow<LectureDetailUiEvent> = MutableSharedFlow(replay = 0)
+    private val _lectureDetailUiEvent: MutableSharedFlow<LectureDetailUiEvent> =
+        MutableSharedFlow(replay = 0)
     val lectureDetailUiEvent = _lectureDetailUiEvent.asSharedFlow()
 
     // 여기부터 dispose(), 그리고 관련 코드는 리팩토링을 한다면 필요가 없다. 지금은 LectureDetailPage가 dispose 될 때 LectureDetailViewModel은 여전히 살아있기 때문에 필요한 코드.
@@ -134,7 +135,11 @@ class LectureDetailViewModel @Inject constructor(
         viewModelScope.launch { _modeType.emit(ModeType.Editing(adding)) }
     }
 
-    fun initializeEditingLectureDetail(lecture: LectureDto?, modeType: ModeType, table: TableDto? = null) {
+    fun initializeEditingLectureDetail(
+        lecture: LectureDto?,
+        modeType: ModeType,
+        table: TableDto? = null,
+    ) {
         fixedLectureDetail = lecture ?: LectureDto.Default // null 문제 (reset에서 비롯됨)
         viewModelScope.launch {
             lectureReminderJob?.cancel()
@@ -201,6 +206,7 @@ class LectureDetailViewModel @Inject constructor(
             currentTableRepository.getLectureReviewSummary(lectureId)
         }
     }
+
     suspend fun getTimetableLectureReminder(lecture: LectureDto = fixedLectureDetail) {
         _showLectureReminderPicker.emit(false)
         _lectureWithReminderOption.emit(LectureWithReminderOption.Default)
@@ -284,13 +290,16 @@ class LectureDetailViewModel @Inject constructor(
                 userRepository.postForceLogout()
                 _lectureDetailUiEvent.emit(LectureDetailUiEvent.LoggedOut)
             }
+
             is EOF -> {
                 _showLectureReminderPicker.emit(true)
                 _enableLectureReminderPicker.emit(isTablePrimary)
                 _lectureWithReminderOption.emit(LectureWithReminderOption.Default.copy(lectureId = fixedLectureDetail.id))
             }
+
             is PastSemester -> {
             }
+
             else -> {
                 _lectureDetailUiEvent.emit(LectureDetailUiEvent.ShowToast(displayMessage))
             }

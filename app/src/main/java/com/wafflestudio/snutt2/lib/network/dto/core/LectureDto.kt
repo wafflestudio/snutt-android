@@ -184,7 +184,7 @@ data class LectureDto(
                     BuiltInColor(
                         foreground = Color(color.fgRaw?.toColorInt() ?: 0xFFFFFF),
                         background = Color(color.bgRaw?.toColorInt() ?: 0xFFFFFF),
-                        colorIndex = colorIndex.toInt(),
+                        colorIndex = colorIndex,
                     )
                 },
             )
@@ -214,7 +214,7 @@ data class LectureDto(
                     BuiltInColor(
                         foreground = Color(color.fgRaw?.toColorInt() ?: 0xFFFFFF),
                         background = Color(color.bgRaw?.toColorInt() ?: 0xFFFFFF),
-                        colorIndex = colorIndex.toInt(),
+                        colorIndex = colorIndex,
                     )
                 },
             )

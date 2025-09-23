@@ -1,11 +1,11 @@
 package com.wafflestudio.snutt2.data.themes
 
+import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
+import com.wafflestudio.snutt2.domainmodel.CustomTheme
+import com.wafflestudio.snutt2.domainmodel.LectureColor
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.PatchThemeParams
 import com.wafflestudio.snutt2.lib.network.dto.PostThemeParams
-import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
-import com.wafflestudio.snutt2.model.BuiltInTheme
-import com.wafflestudio.snutt2.model.CustomTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
@@ -24,7 +24,8 @@ class ThemeRepositoryImpl @Inject constructor(
 
     override suspend fun fetchThemes() {
         api._getThemes().let { themes ->
-            _customThemes.value = themes.filter { it.isCustom == true }.map { it.toTableTheme() as CustomTheme }
+            _customThemes.value =
+                themes.filter { it.isCustom == true }.map { it.toTableTheme() as CustomTheme }
             _builtInThemes.value = (0..5).map { code ->
                 BuiltInTheme.fromCode(code)
             }
@@ -35,16 +36,25 @@ class ThemeRepositoryImpl @Inject constructor(
         return _customThemes.value.find { it.id == themeId } ?: CustomTheme.Default
     }
 
-    override suspend fun createTheme(name: String, colors: List<ColorDto>): CustomTheme {
-        val newTheme = api._postTheme(PostThemeParams(name = name, colors = colors)).toTableTheme() as CustomTheme
+    override suspend fun createTheme(name: String, colors: List<LectureColor>): CustomTheme {
+        val newTheme =
+            api._postTheme(PostThemeParams(name = name, colors = colors.map { it.toColorDto() }))
+                .toTableTheme() as CustomTheme
         _customThemes.value = _customThemes.value.toMutableList().apply { add(0, newTheme) }
         return newTheme
     }
 
-    override suspend fun updateTheme(themeId: String, name: String, colors: List<ColorDto>): CustomTheme {
+    override suspend fun updateTheme(
+        themeId: String,
+        name: String,
+        colors: List<LectureColor>,
+    ): CustomTheme {
         val newTheme = api._patchTheme(
             themeId = themeId,
-            patchThemeParams = PatchThemeParams(name = name, colors = colors),
+            patchThemeParams = PatchThemeParams(
+                name = name,
+                colors = colors.map { it.toColorDto() },
+            ),
         ).toTableTheme() as CustomTheme
         _customThemes.value = _customThemes.value.toMutableList().apply {
             set(indexOfFirst { it.id == newTheme.id }, newTheme)
@@ -59,6 +69,7 @@ class ThemeRepositoryImpl @Inject constructor(
 
     override suspend fun deleteTheme(themeId: String) {
         api._deleteTheme(themeId = themeId)
-        _customThemes.value = _customThemes.value.toMutableList().apply { removeIf { it.id == themeId } }
+        _customThemes.value =
+            _customThemes.value.toMutableList().apply { removeIf { it.id == themeId } }
     }
 }
