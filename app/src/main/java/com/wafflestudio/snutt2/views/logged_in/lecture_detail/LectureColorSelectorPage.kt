@@ -2,7 +2,15 @@ package com.wafflestudio.snutt2.views.logged_in.lecture_detail
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -16,28 +24,30 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.CheckedIcon
 import com.wafflestudio.snutt2.components.compose.ColorBox
+import com.wafflestudio.snutt2.components.compose.ColorCircle
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
-import com.wafflestudio.snutt2.model.BuiltInTheme
-import com.wafflestudio.snutt2.model.CustomTheme
-import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.LocalNavController
-import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.ColorCircle
 import com.wafflestudio.snutt2.components.compose.showColorPickerDialog
+import com.wafflestudio.snutt2.domainmodel.BuiltInColor
+import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
+import com.wafflestudio.snutt2.domainmodel.CustomColor
+import com.wafflestudio.snutt2.domainmodel.CustomTheme
+import com.wafflestudio.snutt2.domainmodel.LectureColor
+import com.wafflestudio.snutt2.domainmodel.toCustomColor
 import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.ui.onSurfaceVariant
 import com.wafflestudio.snutt2.views.LocalModalState
+import com.wafflestudio.snutt2.views.LocalNavController
 
 @Composable
 fun LectureColorSelectorPage(
@@ -50,13 +60,27 @@ fun LectureColorSelectorPage(
     val lectureState by lectureDetailViewModel.editingLectureDetail.collectAsState()
 
     val theme by lectureDetailViewModel.currentTableTheme.collectAsState()
-    var customFgColor by remember { mutableStateOf(Color(lectureState.color.fgColor?.toLong() ?: 0xffffffff)) }
-    var customBgColor by remember { mutableStateOf(Color(lectureState.color.bgColor?.toLong() ?: 0xffffffff)) }
+    var customFgColor by remember {
+        mutableStateOf(
+            Color(
+                lectureState.color.fgColor?.toLong() ?: 0xffffffff,
+            ),
+        )
+    }
+    var customBgColor by remember {
+        mutableStateOf(
+            Color(
+                lectureState.color.bgColor?.toLong() ?: 0xffffffff,
+            ),
+        )
+    }
     val isDarkMode = isDarkMode()
 
     var selectedIndex by remember { // -1: 커스텀 색상.  0,1,2...: 선택된 색상의 0-based 인덱스
         if (theme is CustomTheme) {
-            mutableIntStateOf(theme.getColors(isDarkMode).indexOf(lectureState.color))
+            mutableIntStateOf(
+                theme.getColors(isDarkMode).indexOf(lectureState.color.toCustomColor()),
+            )
         } else {
             mutableIntStateOf(lectureState.colorIndex.toInt() - 1)
         }
@@ -68,18 +92,18 @@ fun LectureColorSelectorPage(
                 lectureState.copy(
                     colorIndex = 0,
                     color = if (selectedIndex == -1) {
-                        ColorDto(customFgColor.toArgb(), customBgColor.toArgb())
+                        CustomColor(customFgColor, customBgColor).toColorDto()
                     } else {
-                        theme.getColors(isDarkMode)[selectedIndex]
+                        theme.getColors(isDarkMode)[selectedIndex].toColorDto()
                     },
                 )
             } else {
                 lectureState.copy(
                     colorIndex = selectedIndex.toLong() + 1,
                     color = if (selectedIndex == -1) {
-                        ColorDto(customFgColor.toArgb(), customBgColor.toArgb())
+                        CustomColor(customFgColor, customBgColor).toColorDto()
                     } else {
-                        ColorDto()
+                        CustomColor(Color.White, Color.White).toColorDto()
                     },
                 )
             },
@@ -115,9 +139,10 @@ fun LectureColorSelectorPage(
             }
         } else {
             for (colorIndex in 1L..9L) ColorItem(
-                color = ColorDto(
-                    fgColor = 0xffffff,
-                    bgColor = (theme as BuiltInTheme).getColorByIndex(colorIndex),
+                color = BuiltInColor(
+                    foreground = Color(0xffffffff),
+                    background = (theme as BuiltInTheme).getColorByIndex(colorIndex),
+                    colorIndex,
                 ),
                 title = "${theme.name} $colorIndex",
                 isSelected = colorIndex.toInt() - 1 == selectedIndex,
@@ -127,7 +152,7 @@ fun LectureColorSelectorPage(
 
             Column {
                 ColorItem(
-                    color = ColorDto(customFgColor.toArgb(), customBgColor.toArgb()),
+                    color = CustomColor(customFgColor, customBgColor),
                     title = stringResource(R.string.lecture_color_selector_page_custom_color),
                     isSelected = selectedIndex == -1,
                     onClick = {
@@ -203,7 +228,7 @@ fun LectureColorSelectorPage(
 
 @Composable
 fun ColorItem(
-    color: ColorDto,
+    color: LectureColor,
     title: String,
     isSelected: Boolean,
     onClick: () -> Unit,
@@ -223,7 +248,10 @@ fun ColorItem(
             style = SNUTTTypography.body1,
         )
         if (isSelected) {
-            CheckedIcon(modifier = Modifier.size(20.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black500))
+            CheckedIcon(
+                modifier = Modifier.size(20.dp),
+                colorFilter = ColorFilter.tint(SNUTTColors.Black500),
+            )
         } else {
             Spacer(modifier = Modifier.width(20.dp))
         }

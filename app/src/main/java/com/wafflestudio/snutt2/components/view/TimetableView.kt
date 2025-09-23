@@ -10,9 +10,11 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import androidx.compose.ui.graphics.toArgb
 import androidx.core.content.res.ResourcesCompat
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.SNUTTStorage
+import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.lib.contains
 import com.wafflestudio.snutt2.lib.dp
@@ -22,7 +24,6 @@ import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.roundToCompact
 import com.wafflestudio.snutt2.lib.sp
 import com.wafflestudio.snutt2.lib.toDayString
-import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.ui.isSystemDarkMode
 import kotlin.math.max
 import kotlin.math.min
@@ -253,7 +254,7 @@ class TimetableView : View {
                 } else {
                     BuiltInTheme.fromCode(theme).getColorByIndex(
                         lecture.colorIndex,
-                    )
+                    ).toArgb()
                 },
                 if (lecture.colorIndex == 0L && lecture.color.fgColor != null) {
                     lecture.color.fgColor!!
