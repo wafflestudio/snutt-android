@@ -7,35 +7,32 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.logImpression
+import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.search.LectureListItem
-import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
-import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
-import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.search.LectureState
 
 @Composable
 fun BookmarkList(
-    searchViewModel: SearchViewModel,
-    timetableViewModel: TimetableViewModel,
-    tableListViewModel: TableListViewModel,
-    lectureDetailViewModel: LectureDetailViewModel,
-    userViewModel: UserViewModel,
-    vacancyViewModel: VacancyViewModel,
+    bookmarks: List<DataWithState<LectureDto, LectureState>>,
+//    searchViewModel: SearchViewModel,
+//    timetableViewModel: TimetableViewModel,
+//    tableListViewModel: TableListViewModel,
+//    lectureDetailViewModel: LectureDetailViewModel,
+//    userViewModel: UserViewModel,
+//    vacancyViewModel: VacancyViewModel,
     reviewWebViewContainer: ReviewWebViewContainer,
 ) {
     Box(
         modifier = Modifier.logImpression(AnalyticsScreen.Bookmark),
     ) {
-        val bookmarks by searchViewModel.bookmarkList.collectAsState()
+//        val bookmarks by searchViewModel.bookmarkList.collectAsState()
         if (bookmarks.isEmpty()) {
             BookmarkPlaceHolder()
         } else {
@@ -47,14 +44,14 @@ fun BookmarkList(
                 items(bookmarks) {
                     LectureListItem(
                         lectureDataWithState = it,
-                        searchViewModel = searchViewModel,
+//                        searchViewModel = searchViewModel,
                         reviewWebViewContainer = reviewWebViewContainer,
                         isBookmarkPage = true,
-                        timetableViewModel = timetableViewModel,
-                        tableListViewModel = tableListViewModel,
-                        lectureDetailViewModel = lectureDetailViewModel,
-                        userViewModel = userViewModel,
-                        vacancyViewModel = vacancyViewModel,
+//                        timetableViewModel = timetableViewModel,
+//                        tableListViewModel = tableListViewModel,
+//                        lectureDetailViewModel = lectureDetailViewModel,
+//                        userViewModel = userViewModel,
+//                        vacancyViewModel = vacancyViewModel,
                     )
                 }
                 item { Divider(color = SNUTTColors.White400) }

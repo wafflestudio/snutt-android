@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -46,6 +47,7 @@ import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
@@ -61,32 +63,31 @@ import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
-import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
+import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModelNew
 import kotlinx.coroutines.launch
 
 @Composable
-fun SearchPage(
+fun SearchRoute(
     searchResultPagingItems: LazyPagingItems<DataWithState<LectureDto, LectureState>>,
     searchResultListState: SearchResultListState,
+    timetableViewModel: TimetableViewModel = hiltViewModel(),
+    tableListViewModel: TableListViewModel = hiltViewModel(),
+    lectureDetailViewModel: LectureDetailViewModel = hiltViewModel(),
+    searchViewModel: SearchViewModel = hiltViewModel(),
+    userViewModel: UserViewModel = hiltViewModel(),
+    vacancyViewModel: VacancyViewModelNew = hiltViewModel(),
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
     val bottomSheet = LocalBottomSheetState.current
-
-    val timetableViewModel: TimetableViewModel = hiltViewModel()
-    val tableListViewModel: TableListViewModel = hiltViewModel()
-    val lectureDetailViewModel: LectureDetailViewModel = hiltViewModel()
-    val searchViewModel = hiltViewModel<SearchViewModel>()
-    val userViewModel = hiltViewModel<UserViewModel>()
-    val vacancyViewModel = hiltViewModel<VacancyViewModel>()
+    val bookmarks by searchViewModel.bookmarkList.collectAsState()
     val selectedLecture by searchViewModel.selectedLecture.collectAsState()
     val pageMode by searchViewModel.pageMode.collectAsState()
     val firstBookmarkAlert by userViewModel.firstBookmarkAlert.collectAsState()
-    val draggedTimeBlock = searchViewModel.draggedTimeBlock.collectAsState()
-
-    var searchEditTextFocused by remember { mutableStateOf(false) }
+    val selectedTags by searchViewModel.selectedTags.collectAsState()
+    val lazyListState = searchViewModel.lazyListState
     val isDarkMode = isDarkMode()
     val reviewBottomSheetReviewWebViewContainer = remember {
         ReviewWebViewContainer(context, userViewModel.accessToken, isDarkMode).apply {
@@ -96,9 +97,79 @@ fun SearchPage(
             )
         }
     }
+    SearchScreen(
+        searchResultPagingItems = searchResultPagingItems,
+        searchResultListState = searchResultListState,
+        selectedTags = selectedTags,
+        lazyListState = lazyListState,
+        bookmarks = bookmarks,
+        selectedLecture = selectedLecture,
+        pageMode = pageMode,
+        firstBookmarkAlert = firstBookmarkAlert,
+        reviewBottomSheetReviewWebViewContainer = reviewBottomSheetReviewWebViewContainer,
+        onClickBack = {
+            if (pageMode == SearchPageMode.Bookmark) {
+                searchViewModel.togglePageMode()
+            }
+        },
+        onSearch = {
+            scope.launch { searchViewModel.query() }
+        },
+        onClearEditText = {
+            scope.launch { searchViewModel.clearEditText() }
+        },
+        onFilter = {
+            bottomSheet.setSheetContent {
+                SearchOptionSheet(
+                    applyOption = {
+                        scope.launch {
+                            launchSuspendApi(apiOnProgress, apiOnError) {
+                                searchViewModel.query()
+                            }
+                            searchViewModel.storeRecentSearchedDepartments()
+                        }
+                        scope.launch { bottomSheet.hide() }
+                    },
+                    hideBottomSheet = {
+                        scope.launch { bottomSheet.hide() }
+                    },
+                )
+            }
+            scope.launch { bottomSheet.show() }
+        },
+        onToggleMode = {
+            scope.launch { searchViewModel.togglePageMode() }
+        },
+        onToggleTagAndQuery = { tag ->
+            scope.launch { searchViewModel.toggleTag(tag); searchViewModel.query() }
+        },
+    )
+}
 
-    BackHandler(pageMode == SearchPageMode.Bookmark) {
-        searchViewModel.togglePageMode()
+@Composable
+fun SearchScreen(
+    searchResultPagingItems: LazyPagingItems<DataWithState<LectureDto, LectureState>>,
+    searchResultListState: SearchResultListState,
+    selectedTags: List<TagDto>,
+    lazyListState: LazyListState,
+    bookmarks: List<DataWithState<LectureDto, LectureState>>,
+    selectedLecture: LectureDto?,
+    pageMode: SearchPageMode,
+    firstBookmarkAlert: Boolean,
+    reviewBottomSheetReviewWebViewContainer: ReviewWebViewContainer,
+    onClickBack: () -> Unit,
+    onSearch: () -> Unit,
+    onClearEditText: () -> Unit,
+    onFilter: () -> Unit,
+    onToggleMode: () -> Unit,
+    onToggleTagAndQuery: (tag: TagDto) -> Unit,
+) {
+    val scope = rememberCoroutineScope()
+
+    var searchEditTextFocused by remember { mutableStateOf(false) }
+
+    BackHandler {
+        onClickBack()
     }
 
     Column {
@@ -137,11 +208,7 @@ fun SearchPage(
                             ) {
                                 SearchIcon(
                                     modifier = Modifier.clicks {
-                                        scope.launch {
-                                            launchSuspendApi(apiOnProgress, apiOnError) {
-                                                searchViewModel.query()
-                                            }
-                                        }
+                                        onSearch()
                                     },
                                 )
                                 SearchEditText(
@@ -153,34 +220,13 @@ fun SearchPage(
                                 if (searchEditTextFocused) {
                                     ExitIcon(
                                         modifier = Modifier.clicks {
-                                            scope.launch {
-                                                searchViewModel.clearEditText()
-                                                searchEditTextFocused = false
-                                            }
+                                            onClearEditText()
                                         },
                                     )
                                 } else {
                                     FilterIcon(
                                         modifier = Modifier.clicks {
-                                            // 강의 검색 필터 sheet 띄우기
-                                            bottomSheet.setSheetContent {
-                                                SearchOptionSheet(
-                                                    applyOption = {
-                                                        scope.launch {
-                                                            launchSuspendApi(apiOnProgress, apiOnError) {
-                                                                searchViewModel.query()
-                                                            }
-                                                            searchViewModel.storeRecentSearchedDepartments()
-                                                        }
-                                                        scope.launch { bottomSheet.hide() }
-                                                    },
-                                                    hideBottomSheet = {
-                                                        scope.launch { bottomSheet.hide() }
-                                                    },
-                                                    draggedTimeBlock = draggedTimeBlock,
-                                                )
-                                            }
-                                            scope.launch { bottomSheet.show() }
+                                            onFilter()
                                         },
                                     )
                                 }
@@ -209,7 +255,7 @@ fun SearchPage(
                         modifier = centerAlignedModifier
                             .size(30.dp)
                             .clicks {
-                                searchViewModel.togglePageMode()
+                                onToggleMode()
                             },
                         marked = pageMode == SearchPageMode.Bookmark,
                     )
@@ -246,22 +292,14 @@ fun SearchPage(
                         scope,
                         searchResultPagingItems,
                         searchResultListState,
-                        searchViewModel,
-                        timetableViewModel,
-                        tableListViewModel,
-                        lectureDetailViewModel,
-                        userViewModel,
-                        vacancyViewModel,
+                        selectedTags,
+                        lazyListState,
+                        onToggleTagAndQuery,
                         reviewBottomSheetReviewWebViewContainer,
                     )
                     SearchPageMode.Bookmark -> BookmarkList(
-                        searchViewModel,
-                        timetableViewModel,
-                        tableListViewModel,
-                        lectureDetailViewModel,
-                        userViewModel,
-                        vacancyViewModel,
-                        reviewBottomSheetReviewWebViewContainer,
+                        bookmarks = bookmarks,
+                        reviewWebViewContainer = reviewBottomSheetReviewWebViewContainer,
                     )
                 }
             }

@@ -16,13 +16,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.BigSearchIcon
-import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 
 @Composable
 fun SearchPlaceHolder(
-    onClickSearchIcon: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -36,10 +34,7 @@ fun SearchPlaceHolder(
             modifier = Modifier
                 .width(78.dp)
                 .height(76.dp)
-                .padding(10.dp)
-                .clicks {
-                    onClickSearchIcon.invoke()
-                },
+                .padding(10.dp),
         )
         Spacer(modifier = Modifier.height(25.dp))
         Text(

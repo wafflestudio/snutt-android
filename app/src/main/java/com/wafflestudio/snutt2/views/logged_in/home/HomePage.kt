@@ -47,7 +47,7 @@ import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.home.friend.FriendsPage
 import com.wafflestudio.snutt2.views.logged_in.home.popups.Popup
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewPage
-import com.wafflestudio.snutt2.views.logged_in.home.search.SearchPage
+import com.wafflestudio.snutt2.views.logged_in.home.search.SearchRoute
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.search.rememberSearchResultListState
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingsRoute
@@ -155,7 +155,7 @@ fun HomePage() {
             ) {
                 when (pageController.homePageState.value) {
                     HomeItem.Timetable -> TimetablePage(uncheckedNotification)
-                    HomeItem.Search -> SearchPage(searchResultPagingItems, searchResultListState)
+                    HomeItem.Search -> SearchRoute(searchResultPagingItems, searchResultListState)
                     is HomeItem.Review -> {
                         CompositionLocalProvider(LocalReviewWebView provides reviewPageReviewWebViewContainer) {
                             ReviewPage()

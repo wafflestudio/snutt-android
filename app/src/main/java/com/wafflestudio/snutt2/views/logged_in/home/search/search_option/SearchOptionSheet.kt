@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -36,13 +35,13 @@ private enum class OptionSheetMode {
 fun SearchOptionSheet(
     applyOption: () -> Unit,
     hideBottomSheet: () -> Unit,
-    draggedTimeBlock: State<List<List<Boolean>>>,
 ) {
     val viewModel = hiltViewModel<SearchViewModel>()
     val tagsByTagType by viewModel.tagsByTagType.collectAsState()
     val selectedTagType by viewModel.selectedTagType.collectAsState()
     val recentSearchedDepartments by viewModel.selectableRecentSearchedDepartments.collectAsState()
     val tagTypesNotEmpty by viewModel.tagTypesNotEmpty.collectAsState()
+    val draggedTimeBlock = viewModel.draggedTimeBlock.collectAsState()
     val scope = rememberCoroutineScope()
     val bottomSheet = LocalBottomSheetState.current
 
