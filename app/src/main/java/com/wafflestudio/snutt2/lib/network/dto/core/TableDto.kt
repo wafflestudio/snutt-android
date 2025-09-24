@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.lib.network.dto.core
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.model.BuiltInTheme
 
 @JsonClass(generateAdapter = true)
@@ -32,6 +33,10 @@ data class TableDto(
         return 0
     }
 
+    fun getCourseBook(): CourseBook = CourseBook(
+        year = this.year,
+        semester = this.semester,
+    )
     companion object {
         val Default = TableDto(
             id = "",

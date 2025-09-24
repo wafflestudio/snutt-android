@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.views.logged_in.lecture_detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.wafflestudio.snutt2.data.course_books.SemesterStatusRepository
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
@@ -9,6 +10,7 @@ import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
 import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
+import com.wafflestudio.snutt2.domainmodel.SemesterStatus
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.AuthError
 import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
@@ -53,6 +55,7 @@ sealed class ModeType {
 @HiltViewModel
 class LectureDetailViewModel @Inject constructor(
     private val currentTableRepository: CurrentTableRepository,
+    private val semesterStateRepository: SemesterStatusRepository,
     private val lectureSearchRepository: LectureSearchRepository,
     private val tableRepository: TableRepository,
     private val userRepository: UserRepository,
@@ -61,6 +64,7 @@ class LectureDetailViewModel @Inject constructor(
     getCurrentTableThemeUseCase: GetCurrentTableThemeUseCase,
 ) : ViewModel() {
     val currentTable: StateFlow<TableDto?> = currentTableRepository.currentTable
+    val semesterStatus: StateFlow<SemesterStatus> = semesterStateRepository.semesterStatus
 
     private val _table = MutableStateFlow<TableDto?>(null)
     val table = _table.asStateFlow()
@@ -207,15 +211,17 @@ class LectureDetailViewModel @Inject constructor(
         _enableLectureReminderPicker.emit(false)
         val table = _table.value
         if (table != null && lecture.class_time_json.isNotEmpty() && lecture.lecture_id != null) {
-            tableRepository.getTimetableLectureReminder(currentTable.value?.id ?: "", lecture.id)
-                .onSuccess { data ->
-                    _showLectureReminderPicker.emit(true)
-                    _enableLectureReminderPicker.emit(table.isPrimary)
-                    _lectureWithReminderOption.emit(data)
-                }
-                .onFailure { error ->
-                    handleLectureDetailError(error, table.isPrimary)
-                }
+            if ((semesterStatus.value.current == null && currentTable.value?.getCourseBook() == semesterStatus.value.next) || semesterStatus.value.current == currentTable.value?.getCourseBook()) {
+                tableRepository.getTimetableLectureReminder(currentTable.value?.id ?: "", lecture.id)
+                    .onSuccess { data ->
+                        _showLectureReminderPicker.emit(true)
+                        _enableLectureReminderPicker.emit(table.isPrimary)
+                        _lectureWithReminderOption.emit(data)
+                    }
+                    .onFailure { error ->
+                        handleLectureDetailError(error, table.isPrimary)
+                    }
+            }
         }
     }
 
