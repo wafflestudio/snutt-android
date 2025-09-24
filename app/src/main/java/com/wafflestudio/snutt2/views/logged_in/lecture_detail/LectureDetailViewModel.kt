@@ -211,7 +211,7 @@ class LectureDetailViewModel @Inject constructor(
         _enableLectureReminderPicker.emit(false)
         val table = _table.value
         if (table != null && lecture.class_time_json.isNotEmpty() && lecture.lecture_id != null) {
-            if ((semesterStatus.value.current == null && currentTable.value?.getCourseBook() == semesterStatus.value.next) || semesterStatus.value.current == currentTable.value?.getCourseBook()) {
+            if ((semesterStatus.value.current == null && table.getCourseBook() == semesterStatus.value.next) || semesterStatus.value.current == table.getCourseBook()) {
                 tableRepository.getTimetableLectureReminder(currentTable.value?.id ?: "", lecture.id)
                     .onSuccess { data ->
                         _showLectureReminderPicker.emit(true)
