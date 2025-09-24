@@ -119,13 +119,15 @@ class TableRepositoryImpl @Inject constructor(
             val activeLectureReminders = api._getActiveLectureReminders()
             val activeTable = api._getTableById(activeLectureReminders.timetableId)
             val activeLecturesWithReminderOption = activeLectureReminders.reminders.map { it.toDomainModel() }
-            val result = activeTable.lectureList.map { lectureDto ->
+            val result = activeTable.lectureList.mapNotNull { lectureDto ->
                 val matchingOption = activeLecturesWithReminderOption.find { it.lectureId == lectureDto.id }
-                LectureWithReminderOption(
-                    lectureId = lectureDto.id,
-                    lectureTitle = lectureDto.course_title,
-                    lectureReminderOffset = matchingOption?.lectureReminderOffset ?: LectureReminderOffset.NONE,
-                )
+                matchingOption?.let {
+                    LectureWithReminderOption(
+                        lectureId = lectureDto.id,
+                        lectureTitle = lectureDto.course_title,
+                        lectureReminderOffset = it.lectureReminderOffset,
+                    )
+                }
             }
             return Result.Success(TimetableLectureReminders(activeTable.id, result))
         } catch (e: Exception) {
