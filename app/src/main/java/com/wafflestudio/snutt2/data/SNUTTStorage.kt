@@ -1,5 +1,7 @@
 package com.wafflestudio.snutt2.data
 
+import com.wafflestudio.snutt2.domainmodel.CourseBook
+import com.wafflestudio.snutt2.domainmodel.SemesterStatus
 import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.network.NetworkLog
 import com.wafflestudio.snutt2.lib.network.dto.core.*
@@ -176,6 +178,19 @@ class SNUTTStorage @Inject constructor(
             key = "recent_searched_departments",
             type = TagDto::class.java,
             defaultValue = listOf(),
+        ),
+    )
+
+    val semesterStatus = PrefValue<SemesterStatus>(
+        prefContext,
+        PrefValueMetaData(
+            domain = DOMAIN_SCOPE_LOGIN,
+            key = "semester_status",
+            type = SemesterStatus::class.java,
+            defaultValue = SemesterStatus(
+                current = CourseBook(year = 2025L, semester = 3),
+                next = CourseBook(year = 2025L, semester = 4),
+            ),
         ),
     )
 
