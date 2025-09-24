@@ -113,7 +113,11 @@ fun SearchRoute(
             }
         },
         onSearch = {
-            scope.launch { searchViewModel.query() }
+            scope.launch {
+                launchSuspendApi(apiOnProgress, apiOnError) {
+                    searchViewModel.query()
+                }
+            }
         },
         onClearEditText = {
             scope.launch { searchViewModel.clearEditText() }
@@ -141,7 +145,12 @@ fun SearchRoute(
             scope.launch { searchViewModel.togglePageMode() }
         },
         onToggleTagAndQuery = { tag ->
-            scope.launch { searchViewModel.toggleTag(tag); searchViewModel.query() }
+            scope.launch {
+                searchViewModel.toggleTag(tag)
+                launchSuspendApi(apiOnProgress, apiOnError) {
+                    searchViewModel.query()
+                }
+            }
         },
     )
 }
