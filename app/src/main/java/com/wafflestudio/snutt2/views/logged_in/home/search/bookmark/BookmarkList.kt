@@ -21,18 +21,11 @@ import com.wafflestudio.snutt2.views.logged_in.home.search.LectureState
 @Composable
 fun BookmarkList(
     bookmarks: List<DataWithState<LectureDto, LectureState>>,
-//    searchViewModel: SearchViewModel,
-//    timetableViewModel: TimetableViewModel,
-//    tableListViewModel: TableListViewModel,
-//    lectureDetailViewModel: LectureDetailViewModel,
-//    userViewModel: UserViewModel,
-//    vacancyViewModel: VacancyViewModel,
     reviewWebViewContainer: ReviewWebViewContainer,
 ) {
     Box(
         modifier = Modifier.logImpression(AnalyticsScreen.Bookmark),
     ) {
-//        val bookmarks by searchViewModel.bookmarkList.collectAsState()
         if (bookmarks.isEmpty()) {
             BookmarkPlaceHolder()
         } else {
@@ -44,14 +37,8 @@ fun BookmarkList(
                 items(bookmarks) {
                     LectureListItem(
                         lectureDataWithState = it,
-//                        searchViewModel = searchViewModel,
                         reviewWebViewContainer = reviewWebViewContainer,
                         isBookmarkPage = true,
-//                        timetableViewModel = timetableViewModel,
-//                        tableListViewModel = tableListViewModel,
-//                        lectureDetailViewModel = lectureDetailViewModel,
-//                        userViewModel = userViewModel,
-//                        vacancyViewModel = vacancyViewModel,
                     )
                 }
                 item { Divider(color = SNUTTColors.White400) }

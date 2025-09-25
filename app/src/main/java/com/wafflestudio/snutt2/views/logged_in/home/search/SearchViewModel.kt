@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.search
 
+import android.util.Log
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,7 +9,9 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
+import com.wafflestudio.snutt2.data.vacancy_noti.VacancyRepository
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
+import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.concatenate
 import com.wafflestudio.snutt2.lib.flatMapToSearchTimeDto
@@ -30,7 +33,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
@@ -50,6 +52,7 @@ import javax.inject.Inject
 class SearchViewModel @Inject constructor(
     private val currentTableRepository: CurrentTableRepository,
     private val lectureSearchRepository: LectureSearchRepository,
+    private val vacancyRepository: VacancyRepository,
     private val apiOnError: ApiOnError,
     private val analyticsLogger: AnalyticsLogger,
 ) : ViewModel() {
@@ -71,6 +74,9 @@ class SearchViewModel @Inject constructor(
     private val _searchTagListFlow = MutableStateFlow(listOf<TagDto>())
 
     private val currentTable = currentTableRepository.currentTable
+
+    private val _vacancyList = MutableStateFlow(listOf<LectureDto>())
+    val vacancyList = _vacancyList.asStateFlow()
 
     val semesterChange =
         currentTable
@@ -123,6 +129,12 @@ class SearchViewModel @Inject constructor(
                 setTagType(TagType.SORT_CRITERIA)
             }
         }
+        viewModelScope.launch {
+            _vacancyList.emit(
+                vacancyRepository.getVacancyLectures()
+                    .sortedByDescending { it.wasFull && it.registrationCount < it.quota },
+            )
+        }
     }
 
     val tagsByTagType: StateFlow<List<Selectable<TagDto>>> = combine(
@@ -155,13 +167,18 @@ class SearchViewModel @Inject constructor(
         },
         _selectedLecture,
         currentTable.filterNotNull(),
-    ) { bookmarks, selectedLecture, currentTable ->
+        _vacancyList,
+    ) { bookmarks, selectedLecture, currentTable, vacancyList ->
         bookmarks.map { bookmarkedLecture ->
             bookmarkedLecture.toDataWithState(
                 LectureState(
                     selected = selectedLecture == bookmarkedLecture,
                     contained = currentTable.lectureList.any { lectureOfCurrentTable ->
                         lectureOfCurrentTable.isLectureNumberEquals(bookmarkedLecture)
+                    },
+                    isBookmarked = true,
+                    isVacancyRegistered = vacancyList.any { vacancyRegisteredLecture ->
+                        vacancyRegisteredLecture.isLectureNumberEquals(bookmarkedLecture)
                     },
                 ),
             )
@@ -172,7 +189,7 @@ class SearchViewModel @Inject constructor(
         emptyList(),
     )
 
-    val queryResults = combine(
+    val queryResults: StateFlow<PagingData<DataWithState<LectureDto, LectureState>>> = combine(
         _querySignal.flatMapLatest {
             val currentTable = currentTable.filterNotNull().first()
             lectureSearchRepository.getLectureSearchResultStream(
@@ -185,13 +202,29 @@ class SearchViewModel @Inject constructor(
             ).cachedIn(viewModelScope)
         },
         _selectedLecture, currentTable.filterNotNull(),
-    ) { pagingData, selectedLecture, currentTable ->
+        _getBookmarkListSignal.flatMapLatest {
+            try {
+                flowOf(currentTableRepository.getBookmarks())
+            } catch (e: Exception) {
+                flowOf(emptyList())
+            }
+        },
+        _vacancyList,
+    ) { pagingData, selectedLecture, currentTable, bookmarks, vacancyList ->
         pagingData.map { searchedLecture ->
+            Log.d("vacancyList: ", vacancyList.toString())
+            Log.d("searchedLecture: ", searchedLecture.toString())
             searchedLecture.toDataWithState(
                 LectureState(
                     selected = selectedLecture == searchedLecture,
                     contained = currentTable.lectureList.any { lectureOfCurrentTable ->
                         lectureOfCurrentTable.isLectureNumberEquals(searchedLecture)
+                    },
+                    isBookmarked = bookmarks.any { bookmarkedLecture ->
+                        bookmarkedLecture.isLectureNumberEquals(searchedLecture)
+                    },
+                    isVacancyRegistered = vacancyList.any { vacancyRegisteredLecture ->
+                        vacancyRegisteredLecture.isLectureNumberEquals(searchedLecture)
                     },
                 ),
             )
@@ -282,6 +315,23 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    suspend fun getVacancyLectures() {
+        _vacancyList.emit(
+            vacancyRepository.getVacancyLectures()
+                .sortedByDescending { it.wasFull && it.registrationCount < it.quota },
+        )
+    }
+
+    suspend fun addVacancyLecture(lectureId: String) {
+        vacancyRepository.addVacancyLecture(lectureId)
+        getVacancyLectures()
+    }
+
+    suspend fun removeVacancyLecture(lectureId: String) {
+        vacancyRepository.removeVacancyLecture(lectureId)
+        getVacancyLectures()
+    }
+
     suspend fun setDraggedTimeBlock(draggedTimeBlock: List<List<Boolean>>) {
         _draggedTimeBlock.emit(draggedTimeBlock)
         draggedTimeBlock.clusterToTimeBlocks().let {
@@ -326,5 +376,6 @@ class SearchViewModel @Inject constructor(
 
     fun togglePageMode() {
         _pageMode.value = _pageMode.value.toggled()
+        Log.d("bookmarkList", bookmarkList.value.toString())
     }
 }
