@@ -12,23 +12,25 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.items
 import com.wafflestudio.snutt2.components.compose.AnimatedLazyRow
 import com.wafflestudio.snutt2.lib.DataWithState
-import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.model.TagDto
-import kotlinx.coroutines.CoroutineScope
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchResultList(
-    scope: CoroutineScope,
     searchResultPagingItems: LazyPagingItems<DataWithState<LectureDto, LectureState>>,
     searchResultListState: SearchResultListState,
     selectedTags: List<TagDto>,
     lazyListState: LazyListState,
     onToggleTagAndQuery: (tag: TagDto) -> Unit,
-    reviewBottomSheetReviewWebViewContainer: ReviewWebViewContainer,
+    onToggleLectureSelection: (LectureDto) -> Unit,
+    onClickLectureDetail: (LectureDto) -> Unit,
+    onClickReview: (LectureDto) -> Unit,
+    onClickBookmark: (LectureDto, Boolean) -> Unit,
+    onClickVacancy: (LectureDto, Boolean) -> Unit,
+    onToggleLectureContained: (LectureDto, Boolean) -> Unit,
 ) {
     Column {
         AnimatedLazyRow(itemList = selectedTags, itemKey = { it.toItemKey() }) {
@@ -63,10 +65,14 @@ fun SearchResultList(
                 ) {
                     items(searchResultPagingItems) { lectureDataWithState ->
                         lectureDataWithState?.let {
-                            LectureListItem(
+                            ExpandableLectureListItem(
                                 lectureDataWithState,
-                                reviewBottomSheetReviewWebViewContainer,
-                                false,
+                                onClickLectureDetail = onClickLectureDetail,
+                                onClickReview = onClickReview,
+                                onClickBookmark = onClickBookmark,
+                                onClickVacancy = onClickVacancy,
+                                onToggleLectureContained = onToggleLectureContained,
+                                onToggleLectureSelection = onToggleLectureSelection,
                             )
                         }
                     }

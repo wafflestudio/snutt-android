@@ -10,18 +10,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.wafflestudio.snutt2.lib.DataWithState
-import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.views.logged_in.home.search.LectureListItem
+import com.wafflestudio.snutt2.views.logged_in.home.search.ExpandableLectureListItem
 import com.wafflestudio.snutt2.views.logged_in.home.search.LectureState
 
 @Composable
 fun BookmarkList(
     bookmarks: List<DataWithState<LectureDto, LectureState>>,
-    reviewWebViewContainer: ReviewWebViewContainer,
+    onToggleLectureSelection: (LectureDto) -> Unit,
+    onClickLectureDetail: (LectureDto) -> Unit,
+    onClickReview: (LectureDto) -> Unit,
+    onClickBookmark: (LectureDto, Boolean) -> Unit,
+    onClickVacancy: (LectureDto, Boolean) -> Unit,
+    onToggleLectureContained: (LectureDto, Boolean) -> Unit,
 ) {
     Box(
         modifier = Modifier.logImpression(AnalyticsScreen.Bookmark),
@@ -35,10 +39,14 @@ fun BookmarkList(
                     .fillMaxSize(),
             ) {
                 items(bookmarks) {
-                    LectureListItem(
+                    ExpandableLectureListItem(
                         lectureDataWithState = it,
-                        reviewWebViewContainer = reviewWebViewContainer,
-                        isBookmarkPage = true,
+                        onToggleLectureSelection = onToggleLectureSelection,
+                        onClickLectureDetail = onClickLectureDetail,
+                        onClickReview = onClickReview,
+                        onClickBookmark = onClickBookmark,
+                        onClickVacancy = onClickVacancy,
+                        onToggleLectureContained = onToggleLectureContained,
                     )
                 }
                 item { Divider(color = SNUTTColors.White400) }

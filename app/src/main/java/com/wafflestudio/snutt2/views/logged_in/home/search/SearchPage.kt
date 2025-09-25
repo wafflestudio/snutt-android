@@ -37,6 +37,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.BookmarkIcon
+import com.wafflestudio.snutt2.components.compose.ComposableStatesWithScope
 import com.wafflestudio.snutt2.components.compose.ExitIcon
 import com.wafflestudio.snutt2.components.compose.FilterIcon
 import com.wafflestudio.snutt2.components.compose.IconWithAlertDot
@@ -44,17 +45,26 @@ import com.wafflestudio.snutt2.components.compose.SearchIcon
 import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.DataWithState
+import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
+import com.wafflestudio.snutt2.lib.logging.AddToBookmarkParameter
+import com.wafflestudio.snutt2.lib.logging.AddToTimetableParameter
+import com.wafflestudio.snutt2.lib.logging.AddToVacancyParameter
+import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
+import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
+import com.wafflestudio.snutt2.lib.logging.LectureActionReferrer
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
+import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
 import com.wafflestudio.snutt2.views.LocalApiOnError
 import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalBottomSheetState
 import com.wafflestudio.snutt2.views.launchSuspendApi
+import com.wafflestudio.snutt2.views.logged_in.bookmark.showDeleteBookmarkDialog
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.search.bookmark.BookmarkList
 import com.wafflestudio.snutt2.views.logged_in.home.search.bookmark.SearchPageMode
@@ -62,8 +72,10 @@ import com.wafflestudio.snutt2.views.logged_in.home.search.search_option.SearchO
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
-import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModelNew
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.ModeType
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
@@ -75,13 +87,16 @@ fun SearchRoute(
     lectureDetailViewModel: LectureDetailViewModel = hiltViewModel(),
     searchViewModel: SearchViewModel = hiltViewModel(),
     userViewModel: UserViewModel = hiltViewModel(),
-    vacancyViewModel: VacancyViewModelNew = hiltViewModel(),
 ) {
     val scope = rememberCoroutineScope()
+    val composableStates = ComposableStatesWithScope(scope)
+
     val context = LocalContext.current
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
     val bottomSheet = LocalBottomSheetState.current
+    val analyticsLogger = LocalAnalyticsLogger.current
+
     val bookmarks by searchViewModel.bookmarkList.collectAsState()
     val selectedLecture by searchViewModel.selectedLecture.collectAsState()
     val pageMode by searchViewModel.pageMode.collectAsState()
@@ -152,6 +167,144 @@ fun SearchRoute(
                 }
             }
         },
+        onToggleLectureSelection = { lecture ->
+            scope.launch {
+                searchViewModel.toggleLectureSelection(lecture)
+            }
+        },
+        onClickLectureDetail = { lecture ->
+            lectureDetailViewModel.initializeEditingLectureDetail(
+                lecture, ModeType.Viewing,
+            )
+            val referrer = if (pageMode == SearchPageMode.Bookmark) DetailScreenReferrer.Bookmark else DetailScreenReferrer.Search(searchViewModel.searchTitle.value)
+            bottomSheet.setSheetContent {
+                LectureDetailPage(
+                    referrer = referrer,
+                    searchViewModel = searchViewModel,
+                    onCloseViewMode = { scope ->
+                        scope.launch { bottomSheet.hide() }
+                    },
+                )
+            }
+            scope.launch { bottomSheet.show() }
+        },
+        onClickReview = { lecture ->
+            scope.launch {
+                val url = lecture.review?.getReviewUrl(context)
+                openReviewBottomSheet(
+                    url = url,
+                    reviewWebViewContainer = reviewBottomSheetReviewWebViewContainer,
+                    bottomSheet = bottomSheet,
+                    lectureId = lecture.lecture_id ?: lecture.id,
+                    referrer = DetailScreenReferrer.Search(searchViewModel.searchTitle.value),
+                )
+            }
+        },
+        onClickBookmark = { lecture, isBookmarked ->
+            scope.launch {
+                launchSuspendApi(apiOnProgress, apiOnError) {
+                    if (pageMode == SearchPageMode.Bookmark) {
+                        showDeleteBookmarkDialog(
+                            composableStates,
+                            onConfirm = {
+                                searchViewModel.deleteBookmark(lecture)
+                                searchViewModel.toggleLectureSelection(
+                                    lecture,
+                                )
+                            },
+                        )
+                    } else {
+                        if (isBookmarked) {
+                            searchViewModel.deleteBookmark(lecture)
+                        } else {
+                            analyticsLogger.logEvent(
+                                AnalyticsEvent.AddToBookmark(
+                                    AddToBookmarkParameter(
+                                        lectureId = lecture.lecture_id ?: lecture.id,
+                                        referrer = LectureActionReferrer.Search(searchViewModel.searchTitle.value),
+                                    ),
+                                ),
+                            )
+                            searchViewModel.addBookmark(lecture)
+                            if (firstBookmarkAlert) {
+                                searchViewModel.setFirstBookmarkAlertShown()
+                                context.toast(context.getString(R.string.bookmark_first_alert_message))
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        onClickVacancy = { lecture, isVacancyRegistered ->
+            scope.launch {
+                launchSuspendApi(apiOnProgress, apiOnError) {
+                    if (isVacancyRegistered) {
+                        searchViewModel.removeVacancyLecture(lecture.id)
+                    } else {
+                        analyticsLogger.logEvent(
+                            AnalyticsEvent.AddToVacancy(
+                                AddToVacancyParameter(
+                                    lectureId = lecture.lecture_id ?: lecture.id,
+                                    referrer = LectureActionReferrer.Search(searchViewModel.searchTitle.value),
+                                ),
+                            ),
+                        )
+                        searchViewModel.addVacancyLecture(lecture.id)
+                    }
+                }
+            }
+        },
+        onToggleLectureContained = { lecture, contained ->
+            if (contained) {
+                scope.launch(Dispatchers.IO) {
+                    launchSuspendApi(apiOnProgress, apiOnError) {
+                        timetableViewModel.removeLecture(lecture)
+                        searchViewModel.toggleLectureSelection(lecture)
+                        tableListViewModel.fetchTableMap()
+                    }
+                }
+            } else {
+                checkLectureOverlap(
+                    composableStates,
+                    api = {
+                        analyticsLogger.logEvent(
+                            AnalyticsEvent.AddToTimetable(
+                                AddToTimetableParameter(
+                                    lectureId = lecture.lecture_id
+                                        ?: lecture.id,
+                                    timetableId = timetableViewModel.currentTable.value?.id,
+                                    referrer = when (pageMode == SearchPageMode.Bookmark) {
+                                        true -> LectureActionReferrer.Bookmark
+                                        false -> LectureActionReferrer.Search(searchViewModel.searchTitle.value)
+                                    },
+                                ),
+                            ),
+                        )
+                        timetableViewModel.addLecture(
+                            lecture = lecture,
+                            is_force = false,
+                        )
+                        searchViewModel.toggleLectureSelection(lecture)
+                        tableListViewModel.fetchTableMap()
+                    },
+                    onLectureOverlap = { message ->
+                        showLectureOverlapDialog(
+                            composableStates,
+                            message,
+                            forceAddApi = {
+                                timetableViewModel.addLecture(
+                                    lecture = lecture,
+                                    is_force = true,
+                                )
+                                searchViewModel.toggleLectureSelection(
+                                    lecture,
+                                )
+                            },
+                        )
+                    },
+                )
+            }
+        },
     )
 }
 
@@ -172,6 +325,13 @@ fun SearchScreen(
     onFilter: () -> Unit,
     onToggleMode: () -> Unit,
     onToggleTagAndQuery: (tag: TagDto) -> Unit,
+
+    onToggleLectureSelection: (LectureDto) -> Unit,
+    onClickLectureDetail: (LectureDto) -> Unit,
+    onClickReview: (LectureDto) -> Unit,
+    onClickBookmark: (LectureDto, Boolean) -> Unit,
+    onClickVacancy: (LectureDto, Boolean) -> Unit,
+    onToggleLectureContained: (LectureDto, Boolean) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
 
@@ -304,11 +464,21 @@ fun SearchScreen(
                         selectedTags,
                         lazyListState,
                         onToggleTagAndQuery,
-                        reviewBottomSheetReviewWebViewContainer,
+                        onClickLectureDetail = onClickLectureDetail,
+                        onClickReview = onClickReview,
+                        onClickBookmark = onClickBookmark,
+                        onClickVacancy = onClickVacancy,
+                        onToggleLectureContained = onToggleLectureContained,
+                        onToggleLectureSelection = onToggleLectureSelection,
                     )
                     SearchPageMode.Bookmark -> BookmarkList(
                         bookmarks = bookmarks,
-                        reviewWebViewContainer = reviewBottomSheetReviewWebViewContainer,
+                        onClickLectureDetail = onClickLectureDetail,
+                        onClickReview = onClickReview,
+                        onClickBookmark = onClickBookmark,
+                        onClickVacancy = onClickVacancy,
+                        onToggleLectureContained = onToggleLectureContained,
+                        onToggleLectureSelection = onToggleLectureSelection,
                     )
                 }
             }

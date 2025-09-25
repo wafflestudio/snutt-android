@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.spring
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,25 +18,20 @@ import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.AddCircleIcon
 import com.wafflestudio.snutt2.components.compose.BookmarkIcon
 import com.wafflestudio.snutt2.components.compose.ClockIcon
-import com.wafflestudio.snutt2.components.compose.ComposableStatesWithScope
 import com.wafflestudio.snutt2.components.compose.DetailIcon
 import com.wafflestudio.snutt2.components.compose.LocationIcon
 import com.wafflestudio.snutt2.components.compose.RemarkIcon
@@ -48,216 +42,21 @@ import com.wafflestudio.snutt2.components.compose.TagIcon
 import com.wafflestudio.snutt2.components.compose.ThickReviewIcon
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.DataWithState
-import com.wafflestudio.snutt2.lib.android.toast
-import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
-import com.wafflestudio.snutt2.lib.logging.AddToBookmarkParameter
-import com.wafflestudio.snutt2.lib.logging.AddToTimetableParameter
-import com.wafflestudio.snutt2.lib.logging.AddToVacancyParameter
-import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
-import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
-import com.wafflestudio.snutt2.lib.logging.LectureActionReferrer
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
-import com.wafflestudio.snutt2.views.LocalApiOnError
-import com.wafflestudio.snutt2.views.LocalApiOnProgress
-import com.wafflestudio.snutt2.views.LocalBottomSheetState
-import com.wafflestudio.snutt2.views.LocalHomePageController
-import com.wafflestudio.snutt2.views.LocalNavController
-import com.wafflestudio.snutt2.views.launchSuspendApi
-import com.wafflestudio.snutt2.views.logged_in.bookmark.showDeleteBookmarkDialog
-import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.ModeType
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlin.text.ifEmpty
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun LazyItemScope.LectureListItem(
-    lectureDataWithState: DataWithState<LectureDto, LectureState>,
-    reviewWebViewContainer: ReviewWebViewContainer,
-    isBookmarkPage: Boolean = false,
-    searchViewModel: SearchViewModel = hiltViewModel(),
-    timetableViewModel: TimetableViewModel = hiltViewModel(),
-    tableListViewModel: TableListViewModel = hiltViewModel(),
-    lectureDetailViewModel: LectureDetailViewModel = hiltViewModel(),
-) {
-    val scope = rememberCoroutineScope()
-    val apiOnProgress = LocalApiOnProgress.current
-    val apiOnError = LocalApiOnError.current
-    val bottomSheet = LocalBottomSheetState.current
-    val pageController = LocalHomePageController.current
-    val context = LocalContext.current
-    val navController = LocalNavController.current
-    val analyticsLogger = LocalAnalyticsLogger.current
-    val composableStates = ComposableStatesWithScope(scope)
-
-    val selected = lectureDataWithState.state.selected
-    val contained = lectureDataWithState.state.contained
-    val isBookmarked = lectureDataWithState.state.isBookmarked
-    val isVacancyRegistered = lectureDataWithState.state.isVacancyRegistered
-    val lecture = lectureDataWithState.item
-
-    val firstBookmarkAlert by searchViewModel.firstBookmarkAlert.collectAsState()
-
-    ExpandableLectureListItem(
-        lectureDataWithState,
-        onToggleLectureSelection = {
-            scope.launch {
-                searchViewModel.toggleLectureSelection(lectureDataWithState.item)
-            }
-        },
-        onClickLectureDetail = {
-            lectureDetailViewModel.initializeEditingLectureDetail(
-                lectureDataWithState.item, ModeType.Viewing,
-            )
-            val referrer = if (isBookmarkPage) DetailScreenReferrer.Bookmark else DetailScreenReferrer.Search(searchViewModel.searchTitle.value)
-            bottomSheet.setSheetContent {
-                LectureDetailPage(
-                    referrer = referrer,
-                    searchViewModel = searchViewModel,
-                    onCloseViewMode = { scope ->
-                        scope.launch { bottomSheet.hide() }
-                    },
-                )
-            }
-            scope.launch { bottomSheet.show() }
-        },
-        onClickReview = {
-            scope.launch {
-                val url = lectureDataWithState.item.review?.getReviewUrl(context)
-                openReviewBottomSheet(
-                    url = url,
-                    reviewWebViewContainer = reviewWebViewContainer,
-                    bottomSheet = bottomSheet,
-                    lectureId = lectureDataWithState.item.lecture_id ?: lectureDataWithState.item.id,
-                    referrer = DetailScreenReferrer.Search(searchViewModel.searchTitle.value),
-                )
-            }
-        },
-        onClickBookmark = {
-            scope.launch {
-                launchSuspendApi(apiOnProgress, apiOnError) {
-                    if (isBookmarkPage) {
-                        showDeleteBookmarkDialog(
-                            composableStates,
-                            onConfirm = {
-                                searchViewModel.deleteBookmark(lectureDataWithState.item)
-                                searchViewModel.toggleLectureSelection(
-                                    lectureDataWithState.item,
-                                )
-                            },
-                        )
-                    } else {
-                        if (isBookmarked) {
-                            searchViewModel.deleteBookmark(lectureDataWithState.item)
-                        } else {
-                            analyticsLogger.logEvent(
-                                AnalyticsEvent.AddToBookmark(
-                                    AddToBookmarkParameter(
-                                        lectureId = lectureDataWithState.item.lecture_id ?: lectureDataWithState.item.id,
-                                        referrer = LectureActionReferrer.Search(searchViewModel.searchTitle.value),
-                                    ),
-                                ),
-                            )
-                            searchViewModel.addBookmark(lectureDataWithState.item)
-                            if (firstBookmarkAlert) {
-                                searchViewModel.setFirstBookmarkAlertShown()
-                                context.toast(context.getString(R.string.bookmark_first_alert_message))
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        onClickVacancy = {
-            scope.launch {
-                launchSuspendApi(apiOnProgress, apiOnError) {
-                    if (isVacancyRegistered) {
-                        searchViewModel.removeVacancyLecture(lecture.id)
-                    } else {
-                        analyticsLogger.logEvent(
-                            AnalyticsEvent.AddToVacancy(
-                                AddToVacancyParameter(
-                                    lectureId = lectureDataWithState.item.lecture_id ?: lectureDataWithState.item.id,
-                                    referrer = LectureActionReferrer.Search(searchViewModel.searchTitle.value),
-                                ),
-                            ),
-                        )
-                        searchViewModel.addVacancyLecture(lectureDataWithState.item.id)
-                    }
-                }
-            }
-        },
-        onToggleLectureContained = {
-            if (contained) {
-                scope.launch(Dispatchers.IO) {
-                    launchSuspendApi(apiOnProgress, apiOnError) {
-                        timetableViewModel.removeLecture(lectureDataWithState.item)
-                        searchViewModel.toggleLectureSelection(lectureDataWithState.item)
-                        tableListViewModel.fetchTableMap()
-                    }
-                }
-            } else {
-                checkLectureOverlap(
-                    composableStates,
-                    api = {
-                        analyticsLogger.logEvent(
-                            AnalyticsEvent.AddToTimetable(
-                                AddToTimetableParameter(
-                                    lectureId = lectureDataWithState.item.lecture_id
-                                        ?: lectureDataWithState.item.id,
-                                    timetableId = timetableViewModel.currentTable.value?.id,
-                                    referrer = when (isBookmarkPage) {
-                                        true -> LectureActionReferrer.Bookmark
-                                        false -> LectureActionReferrer.Search(searchViewModel.searchTitle.value)
-                                    },
-                                ),
-                            ),
-                        )
-                        timetableViewModel.addLecture(
-                            lecture = lectureDataWithState.item,
-                            is_force = false,
-                        )
-                        searchViewModel.toggleLectureSelection(lectureDataWithState.item)
-                        tableListViewModel.fetchTableMap()
-                    },
-                    onLectureOverlap = { message ->
-                        showLectureOverlapDialog(
-                            composableStates,
-                            message,
-                            forceAddApi = {
-                                timetableViewModel.addLecture(
-                                    lecture = lectureDataWithState.item,
-                                    is_force = true,
-                                )
-                                searchViewModel.toggleLectureSelection(
-                                    lectureDataWithState.item,
-                                )
-                            },
-                        )
-                    },
-                )
-            }
-        },
-    )
-}
 
 @Composable
 fun LazyItemScope.ExpandableLectureListItem(
     lectureDataWithState: DataWithState<LectureDto, LectureState>,
-    onToggleLectureSelection: () -> Unit,
-    onClickLectureDetail: () -> Unit,
-    onClickReview: () -> Unit,
-    onClickBookmark: () -> Unit,
-    onClickVacancy: () -> Unit,
-    onToggleLectureContained: () -> Unit,
+    onToggleLectureSelection: (LectureDto) -> Unit,
+    onClickLectureDetail: (LectureDto) -> Unit,
+    onClickReview: (LectureDto) -> Unit,
+    onClickBookmark: (LectureDto, Boolean) -> Unit,
+    onClickVacancy: (LectureDto, Boolean) -> Unit,
+    onToggleLectureContained: (LectureDto, Boolean) -> Unit,
 ) {
     val lecture = lectureDataWithState.item
     val selected = lectureDataWithState.state.selected
@@ -292,7 +91,7 @@ fun LazyItemScope.ExpandableLectureListItem(
             modifier = Modifier
                 .padding(top = 10.dp, bottom = 10.dp)
                 .clicks {
-                    onToggleLectureSelection()
+                    onToggleLectureSelection(lecture)
                 },
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
@@ -408,7 +207,7 @@ fun LazyItemScope.ExpandableLectureListItem(
                     title = stringResource(R.string.search_result_item_detail_button),
                     modifier = Modifier.weight(1f),
                     onClick = {
-                        onClickLectureDetail()
+                        onClickLectureDetail(lecture)
                     },
                 ) {
                     DetailIcon(
@@ -421,7 +220,7 @@ fun LazyItemScope.ExpandableLectureListItem(
                     title = stringResource(R.string.search_result_item_review_button),
                     modifier = Modifier.weight(1f),
                     onClick = {
-                        onClickReview()
+                        onClickReview(lecture)
                     },
                 ) {
                     ThickReviewIcon(
@@ -434,7 +233,7 @@ fun LazyItemScope.ExpandableLectureListItem(
                     title = stringResource(R.string.search_result_item_bookmark_button),
                     modifier = Modifier.weight(1f),
                     onClick = {
-                        onClickBookmark()
+                        onClickBookmark(lecture, isBookmarked)
                     },
                 ) {
                     BookmarkIcon(
@@ -449,7 +248,7 @@ fun LazyItemScope.ExpandableLectureListItem(
                     title = stringResource(R.string.search_result_item_vacancy_button),
                     modifier = Modifier.weight(1f),
                     onClick = {
-                        onClickVacancy()
+                        onClickVacancy(lecture, isVacancyRegistered)
                     },
                 ) {
                     RingingAlarmIcon(
@@ -463,7 +262,7 @@ fun LazyItemScope.ExpandableLectureListItem(
                     title = if (contained) stringResource(R.string.search_result_item_remove_button) else stringResource(R.string.search_result_item_add_button),
                     modifier = Modifier.weight(1f),
                     onClick = {
-                        onToggleLectureContained()
+                        onToggleLectureContained(lecture, contained)
                     },
                 ) {
                     if (contained) {
