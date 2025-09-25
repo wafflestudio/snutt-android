@@ -112,6 +112,13 @@ fun SearchRoute(
             )
         }
     }
+
+    BackHandler {
+        if (pageMode == SearchPageMode.Bookmark) {
+            searchViewModel.togglePageMode()
+        }
+    }
+
     SearchScreen(
         searchResultPagingItems = searchResultPagingItems,
         searchResultListState = searchResultListState,
@@ -121,11 +128,6 @@ fun SearchRoute(
         selectedLecture = selectedLecture,
         pageMode = pageMode,
         firstBookmarkAlert = firstBookmarkAlert,
-        onClickBack = {
-            if (pageMode == SearchPageMode.Bookmark) {
-                searchViewModel.togglePageMode()
-            }
-        },
         onSearch = {
             scope.launch {
                 launchSuspendApi(apiOnProgress, apiOnError) {
@@ -317,7 +319,6 @@ fun SearchScreen(
     selectedLecture: LectureDto?,
     pageMode: SearchPageMode,
     firstBookmarkAlert: Boolean,
-    onClickBack: () -> Unit,
     onSearch: () -> Unit,
     onClearEditText: () -> Unit,
     onFilter: () -> Unit,
@@ -331,13 +332,7 @@ fun SearchScreen(
     onClickVacancy: (LectureDto, Boolean) -> Unit,
     onToggleLectureContained: (LectureDto, Boolean) -> Unit,
 ) {
-    val scope = rememberCoroutineScope()
-
     var searchEditTextFocused by remember { mutableStateOf(false) }
-
-    BackHandler {
-        onClickBack()
-    }
 
     Column {
         TopBar(
