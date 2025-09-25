@@ -24,6 +24,8 @@ class LectureSearchRepositoryImpl @Inject constructor(
 
     override val recentSearchedDepartments = storage.recentSearchedDepartments.asStateFlow()
 
+    override val firstBookmarkAlert = storage.firstBookmarkAlert.asStateFlow()
+
     override fun getLectureSearchResultStream(
         year: Long,
         semester: Long,
@@ -82,6 +84,10 @@ class LectureSearchRepositoryImpl @Inject constructor(
     override fun removeRecentSearchedDepartment(tag: TagDto) {
         val previousStoredTags = storage.recentSearchedDepartments.get()
         storage.recentSearchedDepartments.update(previousStoredTags - tag)
+    }
+
+    override fun setFirstBookmarkAlertShown() {
+        storage.firstBookmarkAlert.update(false)
     }
 
     companion object {

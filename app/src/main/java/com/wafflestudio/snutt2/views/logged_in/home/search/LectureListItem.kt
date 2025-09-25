@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -68,7 +69,6 @@ import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.bookmark.showDeleteBookmarkDialog
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
-import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
@@ -87,7 +87,6 @@ fun LazyItemScope.LectureListItem(
     timetableViewModel: TimetableViewModel = hiltViewModel(),
     tableListViewModel: TableListViewModel = hiltViewModel(),
     lectureDetailViewModel: LectureDetailViewModel = hiltViewModel(),
-    userViewModel: UserViewModel = hiltViewModel(),
 ) {
     val scope = rememberCoroutineScope()
     val apiOnProgress = LocalApiOnProgress.current
@@ -104,6 +103,9 @@ fun LazyItemScope.LectureListItem(
     val isBookmarked = lectureDataWithState.state.isBookmarked
     val isVacancyRegistered = lectureDataWithState.state.isVacancyRegistered
     val lecture = lectureDataWithState.item
+
+    val firstBookmarkAlert by searchViewModel.firstBookmarkAlert.collectAsState()
+
     ExpandableLectureListItem(
         lectureDataWithState,
         onToggleLectureSelection = {
@@ -165,8 +167,8 @@ fun LazyItemScope.LectureListItem(
                                 ),
                             )
                             searchViewModel.addBookmark(lectureDataWithState.item)
-                            if (userViewModel.firstBookmarkAlert.value) {
-                                userViewModel.setFirstBookmarkAlertShown()
+                            if (firstBookmarkAlert) {
+                                searchViewModel.setFirstBookmarkAlertShown()
                                 context.toast(context.getString(R.string.bookmark_first_alert_message))
                             }
                         }

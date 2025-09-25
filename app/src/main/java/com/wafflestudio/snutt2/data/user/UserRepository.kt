@@ -22,8 +22,6 @@ interface UserRepository {
 
     val compactMode: StateFlow<Boolean>
 
-    val firstBookmarkAlert: StateFlow<Boolean>
-
     // login with local id
     suspend fun postSignIn(id: String, password: String)
 

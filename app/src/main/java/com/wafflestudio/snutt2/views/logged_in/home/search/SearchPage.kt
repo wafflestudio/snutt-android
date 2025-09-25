@@ -85,7 +85,7 @@ fun SearchRoute(
     val bookmarks by searchViewModel.bookmarkList.collectAsState()
     val selectedLecture by searchViewModel.selectedLecture.collectAsState()
     val pageMode by searchViewModel.pageMode.collectAsState()
-    val firstBookmarkAlert by userViewModel.firstBookmarkAlert.collectAsState()
+    val firstBookmarkAlert by searchViewModel.firstBookmarkAlert.collectAsState()
     val selectedTags by searchViewModel.selectedTags.collectAsState()
     val lazyListState = searchViewModel.lazyListState
     val isDarkMode = isDarkMode()

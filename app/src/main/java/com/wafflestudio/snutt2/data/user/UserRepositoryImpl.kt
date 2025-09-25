@@ -57,8 +57,6 @@ class UserRepositoryImpl @Inject constructor(
 
     override val compactMode = storage.compactMode.asStateFlow()
 
-    override val firstBookmarkAlert = storage.firstBookmarkAlert.asStateFlow()
-
     override suspend fun postSignIn(id: String, password: String) {
         val response = api._postSignIn(PostSignInParams(id, password))
         storage.prefKeyUserId.update(response.userId.toOptional())

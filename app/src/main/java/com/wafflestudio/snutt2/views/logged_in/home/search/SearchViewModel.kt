@@ -78,6 +78,8 @@ class SearchViewModel @Inject constructor(
     private val _vacancyList = MutableStateFlow(listOf<LectureDto>())
     val vacancyList = _vacancyList.asStateFlow()
 
+    val firstBookmarkAlert = lectureSearchRepository.firstBookmarkAlert
+
     val semesterChange =
         currentTable
             .filterNotNull()
@@ -351,6 +353,10 @@ class SearchViewModel @Inject constructor(
 
     fun removeRecentSearchedDepartment(tag: TagDto) {
         lectureSearchRepository.removeRecentSearchedDepartment(tag)
+    }
+
+    fun setFirstBookmarkAlertShown() {
+        lectureSearchRepository.setFirstBookmarkAlertShown()
     }
 
     private suspend fun clear() {
