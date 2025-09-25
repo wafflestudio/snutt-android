@@ -458,12 +458,11 @@ fun SearchScreen(
             ) { pageMode ->
                 when (pageMode) {
                     SearchPageMode.Search -> SearchResultList(
-                        scope,
-                        searchResultPagingItems,
-                        searchResultListState,
-                        selectedTags,
-                        lazyListState,
-                        onToggleTagAndQuery,
+                        searchResultPagingItems = searchResultPagingItems,
+                        searchResultListState = searchResultListState,
+                        selectedTags = selectedTags,
+                        lazyListState = lazyListState,
+                        onToggleTagAndQuery = onToggleTagAndQuery,
                         onClickLectureDetail = onClickLectureDetail,
                         onClickReview = onClickReview,
                         onClickBookmark = onClickBookmark,
