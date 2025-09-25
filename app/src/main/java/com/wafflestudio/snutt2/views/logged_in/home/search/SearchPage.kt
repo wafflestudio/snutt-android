@@ -121,7 +121,6 @@ fun SearchRoute(
         selectedLecture = selectedLecture,
         pageMode = pageMode,
         firstBookmarkAlert = firstBookmarkAlert,
-        reviewBottomSheetReviewWebViewContainer = reviewBottomSheetReviewWebViewContainer,
         onClickBack = {
             if (pageMode == SearchPageMode.Bookmark) {
                 searchViewModel.togglePageMode()
@@ -318,7 +317,6 @@ fun SearchScreen(
     selectedLecture: LectureDto?,
     pageMode: SearchPageMode,
     firstBookmarkAlert: Boolean,
-    reviewBottomSheetReviewWebViewContainer: ReviewWebViewContainer,
     onClickBack: () -> Unit,
     onSearch: () -> Unit,
     onClearEditText: () -> Unit,

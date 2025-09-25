@@ -75,8 +75,7 @@ class SearchViewModel @Inject constructor(
 
     private val currentTable = currentTableRepository.currentTable
 
-    private val _vacancyList = MutableStateFlow(listOf<LectureDto>())
-    val vacancyList = _vacancyList.asStateFlow()
+    private val vacancyList = MutableStateFlow(listOf<LectureDto>())
 
     val firstBookmarkAlert = lectureSearchRepository.firstBookmarkAlert
 
@@ -132,7 +131,7 @@ class SearchViewModel @Inject constructor(
             }
         }
         viewModelScope.launch {
-            _vacancyList.emit(
+            vacancyList.emit(
                 vacancyRepository.getVacancyLectures()
                     .sortedByDescending { it.wasFull && it.registrationCount < it.quota },
             )
@@ -169,7 +168,7 @@ class SearchViewModel @Inject constructor(
         },
         _selectedLecture,
         currentTable.filterNotNull(),
-        _vacancyList,
+        vacancyList,
     ) { bookmarks, selectedLecture, currentTable, vacancyList ->
         bookmarks.map { bookmarkedLecture ->
             bookmarkedLecture.toDataWithState(
@@ -211,7 +210,7 @@ class SearchViewModel @Inject constructor(
                 flowOf(emptyList())
             }
         },
-        _vacancyList,
+        vacancyList,
     ) { pagingData, selectedLecture, currentTable, bookmarks, vacancyList ->
         pagingData.map { searchedLecture ->
             Log.d("vacancyList: ", vacancyList.toString())
@@ -318,7 +317,7 @@ class SearchViewModel @Inject constructor(
     }
 
     suspend fun getVacancyLectures() {
-        _vacancyList.emit(
+        vacancyList.emit(
             vacancyRepository.getVacancyLectures()
                 .sortedByDescending { it.wasFull && it.registrationCount < it.quota },
         )
