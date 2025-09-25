@@ -103,6 +103,12 @@ fun SearchRoute(
     val firstBookmarkAlert by searchViewModel.firstBookmarkAlert.collectAsState()
     val selectedTags by searchViewModel.selectedTags.collectAsState()
     val lazyListState = searchViewModel.lazyListState
+    val tagsByTagType = searchViewModel.tagsByTagType.collectAsState()
+    val selectedTagType = searchViewModel.selectedTagType.collectAsState()
+    val recentSearchedDepartments = searchViewModel.selectableRecentSearchedDepartments.collectAsState()
+    val tagTypesNotEmpty = searchViewModel.tagTypesNotEmpty.collectAsState()
+    val draggedTimeBlock = searchViewModel.draggedTimeBlock.collectAsState()
+
     val isDarkMode = isDarkMode()
     val reviewBottomSheetReviewWebViewContainer = remember {
         ReviewWebViewContainer(context, userViewModel.accessToken, isDarkMode).apply {
@@ -152,6 +158,44 @@ fun SearchRoute(
                     },
                     hideBottomSheet = {
                         scope.launch { bottomSheet.hide() }
+                    },
+                    tagsByTagType = tagsByTagType,
+                    selectedTagType = selectedTagType,
+                    recentSearchedDepartments = recentSearchedDepartments,
+                    tagTypesNotEmpty = tagTypesNotEmpty,
+                    draggedTimeBlock = draggedTimeBlock,
+                    onSelectTagType = {
+                        scope.launch {
+                            searchViewModel.setTagType(it)
+                        }
+                    },
+                    onToggleTag = {
+                        scope.launch {
+                            searchViewModel.toggleTag(it)
+                        }
+                    },
+                    onRemoveRecent = {
+                        scope.launch {
+                            searchViewModel.removeRecentSearchedDepartment(it)
+                        }
+                    },
+                    onTimeSelectCancel = {
+                        scope.launch {
+                            if (draggedTimeBlock.value.all { it.all { it.not() } }) {
+                                scope.launch {
+                                    searchViewModel.toggleTag(TagDto.TIME_SELECT)
+                                }
+                            }
+                        }
+                    },
+                    onTimeSelectConfirm = {
+                        scope.launch {
+                            searchViewModel.setDraggedTimeBlock(it)
+                            // 시간대를 하나도 선택을 안 하고 완료를 누르면 태그 선택도 해제하기 (다시 누를 수 있게)
+                            if (it.all { it.all { it.not() } }) {
+                                searchViewModel.toggleTag(TagDto.TIME_SELECT)
+                            }
+                        }
                     },
                 )
             }
