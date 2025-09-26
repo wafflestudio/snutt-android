@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.data.lecture_search
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.SnuttUrls
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
@@ -11,7 +12,10 @@ import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.model.SearchTimeDto
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.model.TagType
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -33,6 +37,7 @@ class LectureSearchRepositoryImpl @Inject constructor(
         tags: List<TagDto>,
         times: List<SearchTimeDto>?,
         timesToExclude: List<SearchTimeDto>?,
+        scope: CoroutineScope,
     ): Flow<PagingData<LectureDto>> {
         return Pager(
             config = PagingConfig(
@@ -51,6 +56,7 @@ class LectureSearchRepositoryImpl @Inject constructor(
                 )
             },
         ).flow
+            .cachedIn(scope)
     }
 
     override suspend fun getSearchTags(year: Long, semester: Long): List<TagDto> {

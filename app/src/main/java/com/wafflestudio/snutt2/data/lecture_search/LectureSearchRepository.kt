@@ -5,6 +5,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.model.SearchTimeDto
 import com.wafflestudio.snutt2.model.TagDto
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -21,6 +22,7 @@ interface LectureSearchRepository {
         tags: List<TagDto>,
         times: List<SearchTimeDto>?,
         timesToExclude: List<SearchTimeDto>?,
+        scope: CoroutineScope,
     ): Flow<PagingData<LectureDto>>
 
     suspend fun getSearchTags(year: Long, semester: Long): List<TagDto>

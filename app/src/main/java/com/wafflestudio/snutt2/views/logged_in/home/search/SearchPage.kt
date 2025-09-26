@@ -21,12 +21,14 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -82,6 +84,7 @@ import kotlinx.coroutines.launch
 fun SearchRoute(
     searchResultPagingItems: LazyPagingItems<DataWithState<LectureDto, LectureState>>,
     searchResultListState: SearchResultListState,
+    onNavigateOnboardAsOrigin: () -> Unit,
     timetableViewModel: TimetableViewModel = hiltViewModel(),
     tableListViewModel: TableListViewModel = hiltViewModel(),
     lectureDetailViewModel: LectureDetailViewModel = hiltViewModel(),
@@ -119,6 +122,27 @@ fun SearchRoute(
         }
     }
 
+    LaunchedEffect(searchResultPagingItems) {
+        snapshotFlow { searchResultPagingItems.loadState }
+            .collect { loadState ->
+                searchViewModel.onLoadStateChanged(loadState)
+            }
+    }
+
+    LaunchedEffect(Unit) {
+        searchViewModel.searchUiEvent.collect { uiEvent ->
+            when (uiEvent) {
+                is SearchUiEvent.ShowToast -> {
+                    val displayMessage = uiEvent.displayMessage
+                    context.toast(displayMessage)
+                }
+                is SearchUiEvent.LoggedOut -> {
+                    onNavigateOnboardAsOrigin()
+                }
+            }
+        }
+    }
+
     BackHandler {
         searchViewModel::onClickBack
     }
@@ -132,13 +156,7 @@ fun SearchRoute(
         selectedLecture = selectedLecture,
         pageMode = pageMode,
         firstBookmarkAlert = firstBookmarkAlert,
-        onSearch = {
-            scope.launch {
-                launchSuspendApi(apiOnProgress, apiOnError) {
-                    searchViewModel.query()
-                }
-            }
-        },
+        onSearch = searchViewModel::onSearch,
         onClearEditText = searchViewModel::onClearEditText,
         onFilter = {
             bottomSheet.setSheetContent {

@@ -3,14 +3,15 @@ package com.wafflestudio.snutt2.views.logged_in.home.search
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.CombinedLoadStates
+import androidx.paging.LoadState
 import androidx.paging.PagingData
-import androidx.paging.cachedIn
 import androidx.paging.map
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
+import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.data.vacancy_noti.VacancyRepository
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
-import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.concatenate
 import com.wafflestudio.snutt2.lib.flatMapToSearchTimeDto
@@ -19,7 +20,11 @@ import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.lib.logging.AnalyticsLogger
 import com.wafflestudio.snutt2.lib.logging.SearchLectureParameter
 import com.wafflestudio.snutt2.lib.network.ApiOnError
+import com.wafflestudio.snutt2.lib.network.AuthError
+import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
+import com.wafflestudio.snutt2.lib.network.DomainError
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.network.toDomainError
 import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.model.SearchTimeDto
 import com.wafflestudio.snutt2.model.TagDto
@@ -52,9 +57,17 @@ class SearchViewModel @Inject constructor(
     private val currentTableRepository: CurrentTableRepository,
     private val lectureSearchRepository: LectureSearchRepository,
     private val vacancyRepository: VacancyRepository,
+    private val userRepository: UserRepository,
     private val apiOnError: ApiOnError,
+    private val displayMessageResolver: DisplayMessageResolver,
     private val analyticsLogger: AnalyticsLogger,
 ) : ViewModel() {
+
+    private val _searchUiEvent: MutableSharedFlow<SearchUiEvent> = MutableSharedFlow(replay = 1)
+    val searchUiEvent = _searchUiEvent
+
+    private val _searchResultListState = MutableStateFlow(SearchResultListState.PLACEHOLDER)
+    val searchResultListState = _searchResultListState
 
     var lazyListState = LazyListState(0, 0)
 
@@ -189,7 +202,7 @@ class SearchViewModel @Inject constructor(
         emptyList(),
     )
 
-    val queryResults: StateFlow<PagingData<DataWithState<LectureDto, LectureState>>> = combine(
+    val queryResults = combine(
         _querySignal.flatMapLatest {
             val currentTable = currentTable.filterNotNull().first()
             lectureSearchRepository.getLectureSearchResultStream(
@@ -199,9 +212,11 @@ class SearchViewModel @Inject constructor(
                 tags = _selectedTags.value,
                 times = _searchTimeList.value,
                 timesToExclude = if (_selectedTags.value.contains(TagDto.TIME_EMPTY)) currentTable.lectureList.flatMapToSearchTimeDto() else null,
-            ).cachedIn(viewModelScope)
+                scope = viewModelScope,
+            )
         },
-        _selectedLecture, currentTable.filterNotNull(),
+        _selectedLecture,
+        currentTable.filterNotNull(),
         _getBookmarkListSignal.flatMapLatest {
             try {
                 flowOf(currentTableRepository.getBookmarks())
@@ -210,8 +225,8 @@ class SearchViewModel @Inject constructor(
             }
         },
         vacancyList,
-    ) { pagingData, selectedLecture, currentTable, bookmarks, vacancyList ->
-        pagingData.map { searchedLecture ->
+    ) { pagingDataResult, selectedLecture, currentTable, bookmarks, vacancyList ->
+        pagingDataResult.map { searchedLecture ->
             searchedLecture.toDataWithState(
                 LectureState(
                     selected = selectedLecture == searchedLecture,
@@ -286,6 +301,18 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    fun onLoadStateChanged(loadState: CombinedLoadStates) { // FIXME: PagingLoadState -> UI -> ViewModel로 단방향 흐름에 위배됨, LoadState를 ViewModel에서 볼 수 있게 수정할 것.
+        val refreshState = loadState.refresh
+        if (refreshState is LoadState.Error) {
+            val error = (refreshState.error as? Exception)?.toDomainError()
+            if (error == null) return
+            viewModelScope.launch {
+                _searchResultListState.emit(SearchResultListState.EMPTY) // FIXME: loadState가 에러여도 PagingData는 그대로 남아있고, 그냥 EMPTY로 보이지 않게 해둠
+                handleSearchError(error)
+            }
+        }
+    }
+
     suspend fun query() {
         _querySignal.emit(Unit)
         lazyListState = LazyListState(0, 0)
@@ -297,6 +324,13 @@ class SearchViewModel @Inject constructor(
                 ),
             ),
         )
+    }
+
+    fun onSearch() {
+        viewModelScope.launch {
+            _searchResultListState.emit(SearchResultListState.HAS_RESULTS)
+            query()
+        }
     }
 
     suspend fun getBookmarkList() {
@@ -416,4 +450,25 @@ class SearchViewModel @Inject constructor(
             }
         }
     }
+
+    private suspend fun handleSearchError(error: DomainError) {
+        val displayMessage = displayMessageResolver.getDisplayMessage(error)
+        when (error) {
+            is AuthError -> {
+                _searchUiEvent.emit(SearchUiEvent.ShowToast(displayMessage))
+                userRepository.postForceLogout()
+                _searchUiEvent.emit(SearchUiEvent.LoggedOut)
+            }
+            else -> {
+                _searchUiEvent.emit(SearchUiEvent.ShowToast(displayMessage))
+            }
+        }
+    }
+}
+
+sealed interface SearchUiEvent {
+    data class ShowToast(val displayMessage: String) : SearchUiEvent
+    data object LoggedOut : SearchUiEvent
+//    data object ShowDeleteBookmarkAlert: SearchUiEvent
+//    data object ShowBottomSheet: SearchUiEvent
 }
