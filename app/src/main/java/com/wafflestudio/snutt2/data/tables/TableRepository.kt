@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.data.tables
 
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
+import com.wafflestudio.snutt2.domainmodel.TableSummary
 import com.wafflestudio.snutt2.domainmodel.TimetableLectureReminders
 import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
@@ -37,7 +38,17 @@ interface TableRepository {
 
     suspend fun getActiveLectureReminders(): Result<TimetableLectureReminders>
 
-    suspend fun getTimetableLectureReminder(timetableId: String, lectureId: String): Result<LectureWithReminderOption>
+    suspend fun getTimetableLectureReminder(
+        timetableId: String,
+        lectureId: String
+    ): Result<LectureWithReminderOption>
 
-    suspend fun updateTimetableLectureReminder(timetableId: String, lectureId: String, option: LectureWithReminderOption): Result<LectureWithReminderOption>
+    suspend fun updateTimetableLectureReminder(
+        timetableId: String,
+        lectureId: String,
+        option: LectureWithReminderOption
+    ): Result<LectureWithReminderOption>
+
+    // 여기부터 리팩토링 코드
+    val tableSummaryList: StateFlow<List<TableSummary>>
 }
