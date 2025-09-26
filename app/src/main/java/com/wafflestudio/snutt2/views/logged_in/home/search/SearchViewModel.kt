@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.home.search
 
-import android.util.Log
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -213,8 +212,6 @@ class SearchViewModel @Inject constructor(
         vacancyList,
     ) { pagingData, selectedLecture, currentTable, bookmarks, vacancyList ->
         pagingData.map { searchedLecture ->
-            Log.d("vacancyList: ", vacancyList.toString())
-            Log.d("searchedLecture: ", searchedLecture.toString())
             searchedLecture.toDataWithState(
                 LectureState(
                     selected = selectedLecture == searchedLecture,
@@ -240,8 +237,16 @@ class SearchViewModel @Inject constructor(
         _searchTitle.emit(title)
     }
 
-    suspend fun setTagType(tagType: TagType) {
-        _selectedTagType.emit(tagType)
+    fun setTagType(tagType: TagType) {
+        viewModelScope.launch {
+            _selectedTagType.emit(tagType)
+        }
+    }
+
+    fun onToggleLectureSelection(lecture: LectureDto) {
+        viewModelScope.launch {
+            toggleLectureSelection(lecture)
+        }
     }
 
     suspend fun toggleLectureSelection(lecture: LectureDto) {
@@ -252,27 +257,29 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    suspend fun toggleTag(tag: TagDto) {
-        if (_selectedTags.value.contains(tag)) {
-            _selectedTags.emit(_selectedTags.value.filter { it != tag })
+    fun onToggleTag(tag: TagDto) {
+        viewModelScope.launch {
+            if (_selectedTags.value.contains(tag)) {
+                _selectedTags.emit(_selectedTags.value.filter { it != tag })
 
-            if (tag == TagDto.TIME_SELECT) {
-                _searchTimeList.emit(null)
-            }
-        } else {
-            val selectedTags = if (tag.type.isExclusive) {
-                concatenate(_selectedTags.value.filter { it.type != tag.type }, listOf(tag))
+                if (tag == TagDto.TIME_SELECT) {
+                    _searchTimeList.emit(null)
+                }
             } else {
-                concatenate(_selectedTags.value, listOf(tag))
-            }
-            _selectedTags.emit(selectedTags)
+                val selectedTags = if (tag.type.isExclusive) {
+                    concatenate(_selectedTags.value.filter { it.type != tag.type }, listOf(tag))
+                } else {
+                    concatenate(_selectedTags.value, listOf(tag))
+                }
+                _selectedTags.emit(selectedTags)
 
-            if (tag == TagDto.TIME_SELECT) {
-                _draggedTimeBlock.value.clusterToTimeBlocks().let {
-                    if (it.isEmpty()) {
-                        _searchTimeList.emit(null)
-                    } else {
-                        _searchTimeList.emit(it)
+                if (tag == TagDto.TIME_SELECT) {
+                    _draggedTimeBlock.value.clusterToTimeBlocks().let {
+                        if (it.isEmpty()) {
+                            _searchTimeList.emit(null)
+                        } else {
+                            _searchTimeList.emit(it)
+                        }
                     }
                 }
             }
@@ -296,8 +303,10 @@ class SearchViewModel @Inject constructor(
         _getBookmarkListSignal.emit(Unit)
     }
 
-    suspend fun clearEditText() {
-        _searchTitle.emit("")
+    fun onClearEditText() {
+        viewModelScope.launch {
+            _searchTitle.emit("")
+        }
     }
 
     suspend fun addBookmark(lecture: LectureDto) {
@@ -316,7 +325,7 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    suspend fun getVacancyLectures() {
+    private suspend fun getVacancyLectures() {
         vacancyList.emit(
             vacancyRepository.getVacancyLectures()
                 .sortedByDescending { it.wasFull && it.registrationCount < it.quota },
@@ -333,13 +342,28 @@ class SearchViewModel @Inject constructor(
         getVacancyLectures()
     }
 
-    suspend fun setDraggedTimeBlock(draggedTimeBlock: List<List<Boolean>>) {
-        _draggedTimeBlock.emit(draggedTimeBlock)
-        draggedTimeBlock.clusterToTimeBlocks().let {
-            if (it.isEmpty()) {
-                _searchTimeList.emit(null)
-            } else {
-                _searchTimeList.emit(it)
+    fun onTimeSelectCancel() {
+        viewModelScope.launch {
+            if (_draggedTimeBlock.value.all { it.all { it.not() } }) {
+                onToggleTag(TagDto.TIME_SELECT)
+            }
+        }
+    }
+
+    fun onTimeSelectConfirm(draggedTimeBlock: List<List<Boolean>>) {
+        viewModelScope.launch {
+            _draggedTimeBlock.emit(draggedTimeBlock)
+            draggedTimeBlock.clusterToTimeBlocks().let {
+                if (it.isEmpty()) {
+                    _searchTimeList.emit(null)
+                } else {
+                    _searchTimeList.emit(it)
+                }
+            }
+
+            // 시간대를 하나도 선택을 안 하고 완료를 누르면 태그 선택도 해제하기 (다시 누를 수 있게)
+            if (draggedTimeBlock.all { it.all { it.not() } }) {
+                onToggleTag(TagDto.TIME_SELECT)
             }
         }
     }
@@ -379,8 +403,17 @@ class SearchViewModel @Inject constructor(
         )
     }
 
-    fun togglePageMode() {
-        _pageMode.value = _pageMode.value.toggled()
-        Log.d("bookmarkList", bookmarkList.value.toString())
+    fun onTogglePageMode() {
+        viewModelScope.launch {
+            _pageMode.emit(_pageMode.value.toggled())
+        }
+    }
+
+    fun onClickBack() {
+        viewModelScope.launch {
+            if (_pageMode.value == SearchPageMode.Bookmark) {
+                _pageMode.emit(SearchPageMode.Search)
+            }
+        }
     }
 }

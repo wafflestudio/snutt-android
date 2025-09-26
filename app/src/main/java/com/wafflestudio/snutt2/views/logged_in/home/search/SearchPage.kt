@@ -120,9 +120,7 @@ fun SearchRoute(
     }
 
     BackHandler {
-        if (pageMode == SearchPageMode.Bookmark) {
-            searchViewModel.togglePageMode()
-        }
+        searchViewModel::onClickBack
     }
 
     SearchScreen(
@@ -141,9 +139,7 @@ fun SearchRoute(
                 }
             }
         },
-        onClearEditText = {
-            scope.launch { searchViewModel.clearEditText() }
-        },
+        onClearEditText = searchViewModel::onClearEditText,
         onFilter = {
             bottomSheet.setSheetContent {
                 SearchOptionSheet(
@@ -164,59 +160,25 @@ fun SearchRoute(
                     recentSearchedDepartments = recentSearchedDepartments,
                     tagTypesNotEmpty = tagTypesNotEmpty,
                     draggedTimeBlock = draggedTimeBlock,
-                    onSelectTagType = {
-                        scope.launch {
-                            searchViewModel.setTagType(it)
-                        }
-                    },
-                    onToggleTag = {
-                        scope.launch {
-                            searchViewModel.toggleTag(it)
-                        }
-                    },
-                    onRemoveRecent = {
-                        scope.launch {
-                            searchViewModel.removeRecentSearchedDepartment(it)
-                        }
-                    },
-                    onTimeSelectCancel = {
-                        scope.launch {
-                            if (draggedTimeBlock.value.all { it.all { it.not() } }) {
-                                scope.launch {
-                                    searchViewModel.toggleTag(TagDto.TIME_SELECT)
-                                }
-                            }
-                        }
-                    },
-                    onTimeSelectConfirm = {
-                        scope.launch {
-                            searchViewModel.setDraggedTimeBlock(it)
-                            // 시간대를 하나도 선택을 안 하고 완료를 누르면 태그 선택도 해제하기 (다시 누를 수 있게)
-                            if (it.all { it.all { it.not() } }) {
-                                searchViewModel.toggleTag(TagDto.TIME_SELECT)
-                            }
-                        }
-                    },
+                    onSelectTagType = searchViewModel::setTagType,
+                    onToggleTag = searchViewModel::onToggleTag,
+                    onRemoveRecent = searchViewModel::removeRecentSearchedDepartment,
+                    onTimeSelectCancel = searchViewModel::onTimeSelectCancel,
+                    onTimeSelectConfirm = searchViewModel::onTimeSelectConfirm,
                 )
             }
             scope.launch { bottomSheet.show() }
         },
-        onToggleMode = {
-            scope.launch { searchViewModel.togglePageMode() }
-        },
+        onToggleMode = searchViewModel::onTogglePageMode,
         onToggleTagAndQuery = { tag ->
             scope.launch {
-                searchViewModel.toggleTag(tag)
+                searchViewModel.onToggleTag(tag)
                 launchSuspendApi(apiOnProgress, apiOnError) {
                     searchViewModel.query()
                 }
             }
         },
-        onToggleLectureSelection = { lecture ->
-            scope.launch {
-                searchViewModel.toggleLectureSelection(lecture)
-            }
-        },
+        onToggleLectureSelection = searchViewModel::onToggleLectureSelection,
         onClickLectureDetail = { lecture ->
             lectureDetailViewModel.initializeEditingLectureDetail(
                 lecture, ModeType.Viewing,
