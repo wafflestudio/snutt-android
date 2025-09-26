@@ -4,7 +4,6 @@ import androidx.compose.material.Text
 import androidx.compose.ui.res.stringResource
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.ComposableStates
-import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.launchSuspendApi
 import kotlinx.coroutines.launch
@@ -30,7 +29,6 @@ fun showDeleteBookmarkDialog(
                     ) {
                         onConfirm()
                         modalState.hide()
-                        context.toast(context.getString(R.string.bookmark_remove_toast))
                     }
                 }
             },

@@ -7,6 +7,7 @@ import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.map
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
@@ -16,8 +17,10 @@ import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.concatenate
 import com.wafflestudio.snutt2.lib.flatMapToSearchTimeDto
 import com.wafflestudio.snutt2.lib.isLectureNumberEquals
+import com.wafflestudio.snutt2.lib.logging.AddToBookmarkParameter
 import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.lib.logging.AnalyticsLogger
+import com.wafflestudio.snutt2.lib.logging.LectureActionReferrer
 import com.wafflestudio.snutt2.lib.logging.SearchLectureParameter
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.AuthError
@@ -343,6 +346,38 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    fun onClickBookmark(lecture: LectureDto, isBookmarked: Boolean) {
+        val isBookmarked = bookmarkList.value.map { it.item }.contains(lecture)
+        viewModelScope.launch {
+            if (pageMode.value == SearchPageMode.Bookmark) {
+                _searchUiEvent.emit(
+                    SearchUiEvent.ShowBookmarkDeleteAlert(onConfirm = {
+                        deleteBookmark(lecture)
+                        toggleLectureSelection(lecture)
+                    },),
+                )
+            } else {
+                if (isBookmarked) {
+                    deleteBookmark(lecture)
+                } else {
+                    analyticsLogger.logEvent(
+                        AnalyticsEvent.AddToBookmark(
+                            AddToBookmarkParameter(
+                                lectureId = lecture.lecture_id ?: lecture.id,
+                                referrer = LectureActionReferrer.Search(searchTitle.value),
+                            ),
+                        ),
+                    )
+                    addBookmark(lecture)
+                    if (firstBookmarkAlert.value) {
+                        setFirstBookmarkAlertShown()
+                        _searchUiEvent.emit(SearchUiEvent.ShowToast(R.string.bookmark_first_alert_message))
+                    }
+                }
+            }
+        }
+    }
+
     suspend fun addBookmark(lecture: LectureDto) {
         currentTableRepository.addBookmark(lecture)
         getBookmarkList()
@@ -455,20 +490,21 @@ class SearchViewModel @Inject constructor(
         val displayMessage = displayMessageResolver.getDisplayMessage(error)
         when (error) {
             is AuthError -> {
-                _searchUiEvent.emit(SearchUiEvent.ShowToast(displayMessage))
+                _searchUiEvent.emit(SearchUiEvent.ShowToastError(displayMessage))
                 userRepository.postForceLogout()
                 _searchUiEvent.emit(SearchUiEvent.LoggedOut)
             }
             else -> {
-                _searchUiEvent.emit(SearchUiEvent.ShowToast(displayMessage))
+                _searchUiEvent.emit(SearchUiEvent.ShowToastError(displayMessage))
             }
         }
     }
 }
 
 sealed interface SearchUiEvent {
-    data class ShowToast(val displayMessage: String) : SearchUiEvent
+    data class ShowToastError(val displayMessage: String) : SearchUiEvent
+    data class ShowToast(val resId: Int) : SearchUiEvent
     data object LoggedOut : SearchUiEvent
-//    data object ShowDeleteBookmarkAlert: SearchUiEvent
+    data class ShowBookmarkDeleteAlert(val onConfirm: suspend () -> Unit) : SearchUiEvent
 //    data object ShowBottomSheet: SearchUiEvent
 }

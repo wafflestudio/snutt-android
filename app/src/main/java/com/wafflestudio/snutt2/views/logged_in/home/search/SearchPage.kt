@@ -50,7 +50,6 @@ import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
-import com.wafflestudio.snutt2.lib.logging.AddToBookmarkParameter
 import com.wafflestudio.snutt2.lib.logging.AddToTimetableParameter
 import com.wafflestudio.snutt2.lib.logging.AddToVacancyParameter
 import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
@@ -132,12 +131,23 @@ fun SearchRoute(
     LaunchedEffect(Unit) {
         searchViewModel.searchUiEvent.collect { uiEvent ->
             when (uiEvent) {
-                is SearchUiEvent.ShowToast -> {
+                is SearchUiEvent.ShowToastError -> {
                     val displayMessage = uiEvent.displayMessage
                     context.toast(displayMessage)
                 }
+                is SearchUiEvent.ShowToast -> {
+                    val resId = uiEvent.resId
+                    context.toast(context.getString(resId))
+                }
                 is SearchUiEvent.LoggedOut -> {
                     onNavigateOnboardAsOrigin()
+                }
+                is SearchUiEvent.ShowBookmarkDeleteAlert -> {
+                    val onConfirm = uiEvent.onConfirm
+                    showDeleteBookmarkDialog(
+                        composableStates,
+                        onConfirm,
+                    )
                 }
             }
         }
@@ -225,41 +235,7 @@ fun SearchRoute(
                 )
             }
         },
-        onClickBookmark = { lecture, isBookmarked ->
-            scope.launch {
-                launchSuspendApi(apiOnProgress, apiOnError) {
-                    if (pageMode == SearchPageMode.Bookmark) {
-                        showDeleteBookmarkDialog(
-                            composableStates,
-                            onConfirm = {
-                                searchViewModel.deleteBookmark(lecture)
-                                searchViewModel.toggleLectureSelection(
-                                    lecture,
-                                )
-                            },
-                        )
-                    } else {
-                        if (isBookmarked) {
-                            searchViewModel.deleteBookmark(lecture)
-                        } else {
-                            analyticsLogger.logEvent(
-                                AnalyticsEvent.AddToBookmark(
-                                    AddToBookmarkParameter(
-                                        lectureId = lecture.lecture_id ?: lecture.id,
-                                        referrer = LectureActionReferrer.Search(searchViewModel.searchTitle.value),
-                                    ),
-                                ),
-                            )
-                            searchViewModel.addBookmark(lecture)
-                            if (firstBookmarkAlert) {
-                                searchViewModel.setFirstBookmarkAlertShown()
-                                context.toast(context.getString(R.string.bookmark_first_alert_message))
-                            }
-                        }
-                    }
-                }
-            }
-        },
+        onClickBookmark = searchViewModel::onClickBookmark,
         onClickVacancy = { lecture, isVacancyRegistered ->
             scope.launch {
                 launchSuspendApi(apiOnProgress, apiOnError) {
