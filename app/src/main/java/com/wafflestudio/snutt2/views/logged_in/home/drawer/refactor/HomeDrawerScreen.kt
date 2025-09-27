@@ -116,7 +116,11 @@ fun HomeDrawerScreen(
                         courseBookDrawerItem.tableList.forEach {
                             CourseBookDrawerItem(it, uiState.selectedTable?.id == it.id)
                         }
-                        // 가장 최근 학기에 시간표가 없을 때, "+ 시간표 추가하기" 를 누르면 시간표 추가 바텀시트 보여주기
+                        if (courseBookDrawerItem.tableList.isEmpty()) {
+                            CreateTableItem {
+                                // TODO: 시간표 만들기 (해당 학기)
+                            }
+                        }
                     }
                 }
             }

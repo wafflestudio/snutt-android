@@ -89,3 +89,21 @@ fun CourseBookDrawerItem(
         )
     }
 }
+
+@Composable
+fun CreateTableItem(
+    onClick: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .padding(vertical = 10.dp)
+            .clicks { onClick() },
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Spacer(modifier = Modifier.width(25.dp))
+        Text(
+            text = stringResource(R.string.home_drawer_timetable_add_button),
+            style = SNUTTTypography.body1,
+        )
+    }
+}
