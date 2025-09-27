@@ -51,93 +51,99 @@ fun HomeDrawerContent(
 ) {
     val context = LocalContext.current
 
-    Column(
-        modifier = modifier
-            .background(SNUTTColors.White900)
-            .fillMaxSize()
-            .padding(20.dp),
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            LogoIcon(modifier = Modifier.size(20.dp))
-            Spacer(modifier = Modifier.width(10.dp))
-            Text(
-                text = stringResource(R.string.sign_in_logo_title),
-                style = SNUTTTypography.h2,
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            ExitIcon(modifier = Modifier.clicks {
-                onClickExitIcon()
-            })
-        }
-        Divider(
-            modifier = Modifier.padding(top = 20.dp, bottom = 10.dp), color = SNUTTColors.Gray100,
-        )
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = stringResource(R.string.timetable_app_bar_title),
-                style = SNUTTTypography.body1,
-                color = SNUTTColors.Gray200,
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            Text(
-                text = "+",
-                modifier = Modifier.clicks {
-                    onClickCreateNewTable()
-                },
-                style = SNUTTTypography.subtitle1,
-                fontSize = 24.sp,
-            )
-            Spacer(modifier = Modifier.width(10.dp))
-        }
-        LazyColumn {
-            itemsIndexed(
-                items = uiState.courseBookDrawerItemList,
-                key = { _, it ->
-                    it.item.courseBook.year * 10 + it.item.courseBook.semester
-                },
-            ) { idx, (courseBookDrawerItem, expanded) ->
-                val rotation by animateFloatAsState(if (expanded) -180f else 0f)
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(vertical = 10.dp)
-                        .clicks {
-                            onToggleExpand(idx)
-                        },
-                ) {
+    when (uiState) {
+        is HomeDrawerUiState.Loading -> {}
+        is HomeDrawerUiState.Loaded -> {
+            Column(
+                modifier = modifier
+                    .background(SNUTTColors.White900)
+                    .fillMaxSize()
+                    .padding(20.dp),
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    LogoIcon(modifier = Modifier.size(20.dp))
+                    Spacer(modifier = Modifier.width(10.dp))
                     Text(
-                        text = courseBookDrawerItem.courseBook.toFormattedString(context),
-                        style = SNUTTTypography.h3,
+                        text = stringResource(R.string.sign_in_logo_title),
+                        style = SNUTTTypography.h2,
                     )
-                    Spacer(modifier = Modifier.width(6.dp))
-                    ArrowDownIcon(
-                        modifier = Modifier
-                            .size(22.dp)
-                            .rotate(rotation),
-                    )
-                    Spacer(modifier = Modifier.width(6.dp))
-                    if (courseBookDrawerItem.showNewCoursebookDot) {
-                        RedDot()
-                    }
+                    Spacer(modifier = Modifier.weight(1f))
+                    ExitIcon(modifier = Modifier.clicks {
+                        onClickExitIcon()
+                    })
                 }
-                AnimatedVisibility(visible = expanded) {
-                    Column {
-                        courseBookDrawerItem.tableList.forEach {
-                            CourseBookDrawerItem(
-                                tableSummary = it,
-                                isSelectedTable = (uiState.selectedTable.id == it.id),
-                                onSelectTable = onSelectTable,
-                                onClickCopyIcon = onClickCopyIcon,
-                                onClickMoreIcon = onClickMoreIcon
+                Divider(
+                    modifier = Modifier.padding(top = 20.dp, bottom = 10.dp),
+                    color = SNUTTColors.Gray100,
+                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = stringResource(R.string.timetable_app_bar_title),
+                        style = SNUTTTypography.body1,
+                        color = SNUTTColors.Gray200,
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    Text(
+                        text = "+",
+                        modifier = Modifier.clicks {
+                            onClickCreateNewTable()
+                        },
+                        style = SNUTTTypography.subtitle1,
+                        fontSize = 24.sp,
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                }
+                LazyColumn {
+                    itemsIndexed(
+                        items = uiState.courseBookDrawerItemList,
+                        key = { _, it ->
+                            it.item.courseBook.year * 10 + it.item.courseBook.semester
+                        },
+                    ) { idx, (courseBookDrawerItem, expanded) ->
+                        val rotation by animateFloatAsState(if (expanded) -180f else 0f)
+
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .padding(vertical = 10.dp)
+                                .clicks {
+                                    onToggleExpand(idx)
+                                },
+                        ) {
+                            Text(
+                                text = courseBookDrawerItem.courseBook.toFormattedString(context),
+                                style = SNUTTTypography.h3,
                             )
+                            Spacer(modifier = Modifier.width(6.dp))
+                            ArrowDownIcon(
+                                modifier = Modifier
+                                    .size(22.dp)
+                                    .rotate(rotation),
+                            )
+                            Spacer(modifier = Modifier.width(6.dp))
+                            if (courseBookDrawerItem.showNewCoursebookDot) {
+                                RedDot()
+                            }
                         }
-                        if (courseBookDrawerItem.tableList.isEmpty()) {
-                            CreateTableItem(
-                                onClick = {
-                                    onClickCreateNewTableOfCourseBook(courseBookDrawerItem.courseBook)
+                        AnimatedVisibility(visible = expanded) {
+                            Column {
+                                courseBookDrawerItem.tableList.forEach {
+                                    CourseBookDrawerItem(
+                                        tableSummary = it,
+                                        isSelectedTable = (uiState.selectedTable.id == it.id),
+                                        onSelectTable = onSelectTable,
+                                        onClickCopyIcon = onClickCopyIcon,
+                                        onClickMoreIcon = onClickMoreIcon
+                                    )
                                 }
-                            )
+                                if (courseBookDrawerItem.tableList.isEmpty()) {
+                                    CreateTableItem(
+                                        onClick = {
+                                            onClickCreateNewTableOfCourseBook(courseBookDrawerItem.courseBook)
+                                        }
+                                    )
+                                }
+                            }
                         }
                     }
                 }

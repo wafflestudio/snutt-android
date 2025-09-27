@@ -6,7 +6,6 @@ import com.wafflestudio.snutt2.data.course_books.CourseBookRepository
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.domainmodel.CourseBook
-import com.wafflestudio.snutt2.domainmodel.Table
 import com.wafflestudio.snutt2.domainmodel.TableSummary
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.network.onFailure
@@ -18,7 +17,11 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,18 +30,8 @@ class HomeDrawerViewModel @Inject constructor(
     private val tableRepository: TableRepository,
     private val currentTableRepository: CurrentTableRepository,
 ) : ViewModel() {
-
-    private val currentTable = currentTableRepository.currentTableRefactored
     private val _uiEvent = MutableSharedFlow<HomeDrawerUiEvent>()
-    private val _uiState =
-        MutableStateFlow(
-            HomeDrawerUiState(
-                courseBookDrawerItemList = emptyList(),
-                // FIXME: 로딩 상태 만들기
-                selectedTable = currentTable.value!!.summary,
-                homeDrawerBottomSheetType = HomeDrawerBottomSheetType.Hidden
-            )
-        )
+    private val _uiState = MutableStateFlow<HomeDrawerUiState>(HomeDrawerUiState.Loading)
 
     val uiEvent = _uiEvent.asSharedFlow()
     val uiState = _uiState.asStateFlow()
@@ -53,7 +46,12 @@ class HomeDrawerViewModel @Inject constructor(
                 }
                 // 콜백지옥인데..
                 .onSuccess { coursebookList ->
-                    tableRepository.tableSummaryList.collect { tableSummaryList ->
+                    combine(
+                        tableRepository.tableSummaryList,
+                        currentTableRepository.currentTableRefactored.filterNotNull()
+                    ) { tableSummaryList, currentTable ->
+                        Timber.tag("aaaa").d("${currentTable}")
+
                         // 유저의 전체 시간표 목록을 학기 별로 그룹핑 한 뒤 학기 순으로 정렬
                         val tableSummariesOfEachCourseBook = tableSummaryList.groupBy {
                             it.courseBook
@@ -67,56 +65,72 @@ class HomeDrawerViewModel @Inject constructor(
                             tableSummariesOfEachCourseBook[mostRecentCourseBook] = emptyList()
                         }
 
+                        val state = _uiState.value
+
                         // 기존 각 학기의 펼침 상태 map
                         val courseBookDrawerItemListMap =
-                            _uiState.value.courseBookDrawerItemList.associate { (item, expanded) ->
-                                item.courseBook to expanded
+                            when (state) {
+                                is HomeDrawerUiState.Loading -> emptyMap()
+                                is HomeDrawerUiState.Loaded -> state.courseBookDrawerItemList.associate { (item, expanded) ->
+                                    item.courseBook to expanded
+                                }
                             }
 
-                        _uiState.value = _uiState.value.copy(
-                            courseBookDrawerItemList = tableSummariesOfEachCourseBook
-                                .toList()
-                                .sortedBy { (coursebook, _) -> coursebook }
-                                .map { (courseBook, tableSummaries) ->
-                                    CoursebookDrawerItem(
-                                        courseBook = courseBook,
-                                        showNewCoursebookDot = (courseBook == mostRecentCourseBook) && tableSummaries.isEmpty(),
-                                        tableList = tableSummaries
-                                    ).toDataWithState(
-                                        // FIXME: 로직 정리
-                                        currentTable.value?.summary?.courseBook == courseBook ||
-                                                courseBookDrawerItemListMap[courseBook] ?: false
-                                    )
-                                }
-                        )
-                    }
+                        val courseBookDrawerItemList = tableSummariesOfEachCourseBook
+                            .toList()
+                            .sortedBy { (coursebook, _) -> coursebook }
+                            .map { (courseBook, tableSummaries) ->
+                                CoursebookDrawerItem(
+                                    courseBook = courseBook,
+                                    showNewCoursebookDot = (courseBook == mostRecentCourseBook) && tableSummaries.isEmpty(),
+                                    tableList = tableSummaries
+                                ).toDataWithState(
+                                    // FIXME: 로직 정리
+                                    currentTable.summary.courseBook == courseBook ||
+                                            courseBookDrawerItemListMap[courseBook] ?: false
+                                )
+                            }
+
+                        _uiState.value = when (state) {
+                            is HomeDrawerUiState.Loaded -> state.copy(
+                                courseBookDrawerItemList = courseBookDrawerItemList,
+                                selectedTable = currentTable.summary
+                            )
+
+                            is HomeDrawerUiState.Loading -> HomeDrawerUiState.Loaded(
+                                courseBookDrawerItemList = courseBookDrawerItemList,
+                                selectedTable = currentTable.summary,
+                                homeDrawerBottomSheetType = HomeDrawerBottomSheetType.Hidden
+                            )
+                        }
+                    }.collect()
                 }
-        }
-        viewModelScope.launch {
-            currentTableRepository.currentTable.collect { currentTable ->
-                currentTable?.let {
-                    _uiState.value = _uiState.value.copy(
-                        selectedTable = Table.fromTableDto(it).summary
-                    )
-                }
-            }
         }
     }
 
     fun toggleCourseBookDrawerItem(index: Int) {
         val state = _uiState.value
+        if (state !is HomeDrawerUiState.Loaded) {
+            return
+        }
+
         _uiState.value = state.copy(
             courseBookDrawerItemList = state.courseBookDrawerItemList.toggleIndex(index)
         )
     }
 
     fun openCreateNewTableSheet() {
+        val state = _uiState.value
+        if (state !is HomeDrawerUiState.Loaded) {
+            return
+        }
+
         viewModelScope.launch {
             // FIXME: 이거 매번 이렇게 가져와?
             courseBookRepository.getCourseBookNew().onSuccess { allCourseBook ->
-                _uiState.value = _uiState.value.copy(
+                _uiState.value = state.copy(
                     homeDrawerBottomSheetType = HomeDrawerBottomSheetType.CreateNewTable.SelectCourseBook(
-                        initialCourseBook = _uiState.value.selectedTable.courseBook,
+                        initialCourseBook = state.selectedTable.courseBook,
                         allCourseBook = allCourseBook
                     )
                 )
@@ -128,7 +142,12 @@ class HomeDrawerViewModel @Inject constructor(
     fun openCreateNewTableOfSpecificCourseBookSheet(
         courseBook: CourseBook
     ) {
-        _uiState.value = _uiState.value.copy(
+        val state = _uiState.value
+        if (state !is HomeDrawerUiState.Loaded) {
+            return
+        }
+
+        _uiState.value = state.copy(
             homeDrawerBottomSheetType = HomeDrawerBottomSheetType.CreateNewTable.SpecificCourseBook(
                 courseBook = courseBook,
             )
@@ -155,7 +174,12 @@ class HomeDrawerViewModel @Inject constructor(
     }
 
     fun openMoreActionBottomSheet(tableSummary: TableSummary) {
-        _uiState.value = _uiState.value.copy(
+        val state = _uiState.value
+        if (state !is HomeDrawerUiState.Loaded) {
+            return
+        }
+
+        _uiState.value = state.copy(
             homeDrawerBottomSheetType = HomeDrawerBottomSheetType.MoreAction(tableSummary)
         )
         viewModelScope.launch {
@@ -169,11 +193,15 @@ sealed interface HomeDrawerUiEvent {
     data object CloseDrawer : HomeDrawerUiEvent
 }
 
-data class HomeDrawerUiState(
-    val courseBookDrawerItemList: List<Selectable<CoursebookDrawerItem>>,
-    val selectedTable: TableSummary,
-    val homeDrawerBottomSheetType: HomeDrawerBottomSheetType
-)
+sealed interface HomeDrawerUiState {
+    data class Loaded(
+        val courseBookDrawerItemList: List<Selectable<CoursebookDrawerItem>>,
+        val selectedTable: TableSummary,
+        val homeDrawerBottomSheetType: HomeDrawerBottomSheetType
+    ) : HomeDrawerUiState
+
+    data object Loading : HomeDrawerUiState
+}
 
 // 이렇게 uiState 용 data class 를 만드는 건 어떨까? 위치는?
 data class CoursebookDrawerItem(

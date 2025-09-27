@@ -15,15 +15,20 @@ fun HomeDrawerBottomSheetLayout(
 ) {
     ModalBottomSheetLayout(
         sheetContent = {
-            when (uiState.homeDrawerBottomSheetType) {
-                HomeDrawerBottomSheetType.Hidden -> {}
-                HomeDrawerBottomSheetType.SelectTheme -> {}
-                HomeDrawerBottomSheetType.CreateNewTheme -> {}
-                is HomeDrawerBottomSheetType.CreateNewTable -> {
-                    CreateTableBottomSheet(uiState.homeDrawerBottomSheetType)
-                }
+            when (uiState) {
+                is HomeDrawerUiState.Loading -> {}
+                is HomeDrawerUiState.Loaded ->
+                    when (uiState.homeDrawerBottomSheetType) {
+                        HomeDrawerBottomSheetType.Hidden -> {}
+                        HomeDrawerBottomSheetType.SelectTheme -> {}
+                        HomeDrawerBottomSheetType.CreateNewTheme -> {}
+                        is HomeDrawerBottomSheetType.CreateNewTable -> {
+                            CreateTableBottomSheet(uiState.homeDrawerBottomSheetType)
+                        }
 
-                is HomeDrawerBottomSheetType.MoreAction -> {}
+                        is HomeDrawerBottomSheetType.MoreAction -> {}
+                    }
+
             }
         },
         sheetState = sheetState,
