@@ -10,6 +10,7 @@ import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.network.onFailure
 import com.wafflestudio.snutt2.lib.network.onSuccess
 import com.wafflestudio.snutt2.lib.toDataWithState
+import com.wafflestudio.snutt2.lib.toggleIndex
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -56,6 +57,12 @@ class HomeDrawerViewModel @Inject constructor(
                             tableSummariesOfEachCourseBook[mostRecentCourseBook] = emptyList()
                         }
 
+                        // 기존 각 학기의 펼침 상태 map
+                        val courseBookDrawerItemListMap =
+                            _uiState.value.courseBookDrawerItemList.associate { (item, expanded) ->
+                                item.courseBook to expanded
+                            }
+
                         _uiState.value = _uiState.value.copy(
                             courseBookDrawerItemList = tableSummariesOfEachCourseBook
                                 .toList()
@@ -66,14 +73,20 @@ class HomeDrawerViewModel @Inject constructor(
                                         showNewCoursebookDot = (courseBook == mostRecentCourseBook) && tableSummaries.isEmpty(),
                                         tableList = tableSummaries
                                     ).toDataWithState(
-                                        // TODO: 현재 선택된 시간표가 속한 coursebook 은 초기 펼침 상태여야 함
-                                        false
+                                        courseBookDrawerItemListMap[courseBook] ?: false
                                     )
                                 }
                         )
                     }
                 }
         }
+    }
+
+    fun toggleCourseBookDrawerItem(index: Int) {
+        val state = _uiState.value
+        _uiState.value = state.copy(
+            courseBookDrawerItemList = state.courseBookDrawerItemList.toggleIndex(index)
+        )
     }
 }
 

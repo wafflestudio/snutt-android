@@ -37,6 +37,7 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 fun HomeDrawerScreen(
     modifier: Modifier,
     uiState: HomeDrawerUiState,
+    onToggleExpand: (drawerItemIndex: Int) -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -92,7 +93,7 @@ fun HomeDrawerScreen(
                     modifier = Modifier
                         .padding(vertical = 10.dp)
                         .clicks {
-                            // TODO: 접었다 폈다
+                            onToggleExpand(idx)
                         },
                 ) {
                     Text(
