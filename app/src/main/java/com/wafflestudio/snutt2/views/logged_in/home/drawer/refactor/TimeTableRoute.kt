@@ -61,8 +61,8 @@ fun TimeTableRoute(
                             drawerState.close()
                         }
                     },
-                    onClickCreateNewTable = drawerViewModel::openCreateNewTableBottomSheet,
-                    onClickCreateNewTableOfCourseBook = drawerViewModel::openCreateNewTableOfCourseBookBottomSheet,
+                    onClickCreateNewTable = drawerViewModel::openCreateNewTableSheet,
+                    onClickCreateNewTableOfCourseBook = drawerViewModel::openCreateNewTableOfSpecificCourseBookSheet,
                     onSelectTable = drawerViewModel::selectTable,
                     onClickCopyIcon = drawerViewModel::copyTable,
                     onClickMoreIcon = drawerViewModel::openMoreActionBottomSheet

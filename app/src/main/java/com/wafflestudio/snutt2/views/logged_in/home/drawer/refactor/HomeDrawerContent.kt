@@ -126,7 +126,7 @@ fun HomeDrawerContent(
                         courseBookDrawerItem.tableList.forEach {
                             CourseBookDrawerItem(
                                 tableSummary = it,
-                                isSelectedTable = (uiState.selectedTable?.id == it.id),
+                                isSelectedTable = (uiState.selectedTable.id == it.id),
                                 onSelectTable = onSelectTable,
                                 onClickCopyIcon = onClickCopyIcon,
                                 onClickMoreIcon = onClickMoreIcon

@@ -17,7 +17,7 @@ data class Table(
             return Table(
                 summary = TableSummary(
                     id = dto.id,
-                    courseBook = CourseBook(dto.year, dto.semester),
+                    courseBook = CourseBook(dto.semester, dto.year),
                     title = dto.title,
                     totalCredit = dto.totalCredit ?: 0,
                     isPrimary = dto.isPrimary,
@@ -46,6 +46,14 @@ data class TableSummary(
             title = dto.title,
             totalCredit = dto.totalCredit ?: 0,
             isPrimary = dto.isPrimary,
+        )
+
+        val Default = TableSummary(
+            id = "",
+            courseBook = CourseBook(1, 2026),
+            title = "테스트 강의",
+            totalCredit = 3,
+            isPrimary = false,
         )
     }
 }

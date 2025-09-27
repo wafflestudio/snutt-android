@@ -5,6 +5,7 @@ import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.Composable
 import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.views.logged_in.home.drawer.refactor.bottom_sheet.CreateTableBottomSheet
 
 @Composable
 fun HomeDrawerBottomSheetLayout(
@@ -18,8 +19,10 @@ fun HomeDrawerBottomSheetLayout(
                 HomeDrawerBottomSheetType.Hidden -> {}
                 HomeDrawerBottomSheetType.SelectTheme -> {}
                 HomeDrawerBottomSheetType.CreateNewTheme -> {}
-                HomeDrawerBottomSheetType.NewTable -> {}
-                is HomeDrawerBottomSheetType.NewTableOfCourseBook -> {}
+                is HomeDrawerBottomSheetType.CreateNewTable -> {
+                    CreateTableBottomSheet(uiState.homeDrawerBottomSheetType)
+                }
+
                 is HomeDrawerBottomSheetType.MoreAction -> {}
             }
         },

@@ -28,20 +28,21 @@ class HomeDrawerViewModel @Inject constructor(
     private val currentTableRepository: CurrentTableRepository,
 ) : ViewModel() {
 
-    private val _uiEvent = MutableSharedFlow<HomeDrawerUiEvent>(1)
+    private val currentTable = currentTableRepository.currentTableRefactored
+    private val _uiEvent = MutableSharedFlow<HomeDrawerUiEvent>()
     private val _uiState =
         MutableStateFlow(
             HomeDrawerUiState(
                 courseBookDrawerItemList = emptyList(),
-                selectedTable = currentTableRepository.currentTable.value?.let {
-                    Table.fromTableDto(it).summary
-                },
+                // FIXME: 로딩 상태 만들기
+                selectedTable = currentTable.value!!.summary,
                 homeDrawerBottomSheetType = HomeDrawerBottomSheetType.Hidden
             )
         )
 
     val uiEvent = _uiEvent.asSharedFlow()
     val uiState = _uiState.asStateFlow()
+
 
     init {
         viewModelScope.launch {
@@ -82,7 +83,9 @@ class HomeDrawerViewModel @Inject constructor(
                                         showNewCoursebookDot = (courseBook == mostRecentCourseBook) && tableSummaries.isEmpty(),
                                         tableList = tableSummaries
                                     ).toDataWithState(
-                                        courseBookDrawerItemListMap[courseBook] ?: false
+                                        // FIXME: 로직 정리
+                                        currentTable.value?.summary?.courseBook == courseBook ||
+                                                courseBookDrawerItemListMap[courseBook] ?: false
                                     )
                                 }
                         )
@@ -91,9 +94,11 @@ class HomeDrawerViewModel @Inject constructor(
         }
         viewModelScope.launch {
             currentTableRepository.currentTable.collect { currentTable ->
-                _uiState.value = _uiState.value.copy(
-                    selectedTable = currentTable?.let { Table.fromTableDto(it).summary }
-                )
+                currentTable?.let {
+                    _uiState.value = _uiState.value.copy(
+                        selectedTable = Table.fromTableDto(it).summary
+                    )
+                }
             }
         }
     }
@@ -105,20 +110,28 @@ class HomeDrawerViewModel @Inject constructor(
         )
     }
 
-    fun openCreateNewTableBottomSheet() {
-        _uiState.value = _uiState.value.copy(
-            homeDrawerBottomSheetType = HomeDrawerBottomSheetType.NewTable
-        )
+    fun openCreateNewTableSheet() {
         viewModelScope.launch {
+            // FIXME: 이거 매번 이렇게 가져와?
+            courseBookRepository.getCourseBookNew().onSuccess { allCourseBook ->
+                _uiState.value = _uiState.value.copy(
+                    homeDrawerBottomSheetType = HomeDrawerBottomSheetType.CreateNewTable.SelectCourseBook(
+                        initialCourseBook = _uiState.value.selectedTable.courseBook,
+                        allCourseBook = allCourseBook
+                    )
+                )
+            }
             _uiEvent.emit(HomeDrawerUiEvent.OpenBottomSheet)
         }
     }
 
-    fun openCreateNewTableOfCourseBookBottomSheet(
+    fun openCreateNewTableOfSpecificCourseBookSheet(
         courseBook: CourseBook
     ) {
         _uiState.value = _uiState.value.copy(
-            homeDrawerBottomSheetType = HomeDrawerBottomSheetType.NewTableOfCourseBook(courseBook)
+            homeDrawerBottomSheetType = HomeDrawerBottomSheetType.CreateNewTable.SpecificCourseBook(
+                courseBook = courseBook,
+            )
         )
         viewModelScope.launch {
             _uiEvent.emit(HomeDrawerUiEvent.OpenBottomSheet)
@@ -158,7 +171,7 @@ sealed interface HomeDrawerUiEvent {
 
 data class HomeDrawerUiState(
     val courseBookDrawerItemList: List<Selectable<CoursebookDrawerItem>>,
-    val selectedTable: TableSummary?,
+    val selectedTable: TableSummary,
     val homeDrawerBottomSheetType: HomeDrawerBottomSheetType
 )
 
@@ -173,10 +186,16 @@ sealed class HomeDrawerBottomSheetType {
     data object Hidden : HomeDrawerBottomSheetType()
     data object SelectTheme : HomeDrawerBottomSheetType()
     data object CreateNewTheme : HomeDrawerBottomSheetType()
-    data object NewTable : HomeDrawerBottomSheetType()
-    data class NewTableOfCourseBook(
-        val courseBook: CourseBook
-    ) : HomeDrawerBottomSheetType()
+    sealed class CreateNewTable : HomeDrawerBottomSheetType() {
+        data class SelectCourseBook(
+            val initialCourseBook: CourseBook,
+            val allCourseBook: List<CourseBook>,
+        ) : CreateNewTable()
+
+        data class SpecificCourseBook(
+            val courseBook: CourseBook
+        ) : CreateNewTable()
+    }
 
     data class MoreAction(
         val tableSummary: TableSummary
