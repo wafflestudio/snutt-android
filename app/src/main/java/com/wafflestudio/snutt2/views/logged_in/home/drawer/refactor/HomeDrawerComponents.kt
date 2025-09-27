@@ -27,8 +27,11 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 
 @Composable
 fun CourseBookDrawerItem(
-    table: TableSummary,
+    tableSummary: TableSummary,
     isSelectedTable: Boolean,
+    onSelectTable: (tableId: String) -> Unit,
+    onClickCopyIcon: (tableId: String) -> Unit,
+    onClickMoreIcon: (tableSummary: TableSummary) -> Unit,
 ) {
     Row(
         modifier = Modifier.padding(vertical = 6.dp),
@@ -38,7 +41,7 @@ fun CourseBookDrawerItem(
             modifier = Modifier
                 .weight(1f)
                 .clicks {
-                    // TODO: 시간표 선택
+                    onSelectTable(tableSummary.id)
                 },
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(5.dp),
@@ -50,19 +53,19 @@ fun CourseBookDrawerItem(
             )
             Text(
                 modifier = Modifier.weight(1f, fill = false),
-                text = table.title,
+                text = tableSummary.title,
                 style = SNUTTTypography.body1,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
             Text(
                 text = stringResource(
-                    R.string.home_drawer_table_credit, table.totalCredit ?: 0L,
+                    R.string.home_drawer_table_credit, tableSummary.totalCredit ?: 0L,
                 ),
                 style = SNUTTTypography.body2.copy(color = SNUTTColors.Black300),
                 maxLines = 1,
             )
-            if (table.isPrimary) {
+            if (tableSummary.isPrimary) {
                 BigPeopleIcon(
                     modifier = Modifier.size(15.dp),
                     isSelected = true,
@@ -74,7 +77,7 @@ fun CourseBookDrawerItem(
             modifier = Modifier
                 .size(30.dp)
                 .clicks {
-                    // TODO: 시간표 복사
+                    onClickCopyIcon(tableSummary.id)
                 },
             colorFilter = ColorFilter.tint(SNUTTColors.Black500),
         )
@@ -83,7 +86,7 @@ fun CourseBookDrawerItem(
             modifier = Modifier
                 .size(30.dp)
                 .clicks {
-                    // TODO: 더보기 버튼
+                    onClickMoreIcon(tableSummary)
                 },
             colorFilter = ColorFilter.tint(SNUTTColors.Black500),
         )

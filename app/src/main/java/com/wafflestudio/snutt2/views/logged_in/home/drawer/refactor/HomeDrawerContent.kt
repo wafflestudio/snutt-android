@@ -38,16 +38,16 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 
 @Composable
-fun HomeDrawerScreen(
+fun HomeDrawerContent(
     modifier: Modifier,
     uiState: HomeDrawerUiState,
     onToggleExpand: (drawerItemIndex: Int) -> Unit,
-    onClickExit: () -> Unit,
+    onClickExitIcon: () -> Unit,
     onClickCreateNewTable: () -> Unit,
     onClickCreateNewTableOfCourseBook: (courseBook: CourseBook) -> Unit,
     onSelectTable: (tableId: String) -> Unit,
-    onDuplicateTable: (tableId: String) -> Unit,
-    onClickMoreOption: (tableId: String) -> Unit,
+    onClickCopyIcon: (tableId: String) -> Unit,
+    onClickMoreIcon: (tableSummary: TableSummary) -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -66,7 +66,7 @@ fun HomeDrawerScreen(
             )
             Spacer(modifier = Modifier.weight(1f))
             ExitIcon(modifier = Modifier.clicks {
-                onClickExit()
+                onClickExitIcon()
             })
         }
         Divider(
@@ -124,7 +124,13 @@ fun HomeDrawerScreen(
                 AnimatedVisibility(visible = expanded) {
                     Column {
                         courseBookDrawerItem.tableList.forEach {
-                            CourseBookDrawerItem(it, uiState.selectedTable?.id == it.id)
+                            CourseBookDrawerItem(
+                                tableSummary = it,
+                                isSelectedTable = (uiState.selectedTable?.id == it.id),
+                                onSelectTable = onSelectTable,
+                                onClickCopyIcon = onClickCopyIcon,
+                                onClickMoreIcon = onClickMoreIcon
+                            )
                         }
                         if (courseBookDrawerItem.tableList.isEmpty()) {
                             CreateTableItem(
@@ -139,3 +145,4 @@ fun HomeDrawerScreen(
         }
     }
 }
+
