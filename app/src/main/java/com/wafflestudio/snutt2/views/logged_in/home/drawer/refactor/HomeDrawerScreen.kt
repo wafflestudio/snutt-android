@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
@@ -29,6 +30,9 @@ import com.wafflestudio.snutt2.components.compose.ExitIcon
 import com.wafflestudio.snutt2.components.compose.LogoIcon
 import com.wafflestudio.snutt2.components.compose.RedDot
 import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.domainmodel.CourseBook
+import com.wafflestudio.snutt2.domainmodel.TableSummary
+import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.lib.toFormattedString
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -38,6 +42,12 @@ fun HomeDrawerScreen(
     modifier: Modifier,
     uiState: HomeDrawerUiState,
     onToggleExpand: (drawerItemIndex: Int) -> Unit,
+    onClickExit: () -> Unit,
+    onClickCreateNewTable: () -> Unit,
+    onClickCreateNewTableOfCourseBook: (courseBook: CourseBook) -> Unit,
+    onSelectTable: (tableId: String) -> Unit,
+    onDuplicateTable: (tableId: String) -> Unit,
+    onClickMoreOption: (tableId: String) -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -56,7 +66,7 @@ fun HomeDrawerScreen(
             )
             Spacer(modifier = Modifier.weight(1f))
             ExitIcon(modifier = Modifier.clicks {
-                // TODO: 닫기 버튼
+                onClickExit()
             })
         }
         Divider(
@@ -72,7 +82,7 @@ fun HomeDrawerScreen(
             Text(
                 text = "+",
                 modifier = Modifier.clicks {
-                    // TODO: 새 시간표 만들기 바텀시트
+                    onClickCreateNewTable()
                 },
                 style = SNUTTTypography.subtitle1,
                 fontSize = 24.sp,
@@ -117,9 +127,11 @@ fun HomeDrawerScreen(
                             CourseBookDrawerItem(it, uiState.selectedTable?.id == it.id)
                         }
                         if (courseBookDrawerItem.tableList.isEmpty()) {
-                            CreateTableItem {
-                                // TODO: 시간표 만들기 (해당 학기)
-                            }
+                            CreateTableItem(
+                                onClick = {
+                                    onClickCreateNewTableOfCourseBook(courseBookDrawerItem.courseBook)
+                                }
+                            )
                         }
                     }
                 }

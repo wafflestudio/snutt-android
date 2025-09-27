@@ -26,7 +26,6 @@ class HomeDrawerViewModel @Inject constructor(
     private val _uiState =
         MutableStateFlow(
             HomeDrawerUiState(
-                open = false,
                 courseBookDrawerItemList = emptyList(),
                 selectedTable = null
             )
@@ -91,7 +90,6 @@ class HomeDrawerViewModel @Inject constructor(
 }
 
 data class HomeDrawerUiState(
-    val open: Boolean,
     val courseBookDrawerItemList: List<Selectable<CoursebookDrawerItem>>,
     val selectedTable: TableSummary?,
 )

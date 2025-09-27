@@ -15,6 +15,12 @@ fun TimeTableRoute(
     HomeDrawerScreen(
         modifier = Modifier,
         uiState = uiState,
-        onToggleExpand = viewModel::toggleCourseBookDrawerItem
+        onToggleExpand = viewModel::toggleCourseBookDrawerItem,
+        onClickExit = {},
+        onClickCreateNewTable = {},
+        onClickCreateNewTableOfCourseBook = {},
+        onSelectTable = {},
+        onDuplicateTable = {},
+        onClickMoreOption = {},
     )
 }
