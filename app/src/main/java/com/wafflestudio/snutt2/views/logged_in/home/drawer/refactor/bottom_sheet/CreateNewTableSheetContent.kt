@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +35,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.drawer.refactor.HomeDrawerBo
 
 @Composable
 fun CreateTableBottomSheet(
+    sheetState: ModalBottomSheetState,
     sheetType: HomeDrawerBottomSheetType.CreateNewTable,
     onCloseSheet: () -> Unit,
     onSubmit: (courseBook: CourseBook, newTitle: String) -> Unit,
@@ -44,6 +47,12 @@ fun CreateTableBottomSheet(
     BackHandler {
         onCloseSheet()
     }
+
+    var clearFocusFlag by remember { mutableStateOf(false) }
+    LaunchedEffect(sheetState.isVisible) {
+        clearFocusFlag = sheetState.isVisible.not()
+    }
+
 
     Column(
         modifier = Modifier
@@ -91,8 +100,7 @@ fun CreateTableBottomSheet(
                 }
             }),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-            // FIXME: 이거 신경쓰기
-//            clearFocusFlag = bottomSheet.isVisible.not(),
+            clearFocusFlag = clearFocusFlag
         )
         Spacer(modifier = Modifier.height(25.dp))
         if (sheetType is HomeDrawerBottomSheetType.CreateNewTable.SelectCourseBook) {

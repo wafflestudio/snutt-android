@@ -26,6 +26,7 @@ fun HomeDrawerBottomSheetLayout(
                     HomeDrawerBottomSheetType.CreateNewTheme -> {}
                     is HomeDrawerBottomSheetType.CreateNewTable -> {
                         CreateTableBottomSheet(
+                            sheetState = sheetState,
                             sheetType = uiState.homeDrawerBottomSheetType,
                             onCloseSheet = onCloseSheet,
                             onSubmit = onCreateNewTable
