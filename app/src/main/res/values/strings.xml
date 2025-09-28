@@ -530,6 +530,8 @@
     <string name="vacancy_delete_selected_message">선택한 강의의 빈자리 알림을 해제하시겠습니까?</string>
     <string name="vacancy_empty_detail">자세히 보기</string>
     <string name="vacancy_banner_text">여기를 눌러 빈자리 알림 서비스를 이용해 보세요!</string>
+    <string name="vacancy_first_add_snackbar_message">더보기탭에서 빈자리 알림 목록을 확인해보세요.</string>
+    <string name="vacancy_first_add_snackbar_action_label">보기</string>
     <string name="diary_app_bar_title">강의 일기장</string>
     <string name="diary_day_bad">별로에요</string>
     <string name="diary_day_neutral">그럭저럭</string>

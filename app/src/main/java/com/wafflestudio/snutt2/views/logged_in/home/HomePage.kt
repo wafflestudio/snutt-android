@@ -159,6 +159,9 @@ fun HomePage() {
                         onNavigateOnboardAsOrigin = {
                             navController.navigateAsOrigin(NavigationDestination.Onboard)
                         },
+                        onNavigateVacancy = {
+                            navController.navigate(NavigationDestination.VacancyNotification)
+                        },
                     )
                     is HomeItem.Review -> {
                         CompositionLocalProvider(LocalReviewWebView provides reviewPageReviewWebViewContainer) {

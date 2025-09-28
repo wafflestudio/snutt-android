@@ -169,6 +169,16 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
+    val firstVacancyAdd = PrefValue(
+        prefContext,
+        PrefValueMetaData(
+            domain = DOMAIN_SCOPE_LOGIN,
+            key = "first_vacancy_add",
+            type = Boolean::class.java,
+            defaultValue = true,
+        ),
+    )
+
     val recentSearchedDepartments = PrefValue<List<TagDto>>(
         prefContext,
         PrefListValueMetaData(

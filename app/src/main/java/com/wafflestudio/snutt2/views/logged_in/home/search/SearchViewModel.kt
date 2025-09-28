@@ -7,7 +7,6 @@ import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
@@ -93,6 +92,8 @@ class SearchViewModel @Inject constructor(
     private val vacancyList = MutableStateFlow(listOf<LectureDto>())
 
     val firstBookmarkAlert = lectureSearchRepository.firstBookmarkAlert
+
+    val firstVacancyAdd = vacancyRepository.firstVacancyAdd
 
     val semesterChange =
         currentTable
@@ -347,7 +348,6 @@ class SearchViewModel @Inject constructor(
     }
 
     fun onClickBookmark(lecture: LectureDto, isBookmarked: Boolean) {
-        val isBookmarked = bookmarkList.value.map { it.item }.contains(lecture)
         viewModelScope.launch {
             if (pageMode.value == SearchPageMode.Bookmark) {
                 _searchUiEvent.emit(
@@ -371,7 +371,7 @@ class SearchViewModel @Inject constructor(
                     addBookmark(lecture)
                     if (firstBookmarkAlert.value) {
                         setFirstBookmarkAlertShown()
-                        _searchUiEvent.emit(SearchUiEvent.ShowToast(R.string.bookmark_first_alert_message))
+                        _searchUiEvent.emit(SearchUiEvent.ShowSnackBarByEvent(SearchSnackBarEvent.FIRST_BOOKMARK_ADD))
                     }
                 }
             }
@@ -403,6 +403,10 @@ class SearchViewModel @Inject constructor(
 
     suspend fun addVacancyLecture(lectureId: String) {
         vacancyRepository.addVacancyLecture(lectureId)
+        if (firstVacancyAdd.value) {
+            vacancyRepository.setVacancyAdded()
+            _searchUiEvent.emit(SearchUiEvent.ShowSnackBarByEvent(SearchSnackBarEvent.FIRST_VACANCY_ADD))
+        }
         getVacancyLectures()
     }
 
@@ -506,5 +510,11 @@ sealed interface SearchUiEvent {
     data class ShowToast(val resId: Int) : SearchUiEvent
     data object LoggedOut : SearchUiEvent
     data class ShowBookmarkDeleteAlert(val onConfirm: suspend () -> Unit) : SearchUiEvent
+    data class ShowSnackBarByEvent(val event: SearchSnackBarEvent) : SearchUiEvent
 //    data object ShowBottomSheet: SearchUiEvent
+}
+
+enum class SearchSnackBarEvent {
+    FIRST_VACANCY_ADD,
+    FIRST_BOOKMARK_ADD,
 }
