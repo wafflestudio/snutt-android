@@ -17,6 +17,7 @@ import com.wafflestudio.snutt2.lib.concatenate
 import com.wafflestudio.snutt2.lib.flatMapToSearchTimeDto
 import com.wafflestudio.snutt2.lib.isLectureNumberEquals
 import com.wafflestudio.snutt2.lib.logging.AddToBookmarkParameter
+import com.wafflestudio.snutt2.lib.logging.AddToVacancyParameter
 import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.lib.logging.AnalyticsLogger
 import com.wafflestudio.snutt2.lib.logging.LectureActionReferrer
@@ -349,30 +350,29 @@ class SearchViewModel @Inject constructor(
 
     fun onClickBookmark(lecture: LectureDto, isBookmarked: Boolean) {
         viewModelScope.launch {
-            if (pageMode.value == SearchPageMode.Bookmark) {
+            if (isBookmarked) {
                 _searchUiEvent.emit(
-                    SearchUiEvent.ShowBookmarkDeleteAlert(onConfirm = {
-                        deleteBookmark(lecture)
-                        toggleLectureSelection(lecture)
-                    },),
+                    SearchUiEvent.ShowAlertByEvent(
+                        event = SearchAlertEvent.DELETE_BOOKMARK,
+                        onConfirm = {
+                            deleteBookmark(lecture)
+                            toggleLectureSelection(lecture)
+                        },
+                    ),
                 )
             } else {
-                if (isBookmarked) {
-                    deleteBookmark(lecture)
-                } else {
-                    analyticsLogger.logEvent(
-                        AnalyticsEvent.AddToBookmark(
-                            AddToBookmarkParameter(
-                                lectureId = lecture.lecture_id ?: lecture.id,
-                                referrer = LectureActionReferrer.Search(searchTitle.value),
-                            ),
+                analyticsLogger.logEvent(
+                    AnalyticsEvent.AddToBookmark(
+                        AddToBookmarkParameter(
+                            lectureId = lecture.lecture_id ?: lecture.id,
+                            referrer = LectureActionReferrer.Search(searchTitle.value),
                         ),
-                    )
-                    addBookmark(lecture)
-                    if (firstBookmarkAlert.value) {
-                        setFirstBookmarkAlertShown()
-                        _searchUiEvent.emit(SearchUiEvent.ShowSnackBarByEvent(SearchSnackBarEvent.FIRST_BOOKMARK_ADD))
-                    }
+                    ),
+                )
+                addBookmark(lecture)
+                if (firstBookmarkAlert.value) {
+                    setFirstBookmarkAlertShown()
+                    _searchUiEvent.emit(SearchUiEvent.ShowSnackBarByEvent(SearchSnackBarEvent.FIRST_BOOKMARK_ADD))
                 }
             }
         }
@@ -394,6 +394,23 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    fun onClickVacancy(lecture: LectureDto, isVacancyRegistered: Boolean) {
+        viewModelScope.launch {
+            if (isVacancyRegistered) {
+                removeVacancyLecture(lecture)
+            } else {
+                analyticsLogger.logEvent(
+                    AnalyticsEvent.AddToVacancy(
+                        AddToVacancyParameter(
+                            lectureId = lecture.lecture_id ?: lecture.id,
+                            referrer = LectureActionReferrer.Search(searchTitle.value),
+                        ),
+                    ),
+                )
+                addVacancyLecture(lecture)
+            }
+        }
+    }
     private suspend fun getVacancyLectures() {
         vacancyList.emit(
             vacancyRepository.getVacancyLectures()
@@ -401,8 +418,8 @@ class SearchViewModel @Inject constructor(
         )
     }
 
-    suspend fun addVacancyLecture(lectureId: String) {
-        vacancyRepository.addVacancyLecture(lectureId)
+    suspend fun addVacancyLecture(lecture: LectureDto) {
+        vacancyRepository.addVacancyLecture(lecture.id)
         if (firstVacancyAdd.value) {
             vacancyRepository.setVacancyAdded()
             _searchUiEvent.emit(SearchUiEvent.ShowSnackBarByEvent(SearchSnackBarEvent.FIRST_VACANCY_ADD))
@@ -410,9 +427,17 @@ class SearchViewModel @Inject constructor(
         getVacancyLectures()
     }
 
-    suspend fun removeVacancyLecture(lectureId: String) {
-        vacancyRepository.removeVacancyLecture(lectureId)
-        getVacancyLectures()
+    suspend fun removeVacancyLecture(lecture: LectureDto) {
+        _searchUiEvent.emit(
+            SearchUiEvent.ShowAlertByEvent(
+                event = SearchAlertEvent.DELETE_VACANCY,
+                onConfirm = {
+                    vacancyRepository.removeVacancyLecture(lecture.id)
+                    getVacancyLectures()
+                    toggleLectureSelection(lecture)
+                },
+            ),
+        )
     }
 
     fun onTimeSelectCancel() {
@@ -509,7 +534,7 @@ sealed interface SearchUiEvent {
     data class ShowToastError(val displayMessage: String) : SearchUiEvent
     data class ShowToast(val resId: Int) : SearchUiEvent
     data object LoggedOut : SearchUiEvent
-    data class ShowBookmarkDeleteAlert(val onConfirm: suspend () -> Unit) : SearchUiEvent
+    data class ShowAlertByEvent(val event: SearchAlertEvent, val onConfirm: suspend () -> Unit) : SearchUiEvent
     data class ShowSnackBarByEvent(val event: SearchSnackBarEvent) : SearchUiEvent
 //    data object ShowBottomSheet: SearchUiEvent
 }
@@ -517,4 +542,9 @@ sealed interface SearchUiEvent {
 enum class SearchSnackBarEvent {
     FIRST_VACANCY_ADD,
     FIRST_BOOKMARK_ADD,
+}
+
+enum class SearchAlertEvent {
+    DELETE_BOOKMARK,
+    DELETE_VACANCY,
 }

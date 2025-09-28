@@ -60,7 +60,6 @@ import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.lib.logging.AddToTimetableParameter
-import com.wafflestudio.snutt2.lib.logging.AddToVacancyParameter
 import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
 import com.wafflestudio.snutt2.lib.logging.LectureActionReferrer
@@ -74,7 +73,7 @@ import com.wafflestudio.snutt2.views.LocalApiOnError
 import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalBottomSheetState
 import com.wafflestudio.snutt2.views.launchSuspendApi
-import com.wafflestudio.snutt2.views.logged_in.bookmark.showDeleteBookmarkDialog
+import com.wafflestudio.snutt2.views.logged_in.bookmark.showDialog
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.search.bookmark.BookmarkList
 import com.wafflestudio.snutt2.views.logged_in.home.search.bookmark.SearchPageMode
@@ -156,13 +155,26 @@ fun SearchRoute(
                 is SearchUiEvent.LoggedOut -> {
                     onNavigateOnboardAsOrigin()
                 }
-                is SearchUiEvent.ShowBookmarkDeleteAlert -> {
+                is SearchUiEvent.ShowAlertByEvent -> {
                     val onConfirm = uiEvent.onConfirm
-                    showDeleteBookmarkDialog(
+                    val event = uiEvent.event
+                    val dialogMessage = when (event) {
+                        SearchAlertEvent.DELETE_VACANCY -> context.getString(R.string.vacancy_delete_dialog_message)
+                        SearchAlertEvent.DELETE_BOOKMARK -> context.getString(R.string.bookmark_remove_check_message)
+                    }
+                    showDialog(
                         composableStates,
+                        dialogMessage,
                         onConfirm,
                     )
                 }
+//                is SearchUiEvent.ShowBookmarkDeleteAlert -> {
+//                    val onConfirm = uiEvent.onConfirm
+//                    showDeleteBookmarkDialog(
+//                        composableStates,
+//                        onConfirm,
+//                    )
+//                }
                 is SearchUiEvent.ShowSnackBarByEvent -> {
                     val event = uiEvent.event
                     val message = when (event) {
@@ -224,7 +236,8 @@ fun SearchRoute(
         },
     ) { padding ->
         Box(
-            modifier = Modifier.padding(padding)
+            modifier = Modifier
+                .padding(padding)
                 .hazeSource(hazeState),
         ) {
             SearchScreen(
@@ -313,25 +326,7 @@ fun SearchRoute(
                     }
                 },
                 onClickBookmark = searchViewModel::onClickBookmark,
-                onClickVacancy = { lecture, isVacancyRegistered ->
-                    scope.launch {
-                        launchSuspendApi(apiOnProgress, apiOnError) {
-                            if (isVacancyRegistered) {
-                                searchViewModel.removeVacancyLecture(lecture.id)
-                            } else {
-                                analyticsLogger.logEvent(
-                                    AnalyticsEvent.AddToVacancy(
-                                        AddToVacancyParameter(
-                                            lectureId = lecture.lecture_id ?: lecture.id,
-                                            referrer = LectureActionReferrer.Search(searchViewModel.searchTitle.value),
-                                        ),
-                                    ),
-                                )
-                                searchViewModel.addVacancyLecture(lecture.id)
-                            }
-                        }
-                    }
-                },
+                onClickVacancy = searchViewModel::onClickVacancy,
                 onToggleLectureContained = { lecture, contained ->
                     if (contained) {
                         scope.launch(Dispatchers.IO) {
@@ -384,7 +379,7 @@ fun SearchRoute(
                     }
                 },
             )
-        } 
+        }
     }
 }
 

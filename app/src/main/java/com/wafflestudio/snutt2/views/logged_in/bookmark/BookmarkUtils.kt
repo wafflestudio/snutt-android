@@ -1,15 +1,15 @@
 package com.wafflestudio.snutt2.views.logged_in.bookmark
 
 import androidx.compose.material.Text
-import androidx.compose.ui.res.stringResource
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.ComposableStates
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.launchSuspendApi
 import kotlinx.coroutines.launch
 
-fun showDeleteBookmarkDialog(
+fun showDialog(
     composableStates: ComposableStates,
+    content: String,
     onConfirm: suspend () -> Unit,
 ) {
     val modalState = composableStates.modalState
@@ -35,7 +35,7 @@ fun showDeleteBookmarkDialog(
             title = context.getString(R.string.notifications_app_bar_title),
             content = {
                 Text(
-                    text = stringResource(R.string.bookmark_remove_check_message),
+                    text = content,
                     style = SNUTTTypography.body1,
                 )
             },
