@@ -106,51 +106,43 @@ class HomeDrawerViewModel @Inject constructor(
     }
 
     fun toggleCourseBookDrawerItem(index: Int) {
-        val state = _uiState.value
-        if (state !is HomeDrawerUiState.Loaded) {
-            return
+        _uiState.value.ifType<HomeDrawerUiState.Loaded> {
+            _uiState.value = it.copy(
+                courseBookDrawerItemList = it.courseBookDrawerItemList.toggleIndex(index)
+            )
         }
-
-        _uiState.value = state.copy(
-            courseBookDrawerItemList = state.courseBookDrawerItemList.toggleIndex(index)
-        )
     }
 
     fun openCreateNewTableSheet() {
-        val state = _uiState.value
-        if (state !is HomeDrawerUiState.Loaded) {
-            return
-        }
-
         viewModelScope.launch {
             // FIXME: 이거 매번 이렇게 가져와?
+            // TODO: 에러 처리
             courseBookRepository.getCourseBookNew().onSuccess { allCourseBook ->
-                _uiState.value = state.copy(
-                    homeDrawerBottomSheetType = HomeDrawerBottomSheetType.CreateNewTable.SelectCourseBook(
-                        initialCourseBook = state.selectedTable.courseBook,
-                        allCourseBook = allCourseBook
+                _uiState.value.ifType<HomeDrawerUiState.Loaded> {
+                    _uiState.value = it.copy(
+                        homeDrawerBottomSheetType = HomeDrawerBottomSheetType.CreateNewTable.SelectCourseBook(
+                            initialCourseBook = it.selectedTable.courseBook,
+                            allCourseBook = allCourseBook
+                        )
                     )
-                )
+                    _uiEvent.emit(HomeDrawerUiEvent.OpenBottomSheet)
+                }
             }
-            _uiEvent.emit(HomeDrawerUiEvent.OpenBottomSheet)
         }
     }
 
     fun openCreateNewTableOfSpecificCourseBookSheet(
         courseBook: CourseBook
     ) {
-        val state = _uiState.value
-        if (state !is HomeDrawerUiState.Loaded) {
-            return
-        }
-
-        _uiState.value = state.copy(
-            homeDrawerBottomSheetType = HomeDrawerBottomSheetType.CreateNewTable.SpecificCourseBook(
-                courseBook = courseBook,
+        _uiState.value.ifType<HomeDrawerUiState.Loaded> {
+            _uiState.value = it.copy(
+                homeDrawerBottomSheetType = HomeDrawerBottomSheetType.CreateNewTable.SpecificCourseBook(
+                    courseBook = courseBook,
+                )
             )
-        )
-        viewModelScope.launch {
-            _uiEvent.emit(HomeDrawerUiEvent.OpenBottomSheet)
+            viewModelScope.launch {
+                _uiEvent.emit(HomeDrawerUiEvent.OpenBottomSheet)
+            }
         }
     }
 
