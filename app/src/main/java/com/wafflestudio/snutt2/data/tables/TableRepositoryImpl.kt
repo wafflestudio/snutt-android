@@ -114,22 +114,22 @@ class TableRepositoryImpl @Inject constructor(
         api._deletePrimaryTable(id)
     }
 
-    override suspend fun getActiveLectureReminders(): Result<TimetableLectureReminders> {
+    override suspend fun getTimetableReminders(timetableId: String): Result<TimetableLectureReminders> {
         try {
-            val activeLectureReminders = api._getActiveLectureReminders()
-            val activeTable = api._getTableById(activeLectureReminders.timetableId)
-            val activeLecturesWithReminderOption = activeLectureReminders.reminders.map { it.toDomainModel() }
-            val result = activeTable.lectureList.mapNotNull { lectureDto ->
-                val matchingOption = activeLecturesWithReminderOption.find { it.lectureId == lectureDto.id }
+            val timetableReminders = api._getTimetableReminders(timetableId)
+            val reminderTable = api._getTableById(timetableId)
+            val lecturesWithReminderOption = timetableReminders.map { it.toDomainModel() }
+            val result = reminderTable.lectureList.mapNotNull { lecture ->
+                val matchingOption = lecturesWithReminderOption.find { it.lectureId == lecture.id }
                 matchingOption?.let {
                     LectureWithReminderOption(
-                        lectureId = lectureDto.id,
-                        lectureTitle = lectureDto.course_title,
+                        lectureId = lecture.id,
+                        lectureTitle = lecture.course_title,
                         lectureReminderOffset = it.lectureReminderOffset,
                     )
                 }
             }
-            return Result.Success(TimetableLectureReminders(activeTable.id, result))
+            return Result.Success(TimetableLectureReminders(timetableId, result))
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
         }

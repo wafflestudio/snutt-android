@@ -35,7 +35,7 @@ interface TableRepository {
 
     suspend fun setTableNotPrimary(id: String)
 
-    suspend fun getActiveLectureReminders(): Result<TimetableLectureReminders>
+    suspend fun getTimetableReminders(timetableId: String): Result<TimetableLectureReminders>
 
     suspend fun getTimetableLectureReminder(timetableId: String, lectureId: String): Result<LectureWithReminderOption>
 

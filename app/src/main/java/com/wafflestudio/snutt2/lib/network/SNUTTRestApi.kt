@@ -104,8 +104,10 @@ interface SNUTTRestApi {
         @Path("lecture_id") lecture_id: String,
     ): ResetLectureResults
 
-    @GET("v1/tables/active-semester/primary/lecture/reminders")
-    suspend fun _getActiveLectureReminders(): GetActiveLectureRemindersResults
+    @GET("v1/tables/{timetableId}/lecture/reminders")
+    suspend fun _getTimetableReminders(
+        @Path("timetableId") timetableId: String,
+    ): GetTimetableRemindersResults
 
     @GET("v1/tables/{timetableId}/lecture/{timetableLectureId}/reminder")
     suspend fun _getTimetableLectureReminder(
