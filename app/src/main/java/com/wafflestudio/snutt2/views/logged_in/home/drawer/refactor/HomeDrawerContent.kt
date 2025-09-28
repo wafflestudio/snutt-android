@@ -162,3 +162,42 @@ fun HomeDrawerContent(
     }
 }
 
+@Preview
+@Composable
+private fun HomeDrawerScreenPreview() {
+    HomeDrawerContent(
+        modifier = Modifier,
+        uiState = HomeDrawerUiState.Loaded(
+            courseBookDrawerItemList = listOf(
+                CoursebookDrawerItem(
+                    courseBook = CourseBook(1, 2026),
+                    showNewCoursebookDot = false,
+                    tableList = listOf(TableSummary.Default, TableSummary.Default)
+                ).toDataWithState(true),
+                CoursebookDrawerItem(
+                    courseBook = CourseBook(1, 2025),
+                    showNewCoursebookDot = false,
+                    tableList = emptyList()
+                ).toDataWithState(false),
+                CoursebookDrawerItem(
+                    courseBook = CourseBook(1, 2024),
+                    showNewCoursebookDot = false,
+                    tableList = emptyList()
+                ).toDataWithState(false)
+            ),
+            TableSummary.Default,
+            homeDrawerBottomSheetType = HomeDrawerBottomSheetType.Empty,
+            dialogState = HomeDrawerUiState.DialogState.None
+        ),
+        onToggleExpand = {},
+        onClickExitIcon = {},
+        onClickCreateNewTable = {},
+        onClickCreateNewTableOfCourseBook = {},
+        onSelectTable = {},
+        onClickCopyIcon = {},
+        onClickMoreIcon = {},
+        onDismissDialog = {},
+        onConfirmChangeTableTitle = { _, _ -> },
+        onConfirmDeleteTable = {}
+    )
+}
