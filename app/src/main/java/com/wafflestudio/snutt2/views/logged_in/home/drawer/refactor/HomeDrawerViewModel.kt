@@ -8,6 +8,7 @@ import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.TableSummary
 import com.wafflestudio.snutt2.lib.Selectable
+import com.wafflestudio.snutt2.lib.ifType
 import com.wafflestudio.snutt2.lib.network.onFailure
 import com.wafflestudio.snutt2.lib.network.onSuccess
 import com.wafflestudio.snutt2.lib.toDataWithState
@@ -21,7 +22,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -50,8 +50,6 @@ class HomeDrawerViewModel @Inject constructor(
                         tableRepository.tableSummaryList,
                         currentTableRepository.currentTableRefactored.filterNotNull()
                     ) { tableSummaryList, currentTable ->
-                        Timber.tag("aaaa").d("${currentTable}")
-
                         // 유저의 전체 시간표 목록을 학기 별로 그룹핑 한 뒤 학기 순으로 정렬
                         val tableSummariesOfEachCourseBook = tableSummaryList.groupBy {
                             it.courseBook
@@ -90,7 +88,6 @@ class HomeDrawerViewModel @Inject constructor(
                                             courseBookDrawerItemListMap[courseBook] ?: false
                                 )
                             }
-
                         _uiState.value = when (state) {
                             is HomeDrawerUiState.Loaded -> state.copy(
                                 courseBookDrawerItemList = courseBookDrawerItemList,
@@ -174,22 +171,39 @@ class HomeDrawerViewModel @Inject constructor(
     }
 
     fun openMoreActionBottomSheet(tableSummary: TableSummary) {
-        val state = _uiState.value
-        if (state !is HomeDrawerUiState.Loaded) {
-            return
+        _uiState.value.ifType<HomeDrawerUiState.Loaded> {
+            _uiState.value = it.copy(
+                homeDrawerBottomSheetType = HomeDrawerBottomSheetType.MoreAction(tableSummary)
+            )
         }
-
-        _uiState.value = state.copy(
-            homeDrawerBottomSheetType = HomeDrawerBottomSheetType.MoreAction(tableSummary)
-        )
         viewModelScope.launch {
             _uiEvent.emit(HomeDrawerUiEvent.OpenBottomSheet)
+        }
+    }
+
+    fun createNewTable(courseBook: CourseBook, title: String) {
+        viewModelScope.launch {
+            tableRepository.createTableNew(
+                courseBook = courseBook,
+                title = title
+            ).onFailure {
+                // TODO: 에러 처리
+            }.onSuccess {
+                _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
+                _uiState.value.ifType<HomeDrawerUiState.Loaded> {
+                    _uiState.value = it.copy(
+                        homeDrawerBottomSheetType = HomeDrawerBottomSheetType.Hidden
+                    )
+                }
+                _uiEvent.emit(HomeDrawerUiEvent.CloseDrawer)
+            }
         }
     }
 }
 
 sealed interface HomeDrawerUiEvent {
     data object OpenBottomSheet : HomeDrawerUiEvent
+    data object CloseBottomSheet : HomeDrawerUiEvent
     data object CloseDrawer : HomeDrawerUiEvent
 }
 

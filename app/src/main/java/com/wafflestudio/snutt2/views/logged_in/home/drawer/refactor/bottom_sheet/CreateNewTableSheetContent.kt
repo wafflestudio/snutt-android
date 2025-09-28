@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.drawer.refactor.bottom_sheet
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,20 +25,25 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.Picker
 import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.lib.toFormattedString
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.logged_in.home.drawer.refactor.HomeDrawerBottomSheetType
-import timber.log.Timber
 
 @Composable
 fun CreateTableBottomSheet(
-    sheetType: HomeDrawerBottomSheetType.CreateNewTable
+    sheetType: HomeDrawerBottomSheetType.CreateNewTable,
+    onCloseSheet: () -> Unit,
+    onSubmit: (courseBook: CourseBook, newTitle: String) -> Unit,
 ) {
     val context = LocalContext.current
     var title by remember(sheetType) { mutableStateOf("") }
     var pickedCourseBook by remember { mutableStateOf((sheetType as? HomeDrawerBottomSheetType.CreateNewTable.SelectCourseBook)?.initialCourseBook) }
 
+    BackHandler {
+        onCloseSheet()
+    }
 
     Column(
         modifier = Modifier
@@ -50,7 +56,7 @@ fun CreateTableBottomSheet(
             Text(
                 text = stringResource(R.string.common_cancel), style = SNUTTTypography.body1,
                 modifier = Modifier.clicks {
-                    // TODO: 취소
+                    onCloseSheet()
                 },
             )
             Spacer(modifier = Modifier.weight(1f))
@@ -60,8 +66,9 @@ fun CreateTableBottomSheet(
                     color = SNUTTColors.Gray200
                 ),
                 modifier = Modifier.clicks(enabled = title.isNotEmpty()) {
-                    // TODO: 완료
-                    Timber.tag("aaaa").d(pickedCourseBook.toString())
+                    pickedCourseBook?.let {
+                        onSubmit(it, title)
+                    }
                 },
             )
         }
@@ -79,7 +86,9 @@ fun CreateTableBottomSheet(
             underlineColorFocused = SNUTTColors.SNUTTTheme,
             underlineWidth = 2.dp,
             keyboardActions = KeyboardActions(onDone = {
-                // TODO: 완료
+                pickedCourseBook?.let {
+                    onSubmit(it, title)
+                }
             }),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             // FIXME: 이거 신경쓰기

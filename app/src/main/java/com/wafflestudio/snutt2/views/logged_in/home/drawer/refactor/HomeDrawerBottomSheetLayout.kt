@@ -4,6 +4,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.Composable
+import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.logged_in.home.drawer.refactor.bottom_sheet.CreateTableBottomSheet
 
@@ -11,23 +12,28 @@ import com.wafflestudio.snutt2.views.logged_in.home.drawer.refactor.bottom_sheet
 fun HomeDrawerBottomSheetLayout(
     uiState: HomeDrawerUiState,
     sheetState: ModalBottomSheetState,
+    onCloseSheet: () -> Unit,
+    onCreateNewTable: (coursebook: CourseBook, title: String) -> Unit,
     content: @Composable () -> Unit,
 ) {
     ModalBottomSheetLayout(
         sheetContent = {
             when (uiState) {
                 is HomeDrawerUiState.Loading -> {}
-                is HomeDrawerUiState.Loaded ->
-                    when (uiState.homeDrawerBottomSheetType) {
-                        HomeDrawerBottomSheetType.Hidden -> {}
-                        HomeDrawerBottomSheetType.SelectTheme -> {}
-                        HomeDrawerBottomSheetType.CreateNewTheme -> {}
-                        is HomeDrawerBottomSheetType.CreateNewTable -> {
-                            CreateTableBottomSheet(uiState.homeDrawerBottomSheetType)
-                        }
-
-                        is HomeDrawerBottomSheetType.MoreAction -> {}
+                is HomeDrawerUiState.Loaded -> when (uiState.homeDrawerBottomSheetType) {
+                    HomeDrawerBottomSheetType.Hidden -> {}
+                    HomeDrawerBottomSheetType.SelectTheme -> {}
+                    HomeDrawerBottomSheetType.CreateNewTheme -> {}
+                    is HomeDrawerBottomSheetType.CreateNewTable -> {
+                        CreateTableBottomSheet(
+                            sheetType = uiState.homeDrawerBottomSheetType,
+                            onCloseSheet = onCloseSheet,
+                            onSubmit = onCreateNewTable
+                        )
                     }
+
+                    is HomeDrawerBottomSheetType.MoreAction -> {}
+                }
 
             }
         },

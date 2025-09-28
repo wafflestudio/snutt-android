@@ -37,6 +37,12 @@ fun TimeTableRoute(
                     }
                 }
 
+                is HomeDrawerUiEvent.CloseBottomSheet -> {
+                    scope.launch {
+                        sheetState.hide()
+                    }
+                }
+
                 is HomeDrawerUiEvent.CloseDrawer -> {
                     scope.launch {
                         drawerState.close()
@@ -49,6 +55,14 @@ fun TimeTableRoute(
     HomeDrawerBottomSheetLayout(
         uiState = uiState,
         sheetState = sheetState,
+        onCloseSheet = {
+            scope.launch {
+                sheetState.hide()
+            }
+        },
+        onCreateNewTable = { coursebook, title ->
+            drawerViewModel.createNewTable(coursebook, title)
+        }
     ) {
         ModalDrawer(
             drawerContent = {

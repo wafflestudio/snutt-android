@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.data.tables
 
 import com.wafflestudio.snutt2.data.SNUTTStorage
+import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
 import com.wafflestudio.snutt2.domainmodel.TableSummary
@@ -196,4 +197,27 @@ class TableRepositoryImpl @Inject constructor(
                 }
             }
         }
+
+    override suspend fun createTableNew(courseBook: CourseBook, title: String): Result<Unit> {
+        try {
+            val response = api._postTable(
+                PostTableParams(
+                    year = courseBook.year,
+                    semester = courseBook.semester,
+                    title = title
+                )
+            )
+            // FIXME: 데이터 레이어 갈아엎을 때 이 암묵적인 동작도 어떻게 좀 하기
+            snuttStorage.tableMap.update(response.associateBy { it.id })
+            response
+                .firstOrNull { it.year == courseBook.year && it.semester == courseBook.semester && it.title == title }
+                ?.let {
+                    fetchTableById(it.id)
+                }
+
+            return Result.Success(Unit)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
 }

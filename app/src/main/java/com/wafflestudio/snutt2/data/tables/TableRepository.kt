@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.data.tables
 
+import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
 import com.wafflestudio.snutt2.domainmodel.TableSummary
 import com.wafflestudio.snutt2.domainmodel.TimetableLectureReminders
@@ -51,4 +52,5 @@ interface TableRepository {
 
     // 여기부터 리팩토링 코드
     val tableSummaryList: StateFlow<List<TableSummary>>
+    suspend fun createTableNew(courseBook: CourseBook, title: String): Result<Unit>
 }
