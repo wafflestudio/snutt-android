@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.logged_in.home.drawer.refactor.bottom_sheet.CreateTableBottomSheet
+import com.wafflestudio.snutt2.views.logged_in.home.drawer.refactor.bottom_sheet.MoreActionSheet
 
 @Composable
 fun HomeDrawerBottomSheetLayout(
@@ -33,7 +34,9 @@ fun HomeDrawerBottomSheetLayout(
                         )
                     }
 
-                    is HomeDrawerBottomSheetType.MoreAction -> {}
+                    is HomeDrawerBottomSheetType.MoreAction -> {
+                        MoreActionSheet(uiState.homeDrawerBottomSheetType.tableSummary)
+                    }
                 }
 
             }
