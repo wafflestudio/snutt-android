@@ -86,6 +86,7 @@ fun TimeTableRoute(
                     onClickMoreIcon = drawerViewModel::openMoreActionBottomSheet,
                     onDismissDialog = drawerViewModel::dismissDialog,
                     onConfirmChangeTableTitle = drawerViewModel::changeTableTitle,
+                    onConfirmDeleteTable = drawerViewModel::deleteTable,
                 )
             },
             drawerState = drawerState,

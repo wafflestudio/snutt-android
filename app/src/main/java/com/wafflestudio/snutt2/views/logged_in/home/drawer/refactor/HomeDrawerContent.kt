@@ -50,6 +50,7 @@ fun HomeDrawerContent(
     onClickMoreIcon: (tableSummary: TableSummary) -> Unit,
     onDismissDialog: () -> Unit,
     onConfirmChangeTableTitle: (newTitle: String, tableId: String) -> Unit,
+    onConfirmDeleteTable: (tableId: String) -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -59,7 +60,8 @@ fun HomeDrawerContent(
             HomeDrawerDialogs(
                 uiState = uiState,
                 onDismiss = onDismissDialog,
-                onConfirmChangeTableTitle = onConfirmChangeTableTitle
+                onConfirmChangeTableTitle = onConfirmChangeTableTitle,
+                onConfirmDeleteTable = onConfirmDeleteTable
             )
 
             Column(

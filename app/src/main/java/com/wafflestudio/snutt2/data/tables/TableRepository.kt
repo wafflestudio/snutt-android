@@ -57,4 +57,5 @@ interface TableRepository {
     suspend fun setPrimaryTableNew(id: String): Result<Unit>
 
     suspend fun unsetPrimaryTableNew(id: String): Result<Unit>
+    suspend fun deleteTableNew(tableId: String): Result<Unit>
 }

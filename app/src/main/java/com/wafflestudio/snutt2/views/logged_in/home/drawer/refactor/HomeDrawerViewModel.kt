@@ -225,7 +225,7 @@ class HomeDrawerViewModel @Inject constructor(
                 .onSuccess {
                     // FIXME: 구 동작 일단 옮겨오기. 이걸 해야, 상태가 변한다.
                     tableRepository.getTableList()
-                    
+
                     _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
                 }
         }
@@ -233,7 +233,13 @@ class HomeDrawerViewModel @Inject constructor(
 
     fun openShareTableDialog(tableSummary: TableSummary) {}
     fun openSetThemeDialog(tableSummary: TableSummary) {}
-    fun openDeleteTableDialog(tableSummary: TableSummary) {}
+    fun openDeleteTableDialog(tableSummary: TableSummary) {
+        _uiState.value.ifType<HomeDrawerUiState.Loaded> {
+            _uiState.value = it.copy(
+                dialogState = HomeDrawerUiState.DialogState.DeleteTable(tableSummary)
+            )
+        }
+    }
 
     fun changeTableTitle(newTitle: String, tableId: String) {
         viewModelScope.launch {
@@ -241,6 +247,25 @@ class HomeDrawerViewModel @Inject constructor(
                 .onFailure {
                     // TODO: 에러 처리
                 }.onSuccess {
+                    _uiState.value.ifType<HomeDrawerUiState.Loaded> {
+                        _uiState.value = it.copy(
+                            dialogState = HomeDrawerUiState.DialogState.None
+                        )
+                    }
+                    _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
+                }
+        }
+    }
+
+    fun deleteTable(tableId: String) {
+        viewModelScope.launch {
+            tableRepository.deleteTableNew(tableId)
+                .onFailure {
+                    // TODO: 에러 처리
+                    // "하나 남은 시간표는 삭제할 수 없습니다" 는 클라로직 대신 서버로직으로 대체함
+                    // 에러나면 dialog 숨기고 바텀시트도 닫고..
+                }
+                .onSuccess {
                     _uiState.value.ifType<HomeDrawerUiState.Loaded> {
                         _uiState.value = it.copy(
                             dialogState = HomeDrawerUiState.DialogState.None
@@ -279,6 +304,10 @@ sealed interface HomeDrawerUiState {
     sealed interface DialogState {
         data object None : DialogState
         data class ChangeTableName(
+            val tableSummary: TableSummary
+        ) : DialogState
+
+        data class DeleteTable(
             val tableSummary: TableSummary
         ) : DialogState
     }

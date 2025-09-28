@@ -261,4 +261,16 @@ class TableRepositoryImpl @Inject constructor(
             return Result.Fail(e.toDomainError())
         }
     }
+
+    override suspend fun deleteTableNew(tableId: String): Result<Unit> {
+        try {
+            val response = api._deleteTable(tableId)
+            // FIXME: 데이터 레이어 수정
+            snuttStorage.tableMap.update(response.associateBy { it.id })
+
+            return Result.Success(Unit)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
 }

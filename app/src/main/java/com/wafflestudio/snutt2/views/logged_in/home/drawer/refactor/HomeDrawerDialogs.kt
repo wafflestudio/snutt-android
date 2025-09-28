@@ -1,20 +1,24 @@
 package com.wafflestudio.snutt2.views.logged_in.home.drawer.refactor
 
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.CustomDialog
 import com.wafflestudio.snutt2.components.compose.EditText
+import com.wafflestudio.snutt2.ui.SNUTTTypography
 
 @Composable
 fun HomeDrawerDialogs(
     uiState: HomeDrawerUiState.Loaded,
     onDismiss: () -> Unit,
     onConfirmChangeTableTitle: (newName: String, tableId: String) -> Unit,
+    onConfirmDeleteTable: (tableId: String) -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -33,6 +37,23 @@ fun HomeDrawerDialogs(
                 negativeButtonText = context.getString(R.string.common_cancel),
             ) {
                 EditText(value = newTitle, onValueChange = { newTitle = it })
+            }
+        }
+
+        is HomeDrawerUiState.DialogState.DeleteTable -> {
+            CustomDialog(
+                onDismiss = onDismiss,
+                onConfirm = {
+                    onConfirmDeleteTable(uiState.dialogState.tableSummary.id)
+                },
+                title = context.getString(R.string.home_drawer_table_delete),
+                positiveButtonText = context.getString(R.string.common_ok),
+                negativeButtonText = context.getString(R.string.common_cancel),
+            ) {
+                Text(
+                    stringResource(R.string.table_delete_alert_message),
+                    style = SNUTTTypography.body2
+                )
             }
         }
     }
