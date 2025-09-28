@@ -243,4 +243,22 @@ class TableRepositoryImpl @Inject constructor(
             return Result.Fail(e.toDomainError())
         }
     }
+
+    override suspend fun setPrimaryTableNew(id: String): Result<Unit> {
+        try {
+            api._postPrimaryTable(id)
+            return Result.Success(Unit)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun unsetPrimaryTableNew(id: String): Result<Unit> {
+        try {
+            api._deletePrimaryTable(id)
+            return Result.Success(Unit)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
 }

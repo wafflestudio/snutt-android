@@ -54,4 +54,7 @@ interface TableRepository {
     val tableSummaryList: StateFlow<List<TableSummary>>
     suspend fun createTableNew(courseBook: CourseBook, title: String): Result<Unit>
     suspend fun updateTableNameNew(newTitle: String, tableId: String): Result<Unit>
+    suspend fun setPrimaryTableNew(id: String): Result<Unit>
+
+    suspend fun unsetPrimaryTableNew(id: String): Result<Unit>
 }

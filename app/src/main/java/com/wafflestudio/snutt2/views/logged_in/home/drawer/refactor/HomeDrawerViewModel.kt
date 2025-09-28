@@ -201,8 +201,36 @@ class HomeDrawerViewModel @Inject constructor(
         }
     }
 
-    fun openSetPrimaryTableDialog(tableSummary: TableSummary) {}
-    fun openUnsetPrimaryTableDialog(tableSummary: TableSummary) {}
+    fun setPrimaryTable(tableSummary: TableSummary) {
+        viewModelScope.launch {
+            tableRepository.setPrimaryTableNew(tableSummary.id)
+                .onFailure {
+                    // TODO: 에러 처리
+                }
+                .onSuccess {
+                    // FIXME: 구 동작 일단 옮겨오기. 이걸 해야, 상태가 변한다.
+                    tableRepository.getTableList()
+
+                    _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
+                }
+        }
+    }
+
+    fun unsetPrimaryTable(tableSummary: TableSummary) {
+        viewModelScope.launch {
+            tableRepository.unsetPrimaryTableNew(tableSummary.id)
+                .onFailure {
+                    // TODO: 에러 처리
+                }
+                .onSuccess {
+                    // FIXME: 구 동작 일단 옮겨오기. 이걸 해야, 상태가 변한다.
+                    tableRepository.getTableList()
+                    
+                    _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
+                }
+        }
+    }
+
     fun openShareTableDialog(tableSummary: TableSummary) {}
     fun openSetThemeDialog(tableSummary: TableSummary) {}
     fun openDeleteTableDialog(tableSummary: TableSummary) {}
@@ -282,4 +310,3 @@ sealed class HomeDrawerBottomSheetType {
         val tableSummary: TableSummary
     ) : HomeDrawerBottomSheetType()
 }
-
