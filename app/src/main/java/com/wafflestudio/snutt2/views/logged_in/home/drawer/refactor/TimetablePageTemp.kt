@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -41,9 +42,11 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
 import com.wafflestudio.snutt2.views.LocalDrawerState
+import com.wafflestudio.snutt2.views.LocalHomePageController
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.LocalRemoteConfig
 import com.wafflestudio.snutt2.views.LocalTableState
+import com.wafflestudio.snutt2.views.logged_in.home.BottomNavigation
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.showTitleChangeDialog
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
@@ -65,9 +68,10 @@ fun TimetablePageTemp(uncheckedNotification: Boolean, onOpenDrawer: () -> Unit) 
         false
     )
     val analyticsLogger = LocalAnalyticsLogger.current
-
+    val pageController = LocalHomePageController.current
     Column(
         modifier = Modifier
+            .fillMaxSize()
             .background(SNUTTColors.White900)
             .logImpression(AnalyticsScreen.TimetableHome),
     ) {
@@ -139,6 +143,11 @@ fun TimetablePageTemp(uncheckedNotification: Boolean, onOpenDrawer: () -> Unit) 
         ) {
             TimeTable(selectedLecture = null)
         }
+
+        BottomNavigation(
+            pageState = pageController.homePageState.value,
+            onUpdatePageState = { pageController.update(it) },
+        )
     }
 }
 
