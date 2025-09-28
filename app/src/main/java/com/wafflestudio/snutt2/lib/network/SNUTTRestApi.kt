@@ -308,6 +308,9 @@ interface SNUTTRestApi {
         @Body pushPreferences: PushPreferenceDto,
     )
 
+    @GET("/v1/semesters/status")
+    suspend fun _getSemesterStatus(): GetSemesterStatusResult
+
     /**
      * 소셜 로그인 관련.
      *

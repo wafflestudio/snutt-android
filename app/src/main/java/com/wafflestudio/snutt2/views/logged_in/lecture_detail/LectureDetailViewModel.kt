@@ -112,6 +112,9 @@ class LectureDetailViewModel @Inject constructor(
     private var lectureReminderJob: Job? = null
 
     private fun init() {
+        viewModelScope.launch {
+            semesterStateRepository.getSemesterStatus()
+        }
         lectureReminderJob = lectureWithReminderOption
             .drop(1) // 이 또한 리팩토링을 한다면 필요가 없다.
             .debounce(200L)
