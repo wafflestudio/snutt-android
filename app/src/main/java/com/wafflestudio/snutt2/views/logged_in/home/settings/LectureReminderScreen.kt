@@ -1,6 +1,8 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -24,10 +26,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -168,6 +172,7 @@ fun LectureReminderScreen(
         when (uiState) {
             is LectureReminderUiState.Loading -> LectureReminderLoading()
             is LectureReminderUiState.Error -> LectureReminderError()
+            is LectureReminderUiState.NoPrimaryTimetable -> LectureReminderNoPrimaryTimetable()
             is LectureReminderUiState.Success -> {
                 Column {
                     SettingColumn(
@@ -265,6 +270,50 @@ fun LectureReminderError() {
     }
 }
 
+@Composable
+fun LectureReminderNoPrimaryTimetable() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.background)
+            .padding(20.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Image(
+                painter = painterResource(R.drawable.ic_cat_retry),
+                contentDescription = "Cat_Retry",
+                modifier = Modifier.width(60.dp),
+            )
+            Text(
+                text = stringResource(R.string.settings_lecture_reminder_empty_title),
+                style = SNUTTTypography.h3.copy(
+                    color = SNUTTColors.TextMed,
+                    fontSize = 15.sp,
+                ),
+            )
+            val annotatedString = buildAnnotatedString {
+                append(stringResource(R.string.settings_lecture_reminder_empty_normal1))
+                withStyle(style = SpanStyle(fontWeight = FontWeight.SemiBold)) {
+                    append(stringResource(R.string.settings_lecture_reminder_empty_bold1))
+                }
+                append(stringResource(R.string.settings_lecture_reminder_empty_normal2))
+            }
+            Text(
+                textAlign = TextAlign.Center,
+                text = annotatedString,
+                style = SNUTTTypography.body2.copy(
+                    color = SNUTTColors.TextMed,
+                    fontSize = 13.sp,
+                ),
+            )
+        }
+    }
+}
+
 @Preview
 @Composable
 fun LectureReminderPagePreview() {
@@ -276,4 +325,10 @@ fun LectureReminderPagePreview() {
         onClickBack = {},
         onChangeReminderOption = { _, _ -> },
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun LectureReminderNoPrimaryTimetablePreview() {
+    LectureReminderNoPrimaryTimetable()
 }

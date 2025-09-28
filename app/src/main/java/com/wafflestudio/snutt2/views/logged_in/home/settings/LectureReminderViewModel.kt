@@ -56,15 +56,19 @@ class LectureReminderViewModel @Inject constructor(
             val primaryTimetableId = tableRepository.tableMap.value.entries.firstOrNull { (id, table) ->
                 table.isPrimary && table.year == targetYear && table.semester == targetSemester
             }?.key ?: ""
-            tableRepository.getTimetableReminders(primaryTimetableId)
-                .onSuccess { data ->
-                    _currentTimetableId.emit(data.timetableId)
-                    _lectureReminderUiState.emit(LectureReminderUiState.Success(data.lectureReminders.associateBy { it.lectureId }))
-                }
-                .onFailure {
-                    _lectureReminderUiState.emit(LectureReminderUiState.Error)
-                }
-            _primaryTimetableId.emit(primaryTimetableId)
+            if (primaryTimetableId.isEmpty()) {
+                _lectureReminderUiState.emit(LectureReminderUiState.NoPrimaryTimetable)
+            } else {
+                tableRepository.getTimetableReminders(primaryTimetableId)
+                    .onSuccess { data ->
+                        _currentTimetableId.emit(data.timetableId)
+                        _lectureReminderUiState.emit(LectureReminderUiState.Success(data.lectureReminders.associateBy { it.lectureId }))
+                    }
+                    .onFailure {
+                        _lectureReminderUiState.emit(LectureReminderUiState.Error)
+                    }
+                _primaryTimetableId.emit(primaryTimetableId)
+            }
         }
     }
 
@@ -132,6 +136,7 @@ sealed interface LectureReminderUiState {
     data object Loading : LectureReminderUiState
     data object Error : LectureReminderUiState
     data class Success(val data: Map<String, LectureWithReminderOption>) : LectureReminderUiState
+    data object NoPrimaryTimetable : LectureReminderUiState
 }
 
 sealed interface LectureReminderUiEvent {

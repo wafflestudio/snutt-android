@@ -396,6 +396,10 @@
     <string name="settings_lecture_reminder_guide_normal1">강의 리마인더를 설정하면 학기가 시작됐을 때 해당 시간에 푸시 알림을 받을 수 있어요.\n</string>
     <string name="settings_lecture_reminder_guide_bold1">이번 학기의 대표시간표 속 강의들</string>
     <string name="settings_lecture_reminder_guide_normal2">에 적용 가능해요.</string>
+    <string name="settings_lecture_reminder_empty_title">지정된 대표시간표가 없습니다</string>
+    <string name="settings_lecture_reminder_empty_normal1">강의 리마인더는\n</string>
+    <string name="settings_lecture_reminder_empty_bold1">이번 학기의 대표시간표 속 강의</string>
+    <string name="settings_lecture_reminder_empty_normal2">들에 지정 가능해요.\n 대표시간표를 지정하고 강의 리마인더를 설정해,\n원하는 시간에 푸시 알림을 받아보세요!</string>
     <string name="settings_item_vacancy">빈자리 알림</string>
     <string name="settings_item_theme_market">테마 마켓</string>
     <string name="settings_item_push_preferences">푸시알림 설정</string>
