@@ -48,12 +48,20 @@ fun HomeDrawerContent(
     onSelectTable: (tableId: String) -> Unit,
     onClickCopyIcon: (tableId: String) -> Unit,
     onClickMoreIcon: (tableSummary: TableSummary) -> Unit,
+    onDismissDialog: () -> Unit,
+    onConfirmChangeTableTitle: (newTitle: String, tableId: String) -> Unit,
 ) {
     val context = LocalContext.current
 
     when (uiState) {
         is HomeDrawerUiState.Loading -> {}
         is HomeDrawerUiState.Loaded -> {
+            HomeDrawerDialogs(
+                uiState = uiState,
+                onDismiss = onDismissDialog,
+                onConfirmChangeTableTitle = onConfirmChangeTableTitle
+            )
+
             Column(
                 modifier = modifier
                     .background(SNUTTColors.White900)

@@ -97,7 +97,8 @@ class HomeDrawerViewModel @Inject constructor(
                             is HomeDrawerUiState.Loading -> HomeDrawerUiState.Loaded(
                                 courseBookDrawerItemList = courseBookDrawerItemList,
                                 selectedTable = currentTable.summary,
-                                homeDrawerBottomSheetType = HomeDrawerBottomSheetType.Hidden
+                                homeDrawerBottomSheetType = HomeDrawerBottomSheetType.Empty,
+                                dialogState = HomeDrawerUiState.DialogState.None
                             )
                         }
                     }.collect()
@@ -184,11 +185,49 @@ class HomeDrawerViewModel @Inject constructor(
                 _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
                 _uiState.value.ifType<HomeDrawerUiState.Loaded> {
                     _uiState.value = it.copy(
-                        homeDrawerBottomSheetType = HomeDrawerBottomSheetType.Hidden
+                        homeDrawerBottomSheetType = HomeDrawerBottomSheetType.Empty
                     )
                 }
                 _uiEvent.emit(HomeDrawerUiEvent.CloseDrawer)
             }
+        }
+    }
+
+    fun openChangeTableNameDialog(tableSummary: TableSummary) {
+        _uiState.value.ifType<HomeDrawerUiState.Loaded> {
+            _uiState.value = it.copy(
+                dialogState = HomeDrawerUiState.DialogState.ChangeTableName(tableSummary)
+            )
+        }
+    }
+
+    fun openSetPrimaryTableDialog(tableSummary: TableSummary) {}
+    fun openUnsetPrimaryTableDialog(tableSummary: TableSummary) {}
+    fun openShareTableDialog(tableSummary: TableSummary) {}
+    fun openSetThemeDialog(tableSummary: TableSummary) {}
+    fun openDeleteTableDialog(tableSummary: TableSummary) {}
+
+    fun changeTableTitle(newTitle: String, tableId: String) {
+        viewModelScope.launch {
+            tableRepository.updateTableNameNew(newTitle, tableId)
+                .onFailure {
+                    // TODO: 에러 처리
+                }.onSuccess {
+                    _uiState.value.ifType<HomeDrawerUiState.Loaded> {
+                        _uiState.value = it.copy(
+                            dialogState = HomeDrawerUiState.DialogState.None
+                        )
+                    }
+                    _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
+                }
+        }
+    }
+
+    fun dismissDialog() {
+        _uiState.value.ifType<HomeDrawerUiState.Loaded> {
+            _uiState.value = it.copy(
+                dialogState = HomeDrawerUiState.DialogState.None
+            )
         }
     }
 }
@@ -203,10 +242,18 @@ sealed interface HomeDrawerUiState {
     data class Loaded(
         val courseBookDrawerItemList: List<Selectable<CoursebookDrawerItem>>,
         val selectedTable: TableSummary,
-        val homeDrawerBottomSheetType: HomeDrawerBottomSheetType
+        val homeDrawerBottomSheetType: HomeDrawerBottomSheetType,
+        val dialogState: DialogState,
     ) : HomeDrawerUiState
 
     data object Loading : HomeDrawerUiState
+
+    sealed interface DialogState {
+        data object None : DialogState
+        data class ChangeTableName(
+            val tableSummary: TableSummary
+        ) : DialogState
+    }
 }
 
 // 이렇게 uiState 용 data class 를 만드는 건 어떨까? 위치는?
@@ -217,7 +264,7 @@ data class CoursebookDrawerItem(
 )
 
 sealed class HomeDrawerBottomSheetType {
-    data object Hidden : HomeDrawerBottomSheetType()
+    data object Empty : HomeDrawerBottomSheetType()
     data object SelectTheme : HomeDrawerBottomSheetType()
     data object CreateNewTheme : HomeDrawerBottomSheetType()
     sealed class CreateNewTable : HomeDrawerBottomSheetType() {

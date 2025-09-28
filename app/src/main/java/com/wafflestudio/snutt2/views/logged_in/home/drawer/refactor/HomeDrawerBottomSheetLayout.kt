@@ -5,6 +5,7 @@ import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.Composable
 import com.wafflestudio.snutt2.domainmodel.CourseBook
+import com.wafflestudio.snutt2.domainmodel.TableSummary
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.logged_in.home.drawer.refactor.bottom_sheet.CreateTableBottomSheet
 import com.wafflestudio.snutt2.views.logged_in.home.drawer.refactor.bottom_sheet.MoreActionSheet
@@ -15,6 +16,12 @@ fun HomeDrawerBottomSheetLayout(
     sheetState: ModalBottomSheetState,
     onCloseSheet: () -> Unit,
     onCreateNewTable: (coursebook: CourseBook, title: String) -> Unit,
+    onClickChangeTableName: (tableSummary: TableSummary) -> Unit,
+    onClickSetPrimary: (tableSummary: TableSummary) -> Unit,
+    onClickUnsetPrimary: (tableSummary: TableSummary) -> Unit,
+    onClickShareTable: (tableSummary: TableSummary) -> Unit,
+    onClickSetTheme: (tableSummary: TableSummary) -> Unit,
+    onClickDeleteTable: (tableSummary: TableSummary) -> Unit,
     content: @Composable () -> Unit,
 ) {
     ModalBottomSheetLayout(
@@ -22,7 +29,7 @@ fun HomeDrawerBottomSheetLayout(
             when (uiState) {
                 is HomeDrawerUiState.Loading -> {}
                 is HomeDrawerUiState.Loaded -> when (uiState.homeDrawerBottomSheetType) {
-                    HomeDrawerBottomSheetType.Hidden -> {}
+                    HomeDrawerBottomSheetType.Empty -> {}
                     HomeDrawerBottomSheetType.SelectTheme -> {}
                     HomeDrawerBottomSheetType.CreateNewTheme -> {}
                     is HomeDrawerBottomSheetType.CreateNewTable -> {
@@ -35,7 +42,15 @@ fun HomeDrawerBottomSheetLayout(
                     }
 
                     is HomeDrawerBottomSheetType.MoreAction -> {
-                        MoreActionSheet(uiState.homeDrawerBottomSheetType.tableSummary)
+                        MoreActionSheet(
+                            tableSummary = uiState.homeDrawerBottomSheetType.tableSummary,
+                            onClickChangeTableName = onClickChangeTableName,
+                            onClickSetPrimary = onClickSetPrimary,
+                            onClickUnsetPrimary = onClickUnsetPrimary,
+                            onClickShareTable = onClickShareTable,
+                            onClickSetTheme = onClickSetTheme,
+                            onClickDeleteTable = onClickDeleteTable,
+                        )
                     }
                 }
 

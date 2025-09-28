@@ -53,4 +53,5 @@ interface TableRepository {
     // 여기부터 리팩토링 코드
     val tableSummaryList: StateFlow<List<TableSummary>>
     suspend fun createTableNew(courseBook: CourseBook, title: String): Result<Unit>
+    suspend fun updateTableNameNew(newTitle: String, tableId: String): Result<Unit>
 }

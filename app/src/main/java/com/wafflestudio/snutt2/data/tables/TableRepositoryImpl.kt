@@ -220,4 +220,27 @@ class TableRepositoryImpl @Inject constructor(
             return Result.Fail(e.toDomainError())
         }
     }
+
+    override suspend fun updateTableNameNew(newTitle: String, tableId: String): Result<Unit> {
+        try {
+            val response = api._putTable(
+                id = tableId,
+                PutTableParams(title = newTitle)
+            )
+            // FIXME: 데이터 레이어 갈아엎을 때 이 암묵적인 동작도 어떻게 좀 하기
+            snuttStorage.tableMap.update(response.associateBy { it.id })
+            val prev = snuttStorage.lastViewedTable.get().value
+            snuttStorage.lastViewedTable.update(
+                if (prev?.id == tableId) {
+                    prev.copy(title = newTitle).toOptional()
+                } else {
+                    prev.toOptional()
+                },
+            )
+
+            return Result.Success(Unit)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
 }

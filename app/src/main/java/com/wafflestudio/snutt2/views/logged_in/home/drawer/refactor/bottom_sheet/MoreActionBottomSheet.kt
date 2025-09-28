@@ -17,9 +17,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.MoreActionItem
 import com.wafflestudio.snutt2.components.compose.PaletteIcon
-import com.wafflestudio.snutt2.components.compose.PeopleIcon
 import com.wafflestudio.snutt2.components.compose.PeopleOffIcon
 import com.wafflestudio.snutt2.components.compose.ShareIcon
 import com.wafflestudio.snutt2.components.compose.TrashIcon
@@ -32,7 +30,13 @@ import com.wafflestudio.snutt2.ui.isDarkMode
 
 @Composable
 fun MoreActionSheet(
-    tableSummary: TableSummary
+    tableSummary: TableSummary,
+    onClickChangeTableName: (tableSummary: TableSummary) -> Unit,
+    onClickSetPrimary: (tableSummary: TableSummary) -> Unit,
+    onClickUnsetPrimary: (tableSummary: TableSummary) -> Unit,
+    onClickShareTable: (tableSummary: TableSummary) -> Unit,
+    onClickSetTheme: (tableSummary: TableSummary) -> Unit,
+    onClickDeleteTable: (tableSummary: TableSummary) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -43,51 +47,42 @@ fun MoreActionSheet(
         MoreActionItem(
             icon = { WriteIcon(modifier = Modifier.size(30.dp)) },
             text = stringResource(R.string.home_drawer_table_title_change),
+            onClick = { onClickChangeTableName(tableSummary) }
+        )
+        MoreActionItem(
+            icon = {
+                PeopleOffIcon(
+                    modifier = Modifier.size(30.dp),
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                )
+            },
+            text = if (tableSummary.isPrimary) stringResource(R.string.home_drawer_table_set_not_primary) else stringResource(
+                R.string.home_drawer_table_set_primary
+            ),
         ) {
-            // TODO: 시간표 이름 변경 다이얼로그
-        }
-        if (tableSummary.isPrimary) {
-            MoreActionItem(
-                icon = {
-                    PeopleOffIcon(
-                        modifier = Modifier.size(30.dp),
-                        colorFilter = ColorFilter.tint(SNUTTColors.Black900),
-                    )
-                },
-                text = stringResource(R.string.home_drawer_table_set_not_primary),
-            ) {
-                // TODO: 대표 시간표 해제
-            }
-        } else {
-            MoreActionItem(
-                icon = {
-                    PeopleIcon(
-                        modifier = Modifier.size(30.dp),
-                        colorFilter = ColorFilter.tint(SNUTTColors.Black900),
-                    )
-                },
-                text = stringResource(R.string.home_drawer_table_set_primary),
-            ) {
-                // TODO: 대표 시간표 지정
+            if (tableSummary.isPrimary) {
+                onClickUnsetPrimary(tableSummary)
+            } else {
+                onClickSetPrimary(tableSummary)
             }
         }
         MoreActionItem(
             icon = { ShareIcon(modifier = Modifier.size(30.dp)) },
             text = stringResource(R.string.home_drawer_share_table_image),
         ) {
-            // TODO: 이미지 공유
+            onClickShareTable(tableSummary)
         }
         MoreActionItem(
             icon = { PaletteIcon(modifier = Modifier.size(30.dp)) },
             text = stringResource(R.string.home_drawer_table_theme_change),
         ) {
-            // TODO: 테마 바텀시트
+            onClickSetTheme(tableSummary)
         }
         MoreActionItem(
             icon = { TrashIcon(modifier = Modifier.size(30.dp)) },
             text = stringResource(R.string.home_drawer_table_delete),
         ) {
-            // TODO: 시간표 삭제 다이얼로그
+            onClickDeleteTable(tableSummary)
         }
     }
 }

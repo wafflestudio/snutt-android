@@ -60,9 +60,13 @@ fun TimeTableRoute(
                 sheetState.hide()
             }
         },
-        onCreateNewTable = { coursebook, title ->
-            drawerViewModel.createNewTable(coursebook, title)
-        }
+        onCreateNewTable = drawerViewModel::createNewTable,
+        onClickChangeTableName = drawerViewModel::openChangeTableNameDialog,
+        onClickSetPrimary = drawerViewModel::openSetPrimaryTableDialog,
+        onClickUnsetPrimary = drawerViewModel::openUnsetPrimaryTableDialog,
+        onClickShareTable = drawerViewModel::openShareTableDialog,
+        onClickSetTheme = drawerViewModel::openSetThemeDialog,
+        onClickDeleteTable = drawerViewModel::openDeleteTableDialog,
     ) {
         ModalDrawer(
             drawerContent = {
@@ -79,7 +83,9 @@ fun TimeTableRoute(
                     onClickCreateNewTableOfCourseBook = drawerViewModel::openCreateNewTableOfSpecificCourseBookSheet,
                     onSelectTable = drawerViewModel::selectTable,
                     onClickCopyIcon = drawerViewModel::copyTable,
-                    onClickMoreIcon = drawerViewModel::openMoreActionBottomSheet
+                    onClickMoreIcon = drawerViewModel::openMoreActionBottomSheet,
+                    onDismissDialog = drawerViewModel::dismissDialog,
+                    onConfirmChangeTableTitle = drawerViewModel::changeTableTitle,
                 )
             },
             drawerState = drawerState,
