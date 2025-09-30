@@ -47,7 +47,7 @@ fun MoreActionSheet(
         MoreActionItem(
             icon = { WriteIcon(modifier = Modifier.size(30.dp)) },
             text = stringResource(R.string.home_drawer_table_title_change),
-            onClick = { onClickChangeTableName(tableSummary) }
+            onClick = { onClickChangeTableName(tableSummary) },
         )
         MoreActionItem(
             icon = {
@@ -56,9 +56,13 @@ fun MoreActionSheet(
                     colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
             },
-            text = if (tableSummary.isPrimary) stringResource(R.string.home_drawer_table_set_not_primary) else stringResource(
-                R.string.home_drawer_table_set_primary
-            ),
+            text = if (tableSummary.isPrimary) {
+                stringResource(R.string.home_drawer_table_set_not_primary)
+            } else {
+                stringResource(
+                    R.string.home_drawer_table_set_primary,
+                )
+            },
         ) {
             if (tableSummary.isPrimary) {
                 onClickUnsetPrimary(tableSummary)

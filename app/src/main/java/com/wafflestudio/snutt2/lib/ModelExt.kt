@@ -177,13 +177,15 @@ fun List<SearchTimeDto>.getComplement(): List<SearchTimeDto> {
                     }
                     .toMutableList()
                     .apply {
-                        if (start < SearchTimeDto.LAST) add(
-                            SearchTimeDto(
-                                day,
-                                start,
-                                SearchTimeDto.LAST
+                        if (start < SearchTimeDto.LAST) {
+                            add(
+                                SearchTimeDto(
+                                    day,
+                                    start,
+                                    SearchTimeDto.LAST,
+                                ),
                             )
-                        )
+                        }
                     },
             )
         }

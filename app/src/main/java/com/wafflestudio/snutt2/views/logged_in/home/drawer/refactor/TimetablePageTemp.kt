@@ -65,7 +65,7 @@ fun TimetablePageTemp(uncheckedNotification: Boolean, onOpenDrawer: () -> Unit) 
     val tableListViewModel = hiltViewModel<TableListViewModel>()
     val newSemesterNotify by tableListViewModel.newSemesterNotify.collectAsState(false)
     val vacancyNotificationBannerEnabled by remoteConfig.vacancyNotificationBannerEnabled.collectAsState(
-        false
+        false,
     )
     val analyticsLogger = LocalAnalyticsLogger.current
     val pageController = LocalHomePageController.current

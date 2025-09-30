@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun TimeTableRoute(
-    drawerViewModel: HomeDrawerViewModel = hiltViewModel()
+    drawerViewModel: HomeDrawerViewModel = hiltViewModel(),
 ) {
     val scope = rememberCoroutineScope()
 
@@ -25,7 +25,7 @@ fun TimeTableRoute(
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val sheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
-        skipHalfExpanded = true
+        skipHalfExpanded = true,
     )
 
     LaunchedEffect(Unit) {
@@ -97,7 +97,7 @@ fun TimeTableRoute(
                     scope.launch {
                         drawerState.open()
                     }
-                }
+                },
             )
         }
     }

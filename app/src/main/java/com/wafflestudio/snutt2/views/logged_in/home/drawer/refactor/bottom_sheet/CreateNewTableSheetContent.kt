@@ -53,7 +53,6 @@ fun CreateTableBottomSheet(
         clearFocusFlag = sheetState.isVisible.not()
     }
 
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -71,9 +70,13 @@ fun CreateTableBottomSheet(
             Spacer(modifier = Modifier.weight(1f))
             Text(
                 text = stringResource(R.string.common_complete),
-                style = if (title.isNotEmpty()) SNUTTTypography.body1 else SNUTTTypography.body1.copy(
-                    color = SNUTTColors.Gray200
-                ),
+                style = if (title.isNotEmpty()) {
+                    SNUTTTypography.body1
+                } else {
+                    SNUTTTypography.body1.copy(
+                        color = SNUTTColors.Gray200,
+                    )
+                },
                 modifier = Modifier.clicks(enabled = title.isNotEmpty()) {
                     pickedCourseBook?.let {
                         onSubmit(it, title)
@@ -98,9 +101,9 @@ fun CreateTableBottomSheet(
                 pickedCourseBook?.let {
                     onSubmit(it, title)
                 }
-            }),
+            },),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-            clearFocusFlag = clearFocusFlag
+            clearFocusFlag = clearFocusFlag,
         )
         Spacer(modifier = Modifier.height(25.dp))
         if (sheetType is HomeDrawerBottomSheetType.CreateNewTable.SelectCourseBook) {

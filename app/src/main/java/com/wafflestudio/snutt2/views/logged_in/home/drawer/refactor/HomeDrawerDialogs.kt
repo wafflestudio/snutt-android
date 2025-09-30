@@ -58,7 +58,7 @@ fun HomeDrawerDialogs(
             ) {
                 Text(
                     stringResource(R.string.table_delete_alert_message),
-                    style = SNUTTTypography.body2
+                    style = SNUTTTypography.body2,
                 )
             }
         }

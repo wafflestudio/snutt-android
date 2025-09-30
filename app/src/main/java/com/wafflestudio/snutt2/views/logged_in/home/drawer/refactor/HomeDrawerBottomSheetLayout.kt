@@ -45,7 +45,7 @@ fun HomeDrawerBottomSheetLayout(
                             sheetState = sheetState,
                             sheetType = uiState.homeDrawerBottomSheetType,
                             onCloseSheet = onCloseSheet,
-                            onSubmit = onCreateNewTable
+                            onSubmit = onCreateNewTable,
                         )
                     }
 
@@ -61,7 +61,6 @@ fun HomeDrawerBottomSheetLayout(
                         )
                     }
                 }
-
             }
         },
         sheetState = sheetState,

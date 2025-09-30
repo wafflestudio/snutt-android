@@ -140,7 +140,7 @@ class TableRepositoryImpl @Inject constructor(
 
     override suspend fun getTimetableLectureReminder(
         timetableId: String,
-        lectureId: String
+        lectureId: String,
     ): Result<LectureWithReminderOption> {
         try {
             val result = api._getTimetableLectureReminder(timetableId, lectureId)
@@ -153,7 +153,7 @@ class TableRepositoryImpl @Inject constructor(
     override suspend fun updateTimetableLectureReminder(
         timetableId: String,
         lectureId: String,
-        option: LectureWithReminderOption
+        option: LectureWithReminderOption,
     ): Result<LectureWithReminderOption> {
         try {
             val result = when (option.lectureReminderOffset) {
@@ -166,7 +166,7 @@ class TableRepositoryImpl @Inject constructor(
                     api._putTimetableLectureReminder(
                         timetableId,
                         lectureId,
-                        PutTimetableLectureReminderParams(option.lectureReminderOffset.getIntOffset())
+                        PutTimetableLectureReminderParams(option.lectureReminderOffset.getIntOffset()),
                     ).toDomainModel()
                 }
             }
@@ -191,9 +191,11 @@ class TableRepositoryImpl @Inject constructor(
 
             override suspend fun collect(collector: kotlinx.coroutines.flow.FlowCollector<List<TableSummary>>): Nothing {
                 source.collect { dtoMap ->
-                    collector.emit(dtoMap.values.map { dto ->
-                        TableSummary.fromSimpleTableDto(dto)
-                    })
+                    collector.emit(
+                        dtoMap.values.map { dto ->
+                            TableSummary.fromSimpleTableDto(dto)
+                        },
+                    )
                 }
             }
         }
@@ -204,8 +206,8 @@ class TableRepositoryImpl @Inject constructor(
                 PostTableParams(
                     year = courseBook.year,
                     semester = courseBook.semester,
-                    title = title
-                )
+                    title = title,
+                ),
             )
             // FIXME: 데이터 레이어 갈아엎을 때 이 암묵적인 동작도 어떻게 좀 하기
             snuttStorage.tableMap.update(response.associateBy { it.id })
@@ -225,7 +227,7 @@ class TableRepositoryImpl @Inject constructor(
         try {
             val response = api._putTable(
                 id = tableId,
-                PutTableParams(title = newTitle)
+                PutTableParams(title = newTitle),
             )
             // FIXME: 데이터 레이어 갈아엎을 때 이 암묵적인 동작도 어떻게 좀 하기
             snuttStorage.tableMap.update(response.associateBy { it.id })

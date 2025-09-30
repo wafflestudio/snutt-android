@@ -65,7 +65,7 @@ fun HomeDrawerContent(
                 uiState = uiState,
                 onDismiss = onDismissDialog,
                 onConfirmChangeTableTitle = onConfirmChangeTableTitle,
-                onConfirmDeleteTable = onConfirmDeleteTable
+                onConfirmDeleteTable = onConfirmDeleteTable,
             )
 
             Column(
@@ -82,9 +82,11 @@ fun HomeDrawerContent(
                         style = SNUTTTypography.h2,
                     )
                     Spacer(modifier = Modifier.weight(1f))
-                    ExitIcon(modifier = Modifier.clicks {
-                        onClickExitIcon()
-                    })
+                    ExitIcon(
+                        modifier = Modifier.clicks {
+                            onClickExitIcon()
+                        },
+                    )
                 }
                 Divider(
                     modifier = Modifier.padding(top = 20.dp, bottom = 10.dp),
@@ -147,14 +149,14 @@ fun HomeDrawerContent(
                                         isSelectedTable = (uiState.selectedTable.id == it.id),
                                         onSelectTable = onSelectTable,
                                         onClickCopyIcon = onClickCopyIcon,
-                                        onClickMoreIcon = onClickMoreIcon
+                                        onClickMoreIcon = onClickMoreIcon,
                                     )
                                 }
                                 if (courseBookDrawerItem.tableList.isEmpty()) {
                                     CreateTableItem(
                                         onClick = {
                                             onClickCreateNewTableOfCourseBook(courseBookDrawerItem.courseBook)
-                                        }
+                                        },
                                     )
                                 }
                             }
@@ -194,22 +196,22 @@ private fun HomeDrawerScreenPreview() {
                 CoursebookDrawerItem(
                     courseBook = CourseBook(1, 2026),
                     showNewCoursebookDot = false,
-                    tableList = listOf(TableSummary.Default, TableSummary.Default)
+                    tableList = listOf(TableSummary.Default, TableSummary.Default),
                 ).toDataWithState(true),
                 CoursebookDrawerItem(
                     courseBook = CourseBook(1, 2025),
                     showNewCoursebookDot = false,
-                    tableList = emptyList()
+                    tableList = emptyList(),
                 ).toDataWithState(false),
                 CoursebookDrawerItem(
                     courseBook = CourseBook(1, 2024),
                     showNewCoursebookDot = false,
-                    tableList = emptyList()
-                ).toDataWithState(false)
+                    tableList = emptyList(),
+                ).toDataWithState(false),
             ),
             TableSummary.Default,
             homeDrawerBottomSheetType = HomeDrawerBottomSheetType.Empty,
-            dialogState = HomeDrawerUiState.DialogState.None
+            dialogState = HomeDrawerUiState.DialogState.None,
         ),
         onToggleExpand = {},
         onClickExitIcon = {},
@@ -220,6 +222,6 @@ private fun HomeDrawerScreenPreview() {
         onClickMoreIcon = {},
         onDismissDialog = {},
         onConfirmChangeTableTitle = { _, _ -> },
-        onConfirmDeleteTable = {}
+        onConfirmDeleteTable = {},
     )
 }

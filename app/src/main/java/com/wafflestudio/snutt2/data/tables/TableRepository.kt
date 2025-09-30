@@ -41,13 +41,13 @@ interface TableRepository {
 
     suspend fun getTimetableLectureReminder(
         timetableId: String,
-        lectureId: String
+        lectureId: String,
     ): Result<LectureWithReminderOption>
 
     suspend fun updateTimetableLectureReminder(
         timetableId: String,
         lectureId: String,
-        option: LectureWithReminderOption
+        option: LectureWithReminderOption,
     ): Result<LectureWithReminderOption>
 
     // 여기부터 리팩토링 코드
