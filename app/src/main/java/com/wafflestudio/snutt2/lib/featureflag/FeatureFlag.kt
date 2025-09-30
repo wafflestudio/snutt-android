@@ -6,4 +6,6 @@ enum class FeatureFlag(
     THEME_MARKET(true),
     LECTURE_DIARY(true),
     PUSH_PREFERENCES(false),
+
+    LECTURE_REMINDER(false),
 }
