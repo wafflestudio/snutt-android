@@ -25,6 +25,11 @@ import com.wafflestudio.snutt2.domainmodel.TableSummary
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 
+/**
+ * 논의
+ * 특정 domain model 을 UI 로 사상하는 Composable 의 경우만 별도 파일 분리를 하면 어떨까 생각했어
+ * 도메인 모델이랑 딱히 상관 없는 순수 UI 조각은, 사용되는 파일에서 private fun 으로 두고.
+ */
 @Composable
 fun CourseBookDrawerItem(
     tableSummary: TableSummary,
@@ -89,24 +94,6 @@ fun CourseBookDrawerItem(
                     onClickMoreIcon(tableSummary)
                 },
             colorFilter = ColorFilter.tint(SNUTTColors.Black500),
-        )
-    }
-}
-
-@Composable
-fun CreateTableItem(
-    onClick: () -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .padding(vertical = 10.dp)
-            .clicks { onClick() },
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Spacer(modifier = Modifier.width(25.dp))
-        Text(
-            text = stringResource(R.string.home_drawer_timetable_add_button),
-            style = SNUTTTypography.body1,
         )
     }
 }

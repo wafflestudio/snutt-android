@@ -13,6 +13,12 @@ import com.wafflestudio.snutt2.components.compose.CustomDialog
 import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 
+/**
+ * 논의
+ * 다이얼로그 또한 바텀시트처럼 Route 별로 ${Feature}Dialogs.kt 로 묶은 뒤 Screen 단에서 렌더링해주기.
+ * 역시 uiState의 필드로 sealed class DialogState 를 두고, 여기에서 분기해서 그려주기.
+ * 다이얼로그 컴포저블 별로 파일 모두 분리해도 괜찮을듯 (폴더 한 뎁스 더 두고)
+ */
 @Composable
 fun HomeDrawerDialogs(
     uiState: HomeDrawerUiState.Loaded,
@@ -57,5 +63,4 @@ fun HomeDrawerDialogs(
             }
         }
     }
-
 }

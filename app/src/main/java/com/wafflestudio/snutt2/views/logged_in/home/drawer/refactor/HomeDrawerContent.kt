@@ -37,6 +37,10 @@ import com.wafflestudio.snutt2.lib.toFormattedString
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 
+/**
+ * 논의
+ * 이건 Screen 은 아닌데 Screen 체급이라 어떻게 이름붙일 지 좀 고민
+ */
 @Composable
 fun HomeDrawerContent(
     modifier: Modifier,
@@ -159,6 +163,24 @@ fun HomeDrawerContent(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun CreateTableItem(
+    onClick: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .padding(vertical = 10.dp)
+            .clicks { onClick() },
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Spacer(modifier = Modifier.width(25.dp))
+        Text(
+            text = stringResource(R.string.home_drawer_timetable_add_button),
+            style = SNUTTTypography.body1,
+        )
     }
 }
 

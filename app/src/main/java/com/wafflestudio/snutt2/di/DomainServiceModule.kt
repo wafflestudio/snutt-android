@@ -9,7 +9,7 @@ import dagger.hilt.components.SingletonComponent
 
 @InstallIn(SingletonComponent::class)
 @Module
-abstract class DomainModule {
+abstract class DomainServiceModule {
 
     @Binds
     abstract fun bindsThemeService(impl: ThemeServiceImpl): ThemeService
