@@ -172,7 +172,7 @@ fun LectureReminderScreen(
         when (uiState) {
             is LectureReminderUiState.Loading -> LectureReminderLoading()
             is LectureReminderUiState.Error -> LectureReminderError()
-            is LectureReminderUiState.NoPrimaryTimetable -> LectureReminderNoPrimaryTimetable()
+            is LectureReminderUiState.NoPrimaryTimetable -> LectureReminderEmpty()
             is LectureReminderUiState.Success -> {
                 Column {
                     SettingColumn(
@@ -271,13 +271,13 @@ fun LectureReminderError() {
 }
 
 @Composable
-fun LectureReminderNoPrimaryTimetable() {
+fun LectureReminderEmpty() {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colors.background)
-            .padding(20.dp),
-        contentAlignment = Alignment.Center,
+            .padding(vertical = 80.dp, horizontal = 20.dp),
+        contentAlignment = Alignment.TopCenter,
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -291,7 +291,7 @@ fun LectureReminderNoPrimaryTimetable() {
             Text(
                 text = stringResource(R.string.settings_lecture_reminder_empty_title),
                 style = SNUTTTypography.h3.copy(
-                    color = SNUTTColors.TextMed,
+                    color = SNUTTColors.Black,
                     fontSize = 15.sp,
                 ),
             )
@@ -301,6 +301,8 @@ fun LectureReminderNoPrimaryTimetable() {
                     append(stringResource(R.string.settings_lecture_reminder_empty_bold1))
                 }
                 append(stringResource(R.string.settings_lecture_reminder_empty_normal2))
+                append(stringResource(R.string.settings_lecture_reminder_empty_normal3))
+                append(stringResource(R.string.settings_lecture_reminder_empty_normal4))
             }
             Text(
                 textAlign = TextAlign.Center,
@@ -329,6 +331,6 @@ fun LectureReminderPagePreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun LectureReminderNoPrimaryTimetablePreview() {
-    LectureReminderNoPrimaryTimetable()
+fun LectureReminderEmptyPreview() {
+    LectureReminderEmpty()
 }
