@@ -219,11 +219,13 @@ fun SettingsScreen(
                         onClick = onClickPushPreference,
                     )
                 }
-                SettingItem(
-                    title = stringResource(R.string.settings_lecture_reminder_title),
-                    hasNextPage = true,
-                    onClick = onClickLectureReminder,
-                )
+                if (FeatureFlag.LECTURE_REMINDER.isEnabled) {
+                    SettingItem(
+                        title = stringResource(R.string.settings_lecture_reminder_title),
+                        hasNextPage = true,
+                        onClick = onClickLectureReminder,
+                    )
+                }
                 if (BuildConfig.DEBUG) {
                     if (FeatureFlag.LECTURE_DIARY.isEnabled) {
                         SettingItem(
