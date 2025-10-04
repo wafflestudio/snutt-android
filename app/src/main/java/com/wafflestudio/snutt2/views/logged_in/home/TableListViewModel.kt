@@ -18,6 +18,7 @@ class TableListViewModel @Inject constructor(
     private val currentTableRepository: CurrentTableRepository,
 ) : ViewModel() {
 
+    private val currentTable = currentTableRepository.currentTable
     private val _allCourseBook = MutableStateFlow(emptyList<CourseBookDto>())
     val allCourseBook = _allCourseBook.asStateFlow()
     private val mostRecentCourseBook = _allCourseBook.filter { it.isNotEmpty() }.map { it.first() }
@@ -116,9 +117,11 @@ class TableListViewModel @Inject constructor(
 
     suspend fun setTablePrimary(tableId: String) {
         tableRepository.setTablePrimary(tableId)
+        currentTableRepository.updateIsPrimary(tableId == currentTable.value?.id)
     }
 
     suspend fun setTableNotPrimary(tableId: String) {
         tableRepository.setTableNotPrimary(tableId)
+        currentTableRepository.updateIsPrimary(false)
     }
 }

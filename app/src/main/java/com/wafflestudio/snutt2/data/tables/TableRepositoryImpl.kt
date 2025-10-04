@@ -108,10 +108,28 @@ class TableRepositoryImpl @Inject constructor(
 
     override suspend fun setTablePrimary(id: String) {
         api._postPrimaryTable(id)
+        snuttStorage.tableMap.update(
+            tableMap.value.mapValues { (key, table) ->
+                if (key == id) {
+                    table.copy(isPrimary = true)
+                } else {
+                    table
+                }
+            },
+        )
     }
 
     override suspend fun setTableNotPrimary(id: String) {
         api._deletePrimaryTable(id)
+        snuttStorage.tableMap.update(
+            tableMap.value.mapValues { (key, table) ->
+                if (key == id) {
+                    table.copy(isPrimary = false)
+                } else {
+                    table
+                }
+            },
+        )
     }
 
     override suspend fun getTimetableReminders(timetableId: String): Result<TimetableLectureReminders> {

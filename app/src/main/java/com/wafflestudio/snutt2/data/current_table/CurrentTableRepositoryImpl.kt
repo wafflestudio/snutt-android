@@ -96,6 +96,10 @@ class CurrentTableRepositoryImpl @Inject constructor(
         api._deleteBookmark(PostBookmarkParams(lecture.lecture_id ?: lecture.id))
     }
 
+    override suspend fun updateIsPrimary(isPrimary: Boolean) {
+        storage.lastViewedTable.update(currentTable.value?.copy(isPrimary = isPrimary).toOptional())
+    }
+
     override suspend fun getLectureReviewSummary(lectureId: String): LectureReviewDto {
         return api._getLectureReviewSummary(lectureId)
     }

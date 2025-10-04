@@ -35,6 +35,8 @@ interface CurrentTableRepository {
 
     suspend fun deleteBookmark(lecture: LectureDto)
 
+    suspend fun updateIsPrimary(isPrimary: Boolean)
+
     // FIXME: do not expose network layer data class
     suspend fun getLectureReviewSummary(
         lectureId: String,
