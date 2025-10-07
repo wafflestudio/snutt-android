@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.PaletteIcon
+import com.wafflestudio.snutt2.components.compose.PeopleIcon
 import com.wafflestudio.snutt2.components.compose.PeopleOffIcon
 import com.wafflestudio.snutt2.components.compose.ShareIcon
 import com.wafflestudio.snutt2.components.compose.TrashIcon
@@ -51,10 +52,17 @@ fun MoreActionSheet(
         )
         MoreActionItem(
             icon = {
-                PeopleOffIcon(
-                    modifier = Modifier.size(30.dp),
-                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
-                )
+                if (tableSummary.isPrimary) {
+                    PeopleOffIcon(
+                        modifier = Modifier.size(30.dp),
+                        colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                    )
+                } else {
+                    PeopleIcon(
+                        modifier = Modifier.size(30.dp),
+                        colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                    )
+                }
             },
             text = if (tableSummary.isPrimary) {
                 stringResource(R.string.home_drawer_table_set_not_primary)
