@@ -256,22 +256,56 @@ class HomeDrawerViewModel @Inject constructor(
         }
     }
 
-    fun deleteTable(tableId: String) {
+    fun deleteTable(tableSummary: TableSummary) {
         viewModelScope.launch {
-            tableRepository.deleteTableNew(tableId)
-                .onFailure {
-                    // TODO: 에러 처리
-                    // "하나 남은 시간표는 삭제할 수 없습니다" 는 클라로직 대신 서버로직으로 대체함
-                    // 에러나면 dialog 숨기고 바텀시트도 닫고..
-                }
-                .onSuccess {
-                    _uiState.value.ifType<HomeDrawerUiState.Loaded> {
-                        _uiState.value = it.copy(
-                            dialogState = HomeDrawerUiState.DialogState.None,
-                        )
+            _uiState.value.ifType<HomeDrawerUiState.Loaded> { state ->
+                val allTables = state.courseBookDrawerItemList.flatMap { it.item.tableList }
+                val sameCourseBookTables =
+                    allTables.filter { it.courseBook == tableSummary.courseBook }
+                val indexInSameCourseBook =
+                    sameCourseBookTables.indexOfFirst { it.id == tableSummary.id }
+                val indexInAll = allTables.indexOfFirst { it.id == tableSummary.id }
+
+                tableRepository.deleteTableNew(tableSummary.id)
+                    .onFailure {
+                        // TODO: 에러 처리
+                        // "하나 남은 시간표는 삭제할 수 없습니다" 는 클라로직 대신 서버로직으로 대체함
+                        // 에러나면 dialog 숨기고 바텀시트도 닫고..
                     }
-                    _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
-                }
+                    .onSuccess {
+                        // 현재 시간표를 삭제한 경우, 다른 시간표로 전환
+                        if (state.selectedTable.id == tableSummary.id) {
+                            // 삭제 후 남은 같은 학기 시간표들
+                            val remainingSameCourseBookTables =
+                                sameCourseBookTables.filter { it.id != tableSummary.id }
+
+                            val nextTableId = if (remainingSameCourseBookTables.isEmpty()) {
+                                // 같은 학기에 남은 시간표가 없으면 전체에서 선택
+                                val remainingAllTables = allTables.filter { it.id != tableSummary.id }
+                                if (indexInAll == allTables.size) {
+                                    remainingAllTables.last().id
+                                } else {
+                                    remainingAllTables[indexInAll].id
+                                }
+                            } else {
+                                // 같은 학기에 남은 시간표가 있으면 그 중에서 선택
+                                if (indexInSameCourseBook == sameCourseBookTables.size) {
+                                    remainingSameCourseBookTables.last().id
+                                } else {
+                                    remainingSameCourseBookTables[indexInSameCourseBook].id
+                                }
+                            }
+                            tableRepository.fetchTableById(nextTableId)
+                        }
+
+                        _uiState.value.ifType<HomeDrawerUiState.Loaded> {
+                            _uiState.value = it.copy(
+                                dialogState = HomeDrawerUiState.DialogState.None,
+                            )
+                        }
+                        _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
+                    }
+            }
         }
     }
 

@@ -24,7 +24,7 @@ fun HomeDrawerDialogs(
     uiState: HomeDrawerUiState.Loaded,
     onDismiss: () -> Unit,
     onConfirmChangeTableTitle: (newName: String, tableId: String) -> Unit,
-    onConfirmDeleteTable: (tableId: String) -> Unit,
+    onConfirmDeleteTable: (tableSummary: com.wafflestudio.snutt2.domainmodel.TableSummary) -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -50,7 +50,7 @@ fun HomeDrawerDialogs(
             CustomDialog(
                 onDismiss = onDismiss,
                 onConfirm = {
-                    onConfirmDeleteTable(uiState.dialogState.tableSummary.id)
+                    onConfirmDeleteTable(uiState.dialogState.tableSummary)
                 },
                 title = context.getString(R.string.home_drawer_table_delete),
                 positiveButtonText = context.getString(R.string.common_ok),

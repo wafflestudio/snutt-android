@@ -33,7 +33,7 @@ fun HomeDrawerBottomSheetLayout(
     onClickShareTable: (tableSummary: TableSummary) -> Unit,
     onClickSetTheme: (tableSummary: TableSummary) -> Unit,
     onClickDeleteTable: (tableSummary: TableSummary) -> Unit,
-    
+
     drawerState: DrawerState,
     onToggleCourseBookDrawerItemExpand: (drawerItemIndex: Int) -> Unit,
     onClickExitIcon: () -> Unit,
@@ -44,7 +44,7 @@ fun HomeDrawerBottomSheetLayout(
     onClickMoreIcon: (tableSummary: TableSummary) -> Unit,
     onDismissDialog: () -> Unit,
     onConfirmChangeTableTitle: (newTitle: String, tableId: String) -> Unit,
-    onConfirmDeleteTable: (tableId: String) -> Unit,
+    onConfirmDeleteTable: (tableSummary: TableSummary) -> Unit,
     onClickDrawerIcon: () -> Unit,
 ) {
     ModalBottomSheetLayout(
