@@ -1,9 +1,12 @@
 package com.wafflestudio.snutt2.views.logged_in.home.drawer.refactor
 
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.DrawerState
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
+import androidx.compose.material.ModalDrawer
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.TableSummary
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -30,7 +33,19 @@ fun HomeDrawerBottomSheetLayout(
     onClickShareTable: (tableSummary: TableSummary) -> Unit,
     onClickSetTheme: (tableSummary: TableSummary) -> Unit,
     onClickDeleteTable: (tableSummary: TableSummary) -> Unit,
-    content: @Composable () -> Unit,
+    
+    drawerState: DrawerState,
+    onToggleCourseBookDrawerItemExpand: (drawerItemIndex: Int) -> Unit,
+    onClickExitIcon: () -> Unit,
+    onClickCreateNewTable: () -> Unit,
+    onClickCreateNewTableOfCourseBook: (courseBook: CourseBook) -> Unit,
+    onSelectTable: (tableId: String) -> Unit,
+    onClickCopyIcon: (tableId: String) -> Unit,
+    onClickMoreIcon: (tableSummary: TableSummary) -> Unit,
+    onDismissDialog: () -> Unit,
+    onConfirmChangeTableTitle: (newTitle: String, tableId: String) -> Unit,
+    onConfirmDeleteTable: (tableId: String) -> Unit,
+    onClickDrawerIcon: () -> Unit,
 ) {
     ModalBottomSheetLayout(
         sheetContent = {
@@ -68,6 +83,29 @@ fun HomeDrawerBottomSheetLayout(
         scrimColor = SNUTTColors.Black.copy(alpha = 0.32f),
         sheetGesturesEnabled = false,
     ) {
-        content()
+        ModalDrawer(
+            drawerContent = {
+                HomeDrawerContent(
+                    modifier = Modifier,
+                    uiState = uiState,
+                    onToggleExpand = onToggleCourseBookDrawerItemExpand,
+                    onClickExitIcon = onClickExitIcon,
+                    onClickCreateNewTable = onClickCreateNewTable,
+                    onClickCreateNewTableOfCourseBook = onClickCreateNewTableOfCourseBook,
+                    onSelectTable = onSelectTable,
+                    onClickCopyIcon = onClickCopyIcon,
+                    onClickMoreIcon = onClickMoreIcon,
+                    onDismissDialog = onDismissDialog,
+                    onConfirmChangeTableTitle = onConfirmChangeTableTitle,
+                    onConfirmDeleteTable = onConfirmDeleteTable,
+                )
+            },
+            drawerState = drawerState,
+        ) {
+            TimeTableScreen(
+                uiState = uiState,
+                onClickDrawerIcon = onClickDrawerIcon,
+            )
+        }
     }
 }

@@ -2,14 +2,12 @@ package com.wafflestudio.snutt2.views.logged_in.home.drawer.refactor
 
 import androidx.compose.material.DrawerValue
 import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.ModalDrawer
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.launch
@@ -67,40 +65,27 @@ fun TimeTableRoute(
         onClickShareTable = drawerViewModel::openShareTableDialog,
         onClickSetTheme = drawerViewModel::openSetThemeDialog,
         onClickDeleteTable = drawerViewModel::openDeleteTableDialog,
-    ) {
-        ModalDrawer(
-            drawerContent = {
-                HomeDrawerContent(
-                    modifier = Modifier,
-                    uiState = uiState,
-                    onToggleExpand = drawerViewModel::toggleCourseBookDrawerItem,
-                    onClickExitIcon = {
-                        scope.launch {
-                            drawerState.close()
-                        }
-                    },
-                    onClickCreateNewTable = drawerViewModel::openCreateNewTableSheet,
-                    onClickCreateNewTableOfCourseBook = drawerViewModel::openCreateNewTableOfSpecificCourseBookSheet,
-                    onSelectTable = drawerViewModel::selectTable,
-                    onClickCopyIcon = drawerViewModel::copyTable,
-                    onClickMoreIcon = drawerViewModel::openMoreActionBottomSheet,
-                    onDismissDialog = drawerViewModel::dismissDialog,
-                    onConfirmChangeTableTitle = drawerViewModel::changeTableTitle,
-                    onConfirmDeleteTable = drawerViewModel::deleteTable,
-                )
-            },
-            drawerState = drawerState,
-        ) {
-            TimeTableScreen(
-                uiState = uiState,
-                onClickDrawerIcon = {
-                    scope.launch {
-                        drawerState.open()
-                    }
-                },
-            )
-        }
-    }
+        drawerState = drawerState,
+        onToggleCourseBookDrawerItemExpand = drawerViewModel::toggleCourseBookDrawerItem,
+        onClickExitIcon = {
+            scope.launch {
+                drawerState.close()
+            }
+        },
+        onClickCreateNewTable = drawerViewModel::openCreateNewTableSheet,
+        onClickCreateNewTableOfCourseBook = drawerViewModel::openCreateNewTableOfSpecificCourseBookSheet,
+        onSelectTable = drawerViewModel::selectTable,
+        onClickCopyIcon = drawerViewModel::copyTable,
+        onClickMoreIcon = drawerViewModel::openMoreActionBottomSheet,
+        onDismissDialog = drawerViewModel::dismissDialog,
+        onConfirmChangeTableTitle = drawerViewModel::changeTableTitle,
+        onConfirmDeleteTable = drawerViewModel::deleteTable,
+        onClickDrawerIcon = {
+            scope.launch {
+                drawerState.open()
+            }
+        },
+    )
 }
 
 @Composable
