@@ -13,9 +13,8 @@ import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.network.dto.core.toDomainModel
 import com.wafflestudio.snutt2.lib.network.toDomainError
 import com.wafflestudio.snutt2.lib.toOptional
-import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
 import com.wafflestudio.snutt2.domainmodel.TimetableLectureReminders
-import com.wafflestudio.snutt2.domainmodel.getIntOffset
+import com.wafflestudio.snutt2.domainmodel.getStringOffset
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -164,15 +163,7 @@ class TableRepositoryImpl @Inject constructor(
 
     override suspend fun updateTimetableLectureReminder(timetableId: String, lectureId: String, option: LectureWithReminderOption): Result<LectureWithReminderOption> {
         try {
-            val result = when (option.lectureReminderOffset) {
-                LectureReminderOffset.NONE -> {
-                    api._deleteTimetableLectureReminder(timetableId, lectureId)
-                    LectureWithReminderOption.Default
-                }
-                else -> {
-                    api._putTimetableLectureReminder(timetableId, lectureId, PutTimetableLectureReminderParams(option.lectureReminderOffset.getIntOffset())).toDomainModel()
-                }
-            }
+            val result = api._putTimetableLectureReminder(timetableId, lectureId, PutTimetableLectureReminderParams(option.lectureReminderOffset.getStringOffset())).toDomainModel()
             return Result.Success(result)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())

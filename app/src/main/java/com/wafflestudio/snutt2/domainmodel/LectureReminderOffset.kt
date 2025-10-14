@@ -4,8 +4,9 @@ enum class LectureReminderOffset {
     NONE, TEN_MINUTES_BEFORE, AT_START_TIME, TEN_MINUTES_AFTER
 }
 
-fun LectureReminderOffset.getIntOffset(): Int = when (this) {
-    LectureReminderOffset.TEN_MINUTES_BEFORE -> -10
-    LectureReminderOffset.TEN_MINUTES_AFTER -> 10
-    else -> 0
+fun LectureReminderOffset.getStringOffset(): String = when (this) {
+    LectureReminderOffset.TEN_MINUTES_BEFORE -> "TEN_MINUTES_BEFORE"
+    LectureReminderOffset.AT_START_TIME -> "ZERO_MINUTE"
+    LectureReminderOffset.TEN_MINUTES_AFTER -> "TEN_MINUTES_AFTER"
+    else -> "NONE"
 }
