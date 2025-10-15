@@ -141,7 +141,6 @@ fun LectureDetailPage(
     }
 
     LaunchedEffect(Unit) {
-        vm.getTimetableLectureReminder()
         vm.lectureDetailUiEvent.collect { uiEvent ->
             when (uiEvent) {
                 is LectureDetailUiEvent.ShowToast -> {
