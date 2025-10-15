@@ -2,15 +2,15 @@ package com.wafflestudio.snutt2.views.logged_in.lecture_detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wafflestudio.snutt2.data.course_books.SemesterStatusRepository
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
+import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
-import com.wafflestudio.snutt2.domainmodel.SemesterStatus
+import com.wafflestudio.snutt2.domainmodel.TableTheme
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.AuthError
 import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
@@ -24,8 +24,6 @@ import com.wafflestudio.snutt2.lib.network.dto.core.LectureReviewDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.network.onFailure
 import com.wafflestudio.snutt2.lib.network.onSuccess
-import com.wafflestudio.snutt2.model.BuiltInTheme
-import com.wafflestudio.snutt2.model.TableTheme
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
@@ -55,7 +53,6 @@ sealed class ModeType {
 @HiltViewModel
 class LectureDetailViewModel @Inject constructor(
     private val currentTableRepository: CurrentTableRepository,
-    private val semesterStateRepository: SemesterStatusRepository,
     private val lectureSearchRepository: LectureSearchRepository,
     private val tableRepository: TableRepository,
     private val userRepository: UserRepository,
@@ -64,7 +61,6 @@ class LectureDetailViewModel @Inject constructor(
     getCurrentTableThemeUseCase: GetCurrentTableThemeUseCase,
 ) : ViewModel() {
     val currentTable: StateFlow<TableDto?> = currentTableRepository.currentTable
-    val semesterStatus: StateFlow<SemesterStatus> = semesterStateRepository.semesterStatus
 
     private val _table = MutableStateFlow<TableDto?>(null)
     val table = _table.asStateFlow()
@@ -112,9 +108,6 @@ class LectureDetailViewModel @Inject constructor(
     private var lectureReminderJob: Job? = null
 
     private fun init() {
-        viewModelScope.launch {
-            semesterStateRepository.getSemesterStatus()
-        }
         lectureReminderJob = lectureWithReminderOption
             .drop(1) // 이 또한 리팩토링을 한다면 필요가 없다.
             .debounce(200L)
@@ -214,17 +207,15 @@ class LectureDetailViewModel @Inject constructor(
         _enableLectureReminderPicker.emit(false)
         val table = _table.value
         if (table != null && lecture.class_time_json.isNotEmpty() && lecture.lecture_id != null) {
-            if ((semesterStatus.value.current == null && table.getCourseBook() == semesterStatus.value.next) || semesterStatus.value.current == table.getCourseBook()) {
-                tableRepository.getTimetableLectureReminder(currentTable.value?.id ?: "", lecture.id)
-                    .onSuccess { data ->
-                        _showLectureReminderPicker.emit(true)
-                        _enableLectureReminderPicker.emit(table.isPrimary)
-                        _lectureWithReminderOption.emit(data)
-                    }
-                    .onFailure { error ->
-                        handleLectureDetailError(error, table.isPrimary)
-                    }
-            }
+            tableRepository.getTimetableLectureReminder(currentTable.value?.id ?: "", lecture.id)
+                .onSuccess { data ->
+                    _showLectureReminderPicker.emit(true)
+                    _enableLectureReminderPicker.emit(table.isPrimary)
+                    _lectureWithReminderOption.emit(data)
+                }
+                .onFailure { error ->
+                    handleLectureDetailError(error, table.isPrimary)
+                }
         }
     }
 

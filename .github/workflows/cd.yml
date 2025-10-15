@@ -17,7 +17,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: 17
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Clean build
         run: ./gradlew clean
       - name: Setup google-services.json (Live)
@@ -84,7 +84,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: 17
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Clean build
         run: ./gradlew clean
       - name: Setup google-services.json (Staging)

@@ -51,3 +51,27 @@ fun <T : Any> List<Selectable<T>>.unselectExcept(index: Int): List<Selectable<T>
         if (i == index) data else data.copy(state = false)
     }
 }
+
+fun <T : Any> List<Selectable<T>>.selectAll(): List<Selectable<T>> {
+    return this.map { data ->
+        data.copy(state = true)
+    }
+}
+
+fun <T : Any> List<Selectable<T>>.selectWhen(predicate: (T) -> Boolean): List<Selectable<T>> {
+    return this.map { data ->
+        data.copy(state = predicate(data.item))
+    }
+}
+
+fun <T : Any> List<Selectable<T>>.toggleWhen(predicate: (T) -> Boolean): List<Selectable<T>> {
+    return this.map { data ->
+        data.copy(state = data.state xor predicate(data.item))
+    }
+}
+
+fun <T : Any> List<Selectable<T>>.unselectAll(): List<Selectable<T>> {
+    return this.map { data ->
+        data.copy(state = false)
+    }
+}
