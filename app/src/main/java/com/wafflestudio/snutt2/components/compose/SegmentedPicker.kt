@@ -105,7 +105,7 @@ fun <T> SegmentedPicker(
                     Text(
                         text = optionLabel(option),
                         textAlign = TextAlign.Center,
-                        style = SNUTTTypography.body2.copy(fontSize = 13.sp, fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium, color = if (enabled || isSelected) SNUTTColors.Black else SNUTTColors.Gray30),
+                        style = SNUTTTypography.body2.copy(fontSize = 13.sp, fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium, color = if (enabled || isSelected) SNUTTColors.Black900 else SNUTTColors.TextMed),
                     )
                 }
                 // 마지막 아이템이 아닐 경우에만 구분선 추가
