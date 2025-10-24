@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.layouts.ModalDrawerWithBottomSheetLayout
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
@@ -44,6 +45,7 @@ import com.wafflestudio.snutt2.views.LocalPopupState
 import com.wafflestudio.snutt2.views.LocalReviewWebView
 import com.wafflestudio.snutt2.views.LocalTableState
 import com.wafflestudio.snutt2.views.launchSuspendApi
+import com.wafflestudio.snutt2.views.logged_in.home.drawer.refactor.TimeTableRoute
 import com.wafflestudio.snutt2.views.logged_in.home.friend.FriendsPage
 import com.wafflestudio.snutt2.views.logged_in.home.popups.Popup
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewPage
@@ -148,6 +150,12 @@ fun HomePage() {
         LocalTableState provides tableState,
         LocalDrawerState provides drawerState,
     ) {
+        if (BuildConfig.DEBUG && pageController.homePageState.value == HomeItem.Timetable) {
+            TimeTableRoute()
+
+            return@CompositionLocalProvider
+        }
+
         ModalDrawerWithBottomSheetLayout(drawerState = drawerState) {
             Box(
                 modifier = Modifier.weight(1f),

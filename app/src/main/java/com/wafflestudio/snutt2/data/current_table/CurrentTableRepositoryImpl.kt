@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.data.current_table
 
 import com.wafflestudio.snutt2.data.SNUTTStorage
+import com.wafflestudio.snutt2.domainmodel.Table
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.PostBookmarkParams
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
@@ -99,4 +100,22 @@ class CurrentTableRepositoryImpl @Inject constructor(
     override suspend fun getLectureReviewSummary(lectureId: String): LectureReviewDto {
         return api._getLectureReviewSummary(lectureId)
     }
+
+    // 여기부터 리팩토링 코드
+    override val currentTableRefactored: StateFlow<Table?>
+        get() = object : StateFlow<Table?> {
+            private val source = storage.lastViewedTable.asStateFlow()
+
+            override val value: Table?
+                get() = source.value.value?.let { Table.fromTableDto(it) }
+
+            override val replayCache: List<Table?>
+                get() = listOf(value)
+
+            override suspend fun collect(collector: kotlinx.coroutines.flow.FlowCollector<Table?>): Nothing {
+                source.collect { optionalDto ->
+                    collector.emit(optionalDto.value?.let { Table.fromTableDto(it) })
+                }
+            }
+        }
 }
