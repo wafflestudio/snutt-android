@@ -46,7 +46,7 @@ class HomeViewModel @Inject constructor(
                     },
                     async { userRepository.fetchUserInfo() },
                     async { themeRepository.fetchThemes() },
-                    async { semesterStatusRepository.fetchSemesterStatus() }
+                    async { semesterStatusRepository.fetchSemesterStatus() },
                 )
             }
         } catch (e: Exception) {
