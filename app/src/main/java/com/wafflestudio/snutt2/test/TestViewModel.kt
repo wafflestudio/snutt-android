@@ -9,13 +9,19 @@ import com.wafflestudio.snutt2.lib.network.SignupError
 import com.wafflestudio.snutt2.lib.network.onFailure
 import com.wafflestudio.snutt2.lib.network.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@OptIn(FlowPreview::class)
 @HiltViewModel
 class TestViewModel @Inject constructor(
     private val testRepository: TestRepository,
@@ -26,6 +32,19 @@ class TestViewModel @Inject constructor(
 
     private val _testUiEvent: MutableSharedFlow<TestUiEvent> = MutableSharedFlow(replay = 1)
     val testUiEvent = _testUiEvent.asSharedFlow()
+
+    private val _segmentPickerUiState = MutableStateFlow("")
+    val segmentPickerUiState = _segmentPickerUiState.asStateFlow()
+
+    init {
+        segmentPickerUiState
+            .debounce(200L)
+            .distinctUntilChanged()
+            .onEach { state ->
+                callApiForSegmentPicker(state)
+            }
+            .launchIn(viewModelScope)
+    }
 
     fun registerLocal(id: String, password: String, email: String) {
         viewModelScope.launch {
@@ -70,6 +89,16 @@ class TestViewModel @Inject constructor(
                     handleTestError(error)
                 }
         }
+    }
+
+    fun changeSegmentPickerUiState(value: String) {
+        viewModelScope.launch {
+            _segmentPickerUiState.emit(value)
+        }
+    }
+
+    // NOTE(plgafhd): API 호출 가정, debounce에 따라 UiState 변경과 API 호출은 별개이다.
+    private fun callApiForSegmentPicker(state: String) {
     }
 
     private suspend fun handleTestError(error: DomainError) {

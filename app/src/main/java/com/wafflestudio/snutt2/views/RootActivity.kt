@@ -2,17 +2,13 @@ package com.wafflestudio.snutt2.views
 
 import NavigationDestination
 import android.Manifest
-import android.animation.ObjectAnimator
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.view.View
-import android.view.ViewTreeObserver
-import android.view.animation.AnticipateInterpolator
+import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.*
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VisibilityThreshold
@@ -28,10 +24,8 @@ import androidx.compose.material.navigation.bottomSheet
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -46,18 +40,19 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
+import com.facebook.react.ReactActivity
 import com.google.firebase.FirebaseApp
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.deeplink.InstallInAppDeeplinkExecutor
+import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
+import com.wafflestudio.snutt2.domainmodel.CustomTheme
 import com.wafflestudio.snutt2.lib.logging.AnalyticsLogger
 import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
-import com.wafflestudio.snutt2.model.BuiltInTheme
-import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.navigation.getDeepLinkPath
 import com.wafflestudio.snutt2.react_native.ReactNativeBundleManager
 import com.wafflestudio.snutt2.test.TestRoute
@@ -72,9 +67,8 @@ import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
-import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryCompleteRoute
-import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryListPage
-import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryWriteRoute
+import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.diary_history.DiaryHistoryRoute
+import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.diary_write.DiaryWriteRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailRoute
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorPage
@@ -84,7 +78,7 @@ import com.wafflestudio.snutt2.views.logged_in.lecture_detail.deeplink.Timetable
 import com.wafflestudio.snutt2.views.logged_in.notifications.NotificationRoute
 import com.wafflestudio.snutt2.views.logged_in.table_lectures.TableLecturesRoute
 import com.wafflestudio.snutt2.views.logged_in.thememarket.ThemeMarketRoute
-import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyPage
+import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyRoute
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import com.wafflestudio.snutt2.views.logged_out.*
 import com.wafflestudio.snutt2.views.logged_out.reset_password.ResetPasswordPage
@@ -94,7 +88,7 @@ import javax.inject.Inject
 
 @ExperimentalAnimationApi
 @AndroidEntryPoint
-class RootActivity : AppCompatActivity() {
+class RootActivity : ReactActivity() {
     private val userViewModel: UserViewModel by viewModels()
 
     private val homeViewModel: HomeViewModel by viewModels()
@@ -114,26 +108,24 @@ class RootActivity : AppCompatActivity() {
     @Inject
     lateinit var analyticsLogger: AnalyticsLogger
 
-    private var isInitialRefreshFinished = false
-
-    private val composeRoot by lazy { findViewById<ComposeView>(R.id.compose_root) }
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen()
+        val splashScreen = installSplashScreen()
+        var isLoading = true
+        splashScreen.setKeepOnScreenCondition { isLoading }
 
         enableEdgeToEdge()
         super.onCreate(null)
 
         FirebaseApp.initializeApp(this)
-        setContentView(R.layout.activity_root)
         parseDeeplinkExtra()
 
         val token = userViewModel.accessToken.value
+
         lifecycleScope.launch {
             if (token.isNotEmpty()) {
                 homeViewModel.refreshData()
             }
-            isInitialRefreshFinished = true
+            isLoading = false
         }
         setUpContents(
             if (token.isEmpty()) {
@@ -142,14 +134,13 @@ class RootActivity : AppCompatActivity() {
                 NavigationDestination.Home
             },
         )
-        setUpSplashScreen(composeRoot)
         setWindowAppearance()
         checkNotificationPermission()
         startUpdatingPushToken()
     }
 
     private fun setUpContents(startDestination: NavigationDestination) {
-        composeRoot.setContent {
+        setContent {
             val themeMode by userViewModel.themeMode.collectAsState()
             CompositionLocalProvider(LocalThemeState provides themeMode) {
                 SNUTTTheme {
@@ -165,36 +156,6 @@ class RootActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-
-    private fun setUpSplashScreen(rootView: View) {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.S) {
-            splashScreen.setOnExitAnimationListener { view ->
-                ObjectAnimator.ofFloat(view, View.ALPHA, 1f, 0f).run {
-                    interpolator = AnticipateInterpolator()
-                    duration = 200L
-                    doOnEnd { view.remove() }
-                    start()
-                }
-            }
-        }
-
-        rootView.viewTreeObserver.addOnPreDrawListener(
-            object : ViewTreeObserver.OnPreDrawListener {
-                override fun onPreDraw(): Boolean {
-                    return if (isInitialConditionsSatisfied()) {
-                        rootView.viewTreeObserver.removeOnPreDrawListener(this)
-                        true
-                    } else {
-                        false
-                    }
-                }
-            },
-        )
-    }
-
-    fun isInitialConditionsSatisfied(): Boolean {
-        return isInitialRefreshFinished
     }
 
     @Composable
@@ -271,8 +232,13 @@ class RootActivity : AppCompatActivity() {
                 // FIXME: 궁극적으로는 ApiOnError를 제거해야 한다.
                 lifecycleScope.launch {
                     userViewModel.accessToken.collect { token ->
-                        if (token.isEmpty() && navController.currentDestination?.hasRoute(NavigationDestination.Tutorial::class) == false) {
-                            navController.navigateAsOrigin(NavigationDestination.Onboard)
+                        if (token.isEmpty() && navController.currentDestination?.hasRoute(
+                                NavigationDestination.Tutorial::class,
+                            ) == false
+                        ) {
+                            navController.navigateAsOrigin(
+                                NavigationDestination.Onboard,
+                            )
                         }
                     }
                 }
@@ -304,7 +270,11 @@ class RootActivity : AppCompatActivity() {
                             navController.getBackStackEntry(NavigationDestination.Home)
                         }
                         val referrer = when {
-                            navController.previousBackStackEntry?.destination?.hasRoute(NavigationDestination.LecturesOfTable::class) == true -> DetailScreenReferrer.LectureList
+                            navController.previousBackStackEntry?.destination?.hasRoute(
+                                NavigationDestination.LecturesOfTable::class,
+                            ) == true
+                            -> DetailScreenReferrer.LectureList
+
                             homePageController.homePageState.value == HomeItem.Timetable -> DetailScreenReferrer.Timetable
                             else -> null
                         }
@@ -324,10 +294,17 @@ class RootActivity : AppCompatActivity() {
                         val homeBackStackEntry = remember(backStackEntry) {
                             navController.getBackStackEntry(NavigationDestination.Home)
                         }
-                        val tableId = backStackEntry.toRoute<NavigationDestination.TimetableLecture>().tableId
-                        val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>(homeBackStackEntry)
-                        val tableListViewModel = hiltViewModel<TableListViewModel>(homeBackStackEntry)
-                        TimetableLectureDetailPage(tableId, lectureDetailViewModel, tableListViewModel)
+                        val tableId =
+                            backStackEntry.toRoute<NavigationDestination.TimetableLecture>().tableId
+                        val lectureDetailViewModel =
+                            hiltViewModel<LectureDetailViewModel>(homeBackStackEntry)
+                        val tableListViewModel =
+                            hiltViewModel<TableListViewModel>(homeBackStackEntry)
+                        TimetableLectureDetailPage(
+                            tableId,
+                            lectureDetailViewModel,
+                            tableListViewModel,
+                        )
                     }
 
                     composableAnimated<NavigationDestination.LectureColorSelector> {
@@ -345,7 +322,7 @@ class RootActivity : AppCompatActivity() {
                         )
                     }
 
-                    settingComposables(navController, homePageController)
+                    settingComposables(navController, homePageController, dialogState)
                 }
             }
         }
@@ -419,12 +396,17 @@ class RootActivity : AppCompatActivity() {
         )
     }
 
-    private fun NavGraphBuilder.settingComposables(navController: NavController, homePageController: HomePageController) {
+    private fun NavGraphBuilder.settingComposables(
+        navController: NavController,
+        homePageController: HomePageController,
+        modalState: ModalState,
+    ) {
         composableAnimated<NavigationDestination.AppReport> { AppReportPage() }
         composableAnimated<NavigationDestination.OpenLicenses> { OpenSourceLicensePage() }
 
         composableAnimated<NavigationDestination.LicenseDetail> { backStackEntry ->
-            val licenseName = backStackEntry.toRoute<NavigationDestination.LicenseDetail>().licenseName
+            val licenseName =
+                backStackEntry.toRoute<NavigationDestination.LicenseDetail>().licenseName
             LicenseDetailPage(licenseName)
         }
 
@@ -465,8 +447,7 @@ class RootActivity : AppCompatActivity() {
         composableAnimated<NavigationDestination.PersonalInformationPolicy> { PersonalInformationPolicyPage() }
         composableAnimated<NavigationDestination.ThemeModeSelect> { ColorModeSelectPage() }
         if (BuildConfig.DEBUG) {
-            composableAnimated<NavigationDestination.LectureDiary> { DiaryListPage() }
-            composableAnimated<NavigationDestination.LectureDiaryWrite> {
+            composableAnimated<NavigationDestination.LectureDiaryWrite> { entry ->
                 DiaryWriteRoute(
                     onNavigateBack = {
                         if (navController.currentDestination?.hasRoute(NavigationDestination.LectureDiaryWrite::class) == true) {
@@ -476,39 +457,67 @@ class RootActivity : AppCompatActivity() {
                     onNavigateOnboard = {
                         navController.navigateAsOrigin(NavigationDestination.Onboard)
                     },
-                    onNavigateDiaryWriteDone = { isCourseOver ->
-                        navController.navigateAsOrigin(NavigationDestination.LectureDiaryComplete(isCourseOver))
-                    },
+                    onNavigateHome = { navController.navigateAsOrigin(NavigationDestination.Home) },
+                    onNavigateReview = {},
                 )
             }
-            composableAnimated<NavigationDestination.LectureDiaryComplete> { entry ->
-                val isCourseOver = entry.arguments?.getBoolean("isCourseOver") ?: false
-                DiaryCompleteRoute(
-                    isCourseOver = isCourseOver,
-                    onNavigateDiaryWrite = {
-                        navController.navigateAsOrigin(NavigationDestination.LectureDiaryWrite)
+            composableAnimated<NavigationDestination.LectureDiaryHistory> { entry ->
+                DiaryHistoryRoute(
+                    onNavigateBack = {
+                        if (navController.currentDestination?.hasRoute(NavigationDestination.LectureDiaryHistory::class) == true) {
+                            navController.popBackStack()
+                        }
                     },
-                    onNavigateLectureReview = {
-                        navController.navigateAsOrigin(NavigationDestination.Home)
-                        homePageController.update(HomeItem.Review(applicationContext.getString(R.string.review_base_url) + "/detail?id=53131")) // TODO: 이전 화면과 연결해서 적당한 위치로 보내기
+                    onNavigateOnboard = {
+                        navController.navigateAsOrigin(NavigationDestination.Onboard)
                     },
-                    onNavigateHomePage = {
-                        navController.navigateAsOrigin(NavigationDestination.Home)
+                    onNavigateDiaryWrite = { lectureId ->
+                        navController.navigate(
+                            NavigationDestination.LectureDiaryWrite(
+                                lectureId = lectureId,
+                                edit = true,
+                            ),
+                        )
                     },
                 )
             }
         }
         composableAnimated<NavigationDestination.VacancyNotification> {
-            val parentEntry = remember(it) {
-                navController.getBackStackEntry(NavigationDestination.Home)
-            }
-            val vacancyViewModel = hiltViewModel<VacancyViewModel>(parentEntry)
-            VacancyPage(vacancyViewModel)
+            VacancyRoute(
+                onNavigateBack = {
+                    if (navController.currentDestination?.hasRoute(NavigationDestination.VacancyNotification::class) == true) {
+                        navController.popBackStack()
+                    }
+                },
+                onNavigateOnboard = { navController.navigateAsOrigin(NavigationDestination.Onboard) },
+                onShowDeleteModal = { modalProperties ->
+                    modalState.set(
+                        title = modalProperties.title,
+                        positiveButton = modalProperties.positiveButton,
+                        negativeButton = modalProperties.negativeButton,
+                        onDismiss = modalProperties.onDismiss,
+                        onConfirm = modalProperties.onConfirm,
+                        width = modalProperties.width,
+                        content = modalProperties.content,
+                    ).show()
+                },
+                onHideDeleteModal = modalState::hide,
+            )
         }
         composableAnimated<NavigationDestination.PushPreferences> {
             PushPreferencesRoute(
                 onNavigateBack = {
                     if (navController.currentDestination?.hasRoute(NavigationDestination.PushPreferences::class) == true) {
+                        navController.popBackStack()
+                    }
+                },
+                onNavigateOnboard = { navController.navigateAsOrigin(NavigationDestination.Onboard) },
+            )
+        }
+        composableAnimated<NavigationDestination.LectureReminder> {
+            LectureReminderRoute(
+                onNavigateBack = {
+                    if (navController.currentDestination?.hasRoute(NavigationDestination.LectureReminder::class) == true) {
                         navController.popBackStack()
                     }
                 },
@@ -525,8 +534,13 @@ class RootActivity : AppCompatActivity() {
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToDetail = { theme ->
                     when (theme) {
-                        is CustomTheme -> navController.navigate(NavigationDestination.ThemeDetail(themeId = theme.id))
-                        is BuiltInTheme -> navController.navigate(NavigationDestination.ThemeDetail(theme = theme.code))
+                        is CustomTheme -> navController.navigate(
+                            NavigationDestination.ThemeDetail(themeId = theme.id),
+                        )
+
+                        is BuiltInTheme -> navController.navigate(
+                            NavigationDestination.ThemeDetail(theme = theme.code),
+                        )
                     }
                 },
                 onClickAddTheme = {

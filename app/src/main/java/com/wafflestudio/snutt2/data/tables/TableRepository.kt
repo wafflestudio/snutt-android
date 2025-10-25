@@ -1,5 +1,10 @@
 package com.wafflestudio.snutt2.data.tables
 
+import com.wafflestudio.snutt2.domainmodel.CourseBook
+import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
+import com.wafflestudio.snutt2.domainmodel.TableSummary
+import com.wafflestudio.snutt2.domainmodel.TimetableLectureReminders
+import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import kotlinx.coroutines.flow.StateFlow
@@ -31,4 +36,26 @@ interface TableRepository {
     suspend fun setTablePrimary(id: String)
 
     suspend fun setTableNotPrimary(id: String)
+
+    suspend fun getActiveLectureReminders(): Result<TimetableLectureReminders>
+
+    suspend fun getTimetableLectureReminder(
+        timetableId: String,
+        lectureId: String,
+    ): Result<LectureWithReminderOption>
+
+    suspend fun updateTimetableLectureReminder(
+        timetableId: String,
+        lectureId: String,
+        option: LectureWithReminderOption,
+    ): Result<LectureWithReminderOption>
+
+    // 여기부터 리팩토링 코드
+    val tableSummaryList: StateFlow<List<TableSummary>>
+    suspend fun createTableNew(courseBook: CourseBook, title: String): Result<Unit>
+    suspend fun updateTableNameNew(newTitle: String, tableId: String): Result<Unit>
+    suspend fun setPrimaryTableNew(id: String): Result<Unit>
+
+    suspend fun unsetPrimaryTableNew(id: String): Result<Unit>
+    suspend fun deleteTableNew(tableId: String): Result<Unit>
 }

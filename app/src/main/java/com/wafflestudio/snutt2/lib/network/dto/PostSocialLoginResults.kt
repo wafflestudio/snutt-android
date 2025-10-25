@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class PostSocialLoginResults(
-    @Json(name = "user_id") val userId: String,
-    @Json(name = "token") val token: String,
-    @Json(name = "message") val message: String,
+    @param:Json(name = "user_id") val userId: String,
+    @param:Json(name = "token") val token: String,
+    @param:Json(name = "message") val message: String,
 )

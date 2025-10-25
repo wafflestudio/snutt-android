@@ -5,5 +5,5 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class PostCheckEmailByIdResults(
-    @Json(name = "email") val email: String,
+    @param:Json(name = "email") val email: String,
 )

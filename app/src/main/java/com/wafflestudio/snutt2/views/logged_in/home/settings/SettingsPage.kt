@@ -58,7 +58,9 @@ fun SettingsRoute(
     onNavigateVacancyNotification: () -> Unit,
     onNavigateThemeMarket: () -> Unit,
     onNavigatePushPreference: () -> Unit,
-    onNavigateLectureDiary: () -> Unit,
+    onNavigateLectureReminder: () -> Unit,
+    onNavigateDiaryWrite: () -> Unit,
+    onNavigateDiaryHistory: () -> Unit,
     onNavigateTeamInfo: () -> Unit,
     onNavigateAppReport: () -> Unit,
     onNavigateOpenLicenses: () -> Unit,
@@ -85,7 +87,9 @@ fun SettingsRoute(
         onClickVacancyNotification = onNavigateVacancyNotification,
         onClickThemeMarket = onNavigateThemeMarket,
         onClickPushPreference = onNavigatePushPreference,
-        onClickLectureDiary = onNavigateLectureDiary,
+        onClickLectureReminder = onNavigateLectureReminder,
+        onClickDiaryWrite = onNavigateDiaryWrite,
+        onClickDiaryHistory = onNavigateDiaryHistory,
         onClickTeamInfo = onNavigateTeamInfo,
         onClickAppReport = onNavigateAppReport,
         onClickOpenLicenses = onNavigateOpenLicenses,
@@ -109,7 +113,9 @@ fun SettingsScreen(
     onClickVacancyNotification: () -> Unit,
     onClickThemeMarket: () -> Unit,
     onClickPushPreference: () -> Unit,
-    onClickLectureDiary: () -> Unit,
+    onClickLectureReminder: () -> Unit,
+    onClickDiaryWrite: () -> Unit,
+    onClickDiaryHistory: () -> Unit,
     onClickTeamInfo: () -> Unit,
     onClickAppReport: () -> Unit,
     onClickOpenLicenses: () -> Unit,
@@ -213,13 +219,26 @@ fun SettingsScreen(
                         onClick = onClickPushPreference,
                     )
                 }
+                if (FeatureFlag.LECTURE_REMINDER.isEnabled) {
+                    SettingItem(
+                        title = stringResource(R.string.settings_lecture_reminder_title),
+                        hasNextPage = true,
+                        onClick = onClickLectureReminder,
+                    )
+                }
                 if (BuildConfig.DEBUG) {
                     if (FeatureFlag.LECTURE_DIARY.isEnabled) {
+                        SettingItem(
+                            title = stringResource(R.string.settings_item_lecture_diary),
+                            settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
+                            hasNextPage = true,
+                            onClick = onClickDiaryHistory,
+                        )
                         SettingItem(
                             title = stringResource(R.string.settings_item_write_lecture_diary),
                             settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
                             hasNextPage = true,
-                            onClick = onClickLectureDiary,
+                            onClick = onClickDiaryWrite,
                         )
                     }
                 }
@@ -301,7 +320,10 @@ fun SettingsScreen(
             title = stringResource(R.string.settings_logout_title),
             positiveButtonText = stringResource(R.string.settings_logout_title),
         ) {
-            Text(text = stringResource(R.string.settings_logout_message), style = SNUTTTypography.body2)
+            Text(
+                text = stringResource(R.string.settings_logout_message),
+                style = SNUTTTypography.body2,
+            )
         }
     }
 }
@@ -402,6 +424,26 @@ fun NewBadge(
 @Composable
 fun SettingsPagePreview() {
     SettingsScreen(
-        uiState = SettingsUiState("양주현", "다크", false, listOf("빈자리 알림")), onClickUserConfig = {}, onClickThemeModeSelect = {}, onClickTimeTableConfig = {}, onClickThemeConfig = {}, onClickVacancyNotification = {}, onClickThemeMarket = {}, onClickPushPreference = {}, onClickLectureDiary = {}, onClickTeamInfo = {}, onClickAppReport = {}, onClickOpenLicenses = {}, onClickServiceInfo = {}, onClickPersonalInformationPolicy = {}, onClickNetworkLog = {}, onClickTest = {}, onClickLogout = {}, onConfirmLogout = {}, onDismissLogout = {},
+        uiState = SettingsUiState("양주현", "다크", false, listOf("빈자리 알림")),
+        onClickUserConfig = {},
+        onClickThemeModeSelect = {},
+        onClickTimeTableConfig = {},
+        onClickThemeConfig = {},
+        onClickVacancyNotification = {},
+        onClickThemeMarket = {},
+        onClickPushPreference = {},
+        onClickLectureReminder = {},
+        onClickDiaryWrite = {},
+        onClickDiaryHistory = {},
+        onClickTeamInfo = {},
+        onClickAppReport = {},
+        onClickOpenLicenses = {},
+        onClickServiceInfo = {},
+        onClickPersonalInformationPolicy = {},
+        onClickNetworkLog = {},
+        onClickTest = {},
+        onClickLogout = {},
+        onConfirmLogout = {},
+        onDismissLogout = {},
     )
 }

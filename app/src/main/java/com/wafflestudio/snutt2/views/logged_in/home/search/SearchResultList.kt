@@ -33,6 +33,7 @@ import kotlinx.coroutines.launch
 fun SearchResultList(
     scope: CoroutineScope,
     searchResultPagingItems: LazyPagingItems<DataWithState<LectureDto, LectureState>>,
+    searchResultListState: SearchResultListState,
     searchViewModel: SearchViewModel,
     timetableViewModel: TimetableViewModel,
     tableListViewModel: TableListViewModel,
@@ -46,8 +47,6 @@ fun SearchResultList(
     val selectedTags by searchViewModel.selectedTags.collectAsState()
     val lazyListState = searchViewModel.lazyListState
     val keyBoardController = LocalSoftwareKeyboardController.current
-
-    val searchResultListState = rememberSearchResultListState(searchResultPagingItems)
 
     Column {
         AnimatedLazyRow(itemList = selectedTags, itemKey = { it.toItemKey() }) {

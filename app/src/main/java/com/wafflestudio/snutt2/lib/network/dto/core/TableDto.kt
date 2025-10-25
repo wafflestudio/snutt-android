@@ -2,20 +2,20 @@ package com.wafflestudio.snutt2.lib.network.dto.core
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import com.wafflestudio.snutt2.model.BuiltInTheme
+import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 
 @JsonClass(generateAdapter = true)
 data class TableDto(
-    @Json(name = "_id") val id: String,
-    @Json(name = "year") val year: Long,
-    @Json(name = "semester") val semester: Long,
-    @Json(name = "title") val title: String,
-    @Json(name = "lecture_list") val lectureList: List<LectureDto> = emptyList(),
-    @Json(name = "updated_at") val updatedAt: String,
-    @Json(name = "total_credit") val totalCredit: Long?,
-    @Json(name = "theme") val theme: Int,
-    @Json(name = "themeId") val themeId: String? = null,
-    @Json(name = "isPrimary") val isPrimary: Boolean = false,
+    @param:Json(name = "_id") val id: String,
+    @param:Json(name = "year") val year: Long,
+    @param:Json(name = "semester") val semester: Long,
+    @param:Json(name = "title") val title: String,
+    @param:Json(name = "lecture_list") val lectureList: List<LectureDto> = emptyList(),
+    @param:Json(name = "updated_at") val updatedAt: String,
+    @param:Json(name = "total_credit") val totalCredit: Long?,
+    @param:Json(name = "theme") val theme: Int,
+    @param:Json(name = "themeId") val themeId: String? = null,
+    @param:Json(name = "isPrimary") val isPrimary: Boolean = false,
 ) : Comparable<TableDto> {
 
     override fun compareTo(other: TableDto): Int {

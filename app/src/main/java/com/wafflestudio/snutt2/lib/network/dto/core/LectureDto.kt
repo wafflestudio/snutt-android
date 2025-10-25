@@ -19,27 +19,27 @@ import java.time.LocalTime
 
 @JsonClass(generateAdapter = true)
 data class LectureDto(
-    @Json(name = "_id") val id: String,
-    @Json(name = "lecture_id") val lecture_id: String? = null,
-    @Json(name = "classification") val classification: String?,
-    @Json(name = "department") val department: String?,
-    @Json(name = "academic_year") val academic_year: String?,
-    @Json(name = "course_number") val course_number: String?,
-    @Json(name = "lecture_number") val lecture_number: String?,
-    @Json(name = "course_title") val course_title: String,
-    @Json(name = "credit") val credit: Long,
-    @Json(name = "class_time_json") val class_time_json: List<ClassTimeDto>,
-    @Json(name = "instructor") val instructor: String,
-    @Json(name = "quota") val quota: Long = 0,
-    @Json(name = "freshmanQuota") val freshmanQuota: Long?,
-    @Json(name = "remark") val remark: String,
-    @Json(name = "category") val category: String?,
-    @Json(name = "categoryPre2025") val categoryPre2025: String?,
-    @Json(name = "colorIndex") val colorIndex: Long = 0, // 색상
-    @Json(name = "color") val color: ColorDto = ColorDto(),
-    @Json(name = "registrationCount") val registrationCount: Long = 0,
-    @Json(name = "wasFull") val wasFull: Boolean = false,
-    @Json(name = "snuttEvLecture") val review: LectureReviewDto? = null,
+    @param:Json(name = "_id") val id: String,
+    @param:Json(name = "lecture_id") val lecture_id: String? = null,
+    @param:Json(name = "classification") val classification: String?,
+    @param:Json(name = "department") val department: String?,
+    @param:Json(name = "academic_year") val academic_year: String?,
+    @param:Json(name = "course_number") val course_number: String?,
+    @param:Json(name = "lecture_number") val lecture_number: String?,
+    @param:Json(name = "course_title") val course_title: String,
+    @param:Json(name = "credit") val credit: Long,
+    @param:Json(name = "class_time_json") val class_time_json: List<ClassTimeDto>,
+    @param:Json(name = "instructor") val instructor: String,
+    @param:Json(name = "quota") val quota: Long = 0,
+    @param:Json(name = "freshmanQuota") val freshmanQuota: Long?,
+    @param:Json(name = "remark") val remark: String,
+    @param:Json(name = "category") val category: String?,
+    @param:Json(name = "categoryPre2025") val categoryPre2025: String?,
+    @param:Json(name = "colorIndex") val colorIndex: Long = 0, // 색상
+    @param:Json(name = "color") val color: ColorDto = ColorDto(),
+    @param:Json(name = "registrationCount") val registrationCount: Long = 0,
+    @param:Json(name = "wasFull") val wasFull: Boolean = false,
+    @param:Json(name = "snuttEvLecture") val review: LectureReviewDto? = null,
 ) {
 
     val isCustom: Boolean
@@ -65,6 +65,13 @@ data class LectureDto(
             remark = "",
             class_time_json = emptyList(),
         )
+
+        fun fromLecture(lecture: Lecture): LectureDto {
+            return when (lecture) {
+                is LocalLecture -> fromLocalLecture(lecture)
+                is SearchedLecture -> fromSearchedLecture(lecture)
+            }
+        }
 
         fun fromLocalLecture(localLecture: LocalLecture): LectureDto = LectureDto(
             id = localLecture.id,
@@ -93,10 +100,50 @@ data class LectureDto(
             category = if (localLecture is SyllabusLecture) localLecture.category else null,
             categoryPre2025 = if (localLecture is SyllabusLecture) localLecture.categoryPre2025 else null,
             colorIndex = (localLecture.color as? BuiltInColor)?.colorIndex?.toLong() ?: 0L,
-            color = ColorDto(fgColor = localLecture.color.foreground.toArgb(), localLecture.color.background.toArgb()),
+            color = ColorDto(
+                fgColor = localLecture.color.foreground.toArgb(),
+                localLecture.color.background.toArgb(),
+            ),
             registrationCount = 0L,
             wasFull = false,
             review = null,
+        )
+
+        fun fromSearchedLecture(searchedLecture: SearchedLecture): LectureDto = LectureDto(
+            id = searchedLecture.id,
+            lecture_id = null,
+            classification = searchedLecture.classification,
+            department = searchedLecture.department,
+            academic_year = searchedLecture.academicYear,
+            course_number = searchedLecture.courseNumber,
+            lecture_number = searchedLecture.lectureNumber,
+            course_title = searchedLecture.courseTitle,
+            credit = searchedLecture.credit,
+            class_time_json = searchedLecture.lectureSessions.map {
+                ClassTimeDto(
+                    // NOTE: DayOfWeek 는 1이 월요일이고, 우리 서버는 0이 월요일이다
+                    day = it.day.value - 1,
+                    place = it.place,
+                    id = it.id,
+                    startMinute = it.startTime.hour * 60 + it.startTime.minute,
+                    endMinute = it.endTime.hour * 60 + it.endTime.minute,
+                )
+            },
+            instructor = searchedLecture.instructor,
+            quota = searchedLecture.quota,
+            freshmanQuota = searchedLecture.freshmanQuota,
+            remark = searchedLecture.remark,
+            category = searchedLecture.category,
+            categoryPre2025 = searchedLecture.categoryPre2025,
+            colorIndex = 0L,
+            color = ColorDto(),
+            registrationCount = searchedLecture.registrationCount,
+            wasFull = searchedLecture.wasFull,
+            review = LectureReviewDto(
+                id = searchedLecture.reviewInfo.id,
+                rating = searchedLecture.reviewInfo.rating,
+                reviewCount = searchedLecture.reviewInfo.reviewCount,
+            ),
         )
     }
 
@@ -137,7 +184,7 @@ data class LectureDto(
                     BuiltInColor(
                         foreground = Color(color.fgRaw?.toColorInt() ?: 0xFFFFFF),
                         background = Color(color.bgRaw?.toColorInt() ?: 0xFFFFFF),
-                        colorIndex = colorIndex.toInt(),
+                        colorIndex = colorIndex,
                     )
                 },
             )
@@ -167,50 +214,52 @@ data class LectureDto(
                     BuiltInColor(
                         foreground = Color(color.fgRaw?.toColorInt() ?: 0xFFFFFF),
                         background = Color(color.bgRaw?.toColorInt() ?: 0xFFFFFF),
-                        colorIndex = colorIndex.toInt(),
+                        colorIndex = colorIndex,
                     )
                 },
             )
         }
     }
 
-    fun toDomainModel(): Lecture {
-        if (this.review != null) {
-            return SearchedLecture(
+    fun toSearchedLecture(): SearchedLecture = SearchedLecture(
+        id = id,
+        courseTitle = course_title,
+        lectureSessions = class_time_json.map { (day, place, id, startMinute, endMinute) ->
+            LectureSession(
                 id = id,
-                courseTitle = course_title,
-                lectureSessions = class_time_json.map { (day, place, id, startMinute, endMinute) ->
-                    LectureSession(
-                        id = id,
-                        // NOTE: DayOfWeek 는 1이 월요일이고, 우리 서버는 0이 월요일이다
-                        day = DayOfWeek.of(day + 1),
-                        startTime = LocalTime.ofSecondOfDay(startMinute * 60L),
-                        endTime = LocalTime.ofSecondOfDay(endMinute * 60L),
-                        place = place,
-                    )
-                },
-                instructor = instructor,
-                credit = credit,
-                remark = remark,
-                classification = classification ?: "",
-                department = department ?: "",
-                academicYear = academic_year ?: "",
-                courseNumber = course_number ?: "",
-                lectureNumber = lecture_number ?: "",
-                category = category ?: "",
-                categoryPre2025 = categoryPre2025 ?: "",
-                quota = quota,
-                freshmanQuota = freshmanQuota ?: 0, // TODO
-                registrationCount = registrationCount,
-                wasFull = wasFull,
-                reviewInfo = LectureReviewInfo(
-                    id = review.id,
-                    rating = review.rating ?: 0.0,
-                    reviewCount = review.reviewCount ?: 0,
-                ),
+                // NOTE: DayOfWeek 는 1이 월요일이고, 우리 서버는 0이 월요일이다
+                day = DayOfWeek.of(day + 1),
+                startTime = LocalTime.ofSecondOfDay(startMinute * 60L),
+                endTime = LocalTime.ofSecondOfDay(endMinute * 60L),
+                place = place,
             )
+        },
+        instructor = instructor,
+        credit = credit,
+        remark = remark,
+        classification = classification ?: "",
+        department = department ?: "",
+        academicYear = academic_year ?: "",
+        courseNumber = course_number ?: "",
+        lectureNumber = lecture_number ?: "",
+        category = category ?: "",
+        categoryPre2025 = categoryPre2025 ?: "",
+        quota = quota,
+        freshmanQuota = freshmanQuota ?: 0, // TODO
+        registrationCount = registrationCount,
+        wasFull = wasFull,
+        reviewInfo = LectureReviewInfo(
+            id = review?.id ?: "",
+            rating = review?.rating ?: 0.0,
+            reviewCount = review?.reviewCount ?: 0,
+        ),
+    )
+
+    fun toDomainModel(): Lecture {
+        return if (this.review != null) {
+            this.toSearchedLecture()
         } else {
-            return this.toLocalLecture()
+            this.toLocalLecture()
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.views.logged_in.home.timetable
 
 import NavigationDestination
+import android.annotation.SuppressLint
 import android.view.MotionEvent
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -36,6 +37,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
+import com.wafflestudio.snutt2.domainmodel.CustomTheme
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.lib.contains
 import com.wafflestudio.snutt2.lib.getFittingTrimParam
@@ -44,8 +47,6 @@ import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.roundToCompact
 import com.wafflestudio.snutt2.lib.toDayString
 import com.wafflestudio.snutt2.lib.trimByTrimParam
-import com.wafflestudio.snutt2.model.BuiltInTheme
-import com.wafflestudio.snutt2.model.CustomTheme
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.LocalCompactState
@@ -70,7 +71,7 @@ fun TimeTable(
                     it.mapIndexed { idx, lecture ->
                         lecture.copy(
                             colorIndex = 0,
-                            color = colors[idx % colors.size],
+                            color = colors[idx % colors.size].toColorDto(),
                         )
                     }
                 } else {
@@ -107,7 +108,7 @@ private fun DrawClickEventDetector(lectures: List<LectureDto>, fittedTrimParam: 
     var canvasSize by remember { mutableStateOf(Size.Zero) }
     val hourLabelWidth = TimetableCanvasObjects.hourLabelWidth
     val dayLabelHeight = TimetableCanvasObjects.dayLabelHeight
-
+    val table = LocalTableState.current.table
     Canvas(
         modifier = Modifier
             .fillMaxSize()
@@ -128,6 +129,7 @@ private fun DrawClickEventDetector(lectures: List<LectureDto>, fittedTrimParam: 
                             lectureDetailViewModel.initializeEditingLectureDetail(
                                 lecture,
                                 ModeType.Normal,
+                                table,
                             )
                             navigator.navigate(NavigationDestination.LectureDetail) {
                                 launchSingleTop = true
@@ -143,6 +145,7 @@ private fun DrawClickEventDetector(lectures: List<LectureDto>, fittedTrimParam: 
     }
 }
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun DrawTableGrid(fittedTrimParam: TableTrimParam) {
     val context = LocalContext.current
@@ -265,6 +268,7 @@ fun DrawLectures(lectures: List<LectureDto>, fittedTrimParam: TableTrimParam) {
     }
 }
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 private fun DrawClassTime(
     fittedTrimParam: TableTrimParam,
@@ -333,10 +337,22 @@ private fun DrawClassTime(
                         try {
                             calculateAdjustedTextLayout(
                                 listOf(
-                                    LectureCellInfo.titleTextLayout(courseTitle, tableLectureCustomOptions.title),
-                                    LectureCellInfo.placeTextLayout(classTime.place, tableLectureCustomOptions.place),
-                                    LectureCellInfo.lectureNumberTextLayout(lectureNumber, tableLectureCustomOptions.lectureNumber),
-                                    LectureCellInfo.instructorNameTextLayout(instructorName, tableLectureCustomOptions.instructor),
+                                    LectureCellInfo.titleTextLayout(
+                                        courseTitle,
+                                        tableLectureCustomOptions.title,
+                                    ),
+                                    LectureCellInfo.placeTextLayout(
+                                        classTime.place,
+                                        tableLectureCustomOptions.place,
+                                    ),
+                                    LectureCellInfo.lectureNumberTextLayout(
+                                        lectureNumber,
+                                        tableLectureCustomOptions.lectureNumber,
+                                    ),
+                                    LectureCellInfo.instructorNameTextLayout(
+                                        instructorName,
+                                        tableLectureCustomOptions.instructor,
+                                    ),
                                 ),
                                 textMeasurer,
                                 constraints,

@@ -11,12 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
+import com.wafflestudio.snutt2.domainmodel.LectureColor
 import com.wafflestudio.snutt2.ui.SNUTTColors
 
 @Composable
 fun ColorBox(
-    color: ColorDto,
+    color: LectureColor,
     modifier: Modifier = Modifier,
     borderColor: Color = SNUTTColors.Black250,
     borderThickness: Dp = 0.5.dp,
@@ -29,7 +29,7 @@ fun ColorBox(
         Box(
             modifier = Modifier
                 .background(
-                    Color(color.fgColor ?: 0xffffff),
+                    color.foreground,
                 )
                 .weight(1f)
                 .fillMaxHeight(),
@@ -37,7 +37,7 @@ fun ColorBox(
         Box(
             modifier = Modifier
                 .background(
-                    Color(color.bgColor ?: 0xffffff),
+                    color.background,
                 )
                 .weight(1f)
                 .fillMaxHeight(),

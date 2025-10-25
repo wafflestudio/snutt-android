@@ -2,25 +2,29 @@ package com.wafflestudio.snutt2.components.view
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Rect
+import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import androidx.compose.ui.graphics.toArgb
 import androidx.core.content.res.ResourcesCompat
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.SNUTTStorage
+import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.lib.contains
+import com.wafflestudio.snutt2.lib.dp
 import com.wafflestudio.snutt2.lib.getFittingTrimParam
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.roundToCompact
-import com.wafflestudio.snutt2.lib.rx.dp
-import com.wafflestudio.snutt2.lib.rx.sp
+import com.wafflestudio.snutt2.lib.sp
 import com.wafflestudio.snutt2.lib.toDayString
-import com.wafflestudio.snutt2.model.BuiltInTheme
 import com.wafflestudio.snutt2.ui.isSystemDarkMode
-import io.reactivex.rxjava3.core.Observable
 import kotlin.math.max
 import kotlin.math.min
 
@@ -133,7 +137,10 @@ class TimetableView : View {
     }
 
     private fun init() {
-        val sharedPreferences = context.getSharedPreferences(SNUTTStorage.DOMAIN_SCOPE_CURRENT_VERSION, Context.MODE_PRIVATE)
+        val sharedPreferences = context.getSharedPreferences(
+            SNUTTStorage.DOMAIN_SCOPE_CURRENT_VERSION,
+            Context.MODE_PRIVATE,
+        )
         val themeMode = sharedPreferences.getString("theme_mode", null) ?: ""
         val isDarkMode = when (themeMode) {
             "\"DARK\"" -> true
@@ -175,12 +182,6 @@ class TimetableView : View {
             override fun onClick(lecture: LectureDto) {
                 listener(lecture)
             }
-        }
-    }
-
-    fun lectureClicks(): Observable<LectureDto> {
-        return Observable.create { emitter ->
-            setOnLectureClickListener { emitter.onNext(it) }
         }
     }
 
@@ -253,7 +254,7 @@ class TimetableView : View {
                 } else {
                     BuiltInTheme.fromCode(theme).getColorByIndex(
                         lecture.colorIndex,
-                    )
+                    ).toArgb()
                 },
                 if (lecture.colorIndex == 0L && lecture.color.fgColor != null) {
                     lecture.color.fgColor!!

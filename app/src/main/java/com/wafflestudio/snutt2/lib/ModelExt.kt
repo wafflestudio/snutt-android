@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.lib
 
 import android.content.Context
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
@@ -35,6 +36,28 @@ fun CourseBookDto.toFormattedString(context: Context): String {
         else -> "-"
     }
     return "${this.year}년 $semesterStr"
+}
+
+fun CourseBook.toFormattedString(context: Context): String {
+    val semesterStr = when (this.semester) {
+        1L -> context.getString(R.string.course_book_spring_semster)
+        2L -> context.getString(R.string.course_book_summer_semester)
+        3L -> context.getString(R.string.course_book_authum)
+        4L -> context.getString(R.string.course_book_winter)
+        else -> "-"
+    }
+    return "${this.year}년 $semesterStr"
+}
+
+fun CourseBook.toAbbvString(): String {
+    val semesterStr = when (this.semester) {
+        1L -> "1"
+        2L -> "여름"
+        3L -> "2"
+        4L -> "겨울"
+        else -> ""
+    }
+    return "${this.year}-$semesterStr"
 }
 
 fun TagType.color(): androidx.compose.ui.graphics.Color {
@@ -132,7 +155,9 @@ fun SimpleTableDto.courseBookEquals(other: SimpleTableDto): Boolean {
 fun SimpleTableDto.courseBookEquals(other: CourseBookDto): Boolean {
     return this.semester == other.semester && this.year == other.year
 }
-fun List<LectureDto>.flatMapToSearchTimeDto(): List<SearchTimeDto> = flatMap { it.class_time_json }.map { SearchTimeDto(it.day, it.startMinute, it.endMinute) }
+
+fun List<LectureDto>.flatMapToSearchTimeDto(): List<SearchTimeDto> =
+    flatMap { it.class_time_json }.map { SearchTimeDto(it.day, it.startMinute, it.endMinute) }
 
 fun List<SearchTimeDto>.getComplement(): List<SearchTimeDto> {
     val groupedByDay = groupBy { it.day }
@@ -152,7 +177,15 @@ fun List<SearchTimeDto>.getComplement(): List<SearchTimeDto> {
                     }
                     .toMutableList()
                     .apply {
-                        if (start < SearchTimeDto.LAST) add(SearchTimeDto(day, start, SearchTimeDto.LAST))
+                        if (start < SearchTimeDto.LAST) {
+                            add(
+                                SearchTimeDto(
+                                    day,
+                                    start,
+                                    SearchTimeDto.LAST,
+                                ),
+                            )
+                        }
                     },
             )
         }

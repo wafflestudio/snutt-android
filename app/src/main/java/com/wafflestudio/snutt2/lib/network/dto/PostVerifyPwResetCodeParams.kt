@@ -5,6 +5,6 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class PostVerifyPwResetCodeParams(
-    @Json(name = "user_id") val id: String,
-    @Json(name = "code") val code: String,
+    @param:Json(name = "user_id") val id: String,
+    @param:Json(name = "code") val code: String,
 )

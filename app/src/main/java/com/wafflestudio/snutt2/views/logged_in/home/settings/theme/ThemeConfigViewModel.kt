@@ -5,10 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
+import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
+import com.wafflestudio.snutt2.domainmodel.CustomTheme
+import com.wafflestudio.snutt2.domainmodel.TableTheme
 import com.wafflestudio.snutt2.lib.map
-import com.wafflestudio.snutt2.model.BuiltInTheme
-import com.wafflestudio.snutt2.model.CustomTheme
-import com.wafflestudio.snutt2.model.TableTheme
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
@@ -48,5 +48,24 @@ class ThemeConfigViewModel @Inject constructor(
     suspend fun copyTheme(theme: TableTheme) {
         if (theme !is CustomTheme) return
         themeRepository.copyTheme(theme.id)
+    }
+
+    suspend fun applyThemeToCurrentTable(theme: TableTheme) {
+        val currentTable = currentTable.value ?: return
+        when (theme) {
+            is CustomTheme -> {
+                tableRepository.updateTableTheme(
+                    currentTable.id,
+                    theme.id,
+                )
+            }
+
+            is BuiltInTheme -> {
+                tableRepository.updateTableTheme(
+                    currentTable.id,
+                    theme.code,
+                )
+            }
+        }
     }
 }

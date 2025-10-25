@@ -5,11 +5,11 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class PostAccessTokenByAuthCodeResults(
-    @Json(name = "access_token") val accessToken: String?,
-    @Json(name = "expires_in") val expiresIn: Int?,
-    @Json(name = "scope") val scope: String?,
-    @Json(name = "token_type") val tokenType: String?,
-    @Json(name = "id_token") val idToken: String?,
-    @Json(name = "error") val error: String?,
-    @Json(name = "error_description") val errorDescription: String?,
+    @param:Json(name = "access_token") val accessToken: String?,
+    @param:Json(name = "expires_in") val expiresIn: Int?,
+    @param:Json(name = "scope") val scope: String?,
+    @param:Json(name = "token_type") val tokenType: String?,
+    @param:Json(name = "id_token") val idToken: String?,
+    @param:Json(name = "error") val error: String?,
+    @param:Json(name = "error_description") val errorDescription: String?,
 )

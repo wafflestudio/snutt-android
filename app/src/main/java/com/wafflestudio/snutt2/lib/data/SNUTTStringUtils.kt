@@ -3,33 +3,20 @@ package com.wafflestudio.snutt2.lib.data
 import android.content.Context
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils
+import com.wafflestudio.snutt2.domainmodel.LectureSession
+import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
-import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.model.SearchTimeDto
-import timber.log.Timber
+import java.time.DayOfWeek
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 object SNUTTStringUtils {
-    fun getFullSemester(tableDto: TableDto): String {
-        val yearString = tableDto.year.toString()
-        val semesterString = when (tableDto.semester) {
-            1L -> "1"
-            2L -> "S"
-            3L -> "2"
-            4L -> "W"
-            else -> {
-                Timber.e("semester is out of range!!")
-                ""
-            }
-        }
-        return "$yearString-$semesterString"
-    }
-
     /**
      * 강의의 모든 classTime을 text로 변환
      * ex) 월, 수 09:30 ~ 10:45 이면 -> "월(09:30~10:45), 수(09:30~10:45)"
@@ -39,7 +26,22 @@ object SNUTTStringUtils {
             return "(없음)"
         }
 
-        return lectureDto.class_time_json.joinToString(", ", transform = ::getClassTimeTextForLecture)
+        return lectureDto.class_time_json.joinToString(
+            ", ",
+            transform = ::getClassTimeTextForLecture,
+        )
+    }
+
+    /**
+     * 강의의 모든 lectureSession을 text로 변환
+     * ex) 월, 수 09:30 ~ 10:45 이면 -> "월(09:30~10:45), 수(09:30~10:45)"
+     */
+    fun getSimplifiedClassTimeForLecture(lecture: SearchedLecture): String {
+        if (lecture.lectureSessions.isEmpty()) {
+            return "(없음)"
+        }
+
+        return lecture.lectureSessions.joinToString(", ", transform = ::getClassTimeTextForLecture)
     }
 
     /**
@@ -52,6 +54,19 @@ object SNUTTStringUtils {
         append("%02d:%02d".format(classTime.startTimeHour, classTime.startTimeMinute))
         append("~")
         append("%02d:%02d".format(classTime.endTimeHour, classTime.endTimeMinute))
+        append(")")
+    }
+
+    /**
+     * 하나의 classTime을 텍스트로 변환, 강의 내의 모든 classTime에 대해 필요할 때
+     * ex) 월 09:30 ~ 10:45 이면 -> "월(09:30~10:45)"
+     */
+    private fun getClassTimeTextForLecture(session: LectureSession): String = buildString {
+        append(session.day.getString())
+        append("(")
+        append(session.startTime.getHourMinuteString())
+        append("~")
+        append(session.endTime.getHourMinuteString())
         append(")")
     }
 
@@ -69,6 +84,17 @@ object SNUTTStringUtils {
     fun getSimplifiedLocation(lectureDto: LectureDto): String {
         val text = StringBuilder()
         val places = lectureDto.class_time_json.map { it.place }.distinct()
+        places.forEachIndexed { index, place ->
+            text.append(place)
+            if (index != places.size - 1 && place.isNotEmpty()) text.append(" / ")
+        }
+        if (text.isEmpty()) text.append("(없음)")
+        return text.toString()
+    }
+
+    fun getSimplifiedLocation(lecture: SearchedLecture): String {
+        val text = StringBuilder()
+        val places = lecture.lectureSessions.map { it.place }.distinct()
         places.forEachIndexed { index, place ->
             text.append(place)
             if (index != places.size - 1 && place.isNotEmpty()) text.append(" / ")
@@ -108,6 +134,18 @@ object SNUTTStringUtils {
             lecture.academic_year,
         )
             .filter { it.isNullOrBlank().not() }
+            .let {
+                if (it.isEmpty()) "(없음)" else it.joinToString(", ")
+            }
+    }
+
+    fun getLectureTagText(lecture: SearchedLecture): String {
+        return listOf(
+            lecture.category,
+            lecture.department,
+            lecture.academicYear,
+        )
+            .filter { it.isBlank().not() }
             .let {
                 if (it.isEmpty()) "(없음)" else it.joinToString(", ")
             }
@@ -163,7 +201,22 @@ object SNUTTStringUtils {
         return this.isEmpty() || regex.matches(this).not()
     }
 
-    fun String.isPasswordInvalid(): Boolean = Regex("^(?=.*\\d)(?=.*[a-zA-Z])\\S{6,20}\$").matches(this).not()
+    fun String.isPasswordInvalid(): Boolean =
+        Regex("^(?=.*\\d)(?=.*[a-zA-Z])\\S{6,20}\$").matches(this).not()
 
     fun String.isIdInvalid(): Boolean = Regex("^[A-Za-z\\d]{4,32}\$").matches(this).not()
+
+    fun LocalTime.getHourMinuteString(): String = buildString {
+        append("%02d:%02d".format(this@getHourMinuteString.hour, this@getHourMinuteString.minute))
+    }
+
+    fun DayOfWeek.getString(): String = when (this) {
+        DayOfWeek.MONDAY -> "월"
+        DayOfWeek.TUESDAY -> "화"
+        DayOfWeek.WEDNESDAY -> "수"
+        DayOfWeek.THURSDAY -> "목"
+        DayOfWeek.FRIDAY -> "금"
+        DayOfWeek.SATURDAY -> "토"
+        DayOfWeek.SUNDAY -> "일"
+    }
 }
