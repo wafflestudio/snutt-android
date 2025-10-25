@@ -6,5 +6,5 @@ import kotlinx.coroutines.flow.StateFlow
 interface SemesterStatusRepository {
     val semesterStatus: StateFlow<SemesterStatus>
 
-    suspend fun getSemesterStatus()
+    suspend fun fetchSemesterStatus()
 }
