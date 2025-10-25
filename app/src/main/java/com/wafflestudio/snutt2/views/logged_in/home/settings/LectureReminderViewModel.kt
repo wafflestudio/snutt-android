@@ -53,6 +53,12 @@ class LectureReminderViewModel @Inject constructor(
         viewModelScope.launch {
             semesterStatusRepository.semesterStatus.filter { it.next != null }
                 .collectLatest { semesterStatus ->
+                    if (semesterStatus.next == null) {
+                        _lectureReminderUiState.emit(
+                            LectureReminderUiState.Loading,
+                        )
+                        return@collectLatest
+                    }
                     val targetYear =
                         semesterStatus.current?.year ?: semesterStatus.next.year
                     val targetSemester =
