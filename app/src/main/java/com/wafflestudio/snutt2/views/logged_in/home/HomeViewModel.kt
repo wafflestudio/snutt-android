@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.views.logged_in.home
 
 import androidx.lifecycle.ViewModel
 import com.wafflestudio.snutt2.RemoteConfig
+import com.wafflestudio.snutt2.data.course_books.SemesterStatusRepository
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.notifications.NotificationRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
@@ -23,6 +24,7 @@ class HomeViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val notificationRepository: NotificationRepository,
     private val themeRepository: ThemeRepository,
+    private val semesterStatusRepository: SemesterStatusRepository,
     private val remoteConfig: RemoteConfig,
 ) : ViewModel() {
 
@@ -44,6 +46,7 @@ class HomeViewModel @Inject constructor(
                     },
                     async { userRepository.fetchUserInfo() },
                     async { themeRepository.fetchThemes() },
+                    async { semesterStatusRepository.fetchSemesterStatus() },
                 )
             }
         } catch (e: Exception) {

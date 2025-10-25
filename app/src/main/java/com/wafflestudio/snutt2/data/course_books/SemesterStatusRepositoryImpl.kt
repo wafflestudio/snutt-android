@@ -13,12 +13,8 @@ class SemesterStatusRepositoryImpl @Inject constructor(
     private val storage: SNUTTStorage,
 ) : SemesterStatusRepository {
     override val semesterStatus: StateFlow<SemesterStatus> = storage.semesterStatus.asStateFlow()
-    override suspend fun getSemesterStatus() {
+    override suspend fun fetchSemesterStatus() {
         val response = api._getSemesterStatus()
-//        val response = GetSemesterStatusResult(
-//            current = CourseBook(year = 2025L, semester = 2),
-//            next = CourseBook(year = 2025L, semester = 3),
-//        )
         storage.semesterStatus.update(response)
     }
 }

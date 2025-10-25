@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.views.logged_in.lecture_detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.wafflestudio.snutt2.data.course_books.SemesterStatusRepository
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
@@ -56,6 +57,7 @@ class LectureDetailViewModel @Inject constructor(
     private val lectureSearchRepository: LectureSearchRepository,
     private val tableRepository: TableRepository,
     private val userRepository: UserRepository,
+    private val semesterStatusRepository: SemesterStatusRepository,
     private val apiOnError: ApiOnError,
     private val displayMessageResolver: DisplayMessageResolver,
     getCurrentTableThemeUseCase: GetCurrentTableThemeUseCase,
@@ -206,16 +208,19 @@ class LectureDetailViewModel @Inject constructor(
         _lectureWithReminderOption.emit(LectureWithReminderOption.Default)
         _enableLectureReminderPicker.emit(false)
         val table = _table.value
-        if (table != null && lecture.class_time_json.isNotEmpty() && lecture.lecture_id != null) {
-            tableRepository.getTimetableLectureReminder(currentTable.value?.id ?: "", lecture.id)
-                .onSuccess { data ->
-                    _showLectureReminderPicker.emit(true)
-                    _enableLectureReminderPicker.emit(table.isPrimary)
-                    _lectureWithReminderOption.emit(data)
-                }
-                .onFailure { error ->
-                    handleLectureDetailError(error, table.isPrimary)
-                }
+        val semesterStatus = semesterStatusRepository.semesterStatus.value
+        if (table != null && ((table.year == semesterStatus.current?.year && table.semester == semesterStatus.current.semester) || (semesterStatus.current == null && table.year == semesterStatus.next.year && table.semester == semesterStatus.next.semester))) {
+            if (lecture.class_time_json.isNotEmpty() && lecture.lecture_id != null) {
+                tableRepository.getTimetableLectureReminder(currentTable.value?.id ?: "", lecture.id)
+                    .onSuccess { data ->
+                        _showLectureReminderPicker.emit(true)
+                        _enableLectureReminderPicker.emit(table.isPrimary)
+                        _lectureWithReminderOption.emit(data)
+                    }
+                    .onFailure { error ->
+                        handleLectureDetailError(error, table.isPrimary)
+                    }
+            }
         }
     }
 
