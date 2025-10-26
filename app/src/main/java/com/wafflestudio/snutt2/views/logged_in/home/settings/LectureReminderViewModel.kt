@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -51,14 +50,8 @@ class LectureReminderViewModel @Inject constructor(
 
     private fun loadInitialData() {
         viewModelScope.launch {
-            semesterStatusRepository.semesterStatus.filter { it.next != null }
+            semesterStatusRepository.semesterStatus
                 .collectLatest { semesterStatus ->
-                    if (semesterStatus.next == null) {
-                        _lectureReminderUiState.emit(
-                            LectureReminderUiState.Loading,
-                        )
-                        return@collectLatest
-                    }
                     val targetYear =
                         semesterStatus.current?.year ?: semesterStatus.next.year
                     val targetSemester =
