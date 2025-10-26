@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.data
 
-import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.model.SemesterStatus
 import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.network.NetworkLog
@@ -181,16 +180,13 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val semesterStatus = PrefValue<SemesterStatus>(
+    val semesterStatus = PrefValue<Optional<SemesterStatus>>(
         prefContext,
-        PrefValueMetaData(
+        PrefOptionalValueMetaData(
             domain = DOMAIN_SCOPE_LOGIN,
             key = "semester_status",
             type = SemesterStatus::class.java,
-            defaultValue = SemesterStatus(
-                current = CourseBook(year = 2025L, semester = 3),
-                next = CourseBook(year = 2025L, semester = 4),
-            ),
+            defaultValue = Optional.empty(),
         ),
     )
 
