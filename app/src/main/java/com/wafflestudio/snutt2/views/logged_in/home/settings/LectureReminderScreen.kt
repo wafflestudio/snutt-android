@@ -21,6 +21,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -50,6 +51,7 @@ import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.components.compose.SegmentedPicker
 import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
+import com.wafflestudio.snutt2.model.SemesterStatus
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import dev.chrisbanes.haze.hazeSource
@@ -68,6 +70,7 @@ fun LectureReminderRoute(
     val snackBarHostState = remember { CustomSnackBarHostState() }
     val hazeState = rememberHazeState()
 
+    val tmpSemesterStatus = viewModel.semesterStatus.collectAsState()
     LaunchedEffect(Unit) {
         viewModel.lectureReminderUiEvent.collect { uiEvent ->
             when (uiEvent) {
@@ -133,6 +136,7 @@ fun LectureReminderRoute(
             uiState = uiState,
             onClickBack = onNavigateBack,
             onChangeReminderOption = viewModel::changeLectureReminderOption,
+            tmpSemesterStatus = tmpSemesterStatus.value
         )
     }
 }
@@ -144,6 +148,7 @@ fun LectureReminderScreen(
     uiState: LectureReminderUiState,
     onClickBack: () -> Unit,
     onChangeReminderOption: (String, LectureWithReminderOption) -> Unit,
+    tmpSemesterStatus: SemesterStatus
 ) {
     val lectureReminderOptions = listOf(
         stringResource(R.string.settings_lecture_reminder_none),
@@ -172,7 +177,7 @@ fun LectureReminderScreen(
         when (uiState) {
             is LectureReminderUiState.Loading -> LectureReminderLoading()
             is LectureReminderUiState.Error -> LectureReminderError()
-            is LectureReminderUiState.NoPrimaryTimetable -> LectureReminderEmpty()
+            is LectureReminderUiState.NoPrimaryTimetable -> LectureReminderEmpty(tmpSemesterStatus)
             is LectureReminderUiState.Success -> {
                 Column {
                     SettingColumn(
@@ -271,7 +276,7 @@ fun LectureReminderError() {
 }
 
 @Composable
-fun LectureReminderEmpty() {
+fun LectureReminderEmpty(tmpSemesterStatus: SemesterStatus) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -295,6 +300,7 @@ fun LectureReminderEmpty() {
                     fontSize = 15.sp,
                 ),
             )
+            Text(text = tmpSemesterStatus.toString())
             val annotatedString = buildAnnotatedString {
                 append(stringResource(R.string.settings_lecture_reminder_empty_normal1))
                 withStyle(style = SpanStyle(fontWeight = FontWeight.SemiBold)) {
@@ -319,18 +325,18 @@ fun LectureReminderEmpty() {
 @Preview
 @Composable
 fun LectureReminderPagePreview() {
-    LectureReminderScreen(
-        modifier = Modifier
-            .height(959.dp)
-            .width(375.dp),
-        uiState = LectureReminderUiState.Success(PreviewData.sampleLectureReminderOptions),
-        onClickBack = {},
-        onChangeReminderOption = { _, _ -> },
-    )
+//    LectureReminderScreen(
+//        modifier = Modifier
+//            .height(959.dp)
+//            .width(375.dp),
+//        uiState = LectureReminderUiState.Success(PreviewData.sampleLectureReminderOptions),
+//        onClickBack = {},
+//        onChangeReminderOption = { _, _ -> },
+//    )
 }
 
 @Preview(showBackground = true)
 @Composable
 fun LectureReminderEmptyPreview() {
-    LectureReminderEmpty()
+//    LectureReminderEmpty()
 }
