@@ -1,12 +1,12 @@
 package com.wafflestudio.snutt2.data.course_books
 
 import com.wafflestudio.snutt2.data.SNUTTStorage
-import com.wafflestudio.snutt2.lib.map
 import com.wafflestudio.snutt2.model.SemesterStatus
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.toOptional
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -15,9 +15,14 @@ class SemesterStatusRepositoryImpl @Inject constructor(
     private val api: SNUTTRestApi,
     private val storage: SNUTTStorage,
 ) : SemesterStatusRepository {
-    override val semesterStatus: Flow<SemesterStatus> = storage.semesterStatus.asStateFlow().map { it.get() ?: SemesterStatus.Default }
+
+    private val _semesterStatus: MutableStateFlow<SemesterStatus> =
+        MutableStateFlow(storage.semesterStatus.get().value ?: SemesterStatus.Default)
+    override val semesterStatus: StateFlow<SemesterStatus> = _semesterStatus.asStateFlow()
+
     override suspend fun fetchSemesterStatus() {
         val response = api._getSemesterStatus()
         storage.semesterStatus.update(response.toOptional())
+        _semesterStatus.value = response
     }
 }

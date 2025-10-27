@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.course_books.SemesterStatusRepository
