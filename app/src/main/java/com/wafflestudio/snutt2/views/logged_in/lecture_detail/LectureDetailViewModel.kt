@@ -296,8 +296,6 @@ class LectureDetailViewModel @Inject constructor(
                 _enableLectureReminderPicker.emit(isTablePrimary)
                 _lectureWithReminderOption.emit(LectureWithReminderOption.Default.copy(lectureId = fixedLectureDetail.id))
             }
-            is PastSemester -> {
-            }
             else -> {
                 _lectureDetailUiEvent.emit(LectureDetailUiEvent.ShowToast(displayMessage))
             }
