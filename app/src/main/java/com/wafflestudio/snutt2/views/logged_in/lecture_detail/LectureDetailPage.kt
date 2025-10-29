@@ -197,6 +197,7 @@ fun LectureDetailPage(
     }
 
     LaunchedEffect(Unit) {
+        vm.init()
         vm.lectureDetailUiEvent.collect { uiEvent ->
             when (uiEvent) {
                 is LectureDetailUiEvent.ShowToast -> {

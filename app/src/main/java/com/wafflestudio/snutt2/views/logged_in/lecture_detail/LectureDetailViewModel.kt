@@ -109,7 +109,9 @@ class LectureDetailViewModel @Inject constructor(
     // 여기부터 dispose(), 그리고 관련 코드는 리팩토링을 한다면 필요가 없다. 지금은 LectureDetailPage가 dispose 될 때 LectureDetailViewModel은 여전히 살아있기 때문에 필요한 코드.
     private var lectureReminderJob: Job? = null
 
-    private fun init() {
+    suspend fun init() {
+        getTimetableLectureReminder(fixedLectureDetail)
+        lectureReminderJob?.cancel()
         lectureReminderJob = lectureWithReminderOption
             .drop(1) // 이 또한 리팩토링을 한다면 필요가 없다.
             .debounce(200L)
@@ -144,9 +146,8 @@ class LectureDetailViewModel @Inject constructor(
             _modeType.emit(modeType)
             _editingLectureDetail.emit(fixedLectureDetail)
             if (modeType !is ModeType.Editing) { // Editing으로 여는 것은 강의를 추가할 때 뿐이고, 이때는 아직 추가되지 않은 강의이므로 lecture reminder를 얻을 수 없다.
-                getTimetableLectureReminder(fixedLectureDetail)
+                init()
             }
-            init()
         }
     }
 
