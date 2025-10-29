@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -49,26 +50,32 @@ class LectureReminderViewModel @Inject constructor(
 
     private fun loadInitialData() {
         viewModelScope.launch {
-            val semesterStatus = semesterStatusRepository.semesterStatus
-            val targetYear = semesterStatus.value.current?.year ?: semesterStatus.value.next.year
-            val targetSemester = semesterStatus.value.current?.semester ?: semesterStatus.value.next.semester
-            tableRepository.getTableList()
-            val primaryTimetableId = tableRepository.tableMap.value.entries.firstOrNull { (id, table) ->
-                table.isPrimary && table.year == targetYear && table.semester == targetSemester
-            }?.key ?: ""
-            if (primaryTimetableId.isEmpty()) {
-                _lectureReminderUiState.emit(LectureReminderUiState.NoPrimaryTimetable)
-            } else {
-                tableRepository.getTimetableReminders(primaryTimetableId)
-                    .onSuccess { data ->
-                        _currentTimetableId.emit(data.timetableId)
-                        _lectureReminderUiState.emit(LectureReminderUiState.Success(data.lectureReminders.associateBy { it.lectureId }))
+            semesterStatusRepository.semesterStatus
+                .collectLatest { semesterStatus ->
+                    if (semesterStatus == null) return@collectLatest
+                    val targetYear =
+                        semesterStatus.current?.year ?: semesterStatus.next.year
+                    val targetSemester =
+                        semesterStatus.current?.semester ?: semesterStatus.next.semester
+                    tableRepository.getTableList()
+                    val primaryTimetableId =
+                        tableRepository.tableMap.value.entries.firstOrNull { (id, table) ->
+                            table.isPrimary && table.year == targetYear && table.semester == targetSemester
+                        }?.key ?: ""
+                    if (primaryTimetableId.isEmpty()) {
+                        _lectureReminderUiState.emit(LectureReminderUiState.NoPrimaryTimetable)
+                    } else {
+                        tableRepository.getTimetableReminders(primaryTimetableId)
+                            .onSuccess { data ->
+                                _currentTimetableId.emit(data.timetableId)
+                                _lectureReminderUiState.emit(LectureReminderUiState.Success(data.lectureReminders.associateBy { it.lectureId }))
+                            }
+                            .onFailure {
+                                _lectureReminderUiState.emit(LectureReminderUiState.Error)
+                            }
+                        _primaryTimetableId.emit(primaryTimetableId)
                     }
-                    .onFailure {
-                        _lectureReminderUiState.emit(LectureReminderUiState.Error)
-                    }
-                _primaryTimetableId.emit(primaryTimetableId)
-            }
+                }
         }
     }
 

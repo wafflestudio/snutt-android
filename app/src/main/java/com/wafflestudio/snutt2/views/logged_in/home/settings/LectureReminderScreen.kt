@@ -291,7 +291,7 @@ fun LectureReminderEmpty() {
             Text(
                 text = stringResource(R.string.settings_lecture_reminder_empty_title),
                 style = SNUTTTypography.h3.copy(
-                    color = SNUTTColors.Black,
+                    color = SNUTTColors.Black900,
                     fontSize = 15.sp,
                 ),
             )
