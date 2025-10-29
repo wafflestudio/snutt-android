@@ -14,7 +14,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.toDomainModel
 import com.wafflestudio.snutt2.lib.network.toDomainError
 import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.domainmodel.TimetableLectureReminders
-import com.wafflestudio.snutt2.domainmodel.getStringOffset
+import com.wafflestudio.snutt2.domainmodel.toOffsetString
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -163,7 +163,7 @@ class TableRepositoryImpl @Inject constructor(
 
     override suspend fun updateTimetableLectureReminder(timetableId: String, lectureId: String, option: LectureWithReminderOption): Result<LectureWithReminderOption> {
         try {
-            val result = api._putTimetableLectureReminder(timetableId, lectureId, PutTimetableLectureReminderParams(option.lectureReminderOffset.getStringOffset())).toDomainModel()
+            val result = api._putTimetableLectureReminder(timetableId, lectureId, PutTimetableLectureReminderParams(option.lectureReminderOffset.toOffsetString())).toDomainModel()
             return Result.Success(result)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
