@@ -17,7 +17,6 @@ import com.wafflestudio.snutt2.lib.network.AuthError
 import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
 import com.wafflestudio.snutt2.lib.network.DomainError
 import com.wafflestudio.snutt2.lib.network.EOF
-import com.wafflestudio.snutt2.lib.network.PastSemester
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
