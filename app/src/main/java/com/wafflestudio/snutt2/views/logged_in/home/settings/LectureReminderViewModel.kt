@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.course_books.SemesterStatusRepository
@@ -53,6 +52,7 @@ class LectureReminderViewModel @Inject constructor(
         viewModelScope.launch {
             semesterStatusRepository.semesterStatus
                 .collectLatest { semesterStatus ->
+                    if (semesterStatus == null) return@collectLatest
                     val targetYear =
                         semesterStatus.current?.year ?: semesterStatus.next.year
                     val targetSemester =

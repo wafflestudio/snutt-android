@@ -4,7 +4,7 @@ import com.wafflestudio.snutt2.model.SemesterStatus
 import kotlinx.coroutines.flow.StateFlow
 
 interface SemesterStatusRepository {
-    val semesterStatus: StateFlow<SemesterStatus>
+    val semesterStatus: StateFlow<SemesterStatus?>
 
     suspend fun fetchSemesterStatus()
 }

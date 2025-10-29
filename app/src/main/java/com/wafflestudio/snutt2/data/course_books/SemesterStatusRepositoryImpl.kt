@@ -16,9 +16,9 @@ class SemesterStatusRepositoryImpl @Inject constructor(
     private val storage: SNUTTStorage,
 ) : SemesterStatusRepository {
 
-    private val _semesterStatus: MutableStateFlow<SemesterStatus> =
-        MutableStateFlow(storage.semesterStatus.get().value ?: SemesterStatus.Default)
-    override val semesterStatus: StateFlow<SemesterStatus> = _semesterStatus.asStateFlow()
+    private val _semesterStatus: MutableStateFlow<SemesterStatus?> =
+        MutableStateFlow(storage.semesterStatus.get().value)
+    override val semesterStatus: StateFlow<SemesterStatus?> = _semesterStatus.asStateFlow()
 
     override suspend fun fetchSemesterStatus() {
         val response = api._getSemesterStatus()

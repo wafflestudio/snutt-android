@@ -37,7 +37,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -210,6 +209,7 @@ class LectureDetailViewModel @Inject constructor(
         _enableLectureReminderPicker.emit(false)
         val table = _table.value
         val semesterStatus = semesterStatusRepository.semesterStatus.value
+        if (semesterStatus == null) return
         if (table != null && ((table.year == semesterStatus.current?.year && table.semester == semesterStatus.current.semester) || (semesterStatus.current == null && table.year == semesterStatus.next.year && table.semester == semesterStatus.next.semester))) {
             if (lecture.class_time_json.isNotEmpty() && lecture.lecture_id != null) {
                 tableRepository.getTimetableLectureReminder(currentTable.value?.id ?: "", lecture.id)
