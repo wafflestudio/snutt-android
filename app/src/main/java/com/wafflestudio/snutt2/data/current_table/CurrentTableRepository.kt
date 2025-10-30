@@ -5,6 +5,7 @@ import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureReviewDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
+import com.wafflestudio.snutt2.domainmodel.Table
 import kotlinx.coroutines.flow.StateFlow
 
 interface CurrentTableRepository {
@@ -41,4 +42,7 @@ interface CurrentTableRepository {
     suspend fun getLectureReviewSummary(
         lectureId: String,
     ): LectureReviewDto
+
+    // 여기부터 리팩토링 코드
+    val currentTableRefactored: StateFlow<Table?>
 }
