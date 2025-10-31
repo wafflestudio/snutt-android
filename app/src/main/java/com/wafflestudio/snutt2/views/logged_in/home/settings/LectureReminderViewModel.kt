@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.wafflestudio.snutt2.data.semester_status.SemesterStatusRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -28,6 +30,7 @@ import javax.inject.Inject
 class LectureReminderViewModel @Inject constructor(
     private val tableRepository: TableRepository,
     private val userRepository: UserRepository,
+    private val semesterStatusRepository: SemesterStatusRepository,
     private val displayMessageResolver: DisplayMessageResolver,
 ) : ViewModel() {
     private val _lectureReminderUiState = MutableStateFlow<LectureReminderUiState>(LectureReminderUiState.Loading)
@@ -39,7 +42,7 @@ class LectureReminderViewModel @Inject constructor(
     val lectureReminderUiEvent = _lectureReminderUiEvent.asSharedFlow()
 
     private val _currentTimetableId = MutableStateFlow("")
-
+    private val _primaryTimetableId = MutableStateFlow("")
     init {
         loadInitialData()
         handleUpdateEvents()
@@ -47,13 +50,28 @@ class LectureReminderViewModel @Inject constructor(
 
     private fun loadInitialData() {
         viewModelScope.launch {
-            tableRepository.getActiveLectureReminders()
-                .onSuccess { data ->
-                    _currentTimetableId.emit(data.timetableId)
-                    _lectureReminderUiState.emit(LectureReminderUiState.Success(data.lectureReminders.associateBy { it.lectureId }))
-                }
-                .onFailure {
-                    _lectureReminderUiState.emit(LectureReminderUiState.Error)
+            semesterStatusRepository.semesterStatus
+                .collectLatest { semesterStatus ->
+                    if (semesterStatus == null) return@collectLatest
+                    val targetYear =
+                        semesterStatus.current?.year ?: semesterStatus.next.year
+                    val targetSemester =
+                        semesterStatus.current?.semester ?: semesterStatus.next.semester
+                    val primaryTimetableId = tableRepository.getTableList().firstOrNull { simpleTableDto ->
+                        simpleTableDto.isPrimary && simpleTableDto.year == targetYear && simpleTableDto.semester == targetSemester
+                    }?.id ?: run {
+                        _lectureReminderUiState.emit(LectureReminderUiState.NoPrimaryTimetable)
+                        return@collectLatest
+                    }
+                    tableRepository.getTimetableReminders(primaryTimetableId)
+                        .onSuccess { data ->
+                            _currentTimetableId.emit(data.timetableId)
+                            _lectureReminderUiState.emit(LectureReminderUiState.Success(data.lectureReminders.associateBy { it.lectureId }))
+                        }
+                        .onFailure {
+                            _lectureReminderUiState.emit(LectureReminderUiState.Error)
+                        }
+                    _primaryTimetableId.emit(primaryTimetableId)
                 }
         }
     }
@@ -122,6 +140,7 @@ sealed interface LectureReminderUiState {
     data object Loading : LectureReminderUiState
     data object Error : LectureReminderUiState
     data class Success(val data: Map<String, LectureWithReminderOption>) : LectureReminderUiState
+    data object NoPrimaryTimetable : LectureReminderUiState
 }
 
 sealed interface LectureReminderUiEvent {

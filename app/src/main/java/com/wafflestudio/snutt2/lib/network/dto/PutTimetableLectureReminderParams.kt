@@ -5,5 +5,5 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class PutTimetableLectureReminderParams(
-    @param:Json(name = "offsetMinutes") val offsetMinutes: Int,
+    @param:Json(name = "option") val offsetMinutes: String,
 )

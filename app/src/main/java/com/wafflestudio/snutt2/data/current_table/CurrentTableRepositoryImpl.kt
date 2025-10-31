@@ -101,6 +101,13 @@ class CurrentTableRepositoryImpl @Inject constructor(
         return api._getLectureReviewSummary(lectureId)
     }
 
+    override suspend fun updateCurrentTable() {
+        val prevTable = storage.lastViewedTable.get().value
+            ?: throw IllegalStateException("cannot update table when current table not exists")
+        val response = api._getTableById(prevTable.id)
+        storage.lastViewedTable.update(response.toOptional())
+    }
+
     // 여기부터 리팩토링 코드
     override val currentTableRefactored: StateFlow<Table?>
         get() = object : StateFlow<Table?> {

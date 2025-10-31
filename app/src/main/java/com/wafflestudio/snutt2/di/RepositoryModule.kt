@@ -2,6 +2,8 @@ package com.wafflestudio.snutt2.di
 
 import com.wafflestudio.snutt2.data.course_books.CourseBookRepository
 import com.wafflestudio.snutt2.data.course_books.CourseBookRepositoryImpl
+import com.wafflestudio.snutt2.data.semester_status.SemesterStatusRepository
+import com.wafflestudio.snutt2.data.semester_status.SemesterStatusRepositoryImpl
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepositoryImpl
 import com.wafflestudio.snutt2.data.lecture_diary.DiaryRepository
@@ -58,4 +60,7 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindsDiaryRepository(impl: DiaryRepositoryImpl): DiaryRepository
+
+    @Binds
+    abstract fun bindsSemesterStatusRepository(impl: SemesterStatusRepositoryImpl): SemesterStatusRepository
 }

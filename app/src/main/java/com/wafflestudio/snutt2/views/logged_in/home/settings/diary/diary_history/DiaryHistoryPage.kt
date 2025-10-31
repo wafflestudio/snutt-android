@@ -28,7 +28,7 @@ import com.wafflestudio.snutt2.components.compose.ArrowBackIcon
 import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.domainmodel.preview.DiaryPreviewData
-import com.wafflestudio.snutt2.lib.network.dto.core.toCourseBook
+import com.wafflestudio.snutt2.lib.network.dto.core.toDomainModel
 import com.wafflestudio.snutt2.lib.toAbbvString
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -134,7 +134,7 @@ fun DiaryHistoryScreen(
 @Preview
 fun DiaryListPagePreview() {
     val courseBookList =
-        DiaryPreviewData.courseBookDtoList.map { courseBookDto -> courseBookDto.toCourseBook() }
+        DiaryPreviewData.courseBookDtoList.map { courseBookDto -> courseBookDto.toDomainModel() }
     DiaryHistoryScreen(
         modifier = Modifier,
         onNavigateBack = {},
