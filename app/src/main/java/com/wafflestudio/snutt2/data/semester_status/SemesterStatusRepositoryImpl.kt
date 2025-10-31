@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.data.course_books
+package com.wafflestudio.snutt2.data.semester_status
 
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.domainmodel.SemesterStatus

@@ -2,7 +2,7 @@ package com.wafflestudio.snutt2.views.logged_in.home
 
 import androidx.lifecycle.ViewModel
 import com.wafflestudio.snutt2.RemoteConfig
-import com.wafflestudio.snutt2.data.course_books.SemesterStatusRepository
+import com.wafflestudio.snutt2.data.semester_status.SemesterStatusRepository
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.notifications.NotificationRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
