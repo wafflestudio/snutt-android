@@ -41,6 +41,8 @@ interface CurrentTableRepository {
         lectureId: String,
     ): LectureReviewDto
 
+    suspend fun updateCurrentTable()
+
     // 여기부터 리팩토링 코드
     val currentTableRefactored: StateFlow<Table?>
 }

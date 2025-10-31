@@ -104,8 +104,10 @@ interface SNUTTRestApi {
         @Path("lecture_id") lecture_id: String,
     ): ResetLectureResults
 
-    @GET("v1/tables/active-semester/primary/lecture/reminders")
-    suspend fun _getActiveLectureReminders(): GetActiveLectureRemindersResults
+    @GET("v1/tables/{timetableId}/lecture/reminders")
+    suspend fun _getTimetableReminders(
+        @Path("timetableId") timetableId: String,
+    ): GetTimetableRemindersResults
 
     @GET("v1/tables/{timetableId}/lecture/{timetableLectureId}/reminder")
     suspend fun _getTimetableLectureReminder(
@@ -307,6 +309,9 @@ interface SNUTTRestApi {
     suspend fun _postPushPreferences(
         @Body pushPreferences: PushPreferenceDto,
     )
+
+    @GET("/v1/semesters/status")
+    suspend fun _getSemesterStatus(): GetSemesterStatusResult
 
     /**
      * 소셜 로그인 관련.

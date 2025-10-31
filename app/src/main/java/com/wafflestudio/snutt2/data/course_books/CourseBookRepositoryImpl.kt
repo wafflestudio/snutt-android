@@ -4,7 +4,7 @@ import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
-import com.wafflestudio.snutt2.lib.network.dto.core.toCourseBook
+import com.wafflestudio.snutt2.lib.network.dto.core.toDomainModel
 import com.wafflestudio.snutt2.lib.network.toDomainError
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -21,7 +21,7 @@ class CourseBookRepositoryImpl @Inject constructor(
     override suspend fun getCourseBookNew(): Result<List<CourseBook>> {
         try {
             val result = api._getCoursebook()
-            return Result.Success(result.map { it.toCourseBook() })
+            return Result.Success(result.map { it.toDomainModel() })
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
         }

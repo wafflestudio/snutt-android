@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.data
 
+import com.wafflestudio.snutt2.model.SemesterStatusDto
 import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.network.NetworkLog
 import com.wafflestudio.snutt2.lib.network.dto.core.*
@@ -176,6 +177,16 @@ class SNUTTStorage @Inject constructor(
             key = "recent_searched_departments",
             type = TagDto::class.java,
             defaultValue = listOf(),
+        ),
+    )
+
+    val semesterStatus = PrefValue<Optional<SemesterStatusDto>>(
+        prefContext,
+        PrefOptionalValueMetaData(
+            domain = DOMAIN_SCOPE_LOGIN,
+            key = "semester_status",
+            type = SemesterStatusDto::class.java,
+            defaultValue = Optional.empty(),
         ),
     )
 
