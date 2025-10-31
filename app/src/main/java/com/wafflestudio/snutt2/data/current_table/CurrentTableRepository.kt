@@ -36,12 +36,12 @@ interface CurrentTableRepository {
 
     suspend fun deleteBookmark(lecture: LectureDto)
 
-    suspend fun updateIsPrimary(isPrimary: Boolean)
-
     // FIXME: do not expose network layer data class
     suspend fun getLectureReviewSummary(
         lectureId: String,
     ): LectureReviewDto
+
+    suspend fun updateCurrentTable()
 
     // 여기부터 리팩토링 코드
     val currentTableRefactored: StateFlow<Table?>

@@ -97,12 +97,15 @@ class CurrentTableRepositoryImpl @Inject constructor(
         api._deleteBookmark(PostBookmarkParams(lecture.lecture_id ?: lecture.id))
     }
 
-    override suspend fun updateIsPrimary(isPrimary: Boolean) {
-        storage.lastViewedTable.update(currentTable.value?.copy(isPrimary = isPrimary).toOptional())
-    }
-
     override suspend fun getLectureReviewSummary(lectureId: String): LectureReviewDto {
         return api._getLectureReviewSummary(lectureId)
+    }
+
+    override suspend fun updateCurrentTable() {
+        val prevTable = storage.lastViewedTable.get().value
+            ?: throw IllegalStateException("cannot update table when current table not exists")
+        val response = api._getTableById(prevTable.id)
+        storage.lastViewedTable.update(response.toOptional())
     }
 
     // 여기부터 리팩토링 코드
