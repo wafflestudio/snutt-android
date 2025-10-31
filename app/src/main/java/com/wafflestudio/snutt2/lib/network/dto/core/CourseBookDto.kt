@@ -23,7 +23,7 @@ data class CourseBookDto(
     }
 }
 
-fun CourseBookDto.toCourseBook(): CourseBook {
+fun CourseBookDto.toDomainModel(): CourseBook {
     return CourseBook(
         semester = this.semester,
         year = this.year,

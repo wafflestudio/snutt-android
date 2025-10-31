@@ -1,6 +1,6 @@
 package com.wafflestudio.snutt2.data.course_books
 
-import com.wafflestudio.snutt2.model.SemesterStatus
+import com.wafflestudio.snutt2.domainmodel.SemesterStatus
 import kotlinx.coroutines.flow.StateFlow
 
 interface SemesterStatusRepository {
