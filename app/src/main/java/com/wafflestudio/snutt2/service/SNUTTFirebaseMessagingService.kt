@@ -36,17 +36,17 @@ class SNUTTFirebaseMessagingService : FirebaseMessagingService() {
         val channelId = "fcm_default_channel"
         val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
+            val reminderChannel = NotificationChannel(
                 channelId,
-                "기본 알림",
+                getString(R.string.firebase_messaging_service_channel_lecture_reminder),
                 NotificationManager.IMPORTANCE_HIGH,
             ).apply {
-                description = "앱 알림 채널"
+                description = getString(R.string.firebase_messaging_service_description_lecture_reminder)
                 enableLights(true)
                 lightColor = Color.BLUE
                 enableVibration(true)
             }
-            nm.createNotificationChannel(channel)
+            nm.createNotificationChannel(reminderChannel)
         }
 
         val intent = Intent(this, RootActivity::class.java).apply {
