@@ -1,7 +1,11 @@
 package com.wafflestudio.snutt2.data.tables
 
 import com.wafflestudio.snutt2.data.SNUTTStorage
+import com.wafflestudio.snutt2.domainmodel.CourseBook
+import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
+import com.wafflestudio.snutt2.domainmodel.TableSummary
+import com.wafflestudio.snutt2.domainmodel.TimetableLectureReminders
 import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.PostTableParams
@@ -13,9 +17,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.network.dto.core.toDomainModel
 import com.wafflestudio.snutt2.lib.network.toDomainError
 import com.wafflestudio.snutt2.lib.toOptional
-import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
-import com.wafflestudio.snutt2.domainmodel.TimetableLectureReminders
-import com.wafflestudio.snutt2.domainmodel.getIntOffset
+import com.wafflestudio.snutt2.domainmodel.toOffsetString
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -108,32 +110,54 @@ class TableRepositoryImpl @Inject constructor(
 
     override suspend fun setTablePrimary(id: String) {
         api._postPrimaryTable(id)
+        snuttStorage.tableMap.update(
+            tableMap.value.mapValues { (key, table) ->
+                if (key == id) {
+                    table.copy(isPrimary = true)
+                } else {
+                    table
+                }
+            },
+        )
     }
 
     override suspend fun setTableNotPrimary(id: String) {
         api._deletePrimaryTable(id)
+        snuttStorage.tableMap.update(
+            tableMap.value.mapValues { (key, table) ->
+                if (key == id) {
+                    table.copy(isPrimary = false)
+                } else {
+                    table
+                }
+            },
+        )
     }
 
-    override suspend fun getActiveLectureReminders(): Result<TimetableLectureReminders> {
+    override suspend fun getTimetableReminders(timetableId: String): Result<TimetableLectureReminders> {
         try {
-            val activeLectureReminders = api._getActiveLectureReminders()
-            val activeTable = api._getTableById(activeLectureReminders.timetableId)
-            val activeLecturesWithReminderOption = activeLectureReminders.reminders.map { it.toDomainModel() }
-            val result = activeTable.lectureList.map { lectureDto ->
-                val matchingOption = activeLecturesWithReminderOption.find { it.lectureId == lectureDto.id }
+            val timetableReminders = api._getTimetableReminders(timetableId)
+            val reminderTable = api._getTableById(timetableId)
+            val lecturesWithReminderOption = timetableReminders.map { it.toDomainModel() }
+            val result = reminderTable.lectureList.map { lecture ->
+                val matchingOption = lecturesWithReminderOption.find { it.lectureId == lecture.id }
                 LectureWithReminderOption(
-                    lectureId = lectureDto.id,
-                    lectureTitle = lectureDto.course_title,
-                    lectureReminderOffset = matchingOption?.lectureReminderOffset ?: LectureReminderOffset.NONE,
+                    lectureId = lecture.id,
+                    lectureTitle = lecture.course_title,
+                    lectureReminderOffset = matchingOption?.lectureReminderOffset
+                        ?: LectureReminderOffset.NONE,
                 )
             }
-            return Result.Success(TimetableLectureReminders(activeTable.id, result))
+            return Result.Success(TimetableLectureReminders(timetableId, result))
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
         }
     }
 
-    override suspend fun getTimetableLectureReminder(timetableId: String, lectureId: String): Result<LectureWithReminderOption> {
+    override suspend fun getTimetableLectureReminder(
+        timetableId: String,
+        lectureId: String,
+    ): Result<LectureWithReminderOption> {
         try {
             val result = api._getTimetableLectureReminder(timetableId, lectureId)
             return Result.Success(result.toDomainModel())
@@ -142,18 +166,114 @@ class TableRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateTimetableLectureReminder(timetableId: String, lectureId: String, option: LectureWithReminderOption): Result<LectureWithReminderOption> {
+    override suspend fun updateTimetableLectureReminder(
+        timetableId: String,
+        lectureId: String,
+        option: LectureWithReminderOption,
+    ): Result<LectureWithReminderOption> {
         try {
-            val result = when (option.lectureReminderOffset) {
-                LectureReminderOffset.NONE -> {
-                    api._deleteTimetableLectureReminder(timetableId, lectureId)
-                    LectureWithReminderOption.Default
+            val result = api._putTimetableLectureReminder(timetableId, lectureId, PutTimetableLectureReminderParams(option.lectureReminderOffset.toOffsetString())).toDomainModel()
+            return Result.Success(result)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
+
+    // 여기부터 리팩토링 코드
+    override val tableSummaryList: StateFlow<List<TableSummary>>
+        get() = object : StateFlow<List<TableSummary>> {
+            private val source = snuttStorage.tableMap.asStateFlow()
+
+            override val value: List<TableSummary>
+                get() = source.value.values.map { dto ->
+                    TableSummary.fromSimpleTableDto(dto)
                 }
-                else -> {
-                    api._putTimetableLectureReminder(timetableId, lectureId, PutTimetableLectureReminderParams(option.lectureReminderOffset.getIntOffset())).toDomainModel()
+
+            override val replayCache: List<List<TableSummary>>
+                get() = listOf(value)
+
+            override suspend fun collect(collector: kotlinx.coroutines.flow.FlowCollector<List<TableSummary>>): Nothing {
+                source.collect { dtoMap ->
+                    collector.emit(
+                        dtoMap.values.map { dto ->
+                            TableSummary.fromSimpleTableDto(dto)
+                        },
+                    )
                 }
             }
-            return Result.Success(result)
+        }
+
+    override suspend fun createTableNew(courseBook: CourseBook, title: String): Result<Unit> {
+        try {
+            val response = api._postTable(
+                PostTableParams(
+                    year = courseBook.year,
+                    semester = courseBook.semester,
+                    title = title,
+                ),
+            )
+            // FIXME: 데이터 레이어 갈아엎을 때 이 암묵적인 동작도 어떻게 좀 하기
+            snuttStorage.tableMap.update(response.associateBy { it.id })
+            response
+                .firstOrNull { it.year == courseBook.year && it.semester == courseBook.semester && it.title == title }
+                ?.let {
+                    fetchTableById(it.id)
+                }
+
+            return Result.Success(Unit)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun updateTableNameNew(newTitle: String, tableId: String): Result<Unit> {
+        try {
+            val response = api._putTable(
+                id = tableId,
+                PutTableParams(title = newTitle),
+            )
+            // FIXME: 데이터 레이어 갈아엎을 때 이 암묵적인 동작도 어떻게 좀 하기
+            snuttStorage.tableMap.update(response.associateBy { it.id })
+            val prev = snuttStorage.lastViewedTable.get().value
+            snuttStorage.lastViewedTable.update(
+                if (prev?.id == tableId) {
+                    prev.copy(title = newTitle).toOptional()
+                } else {
+                    prev.toOptional()
+                },
+            )
+
+            return Result.Success(Unit)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun setPrimaryTableNew(id: String): Result<Unit> {
+        try {
+            api._postPrimaryTable(id)
+            return Result.Success(Unit)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun unsetPrimaryTableNew(id: String): Result<Unit> {
+        try {
+            api._deletePrimaryTable(id)
+            return Result.Success(Unit)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun deleteTableNew(tableId: String): Result<Unit> {
+        try {
+            val response = api._deleteTable(tableId)
+            // FIXME: 데이터 레이어 수정
+            snuttStorage.tableMap.update(response.associateBy { it.id })
+
+            return Result.Success(Unit)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
         }

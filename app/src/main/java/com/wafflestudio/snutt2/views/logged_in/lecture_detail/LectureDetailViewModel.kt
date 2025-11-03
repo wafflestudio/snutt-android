@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.views.logged_in.lecture_detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.wafflestudio.snutt2.data.semester_status.SemesterStatusRepository
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
@@ -16,7 +17,6 @@ import com.wafflestudio.snutt2.lib.network.AuthError
 import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
 import com.wafflestudio.snutt2.lib.network.DomainError
 import com.wafflestudio.snutt2.lib.network.EOF
-import com.wafflestudio.snutt2.lib.network.PastSemester
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
@@ -56,6 +56,7 @@ class LectureDetailViewModel @Inject constructor(
     private val lectureSearchRepository: LectureSearchRepository,
     private val tableRepository: TableRepository,
     private val userRepository: UserRepository,
+    private val semesterStatusRepository: SemesterStatusRepository,
     private val apiOnError: ApiOnError,
     private val displayMessageResolver: DisplayMessageResolver,
     getCurrentTableThemeUseCase: GetCurrentTableThemeUseCase,
@@ -101,14 +102,15 @@ class LectureDetailViewModel @Inject constructor(
     private val _lectureWithReminderOption = MutableStateFlow(LectureWithReminderOption.Default)
     val lectureWithReminderOption = _lectureWithReminderOption.asStateFlow()
 
-    private val _lectureDetailUiEvent: MutableSharedFlow<LectureDetailUiEvent> =
-        MutableSharedFlow(replay = 0)
+    private val _lectureDetailUiEvent: MutableSharedFlow<LectureDetailUiEvent> = MutableSharedFlow(replay = 0)
     val lectureDetailUiEvent = _lectureDetailUiEvent.asSharedFlow()
 
     // 여기부터 dispose(), 그리고 관련 코드는 리팩토링을 한다면 필요가 없다. 지금은 LectureDetailPage가 dispose 될 때 LectureDetailViewModel은 여전히 살아있기 때문에 필요한 코드.
     private var lectureReminderJob: Job? = null
 
-    private fun init() {
+    suspend fun init() {
+        getTimetableLectureReminder(fixedLectureDetail)
+        lectureReminderJob?.cancel()
         lectureReminderJob = lectureWithReminderOption
             .drop(1) // 이 또한 리팩토링을 한다면 필요가 없다.
             .debounce(200L)
@@ -135,11 +137,7 @@ class LectureDetailViewModel @Inject constructor(
         viewModelScope.launch { _modeType.emit(ModeType.Editing(adding)) }
     }
 
-    fun initializeEditingLectureDetail(
-        lecture: LectureDto?,
-        modeType: ModeType,
-        table: TableDto? = null,
-    ) {
+    fun initializeEditingLectureDetail(lecture: LectureDto?, modeType: ModeType, table: TableDto? = null) {
         fixedLectureDetail = lecture ?: LectureDto.Default // null 문제 (reset에서 비롯됨)
         viewModelScope.launch {
             lectureReminderJob?.cancel()
@@ -147,9 +145,8 @@ class LectureDetailViewModel @Inject constructor(
             _modeType.emit(modeType)
             _editingLectureDetail.emit(fixedLectureDetail)
             if (modeType !is ModeType.Editing) { // Editing으로 여는 것은 강의를 추가할 때 뿐이고, 이때는 아직 추가되지 않은 강의이므로 lecture reminder를 얻을 수 없다.
-                getTimetableLectureReminder(fixedLectureDetail)
+                init()
             }
-            init()
         }
     }
 
@@ -206,22 +203,25 @@ class LectureDetailViewModel @Inject constructor(
             currentTableRepository.getLectureReviewSummary(lectureId)
         }
     }
-
     suspend fun getTimetableLectureReminder(lecture: LectureDto = fixedLectureDetail) {
         _showLectureReminderPicker.emit(false)
         _lectureWithReminderOption.emit(LectureWithReminderOption.Default)
         _enableLectureReminderPicker.emit(false)
         val table = _table.value
-        if (table != null && lecture.class_time_json.isNotEmpty() && lecture.lecture_id != null) {
-            tableRepository.getTimetableLectureReminder(currentTable.value?.id ?: "", lecture.id)
-                .onSuccess { data ->
-                    _showLectureReminderPicker.emit(true)
-                    _enableLectureReminderPicker.emit(table.isPrimary)
-                    _lectureWithReminderOption.emit(data)
-                }
-                .onFailure { error ->
-                    handleLectureDetailError(error, table.isPrimary)
-                }
+        val semesterStatus = semesterStatusRepository.semesterStatus.value
+        if (semesterStatus == null) return
+        if (table != null && ((table.year == semesterStatus.current?.year && table.semester == semesterStatus.current.semester) || (semesterStatus.current == null && table.year == semesterStatus.next.year && table.semester == semesterStatus.next.semester))) {
+            if (lecture.class_time_json.isNotEmpty()) {
+                tableRepository.getTimetableLectureReminder(currentTable.value?.id ?: "", lecture.id)
+                    .onSuccess { data ->
+                        _showLectureReminderPicker.emit(true)
+                        _enableLectureReminderPicker.emit(table.isPrimary)
+                        _lectureWithReminderOption.emit(data)
+                    }
+                    .onFailure { error ->
+                        handleLectureDetailError(error, table.isPrimary)
+                    }
+            }
         }
     }
 
@@ -290,16 +290,11 @@ class LectureDetailViewModel @Inject constructor(
                 userRepository.postForceLogout()
                 _lectureDetailUiEvent.emit(LectureDetailUiEvent.LoggedOut)
             }
-
             is EOF -> {
                 _showLectureReminderPicker.emit(true)
                 _enableLectureReminderPicker.emit(isTablePrimary)
                 _lectureWithReminderOption.emit(LectureWithReminderOption.Default.copy(lectureId = fixedLectureDetail.id))
             }
-
-            is PastSemester -> {
-            }
-
             else -> {
                 _lectureDetailUiEvent.emit(LectureDetailUiEvent.ShowToast(displayMessage))
             }

@@ -105,6 +105,7 @@ import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.creditStringToLong
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getFullQuota
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getQuotaTitle
+import com.wafflestudio.snutt2.lib.featureflag.FeatureFlag
 import com.wafflestudio.snutt2.lib.logging.AddToBookmarkParameter
 import com.wafflestudio.snutt2.lib.logging.AddToVacancyParameter
 import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
@@ -196,7 +197,7 @@ fun LectureDetailPage(
     }
 
     LaunchedEffect(Unit) {
-        vm.getTimetableLectureReminder()
+        vm.init()
         vm.lectureDetailUiEvent.collect { uiEvent ->
             when (uiEvent) {
                 is LectureDetailUiEvent.ShowToast -> {
@@ -599,40 +600,42 @@ fun LectureDetailPage(
                             }
                         }
                     }
-                    AnimatedVisibility(showLectureReminderPicker && (modeType !is ModeType.Editing)) {
-                        Column(
-                            modifier = Modifier
-                                .background(SNUTTColors.White900)
-                                .padding(vertical = 4.dp),
-                        ) {
-                            SegmentedPicker(
-                                title = stringResource(R.string.lecture_detail_lecture_reminder_title),
-                                options = LectureReminderOffset.entries,
-                                optionLabel = { offset -> offset.getString() },
-                                selectedOption = lectureWithReminderOption.lectureReminderOffset,
-                                onOptionSelected = { offset ->
-                                    vm.changeLectureReminderOption(
-                                        LectureWithReminderOption(
-                                            lectureId = lectureWithReminderOption.lectureId,
-                                            lectureTitle = lectureWithReminderOption.lectureTitle,
-                                            lectureReminderOffset = offset,
-                                        ),
-                                    )
-                                },
-                                description = (
-                                    buildAnnotatedString {
-                                        if (enableLectureReminderPicker) {
-                                            append(stringResource(R.string.lecture_detail_lecture_reminder_description))
-                                        } else {
-                                            withStyle(style = SpanStyle(fontWeight = FontWeight.SemiBold)) {
-                                                append(stringResource(R.string.lecture_detail_lecture_reminder_guide_bold1))
+                    if (FeatureFlag.LECTURE_REMINDER.isEnabled) {
+                        AnimatedVisibility(showLectureReminderPicker && (modeType !is ModeType.Editing)) {
+                            Column(
+                                modifier = Modifier
+                                    .background(SNUTTColors.White900)
+                                    .padding(vertical = 4.dp),
+                            ) {
+                                SegmentedPicker(
+                                    title = stringResource(R.string.lecture_detail_lecture_reminder_title),
+                                    options = LectureReminderOffset.entries,
+                                    optionLabel = { offset -> offset.getString() },
+                                    selectedOption = lectureWithReminderOption.lectureReminderOffset,
+                                    onOptionSelected = { offset ->
+                                        vm.changeLectureReminderOption(
+                                            LectureWithReminderOption(
+                                                lectureId = lectureWithReminderOption.lectureId,
+                                                lectureTitle = lectureWithReminderOption.lectureTitle,
+                                                lectureReminderOffset = offset,
+                                            ),
+                                        )
+                                    },
+                                    description = (
+                                        buildAnnotatedString {
+                                            if (enableLectureReminderPicker) {
+                                                append(stringResource(R.string.lecture_detail_lecture_reminder_description))
+                                            } else {
+                                                withStyle(style = SpanStyle(fontWeight = FontWeight.SemiBold)) {
+                                                    append(stringResource(R.string.lecture_detail_lecture_reminder_guide_bold1))
+                                                }
+                                                append(stringResource(R.string.lecture_detail_lecture_reminder_guide_normal1))
                                             }
-                                            append(stringResource(R.string.lecture_detail_lecture_reminder_guide_normal1))
                                         }
-                                    }
-                                    ),
-                                enabled = enableLectureReminderPicker,
-                            )
+                                        ),
+                                    enabled = enableLectureReminderPicker,
+                                )
+                            }
                         }
                     }
                     AnimatedVisibility(isCustom.not() && (modeType !is ModeType.Editing)) {
