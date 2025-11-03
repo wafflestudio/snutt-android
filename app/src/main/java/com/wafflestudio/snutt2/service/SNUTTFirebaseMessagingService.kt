@@ -3,7 +3,6 @@ package com.wafflestudio.snutt2.service
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
@@ -16,6 +15,9 @@ import com.wafflestudio.snutt2.views.RootActivity
 
 class SNUTTFirebaseMessagingService : FirebaseMessagingService() {
 
+    override fun onNewToken(p0: String) {
+        super.onNewToken(p0)
+    }
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
 
@@ -34,7 +36,7 @@ class SNUTTFirebaseMessagingService : FirebaseMessagingService() {
     @OptIn(ExperimentalAnimationApi::class)
     private fun showNotification(title: String, body: String, route: String) {
         val channelId = "fcm_default_channel"
-        val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val reminderChannel = NotificationChannel(
                 channelId,
@@ -51,7 +53,7 @@ class SNUTTFirebaseMessagingService : FirebaseMessagingService() {
 
         val intent = Intent(this, RootActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            putExtra("route", route)
+            putExtra("url_scheme", route)
         }
         val pendingIntent = PendingIntent.getActivity(
             this,
