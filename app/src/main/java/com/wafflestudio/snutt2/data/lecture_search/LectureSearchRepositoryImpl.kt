@@ -20,7 +20,6 @@ import javax.inject.Singleton
 @Singleton
 class LectureSearchRepositoryImpl @Inject constructor(
     private val api: SNUTTRestApi,
-    private val snuttUrls: SnuttUrls,
     private val storage: SNUTTStorage,
 ) : LectureSearchRepository {
 
