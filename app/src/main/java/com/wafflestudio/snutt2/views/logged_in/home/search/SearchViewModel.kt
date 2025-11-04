@@ -218,7 +218,7 @@ class SearchViewModel @Inject constructor(
                 tags = _selectedTags.value,
                 times = _searchTimeList.value,
                 timesToExclude = if (_selectedTags.value.contains(TagDto.TIME_EMPTY)) currentTable.lectureList.flatMapToSearchTimeDto() else null,
-            )
+            ).cachedIn(viewModelScope)
         },
         _selectedLecture,
         currentTable.filterNotNull(),
@@ -252,7 +252,6 @@ class SearchViewModel @Inject constructor(
         SharingStarted.Eagerly,
         PagingData.empty(),
     )
-        .cachedIn(viewModelScope)
 
     suspend fun setTitle(title: String) {
         _searchTitle.emit(title)
