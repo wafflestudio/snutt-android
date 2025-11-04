@@ -95,7 +95,7 @@ fun HomePage() {
         remember { ReviewWebViewContainer(context, userViewModel.accessToken, isDarkMode) }
     // HomePage에서 collect 까지 해 줘야 탭 전환했을 때 검색 현황이 유지됨
     val searchResultPagingItems = searchViewModel.queryResults.collectAsLazyPagingItems()
-    val searchResultListState by searchViewModel.searchResultListState.collectAsState() // rememberSearchResultListState(searchResultPagingItems)
+    val searchResultListState by searchViewModel.searchResultListState.collectAsState()
 
     LaunchedEffect(Unit) {
         scope.launch(Dispatchers.IO) {
