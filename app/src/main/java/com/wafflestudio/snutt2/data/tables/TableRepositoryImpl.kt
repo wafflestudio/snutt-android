@@ -169,10 +169,10 @@ class TableRepositoryImpl @Inject constructor(
     override suspend fun updateTimetableLectureReminder(
         timetableId: String,
         lectureId: String,
-        option: LectureWithReminderOption,
+        offset: LectureReminderOffset,
     ): Result<LectureWithReminderOption> {
         try {
-            val result = api._putTimetableLectureReminder(timetableId, lectureId, PutTimetableLectureReminderParams(option.lectureReminderOffset.toOffsetString())).toDomainModel()
+            val result = api._putTimetableLectureReminder(timetableId, lectureId, PutTimetableLectureReminderParams(offset.toOffsetString())).toDomainModel()
             return Result.Success(result)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
