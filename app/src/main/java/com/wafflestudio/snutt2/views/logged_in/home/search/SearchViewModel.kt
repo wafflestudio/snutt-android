@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import androidx.paging.map
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
@@ -217,7 +218,6 @@ class SearchViewModel @Inject constructor(
                 tags = _selectedTags.value,
                 times = _searchTimeList.value,
                 timesToExclude = if (_selectedTags.value.contains(TagDto.TIME_EMPTY)) currentTable.lectureList.flatMapToSearchTimeDto() else null,
-                scope = viewModelScope,
             )
         },
         _selectedLecture,
@@ -252,6 +252,7 @@ class SearchViewModel @Inject constructor(
         SharingStarted.Eagerly,
         PagingData.empty(),
     )
+        .cachedIn(viewModelScope)
 
     suspend fun setTitle(title: String) {
         _searchTitle.emit(title)
