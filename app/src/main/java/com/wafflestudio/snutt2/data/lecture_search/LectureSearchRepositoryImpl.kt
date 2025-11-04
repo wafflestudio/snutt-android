@@ -4,7 +4,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.wafflestudio.snutt2.data.SNUTTStorage
-import com.wafflestudio.snutt2.lib.SnuttUrls
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
