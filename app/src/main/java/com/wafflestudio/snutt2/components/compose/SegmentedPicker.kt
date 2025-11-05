@@ -1,5 +1,7 @@
 package com.wafflestudio.snutt2.components.compose
 
+import androidx.compose.animation.core.animateDp
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -10,16 +12,22 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.buildAnnotatedString
@@ -28,6 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.times
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -45,6 +54,7 @@ import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
  */
 @Composable
 fun <T> SegmentedPicker(
+    modifier: Modifier = Modifier,
     title: String?,
     options: List<T>,
     optionLabel: (T) -> String,
@@ -52,8 +62,9 @@ fun <T> SegmentedPicker(
     onOptionSelected: (T) -> Unit,
     description: AnnotatedString?,
     enabled: Boolean = true,
-    modifier: Modifier = Modifier,
 ) {
+    val optionSize = remember { mutableStateOf(0.dp) }
+    val density = LocalDensity.current
     Column(
         modifier = modifier
             .padding(horizontal = 16.dp)
@@ -68,55 +79,81 @@ fun <T> SegmentedPicker(
             )
             Spacer(modifier = Modifier.height(8.dp))
         }
-        Row(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(32.dp)
-                .clip(RoundedCornerShape(9.dp))
-                .background(SNUTTColors.FillTertiary)
-                .padding(2.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            options.forEachIndexed { index, option ->
-                val isSelected = selectedOption == option
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxSize()
-                        .clip(RoundedCornerShape(7.dp))
-                        .background(
-                            if (isSelected) {
-                                SNUTTColors.BackgroundPrimary
-                            } else {
-                                Color.Transparent
-                            },
-                        )
-                        .then(
-                            if (isSelected) {
-                                Modifier
-                                    .border(0.5.dp, SNUTTColors.Black150, RoundedCornerShape(7.dp))
-                            } else {
-                                Modifier
-                            },
-                        )
-                        .clicks { if (enabled) onOptionSelected(option) },
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text = optionLabel(option),
-                        textAlign = TextAlign.Center,
-                        style = SNUTTTypography.body2.copy(fontSize = 13.sp, fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium, color = if (enabled || isSelected) SNUTTColors.Black900 else SNUTTColors.TextMed),
-                    )
+                .onGloballyPositioned { coordinates ->
+                    val optionWidthPx = coordinates.size.width / options.size
+                    optionSize.value = with(density) { optionWidthPx.toDp() }
                 }
-                // 마지막 아이템이 아닐 경우에만 구분선 추가
-                if (index != options.lastIndex) {
-                    Divider(
+                .clip(RoundedCornerShape(9.dp))
+                .background(SNUTTColors.FillTertiary),
+
+        ) {
+            val selectedIndex = options.indexOf(selectedOption)
+            val transition = updateTransition(targetState = selectedIndex, label = "buttonTransition")
+            val indicatorOffset by transition.animateDp(label = "indicatorOffset") { index ->
+                optionSize.value * index
+            }
+            Box(
+                modifier = Modifier
+                    .padding(2.dp)
+                    .offset(x = indicatorOffset)
+                    .width(optionSize.value - 3.dp)
+                    .fillMaxHeight()
+                    .clip(RoundedCornerShape(7.dp))
+                    .background(SNUTTColors.BackgroundPrimary)
+                    .border(
+                        0.5.dp,
+                        SNUTTColors.Black150,
+                        RoundedCornerShape(7.dp),
+                    ),
+            )
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(32.dp)
+                    .clip(RoundedCornerShape(9.dp))
+                    .padding(2.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                options.forEachIndexed { index, option ->
+                    val isSelected = selectedOption == option
+                    Box(
                         modifier = Modifier
-                            .fillMaxHeight()
-                            .padding(vertical = 6.dp)
-                            .width(0.5.dp),
-                        color = SNUTTColors.SeparatorTransparency,
-                    )
+                            .weight(1f)
+                            .fillMaxSize()
+                            .clip(RoundedCornerShape(7.dp))
+                            .background(
+
+                                Color.Transparent,
+
+                            )
+                            .clicks { if (enabled) onOptionSelected(option) },
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            text = optionLabel(option),
+                            textAlign = TextAlign.Center,
+                            style = SNUTTTypography.body2.copy(
+                                fontSize = 13.sp,
+                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                                color = if (enabled || isSelected) SNUTTColors.Black900 else SNUTTColors.TextMed,
+                            ),
+                        )
+                    }
+                    // 마지막 아이템이 아닐 경우에만 구분선 추가
+                    if (index != options.lastIndex) {
+                        Divider(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .padding(vertical = 6.dp)
+                                .width(0.5.dp),
+                            color = SNUTTColors.SeparatorTransparency,
+                        )
+                    }
                 }
             }
         }
