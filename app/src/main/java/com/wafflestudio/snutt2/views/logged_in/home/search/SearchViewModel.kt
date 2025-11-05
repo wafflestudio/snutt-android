@@ -52,6 +52,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -280,25 +281,26 @@ class SearchViewModel @Inject constructor(
     fun onToggleTag(tag: TagDto) {
         viewModelScope.launch {
             if (_selectedTags.value.contains(tag)) {
-                _selectedTags.emit(_selectedTags.value.filter { it != tag })
+                _selectedTags.update { tagList ->
+                    tagList.filter { it != tag }
+                }
 
                 if (tag == TagDto.TIME_SELECT) {
                     _searchTimeList.emit(null)
                 }
             } else {
-                val selectedTags = if (tag.type.isExclusive) {
-                    concatenate(_selectedTags.value.filter { it.type != tag.type }, listOf(tag))
-                } else {
-                    concatenate(_selectedTags.value, listOf(tag))
+                _selectedTags.update { current ->
+                    if (tag.type.isExclusive) {
+                        concatenate(current.filter { it.type != tag.type }, listOf(tag))
+                    } else {
+                        concatenate(current, listOf(tag))
+                    }
                 }
-                _selectedTags.emit(selectedTags)
 
                 if (tag == TagDto.TIME_SELECT) {
-                    _draggedTimeBlock.value.clusterToTimeBlocks().let {
-                        if (it.isEmpty()) {
-                            _searchTimeList.emit(null)
-                        } else {
-                            _searchTimeList.emit(it)
+                    _draggedTimeBlock.value.clusterToTimeBlocks().let { clustered ->
+                        _searchTimeList.update {
+                            clustered.ifEmpty { null }
                         }
                     }
                 }
@@ -503,7 +505,9 @@ class SearchViewModel @Inject constructor(
 
     fun onTogglePageMode() {
         viewModelScope.launch {
-            _pageMode.emit(_pageMode.value.toggled())
+            _pageMode.update { mode ->
+                mode.toggled()
+            }
         }
     }
 
