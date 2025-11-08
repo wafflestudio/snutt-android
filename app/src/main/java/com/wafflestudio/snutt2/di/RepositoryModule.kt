@@ -2,16 +2,18 @@ package com.wafflestudio.snutt2.di
 
 import com.wafflestudio.snutt2.data.course_books.CourseBookRepository
 import com.wafflestudio.snutt2.data.course_books.CourseBookRepositoryImpl
-import com.wafflestudio.snutt2.data.semester_status.SemesterStatusRepository
-import com.wafflestudio.snutt2.data.semester_status.SemesterStatusRepositoryImpl
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepositoryImpl
+import com.wafflestudio.snutt2.data.friends.FriendRepository
+import com.wafflestudio.snutt2.data.friends.FriendRepositoryImpl
 import com.wafflestudio.snutt2.data.lecture_diary.DiaryRepository
 import com.wafflestudio.snutt2.data.lecture_diary.DiaryRepositoryImpl
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepositoryImpl
 import com.wafflestudio.snutt2.data.notifications.NotificationRepository
 import com.wafflestudio.snutt2.data.notifications.NotificationRepositoryImpl
+import com.wafflestudio.snutt2.data.semester_status.SemesterStatusRepository
+import com.wafflestudio.snutt2.data.semester_status.SemesterStatusRepositoryImpl
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.tables.TableRepositoryImpl
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
@@ -63,4 +65,7 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindsSemesterStatusRepository(impl: SemesterStatusRepositoryImpl): SemesterStatusRepository
+
+    @Binds
+    abstract fun bindsFriendRepository(impl: FriendRepositoryImpl): FriendRepository
 }

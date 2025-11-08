@@ -1,8 +1,97 @@
 package com.wafflestudio.snutt2.lib.network
 
-import com.wafflestudio.snutt2.lib.network.dto.*
+import com.wafflestudio.snutt2.lib.network.dto.BuildingsResponse
+import com.wafflestudio.snutt2.lib.network.dto.DeleteFirebaseTokenResults
+import com.wafflestudio.snutt2.lib.network.dto.DeleteLectureResults
+import com.wafflestudio.snutt2.lib.network.dto.DeleteSocialLinkResults
+import com.wafflestudio.snutt2.lib.network.dto.DeleteTableResults
+import com.wafflestudio.snutt2.lib.network.dto.DeleteUserAccountResults
+import com.wafflestudio.snutt2.lib.network.dto.GetBookmarkListResults
+import com.wafflestudio.snutt2.lib.network.dto.GetCoursebookResults
+import com.wafflestudio.snutt2.lib.network.dto.GetCoursebooksOfficialResults
+import com.wafflestudio.snutt2.lib.network.dto.GetFriendCourseBooksResults
+import com.wafflestudio.snutt2.lib.network.dto.GetFriendPrimaryTableResults
+import com.wafflestudio.snutt2.lib.network.dto.GetFriendRequestLinkResults
+import com.wafflestudio.snutt2.lib.network.dto.GetFriendsResults
+import com.wafflestudio.snutt2.lib.network.dto.GetLectureReviewSummaryResult
+import com.wafflestudio.snutt2.lib.network.dto.GetNotificationCountResults
+import com.wafflestudio.snutt2.lib.network.dto.GetNotificationResults
+import com.wafflestudio.snutt2.lib.network.dto.GetPopupResults
+import com.wafflestudio.snutt2.lib.network.dto.GetRecentTableResults
+import com.wafflestudio.snutt2.lib.network.dto.GetRemoteConfigResponse
+import com.wafflestudio.snutt2.lib.network.dto.GetSemesterStatusResult
+import com.wafflestudio.snutt2.lib.network.dto.GetSocialProvidersResults
+import com.wafflestudio.snutt2.lib.network.dto.GetTableByIdResults
+import com.wafflestudio.snutt2.lib.network.dto.GetTableListResults
+import com.wafflestudio.snutt2.lib.network.dto.GetTagListResults
+import com.wafflestudio.snutt2.lib.network.dto.GetThemesResults
+import com.wafflestudio.snutt2.lib.network.dto.GetTimetableRemindersResults
+import com.wafflestudio.snutt2.lib.network.dto.GetUserInfoResults
+import com.wafflestudio.snutt2.lib.network.dto.GetVacancyLecturesResults
+import com.wafflestudio.snutt2.lib.network.dto.PatchFriendDisplayNameParams
+import com.wafflestudio.snutt2.lib.network.dto.PatchThemeParams
+import com.wafflestudio.snutt2.lib.network.dto.PatchThemeResults
+import com.wafflestudio.snutt2.lib.network.dto.PatchUserInfoParams
+import com.wafflestudio.snutt2.lib.network.dto.PatchUserInfoResults
+import com.wafflestudio.snutt2.lib.network.dto.PostAcceptFriendByLinkResults
+import com.wafflestudio.snutt2.lib.network.dto.PostBookmarkParams
+import com.wafflestudio.snutt2.lib.network.dto.PostCheckEmailByIdParams
+import com.wafflestudio.snutt2.lib.network.dto.PostCheckEmailByIdResults
+import com.wafflestudio.snutt2.lib.network.dto.PostCopyTableResults
+import com.wafflestudio.snutt2.lib.network.dto.PostCopyThemeResults
+import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
+import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureResults
+import com.wafflestudio.snutt2.lib.network.dto.PostFeedbackParams
+import com.wafflestudio.snutt2.lib.network.dto.PostFeedbackResults
+import com.wafflestudio.snutt2.lib.network.dto.PostFindIdParams
+import com.wafflestudio.snutt2.lib.network.dto.PostFindIdResults
+import com.wafflestudio.snutt2.lib.network.dto.PostForceLogoutParams
+import com.wafflestudio.snutt2.lib.network.dto.PostForceLogoutResults
+import com.wafflestudio.snutt2.lib.network.dto.PostLectureParams
+import com.wafflestudio.snutt2.lib.network.dto.PostRequestFriendParams
+import com.wafflestudio.snutt2.lib.network.dto.PostResetPasswordParams
+import com.wafflestudio.snutt2.lib.network.dto.PostSearchQueryParams
+import com.wafflestudio.snutt2.lib.network.dto.PostSearchQueryResults
+import com.wafflestudio.snutt2.lib.network.dto.PostSendCodeToEmailParams
+import com.wafflestudio.snutt2.lib.network.dto.PostSendPwResetCodeParams
+import com.wafflestudio.snutt2.lib.network.dto.PostSignInParams
+import com.wafflestudio.snutt2.lib.network.dto.PostSignInResults
+import com.wafflestudio.snutt2.lib.network.dto.PostSignUpParams
+import com.wafflestudio.snutt2.lib.network.dto.PostSignUpResults
+import com.wafflestudio.snutt2.lib.network.dto.PostSocialLinkResults
+import com.wafflestudio.snutt2.lib.network.dto.PostSocialLoginParams
+import com.wafflestudio.snutt2.lib.network.dto.PostSocialLoginResults
+import com.wafflestudio.snutt2.lib.network.dto.PostTableParams
+import com.wafflestudio.snutt2.lib.network.dto.PostTableResults
+import com.wafflestudio.snutt2.lib.network.dto.PostThemeParams
+import com.wafflestudio.snutt2.lib.network.dto.PostThemeResults
+import com.wafflestudio.snutt2.lib.network.dto.PostUserPasswordParams
+import com.wafflestudio.snutt2.lib.network.dto.PostUserPasswordResults
+import com.wafflestudio.snutt2.lib.network.dto.PostVerifyEmailCodeParams
+import com.wafflestudio.snutt2.lib.network.dto.PostVerifyPwResetCodeParams
+import com.wafflestudio.snutt2.lib.network.dto.PushPreferenceDto
+import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
+import com.wafflestudio.snutt2.lib.network.dto.PutLectureResults
+import com.wafflestudio.snutt2.lib.network.dto.PutTableParams
+import com.wafflestudio.snutt2.lib.network.dto.PutTableResults
+import com.wafflestudio.snutt2.lib.network.dto.PutTableThemeParams
+import com.wafflestudio.snutt2.lib.network.dto.PutTableThemeResult
+import com.wafflestudio.snutt2.lib.network.dto.PutTimetableLectureReminderParams
+import com.wafflestudio.snutt2.lib.network.dto.PutUserPasswordParams
+import com.wafflestudio.snutt2.lib.network.dto.PutUserPasswordResults
+import com.wafflestudio.snutt2.lib.network.dto.RegisterFirebaseTokenParams
+import com.wafflestudio.snutt2.lib.network.dto.RegisterFirebaseTokenResults
+import com.wafflestudio.snutt2.lib.network.dto.ResetLectureResults
 import com.wafflestudio.snutt2.lib.network.dto.core.TimetableLectureReminderDto
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.DELETE
+import retrofit2.http.GET
+import retrofit2.http.HTTP
+import retrofit2.http.PATCH
+import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 /**
  * Created by makesource on 2016. 1. 16..
@@ -363,4 +452,56 @@ interface SNUTTRestApi {
 
     @DELETE("/v1/user/kakao")
     suspend fun _deleteUserKakao(): DeleteSocialLinkResults
+
+    // Friend APIs
+    @GET("/v1/friends")
+    suspend fun _getFriends(
+        @Query("state") state: String,
+    ): GetFriendsResults
+
+    @POST("/v1/friends")
+    suspend fun _requestFriend(
+        @Body body: PostRequestFriendParams,
+    )// : GetFriendsResults FIXME 질문해놓음
+
+    @POST("/v1/friends/accept-link/{requestToken}")
+    suspend fun _acceptFriendByLink(
+        @Path("requestToken") requestToken: String,
+    ): PostAcceptFriendByLinkResults
+
+    @GET("/v1/friends/generate-link")
+    suspend fun _generateFriendLink(): GetFriendRequestLinkResults
+
+    @DELETE("/v1/friends/{friendId}")
+    suspend fun _deleteFriend(
+        @Path("friendId") friendId: String,
+    )
+
+    @POST("/v1/friends/{friendId}/accept")
+    suspend fun _acceptFriend(
+        @Path("friendId") friendId: String,
+    )
+
+    @POST("/v1/friends/{friendId}/decline")
+    suspend fun _declineFriend(
+        @Path("friendId") friendId: String,
+    )
+
+    @GET("/v1/friends/{friendId}/coursebooks")
+    suspend fun _getFriendCourseBooks(
+        @Path("friendId") friendId: String,
+    ): GetFriendCourseBooksResults
+
+    @GET("/v1/friends/{friendId}/primary-table")
+    suspend fun _getFriendPrimaryTable(
+        @Path("friendId") friendId: String,
+        @Query("semester") semester: String,
+        @Query("year") year: Int,
+    ): GetFriendPrimaryTableResults
+
+    @PATCH("/v1/friends/{friendId}/display-name")
+    suspend fun _patchFriendDisplayName(
+        @Path("friendId") friendId: String,
+        @Body body: PatchFriendDisplayNameParams,
+    )
 }
