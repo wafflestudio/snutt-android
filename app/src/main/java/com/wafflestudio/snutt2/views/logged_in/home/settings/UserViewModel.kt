@@ -27,8 +27,6 @@ class UserViewModel @Inject constructor(
 
     val compactMode: StateFlow<Boolean> = userRepository.compactMode
 
-    val firstBookmarkAlert: StateFlow<Boolean> = userRepository.firstBookmarkAlert
-
     suspend fun fetchUserInfo() {
         userRepository.fetchUserInfo()
     }
@@ -91,10 +89,6 @@ class UserViewModel @Inject constructor(
 
     suspend fun verifyEmailCode(code: String) {
         userRepository.verifyEmailCode(code)
-    }
-
-    suspend fun setFirstBookmarkAlertShown() {
-        userRepository.setFirstBookmarkAlertShown()
     }
 
     suspend fun getAccessTokenByAuthCode(authCode: String, clientId: String, clientSecret: String): String? {
