@@ -39,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -251,7 +252,7 @@ fun FriendsScreen(
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    text = "친구 목록을 불러오는 데 실패했습니다.",
+                    text = stringResource(R.string.friend_load_error),
                     style = SNUTTTypography.body1,
                 )
             }
@@ -342,7 +343,7 @@ private fun FriendsLoadedScreen(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            "친구 시간표",
+                            stringResource(R.string.friend_timetable_title),
                             style = SNUTTTypography.subtitle1.copy(color = SNUTTColors.Black900),
                         )
                         Spacer(modifier = Modifier.width(6.dp))
@@ -437,7 +438,7 @@ private fun FriendsLoadedScreen(
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            text = "친구에게 대표 시간표가 없습니다.",
+                            text = stringResource(R.string.friend_timetable_empty),
                             style = SNUTTTypography.body1,
                             color = SNUTTColors.Gray600,
                         )
@@ -453,11 +454,11 @@ private fun FriendsLoadedScreen(
                         Image(
                             modifier = Modifier.size(width = 50.dp, height = 58.dp),
                             painter = painterResource(id = R.drawable.ic_cat_retry),
-                            contentDescription = "추가한 친구가 없습니다.",
+                            contentDescription = stringResource(R.string.friend_list_empty),
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
-                            text = "추가한 친구가 없습니다.",
+                            text = stringResource(R.string.friend_list_empty),
                             style = SNUTTTypography.subtitle1,
                             color = SNUTTColors.Black900,
                         )
@@ -467,7 +468,7 @@ private fun FriendsLoadedScreen(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Text(
-                                text = "우측 상단",
+                                text = stringResource(R.string.friend_empty_guide_action),
                                 style = SNUTTTypography.subtitle2.copy(fontSize = 12.sp),
                                 color = SNUTTColors.Gray600,
                             )
@@ -476,13 +477,13 @@ private fun FriendsLoadedScreen(
                                 colorFilter = ColorFilter.tint(SNUTTColors.Gray600),
                             )
                             Text(
-                                text = "을 눌러",
+                                text = stringResource(R.string.friend_empty_guide_action2),
                                 style = SNUTTTypography.subtitle2.copy(fontSize = 12.sp),
                                 color = SNUTTColors.Gray600,
                             )
                         }
                         Text(
-                            text = "시간표를 공유하고 싶은 친구에게 친구 요청을 보내보세요!",
+                            text = stringResource(R.string.friend_empty_guide_message),
                             style = SNUTTTypography.subtitle2.copy(fontSize = 12.sp),
                             color = SNUTTColors.TextMed,
                         )
@@ -492,7 +493,7 @@ private fun FriendsLoadedScreen(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Text(
-                                text = "친구가 수락하면 사이드바",
+                                text = stringResource(R.string.friend_empty_guide_sidebar),
                                 style = SNUTTTypography.subtitle2.copy(fontSize = 12.sp),
                                 color = SNUTTColors.TextMed,
                             )
@@ -501,7 +502,7 @@ private fun FriendsLoadedScreen(
                                 colorFilter = ColorFilter.tint(SNUTTColors.TextMed),
                             )
                             Text(
-                                text = "친구 목록에 추가됩니다.",
+                                text = stringResource(R.string.friend_empty_guide_sidebar2),
                                 style = SNUTTTypography.subtitle2.copy(fontSize = 12.sp),
                                 color = SNUTTColors.TextMed,
                             )
@@ -516,7 +517,7 @@ private fun FriendsLoadedScreen(
                         ) {
                             QuestionCircleIcon(modifier = Modifier.size(11.5.dp))
                             Text(
-                                text = "자세히 보기",
+                                text = stringResource(R.string.friend_guide_detail),
                                 style = SNUTTTypography.subtitle2.copy(fontSize = 11.sp),
                                 color = SNUTTColors.Gray600,
                                 textDecoration = TextDecoration.Underline,

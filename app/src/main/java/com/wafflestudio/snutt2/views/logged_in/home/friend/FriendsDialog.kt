@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.wafflestudio.snutt2.R
@@ -84,12 +85,12 @@ private fun DeleteFriendDialog(
     CustomDialog(
         onDismiss = onDismiss,
         onConfirm = onConfirm,
-        title = "친구 삭제",
-        positiveButtonText = "삭제",
-        negativeButtonText = "취소",
+        title = stringResource(R.string.friend_delete_dialog_title),
+        positiveButtonText = stringResource(R.string.notifications_noti_delete),
+        negativeButtonText = stringResource(R.string.common_cancel),
     ) {
         Text(
-            text = "정말로 친구를 삭제하시겠습니까?",
+            text = stringResource(R.string.friend_delete_dialog_message),
             style = SNUTTTypography.body2,
         )
     }
@@ -104,9 +105,9 @@ private fun DeclineFriendDialog(
     CustomDialog(
         onDismiss = onDismiss,
         onConfirm = onConfirm,
-        title = "친구 요청 거절",
-        positiveButtonText = "거절",
-        negativeButtonText = "취소",
+        title = stringResource(R.string.friend_decline_dialog_title),
+        positiveButtonText = stringResource(R.string.friend_decline),
+        negativeButtonText = stringResource(R.string.common_cancel),
     ) {
         Text(
             text = "${friend.nickname.nickname}#${friend.nickname.tag}님의 친구 요청을 거절하시겠습니까?",

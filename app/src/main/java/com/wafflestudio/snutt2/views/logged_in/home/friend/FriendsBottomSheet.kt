@@ -19,8 +19,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.FriendHashIcon
 import com.wafflestudio.snutt2.components.compose.KakaoTalkIcon
@@ -97,13 +99,13 @@ private fun AddFriendMethodListBottomSheet(
     ) {
         MoreActionItem(
             icon = { KakaoTalkIcon(modifier = Modifier.size(30.dp)) },
-            text = "카카오톡으로 친구 초대",
+            text = stringResource(R.string.friend_add_kakao),
         ) {
             onRequestWithKakaoTalk()
         }
         MoreActionItem(
             icon = { FriendHashIcon(modifier = Modifier.size(30.dp)) },
-            text = "닉네임으로 친구 초대",
+            text = stringResource(R.string.friend_add_nickname),
         ) {
             onRequestWithNickName()
         }
@@ -126,13 +128,13 @@ private fun RequestWithNicknameBottomSheet(
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Text(
-                text = "취소",
+                text = stringResource(R.string.common_cancel),
                 style = SNUTTTypography.body1,
                 modifier = Modifier.clickable { onDismiss() },
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
-                text = "요청 보내기",
+                text = stringResource(R.string.friend_request_send),
                 style = if (nickname.isNotBlank()) {
                     SNUTTTypography.body1
                 } else {
@@ -145,14 +147,14 @@ private fun RequestWithNicknameBottomSheet(
         }
         Spacer(modifier = Modifier.height(25.dp))
         Text(
-            text = "추가하고 싶은 친구의 닉네임",
+            text = stringResource(R.string.friend_request_nickname_label),
             style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Gray600),
         )
         Spacer(modifier = Modifier.height(15.dp))
         EditText(
             value = nickname,
             onValueChange = { nickname = it },
-            hint = "예) 홍길동#1234",
+            hint = stringResource(R.string.friend_request_nickname_hint),
             underlineColor = SNUTTColors.SNUTTTheme,
             underlineColorFocused = SNUTTColors.SNUTTTheme,
             underlineWidth = 2.dp,
@@ -167,7 +169,7 @@ private fun RequestWithNicknameBottomSheet(
                 colorFilter = if (nickname.isNotBlank()) ColorFilter.tint(SNUTTColors.SNUTTTheme) else null,
             )
             Text(
-                text = "닉네임 전체를 입력하세요",
+                text = stringResource(R.string.friend_request_nickname_error),
                 style = SNUTTTypography.body2.copy(color = if (nickname.isNotBlank()) SNUTTColors.SNUTTTheme else SNUTTColors.Gray600),
             )
         }
@@ -190,13 +192,13 @@ private fun FriendDetailBottomSheet(
     ) {
         MoreActionItem(
             icon = { WriteIcon(modifier = Modifier.size(30.dp)) },
-            text = "친구 이름 설정",
+            text = stringResource(R.string.friend_display_name_title),
         ) {
             onEditDisplayName()
         }
         MoreActionItem(
             icon = { TrashIcon(modifier = Modifier.size(30.dp)) },
-            text = "친구 목록에서 삭제",
+            text = stringResource(R.string.friend_delete_from_list),
         ) {
             onDeleteFriend()
         }
@@ -221,13 +223,13 @@ private fun EditDisplayNameBottomSheet(
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Text(
-                text = "취소",
+                text = stringResource(R.string.common_cancel),
                 style = SNUTTTypography.body1,
                 modifier = Modifier.clickable { onDismiss() },
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
-                text = "적용",
+                text = stringResource(R.string.friend_apply),
                 style = if (isModifiable) {
                     SNUTTTypography.body1
                 } else {
@@ -241,7 +243,7 @@ private fun EditDisplayNameBottomSheet(
         Spacer(modifier = Modifier.height(25.dp))
         Row {
             Text(
-                text = "나에게 표시될 친구 이름",
+                text = stringResource(R.string.friend_display_name_label),
                 style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Gray600),
             )
             Spacer(modifier = Modifier.width(4.dp))
@@ -261,7 +263,7 @@ private fun EditDisplayNameBottomSheet(
         )
         Spacer(modifier = Modifier.height(7.dp))
         Text(
-            text = "친구 닉네임: ${friend.nickname.nickname}#${friend.nickname.tag}",
+            text = stringResource(R.string.friend_display_name_original, "${friend.nickname.nickname}#${friend.nickname.tag}"),
             style = SNUTTTypography.body2.copy(color = SNUTTColors.SNUTTTheme),
         )
         Spacer(modifier = Modifier.height(30.dp))

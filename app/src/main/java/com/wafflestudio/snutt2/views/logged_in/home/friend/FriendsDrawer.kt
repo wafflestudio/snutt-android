@@ -98,7 +98,7 @@ fun FriendsDrawerContent(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    text = "친구 목록",
+                    text = stringResource(R.string.friend_list_tab),
                     style = SNUTTTypography.button.copy(
                         color = if (uiState.drawerTab == FriendDrawerTab.ACTIVE) SNUTTColors.Black900 else SNUTTColors.Gray200,
                     ),
@@ -121,7 +121,7 @@ fun FriendsDrawerContent(
                     horizontalArrangement = Arrangement.Center,
                 ) {
                     Text(
-                        text = "친구 요청",
+                        text = stringResource(R.string.friend_request_tab),
                         style = SNUTTTypography.button.copy(
                             color = if (uiState.drawerTab == FriendDrawerTab.REQUESTED) SNUTTColors.Black900 else SNUTTColors.Gray200,
                         ),
@@ -147,7 +147,7 @@ fun FriendsDrawerContent(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = "친구 추가하기",
+                text = stringResource(R.string.friend_add_action),
                 style = SNUTTTypography.body2,
                 color = SNUTTColors.Gray600,
                 modifier = Modifier.weight(1f),
@@ -202,11 +202,11 @@ private fun FriendsActiveList(
             Image(
                 modifier = Modifier.size(width = 50.dp, height = 58.dp),
                 painter = painterResource(id = R.drawable.ic_cat_retry),
-                contentDescription = "추가한 친구가 없습니다.",
+                contentDescription = stringResource(R.string.friend_list_empty),
             )
             Spacer(modifier = Modifier.height(21.dp))
             Text(
-                text = "추가한 친구가 없습니다.",
+                text = stringResource(R.string.friend_list_empty),
                 style = SNUTTTypography.subtitle2,
                 color = SNUTTColors.Black900,
             )
@@ -215,7 +215,7 @@ private fun FriendsActiveList(
                 horizontalArrangement = Arrangement.spacedBy(1.5.dp),
             ) {
                 Text(
-                    text = "친구 추가하기",
+                    text = stringResource(R.string.friend_add_action),
                     style = SNUTTTypography.subtitle2.copy(fontSize = 11.sp),
                     color = SNUTTColors.Gray600,
                 )
@@ -224,14 +224,14 @@ private fun FriendsActiveList(
                     colorFilter = ColorFilter.tint(SNUTTColors.Gray600),
                 )
                 Text(
-                    text = "를 눌러 요청을 보내보세요!",
+                    text = stringResource(R.string.friend_list_empty_guide1),
                     style = SNUTTTypography.subtitle2.copy(fontSize = 11.sp),
                     color = SNUTTColors.TextMed,
                 )
             }
             Spacer(modifier = Modifier.height(2.dp))
             Text(
-                text = "친구가 수락하면 이 곳에 추가됩니다.",
+                text = stringResource(R.string.friend_list_empty_guide2),
                 style = SNUTTTypography.subtitle2.copy(fontSize = 11.sp),
                 color = SNUTTColors.TextMed,
             )
@@ -268,23 +268,23 @@ private fun FriendsRequestedList(
             Image(
                 modifier = Modifier.size(width = 50.dp, height = 58.dp),
                 painter = painterResource(id = R.drawable.ic_cat_retry),
-                contentDescription = "받은 친구 요청이 없습니다.",
+                contentDescription = stringResource(R.string.friend_request_empty),
             )
             Spacer(modifier = Modifier.height(21.dp))
             Text(
-                text = "받은 친구 요청이 없습니다.",
+                text = stringResource(R.string.friend_request_empty),
                 style = SNUTTTypography.subtitle2,
                 color = SNUTTColors.Black900,
             )
             Spacer(modifier = Modifier.height(9.dp))
             Text(
-                text = "친구가 나에게 요청을 보내면",
+                text = stringResource(R.string.friend_request_empty_guide1),
                 style = SNUTTTypography.subtitle2.copy(fontSize = 11.sp),
                 color = SNUTTColors.TextMed,
             )
             Spacer(modifier = Modifier.height(2.dp))
             Text(
-                text = "여기에서 수락 또는 거절할 수 있어요.",
+                text = stringResource(R.string.friend_request_empty_guide2),
                 style = SNUTTTypography.subtitle2.copy(fontSize = 11.sp),
                 color = SNUTTColors.TextMed,
             )
@@ -363,7 +363,7 @@ private fun FriendRequestItem(
                 }
                 .padding(horizontal = 10.dp, vertical = 8.dp),
         ) {
-            Text("거절", style = SNUTTTypography.body2.copy(color = SNUTTColors.Gray200))
+            Text(stringResource(R.string.friend_decline), style = SNUTTTypography.body2.copy(color = SNUTTColors.Gray200))
         }
         Divider(modifier = Modifier.width(4.dp))
         Box(
@@ -378,7 +378,7 @@ private fun FriendRequestItem(
                 }
                 .padding(horizontal = 10.dp, vertical = 8.dp),
         ) {
-            Text("수락", style = SNUTTTypography.body2.copy(color = SNUTTColors.MainBlue))
+            Text(stringResource(R.string.friend_accept), style = SNUTTTypography.body2.copy(color = SNUTTColors.MainBlue))
         }
     }
 }
