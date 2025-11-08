@@ -5,28 +5,25 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.components.compose.ExitIcon
 import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.compose.BottomSheetLoggingEffect
 import com.wafflestudio.snutt2.model.TagDto
+import com.wafflestudio.snutt2.model.TagType
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.LocalBottomSheetState
-import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
-import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
+import androidx.compose.runtime.State
 
 private enum class OptionSheetMode {
     Normal, TimeSelect,
@@ -34,16 +31,19 @@ private enum class OptionSheetMode {
 
 @Composable
 fun SearchOptionSheet(
+    tagsByTagType: State<List<Selectable<TagDto>>>,
+    selectedTagType: State<TagType>,
+    recentSearchedDepartments: State<List<Selectable<TagDto>>>,
+    tagTypesNotEmpty: State<List<TagType>>,
+    draggedTimeBlock: State<List<List<Boolean>>>,
+    onSelectTagType: (TagType) -> Unit,
+    onToggleTag: (TagDto) -> Unit,
+    onRemoveRecent: (TagDto) -> Unit,
+    onTimeSelectCancel: () -> Unit,
+    onTimeSelectConfirm: (List<List<Boolean>>) -> Unit,
     applyOption: () -> Unit,
     hideBottomSheet: () -> Unit,
-    draggedTimeBlock: State<List<List<Boolean>>>,
 ) {
-    val viewModel = hiltViewModel<SearchViewModel>()
-    val tagsByTagType by viewModel.tagsByTagType.collectAsState()
-    val selectedTagType by viewModel.selectedTagType.collectAsState()
-    val recentSearchedDepartments by viewModel.selectableRecentSearchedDepartments.collectAsState()
-    val tagTypesNotEmpty by viewModel.tagTypesNotEmpty.collectAsState()
-    val scope = rememberCoroutineScope()
     val bottomSheet = LocalBottomSheetState.current
 
     var optionSheetMode by remember {
@@ -79,14 +79,11 @@ fun SearchOptionSheet(
     ) { constraints ->
         val tagTypePlaceable = subcompose(slotId = 1) {
             TagTypeColumn(
-                tagTypesNotEmpty = tagTypesNotEmpty,
-                selectedTagType = selectedTagType,
+                tagTypesNotEmpty = tagTypesNotEmpty.value,
+                selectedTagType = selectedTagType.value,
                 baseAnimatedFloat = baseAnimatedFloat,
-            ) {
-                scope.launch {
-                    viewModel.setTagType(it)
-                }
-            }
+                onSelectTagType = onSelectTagType,
+            )
         }.first().measure(constraints)
 
         val tagListPlaceable = subcompose(slotId = 2) {
@@ -96,23 +93,19 @@ fun SearchOptionSheet(
                     // tag column의 높이를 tagType column의 높이로 설정
                     height = tagTypePlaceable.height.toDp(),
                 ),
-                recentSearchedDepartments = recentSearchedDepartments,
-                tagsByTagType = tagsByTagType,
+                recentSearchedDepartments = recentSearchedDepartments.value,
+                tagsByTagType = tagsByTagType.value,
                 selectedTimes = draggedTimeBlock,
                 baseAnimatedFloat = baseAnimatedFloat,
-                onToggleTag = {
-                    scope.launch {
-                        if (it == TagDto.TIME_SELECT) {
-                            if (tagsByTagType.first { it.item == TagDto.TIME_SELECT }.state.not() && draggedTimeBlock.value.all { it.all { it.not() } }) {
-                                optionSheetMode = OptionSheetMode.TimeSelect
-                            }
+                onToggleTag = { tagDto ->
+                    if (tagDto == TagDto.TIME_SELECT) {
+                        if (tagsByTagType.value.first { it.item == TagDto.TIME_SELECT }.state.not() && draggedTimeBlock.value.all { it.all { it.not() } }) {
+                            optionSheetMode = OptionSheetMode.TimeSelect
                         }
-                        viewModel.toggleTag(it)
                     }
+                    onToggleTag(tagDto)
                 },
-                onRemoveRecent = {
-                    viewModel.removeRecentSearchedDepartment(it)
-                },
+                onRemoveRecent = onRemoveRecent,
                 openTimeSelectSheet = {
                     optionSheetMode = OptionSheetMode.TimeSelect
                 },
@@ -125,22 +118,11 @@ fun SearchOptionSheet(
                 initialDraggedTimeBlock = draggedTimeBlock,
                 onCancel = {
                     optionSheetMode = OptionSheetMode.Normal
-                    // 확정 선택된 시간대(회색 밑줄로 뜨는 부분)가 없는 상태에서 취소를 누르면 태그 선택도 해제하기 (다시 누를 수 있게)
-                    if (draggedTimeBlock.value.all { it.all { it.not() } }) {
-                        scope.launch {
-                            viewModel.toggleTag(TagDto.TIME_SELECT)
-                        }
-                    }
+                    onTimeSelectCancel()
                 },
                 onConfirm = {
                     optionSheetMode = OptionSheetMode.Normal
-                    scope.launch {
-                        viewModel.setDraggedTimeBlock(it)
-                        // 시간대를 하나도 선택을 안 하고 완료를 누르면 태그 선택도 해제하기 (다시 누를 수 있게)
-                        if (it.all { it.all { it.not() } }) {
-                            viewModel.toggleTag(TagDto.TIME_SELECT)
-                        }
-                    }
+                    onTimeSelectConfirm(it)
                 },
             )
         }.first().measure(constraints)

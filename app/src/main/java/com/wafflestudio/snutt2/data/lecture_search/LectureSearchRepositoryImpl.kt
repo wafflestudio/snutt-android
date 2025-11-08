@@ -4,7 +4,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.wafflestudio.snutt2.data.SNUTTStorage
-import com.wafflestudio.snutt2.lib.SnuttUrls
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
@@ -12,17 +11,20 @@ import com.wafflestudio.snutt2.model.SearchTimeDto
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.model.TagType
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class LectureSearchRepositoryImpl @Inject constructor(
     private val api: SNUTTRestApi,
-    private val snuttUrls: SnuttUrls,
     private val storage: SNUTTStorage,
 ) : LectureSearchRepository {
 
     override val recentSearchedDepartments = storage.recentSearchedDepartments.asStateFlow()
+
+    override val firstBookmarkAlert = storage.firstBookmarkAlert.asStateFlow()
 
     override fun getLectureSearchResultStream(
         year: Long,
@@ -82,6 +84,10 @@ class LectureSearchRepositoryImpl @Inject constructor(
     override fun removeRecentSearchedDepartment(tag: TagDto) {
         val previousStoredTags = storage.recentSearchedDepartments.get()
         storage.recentSearchedDepartments.update(previousStoredTags - tag)
+    }
+
+    override fun setFirstBookmarkAlertShown() {
+        storage.firstBookmarkAlert.update(false)
     }
 
     companion object {

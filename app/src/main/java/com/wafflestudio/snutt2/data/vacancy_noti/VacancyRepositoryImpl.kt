@@ -18,6 +18,8 @@ class VacancyRepositoryImpl @Inject constructor(
 
     override val firstVacancyVisit = storage.firstVacancyVisit.asStateFlow()
 
+    override val firstVacancyAdd = storage.firstVacancyAdd.asStateFlow()
+
     override suspend fun getVacancyLectures(): List<LectureDto> {
         return api._getVacancyLectures().lectures
     }
@@ -32,6 +34,10 @@ class VacancyRepositoryImpl @Inject constructor(
 
     override suspend fun setVacancyVisited() {
         storage.firstVacancyVisit.update(false)
+    }
+
+    override suspend fun setVacancyAdded() {
+        storage.firstVacancyAdd.update(false)
     }
 
     // 여기부터 리팩토링된 코드
