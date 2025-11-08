@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.data.tables
 
 import com.wafflestudio.snutt2.domainmodel.CourseBook
+import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
 import com.wafflestudio.snutt2.domainmodel.TableSummary
 import com.wafflestudio.snutt2.domainmodel.TimetableLectureReminders
@@ -47,7 +48,7 @@ interface TableRepository {
     suspend fun updateTimetableLectureReminder(
         timetableId: String,
         lectureId: String,
-        option: LectureWithReminderOption,
+        offset: LectureReminderOffset,
     ): Result<LectureWithReminderOption>
 
     // 여기부터 리팩토링 코드

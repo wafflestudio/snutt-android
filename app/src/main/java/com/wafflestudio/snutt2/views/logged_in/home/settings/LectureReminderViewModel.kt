@@ -36,7 +36,7 @@ class LectureReminderViewModel @Inject constructor(
     private val _lectureReminderUiState = MutableStateFlow<LectureReminderUiState>(LectureReminderUiState.Loading)
     val lectureReminderUiState = _lectureReminderUiState.asStateFlow()
 
-    private val _updateEvent = MutableSharedFlow<Pair<String, LectureWithReminderOption>>()
+    private val _updateEvent = MutableSharedFlow<LectureReminderChangeEvent>()
 
     private val _lectureReminderUiEvent: MutableSharedFlow<LectureReminderUiEvent> = MutableSharedFlow(replay = 1)
     val lectureReminderUiEvent = _lectureReminderUiEvent.asSharedFlow()
@@ -79,14 +79,16 @@ class LectureReminderViewModel @Inject constructor(
     private fun handleUpdateEvents() {
         viewModelScope.launch {
             _updateEvent
-                .debouncePerKey(200L) { (lectureId, _) -> lectureId } // lectureId가 Key로 사용되어 lectureId가 서로 다른 변경은 debounce 없이 collect 한다.
+                .debouncePerKey(200L) { changeEvent -> changeEvent.lectureId } // lectureId가 Key로 사용되어 lectureId가 서로 다른 변경은 debounce 없이 collect 한다.
                 .distinctUntilChanged()
-                .onEach { (lectureId, option) ->
-                    tableRepository.updateTimetableLectureReminder(_currentTimetableId.value, lectureId, option)
+                .onEach { changeEvent ->
+                    val lectureId = changeEvent.lectureId
+                    val offset = changeEvent.option.lectureReminderOffset
+                    tableRepository.updateTimetableLectureReminder(_currentTimetableId.value, lectureId, offset)
                         .onSuccess {
                             _lectureReminderUiEvent.emit(
                                 LectureReminderUiEvent.ShowSnackBarByEvent(
-                                    when (option.lectureReminderOffset) {
+                                    when (offset) {
                                         LectureReminderOffset.NONE -> LectureReminderEvent.LECTURE_REMINDER_UPDATE_SUCCESS_NONE
                                         LectureReminderOffset.TEN_MINUTES_BEFORE -> LectureReminderEvent.LECTURE_REMINDER_UPDATE_SUCCESS_TEN_MINUTES_BEFORE
                                         LectureReminderOffset.AT_START_TIME -> LectureReminderEvent.LECTURE_REMINDER_UPDATE_SUCCESS_AT_START_TIME
@@ -97,6 +99,7 @@ class LectureReminderViewModel @Inject constructor(
                         }
                         .onFailure { error ->
                             handleLectureReminderError(error)
+                            changeEvent.onFallback()
                         }
                 }
                 .collect()
@@ -118,6 +121,7 @@ class LectureReminderViewModel @Inject constructor(
     }
 
     fun changeLectureReminderOption(lectureId: String, option: LectureWithReminderOption) {
+        val currentState = _lectureReminderUiState.value
         _lectureReminderUiState.update { currentState ->
             if (currentState is LectureReminderUiState.Success) {
                 currentState.copy(
@@ -131,7 +135,13 @@ class LectureReminderViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            _updateEvent.emit(lectureId to option)
+            _updateEvent.emit(
+                LectureReminderChangeEvent(lectureId, option) {
+                    _lectureReminderUiState.update { _ ->
+                        currentState
+                    }
+                },
+            )
         }
     }
 }
@@ -155,3 +165,9 @@ enum class LectureReminderEvent {
     LECTURE_REMINDER_UPDATE_SUCCESS_AT_START_TIME,
     LECTURE_REMINDER_UPDATE_SUCCESS_TEN_MINUTES_AFTER,
 }
+
+private data class LectureReminderChangeEvent(
+    val lectureId: String,
+    val option: LectureWithReminderOption,
+    val onFallback: suspend () -> Unit,
+)
