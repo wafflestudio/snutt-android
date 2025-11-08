@@ -12,6 +12,8 @@ interface LectureSearchRepository {
 
     val recentSearchedDepartments: StateFlow<List<TagDto>>
 
+    val firstBookmarkAlert: StateFlow<Boolean>
+
     fun getLectureSearchResultStream(
         year: Long,
         semester: Long,
@@ -30,4 +32,6 @@ interface LectureSearchRepository {
     fun storeRecentSearchedDepartment(tag: TagDto)
 
     fun removeRecentSearchedDepartment(tag: TagDto)
+
+    fun setFirstBookmarkAlertShown()
 }

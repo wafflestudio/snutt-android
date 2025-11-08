@@ -3,21 +3,32 @@ package com.wafflestudio.snutt2.views.logged_in.home.search
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.CombinedLoadStates
+import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
+import com.wafflestudio.snutt2.data.user.UserRepository
+import com.wafflestudio.snutt2.data.vacancy_noti.VacancyRepository
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.concatenate
 import com.wafflestudio.snutt2.lib.flatMapToSearchTimeDto
 import com.wafflestudio.snutt2.lib.isLectureNumberEquals
+import com.wafflestudio.snutt2.lib.logging.AddToBookmarkParameter
+import com.wafflestudio.snutt2.lib.logging.AddToVacancyParameter
 import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.lib.logging.AnalyticsLogger
+import com.wafflestudio.snutt2.lib.logging.LectureActionReferrer
 import com.wafflestudio.snutt2.lib.logging.SearchLectureParameter
 import com.wafflestudio.snutt2.lib.network.ApiOnError
+import com.wafflestudio.snutt2.lib.network.AuthError
+import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
+import com.wafflestudio.snutt2.lib.network.DomainError
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.network.toDomainError
 import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.model.SearchTimeDto
 import com.wafflestudio.snutt2.model.TagDto
@@ -30,7 +41,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
@@ -42,6 +52,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -50,9 +61,18 @@ import javax.inject.Inject
 class SearchViewModel @Inject constructor(
     private val currentTableRepository: CurrentTableRepository,
     private val lectureSearchRepository: LectureSearchRepository,
+    private val vacancyRepository: VacancyRepository,
+    private val userRepository: UserRepository,
     private val apiOnError: ApiOnError,
+    private val displayMessageResolver: DisplayMessageResolver,
     private val analyticsLogger: AnalyticsLogger,
 ) : ViewModel() {
+
+    private val _searchUiEvent: MutableSharedFlow<SearchUiEvent> = MutableSharedFlow(replay = 0)
+    val searchUiEvent = _searchUiEvent
+
+    private val _searchResultListState = MutableStateFlow(SearchResultListState.PLACEHOLDER)
+    val searchResultListState = _searchResultListState
 
     var lazyListState = LazyListState(0, 0)
 
@@ -71,6 +91,12 @@ class SearchViewModel @Inject constructor(
     private val _searchTagListFlow = MutableStateFlow(listOf<TagDto>())
 
     private val currentTable = currentTableRepository.currentTable
+
+    private val vacancyList = MutableStateFlow(listOf<LectureDto>())
+
+    val firstBookmarkAlert = lectureSearchRepository.firstBookmarkAlert
+
+    val firstVacancyAdd = vacancyRepository.firstVacancyAdd
 
     val semesterChange =
         currentTable
@@ -123,6 +149,12 @@ class SearchViewModel @Inject constructor(
                 setTagType(TagType.SORT_CRITERIA)
             }
         }
+        viewModelScope.launch {
+            vacancyList.emit(
+                vacancyRepository.getVacancyLectures()
+                    .sortedByDescending { it.wasFull && it.registrationCount < it.quota },
+            )
+        }
     }
 
     val tagsByTagType: StateFlow<List<Selectable<TagDto>>> = combine(
@@ -155,13 +187,18 @@ class SearchViewModel @Inject constructor(
         },
         _selectedLecture,
         currentTable.filterNotNull(),
-    ) { bookmarks, selectedLecture, currentTable ->
+        vacancyList,
+    ) { bookmarks, selectedLecture, currentTable, vacancyList ->
         bookmarks.map { bookmarkedLecture ->
             bookmarkedLecture.toDataWithState(
                 LectureState(
                     selected = selectedLecture == bookmarkedLecture,
                     contained = currentTable.lectureList.any { lectureOfCurrentTable ->
                         lectureOfCurrentTable.isLectureNumberEquals(bookmarkedLecture)
+                    },
+                    isBookmarked = true,
+                    isVacancyRegistered = vacancyList.any { vacancyRegisteredLecture ->
+                        vacancyRegisteredLecture.isLectureNumberEquals(bookmarkedLecture)
                     },
                 ),
             )
@@ -184,14 +221,29 @@ class SearchViewModel @Inject constructor(
                 timesToExclude = if (_selectedTags.value.contains(TagDto.TIME_EMPTY)) currentTable.lectureList.flatMapToSearchTimeDto() else null,
             ).cachedIn(viewModelScope)
         },
-        _selectedLecture, currentTable.filterNotNull(),
-    ) { pagingData, selectedLecture, currentTable ->
-        pagingData.map { searchedLecture ->
+        _selectedLecture,
+        currentTable.filterNotNull(),
+        _getBookmarkListSignal.flatMapLatest {
+            try {
+                flowOf(currentTableRepository.getBookmarks())
+            } catch (e: Exception) {
+                flowOf(emptyList())
+            }
+        },
+        vacancyList,
+    ) { pagingDataResult, selectedLecture, currentTable, bookmarks, vacancyList ->
+        pagingDataResult.map { searchedLecture ->
             searchedLecture.toDataWithState(
                 LectureState(
                     selected = selectedLecture == searchedLecture,
                     contained = currentTable.lectureList.any { lectureOfCurrentTable ->
                         lectureOfCurrentTable.isLectureNumberEquals(searchedLecture)
+                    },
+                    isBookmarked = bookmarks.any { bookmarkedLecture ->
+                        bookmarkedLecture.isLectureNumberEquals(searchedLecture)
+                    },
+                    isVacancyRegistered = vacancyList.any { vacancyRegisteredLecture ->
+                        vacancyRegisteredLecture.isLectureNumberEquals(searchedLecture)
                     },
                 ),
             )
@@ -206,8 +258,16 @@ class SearchViewModel @Inject constructor(
         _searchTitle.emit(title)
     }
 
-    suspend fun setTagType(tagType: TagType) {
-        _selectedTagType.emit(tagType)
+    fun setTagType(tagType: TagType) {
+        viewModelScope.launch {
+            _selectedTagType.emit(tagType)
+        }
+    }
+
+    fun onToggleLectureSelection(lecture: LectureDto) {
+        viewModelScope.launch {
+            toggleLectureSelection(lecture)
+        }
     }
 
     suspend fun toggleLectureSelection(lecture: LectureDto) {
@@ -218,29 +278,44 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    suspend fun toggleTag(tag: TagDto) {
-        if (_selectedTags.value.contains(tag)) {
-            _selectedTags.emit(_selectedTags.value.filter { it != tag })
+    fun onToggleTag(tag: TagDto) {
+        viewModelScope.launch {
+            if (_selectedTags.value.contains(tag)) {
+                _selectedTags.update { tagList ->
+                    tagList.filter { it != tag }
+                }
 
-            if (tag == TagDto.TIME_SELECT) {
-                _searchTimeList.emit(null)
-            }
-        } else {
-            val selectedTags = if (tag.type.isExclusive) {
-                concatenate(_selectedTags.value.filter { it.type != tag.type }, listOf(tag))
+                if (tag == TagDto.TIME_SELECT) {
+                    _searchTimeList.emit(null)
+                }
             } else {
-                concatenate(_selectedTags.value, listOf(tag))
-            }
-            _selectedTags.emit(selectedTags)
-
-            if (tag == TagDto.TIME_SELECT) {
-                _draggedTimeBlock.value.clusterToTimeBlocks().let {
-                    if (it.isEmpty()) {
-                        _searchTimeList.emit(null)
+                _selectedTags.update { current ->
+                    if (tag.type.isExclusive) {
+                        concatenate(current.filter { it.type != tag.type }, listOf(tag))
                     } else {
-                        _searchTimeList.emit(it)
+                        concatenate(current, listOf(tag))
                     }
                 }
+
+                if (tag == TagDto.TIME_SELECT) {
+                    _draggedTimeBlock.value.clusterToTimeBlocks().let { clustered ->
+                        _searchTimeList.update {
+                            clustered.ifEmpty { null }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun onLoadStateChanged(loadState: CombinedLoadStates) { // FIXME: PagingLoadState -> UI -> ViewModel로 단방향 흐름에 위배됨, LoadState를 ViewModel에서 볼 수 있게 수정할 것.
+        val refreshState = loadState.refresh
+        if (refreshState is LoadState.Error) {
+            val error = (refreshState.error as? Exception)?.toDomainError()
+            if (error == null) return
+            viewModelScope.launch {
+                _searchResultListState.emit(SearchResultListState.EMPTY) // FIXME: loadState가 에러여도 PagingData는 그대로 남아있고, 그냥 EMPTY로 보이지 않게 해둠
+                handleSearchError(error)
             }
         }
     }
@@ -258,12 +333,51 @@ class SearchViewModel @Inject constructor(
         )
     }
 
+    fun onSearch() {
+        viewModelScope.launch {
+            _searchResultListState.emit(SearchResultListState.HAS_RESULTS)
+            query()
+        }
+    }
+
     suspend fun getBookmarkList() {
         _getBookmarkListSignal.emit(Unit)
     }
 
-    suspend fun clearEditText() {
-        _searchTitle.emit("")
+    fun onClearEditText() {
+        viewModelScope.launch {
+            _searchTitle.emit("")
+        }
+    }
+
+    fun onClickBookmark(lecture: LectureDto, isBookmarked: Boolean) {
+        viewModelScope.launch {
+            if (isBookmarked) {
+                _searchUiEvent.emit(
+                    SearchUiEvent.ShowAlertByEvent(
+                        event = SearchAlertEvent.DELETE_BOOKMARK,
+                        onConfirm = {
+                            deleteBookmark(lecture)
+                            toggleLectureSelection(lecture)
+                        },
+                    ),
+                )
+            } else {
+                analyticsLogger.logEvent(
+                    AnalyticsEvent.AddToBookmark(
+                        AddToBookmarkParameter(
+                            lectureId = lecture.lecture_id ?: lecture.id,
+                            referrer = LectureActionReferrer.Search(searchTitle.value),
+                        ),
+                    ),
+                )
+                addBookmark(lecture)
+                if (firstBookmarkAlert.value) {
+                    setFirstBookmarkAlertShown()
+                    _searchUiEvent.emit(SearchUiEvent.ShowSnackBarByEvent(SearchSnackBarEvent.FIRST_BOOKMARK_ADD))
+                }
+            }
+        }
     }
 
     suspend fun addBookmark(lecture: LectureDto) {
@@ -282,13 +396,74 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    suspend fun setDraggedTimeBlock(draggedTimeBlock: List<List<Boolean>>) {
-        _draggedTimeBlock.emit(draggedTimeBlock)
-        draggedTimeBlock.clusterToTimeBlocks().let {
-            if (it.isEmpty()) {
-                _searchTimeList.emit(null)
+    fun onClickVacancy(lecture: LectureDto, isVacancyRegistered: Boolean) {
+        viewModelScope.launch {
+            if (isVacancyRegistered) {
+                removeVacancyLecture(lecture)
             } else {
-                _searchTimeList.emit(it)
+                analyticsLogger.logEvent(
+                    AnalyticsEvent.AddToVacancy(
+                        AddToVacancyParameter(
+                            lectureId = lecture.lecture_id ?: lecture.id,
+                            referrer = LectureActionReferrer.Search(searchTitle.value),
+                        ),
+                    ),
+                )
+                addVacancyLecture(lecture)
+            }
+        }
+    }
+    private suspend fun getVacancyLectures() {
+        vacancyList.emit(
+            vacancyRepository.getVacancyLectures()
+                .sortedByDescending { it.wasFull && it.registrationCount < it.quota },
+        )
+    }
+
+    suspend fun addVacancyLecture(lecture: LectureDto) {
+        vacancyRepository.addVacancyLecture(lecture.id)
+        if (firstVacancyAdd.value) {
+            vacancyRepository.setVacancyAdded()
+            _searchUiEvent.emit(SearchUiEvent.ShowSnackBarByEvent(SearchSnackBarEvent.FIRST_VACANCY_ADD))
+        }
+        getVacancyLectures()
+    }
+
+    suspend fun removeVacancyLecture(lecture: LectureDto) {
+        _searchUiEvent.emit(
+            SearchUiEvent.ShowAlertByEvent(
+                event = SearchAlertEvent.DELETE_VACANCY,
+                onConfirm = {
+                    vacancyRepository.removeVacancyLecture(lecture.id)
+                    getVacancyLectures()
+                    toggleLectureSelection(lecture)
+                },
+            ),
+        )
+    }
+
+    fun onTimeSelectCancel() {
+        viewModelScope.launch {
+            if (_draggedTimeBlock.value.all { it.all { it.not() } }) {
+                onToggleTag(TagDto.TIME_SELECT)
+            }
+        }
+    }
+
+    fun onTimeSelectConfirm(draggedTimeBlock: List<List<Boolean>>) {
+        viewModelScope.launch {
+            _draggedTimeBlock.emit(draggedTimeBlock)
+            draggedTimeBlock.clusterToTimeBlocks().let {
+                if (it.isEmpty()) {
+                    _searchTimeList.emit(null)
+                } else {
+                    _searchTimeList.emit(it)
+                }
+            }
+
+            // 시간대를 하나도 선택을 안 하고 완료를 누르면 태그 선택도 해제하기 (다시 누를 수 있게)
+            if (draggedTimeBlock.all { it.all { it.not() } }) {
+                onToggleTag(TagDto.TIME_SELECT)
             }
         }
     }
@@ -301,6 +476,10 @@ class SearchViewModel @Inject constructor(
 
     fun removeRecentSearchedDepartment(tag: TagDto) {
         lectureSearchRepository.removeRecentSearchedDepartment(tag)
+    }
+
+    fun setFirstBookmarkAlertShown() {
+        lectureSearchRepository.setFirstBookmarkAlertShown()
     }
 
     private suspend fun clear() {
@@ -324,7 +503,52 @@ class SearchViewModel @Inject constructor(
         )
     }
 
-    fun togglePageMode() {
-        _pageMode.value = _pageMode.value.toggled()
+    fun onTogglePageMode() {
+        viewModelScope.launch {
+            _pageMode.update { mode ->
+                mode.toggled()
+            }
+        }
     }
+
+    fun onClickBack() {
+        viewModelScope.launch {
+            if (_pageMode.value == SearchPageMode.Bookmark) {
+                _pageMode.emit(SearchPageMode.Search)
+            }
+        }
+    }
+
+    private suspend fun handleSearchError(error: DomainError) {
+        val displayMessage = displayMessageResolver.getDisplayMessage(error)
+        when (error) {
+            is AuthError -> {
+                _searchUiEvent.emit(SearchUiEvent.ShowToastError(displayMessage))
+                userRepository.postForceLogout()
+                _searchUiEvent.emit(SearchUiEvent.LoggedOut)
+            }
+            else -> {
+                _searchUiEvent.emit(SearchUiEvent.ShowToastError(displayMessage))
+            }
+        }
+    }
+}
+
+sealed interface SearchUiEvent {
+    data class ShowToastError(val displayMessage: String) : SearchUiEvent
+    data class ShowToast(val resId: Int) : SearchUiEvent
+    data object LoggedOut : SearchUiEvent
+    data class ShowAlertByEvent(val event: SearchAlertEvent, val onConfirm: suspend () -> Unit) : SearchUiEvent
+    data class ShowSnackBarByEvent(val event: SearchSnackBarEvent) : SearchUiEvent
+//    data object ShowBottomSheet: SearchUiEvent
+}
+
+enum class SearchSnackBarEvent {
+    FIRST_VACANCY_ADD,
+    FIRST_BOOKMARK_ADD,
+}
+
+enum class SearchAlertEvent {
+    DELETE_BOOKMARK,
+    DELETE_VACANCY,
 }
