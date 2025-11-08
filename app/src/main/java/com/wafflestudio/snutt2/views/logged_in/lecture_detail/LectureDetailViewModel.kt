@@ -235,7 +235,7 @@ class LectureDetailViewModel @Inject constructor(
         tableRepository.updateTimetableLectureReminder(
             timetableId = currentTable.value?.id ?: "",
             lectureId = lectureWithReminderOption.lectureId,
-            option = lectureWithReminderOption,
+            offset = lectureWithReminderOption.lectureReminderOffset,
         ).onSuccess {
             _lectureDetailUiEvent.emit(
                 LectureDetailUiEvent.ShowSnackBarByEvent(
