@@ -462,7 +462,7 @@ interface SNUTTRestApi {
     @POST("/v1/friends")
     suspend fun _requestFriend(
         @Body body: PostRequestFriendParams,
-    )// : GetFriendsResults FIXME 질문해놓음
+    ) // : GetFriendsResults FIXME 질문해놓음
 
     @POST("/v1/friends/accept-link/{requestToken}")
     suspend fun _acceptFriendByLink(

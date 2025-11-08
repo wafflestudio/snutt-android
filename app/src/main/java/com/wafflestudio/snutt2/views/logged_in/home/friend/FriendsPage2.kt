@@ -126,7 +126,7 @@ fun FriendsRoute(
                     )
                     com.wafflestudio.snutt2.kakao.sendKakaoMessageWithTemplate(
                         context,
-                        feedTemplate
+                        feedTemplate,
                     )
                 }
 
@@ -352,7 +352,7 @@ private fun FriendsLoadedScreen(
                                 .size(16.dp)
                                 .clicks {
                                     onShowGuideDialog()
-                                }
+                                },
                         )
                     }
                     AddFriendIcon(
