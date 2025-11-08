@@ -601,4 +601,5 @@
     <string name="theme_market_webview_error">네트워크 연결을 확인해주세요</string>
     <string name="theme_market_webview_error_retry">다시 불러오기</string>
     <string name="common_copied_to_clipboard">클립보드에 복사되었습니다.</string>
+    <string name="firebase_messaging_service_channel_name">앱 알림</string>
 </resources>
