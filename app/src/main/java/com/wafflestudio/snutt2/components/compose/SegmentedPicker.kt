@@ -127,9 +127,7 @@ fun <T> SegmentedPicker(
                             .fillMaxSize()
                             .clip(RoundedCornerShape(7.dp))
                             .background(
-
                                 Color.Transparent,
-
                             )
                             .clicks { if (enabled) onOptionSelected(option) },
                         contentAlignment = Alignment.Center,
