@@ -1,17 +1,27 @@
 package com.wafflestudio.snutt2.domainmodel.preview
 
 import androidx.compose.ui.graphics.Color
+import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.CustomColor
+import com.wafflestudio.snutt2.domainmodel.Friend
 import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
 import com.wafflestudio.snutt2.domainmodel.LectureSession
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
+import com.wafflestudio.snutt2.domainmodel.Nickname
 import com.wafflestudio.snutt2.domainmodel.SyllabusLecture
+import com.wafflestudio.snutt2.domainmodel.Table
+import com.wafflestudio.snutt2.domainmodel.TableSummary
+import com.wafflestudio.snutt2.domainmodel.ThemeReference
 import com.wafflestudio.snutt2.domainmodel.domainModel
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureReviewDto
 import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
+import com.wafflestudio.snutt2.views.logged_in.home.friend.FriendBottomSheetContent
+import com.wafflestudio.snutt2.views.logged_in.home.friend.FriendDialogState
+import com.wafflestudio.snutt2.views.logged_in.home.friend.FriendDrawerTab
+import com.wafflestudio.snutt2.views.logged_in.home.friend.FriendsUiState
 import java.time.DayOfWeek
 import java.time.LocalTime
 
@@ -362,4 +372,100 @@ object PreviewData {
     )
 
     val sampleLectures = sampleLectureDtos.map { it.toSearchedLecture() }
+
+    val sampleFriends = listOf(
+        Friend(
+            id = "friend1",
+            userId = "user1",
+            displayName = "김철수",
+            nickname = Nickname(nickname = "cheolsu", tag = "1234"),
+            createdAt = "2025-01-15T10:30:00Z",
+        ),
+        Friend(
+            id = "friend2",
+            userId = "user2",
+            displayName = null,
+            nickname = Nickname(nickname = "younghee", tag = "5678"),
+            createdAt = "2025-02-20T14:20:00Z",
+        ),
+        Friend(
+            id = "friend3",
+            userId = "user3",
+            displayName = "박민수",
+            nickname = Nickname(nickname = "minsu_park", tag = "9012"),
+            createdAt = "2025-03-05T09:15:00Z",
+        ),
+    )
+
+    val sampleRequestedFriends = listOf(
+        Friend(
+            id = "requested1",
+            userId = "user4",
+            displayName = null,
+            nickname = Nickname(nickname = "jiwon", tag = "3456"),
+            createdAt = "2025-03-10T16:45:00Z",
+        ),
+        Friend(
+            id = "requested2",
+            userId = "user5",
+            displayName = null,
+            nickname = Nickname(nickname = "sungmin", tag = "7890"),
+            createdAt = "2025-03-11T11:30:00Z",
+        ),
+    )
+
+    val sampleCourseBooks = listOf(
+        CourseBook(semester = 1, year = 2025),
+        CourseBook(semester = 2, year = 2024),
+        CourseBook(semester = 1, year = 2024),
+    )
+
+    private val sampleFriendLecture = com.wafflestudio.snutt2.domainmodel.CustomLecture(
+        id = "lecture1",
+        courseTitle = "컴퓨터 프로그래밍",
+        instructor = "홍길동",
+        color = customColor1,
+        lectureSessions = listOf(
+            LectureSession(
+                id = null,
+                day = DayOfWeek.MONDAY,
+                startTime = LocalTime.of(9, 0),
+                endTime = LocalTime.of(10, 30),
+                place = "302-308",
+            ),
+            LectureSession(
+                id = null,
+                day = DayOfWeek.WEDNESDAY,
+                startTime = LocalTime.of(9, 0),
+                endTime = LocalTime.of(10, 30),
+                place = "302-308",
+            ),
+        ),
+        credit = 3,
+        remark = "",
+    )
+
+    val sampleFriendTable = Table(
+        summary = TableSummary(
+            id = "friend_table1",
+            courseBook = CourseBook(semester = 1, year = 2025),
+            title = "2025-1학기",
+            totalCredit = 18,
+            isPrimary = true,
+        ),
+        lectures = listOf(sampleFriendLecture),
+        themeRef = ThemeReference.BuiltIn(0),
+    )
+
+    val sampleFriendsUiState = FriendsUiState.Loaded(
+        activeFriends = sampleFriends,
+        requestedFriends = sampleRequestedFriends,
+        selectedFriend = sampleFriends.firstOrNull(),
+        selectedFriendCourseBooks = sampleCourseBooks,
+        selectedCourseBook = sampleCourseBooks.firstOrNull(),
+        selectedFriendTable = sampleFriendTable,
+        drawerTab = FriendDrawerTab.ACTIVE,
+        bottomSheetContent = FriendBottomSheetContent.Hidden,
+        dialogState = FriendDialogState.None,
+    )
 }

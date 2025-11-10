@@ -1,0 +1,20 @@
+package com.wafflestudio.snutt2.domainmodel
+
+data class Friend(
+    val id: String,
+    val userId: String,
+    val displayName: String?,
+    val nickname: Nickname,
+    val createdAt: String,
+)
+
+data class Nickname(
+    val nickname: String,
+    val tag: String,
+)
+
+enum class FriendState {
+    ACTIVE,
+    REQUESTED,
+    REQUESTING,
+}
