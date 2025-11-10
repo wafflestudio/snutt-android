@@ -942,3 +942,42 @@ fun ChevronIcon(
         colorFilter = colorFilter,
     )
 }
+
+@Composable
+fun AddFriendIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_user_add),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun KakaoTalkIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_kakao_talk),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun FriendHashIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_friend_hash),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}

@@ -47,6 +47,7 @@ import com.wafflestudio.snutt2.views.LocalTableState
 import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.home.drawer.refactor.TimeTableRoute
 import com.wafflestudio.snutt2.views.logged_in.home.friend.FriendsPage
+import com.wafflestudio.snutt2.views.logged_in.home.friend.FriendsRoute
 import com.wafflestudio.snutt2.views.logged_in.home.popups.Popup
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewPage
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchRoute
@@ -171,13 +172,14 @@ fun HomePage() {
                             navController.navigate(NavigationDestination.VacancyNotification)
                         },
                     )
+
                     is HomeItem.Review -> {
                         CompositionLocalProvider(LocalReviewWebView provides reviewPageReviewWebViewContainer) {
                             ReviewPage()
                         }
                     }
 
-                    HomeItem.Friends -> FriendsPage()
+                    HomeItem.Friends -> if (BuildConfig.DEBUG) FriendsRoute() else FriendsPage()
                     HomeItem.Settings -> SettingsRoute(
                         onNavigateUserConfig = {
                             navController.navigate(NavigationDestination.UserConfig)
