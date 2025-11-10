@@ -46,7 +46,6 @@ import com.wafflestudio.snutt2.views.LocalReviewWebView
 import com.wafflestudio.snutt2.views.LocalTableState
 import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.home.drawer.refactor.TimeTableRoute
-import com.wafflestudio.snutt2.views.logged_in.home.friend.FriendsPage
 import com.wafflestudio.snutt2.views.logged_in.home.friend.FriendsRoute
 import com.wafflestudio.snutt2.views.logged_in.home.popups.Popup
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewPage
@@ -179,7 +178,7 @@ fun HomePage() {
                         }
                     }
 
-                    HomeItem.Friends -> if (BuildConfig.DEBUG) FriendsRoute() else FriendsPage()
+                    HomeItem.Friends -> FriendsRoute()
                     HomeItem.Settings -> SettingsRoute(
                         onNavigateUserConfig = {
                             navController.navigate(NavigationDestination.UserConfig)

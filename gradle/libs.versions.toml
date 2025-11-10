@@ -43,10 +43,6 @@ kakaoSDK = "2.21.5"
 naverMap = "3.22.0"
 naverMapCompose = "1.8.2"
 
-# React Native
-reactAndroid = "0.72.3"
-hermesAndroid = "0.72.3"
-
 # Misc
 androidxCore = "1.16.0"
 material = "1.12.0"
@@ -129,10 +125,6 @@ kakao-user = { module = "com.kakao.sdk:v2-user", version.ref = "kakaoSDK" }
 naver-map = { module = "com.naver.maps:map-sdk", version.ref = "naverMap" }
 naver-map-compose = { module = "io.github.fornewid:naver-map-compose", version.ref = "naverMapCompose" }
 
-# React Native
-react-android = { module = "com.facebook.react:react-android", version.ref = "reactAndroid" }
-hermes-android = { module = "com.facebook.react:hermes-android", version.ref = "hermesAndroid" }
-
 # Serialization
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 
@@ -200,11 +192,6 @@ accompanist = [
 kakao = [
     "kakao-share",
     "kakao-user"
-]
-
-react-native = [
-    "react-android",
-    "hermes-android"
 ]
 
 kotlin-core = [

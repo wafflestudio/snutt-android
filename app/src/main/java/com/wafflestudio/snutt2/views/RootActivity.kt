@@ -9,6 +9,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.*
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VisibilityThreshold
@@ -40,7 +41,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
-import com.facebook.react.ReactActivity
 import com.google.firebase.FirebaseApp
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
@@ -54,7 +54,6 @@ import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.network.ApiOnProgress
 import com.wafflestudio.snutt2.navigation.getDeepLinkPath
-import com.wafflestudio.snutt2.react_native.ReactNativeBundleManager
 import com.wafflestudio.snutt2.test.TestRoute
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTheme
@@ -88,7 +87,7 @@ import javax.inject.Inject
 
 @ExperimentalAnimationApi
 @AndroidEntryPoint
-class RootActivity : ReactActivity() {
+class RootActivity : AppCompatActivity() {
     private val userViewModel: UserViewModel by viewModels()
 
     private val homeViewModel: HomeViewModel by viewModels()
@@ -101,9 +100,6 @@ class RootActivity : ReactActivity() {
 
     @Inject
     lateinit var remoteConfig: RemoteConfig
-
-    @Inject
-    lateinit var friendBundleManager: ReactNativeBundleManager
 
     @Inject
     lateinit var analyticsLogger: AnalyticsLogger
