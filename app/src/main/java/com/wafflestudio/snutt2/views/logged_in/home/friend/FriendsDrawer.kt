@@ -329,6 +329,7 @@ private fun FriendListItem(
             modifier = Modifier
                 .size(30.dp)
                 .clicks { onMoreClick() },
+            colorFilter = ColorFilter.tint(SNUTTColors.Black500),
         )
     }
 }
@@ -363,7 +364,10 @@ private fun FriendRequestItem(
                 }
                 .padding(horizontal = 10.dp, vertical = 8.dp),
         ) {
-            Text(stringResource(R.string.friend_decline), style = SNUTTTypography.body2.copy(color = SNUTTColors.Gray200))
+            Text(
+                stringResource(R.string.friend_decline),
+                style = SNUTTTypography.body2.copy(color = SNUTTColors.Gray200),
+            )
         }
         Divider(modifier = Modifier.width(4.dp))
         Box(
@@ -378,7 +382,10 @@ private fun FriendRequestItem(
                 }
                 .padding(horizontal = 10.dp, vertical = 8.dp),
         ) {
-            Text(stringResource(R.string.friend_accept), style = SNUTTTypography.body2.copy(color = SNUTTColors.MainBlue))
+            Text(
+                stringResource(R.string.friend_accept),
+                style = SNUTTTypography.body2.copy(color = SNUTTColors.MainBlue),
+            )
         }
     }
 }

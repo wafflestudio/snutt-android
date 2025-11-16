@@ -324,7 +324,11 @@ private fun FriendsLoadedScreen(
                 )
             },
         ) {
-            Column(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(SNUTTColors.White900),
+            ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -359,6 +363,7 @@ private fun FriendsLoadedScreen(
                         modifier = Modifier
                             .size(25.dp)
                             .clicks { onOpenRequestFriendBottomSheet() },
+                        colorFilter = ColorFilter.tint(SNUTTColors.Gray600),
                     )
                 }
 

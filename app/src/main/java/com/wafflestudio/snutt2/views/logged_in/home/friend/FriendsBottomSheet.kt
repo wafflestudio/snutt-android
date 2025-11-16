@@ -98,13 +98,23 @@ private fun AddFriendMethodListBottomSheet(
             .padding(vertical = 12.dp),
     ) {
         MoreActionItem(
-            icon = { KakaoTalkIcon(modifier = Modifier.size(30.dp)) },
+            icon = {
+                KakaoTalkIcon(
+                    modifier = Modifier.size(30.dp),
+                    colorFilter = ColorFilter.tint(SNUTTColors.Gray600),
+                )
+            },
             text = stringResource(R.string.friend_add_kakao),
         ) {
             onRequestWithKakaoTalk()
         }
         MoreActionItem(
-            icon = { FriendHashIcon(modifier = Modifier.size(30.dp)) },
+            icon = {
+                FriendHashIcon(
+                    modifier = Modifier.size(30.dp),
+                    colorFilter = ColorFilter.tint(SNUTTColors.Gray600),
+                )
+            },
             text = stringResource(R.string.friend_add_nickname),
         ) {
             onRequestWithNickName()
@@ -263,7 +273,10 @@ private fun EditDisplayNameBottomSheet(
         )
         Spacer(modifier = Modifier.height(7.dp))
         Text(
-            text = stringResource(R.string.friend_display_name_original, "${friend.nickname.nickname}#${friend.nickname.tag}"),
+            text = stringResource(
+                R.string.friend_display_name_original,
+                "${friend.nickname.nickname}#${friend.nickname.tag}",
+            ),
             style = SNUTTTypography.body2.copy(color = SNUTTColors.SNUTTTheme),
         )
         Spacer(modifier = Modifier.height(30.dp))
