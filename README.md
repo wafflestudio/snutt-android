@@ -17,6 +17,7 @@
 </div>
 
 ## Features
+
 - Abbreviated course search
 - Course search by time slot
 - Courses of interest
@@ -26,25 +27,30 @@
 - Custom timetable theme
 
 ## Tech Stack
+
 - MVVM
 - Jetpack Compose
 - Dependency Injection with Hilt
-- Integration with React Native
 - Firebase crashylistics & app distribution
 
 ## Getting Started
+
 ### Secrets
+
 The following files are required for Staging build:
-  - `app/src/staging/google-services.json`
-  - `app/src/staging/res/value/strings.xml`
+
+- `app/src/staging/google-services.json`
+- `app/src/staging/res/value/strings.xml`
 
 The following files are required for Live build:
-  - `app/src/live/google-services.json`
-  - `app/src/live/res/value/strings.xml`
+
+- `app/src/live/google-services.json`
+- `app/src/live/res/value/strings.xml`
 
 Please request these files from the maintainer if needed.
 
 ### Installation
+
 1. Install [Android Studio](https://developer.android.com/studio).
 2. Clone the repository and open the project in Android Studio by entering the following command:
    ```
@@ -53,16 +59,21 @@ Please request these files from the maintainer if needed.
 3. Build and run the project using JDK 17.
 
 ### Deployment
+
 1. Create a `release-${version-code}` branch and modify the version code in `version.properties`.
 2. Upload the APK file to the Play Store.
-3. Merge the `release-${version-code}` branch into the `develop` branch and create a new tag and release for the new version.
+3. Merge the `release-${version-code}` branch into the `develop` branch and create a new tag and
+   release for the new version.
 
 ## Branch Conventions
+
 - The default branch is `develop`.
-- PR branch names should follow the format `${username}/${changes}` (e.g., `sanggggg/renewal-table-ui`).
+- PR branch names should follow the format `${username}/${changes}` (e.g.,
+  `sanggggg/renewal-table-ui`).
 - Only use squash merge when merging.
 
 ## Maintainers
+
 - [@JuTaK97](https://github.com/JuTak97)
 - [@eastshine2741](https://github.com/eastshine2741)
 - [@plgafhd](https://github.com/plgafhd)

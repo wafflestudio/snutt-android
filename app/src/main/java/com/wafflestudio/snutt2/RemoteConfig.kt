@@ -46,8 +46,6 @@ class RemoteConfig @Inject constructor(
         }
     }
 
-    val friendsBundleSrc: Flow<String>
-        get() = config.map { it.reactNativeBundleSrc?.src?.get("android") }.filterNotNull()
     val vacancyNotificationBannerEnabled: Flow<Boolean>
         get() = config.map { it.vacancyBannerConfig.visible }
     val sugangSNUUrl: Flow<String>

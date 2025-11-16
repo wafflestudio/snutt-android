@@ -165,10 +165,6 @@ dependencies {
     // JSON
     implementation(libs.gson)
 
-    // React Native
-    implementation(libs.bundles.react.native)
-    implementation(fileTree(mapOf("dir" to "$rootDir/libs", "include" to listOf("*.aar"))))
-
     // Maps
     implementation(libs.naver.map)
     implementation(libs.naver.map.compose)

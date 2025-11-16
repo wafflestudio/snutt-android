@@ -5,7 +5,6 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class RemoteConfigDto(
-    @param:Json(name = "reactNativeBundleFriends") val reactNativeBundleSrc: ReactNativeBundleSrc? = null,
     @param:Json(name = "vacancyNotificationBanner") val vacancyBannerConfig: VacancyBannerConfig = VacancyBannerConfig(
         false,
     ),
@@ -14,10 +13,6 @@ data class RemoteConfigDto(
     @param:Json(name = "disableMapFeature") val disableMapFeature: Boolean? = null,
     @param:Json(name = "notice") val noticeConfig: NoticeConfig? = null,
 ) {
-    data class ReactNativeBundleSrc(
-        @param:Json(name = "src") val src: Map<String, String>,
-    )
-
     data class SettingsBadgeConfig(
         @param:Json(name = "new") val new: List<String> = emptyList(),
     )

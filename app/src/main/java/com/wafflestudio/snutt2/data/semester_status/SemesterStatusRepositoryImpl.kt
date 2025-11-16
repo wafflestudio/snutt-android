@@ -2,7 +2,9 @@ package com.wafflestudio.snutt2.data.semester_status
 
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.domainmodel.SemesterStatus
+import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
+import com.wafflestudio.snutt2.lib.network.toDomainError
 import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.model.toDomainModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,9 +23,14 @@ class SemesterStatusRepositoryImpl @Inject constructor(
         MutableStateFlow(storage.semesterStatus.get().value?.toDomainModel())
     override val semesterStatus: StateFlow<SemesterStatus?> = _semesterStatus.asStateFlow()
 
-    override suspend fun fetchSemesterStatus() {
-        val response = api._getSemesterStatus()
-        storage.semesterStatus.update(response.toOptional())
-        _semesterStatus.value = response.toDomainModel()
+    override suspend fun fetchSemesterStatus(): Result<Unit> {
+        try {
+            val response = api._getSemesterStatus()
+            storage.semesterStatus.update(response.toOptional())
+            _semesterStatus.value = response.toDomainModel()
+            return Result.Success(Unit)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
     }
 }
