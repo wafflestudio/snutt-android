@@ -150,10 +150,14 @@ class SearchViewModel @Inject constructor(
             }
         }
         viewModelScope.launch {
-            vacancyList.emit(
-                vacancyRepository.getVacancyLectures()
-                    .sortedByDescending { it.wasFull && it.registrationCount < it.quota },
-            )
+            try {
+                vacancyList.emit(
+                    vacancyRepository.getVacancyLectures()
+                        .sortedByDescending { it.wasFull && it.registrationCount < it.quota },
+                )
+            } catch (_: Exception) {
+                // FIXME: 에러 핸들링하기
+            }
         }
     }
 
