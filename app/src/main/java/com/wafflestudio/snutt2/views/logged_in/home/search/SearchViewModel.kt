@@ -386,12 +386,18 @@ class SearchViewModel @Inject constructor(
     }
 
     suspend fun addBookmark(lecture: LectureDto) {
-        currentTableRepository.addBookmark(lecture)
+        currentTableRepository.addBookmark(lecture).onFailure { error ->
+            handleSearchError(error)
+            return
+        }
         getBookmarkList()
     }
 
     suspend fun deleteBookmark(lecture: LectureDto) {
-        currentTableRepository.deleteBookmark(lecture)
+        currentTableRepository.deleteBookmark(lecture).onFailure { error ->
+            handleSearchError(error)
+            return
+        }
         getBookmarkList()
     }
 
@@ -427,7 +433,7 @@ class SearchViewModel @Inject constructor(
 
     suspend fun addVacancyLecture(lecture: LectureDto) {
         vacancyRepository.addVacancyLecture(lecture.id).onFailure { error ->
-            _searchUiEvent.emit(SearchUiEvent.ShowToastError(error.displayMessage))
+            handleSearchError(error)
             return
         }
         if (firstVacancyAdd.value) {

@@ -6,6 +6,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureReviewDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.domainmodel.Table
+import com.wafflestudio.snutt2.lib.network.Result
 import kotlinx.coroutines.flow.StateFlow
 
 interface CurrentTableRepository {
@@ -32,9 +33,9 @@ interface CurrentTableRepository {
 
     suspend fun getBookmarksOfSemester(year: Long, semester: Long): List<LectureDto>
 
-    suspend fun addBookmark(lecture: LectureDto)
+    suspend fun addBookmark(lecture: LectureDto): Result<Unit>
 
-    suspend fun deleteBookmark(lecture: LectureDto)
+    suspend fun deleteBookmark(lecture: LectureDto): Result<Unit>
 
     // FIXME: do not expose network layer data class
     suspend fun getLectureReviewSummary(
