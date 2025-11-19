@@ -30,6 +30,7 @@ fun Exception.toDomainError(): DomainError {
                 ErrorCode.USED_EMAIL -> UsedEmail(displayTitle, displayMessage)
                 ErrorCode.WRONG_PASSWORD -> WrongPassword(displayTitle, displayMessage)
                 ErrorCode.PAST_SEMESTER -> PastSemester(displayTitle, displayMessage)
+                ErrorCode.DISABLED_FEATURE -> DisabledFeature(displayTitle, displayMessage)
                 else -> Unknown(displayTitle, displayMessage)
             }
         }
