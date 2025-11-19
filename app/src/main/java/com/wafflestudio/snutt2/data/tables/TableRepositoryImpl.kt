@@ -45,10 +45,14 @@ class TableRepositoryImpl @Inject constructor(
         snuttStorage.lastViewedTable.update(response.toOptional())
     }
 
-    override suspend fun getTableList(): List<SimpleTableDto> {
-        val response = api._getTableList()
-        snuttStorage.tableMap.update(response.associateBy { it.id })
-        return response
+    override suspend fun getTableList(): Result<List<SimpleTableDto>> {
+        try {
+            val response = api._getTableList()
+            snuttStorage.tableMap.update(response.associateBy { it.id })
+            return Result.Success(response)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
     }
 
     override suspend fun createTable(year: Long, semester: Long, title: String?) {

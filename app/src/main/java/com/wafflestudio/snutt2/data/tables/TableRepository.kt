@@ -20,7 +20,7 @@ interface TableRepository {
 
     suspend fun fetchDefaultTable()
 
-    suspend fun getTableList(): List<SimpleTableDto>
+    suspend fun getTableList(): Result<List<SimpleTableDto>>
 
     suspend fun createTable(year: Long, semester: Long, title: String?)
 

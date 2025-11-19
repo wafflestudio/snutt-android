@@ -28,6 +28,7 @@ import com.wafflestudio.snutt2.lib.network.AuthError
 import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
 import com.wafflestudio.snutt2.lib.network.DomainError
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.network.onFailure
 import com.wafflestudio.snutt2.lib.network.toDomainError
 import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.model.SearchTimeDto
@@ -425,7 +426,10 @@ class SearchViewModel @Inject constructor(
     }
 
     suspend fun addVacancyLecture(lecture: LectureDto) {
-        vacancyRepository.addVacancyLecture(lecture.id)
+        vacancyRepository.addVacancyLecture(lecture.id).onFailure { error ->
+            _searchUiEvent.emit(SearchUiEvent.ShowToastError(error.displayMessage))
+            return
+        }
         if (firstVacancyAdd.value) {
             vacancyRepository.setVacancyAdded()
             _searchUiEvent.emit(SearchUiEvent.ShowSnackBarByEvent(SearchSnackBarEvent.FIRST_VACANCY_ADD))

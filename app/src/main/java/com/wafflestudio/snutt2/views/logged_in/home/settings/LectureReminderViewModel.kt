@@ -11,6 +11,7 @@ import com.wafflestudio.snutt2.lib.debouncePerKey
 import com.wafflestudio.snutt2.lib.network.AuthError
 import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
 import com.wafflestudio.snutt2.lib.network.DomainError
+import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.onFailure
 import com.wafflestudio.snutt2.lib.network.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -57,21 +58,31 @@ class LectureReminderViewModel @Inject constructor(
                         semesterStatus.current?.year ?: semesterStatus.next.year
                     val targetSemester =
                         semesterStatus.current?.semester ?: semesterStatus.next.semester
-                    val primaryTimetableId = tableRepository.getTableList().firstOrNull { simpleTableDto ->
-                        simpleTableDto.isPrimary && simpleTableDto.year == targetYear && simpleTableDto.semester == targetSemester
-                    }?.id ?: run {
-                        _lectureReminderUiState.emit(LectureReminderUiState.NoPrimaryTimetable)
-                        return@collectLatest
-                    }
-                    tableRepository.getTimetableReminders(primaryTimetableId)
-                        .onSuccess { data ->
-                            _currentTimetableId.emit(data.timetableId)
-                            _lectureReminderUiState.emit(LectureReminderUiState.Success(data.lectureReminders.associateBy { it.lectureId }))
-                        }
-                        .onFailure {
+                    _lectureReminderUiState.emit(LectureReminderUiState.Loading)
+                    val tableListResult = tableRepository.getTableList()
+                    when (tableListResult) {
+                        is Result.Fail -> {
                             _lectureReminderUiState.emit(LectureReminderUiState.Error)
+                            return@collectLatest
                         }
-                    _primaryTimetableId.emit(primaryTimetableId)
+                        is Result.Success -> {
+                            val primaryTimetableId = tableListResult.data.firstOrNull { simpleTableDto ->
+                                simpleTableDto.isPrimary && simpleTableDto.year == targetYear && simpleTableDto.semester == targetSemester
+                            }?.id ?: run {
+                                _lectureReminderUiState.emit(LectureReminderUiState.NoPrimaryTimetable)
+                                return@collectLatest
+                            }
+                            tableRepository.getTimetableReminders(primaryTimetableId)
+                                .onSuccess { data ->
+                                    _currentTimetableId.emit(data.timetableId)
+                                    _lectureReminderUiState.emit(LectureReminderUiState.Success(data.lectureReminders.associateBy { it.lectureId }))
+                                }
+                                .onFailure {
+                                    _lectureReminderUiState.emit(LectureReminderUiState.Error)
+                                }
+                            _primaryTimetableId.emit(primaryTimetableId)
+                        }
+                    }
                 }
         }
     }

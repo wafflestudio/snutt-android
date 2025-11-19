@@ -12,7 +12,7 @@ interface VacancyRepository {
 
     suspend fun getVacancyLectures(): List<LectureDto>
 
-    suspend fun addVacancyLecture(lectureId: String)
+    suspend fun addVacancyLecture(lectureId: String): Result<Unit>
 
     suspend fun removeVacancyLecture(lectureId: String)
 
