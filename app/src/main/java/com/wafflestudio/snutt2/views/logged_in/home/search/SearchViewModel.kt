@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.search
 
+import android.util.Log
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -28,6 +29,7 @@ import com.wafflestudio.snutt2.lib.network.AuthError
 import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
 import com.wafflestudio.snutt2.lib.network.DomainError
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.network.onFailure
 import com.wafflestudio.snutt2.lib.network.toDomainError
 import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.model.SearchTimeDto
@@ -385,12 +387,18 @@ class SearchViewModel @Inject constructor(
     }
 
     suspend fun addBookmark(lecture: LectureDto) {
-        currentTableRepository.addBookmark(lecture)
+        currentTableRepository.addBookmark(lecture).onFailure { error ->
+            handleSearchError(error)
+            return
+        }
         getBookmarkList()
     }
 
     suspend fun deleteBookmark(lecture: LectureDto) {
-        currentTableRepository.deleteBookmark(lecture)
+        currentTableRepository.deleteBookmark(lecture).onFailure { error ->
+            handleSearchError(error)
+            return
+        }
         getBookmarkList()
     }
 
@@ -425,7 +433,10 @@ class SearchViewModel @Inject constructor(
     }
 
     suspend fun addVacancyLecture(lecture: LectureDto) {
-        vacancyRepository.addVacancyLecture(lecture.id)
+        vacancyRepository.addVacancyLectureNew(lecture.id).onFailure { error ->
+            handleSearchError(error)
+            return
+        }
         if (firstVacancyAdd.value) {
             vacancyRepository.setVacancyAdded()
             _searchUiEvent.emit(SearchUiEvent.ShowSnackBarByEvent(SearchSnackBarEvent.FIRST_VACANCY_ADD))
@@ -525,6 +536,7 @@ class SearchViewModel @Inject constructor(
 
     private suspend fun handleSearchError(error: DomainError) {
         val displayMessage = displayMessageResolver.getDisplayMessage(error)
+        Log.d("asdf", displayMessage.toString())
         when (error) {
             is AuthError -> {
                 _searchUiEvent.emit(SearchUiEvent.ShowToastError(displayMessage))

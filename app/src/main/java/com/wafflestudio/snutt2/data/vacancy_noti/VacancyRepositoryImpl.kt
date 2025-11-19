@@ -28,6 +28,15 @@ class VacancyRepositoryImpl @Inject constructor(
         api._postVacancyLecture(lectureId)
     }
 
+    override suspend fun addVacancyLectureNew(lectureId: String): Result<Unit> {
+        try {
+            val response = api._postVacancyLecture(lectureId)
+            return Result.Success(response)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
+
     override suspend fun removeVacancyLecture(lectureId: String) {
         api._deleteVacancyLecture(lectureId)
     }

@@ -168,13 +168,7 @@ fun SearchRoute(
                         onConfirm,
                     )
                 }
-//                is SearchUiEvent.ShowBookmarkDeleteAlert -> {
-//                    val onConfirm = uiEvent.onConfirm
-//                    showDeleteBookmarkDialog(
-//                        composableStates,
-//                        onConfirm,
-//                    )
-//                }
+
                 is SearchUiEvent.ShowSnackBarByEvent -> {
                     val event = uiEvent.event
                     val message = when (event) {

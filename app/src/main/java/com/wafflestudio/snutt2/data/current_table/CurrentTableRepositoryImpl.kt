@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.data.current_table
 
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.domainmodel.Table
+import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.PostBookmarkParams
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
@@ -10,6 +11,7 @@ import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureReviewDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
+import com.wafflestudio.snutt2.lib.network.toDomainError
 import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.lib.unwrap
 import kotlinx.coroutines.CoroutineScope
@@ -89,12 +91,22 @@ class CurrentTableRepositoryImpl @Inject constructor(
 
     // 유저 시간표 내의 강의는 id가 바뀌어 저장되기 때문에, parent id인 lecture_id 필드를 사용한다.
     // 검색 결과 혹은 관심강좌의 강의는 원본 그대로이므로 lecture_id == null이며, id 필드를 그대로 사용한다.
-    override suspend fun addBookmark(lecture: LectureDto) {
-        api._addBookmark(PostBookmarkParams(lecture.lecture_id ?: lecture.id))
+    override suspend fun addBookmark(lecture: LectureDto): Result<Unit> {
+        try {
+            val response = api._addBookmark(PostBookmarkParams(lecture.lecture_id ?: lecture.id))
+            return Result.Success(response)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
     }
 
-    override suspend fun deleteBookmark(lecture: LectureDto) {
-        api._deleteBookmark(PostBookmarkParams(lecture.lecture_id ?: lecture.id))
+    override suspend fun deleteBookmark(lecture: LectureDto): Result<Unit> {
+        try {
+            val response = api._deleteBookmark(PostBookmarkParams(lecture.lecture_id ?: lecture.id))
+            return Result.Success(response)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
     }
 
     override suspend fun getLectureReviewSummary(lectureId: String): LectureReviewDto {

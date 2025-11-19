@@ -7,5 +7,5 @@ enum class FeatureFlag(
     LECTURE_DIARY(true),
     PUSH_PREFERENCES(true),
 
-    LECTURE_REMINDER(true),
+    LECTURE_REMINDER(false),
 }
