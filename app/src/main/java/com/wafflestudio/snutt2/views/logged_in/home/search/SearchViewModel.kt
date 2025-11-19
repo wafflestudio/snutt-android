@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.search
 
+import android.util.Log
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -432,7 +433,7 @@ class SearchViewModel @Inject constructor(
     }
 
     suspend fun addVacancyLecture(lecture: LectureDto) {
-        vacancyRepository.addVacancyLecture(lecture.id).onFailure { error ->
+        vacancyRepository.addVacancyLectureNew(lecture.id).onFailure { error ->
             handleSearchError(error)
             return
         }
@@ -535,6 +536,7 @@ class SearchViewModel @Inject constructor(
 
     private suspend fun handleSearchError(error: DomainError) {
         val displayMessage = displayMessageResolver.getDisplayMessage(error)
+        Log.d("asdf", displayMessage.toString())
         when (error) {
             is AuthError -> {
                 _searchUiEvent.emit(SearchUiEvent.ShowToastError(displayMessage))

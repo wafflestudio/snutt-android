@@ -24,7 +24,11 @@ class VacancyRepositoryImpl @Inject constructor(
         return api._getVacancyLectures().lectures
     }
 
-    override suspend fun addVacancyLecture(lectureId: String): Result<Unit> {
+    override suspend fun addVacancyLecture(lectureId: String) {
+        api._postVacancyLecture(lectureId)
+    }
+
+    override suspend fun addVacancyLectureNew(lectureId: String): Result<Unit> {
         try {
             val response = api._postVacancyLecture(lectureId)
             return Result.Success(response)
