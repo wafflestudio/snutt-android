@@ -94,7 +94,7 @@ object ErrorCode {
     const val LECTURE_TIME_OVERLAP = 0x300C
     const val INVALID_EMAIL = 0x300F
     const val PAST_SEMESTER = 0x9C58
-
+    const val DISABLED_FEATURE = 0x9C59
     // Client-Side 에러 코드 (추후 추가)
 
     // 리팩토링 후 코드 형태를 위해 남겨놓은 에러 코드

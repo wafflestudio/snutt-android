@@ -14,6 +14,8 @@ interface VacancyRepository {
 
     suspend fun addVacancyLecture(lectureId: String)
 
+    suspend fun addVacancyLectureNew(lectureId: String): Result<Unit>
+
     suspend fun removeVacancyLecture(lectureId: String)
 
     suspend fun setVacancyVisited()
