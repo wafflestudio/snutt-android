@@ -43,7 +43,7 @@ fun RowScope.SearchEditText(
             onFocus(false)
             scope.launch {
                 launchSuspendApi(apiOnProgress, apiOnError) {
-                    searchViewModel.query()
+                    searchViewModel.onSearch()
                 }
             }
         },),
