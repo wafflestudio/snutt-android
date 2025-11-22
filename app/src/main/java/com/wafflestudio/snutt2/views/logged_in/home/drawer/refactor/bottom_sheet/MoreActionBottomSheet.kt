@@ -78,12 +78,12 @@ fun MoreActionSheet(
                 onClickSetPrimary(tableSummary)
             }
         }
-        MoreActionItem(
-            icon = { ShareIcon(modifier = Modifier.size(30.dp)) },
-            text = stringResource(R.string.home_drawer_share_table_image),
-        ) {
-            onClickShareTable(tableSummary)
-        }
+//        MoreActionItem(
+//            icon = { ShareIcon(modifier = Modifier.size(30.dp)) },
+//            text = stringResource(R.string.home_drawer_share_table_image),
+//        ) {
+//            onClickShareTable(tableSummary)
+//        }
         MoreActionItem(
             icon = { PaletteIcon(modifier = Modifier.size(30.dp)) },
             text = stringResource(R.string.home_drawer_table_theme_change),
