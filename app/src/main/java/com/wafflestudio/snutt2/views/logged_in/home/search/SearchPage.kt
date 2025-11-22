@@ -250,9 +250,7 @@ fun SearchRoute(
                         SearchOptionSheet(
                             applyOption = {
                                 scope.launch {
-                                    launchSuspendApi(apiOnProgress, apiOnError) {
-                                        searchViewModel.query()
-                                    }
+                                    searchViewModel.onSearch()
                                     searchViewModel.storeRecentSearchedDepartments()
                                 }
                                 scope.launch { bottomSheet.hide() }
@@ -278,9 +276,7 @@ fun SearchRoute(
                 onToggleTagAndQuery = { tag ->
                     scope.launch {
                         searchViewModel.onToggleTag(tag)
-                        launchSuspendApi(apiOnProgress, apiOnError) {
-                            searchViewModel.query()
-                        }
+                        searchViewModel.onSearch()
                     }
                 },
                 onToggleLectureSelection = searchViewModel::onToggleLectureSelection,
