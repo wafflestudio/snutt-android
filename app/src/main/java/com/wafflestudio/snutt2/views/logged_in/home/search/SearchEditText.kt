@@ -27,8 +27,6 @@ fun RowScope.SearchEditText(
     onFocus: (Boolean) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
-    val apiOnError = LocalApiOnError.current
-    val apiOnProgress = LocalApiOnProgress.current
     val searchViewModel: SearchViewModel = hiltViewModel()
     val searchKeyword by searchViewModel.searchTitle.collectAsState()
 
@@ -41,11 +39,7 @@ fun RowScope.SearchEditText(
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         keyboardActions = KeyboardActions(onSearch = {
             onFocus(false)
-            scope.launch {
-                launchSuspendApi(apiOnProgress, apiOnError) {
-                    searchViewModel.onSearch()
-                }
-            }
+            searchViewModel.onSearch()
         },),
         value = searchKeyword,
         onValueChange = {
