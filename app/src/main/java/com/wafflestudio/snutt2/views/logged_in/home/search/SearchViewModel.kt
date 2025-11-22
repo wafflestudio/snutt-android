@@ -326,7 +326,7 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    suspend fun query() {
+    private suspend fun query() {
         _querySignal.emit(Unit)
         lazyListState = LazyListState(0, 0)
         analyticsLogger.logEvent(
