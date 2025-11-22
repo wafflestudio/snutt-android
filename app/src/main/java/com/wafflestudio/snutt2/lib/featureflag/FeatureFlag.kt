@@ -4,7 +4,8 @@ enum class FeatureFlag(
     val isEnabled: Boolean,
 ) {
     THEME_MARKET(true),
-    LECTURE_DIARY(false),
+    LECTURE_DIARY(true),
     PUSH_PREFERENCES(true),
+
     LECTURE_REMINDER(false),
 }
