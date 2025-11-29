@@ -20,7 +20,6 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.PaletteIcon
 import com.wafflestudio.snutt2.components.compose.PeopleIcon
 import com.wafflestudio.snutt2.components.compose.PeopleOffIcon
-import com.wafflestudio.snutt2.components.compose.ShareIcon
 import com.wafflestudio.snutt2.components.compose.TrashIcon
 import com.wafflestudio.snutt2.components.compose.WriteIcon
 import com.wafflestudio.snutt2.components.compose.clicks
