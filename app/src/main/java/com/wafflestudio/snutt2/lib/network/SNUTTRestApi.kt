@@ -6,14 +6,18 @@ import com.wafflestudio.snutt2.lib.network.dto.DeleteLectureResults
 import com.wafflestudio.snutt2.lib.network.dto.DeleteSocialLinkResults
 import com.wafflestudio.snutt2.lib.network.dto.DeleteTableResults
 import com.wafflestudio.snutt2.lib.network.dto.DeleteUserAccountResults
+import com.wafflestudio.snutt2.lib.network.dto.DiaryQuestionnaireRequestDto
+import com.wafflestudio.snutt2.lib.network.dto.DiarySubmissionRequestDto
 import com.wafflestudio.snutt2.lib.network.dto.GetBookmarkListResults
 import com.wafflestudio.snutt2.lib.network.dto.GetCoursebookResults
 import com.wafflestudio.snutt2.lib.network.dto.GetCoursebooksOfficialResults
+import com.wafflestudio.snutt2.lib.network.dto.GetDailyClassTypesResults
 import com.wafflestudio.snutt2.lib.network.dto.GetFriendCourseBooksResults
 import com.wafflestudio.snutt2.lib.network.dto.GetFriendPrimaryTableResults
 import com.wafflestudio.snutt2.lib.network.dto.GetFriendRequestLinkResults
 import com.wafflestudio.snutt2.lib.network.dto.GetFriendsResults
 import com.wafflestudio.snutt2.lib.network.dto.GetLectureReviewSummaryResult
+import com.wafflestudio.snutt2.lib.network.dto.GetMyDiarySubmissionsResults
 import com.wafflestudio.snutt2.lib.network.dto.GetNotificationCountResults
 import com.wafflestudio.snutt2.lib.network.dto.GetNotificationResults
 import com.wafflestudio.snutt2.lib.network.dto.GetPopupResults
@@ -28,6 +32,7 @@ import com.wafflestudio.snutt2.lib.network.dto.GetThemesResults
 import com.wafflestudio.snutt2.lib.network.dto.GetTimetableRemindersResults
 import com.wafflestudio.snutt2.lib.network.dto.GetUserInfoResults
 import com.wafflestudio.snutt2.lib.network.dto.GetVacancyLecturesResults
+import com.wafflestudio.snutt2.lib.network.dto.OkResponseDto
 import com.wafflestudio.snutt2.lib.network.dto.PatchFriendDisplayNameParams
 import com.wafflestudio.snutt2.lib.network.dto.PatchThemeParams
 import com.wafflestudio.snutt2.lib.network.dto.PatchThemeResults
@@ -82,6 +87,7 @@ import com.wafflestudio.snutt2.lib.network.dto.PutUserPasswordResults
 import com.wafflestudio.snutt2.lib.network.dto.RegisterFirebaseTokenParams
 import com.wafflestudio.snutt2.lib.network.dto.RegisterFirebaseTokenResults
 import com.wafflestudio.snutt2.lib.network.dto.ResetLectureResults
+import com.wafflestudio.snutt2.lib.network.dto.core.DiaryQuestionnaireDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TimetableLectureReminderDto
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -504,4 +510,25 @@ interface SNUTTRestApi {
         @Path("friendId") friendId: String,
         @Body body: PatchFriendDisplayNameParams,
     )
+
+    @POST("/v1/diary")
+    suspend fun _submitDiary(
+        @Body body: DiarySubmissionRequestDto,
+    ): OkResponseDto
+
+    @GET("/v1/diary/dailyClassTypes")
+    suspend fun _getDailyClassTypes(): GetDailyClassTypesResults
+
+    @GET("/v1/diary/my")
+    suspend fun _getMyDiarySubmissions(): GetMyDiarySubmissionsResults
+
+    @POST("/v1/diary/questionnaire")
+    suspend fun _getQuestionnaireFromActivities(
+        @Body body: DiaryQuestionnaireRequestDto,
+    ): DiaryQuestionnaireDto
+
+    @DELETE("/v1/diary/{id}")
+    suspend fun _removeDiarySubmission(
+        @Path("id") id: String,
+    ): OkResponseDto
 }
