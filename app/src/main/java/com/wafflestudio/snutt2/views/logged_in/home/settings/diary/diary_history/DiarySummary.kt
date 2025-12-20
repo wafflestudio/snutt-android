@@ -86,7 +86,7 @@ fun DiarySummariesOfDay(
                             onEditDiary(diaryListLectureItem.lectureId)
                         },
                         onClickDeleteButton = {
-                            onDeleteDiary(diaryListLectureItem.lectureId)
+                            onDeleteDiary(diaryListLectureItem.id)
                         },
                     )
                 }
@@ -208,8 +208,10 @@ fun DiarySummariesOfDayExpandedPreview() {
         date = LocalDate.of(2025, 3, 20),
         listOf(
             DiarySummary(
+                id = "preview-id-1",
                 lectureId = "",
                 lectureName = "시각디자인기초",
+                date = java.time.LocalDateTime.now(),
                 questionAnswers = listOf(
                     DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
                     DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
@@ -218,8 +220,10 @@ fun DiarySummariesOfDayExpandedPreview() {
                 comment = "좋아요",
             ),
             DiarySummary(
+                id = "preview-id-2",
                 lectureId = "",
                 lectureName = "배구",
+                date = java.time.LocalDateTime.now(),
                 questionAnswers = listOf(
                     DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
                     DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
@@ -240,8 +244,10 @@ fun DiarySummariesOfDayExpandedPreview() {
 fun DiarySummaryPreview() {
     DiarySummary(
         DiarySummary(
+            id = "preview-id-3",
             lectureId = "",
             lectureName = "배구",
+            date = java.time.LocalDateTime.now(),
             questionAnswers = listOf(
                 DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
                 DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),

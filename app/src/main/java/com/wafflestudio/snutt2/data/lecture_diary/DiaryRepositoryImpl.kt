@@ -77,10 +77,14 @@ class DiaryRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getMyDiarySubmissions(): Result<List<DiarySubmissionsOfYearSemesterDto>> {
+    override suspend fun getMyDiarySubmissions(): Result<List<com.wafflestudio.snutt2.domainmodel.diary.CourseBookDiarySubmissions>> {
         return try {
             val result = api._getMyDiarySubmissions()
-            Result.Success(result)
+            Result.Success(
+                result
+                    .map { it.toDomainModel() }
+                    .filter { it.submissions.isNotEmpty() },
+            )
         } catch (e: Exception) {
             Result.Fail(e.toDomainError())
         }

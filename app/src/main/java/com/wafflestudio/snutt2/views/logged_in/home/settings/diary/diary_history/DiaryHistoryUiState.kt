@@ -8,8 +8,8 @@ import java.time.LocalDate
 sealed interface DiaryHistoryUiState {
     data class Success(
         val courseBooks: List<CourseBook>,
-        val selectedCourseBookId: Int,
-        val diarySummariesByDate: DiarySummariesByDate,
+        val selectedCourseBook: CourseBook,
+        val diarySummariesByCourseBook: DiarySummariesByCourseBook,
     ) : DiaryHistoryUiState
 
     data object Error : DiaryHistoryUiState
@@ -19,3 +19,5 @@ sealed interface DiaryHistoryUiState {
 
 // NOTE: 각 날짜 별 expand 상태가 수정 페이지 이동 후 되돌아왔을 때도 유지되기 위해, uiState 에서 관리한다.
 private typealias DiarySummariesByDate = Map<LocalDate, Selectable<List<DiarySummary>>>
+// NOTE: CourseBook별로 그룹화된 diary summaries
+private typealias DiarySummariesByCourseBook = Map<CourseBook, DiarySummariesByDate>
