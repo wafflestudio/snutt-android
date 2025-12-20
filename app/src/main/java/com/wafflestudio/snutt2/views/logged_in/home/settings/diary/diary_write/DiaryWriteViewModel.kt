@@ -42,27 +42,21 @@ class DiaryWriteViewModel @Inject constructor(
         viewModelScope.launch {
             val lectureId = savedStateHandle.get<String>("lectureId")
             val courseTitle = savedStateHandle.get<String>("courseTitle")
-            val edit = savedStateHandle.get<Boolean>("edit") ?: false
 
-            if (edit) {
-                // TODO: Edit 모드 구현은 나중에
-                _uiState.value = DiaryMockData.editUiState
-            } else {
-                // GET /v1/diary/dailyClassTypes 호출
-                diaryRepository.getDailyClassTypes()
-                    .onSuccess { dailyClassTypes ->
-                        _uiState.value = DiaryWriteUiState.Write.New(
-                            lectureName = courseTitle ?: "",
-                            dailyClassTypes = dailyClassTypes.map { Selectable(it, false) },
-                            activitySelectingState = ActivitySelectionState.InitialSelecting,
-                            questions = emptyList(),
-                        )
-                    }
-                    .onFailure { error ->
-                        handleDiaryWriteError(error)
-                        _uiState.value = DiaryWriteUiState.Error
-                    }
-            }
+            // GET /v1/diary/dailyClassTypes 호출
+            diaryRepository.getDailyClassTypes()
+                .onSuccess { dailyClassTypes ->
+                    _uiState.value = DiaryWriteUiState.Write(
+                        lectureName = courseTitle ?: "",
+                        dailyClassTypes = dailyClassTypes.map { Selectable(it, false) },
+                        activitySelectingState = ActivitySelectionState.InitialSelecting,
+                        questions = emptyList(),
+                    )
+                }
+                .onFailure { error ->
+                    handleDiaryWriteError(error)
+                    _uiState.value = DiaryWriteUiState.Error
+                }
         }
     }
 
@@ -147,15 +141,7 @@ class DiaryWriteViewModel @Inject constructor(
                 comment = comment,
             )
                 .onSuccess {
-                    when (state) {
-                        is DiaryWriteUiState.Write.New -> {
-                            _uiState.value = DiaryWriteUiState.Complete(DiaryNextAction.WriteReview)
-                        }
-
-                        is DiaryWriteUiState.Write.Edit -> {
-                            _uiEvent.emit(DiaryWriteUiEvent.Return)
-                        }
-                    }
+                    _uiState.value = DiaryWriteUiState.Complete(DiaryNextAction.WriteReview)
                 }
                 .onFailure { error ->
                     handleDiaryWriteError(error)
@@ -166,7 +152,7 @@ class DiaryWriteViewModel @Inject constructor(
     fun completeActivitySelection() {
         viewModelScope.launch {
             val state = _uiState.value
-            if (state !is DiaryWriteUiState.Write.New) return@launch
+            if (state !is DiaryWriteUiState.Write) return@launch
 
             val lectureId = savedStateHandle.get<String>("lectureId") ?: return@launch
             // POST /v1/diary/questionnaire는 name을 사용

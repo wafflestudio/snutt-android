@@ -6,26 +6,12 @@ import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.anySelected
 
 sealed interface DiaryWriteUiState {
-    abstract sealed class Write(
-        open val lectureName: String,
-        open val dailyClassTypes: List<Selectable<DiaryDailyClassType>>,
-        open val activitySelectingState: ActivitySelectionState,
-        open val questions: List<DiaryQuestion>,
+    data class Write(
+        val lectureName: String,
+        val dailyClassTypes: List<Selectable<DiaryDailyClassType>>,
+        val activitySelectingState: ActivitySelectionState,
+        val questions: List<DiaryQuestion>,
     ) : DiaryWriteUiState {
-
-        data class New(
-            override val lectureName: String,
-            override val dailyClassTypes: List<Selectable<DiaryDailyClassType>>,
-            override val activitySelectingState: ActivitySelectionState,
-            override val questions: List<DiaryQuestion>,
-        ) : Write(lectureName, dailyClassTypes, activitySelectingState, questions)
-
-        data class Edit(
-            override val lectureName: String,
-            override val dailyClassTypes: List<Selectable<DiaryDailyClassType>>,
-            override val activitySelectingState: ActivitySelectionState,
-            override val questions: List<DiaryQuestion>,
-        ) : Write(lectureName, dailyClassTypes, activitySelectingState, questions)
 
         fun allQuestionAnswered(): Boolean =
             questions.all { question -> question.selectableAnswers.anySelected() }
@@ -35,10 +21,7 @@ sealed interface DiaryWriteUiState {
             dailyClassTypes: List<Selectable<DiaryDailyClassType>> = this.dailyClassTypes,
             activitySelectingState: ActivitySelectionState = this.activitySelectingState,
             questions: List<DiaryQuestion> = this.questions,
-        ): Write = when (this) {
-            is New -> this.copy(lectureName, dailyClassTypes, activitySelectingState, questions)
-            is Edit -> this.copy(lectureName, dailyClassTypes, activitySelectingState, questions)
-        }
+        ): Write = this.copy(lectureName, dailyClassTypes, activitySelectingState, questions)
     }
 
     data object Error : DiaryWriteUiState

@@ -42,7 +42,6 @@ fun DiaryHistoryRoute(
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit,
     onNavigateOnboard: () -> Unit,
-    onNavigateDiaryWrite: (lectureId: String) -> Unit,
     viewModel: DiaryHistoryViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -66,7 +65,6 @@ fun DiaryHistoryRoute(
         onNavigateBack,
         { idx -> viewModel.selectCourseBook(idx) },
         viewModel::toggleDateExpand,
-        onNavigateDiaryWrite,
         viewModel::deleteDiary,
         uiState,
     )
@@ -78,7 +76,6 @@ fun DiaryHistoryScreen(
     onNavigateBack: () -> Unit,
     onClickCourseBook: (coursebookIndex: Int) -> Unit,
     onToggleExpandOfDate: (date: LocalDate) -> Unit,
-    onEditDiary: (lectureId: String) -> Unit,
     onDeleteDiary: (lectureId: String) -> Unit,
     diaryHistoryUiState: DiaryHistoryUiState,
 ) {
@@ -139,7 +136,6 @@ fun DiaryHistoryScreen(
                             toggleExpended = {
                                 onToggleExpandOfDate(date)
                             },
-                            onEditDiary = onEditDiary,
                             onDeleteDiary = onDeleteDiary,
                         )
                     }
@@ -157,7 +153,6 @@ fun DiaryListPagePreview() {
     DiaryHistoryScreen(
         modifier = Modifier,
         onNavigateBack = {},
-        {},
         {},
         {},
         {},

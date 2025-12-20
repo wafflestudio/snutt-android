@@ -133,7 +133,6 @@ sealed interface NavigationDestination {
     data class LectureDiaryWrite(
         val lectureId: String = "",
         val courseTitle: String = "",
-        val edit: Boolean = false,
     ) : NavigationDestination
 
     @Serializable

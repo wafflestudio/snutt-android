@@ -268,10 +268,7 @@ private fun DiaryWriting(
                                 vertical = 12.dp,
                                 horizontal = 48.dp,
                             ),
-                        text = when (uiState) {
-                            is DiaryWriteUiState.Write.New -> "다음"
-                            is DiaryWriteUiState.Write.Edit -> "수정하기"
-                        },
+                        text = "다음",
                         style = if (uiState.allQuestionAnswered()) {
                             SNUTTTypography.button.copy(
                                 color = SNUTTColors.White,

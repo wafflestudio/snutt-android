@@ -20,10 +20,6 @@ object DiaryMockData {
         Selectable(dailyClassType, false)
     }
 
-    val selectableDailyClassTypesForEdit = dailyClassTypes.mapIndexed { idx, dailyClassType ->
-        Selectable(dailyClassType, idx % 2 == 0)
-    }
-
     val selectableDailyClassTypesSelected =
         dailyClassTypes.mapIndexed { index, dailyClassType ->
             Selectable(
@@ -228,7 +224,7 @@ object DiaryMockData {
         }
     }
 
-    val initialWriteUiState = DiaryWriteUiState.Write.New(
+    val initialWriteUiState = DiaryWriteUiState.Write(
         lectureName = "컴퓨터프로그래밍",
         activitySelectingState = ActivitySelectionState.InitialSelecting,
         dailyClassTypes = selectableDailyClassTypes,
@@ -243,22 +239,7 @@ object DiaryMockData {
         },
     )
 
-    val editUiState = DiaryWriteUiState.Write.Edit(
-        lectureName = "컴퓨터프로그래밍",
-        activitySelectingState = ActivitySelectionState.Complete,
-        dailyClassTypes = selectableDailyClassTypesForEdit,
-        questions = getQuestionsForActivities(listOf()).map { question ->
-            DiaryQuestion(
-                question.id,
-                question.question,
-                question.selectableAnswers.mapIndexed { idx, answer ->
-                    Selectable(answer.item, idx == 0)
-                },
-            )
-        },
-    )
-
-    val sampleWriteUiState = DiaryWriteUiState.Write.New(
+    val sampleWriteUiState = DiaryWriteUiState.Write(
         lectureName = "컴퓨터프로그래밍",
         activitySelectingState = ActivitySelectionState.Complete,
         dailyClassTypes = selectableDailyClassTypesSelected,
@@ -269,7 +250,7 @@ object DiaryMockData {
     )
 
     val sampleWriteUiStateSelecting =
-        DiaryWriteUiState.Write.New(
+        DiaryWriteUiState.Write(
             lectureName = "데이터구조",
             activitySelectingState = ActivitySelectionState.InitialSelecting,
             dailyClassTypes = dailyClassTypes.mapIndexed { index, dailyClassType ->

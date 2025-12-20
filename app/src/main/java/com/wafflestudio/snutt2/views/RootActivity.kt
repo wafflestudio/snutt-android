@@ -467,15 +467,6 @@ class RootActivity : AppCompatActivity() {
                     onNavigateOnboard = {
                         navController.navigateAsOrigin(NavigationDestination.Onboard)
                     },
-                    onNavigateDiaryWrite = { lectureId ->
-                        navController.navigate(
-                            NavigationDestination.LectureDiaryWrite(
-                                lectureId = lectureId,
-                                courseTitle = "", // TODO: Edit 모드에서 courseTitle 전달
-                                edit = true,
-                            ),
-                        )
-                    },
                 )
             }
         }
