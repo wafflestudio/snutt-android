@@ -2,13 +2,11 @@ package com.wafflestudio.snutt2.data.lecture_diary
 
 import com.wafflestudio.snutt2.domainmodel.diary.DiaryDailyClassType
 import com.wafflestudio.snutt2.domainmodel.diary.DiaryAnsweredQuestion
-import com.wafflestudio.snutt2.domainmodel.diary.DiaryQuestion
 import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.DiaryQuestionnaireRequestDto
 import com.wafflestudio.snutt2.lib.network.dto.DiarySubmissionRequestDto
 import com.wafflestudio.snutt2.lib.network.dto.core.DiaryQuestionAnswerDto
-import com.wafflestudio.snutt2.lib.network.dto.core.DiarySubmissionsOfYearSemesterDto
 import com.wafflestudio.snutt2.lib.network.dto.core.toDomainModel
 import com.wafflestudio.snutt2.lib.network.toDomainError
 import javax.inject.Inject
