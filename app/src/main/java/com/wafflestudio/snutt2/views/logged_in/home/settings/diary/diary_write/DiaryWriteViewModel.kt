@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.lecture_diary.DiaryRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
+import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.isSelected
 import com.wafflestudio.snutt2.lib.network.AuthError
 import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
@@ -38,12 +39,30 @@ class DiaryWriteViewModel @Inject constructor(
         _uiState.asStateFlow()
 
     init {
-        // TODO: 구현
-//        val lectureId = savedStateHandle.get<String>("lectureId")
-        if (savedStateHandle.get<Boolean>("edit") == true) {
-            _uiState.value = DiaryMockData.editUiState
-        } else {
-            _uiState.value = DiaryMockData.initialWriteUiState
+        viewModelScope.launch {
+            val lectureId = savedStateHandle.get<String>("lectureId")
+            val courseTitle = savedStateHandle.get<String>("courseTitle")
+            val edit = savedStateHandle.get<Boolean>("edit") ?: false
+
+            if (edit) {
+                // TODO: Edit 모드 구현은 나중에
+                _uiState.value = DiaryMockData.editUiState
+            } else {
+                // GET /v1/diary/dailyClassTypes 호출
+                diaryRepository.getDailyClassTypes()
+                    .onSuccess { dailyClassTypes ->
+                        _uiState.value = DiaryWriteUiState.Write.New(
+                            lectureName = courseTitle ?: "",
+                            dailyClassTypes = dailyClassTypes.map { Selectable(it, false) },
+                            activitySelectingState = ActivitySelectionState.InitialSelecting,
+                            questions = emptyList(),
+                        )
+                    }
+                    .onFailure { error ->
+                        handleDiaryWriteError(error)
+                        _uiState.value = DiaryWriteUiState.Error
+                    }
+            }
         }
     }
 
@@ -108,9 +127,10 @@ class DiaryWriteViewModel @Inject constructor(
 
             val lectureId = savedStateHandle.get<String>("lectureId") ?: return@launch
 
-            val selectedDailyClassTypeIds = state.dailyClassTypes
+            // POST /v1/diary도 name을 사용
+            val selectedDailyClassTypeNames = state.dailyClassTypes
                 .filter { it.isSelected() }
-                .map { it.item.id }
+                .map { it.item.name }
 
             val questionAnswers = state.questions.mapIndexed { questionIndex, question ->
                 val answerIndex = question.selectableAnswers.indexOfFirst { it.isSelected() }
@@ -122,7 +142,7 @@ class DiaryWriteViewModel @Inject constructor(
 
             diaryRepository.submitDiary(
                 lectureId = lectureId,
-                dailyClassTypes = selectedDailyClassTypeIds,
+                dailyClassTypes = selectedDailyClassTypeNames,
                 questionAnswers = questionAnswers,
                 comment = comment,
             )
@@ -149,15 +169,16 @@ class DiaryWriteViewModel @Inject constructor(
             if (state !is DiaryWriteUiState.Write.New) return@launch
 
             val lectureId = savedStateHandle.get<String>("lectureId") ?: return@launch
-            val selectedDailyClassTypeIds = state.dailyClassTypes
+            // POST /v1/diary/questionnaire는 name을 사용
+            val selectedDailyClassTypeNames = state.dailyClassTypes
                 .filter { it.isSelected() }
-                .map { it.item.id }
+                .map { it.item.name }
 
             // InitialSelecting과 ReSelecting 모두 동일한 처리
             if (state.activitySelectingState.isSelecting()) {
                 diaryRepository.getQuestionnaire(
                     lectureId = lectureId,
-                    dailyClassTypes = selectedDailyClassTypeIds,
+                    dailyClassTypes = selectedDailyClassTypeNames,
                 )
                     .onSuccess { questionnaireData ->
                         _uiState.value = state.copyWith(

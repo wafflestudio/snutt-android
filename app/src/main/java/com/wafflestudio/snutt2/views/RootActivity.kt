@@ -269,7 +269,7 @@ class RootActivity : AppCompatActivity() {
                             navController.previousBackStackEntry?.destination?.hasRoute(
                                 NavigationDestination.LecturesOfTable::class,
                             ) == true
-                            -> DetailScreenReferrer.LectureList
+                                -> DetailScreenReferrer.LectureList
 
                             homePageController.homePageState.value == HomeItem.Timetable -> DetailScreenReferrer.Timetable
                             else -> null
@@ -471,6 +471,7 @@ class RootActivity : AppCompatActivity() {
                         navController.navigate(
                             NavigationDestination.LectureDiaryWrite(
                                 lectureId = lectureId,
+                                courseTitle = "", // TODO: Edit 모드에서 courseTitle 전달
                                 edit = true,
                             ),
                         )
