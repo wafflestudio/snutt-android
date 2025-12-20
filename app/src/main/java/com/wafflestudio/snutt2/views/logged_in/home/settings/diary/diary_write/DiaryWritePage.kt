@@ -381,7 +381,7 @@ private fun DiaryComplete(
 @Preview(heightDp = 1030)
 private fun DiaryWritingPreview() {
     DiaryWriting(
-        uiState = DiaryMockData.sampleWriteUiState,
+        uiState = DiaryPreviewData.sampleWriteUiState,
         onToggleActivitySelection = {},
         onCompleteSelectActivities = {},
         onRestartSelectActivities = {},

@@ -210,7 +210,7 @@ fun DiaryQuestionItem(
                             vertical = 8.dp,
                         ),
 
-                )
+                    )
             }
         }
     }
@@ -329,7 +329,7 @@ fun DiaryActivitySelectingPreview() {
         onToggleActivitySelection = {},
         onCompleteSelectActivities = {},
         onRestartSelectActivities = {},
-        dailyClassTypes = DiaryMockData.sampleWriteUiStateSelecting.dailyClassTypes,
+        dailyClassTypes = DiaryPreviewData.sampleWriteUiStateSelecting.dailyClassTypes,
     )
 }
 
@@ -337,7 +337,7 @@ fun DiaryActivitySelectingPreview() {
 @Preview
 fun DiaryQuestionBoxPreview() {
     DiaryQuestionsSection(
-        questions = DiaryMockData.getQuestionsForActivities(
+        questions = DiaryPreviewData.getQuestionsForActivities(
             listOf("수업"),
             "컴퓨터프로그래밍",
         ),
@@ -349,7 +349,7 @@ fun DiaryQuestionBoxPreview() {
 @Preview(showBackground = true)
 fun DiaryQuestionPreview() {
     val sampleQuestion =
-        DiaryMockData.getQuestionsForActivities(listOf("수업"))
+        DiaryPreviewData.getQuestionsForActivities(listOf("수업"))
             .first()
     DiaryQuestionItem(
         isDuplicate = false,
