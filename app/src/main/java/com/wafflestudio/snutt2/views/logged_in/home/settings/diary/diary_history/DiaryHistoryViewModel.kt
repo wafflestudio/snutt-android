@@ -8,6 +8,8 @@ import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.domainmodel.preview.DiaryPreviewData
 import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
 import com.wafflestudio.snutt2.lib.network.dto.core.toDomainModel
+import com.wafflestudio.snutt2.lib.network.onFailure
+import com.wafflestudio.snutt2.lib.network.onSuccess
 import com.wafflestudio.snutt2.lib.toggle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,8 +33,18 @@ class DiaryHistoryViewModel @Inject constructor(
         viewModelScope.launch {
             val courseBookList = courseBookRepository.getCourseBook()
                 .map { courseBookDto -> courseBookDto.toDomainModel() }
-            _uiState.value =
-                DiaryHistoryUiState.Success(courseBookList, 0, DiaryPreviewData.diaryList)
+
+            diaryRepository.getMyDiarySubmissions()
+                .onSuccess { submissions ->
+                    // TODO: submissions를 DiaryHistoryUiState.Success의 diarySummariesByDate 형식으로 변환
+                    _uiState.value =
+                        DiaryHistoryUiState.Success(courseBookList, 0, DiaryPreviewData.diaryList)
+                }
+                .onFailure { error ->
+                    val displayMessage = displayMessageResolver.getDisplayMessage(error)
+                    // TODO: 에러 처리
+                    _uiState.value = DiaryHistoryUiState.Error
+                }
         }
     }
 
@@ -58,7 +70,16 @@ class DiaryHistoryViewModel @Inject constructor(
         )
     }
 
-    fun deleteDiary(lectureId: String) {
-        // TODO: 구현
+    fun deleteDiary(diaryId: String) {
+        viewModelScope.launch {
+            diaryRepository.removeDiarySubmission(diaryId)
+                .onSuccess {
+                    // TODO: UI 상태에서 삭제된 일기 제거
+                }
+                .onFailure { error ->
+                    val displayMessage = displayMessageResolver.getDisplayMessage(error)
+                    // TODO: 에러 토스트 표시
+                }
+        }
     }
 }
