@@ -38,6 +38,9 @@ class DiaryWriteViewModel @Inject constructor(
     val uiState: StateFlow<DiaryWriteUiState> =
         _uiState.asStateFlow()
 
+    private var nextLectureId: String? = null
+    private var nextLectureTitle: String? = null
+
     init {
         viewModelScope.launch {
             val lectureId = savedStateHandle.get<String>("lectureId")
@@ -141,7 +144,12 @@ class DiaryWriteViewModel @Inject constructor(
                 comment = comment,
             )
                 .onSuccess {
-                    _uiState.value = DiaryWriteUiState.Complete(DiaryNextAction.WriteReview)
+                    val nextAction = if (nextLectureId != null) {
+                        DiaryNextAction.WriteNext
+                    } else {
+                        DiaryNextAction.WriteReview
+                    }
+                    _uiState.value = DiaryWriteUiState.Complete(nextAction)
                 }
                 .onFailure { error ->
                     handleDiaryWriteError(error)
@@ -167,6 +175,8 @@ class DiaryWriteViewModel @Inject constructor(
                     dailyClassTypes = selectedDailyClassTypeNames,
                 )
                     .onSuccess { questionnaireData ->
+                        nextLectureId = questionnaireData.nextLectureId
+                        nextLectureTitle = questionnaireData.nextLectureTitle
                         _uiState.value = state.copyWith(
                             activitySelectingState = ActivitySelectionState.Complete,
                             questions = questionnaireData.questions,
@@ -180,8 +190,33 @@ class DiaryWriteViewModel @Inject constructor(
     }
 
     fun writeNextDiary() {
-        // TODO: 구현
-        _uiState.value = DiaryMockData.initialWriteUiState
+        viewModelScope.launch {
+            val lectureId = nextLectureId ?: return@launch
+            val courseTitle = nextLectureTitle ?: return@launch
+
+            // savedStateHandle 업데이트
+            savedStateHandle["lectureId"] = lectureId
+            savedStateHandle["courseTitle"] = courseTitle
+
+            // 다음 강의를 위한 정보 초기화
+            nextLectureId = null
+            nextLectureTitle = null
+
+            // GET /v1/diary/dailyClassTypes 호출
+            diaryRepository.getDailyClassTypes()
+                .onSuccess { dailyClassTypes ->
+                    _uiState.value = DiaryWriteUiState.Write(
+                        lectureName = courseTitle,
+                        dailyClassTypes = dailyClassTypes.map { Selectable(it, false) },
+                        activitySelectingState = ActivitySelectionState.InitialSelecting,
+                        questions = emptyList(),
+                    )
+                }
+                .onFailure { error ->
+                    handleDiaryWriteError(error)
+                    _uiState.value = DiaryWriteUiState.Error
+                }
+        }
     }
 
     private suspend fun handleDiaryWriteError(error: DomainError) {
