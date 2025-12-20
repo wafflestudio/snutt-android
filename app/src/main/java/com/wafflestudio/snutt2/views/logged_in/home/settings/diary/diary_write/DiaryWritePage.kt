@@ -226,7 +226,7 @@ private fun DiaryWriting(
                     onCompleteSelectActivities()
                 },
                 onRestartSelectActivities,
-                uiState.activities,
+                uiState.dailyClassTypes,
             )
 
             if (uiState.activitySelectingState != ActivitySelectionState.InitialSelecting) {

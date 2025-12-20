@@ -1,33 +1,33 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings.diary.diary_write
 
-import com.wafflestudio.snutt2.domainmodel.diary.DiaryActivity
+import com.wafflestudio.snutt2.domainmodel.diary.DiaryDailyClassType
 import com.wafflestudio.snutt2.domainmodel.diary.DiaryQuestion
 import com.wafflestudio.snutt2.lib.Selectable
 
 object DiaryMockData {
-    val activities = listOf(
-        DiaryActivity("1", "개강"),
-        DiaryActivity("2", "수업"),
-        DiaryActivity("3", "실기"),
-        DiaryActivity("4", "시험"),
-        DiaryActivity("5", "발표"),
-        DiaryActivity("6", "휴강"),
-        DiaryActivity("7", "종강"),
-        DiaryActivity("8", "드랍"),
+    val dailyClassTypes = listOf(
+        DiaryDailyClassType("1", "개강"),
+        DiaryDailyClassType("2", "수업"),
+        DiaryDailyClassType("3", "실기"),
+        DiaryDailyClassType("4", "시험"),
+        DiaryDailyClassType("5", "발표"),
+        DiaryDailyClassType("6", "휴강"),
+        DiaryDailyClassType("7", "종강"),
+        DiaryDailyClassType("8", "드랍"),
     )
 
-    val selectableActivities = activities.map { activity ->
-        Selectable(activity, false)
+    val selectableDailyClassTypes = dailyClassTypes.map { dailyClassType ->
+        Selectable(dailyClassType, false)
     }
 
-    val selectableActivitiesForEdit = activities.mapIndexed { idx, activity ->
-        Selectable(activity, idx % 2 == 0)
+    val selectableDailyClassTypesForEdit = dailyClassTypes.mapIndexed { idx, dailyClassType ->
+        Selectable(dailyClassType, idx % 2 == 0)
     }
 
-    val selectableActivitiesSelected =
-        activities.mapIndexed { index, activity ->
+    val selectableDailyClassTypesSelected =
+        dailyClassTypes.mapIndexed { index, dailyClassType ->
             Selectable(
-                activity,
+                dailyClassType,
                 index == 1,
             ) // "수업" selected
         }
@@ -231,7 +231,7 @@ object DiaryMockData {
     val initialWriteUiState = DiaryWriteUiState.Write.New(
         lectureName = "컴퓨터프로그래밍",
         activitySelectingState = ActivitySelectionState.InitialSelecting,
-        activities = selectableActivities,
+        dailyClassTypes = selectableDailyClassTypes,
         questions = getQuestionsForActivities(listOf()).map { question ->
             DiaryQuestion(
                 question.id,
@@ -246,7 +246,7 @@ object DiaryMockData {
     val editUiState = DiaryWriteUiState.Write.Edit(
         lectureName = "컴퓨터프로그래밍",
         activitySelectingState = ActivitySelectionState.Complete,
-        activities = selectableActivitiesForEdit,
+        dailyClassTypes = selectableDailyClassTypesForEdit,
         questions = getQuestionsForActivities(listOf()).map { question ->
             DiaryQuestion(
                 question.id,
@@ -261,7 +261,7 @@ object DiaryMockData {
     val sampleWriteUiState = DiaryWriteUiState.Write.New(
         lectureName = "컴퓨터프로그래밍",
         activitySelectingState = ActivitySelectionState.Complete,
-        activities = selectableActivitiesSelected,
+        dailyClassTypes = selectableDailyClassTypesSelected,
         questions = getQuestionsForActivities(
             listOf("수업"),
             "컴퓨터프로그래밍",
@@ -272,9 +272,9 @@ object DiaryMockData {
         DiaryWriteUiState.Write.New(
             lectureName = "데이터구조",
             activitySelectingState = ActivitySelectionState.InitialSelecting,
-            activities = activities.mapIndexed { index, activity ->
+            dailyClassTypes = dailyClassTypes.mapIndexed { index, dailyClassType ->
                 Selectable(
-                    activity,
+                    dailyClassType,
                     index == 1 || index == 3,
                 ) // "수업", "시험" selected
             },

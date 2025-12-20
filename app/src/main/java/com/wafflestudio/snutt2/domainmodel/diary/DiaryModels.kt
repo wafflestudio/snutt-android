@@ -3,7 +3,7 @@ package com.wafflestudio.snutt2.domainmodel.diary
 import com.wafflestudio.snutt2.lib.Selectable
 
 // TODO: 파일 분리
-data class DiaryActivity(
+data class DiaryDailyClassType(
     val id: String,
     val name: String,
 )

@@ -1,6 +1,6 @@
 package com.wafflestudio.snutt2.data.lecture_diary
 
-import com.wafflestudio.snutt2.domainmodel.diary.DiaryActivity
+import com.wafflestudio.snutt2.domainmodel.diary.DiaryDailyClassType
 import com.wafflestudio.snutt2.domainmodel.diary.DiaryAnsweredQuestion
 import com.wafflestudio.snutt2.domainmodel.diary.DiaryQuestion
 import com.wafflestudio.snutt2.lib.network.Result
@@ -8,9 +8,9 @@ import com.wafflestudio.snutt2.lib.network.dto.core.DiarySubmissionsOfYearSemest
 
 // TODO: Diary 관련해서는 data layer 다 한 repository 로 통일하기
 interface DiaryRepository {
-    suspend fun getDailyClassTypes(): Result<List<DiaryActivity>>
+    suspend fun getDailyClassTypes(): Result<List<DiaryDailyClassType>>
 
-    suspend fun getQuestionnaireFromActivities(
+    suspend fun getQuestionnaire(
         lectureId: String,
         dailyClassTypes: List<String>,
     ): Result<DiaryQuestionnaireData>

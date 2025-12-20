@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.components.compose.ArrowDownIcon
 import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.domainmodel.diary.DiaryActivity
+import com.wafflestudio.snutt2.domainmodel.diary.DiaryDailyClassType
 import com.wafflestudio.snutt2.domainmodel.diary.DiaryQuestion
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -48,7 +48,7 @@ fun DiaryActivitySelectSection(
     onToggleActivitySelection: (activityIndex: Int) -> Unit,
     onCompleteSelectActivities: () -> Unit,
     onRestartSelectActivities: () -> Unit,
-    activities: List<Selectable<DiaryActivity>>,
+    dailyClassTypes: List<Selectable<DiaryDailyClassType>>,
 ) {
     Column(
         modifier = Modifier
@@ -68,9 +68,9 @@ fun DiaryActivitySelectSection(
         DiaryQuestionItem(
             true,
             "오늘 무엇을 했나요?",
-            options = activities.map { (activity, selected) ->
+            options = dailyClassTypes.map { (dailyClassType, selected) ->
                 Selectable(
-                    activity.name,
+                    dailyClassType.name,
                     selected,
                 )
             },
@@ -329,7 +329,7 @@ fun DiaryActivitySelectingPreview() {
         onToggleActivitySelection = {},
         onCompleteSelectActivities = {},
         onRestartSelectActivities = {},
-        activities = DiaryMockData.sampleWriteUiStateSelecting.activities,
+        dailyClassTypes = DiaryMockData.sampleWriteUiStateSelecting.dailyClassTypes,
     )
 }
 
