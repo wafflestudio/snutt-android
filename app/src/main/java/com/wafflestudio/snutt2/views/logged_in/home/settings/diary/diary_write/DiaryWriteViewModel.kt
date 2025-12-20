@@ -5,9 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.lecture_diary.DiaryRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
+import com.wafflestudio.snutt2.lib.isSelected
 import com.wafflestudio.snutt2.lib.network.AuthError
 import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
 import com.wafflestudio.snutt2.lib.network.DomainError
+import com.wafflestudio.snutt2.lib.network.onFailure
+import com.wafflestudio.snutt2.lib.network.onSuccess
 import com.wafflestudio.snutt2.lib.toggleIndex
 import com.wafflestudio.snutt2.lib.unselectExcept
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -55,7 +58,7 @@ class DiaryWriteViewModel @Inject constructor(
         if (state !is DiaryWriteUiState.Write) return
 
         _uiState.value = state.copyWith(
-            activities = state.activities.toggleIndex(index),
+            dailyClassTypes = state.dailyClassTypes.toggleIndex(index),
             activitySelectingState = when (state.activitySelectingState) {
                 ActivitySelectionState.InitialSelecting -> ActivitySelectionState.InitialSelecting
                 ActivitySelectionState.Complete -> ActivitySelectionState.ReSelecting
@@ -100,24 +103,71 @@ class DiaryWriteViewModel @Inject constructor(
     // 후자는 일관성이 깨지는 느낌이 있는데...
     fun saveDiaryWrite(comment: String) {
         viewModelScope.launch {
-            // TODO: 구현
-//            diaryRepository.saveDiaryWrite(diaryWriteData)
-//                // TODO: 등록완료 화면으로 상태전환하기
-//                .onFailure {
-//                    _diaryWriteInit.emit(DiaryWriteUiState.Error)
-//                }
-            when (_uiState.value) {
-                is DiaryWriteUiState.Write.New -> {
-                    _uiState.value = DiaryWriteUiState.Complete(DiaryNextAction.WriteReview)
-                }
+            val state = _uiState.value
+            if (state !is DiaryWriteUiState.Write) return@launch
 
-                is DiaryWriteUiState.Write.Edit -> {
-                    viewModelScope.launch {
-                        _uiEvent.emit(DiaryWriteUiEvent.Return)
+            val lectureId = savedStateHandle.get<String>("lectureId") ?: return@launch
+
+            val selectedDailyClassTypeIds = state.dailyClassTypes
+                .filter { it.isSelected() }
+                .map { it.item.id }
+
+            val questionAnswers = state.questions.mapIndexed { questionIndex, question ->
+                val answerIndex = question.selectableAnswers.indexOfFirst { it.isSelected() }
+                com.wafflestudio.snutt2.domainmodel.diary.DiaryAnsweredQuestion(
+                    questionId = question.id,
+                    answerIndex = answerIndex,
+                )
+            }
+
+            diaryRepository.submitDiary(
+                lectureId = lectureId,
+                dailyClassTypes = selectedDailyClassTypeIds,
+                questionAnswers = questionAnswers,
+                comment = comment,
+            )
+                .onSuccess {
+                    when (state) {
+                        is DiaryWriteUiState.Write.New -> {
+                            _uiState.value = DiaryWriteUiState.Complete(DiaryNextAction.WriteReview)
+                        }
+
+                        is DiaryWriteUiState.Write.Edit -> {
+                            _uiEvent.emit(DiaryWriteUiEvent.Return)
+                        }
                     }
                 }
+                .onFailure { error ->
+                    handleDiaryWriteError(error)
+                }
+        }
+    }
 
-                else -> {}
+    fun completeActivitySelection() {
+        viewModelScope.launch {
+            val state = _uiState.value
+            if (state !is DiaryWriteUiState.Write.New) return@launch
+
+            val lectureId = savedStateHandle.get<String>("lectureId") ?: return@launch
+            val selectedDailyClassTypeIds = state.dailyClassTypes
+                .filter { it.isSelected() }
+                .map { it.item.id }
+
+            // InitialSelecting과 ReSelecting 모두 동일한 처리
+            if (state.activitySelectingState.isSelecting()) {
+                diaryRepository.getQuestionnaire(
+                    lectureId = lectureId,
+                    dailyClassTypes = selectedDailyClassTypeIds,
+                )
+                    .onSuccess { questionnaireData ->
+                        _uiState.value = state.copyWith(
+                            activitySelectingState = ActivitySelectionState.Complete,
+                            questions = questionnaireData.questions,
+                        )
+                    }
+                    .onFailure { error ->
+                        handleDiaryWriteError(error)
+                    }
             }
         }
     }

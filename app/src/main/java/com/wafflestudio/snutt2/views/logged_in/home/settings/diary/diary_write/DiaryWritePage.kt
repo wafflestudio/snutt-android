@@ -88,11 +88,7 @@ fun DiaryWriteRoute(
         modifier = modifier,
         uiState = uiState,
         onToggleActivitySelection = viewModel::toggleActivitySelection,
-        onCompleteSelectActivities = {
-            viewModel.setSelectingActivitiesState(
-                ActivitySelectionState.Complete,
-            )
-        },
+        onCompleteSelectActivities = viewModel::completeActivitySelection,
         onRestartSelectActivities = {
             viewModel.setSelectingActivitiesState(
                 ActivitySelectionState.ReSelecting,
