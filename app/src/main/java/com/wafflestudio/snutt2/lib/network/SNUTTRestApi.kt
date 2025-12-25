@@ -199,25 +199,25 @@ interface SNUTTRestApi {
         @Path("lecture_id") lecture_id: String,
     ): ResetLectureResults
 
-    @GET("v1/tables/{timetableId}/lecture/reminders")
+    @GET("/v1/tables/{timetableId}/lecture/reminders")
     suspend fun _getTimetableReminders(
         @Path("timetableId") timetableId: String,
     ): GetTimetableRemindersResults
 
-    @GET("v1/tables/{timetableId}/lecture/{timetableLectureId}/reminder")
+    @GET("/v1/tables/{timetableId}/lecture/{timetableLectureId}/reminder")
     suspend fun _getTimetableLectureReminder(
         @Path("timetableId") timetableId: String,
         @Path("timetableLectureId") timetableLectureId: String,
     ): TimetableLectureReminderDto
 
-    @PUT("v1/tables/{timetableId}/lecture/{timetableLectureId}/reminder")
+    @PUT("/v1/tables/{timetableId}/lecture/{timetableLectureId}/reminder")
     suspend fun _putTimetableLectureReminder(
         @Path("timetableId") timetableId: String,
         @Path("timetableLectureId") timetableLectureId: String,
         @Body body: PutTimetableLectureReminderParams,
     ): TimetableLectureReminderDto
 
-    @DELETE("v1/tables/{timetableId}/lecture/{timetableLectureId}/reminder")
+    @DELETE("/v1/tables/{timetableId}/lecture/{timetableLectureId}/reminder")
     suspend fun _deleteTimetableLectureReminder(
         @Path("timetableId") timetableId: String,
         @Path("timetableLectureId") timetableLectureId: String,
