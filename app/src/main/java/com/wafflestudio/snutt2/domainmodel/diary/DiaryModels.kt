@@ -1,9 +1,10 @@
 package com.wafflestudio.snutt2.domainmodel.diary
 
+import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.lib.Selectable
 
 // TODO: 파일 분리
-data class DiaryActivity(
+data class DiaryDailyClassType(
     val id: String,
     val name: String,
 )
@@ -25,8 +26,15 @@ data class DiaryQuestionAnswer(
 )
 
 data class DiarySummary(
+    val id: String,
     val lectureId: String,
     val lectureName: String,
+    val date: java.time.LocalDateTime,
     val questionAnswers: List<DiaryQuestionAnswer>,
     val comment: String?,
+)
+
+data class CourseBookDiarySubmissions(
+    val courseBook: CourseBook,
+    val submissions: List<DiarySummary>,
 )

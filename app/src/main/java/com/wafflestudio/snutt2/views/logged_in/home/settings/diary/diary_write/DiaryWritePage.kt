@@ -88,11 +88,7 @@ fun DiaryWriteRoute(
         modifier = modifier,
         uiState = uiState,
         onToggleActivitySelection = viewModel::toggleActivitySelection,
-        onCompleteSelectActivities = {
-            viewModel.setSelectingActivitiesState(
-                ActivitySelectionState.Complete,
-            )
-        },
+        onCompleteSelectActivities = viewModel::completeActivitySelection,
         onRestartSelectActivities = {
             viewModel.setSelectingActivitiesState(
                 ActivitySelectionState.ReSelecting,
@@ -226,7 +222,7 @@ private fun DiaryWriting(
                     onCompleteSelectActivities()
                 },
                 onRestartSelectActivities,
-                uiState.activities,
+                uiState.dailyClassTypes,
             )
 
             if (uiState.activitySelectingState != ActivitySelectionState.InitialSelecting) {
@@ -272,10 +268,7 @@ private fun DiaryWriting(
                                 vertical = 12.dp,
                                 horizontal = 48.dp,
                             ),
-                        text = when (uiState) {
-                            is DiaryWriteUiState.Write.New -> "다음"
-                            is DiaryWriteUiState.Write.Edit -> "수정하기"
-                        },
+                        text = "다음",
                         style = if (uiState.allQuestionAnswered()) {
                             SNUTTTypography.button.copy(
                                 color = SNUTTColors.White,
@@ -388,7 +381,7 @@ private fun DiaryComplete(
 @Preview(heightDp = 1030)
 private fun DiaryWritingPreview() {
     DiaryWriting(
-        uiState = DiaryMockData.sampleWriteUiState,
+        uiState = DiaryPreviewData.sampleWriteUiState,
         onToggleActivitySelection = {},
         onCompleteSelectActivities = {},
         onRestartSelectActivities = {},
