@@ -129,10 +129,10 @@ sealed interface NavigationDestination {
     data object LectureDiaryHistory : NavigationDestination
 
     @Serializable
-    @DeepLinkPath("lecture_diary_write")
+    @DeepLinkPath("diary")
     data class LectureDiaryWrite(
-        val lectureId: String,
-        val edit: Boolean,
+        val lectureId: String = "",
+        val courseTitle: String = "",
     ) : NavigationDestination
 
     @Serializable

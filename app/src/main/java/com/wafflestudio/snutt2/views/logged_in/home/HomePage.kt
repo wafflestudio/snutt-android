@@ -208,7 +208,7 @@ fun HomePage() {
                             navController.navigate(
                                 NavigationDestination.LectureDiaryWrite(
                                     lectureId = "686e8d3c2afaf11b888e2722",
-                                    edit = false,
+                                    courseTitle = "테스트 강의", // FIXME: 임시 테스트 데이터
                                 ),
                             ) // 푸시 알림으로 트리거, 임시로 넣어둠
                         },

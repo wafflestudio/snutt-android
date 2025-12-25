@@ -15,15 +15,18 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.components.compose.ArrowBackIcon
 import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.clicks
@@ -39,16 +42,29 @@ fun DiaryHistoryRoute(
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit,
     onNavigateOnboard: () -> Unit,
-    onNavigateDiaryWrite: (lectureId: String) -> Unit,
     viewModel: DiaryHistoryViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { uiEvent ->
+            when (uiEvent) {
+                is DiaryHistoryUiEvent.ShowToast -> {
+                    val message = uiEvent.message
+                    if (message.isNotEmpty()) {
+                        context.toast(message)
+                    }
+                }
+            }
+        }
+    }
+
     DiaryHistoryScreen(
         modifier = modifier,
         onNavigateBack,
         { idx -> viewModel.selectCourseBook(idx) },
         viewModel::toggleDateExpand,
-        onNavigateDiaryWrite,
         viewModel::deleteDiary,
         uiState,
     )
@@ -60,7 +76,6 @@ fun DiaryHistoryScreen(
     onNavigateBack: () -> Unit,
     onClickCourseBook: (coursebookIndex: Int) -> Unit,
     onToggleExpandOfDate: (date: LocalDate) -> Unit,
-    onEditDiary: (lectureId: String) -> Unit,
     onDeleteDiary: (lectureId: String) -> Unit,
     diaryHistoryUiState: DiaryHistoryUiState,
 ) {
@@ -88,7 +103,7 @@ fun DiaryHistoryScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     itemsIndexed(diaryHistoryUiState.courseBooks) { idx, courseBook ->
-                        val isSelected = idx == diaryHistoryUiState.selectedCourseBookId
+                        val isSelected = courseBook == diaryHistoryUiState.selectedCourseBook
 
                         Box(
                             modifier = Modifier
@@ -110,7 +125,8 @@ fun DiaryHistoryScreen(
                     }
                 }
                 LazyColumn {
-                    items(diaryHistoryUiState.diarySummariesByDate.toList()) { (date, listOfDiaryListLectureItemWithExpandState) ->
+                    val diarySummariesByDate = diaryHistoryUiState.diarySummariesByCourseBook[diaryHistoryUiState.selectedCourseBook] ?: emptyMap()
+                    items(diarySummariesByDate.toList()) { (date, listOfDiaryListLectureItemWithExpandState) ->
                         val (listOfDiaryListLectureItem, expanded) = listOfDiaryListLectureItemWithExpandState
 
                         DiarySummariesOfDay(
@@ -120,7 +136,6 @@ fun DiaryHistoryScreen(
                             toggleExpended = {
                                 onToggleExpandOfDate(date)
                             },
-                            onEditDiary = onEditDiary,
                             onDeleteDiary = onDeleteDiary,
                         )
                     }
@@ -141,11 +156,10 @@ fun DiaryListPagePreview() {
         {},
         {},
         {},
-        {},
         diaryHistoryUiState = DiaryHistoryUiState.Success(
             courseBooks = courseBookList,
-            selectedCourseBookId = 0,
-            diarySummariesByDate = DiaryPreviewData.diaryList,
+            selectedCourseBook = courseBookList[0],
+            diarySummariesByCourseBook = mapOf(courseBookList[0] to DiaryPreviewData.diaryList),
         ),
     )
 }

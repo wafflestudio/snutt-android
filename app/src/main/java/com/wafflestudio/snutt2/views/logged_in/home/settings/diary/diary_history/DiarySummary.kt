@@ -2,7 +2,6 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings.diary.diary_histor
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -42,7 +41,6 @@ fun DiarySummariesOfDay(
     listOfDiarySummary: List<DiarySummary>,
     expanded: Boolean,
     toggleExpended: () -> Unit,
-    onEditDiary: (lectureId: String) -> Unit,
     onDeleteDiary: (lectureId: String) -> Unit,
 ) {
     Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -82,11 +80,8 @@ fun DiarySummariesOfDay(
                 listOfDiarySummary.forEach { diaryListLectureItem ->
                     DiarySummary(
                         diaryListLectureItem,
-                        onClickEditButton = {
-                            onEditDiary(diaryListLectureItem.lectureId)
-                        },
                         onClickDeleteButton = {
-                            onDeleteDiary(diaryListLectureItem.lectureId)
+                            onDeleteDiary(diaryListLectureItem.id)
                         },
                     )
                 }
@@ -103,7 +98,6 @@ fun DiarySummariesOfDay(
 @Composable
 private fun DiarySummary(
     diarySummary: DiarySummary,
-    onClickEditButton: () -> Unit,
     onClickDeleteButton: () -> Unit,
 ) {
     val textMeasurer = rememberTextMeasurer()
@@ -166,25 +160,6 @@ private fun DiarySummary(
                 }
             }
         }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End,
-        ) {
-            Text(
-                "수정하기",
-                modifier = Modifier
-                    .border(
-                        0.8.dp,
-                        color = SNUTTColors.EditTextUnderline,
-                        shape = RoundedCornerShape(17.dp),
-                    )
-                    .clicks {
-                        onClickEditButton()
-                    }
-                    .padding(vertical = 6.dp, horizontal = 16.dp),
-                style = SNUTTTypography.button.copy(fontSize = 13.sp),
-            )
-        }
     }
 }
 
@@ -197,7 +172,6 @@ fun DiarySummariesOfDayFoldedPreview() {
         false,
         {},
         {},
-        {},
     )
 }
 
@@ -208,8 +182,10 @@ fun DiarySummariesOfDayExpandedPreview() {
         date = LocalDate.of(2025, 3, 20),
         listOf(
             DiarySummary(
+                id = "preview-id-1",
                 lectureId = "",
                 lectureName = "시각디자인기초",
+                date = java.time.LocalDateTime.now(),
                 questionAnswers = listOf(
                     DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
                     DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
@@ -218,8 +194,10 @@ fun DiarySummariesOfDayExpandedPreview() {
                 comment = "좋아요",
             ),
             DiarySummary(
+                id = "preview-id-2",
                 lectureId = "",
                 lectureName = "배구",
+                date = java.time.LocalDateTime.now(),
                 questionAnswers = listOf(
                     DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
                     DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
@@ -231,7 +209,6 @@ fun DiarySummariesOfDayExpandedPreview() {
         true,
         {},
         {},
-        {},
     )
 }
 
@@ -240,8 +217,10 @@ fun DiarySummariesOfDayExpandedPreview() {
 fun DiarySummaryPreview() {
     DiarySummary(
         DiarySummary(
+            id = "preview-id-3",
             lectureId = "",
             lectureName = "배구",
+            date = java.time.LocalDateTime.now(),
             questionAnswers = listOf(
                 DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
                 DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
@@ -249,7 +228,6 @@ fun DiarySummaryPreview() {
             ),
             comment = "좋아요",
         ),
-        {},
         {},
     )
 }
