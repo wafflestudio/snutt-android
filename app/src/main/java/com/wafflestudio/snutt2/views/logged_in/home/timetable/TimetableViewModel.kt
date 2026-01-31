@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -45,13 +46,15 @@ class TimetableViewModel @Inject constructor(
         }
     }
 
-    suspend fun updateTheme() {
-        currentTable.value?.id?.let { id ->
-            _previewTheme.value?.let { theme ->
-                if (theme is BuiltInTheme) {
-                    tableRepository.updateTableTheme(id, theme.code)
-                } else {
-                    tableRepository.updateTableTheme(id, (theme as CustomTheme).id)
+    fun updateTheme() {
+        viewModelScope.launch {
+            currentTable.value?.id?.let { id ->
+                _previewTheme.value?.let { theme ->
+                    if (theme is BuiltInTheme) {
+                        tableRepository.updateTableTheme(id, theme.code)
+                    } else {
+                        tableRepository.updateTableTheme(id, (theme as CustomTheme).id)
+                    }
                 }
             }
         }

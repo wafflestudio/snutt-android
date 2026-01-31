@@ -34,6 +34,7 @@ import com.wafflestudio.snutt2.components.compose.NotificationIcon
 import com.wafflestudio.snutt2.components.compose.RingingAlarmIcon
 import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.domainmodel.TableTheme
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getCreditSumFromLectureList
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.logImpression
@@ -52,7 +53,11 @@ import com.wafflestudio.snutt2.views.logged_in.home.showTitleChangeDialog
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 
 @Composable
-fun TimetablePageTemp(uncheckedNotification: Boolean, onOpenDrawer: () -> Unit) {
+fun TimetablePageTemp(
+    uncheckedNotification: Boolean,
+    previewTheme: TableTheme? = null,
+    onOpenDrawer: () -> Unit,
+) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
@@ -141,7 +146,10 @@ fun TimetablePageTemp(uncheckedNotification: Boolean, onOpenDrawer: () -> Unit) 
                 .weight(1f)
                 .fillMaxWidth(),
         ) {
-            TimeTable(selectedLecture = null)
+            TimeTable(
+                selectedLecture = null,
+                previewTheme = previewTheme,
+            )
         }
 
         BottomNavigation(

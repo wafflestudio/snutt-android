@@ -5,10 +5,18 @@ import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.course_books.CourseBookRepository
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
+import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.TableSummary
+import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.ifType
+import com.wafflestudio.snutt2.lib.logging.AnalyticsLogger
+import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
+import com.wafflestudio.snutt2.lib.network.DomainError
+import com.wafflestudio.snutt2.lib.network.NotSelectedTimetable
+import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.network.onFailure
 import com.wafflestudio.snutt2.lib.network.onSuccess
 import com.wafflestudio.snutt2.lib.toDataWithState
@@ -29,6 +37,9 @@ class HomeDrawerViewModel @Inject constructor(
     private val courseBookRepository: CourseBookRepository,
     private val tableRepository: TableRepository,
     private val currentTableRepository: CurrentTableRepository,
+    private val userRepository: UserRepository,
+    private val analyticsLogger: AnalyticsLogger,
+    private val displayMessageResolver: DisplayMessageResolver,
 ) : ViewModel() {
     private val _uiEvent = MutableSharedFlow<HomeDrawerUiEvent>()
     private val _uiState = MutableStateFlow<HomeDrawerUiState>(HomeDrawerUiState.Loading)
@@ -40,7 +51,7 @@ class HomeDrawerViewModel @Inject constructor(
         viewModelScope.launch {
             courseBookRepository.getCourseBookNew()
                 .onFailure {
-                    // TODO
+                    handleError(it)
                     return@launch
                 }
                 // 콜백지옥인데..
@@ -127,6 +138,8 @@ class HomeDrawerViewModel @Inject constructor(
                     )
                     _uiEvent.emit(HomeDrawerUiEvent.OpenBottomSheet)
                 }
+            }.onFailure {
+                handleError(it)
             }
         }
     }
@@ -158,7 +171,9 @@ class HomeDrawerViewModel @Inject constructor(
     fun copyTable(tableId: String) {
         viewModelScope.launch {
             // TODO: 에러 처리
-            tableRepository.copyTable(tableId)
+            tableRepository.copyTableNew(tableId).onFailure {
+                handleError(it)
+            }
         }
     }
 
@@ -179,7 +194,7 @@ class HomeDrawerViewModel @Inject constructor(
                 courseBook = courseBook,
                 title = title,
             ).onFailure {
-                // TODO: 에러 처리
+                handleError(it)
             }.onSuccess {
                 _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
                 _uiState.value.ifType<HomeDrawerUiState.Loaded> {
@@ -204,7 +219,7 @@ class HomeDrawerViewModel @Inject constructor(
         viewModelScope.launch {
             tableRepository.setPrimaryTableNew(tableSummary.id)
                 .onFailure {
-                    // TODO: 에러 처리
+                    handleError(it)
                 }
                 .onSuccess {
                     // FIXME: 구 동작 일단 옮겨오기. 이걸 해야, 상태가 변한다.
@@ -219,7 +234,7 @@ class HomeDrawerViewModel @Inject constructor(
         viewModelScope.launch {
             tableRepository.unsetPrimaryTableNew(tableSummary.id)
                 .onFailure {
-                    // TODO: 에러 처리
+                    handleError(it)
                 }
                 .onSuccess {
                     // FIXME: 구 동작 일단 옮겨오기. 이걸 해야, 상태가 변한다.
@@ -230,8 +245,39 @@ class HomeDrawerViewModel @Inject constructor(
         }
     }
 
-    fun openShareTableDialog(tableSummary: TableSummary) {}
-    fun openSetThemeDialog(tableSummary: TableSummary) {}
+    fun openShareTableBottomSheet(tableSummary: TableSummary) {
+        viewModelScope.launch {
+            val tableDto = tableRepository.searchTableById(tableSummary.id)
+            val tableTrimParam = userRepository.tableTrimParam.value
+            _uiEvent.emit(
+                HomeDrawerUiEvent.OpenShareScreenshotBottomSheet(
+                    tableDto = tableDto,
+                    tableTrimParam = tableTrimParam,
+                ),
+            )
+            analyticsLogger.logScreen(AnalyticsScreen.TimetableShare)
+        }
+    }
+    fun onClickSetThemeSheet(tableSummary: TableSummary) {
+        viewModelScope.launch {
+            val currentTable = currentTableRepository.currentTable.value
+            if (currentTable?.id == tableSummary.id) {
+                _uiEvent.emit(HomeDrawerUiEvent.CloseDrawer)
+                _uiEvent.emit(HomeDrawerUiEvent.ChangeBottomSheet(HomeDrawerBottomSheetType.SelectTheme))
+            } else {
+                handleError(NotSelectedTimetable)
+            }
+        }
+    }
+
+    fun onChangeSheetType(sheetType: HomeDrawerBottomSheetType) {
+        _uiState.value.ifType<HomeDrawerUiState.Loaded> {
+            _uiState.value = it.copy(
+                homeDrawerBottomSheetType = sheetType,
+            )
+        }
+    }
+
     fun openDeleteTableDialog(tableSummary: TableSummary) {
         _uiState.value.ifType<HomeDrawerUiState.Loaded> {
             _uiState.value = it.copy(
@@ -244,7 +290,7 @@ class HomeDrawerViewModel @Inject constructor(
         viewModelScope.launch {
             tableRepository.updateTableNameNew(newTitle, tableId)
                 .onFailure {
-                    // TODO: 에러 처리
+                    handleError(it)
                 }.onSuccess {
                     _uiState.value.ifType<HomeDrawerUiState.Loaded> {
                         _uiState.value = it.copy(
@@ -269,6 +315,7 @@ class HomeDrawerViewModel @Inject constructor(
                 tableRepository.deleteTableNew(tableSummary.id)
                     .onFailure {
                         // TODO: 에러 처리
+                        handleError(it)
                         // "하나 남은 시간표는 삭제할 수 없습니다" 는 클라로직 대신 서버로직으로 대체함
                         // 에러나면 dialog 숨기고 바텀시트도 닫고..
                     }
@@ -316,12 +363,28 @@ class HomeDrawerViewModel @Inject constructor(
             )
         }
     }
+
+    private fun handleError(error: DomainError) { // TODO: 네트워크 오류일 때 재시도하기(지금은 앱 껐다 켜야 됨)
+        val displayMessage = displayMessageResolver.getDisplayMessage(error)
+        viewModelScope.launch {
+            _uiEvent.emit(HomeDrawerUiEvent.ShowToast(displayMessage))
+        }
+    }
 }
 
 sealed interface HomeDrawerUiEvent {
     data object OpenBottomSheet : HomeDrawerUiEvent
     data object CloseBottomSheet : HomeDrawerUiEvent
+    data class ChangeBottomSheet(
+        val bottomSheetType: HomeDrawerBottomSheetType,
+    ) : HomeDrawerUiEvent
     data object CloseDrawer : HomeDrawerUiEvent
+    data class OpenShareScreenshotBottomSheet(
+        val tableDto: TableDto,
+        val tableTrimParam: TableTrimParam,
+    ) : HomeDrawerUiEvent
+
+    data class ShowToast(val displayMessage: String) : HomeDrawerUiEvent
 }
 
 sealed interface HomeDrawerUiState {

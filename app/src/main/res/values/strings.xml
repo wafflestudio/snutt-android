@@ -315,7 +315,7 @@
     <string name="home_drawer_copy_success_message">\"%s\" 시간표가 복사되었습니다.</string>
     <string name="home_drawer_delete_table_unable_alert_message">하나 남은 시간표는 삭제할 수 없습니다</string>
     <string name="home_drawer_delete_table_success_alert_message">시간표가 삭제되었습니다.</string>
-    <string name="home_drawer_change_theme_unable_alert_message">현재 선택된 강좌의 테마만 변경할 수 있습니다.</string>
+    <string name="home_drawer_change_theme_unable_alert_message">현재 선택된 시간표의 테마만 변경할 수 있습니다.</string>
     <string name="home_drawer_create_table_bottom_sheet_title">새로운 시간표 만들기</string>
     <string name="home_drawer_create_table_bottom_sheet_hint">시간표 제목을 입력하세요</string>
     <string name="search_result_item_add_button">추가하기</string>

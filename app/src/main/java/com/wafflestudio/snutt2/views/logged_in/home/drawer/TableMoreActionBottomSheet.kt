@@ -140,7 +140,7 @@ fun TableMoreActionBottomSheet(
                     drawerState.close()
 
                     bottomSheet.setSheetContent {
-                        ChangeThemeBottomSheet(
+                        SelectThemeBottomSheet(
                             onPreview = { theme ->
                                 scope.launch {
                                     timetableViewModel.setPreviewTheme(theme)
@@ -157,7 +157,7 @@ fun TableMoreActionBottomSheet(
                                     }
                                 }
                             },
-                            onDispose = {
+                            onDismiss = {
                                 scope.launch {
                                     timetableViewModel.setPreviewTheme(null)
                                     bottomSheet.hide()

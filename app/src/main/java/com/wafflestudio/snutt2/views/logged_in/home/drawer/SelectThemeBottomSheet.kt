@@ -53,10 +53,10 @@ import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigVi
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 
 @Composable
-fun ChangeThemeBottomSheet(
+fun SelectThemeBottomSheet(
     onPreview: (TableTheme) -> Unit,
     onApply: () -> Unit,
-    onDispose: () -> Unit,
+    onDismiss: () -> Unit,
     themeConfigViewModel: ThemeConfigViewModel = hiltViewModel(),
     timetableViewModel: TimetableViewModel = hiltViewModel(),
 ) {
@@ -80,10 +80,9 @@ fun ChangeThemeBottomSheet(
         bottomSheetState = bottomSheet,
         analyticsScreen = AnalyticsScreen.ThemePreview,
     )
-
     if (bottomSheet.isVisible) {
         DisposableEffect(LocalLifecycleOwner.current) {
-            onDispose { onDispose() }
+            onDispose { onDismiss() }
         }
     }
 
@@ -109,7 +108,7 @@ fun ChangeThemeBottomSheet(
                 text = stringResource(R.string.common_cancel),
                 modifier = Modifier
                     .padding(horizontal = 10.dp)
-                    .clicks { onDispose() },
+                    .clicks { onDismiss() },
                 style = SNUTTTypography.body1,
             )
             Text(

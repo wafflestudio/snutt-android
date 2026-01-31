@@ -4,12 +4,17 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DrawerState
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.ModalDrawer
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.TableSummary
+import com.wafflestudio.snutt2.domainmodel.TableTheme
+import com.wafflestudio.snutt2.lib.logging.compose.HomeDrawerLoggingEffect
 import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.views.logged_in.home.drawer.SelectThemeBottomSheet
 import com.wafflestudio.snutt2.views.logged_in.home.drawer.refactor.bottom_sheet.CreateTableBottomSheet
 import com.wafflestudio.snutt2.views.logged_in.home.drawer.refactor.bottom_sheet.MoreActionSheet
 
@@ -19,13 +24,13 @@ import com.wafflestudio.snutt2.views.logged_in.home.drawer.refactor.bottom_sheet
  * 1. UiState 의 필드로, 표시할 바텀시트의 종류를 나타낼 sealed class 를 둔다.
  * 2. sealed class 의 각 구체 클래스에는 바텀시트의 초기 렌더링에 필요하거나, 바텀시트만의 상태를 나타내는 값들을 둔다.
  * 3. UiState의 이 필드의 종류에 따라 분기하고 sheetContent 를 그린다. (필요한 경우, sheetShape 등도 분기)
- * 4. sheetState 는 Rouete 에서 주입받는다. rememberModalBottomSheetState 를 해서 상태를 관리하는 곳도 Route
+ * 4. sheetState 는 Route 에서 주입받는다. rememberModalBottomSheetState 를 해서 상태를 관리하는 곳도 Route
  */
 @Composable
 fun HomeDrawerBottomSheetLayout(
     uiState: HomeDrawerUiState,
     sheetState: ModalBottomSheetState,
-    onCloseSheet: () -> Unit,
+    onDismiss: () -> Unit,
     onCreateNewTable: (coursebook: CourseBook, title: String) -> Unit,
     onClickChangeTableName: (tableSummary: TableSummary) -> Unit,
     onClickSetPrimary: (tableSummary: TableSummary) -> Unit,
@@ -46,20 +51,37 @@ fun HomeDrawerBottomSheetLayout(
     onConfirmChangeTableTitle: (newTitle: String, tableId: String) -> Unit,
     onConfirmDeleteTable: (tableSummary: TableSummary) -> Unit,
     onClickDrawerIcon: () -> Unit,
+    onClickPreviewTheme: (TableTheme) -> Unit,
+    onClickApplyTheme: () -> Unit,
+    onClickDisposeTheme: () -> Unit,
+
+    previewTheme: TableTheme?, // TimetableUiState로 확장 수정 예정
 ) {
+    LaunchedEffect(sheetState.currentValue) {
+        if (sheetState.currentValue == ModalBottomSheetValue.Hidden) {
+            onDismiss()
+        }
+    }
+    HomeDrawerLoggingEffect(drawerState)
     ModalBottomSheetLayout(
         sheetContent = {
             when (uiState) {
                 is HomeDrawerUiState.Loading -> {}
                 is HomeDrawerUiState.Loaded -> when (uiState.homeDrawerBottomSheetType) {
                     HomeDrawerBottomSheetType.Empty -> {}
-                    HomeDrawerBottomSheetType.SelectTheme -> {}
+                    is HomeDrawerBottomSheetType.SelectTheme -> {
+                        SelectThemeBottomSheet(
+                            onPreview = onClickPreviewTheme,
+                            onApply = onClickApplyTheme,
+                            onDismiss = onClickDisposeTheme,
+                        )
+                    }
                     HomeDrawerBottomSheetType.CreateNewTheme -> {}
                     is HomeDrawerBottomSheetType.CreateNewTable -> {
                         CreateTableBottomSheet(
                             sheetState = sheetState,
                             sheetType = uiState.homeDrawerBottomSheetType,
-                            onCloseSheet = onCloseSheet,
+                            onDismiss = onDismiss,
                             onSubmit = onCreateNewTable,
                         )
                     }
@@ -104,6 +126,7 @@ fun HomeDrawerBottomSheetLayout(
         ) {
             TimeTableScreen(
                 uiState = uiState,
+                previewTheme = previewTheme,
                 onClickDrawerIcon = onClickDrawerIcon,
             )
         }

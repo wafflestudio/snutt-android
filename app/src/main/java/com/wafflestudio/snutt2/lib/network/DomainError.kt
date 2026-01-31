@@ -21,7 +21,7 @@ data class UnknownApp(override val displayTitle: String, override val displayMes
 data class Unknown(override val displayTitle: String, override val displayMessage: String) : DomainError
 data class Nothing(override val displayTitle: String, override val displayMessage: String) : DomainError
 
-// 2. Local Errors (특정 API에서만 발생)
+// 2. API Errors (특정 API에서만 발생)
 // 각 interface가 어떤 API인지를 의미하고, data class가 구체적인 오류 type을 명시한다.
 // 각 data class가 여러 interface를 상속할 수 있어서, interface 밖에 선언되어 있다.
 sealed interface SignupError : DomainError
@@ -37,3 +37,10 @@ data class UsedEmail(override val displayTitle: String, override val displayMess
 data class WrongPassword(override val displayTitle: String, override val displayMessage: String) : ChangePasswordError
 data class PastSemester(override val displayTitle: String, override val displayMessage: String) : LectureReminderError
 data class DisabledFeature(override val displayTitle: String, override val displayMessage: String) : VacancyError
+
+// 3. Local Errors (클라이언트에서 처리하는 에러)
+// 클라에서 발생하는 에러는 2가지뿐, 문자열을 하드코딩해 처리한다.
+object NotSelectedTimetable : DomainError {
+    override val displayTitle = ""
+    override val displayMessage = "현재 선택된 시간표의 테마만 변경할 수 있습니다."
+}

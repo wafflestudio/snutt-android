@@ -37,7 +37,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.drawer.refactor.HomeDrawerBo
 fun CreateTableBottomSheet(
     sheetState: ModalBottomSheetState,
     sheetType: HomeDrawerBottomSheetType.CreateNewTable,
-    onCloseSheet: () -> Unit,
+    onDismiss: () -> Unit,
     onSubmit: (courseBook: CourseBook, newTitle: String) -> Unit,
 ) {
     val context = LocalContext.current
@@ -45,7 +45,7 @@ fun CreateTableBottomSheet(
     var pickedCourseBook by remember { mutableStateOf((sheetType as? HomeDrawerBottomSheetType.CreateNewTable.SelectCourseBook)?.initialCourseBook) }
 
     BackHandler {
-        onCloseSheet()
+        onDismiss()
     }
 
     var clearFocusFlag by remember { mutableStateOf(false) }
@@ -64,7 +64,7 @@ fun CreateTableBottomSheet(
             Text(
                 text = stringResource(R.string.common_cancel), style = SNUTTTypography.body1,
                 modifier = Modifier.clicks {
-                    onCloseSheet()
+                    onDismiss()
                 },
             )
             Spacer(modifier = Modifier.weight(1f))

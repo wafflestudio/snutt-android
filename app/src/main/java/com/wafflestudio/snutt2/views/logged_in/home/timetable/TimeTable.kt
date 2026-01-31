@@ -38,6 +38,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.CustomTheme
+import com.wafflestudio.snutt2.domainmodel.TableTheme
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.lib.contains
 import com.wafflestudio.snutt2.lib.getFittingTrimParam
@@ -61,8 +62,8 @@ import kotlin.math.min
 fun TimeTable(
     touchEnabled: Boolean = true,
     selectedLecture: LectureDto?,
+    previewTheme: TableTheme? = null,
 ) {
-    val previewTheme = LocalTableState.current.previewTheme
     val lectures =
         LocalTableState.current.table.lectureList.let { // 테마 미리보기용 색 배치 로직. 서버와 통일되어 있다(2024-01-12)
             previewTheme?.let { theme ->

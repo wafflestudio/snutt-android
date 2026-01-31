@@ -282,4 +282,14 @@ class TableRepositoryImpl @Inject constructor(
             return Result.Fail(e.toDomainError())
         }
     }
+
+    override suspend fun copyTableNew(id: String): Result<Unit> {
+        try {
+            val response = api._copyTable(id)
+            snuttStorage.tableMap.update(response.associateBy { it.id })
+            return Result.Success(Unit)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
 }
