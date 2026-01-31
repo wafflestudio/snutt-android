@@ -38,9 +38,9 @@ fun OpenSourceLicensePage() {
                 navController.navigate(
                     NavigationDestination.LicenseDetail(
                         context.getString(
-                            R.string.license_colorpicker_route
-                        )
-                    )
+                            R.string.license_colorpicker_route,
+                        ),
+                    ),
                 )
             },
         )
@@ -51,9 +51,9 @@ fun OpenSourceLicensePage() {
                 navController.navigate(
                     NavigationDestination.LicenseDetail(
                         context.getString(
-                            R.string.license_guava_route
-                        )
-                    )
+                            R.string.license_guava_route,
+                        ),
+                    ),
                 )
             },
         )
@@ -64,9 +64,9 @@ fun OpenSourceLicensePage() {
                 navController.navigate(
                     NavigationDestination.LicenseDetail(
                         context.getString(
-                            R.string.license_retrofit_route
-                        )
-                    )
+                            R.string.license_retrofit_route,
+                        ),
+                    ),
                 )
             },
         )
@@ -77,9 +77,9 @@ fun OpenSourceLicensePage() {
                 navController.navigate(
                     NavigationDestination.LicenseDetail(
                         context.getString(
-                            R.string.license_okhttp_route
-                        )
-                    )
+                            R.string.license_okhttp_route,
+                        ),
+                    ),
                 )
             },
         )
@@ -90,9 +90,9 @@ fun OpenSourceLicensePage() {
                 navController.navigate(
                     NavigationDestination.LicenseDetail(
                         context.getString(
-                            R.string.license_pretendard_route
-                        )
-                    )
+                            R.string.license_pretendard_route,
+                        ),
+                    ),
                 )
             },
         )

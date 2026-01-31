@@ -77,8 +77,9 @@ fun TableLecturesRoute(
             Log.d("table", viewModel.currentTable.value.toString())
             lectureDetailViewModel.initializeEditingLectureDetail(
                 LectureDto.fromLocalLecture(
-                    lecture
-                ), ModeType.Normal, viewModel.currentTable.value
+                    lecture,
+                ),
+                ModeType.Normal, viewModel.currentTable.value,
             )
             navController.navigate(NavigationDestination.LectureDetail) {
                 launchSingleTop = true
@@ -88,7 +89,7 @@ fun TableLecturesRoute(
             // FIXME: 임시 코드
             lectureDetailViewModel.initializeEditingLectureDetail(
                 LectureDto.Default,
-                ModeType.Editing(true)
+                ModeType.Editing(true),
             )
             navController.navigate(NavigationDestination.LectureDetail)
         },

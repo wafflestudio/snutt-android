@@ -72,7 +72,7 @@ fun LecturesOfTablePage() {
             onClickAdd = {
                 lectureDetailViewModel.initializeEditingLectureDetail(
                     LectureDto.Default,
-                    ModeType.Editing(true)
+                    ModeType.Editing(true),
                 )
                 navController.navigate(NavigationDestination.LectureDetail)
             },

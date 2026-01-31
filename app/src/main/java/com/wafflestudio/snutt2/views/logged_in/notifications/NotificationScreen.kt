@@ -135,7 +135,7 @@ fun NotificationItem(notification: Notification, onClick: () -> Unit) {
                         text = notification.title,
                         style = SNUTTTypography.h4.copy(
                             fontSize = 13.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
                         ),
                         overflow = TextOverflow.Ellipsis,
                     )
@@ -143,7 +143,7 @@ fun NotificationItem(notification: Notification, onClick: () -> Unit) {
                         text = getNotificationTime(context, notification.createdAt),
                         style = SNUTTTypography.body1.copy(
                             fontSize = 13.sp,
-                            color = SNUTTColors.Gray2
+                            color = SNUTTColors.Gray2,
                         ),
                         maxLines = 1,
                     )
