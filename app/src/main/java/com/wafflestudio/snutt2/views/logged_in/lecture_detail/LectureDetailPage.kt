@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.lecture_detail
 
-import NavigationDestination
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.BackHandler
@@ -126,6 +125,7 @@ import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalHomePageController
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.LocalRemoteConfig
+import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.search.checkLectureOverlap
@@ -211,13 +211,13 @@ fun LectureDetailPage(
                     val message = when (uiEvent.event) {
                         LectureDetailEvent.LECTURE_REMINDER_UPDATE_SUCCESS_NONE -> ""
                         LectureDetailEvent.LECTURE_REMINDER_UPDATE_SUCCESS_TEN_MINUTES_BEFORE,
-                        -> context.getString(R.string.settings_lecture_reminder_update_success_ten_minutes_before)
+                            -> context.getString(R.string.settings_lecture_reminder_update_success_ten_minutes_before)
 
                         LectureDetailEvent.LECTURE_REMINDER_UPDATE_SUCCESS_AT_START_TIME,
-                        -> context.getString(R.string.settings_lecture_reminder_update_success_at_start_time)
+                            -> context.getString(R.string.settings_lecture_reminder_update_success_at_start_time)
 
                         LectureDetailEvent.LECTURE_REMINDER_UPDATE_SUCCESS_TEN_MINUTES_AFTER,
-                        -> context.getString(R.string.settings_lecture_reminder_update_success_ten_minutes_after)
+                            -> context.getString(R.string.settings_lecture_reminder_update_success_ten_minutes_after)
                     }
                     if (message.isNotEmpty()) {
                         launch {
@@ -622,17 +622,17 @@ fun LectureDetailPage(
                                         )
                                     },
                                     description = (
-                                        buildAnnotatedString {
-                                            if (enableLectureReminderPicker) {
-                                                append(stringResource(R.string.lecture_detail_lecture_reminder_description))
-                                            } else {
-                                                withStyle(style = SpanStyle(fontWeight = FontWeight.SemiBold)) {
-                                                    append(stringResource(R.string.lecture_detail_lecture_reminder_guide_bold1))
+                                            buildAnnotatedString {
+                                                if (enableLectureReminderPicker) {
+                                                    append(stringResource(R.string.lecture_detail_lecture_reminder_description))
+                                                } else {
+                                                    withStyle(style = SpanStyle(fontWeight = FontWeight.SemiBold)) {
+                                                        append(stringResource(R.string.lecture_detail_lecture_reminder_guide_bold1))
+                                                    }
+                                                    append(stringResource(R.string.lecture_detail_lecture_reminder_guide_normal1))
                                                 }
-                                                append(stringResource(R.string.lecture_detail_lecture_reminder_guide_normal1))
                                             }
-                                        }
-                                        ),
+                                            ),
                                     enabled = enableLectureReminderPicker,
                                 )
                             }

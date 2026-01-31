@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.home.timetable
 
-import NavigationDestination
 import android.annotation.SuppressLint
 import android.view.MotionEvent
 import androidx.compose.foundation.Canvas
@@ -52,6 +51,7 @@ import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.LocalCompactState
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.LocalTableState
+import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.ModeType
 import kotlin.math.max
@@ -248,13 +248,13 @@ fun DrawLectures(lectures: List<LectureDto>, fittedTrimParam: TableTrimParam) {
                     lectureNumber = lecture.lecture_number.orEmpty(),
                     instructorName = lecture.instructor,
                     bgColor =
-                    if (lecture.colorIndex == 0L && lecture.color.bgColor != null) {
-                        lecture.color.bgColor!!
-                    } else {
-                        BuiltInTheme.fromCode(code).getColorByIndexComposable(
-                            lecture.colorIndex,
-                        ).toArgb()
-                    },
+                        if (lecture.colorIndex == 0L && lecture.color.bgColor != null) {
+                            lecture.color.bgColor!!
+                        } else {
+                            BuiltInTheme.fromCode(code).getColorByIndexComposable(
+                                lecture.colorIndex,
+                            ).toArgb()
+                        },
                     fgColor = if (lecture.colorIndex == 0L && lecture.color.fgColor != null) {
                         lecture.color.fgColor!!
                     } else {

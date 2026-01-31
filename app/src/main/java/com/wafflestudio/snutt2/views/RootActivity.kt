@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.views
 
-import NavigationDestination
 import android.Manifest
 import android.net.Uri
 import android.os.Build
@@ -269,7 +268,7 @@ class RootActivity : AppCompatActivity() {
                             navController.previousBackStackEntry?.destination?.hasRoute(
                                 NavigationDestination.LecturesOfTable::class,
                             ) == true
-                            -> DetailScreenReferrer.LectureList
+                                -> DetailScreenReferrer.LectureList
 
                             homePageController.homePageState.value == HomeItem.Timetable -> DetailScreenReferrer.Timetable
                             else -> null

@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.home.timetable
 
-import NavigationDestination
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -45,6 +43,7 @@ import com.wafflestudio.snutt2.views.LocalDrawerState
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.LocalRemoteConfig
 import com.wafflestudio.snutt2.views.LocalTableState
+import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.showTitleChangeDialog
 import kotlinx.coroutines.launch
@@ -62,7 +61,9 @@ fun TimetablePage(uncheckedNotification: Boolean) {
     val composableStates = ComposableStatesWithScope(scope)
     val tableListViewModel = hiltViewModel<TableListViewModel>()
     val newSemesterNotify by tableListViewModel.newSemesterNotify.collectAsState(false)
-    val vacancyNotificationBannerEnabled by remoteConfig.vacancyNotificationBannerEnabled.collectAsState(false)
+    val vacancyNotificationBannerEnabled by remoteConfig.vacancyNotificationBannerEnabled.collectAsState(
+        false
+    )
     val analyticsLogger = LocalAnalyticsLogger.current
 
     Column(

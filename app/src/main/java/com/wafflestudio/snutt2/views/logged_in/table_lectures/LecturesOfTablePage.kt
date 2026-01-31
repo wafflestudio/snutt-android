@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.table_lectures
 
-import NavigationDestination
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -40,6 +39,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
+import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.ModeType
@@ -70,7 +70,10 @@ fun LecturesOfTablePage() {
         LecturesOfTable(
             lectures = lectureList,
             onClickAdd = {
-                lectureDetailViewModel.initializeEditingLectureDetail(LectureDto.Default, ModeType.Editing(true))
+                lectureDetailViewModel.initializeEditingLectureDetail(
+                    LectureDto.Default,
+                    ModeType.Editing(true)
+                )
                 navController.navigate(NavigationDestination.LectureDetail)
             },
             onClickLecture = { lecture ->

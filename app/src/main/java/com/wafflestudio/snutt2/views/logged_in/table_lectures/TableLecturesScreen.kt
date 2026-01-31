@@ -44,6 +44,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalNavController
+import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.ModeType
@@ -74,14 +75,21 @@ fun TableLecturesRoute(
         onClickLecture = { lecture ->
             // FIXME: 임시 코드
             Log.d("table", viewModel.currentTable.value.toString())
-            lectureDetailViewModel.initializeEditingLectureDetail(LectureDto.fromLocalLecture(lecture), ModeType.Normal, viewModel.currentTable.value)
+            lectureDetailViewModel.initializeEditingLectureDetail(
+                LectureDto.fromLocalLecture(
+                    lecture
+                ), ModeType.Normal, viewModel.currentTable.value
+            )
             navController.navigate(NavigationDestination.LectureDetail) {
                 launchSingleTop = true
             }
         },
         onClickAddCustom = {
             // FIXME: 임시 코드
-            lectureDetailViewModel.initializeEditingLectureDetail(LectureDto.Default, ModeType.Editing(true))
+            lectureDetailViewModel.initializeEditingLectureDetail(
+                LectureDto.Default,
+                ModeType.Editing(true)
+            )
             navController.navigate(NavigationDestination.LectureDetail)
         },
         onBack = {
@@ -110,7 +118,9 @@ private fun TableLecturesScreen(
         LazyColumn {
             items(uiState.lectures) { lecture ->
                 TableLectureItemNew(
-                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 7.dp), lecture, onClickLecture,
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 7.dp),
+                    lecture,
+                    onClickLecture,
                 )
                 Row(Modifier.padding(horizontal = 20.dp, vertical = 5.dp)) {
                     Divider(thickness = 1.dp, color = SNUTTColors.Black050)
@@ -118,7 +128,8 @@ private fun TableLecturesScreen(
             }
             item {
                 TableLectureAddNew(
-                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp), onClickAddCustom,
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
+                    onClickAddCustom,
                 )
             }
         }

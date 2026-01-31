@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.deeplink
 
-import NavigationDestination
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.runtime.Composable
@@ -18,6 +17,7 @@ import com.wafflestudio.snutt2.views.LocalApiOnError
 import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalHomePageController
 import com.wafflestudio.snutt2.views.LocalNavController
+import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
@@ -144,6 +144,7 @@ fun InstallInAppDeeplinkExecutor() {
                         handleBookmarkDeeplink()
                     }
                 }
+
                 getDeepLinkPath<NavigationDestination.Friends>() -> {
                     handleFriendsDeeplink()
                 }

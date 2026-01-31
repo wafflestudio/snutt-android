@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.notifications
 
-import NavigationDestination
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -53,6 +52,7 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.LocalNavController
+import com.wafflestudio.snutt2.views.NavigationDestination
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
@@ -133,12 +133,18 @@ fun NotificationItem(notification: Notification, onClick: () -> Unit) {
                     Text(
                         modifier = Modifier.weight(1f),
                         text = notification.title,
-                        style = SNUTTTypography.h4.copy(fontSize = 13.sp, fontWeight = FontWeight.SemiBold),
+                        style = SNUTTTypography.h4.copy(
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.SemiBold
+                        ),
                         overflow = TextOverflow.Ellipsis,
                     )
                     Text(
                         text = getNotificationTime(context, notification.createdAt),
-                        style = SNUTTTypography.body1.copy(fontSize = 13.sp, color = SNUTTColors.Gray2),
+                        style = SNUTTTypography.body1.copy(
+                            fontSize = 13.sp,
+                            color = SNUTTColors.Gray2
+                        ),
                         maxLines = 1,
                     )
                 }
