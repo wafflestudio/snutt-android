@@ -1,3 +1,5 @@
+package com.wafflestudio.snutt2.views
+
 import com.wafflestudio.snutt2.navigation.DeepLinkPath
 import kotlinx.serialization.Serializable
 

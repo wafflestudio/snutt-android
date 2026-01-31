@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.lecture_detail
 
-import NavigationDestination
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.BackHandler
@@ -126,6 +125,7 @@ import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalHomePageController
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.LocalRemoteConfig
+import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.search.checkLectureOverlap

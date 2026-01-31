@@ -1,6 +1,6 @@
 package com.wafflestudio.snutt2.navigation
 
-import NavigationDestination
+import com.wafflestudio.snutt2.views.NavigationDestination
 import kotlin.reflect.full.findAnnotation
 
 inline fun <reified T : NavigationDestination> getDeepLinkPath(): String? {

@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.home
 
-import NavigationDestination
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.BackHandler
@@ -44,6 +43,7 @@ import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.LocalPopupState
 import com.wafflestudio.snutt2.views.LocalReviewWebView
 import com.wafflestudio.snutt2.views.LocalTableState
+import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.home.drawer.refactor.TimeTableRoute
 import com.wafflestudio.snutt2.views.logged_in.home.friend.FriendsRoute

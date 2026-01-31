@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.views
 
-import NavigationDestination
 import android.Manifest
 import android.net.Uri
 import android.os.Build
