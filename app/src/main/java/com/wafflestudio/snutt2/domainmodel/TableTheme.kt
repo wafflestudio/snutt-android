@@ -33,6 +33,22 @@ sealed class TableTheme(
                 is BuiltInTheme -> false
             }
         }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+
+        return when {
+            this is CustomTheme && other is CustomTheme -> this.id == other.id
+            this is BuiltInTheme && other is BuiltInTheme -> this.code == other.code
+            else -> false
+        }
+    }
+
+    override fun hashCode(): Int = when (this) {
+        is CustomTheme -> id.hashCode()
+        is BuiltInTheme -> code.hashCode()
+    }
 }
 
 class CustomTheme(

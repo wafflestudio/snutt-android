@@ -6,7 +6,6 @@ import androidx.compose.material.rememberDrawerState
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
@@ -14,7 +13,6 @@ import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.wafflestudio.snutt2.domainmodel.TableTheme
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.shareScreenshot
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
@@ -24,7 +22,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun TimeTableRoute(
     drawerViewModel: HomeDrawerViewModel = hiltViewModel(),
+    // FIXME: 리팩토링 안 된 TimeTable 쪽으로 상태 변경 시켜줄 때를 위해 임시 사용
     timetableViewModel: TimetableViewModel = hiltViewModel(),
+    onNavigateBottomSheetThemeDetail: () -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -36,9 +36,6 @@ fun TimeTableRoute(
         initialValue = ModalBottomSheetValue.Hidden,
         skipHalfExpanded = true,
     )
-
-    // Timetable 관련
-    val previewTheme = timetableViewModel.previewTheme.collectAsState()
 
     LaunchedEffect(Unit) {
         drawerViewModel.uiEvent.collect { uiEvent ->
@@ -87,6 +84,10 @@ fun TimeTableRoute(
                 is HomeDrawerUiEvent.ShowToast -> {
                     context.toast(uiEvent.displayMessage)
                 }
+
+                is HomeDrawerUiEvent.NavigateToThemeDetail -> {
+                    onNavigateBottomSheetThemeDetail()
+                }
             }
         }
     }
@@ -97,9 +98,8 @@ fun TimeTableRoute(
         onDismiss = {
             // 시트가 닫힐 때 수행해야 할 로직은 Route에서 주입할 수밖에 없음
             scope.launch {
-                if (uiState is HomeDrawerUiState.Loaded && (uiState as HomeDrawerUiState.Loaded).homeDrawerBottomSheetType is HomeDrawerBottomSheetType.SelectTheme) {
-                    timetableViewModel.setPreviewTheme(null)
-                }
+                // FIXME: timetable 리팩 후 변경
+                timetableViewModel.setPreviewTheme(null)
                 sheetState.hide()
             }
         },
@@ -130,31 +130,31 @@ fun TimeTableRoute(
                 drawerState.open()
             }
         },
-        onClickPreviewTheme = timetableViewModel::setPreviewTheme,
-        onClickApplyTheme = {
-            scope.launch {
-                timetableViewModel.updateTheme()
-                sheetState.hide()
-            }
+        onClickPreviewTheme = { theme ->
+            drawerViewModel.setPreviewTheme(theme)
+
+            // FIXME: timetable 리팩 후 변경
+            timetableViewModel.setPreviewTheme(theme)
         },
+        onClickApplyTheme = drawerViewModel::applyTheme,
         onClickDisposeTheme = {
             scope.launch {
+                // FIXME: timetable 리팩 후 변경
                 timetableViewModel.setPreviewTheme(null)
                 sheetState.hide()
             }
         },
-        previewTheme = previewTheme.value,
+        onClickAddTheme = drawerViewModel::navigateToThemeDetail,
     )
 }
 
 @Composable
 fun TimeTableScreen(
     uiState: HomeDrawerUiState,
-    previewTheme: TableTheme? = null,
     onClickDrawerIcon: () -> Unit,
 ) {
     // FIXME: 임시
-    TimetablePageTemp(false, previewTheme) {
+    TimetablePageTemp(false) {
         onClickDrawerIcon()
     }
 }

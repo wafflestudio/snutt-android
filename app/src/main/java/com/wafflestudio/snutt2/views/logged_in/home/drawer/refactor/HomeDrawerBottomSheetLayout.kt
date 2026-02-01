@@ -14,9 +14,9 @@ import com.wafflestudio.snutt2.domainmodel.TableSummary
 import com.wafflestudio.snutt2.domainmodel.TableTheme
 import com.wafflestudio.snutt2.lib.logging.compose.HomeDrawerLoggingEffect
 import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.views.logged_in.home.drawer.SelectThemeBottomSheet
 import com.wafflestudio.snutt2.views.logged_in.home.drawer.refactor.bottom_sheet.CreateTableBottomSheet
 import com.wafflestudio.snutt2.views.logged_in.home.drawer.refactor.bottom_sheet.MoreActionSheet
+import com.wafflestudio.snutt2.views.logged_in.home.drawer.refactor.bottom_sheet.SelectThemeSheetContent
 
 /**
  * 논의
@@ -54,8 +54,7 @@ fun HomeDrawerBottomSheetLayout(
     onClickPreviewTheme: (TableTheme) -> Unit,
     onClickApplyTheme: () -> Unit,
     onClickDisposeTheme: () -> Unit,
-
-    previewTheme: TableTheme?, // TimetableUiState로 확장 수정 예정
+    onClickAddTheme: () -> Unit,
 ) {
     LaunchedEffect(sheetState.currentValue) {
         if (sheetState.currentValue == ModalBottomSheetValue.Hidden) {
@@ -70,12 +69,15 @@ fun HomeDrawerBottomSheetLayout(
                 is HomeDrawerUiState.Loaded -> when (uiState.homeDrawerBottomSheetType) {
                     HomeDrawerBottomSheetType.Empty -> {}
                     is HomeDrawerBottomSheetType.SelectTheme -> {
-                        SelectThemeBottomSheet(
-                            onPreview = onClickPreviewTheme,
+                        SelectThemeSheetContent(
+                            sheetType = uiState.homeDrawerBottomSheetType,
+                            onClickPreviewTheme = onClickPreviewTheme,
                             onApply = onClickApplyTheme,
                             onDismiss = onClickDisposeTheme,
+                            onClickAddTheme = onClickAddTheme,
                         )
                     }
+
                     HomeDrawerBottomSheetType.CreateNewTheme -> {}
                     is HomeDrawerBottomSheetType.CreateNewTable -> {
                         CreateTableBottomSheet(
@@ -126,7 +128,6 @@ fun HomeDrawerBottomSheetLayout(
         ) {
             TimeTableScreen(
                 uiState = uiState,
-                previewTheme = previewTheme,
                 onClickDrawerIcon = onClickDrawerIcon,
             )
         }

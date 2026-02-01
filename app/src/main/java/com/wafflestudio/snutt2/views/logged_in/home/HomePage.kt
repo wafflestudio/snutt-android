@@ -150,7 +150,11 @@ fun HomePage() {
         LocalDrawerState provides drawerState,
     ) {
         if (BuildConfig.DEBUG && pageController.homePageState.value == HomeItem.Timetable) {
-            TimeTableRoute()
+            TimeTableRoute(
+                onNavigateBottomSheetThemeDetail = {
+                    navController.navigate(NavigationDestination.ThemeDetail())
+                },
+            )
 
             return@CompositionLocalProvider
         }

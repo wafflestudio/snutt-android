@@ -5,9 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.course_books.CourseBookRepository
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
+import com.wafflestudio.snutt2.data.themes.ThemeRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
+import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
+import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.CourseBook
+import com.wafflestudio.snutt2.domainmodel.CustomTheme
 import com.wafflestudio.snutt2.domainmodel.TableSummary
+import com.wafflestudio.snutt2.domainmodel.TableTheme
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.ifType
@@ -29,6 +34,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -38,6 +45,8 @@ class HomeDrawerViewModel @Inject constructor(
     private val tableRepository: TableRepository,
     private val currentTableRepository: CurrentTableRepository,
     private val userRepository: UserRepository,
+    private val themeRepository: ThemeRepository,
+    private val getCurrentTableThemeUseCase: GetCurrentTableThemeUseCase,
     private val analyticsLogger: AnalyticsLogger,
     private val displayMessageResolver: DisplayMessageResolver,
 ) : ViewModel() {
@@ -258,15 +267,80 @@ class HomeDrawerViewModel @Inject constructor(
             analyticsLogger.logScreen(AnalyticsScreen.TimetableShare)
         }
     }
+
     fun onClickSetThemeSheet(tableSummary: TableSummary) {
         viewModelScope.launch {
             val currentTable = currentTableRepository.currentTable.value
             if (currentTable?.id == tableSummary.id) {
                 _uiEvent.emit(HomeDrawerUiEvent.CloseDrawer)
-                _uiEvent.emit(HomeDrawerUiEvent.ChangeBottomSheet(HomeDrawerBottomSheetType.SelectTheme))
+                openSelectThemeSheet()
             } else {
                 handleError(NotSelectedTimetable)
             }
+        }
+    }
+
+    fun openSelectThemeSheet() {
+        viewModelScope.launch {
+            val customThemes = themeRepository.customThemes.value
+            val builtInThemes = themeRepository.builtInThemes.value
+            // FIXME: 에러 처리하기. silent 하게 해도 될까?
+            val selectedTheme = getCurrentTableThemeUseCase().first()
+
+            _uiState.value.ifType<HomeDrawerUiState.Loaded> {
+                _uiState.value = it.copy(
+                    homeDrawerBottomSheetType = HomeDrawerBottomSheetType.SelectTheme(
+                        customThemes = customThemes,
+                        builtInThemes = builtInThemes,
+                        selectedPreviewTheme = selectedTheme,
+                    ),
+                )
+            }
+            _uiEvent.emit(HomeDrawerUiEvent.OpenBottomSheet)
+        }
+    }
+
+    fun setPreviewTheme(theme: TableTheme) {
+        _uiState.value.ifType<HomeDrawerUiState.Loaded> { state ->
+            state.homeDrawerBottomSheetType.ifType<HomeDrawerBottomSheetType.SelectTheme> { sheetType ->
+                _uiState.update {
+                    state.copy(
+                        homeDrawerBottomSheetType = sheetType.copy(
+                            selectedPreviewTheme = theme,
+                        ),
+                    )
+                }
+            }
+        }
+    }
+
+    fun applyTheme() {
+        viewModelScope.launch {
+            val currentTable = currentTableRepository.currentTable.value
+            val previewTheme = (_uiState.value as? HomeDrawerUiState.Loaded)
+                ?.homeDrawerBottomSheetType
+                ?.let { it as? HomeDrawerBottomSheetType.SelectTheme }
+                ?.selectedPreviewTheme
+            if (currentTable != null && previewTheme != null) {
+                when (previewTheme) {
+                    is BuiltInTheme -> tableRepository.updateTableTheme(
+                        currentTable.id,
+                        previewTheme.code,
+                    )
+
+                    is CustomTheme -> tableRepository.updateTableTheme(
+                        currentTable.id,
+                        previewTheme.id,
+                    )
+                }
+            }
+            _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
+        }
+    }
+
+    fun navigateToThemeDetail() {
+        viewModelScope.launch {
+            _uiEvent.emit(HomeDrawerUiEvent.NavigateToThemeDetail)
         }
     }
 
@@ -328,7 +402,8 @@ class HomeDrawerViewModel @Inject constructor(
 
                             val nextTableId = if (remainingSameCourseBookTables.isEmpty()) {
                                 // 같은 학기에 남은 시간표가 없으면 전체에서 선택
-                                val remainingAllTables = allTables.filter { it.id != tableSummary.id }
+                                val remainingAllTables =
+                                    allTables.filter { it.id != tableSummary.id }
                                 if (indexInAll == allTables.size) {
                                     remainingAllTables.last().id
                                 } else {
@@ -378,11 +453,14 @@ sealed interface HomeDrawerUiEvent {
     data class ChangeBottomSheet(
         val bottomSheetType: HomeDrawerBottomSheetType,
     ) : HomeDrawerUiEvent
+
     data object CloseDrawer : HomeDrawerUiEvent
     data class OpenShareScreenshotBottomSheet(
         val tableDto: TableDto,
         val tableTrimParam: TableTrimParam,
     ) : HomeDrawerUiEvent
+
+    data object NavigateToThemeDetail : HomeDrawerUiEvent
 
     data class ShowToast(val displayMessage: String) : HomeDrawerUiEvent
 }
@@ -418,7 +496,12 @@ data class CoursebookDrawerItem(
 
 sealed class HomeDrawerBottomSheetType {
     data object Empty : HomeDrawerBottomSheetType()
-    data object SelectTheme : HomeDrawerBottomSheetType()
+    data class SelectTheme(
+        val customThemes: List<CustomTheme>,
+        val builtInThemes: List<BuiltInTheme>,
+        val selectedPreviewTheme: TableTheme,
+    ) : HomeDrawerBottomSheetType()
+
     data object CreateNewTheme : HomeDrawerBottomSheetType()
     sealed class CreateNewTable : HomeDrawerBottomSheetType() {
         data class SelectCourseBook(

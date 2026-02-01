@@ -10,8 +10,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetState
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -22,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.EditText
@@ -53,6 +57,16 @@ fun CreateTableBottomSheet(
         clearFocusFlag = sheetState.isVisible.not()
     }
 
+    val submit = {
+        if (sheetType is HomeDrawerBottomSheetType.CreateNewTable.SpecificCourseBook) {
+            onSubmit(sheetType.courseBook, title)
+        } else {
+            pickedCourseBook?.let {
+                onSubmit(it, title)
+            }
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -78,9 +92,7 @@ fun CreateTableBottomSheet(
                     )
                 },
                 modifier = Modifier.clicks(enabled = title.isNotEmpty()) {
-                    pickedCourseBook?.let {
-                        onSubmit(it, title)
-                    }
+                    submit()
                 },
             )
         }
@@ -97,11 +109,9 @@ fun CreateTableBottomSheet(
             underlineColor = SNUTTColors.SNUTTTheme,
             underlineColorFocused = SNUTTColors.SNUTTTheme,
             underlineWidth = 2.dp,
-            keyboardActions = KeyboardActions(onDone = {
-                pickedCourseBook?.let {
-                    onSubmit(it, title)
-                }
-            },),
+            keyboardActions = KeyboardActions(
+                onDone = { submit() },
+            ),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             clearFocusFlag = clearFocusFlag,
         )
@@ -124,4 +134,40 @@ fun CreateTableBottomSheet(
             Spacer(modifier = Modifier.height(20.dp))
         }
     }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Preview(showBackground = true)
+@Composable
+private fun CreateTableBottomSheetSelectCourseBookPreview() {
+    val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Expanded)
+    val sampleCourseBooks = listOf(
+        CourseBook(semester = 1, year = 2025),
+        CourseBook(semester = 2, year = 2024),
+        CourseBook(semester = 1, year = 2024),
+    )
+    CreateTableBottomSheet(
+        sheetState = sheetState,
+        sheetType = HomeDrawerBottomSheetType.CreateNewTable.SelectCourseBook(
+            initialCourseBook = sampleCourseBooks[0],
+            allCourseBook = sampleCourseBooks,
+        ),
+        onDismiss = {},
+        onSubmit = { _, _ -> },
+    )
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Preview(showBackground = true)
+@Composable
+private fun CreateTableBottomSheetSpecificCourseBookPreview() {
+    val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Expanded)
+    CreateTableBottomSheet(
+        sheetState = sheetState,
+        sheetType = HomeDrawerBottomSheetType.CreateNewTable.SpecificCourseBook(
+            courseBook = CourseBook(semester = 1, year = 2025),
+        ),
+        onDismiss = {},
+        onSubmit = { _, _ -> },
+    )
 }
