@@ -133,7 +133,7 @@ class SearchViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             semesterChange.distinctUntilChanged().collectLatest {
-                clear()
+                clearQueries()
                 try {
                     fetchSearchTagList()
                     getBookmarkList()
@@ -424,6 +424,7 @@ class SearchViewModel @Inject constructor(
             }
         }
     }
+
     private suspend fun getVacancyLectures() {
         vacancyList.emit(
             vacancyRepository.getVacancyLectures()
@@ -496,7 +497,7 @@ class SearchViewModel @Inject constructor(
         lectureSearchRepository.setFirstBookmarkAlertShown()
     }
 
-    private suspend fun clear() {
+    private suspend fun clearQueries() {
         _searchTitle.emit("")
         _selectedLecture.emit(null)
         _searchTagListFlow.emit(emptyList())
@@ -541,6 +542,7 @@ class SearchViewModel @Inject constructor(
                 userRepository.postForceLogout()
                 _searchUiEvent.emit(SearchUiEvent.LoggedOut)
             }
+
             else -> {
                 _searchUiEvent.emit(SearchUiEvent.ShowToastError(displayMessage))
             }

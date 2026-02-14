@@ -2,18 +2,16 @@
 
 plugins {
     alias(libs.plugins.android.application) apply false
-    alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.google.services) apply false
-    alias(libs.plugins.ktlint.idea)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.hilt) apply false
-    alias(libs.plugins.kotlin.kapt) apply false
+    alias(libs.plugins.ksp) apply false
     alias(libs.plugins.firebase.appdistribution) apply false
     alias(libs.plugins.firebase.crashlytics) apply false
     alias(libs.plugins.kotlinx.serialization) apply false
     alias(libs.plugins.compose.compiler) apply false
 }
 
-task("clean", Delete::class) {
-    delete = setOf(rootProject.buildDir)
+tasks.register<Delete>("clean") {
+    delete = setOf(rootProject.layout.buildDirectory)
 }

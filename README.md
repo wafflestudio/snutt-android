@@ -56,7 +56,8 @@ Please request these files from the maintainer if needed.
    ```
    git clone https://github.com/wafflestudio/snutt-android
    ```
-3. Build and run the project using JDK 17.
+3. JDK 21 (Eclipse Temurin) 이상을 설치하고, Android Studio의 `Settings > Build Tools > Gradle > Gradle JDK`를 21로 설정합니다.
+4. Build and run the project.
 
 ### Deployment
 

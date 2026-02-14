@@ -3,12 +3,10 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.services)
-    alias(libs.plugins.ktlint.idea)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.hilt)
-    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.ksp)
     alias(libs.plugins.firebase.appdistribution)
     alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.kotlinx.serialization)
@@ -25,22 +23,16 @@ ktlint {
         exclude("**/generated/**")
         include("**/java/**")
     }
-    // See https://github.com/pinterest/ktlint/issues/527
-    disabledRules.addAll(
-        "import-ordering",
-        "no-wildcard-imports",
-        "package-name",
-        "argument-list-wrapping",
-    )
 }
 
-val versionProps = Properties().apply {
-    load(FileInputStream(File(rootProject.rootDir, "version.properties")))
-}
+val versionProps =
+    Properties().apply {
+        load(FileInputStream(File(rootProject.rootDir, "version.properties")))
+    }
 
 android {
     namespace = "com.wafflestudio.snutt2"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.wafflestudio.snutt2"
@@ -67,7 +59,7 @@ android {
         getByName("debug") {
             isDefault = true
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"))
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
         }
 
         getByName("release") {
@@ -134,7 +126,7 @@ dependencies {
 
     // Dependency Injection
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 
     // Navigation
     implementation(libs.navigation.compose)

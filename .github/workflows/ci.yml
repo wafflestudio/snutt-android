@@ -26,12 +26,12 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          java-version: 17
-          distribution: 'adopt'
+          java-version: 21
+          distribution: 'temurin'
       - name: Clean build
         run: ./gradlew clean
-      - name: Run ktlintDebug
-        run: ./gradlew ktlintMainSourceSetCheck
+      - name: Run ktlint
+        run: ./gradlew ktlintCheck
       - name: Upload ktlint report
         uses: actions/upload-artifact@v4
         if: failure()
@@ -48,8 +48,8 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          java-version: 17
-          distribution: 'adopt'
+          java-version: 21
+          distribution: 'temurin'
       - name: Clean build
         run: ./gradlew clean
       - name: Setup google-services.json (Staging)
