@@ -18,8 +18,7 @@ jobs:
         with:
           java-version: 17
           distribution: 'temurin'
-      - name: Clean build
-        run: ./gradlew clean
+          cache: 'gradle'
       - name: Setup google-services.json (Live)
         run: |
           mkdir -p ./app/src/live
@@ -85,8 +84,7 @@ jobs:
         with:
           java-version: 17
           distribution: 'temurin'
-      - name: Clean build
-        run: ./gradlew clean
+          cache: 'gradle'
       - name: Setup google-services.json (Staging)
         run: |
           mkdir -p ./app/src/staging

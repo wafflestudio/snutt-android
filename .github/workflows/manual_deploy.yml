@@ -32,8 +32,7 @@ jobs:
         with:
           java-version: 17
           distribution: 'adopt'
-      - name: Clean build
-        run: ./gradlew clean
+          cache: 'gradle'
       - name: Setup google-services.json (Live)
         if: startsWith(github.event.inputs.variant, 'live')
         run: |
@@ -109,7 +108,7 @@ jobs:
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
       - name: Upload artifact to Firebase App Distribution (Live)
-        if: ${{ github.event.inputs.firebase == 'true' && startsWith(github.event.inputs.variant, 'Live') }}
+        if: ${{ github.event.inputs.firebase == 'true' && startsWith(github.event.inputs.variant, 'live') }}
         run: ./gradlew appDistributionUploadLiveRelease
       - name: Upload artifact to Firebase App Distribution (Staging)
         if: ${{ github.event.inputs.firebase == 'true' && startsWith(github.event.inputs.variant, 'staging') }}
