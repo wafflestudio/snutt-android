@@ -63,7 +63,12 @@ TimetableWidgetProvider : AppWidgetProvider() {
         val dm = context.resources.displayMetrics
         val options = appWidgetManager.getAppWidgetOptions(appWidgetId)
 
-        val sizes = options.getParcelableArrayList<SizeF>(AppWidgetManager.OPTION_APPWIDGET_SIZES)
+        val sizes = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            options.getParcelableArrayList(AppWidgetManager.OPTION_APPWIDGET_SIZES, SizeF::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            options.getParcelableArrayList<SizeF>(AppWidgetManager.OPTION_APPWIDGET_SIZES)
+        }
         val maxBitmapSize = context.displayWidth * context.displayHeight * 1.5
         var scale = 1.0
 
