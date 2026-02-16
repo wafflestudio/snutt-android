@@ -38,6 +38,11 @@ sealed class TableTheme(
         if (this === other) return true
         if (other == null || this::class != other::class) return false
 
+        other as TableTheme
+        if (name != other.name) return false
+        if (lightColors != other.lightColors) return false
+        if (darkColors != other.darkColors) return false
+
         return when {
             this is CustomTheme && other is CustomTheme -> this.id == other.id
             this is BuiltInTheme && other is BuiltInTheme -> this.code == other.code
@@ -45,9 +50,15 @@ sealed class TableTheme(
         }
     }
 
-    override fun hashCode(): Int = when (this) {
-        is CustomTheme -> id.hashCode()
-        is BuiltInTheme -> code.hashCode()
+    override fun hashCode(): Int {
+        var result = name.hashCode()
+        result = 31 * result + lightColors.hashCode()
+        result = 31 * result + darkColors.hashCode()
+        result = 31 * result + when (this) {
+            is CustomTheme -> id.hashCode()
+            is BuiltInTheme -> code.hashCode()
+        }
+        return result
     }
 }
 
