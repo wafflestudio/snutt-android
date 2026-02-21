@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.domainmodel
 
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
+import androidx.compose.ui.graphics.toArgb
 import com.wafflestudio.snutt2.ui.SNUTTColors
 
 sealed class TableTheme(
@@ -78,8 +79,8 @@ class CustomTheme(
             isFromMarket = false,
             colors = listOf(
                 ThemeColor(
-                    foreground = SNUTTColors.White.value.toInt(),
-                    background = SNUTTColors.MainBlue.value.toInt()
+                    foreground = SNUTTColors.White.toArgb(),
+                    background = SNUTTColors.MainBlue.toArgb()
                 ),
             ),
         )
