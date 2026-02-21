@@ -40,9 +40,8 @@ import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.LocalCompactState
-import com.wafflestudio.snutt2.views.LocalNavController
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
+import com.wafflestudio.snutt2.ui.isDarkMode
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.refactor.TimeTableNew
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 import kotlinx.coroutines.launch
 import kotlin.math.max
@@ -225,14 +224,14 @@ fun TimetableConfigScreen(
                     )
                     .align(Alignment.CenterHorizontally),
             ) {
-                TimeTable(
-                    table = uiState.tableState.table,
-                    trimParam = uiState.tableState.trimParam,
-                    tableLectureCustomOptions = uiState.tableState.tableLectureCustomOptions,
-                    previewTheme = uiState.tableState.previewTheme,
-                    compactMode = LocalCompactState.current,
-                    navigator = LocalNavController.current,
+                TimeTableNew(
+                    lectures = uiState.lectures,
                     selectedLecture = null,
+                    fittedTrimParam = uiState.fittedTrimParam,
+                    theme = uiState.theme,
+                    isDarkMode = isDarkMode(),
+                    compactMode = uiState.compactMode,
+                    tableLectureCustomOptions = uiState.tableLectureCustom,
                     touchEnabled = false,
                 )
             }

@@ -3,6 +3,9 @@ package com.wafflestudio.snutt2.views.logged_in.home.friend
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.Friend
 import com.wafflestudio.snutt2.domainmodel.Table
+import com.wafflestudio.snutt2.domainmodel.TableLectureCustom
+import com.wafflestudio.snutt2.domainmodel.TableTheme
+import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 
 sealed interface FriendsUiState {
     data object Loading : FriendsUiState
@@ -14,6 +17,12 @@ sealed interface FriendsUiState {
         val selectedFriendCourseBooks: List<CourseBook>,
         val selectedCourseBook: CourseBook?,
         val selectedFriendTable: Table?,
+        // FIXME: TimeTableNew 로직상, custom theme 일 때는 이 필드는 의미가 없음.
+        val selectedFriendTableTheme: TableTheme,
+        val selectedFriendTableTrimParam: TableTrimParam,
+        val compactMode: Boolean = false,
+        val tableLectureCustomOptions: TableLectureCustom = TableLectureCustom.Default,
+
         val drawerTab: FriendDrawerTab = FriendDrawerTab.ACTIVE,
         val bottomSheetContent: FriendBottomSheetContent = FriendBottomSheetContent.Hidden,
         val dialogState: FriendDialogState = FriendDialogState.None,

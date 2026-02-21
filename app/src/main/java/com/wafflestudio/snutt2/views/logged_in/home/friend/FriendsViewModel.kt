@@ -4,9 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.friends.FriendRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
+import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.Friend
 import com.wafflestudio.snutt2.domainmodel.FriendState
+import com.wafflestudio.snutt2.domainmodel.TableTrimParam
+import com.wafflestudio.snutt2.domainmodel.ThemeReference
+import com.wafflestudio.snutt2.lib.getFittingTrimParam
 import com.wafflestudio.snutt2.lib.network.AuthError
 import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
 import com.wafflestudio.snutt2.lib.network.DomainError
@@ -75,6 +79,13 @@ class FriendsViewModel @Inject constructor(
                                                             selectedFriendCourseBooks = courseBooks,
                                                             selectedCourseBook = selectedCourseBook,
                                                             selectedFriendTable = table,
+                                                            selectedFriendTableTheme = when (table.themeRef) {
+                                                                is ThemeReference.BuiltIn -> BuiltInTheme.fromCode(table.themeRef.code)
+                                                                is ThemeReference.Custom -> BuiltInTheme.SNUTT
+                                                            },
+                                                            selectedFriendTableTrimParam = table.lectures.getFittingTrimParam(TableTrimParam.Default),
+                                                            compactMode = userRepository.compactMode.value,
+                                                            tableLectureCustomOptions = userRepository.tableLectureCustomOption.value,
                                                         )
                                                     }
                                                 }
@@ -91,6 +102,10 @@ class FriendsViewModel @Inject constructor(
                                                     selectedFriendCourseBooks = courseBooks,
                                                     selectedCourseBook = null,
                                                     selectedFriendTable = null,
+                                                    compactMode = userRepository.compactMode.value,
+                                                    tableLectureCustomOptions = userRepository.tableLectureCustomOption.value,
+                                                    selectedFriendTableTrimParam = userRepository.tableTrimParam.value,
+                                                    selectedFriendTableTheme = BuiltInTheme.SNUTT,
                                                 )
                                             }
                                         }
@@ -108,6 +123,10 @@ class FriendsViewModel @Inject constructor(
                                         selectedFriendCourseBooks = emptyList(),
                                         selectedCourseBook = null,
                                         selectedFriendTable = null,
+                                        compactMode = userRepository.compactMode.value,
+                                        tableLectureCustomOptions = userRepository.tableLectureCustomOption.value,
+                                        selectedFriendTableTrimParam = userRepository.tableTrimParam.value,
+                                        selectedFriendTableTheme = BuiltInTheme.SNUTT,
                                     )
                                 }
                             }
@@ -144,7 +163,13 @@ class FriendsViewModel @Inject constructor(
                                             selectedFriendCourseBooks = courseBooks,
                                             selectedCourseBook = selectedCourseBook,
                                             selectedFriendTable = table,
+                                            selectedFriendTableTheme = when (table.themeRef) {
+                                                is ThemeReference.BuiltIn -> BuiltInTheme.fromCode(table.themeRef.code)
+                                                is ThemeReference.Custom -> BuiltInTheme.SNUTT
+                                            },
+                                            selectedFriendTableTrimParam = table.lectures.getFittingTrimParam(TableTrimParam.Default),
                                         )
+
                                         else -> state
                                     }
                                 }
@@ -160,7 +185,10 @@ class FriendsViewModel @Inject constructor(
                                     selectedFriendCourseBooks = courseBooks,
                                     selectedCourseBook = null,
                                     selectedFriendTable = null,
+                                    selectedFriendTableTheme = BuiltInTheme.SNUTT,
+                                    selectedFriendTableTrimParam = TableTrimParam.Default,
                                 )
+
                                 else -> state
                             }
                         }
@@ -188,7 +216,13 @@ class FriendsViewModel @Inject constructor(
                             is FriendsUiState.Loaded -> state.copy(
                                 selectedCourseBook = courseBook,
                                 selectedFriendTable = table,
+                                selectedFriendTableTheme = when (table.themeRef) {
+                                    is ThemeReference.BuiltIn -> BuiltInTheme.fromCode(table.themeRef.code)
+                                    is ThemeReference.Custom -> BuiltInTheme.SNUTT
+                                },
+                                selectedFriendTableTrimParam = table.lectures.getFittingTrimParam(TableTrimParam.Default),
                             )
+
                             else -> state
                         }
                     }
@@ -327,6 +361,7 @@ class FriendsViewModel @Inject constructor(
                             friend.displayName ?: "",
                         ),
                     )
+
                     else -> state
                 }
             }
@@ -364,6 +399,7 @@ class FriendsViewModel @Inject constructor(
                         dialogState = FriendDialogState.DeleteFriend(friend),
                         bottomSheetContent = FriendBottomSheetContent.Hidden,
                     )
+
                     else -> state
                 }
             }

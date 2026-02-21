@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.domainmodel.preview
 
+import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.LectureColor
 import com.wafflestudio.snutt2.domainmodel.Friend
@@ -10,6 +11,7 @@ import com.wafflestudio.snutt2.domainmodel.Nickname
 import com.wafflestudio.snutt2.domainmodel.SyllabusLecture
 import com.wafflestudio.snutt2.domainmodel.Table
 import com.wafflestudio.snutt2.domainmodel.TableSummary
+import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.domainmodel.ThemeReference
 import com.wafflestudio.snutt2.domainmodel.domainModel
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
@@ -463,6 +465,8 @@ object PreviewData {
         selectedFriendCourseBooks = sampleCourseBooks,
         selectedCourseBook = sampleCourseBooks.firstOrNull(),
         selectedFriendTable = sampleFriendTable,
+        selectedFriendTableTheme = BuiltInTheme.SNUTT,
+        selectedFriendTableTrimParam = TableTrimParam.Default,
         drawerTab = FriendDrawerTab.ACTIVE,
         bottomSheetContent = FriendBottomSheetContent.Hidden,
         dialogState = FriendDialogState.None,

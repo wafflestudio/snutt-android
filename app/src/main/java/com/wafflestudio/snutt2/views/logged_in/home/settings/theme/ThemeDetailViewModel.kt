@@ -8,14 +8,19 @@ import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
+import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.CustomTheme
 import com.wafflestudio.snutt2.domainmodel.EditingTheme
+import com.wafflestudio.snutt2.domainmodel.LocalLecture
+import com.wafflestudio.snutt2.domainmodel.TableLectureCustom
+import com.wafflestudio.snutt2.domainmodel.TableTheme
+import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.domainmodel.ThemeColor
+import com.wafflestudio.snutt2.lib.getFittingTrimParam
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.views.NavigationDestination
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.TableState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -30,18 +35,21 @@ class ThemeDetailViewModel @Inject constructor(
     private val tableRepository: TableRepository,
     currentTableRepository: CurrentTableRepository,
     userRepository: UserRepository,
+    getCurrentTableThemeUseCase: GetCurrentTableThemeUseCase,
     private val apiOnError: ApiOnError,
 ) : ViewModel() {
 
+    // TODO: themeDetailUiState 에 포함시키기
     private val editingTheme = MutableStateFlow<EditingTheme?>(null)
     private var isDarkMode = false
 
     val themeDetailUiState = combine(
-        currentTableRepository.currentTable,
+        currentTableRepository.currentTableRefactored,
+        getCurrentTableThemeUseCase(),
         userRepository.tableTrimParam,
         userRepository.tableLectureCustomOption,
         editingTheme,
-    ) { table, trimParam, lectureCustomOption, editingTheme ->
+    ) { table, theme, trimParam, lectureCustomOption, editingTheme ->
         if (editingTheme == null) {
             return@combine ThemeDetailUiState.Loading
         }
@@ -49,15 +57,19 @@ class ThemeDetailViewModel @Inject constructor(
             return@combine ThemeDetailUiState.Error
         }
 
-        val tableState = TableState(
-            table,
-            trimParam,
-            lectureCustomOption,
-            editingTheme.toTableTheme(),
-        )
+        val fittedTrimParam = if (trimParam.forceFitLectures) {
+            table.lectures.getFittingTrimParam(TableTrimParam.Default)
+        } else {
+            trimParam
+        }
+
         ThemeDetailUiState.Success(
             editingTheme = editingTheme,
-            tableState = tableState,
+            lectures = table.lectures,
+            theme = theme,
+            previewTheme = editingTheme.toTableTheme(),
+            fittedTrimParam = fittedTrimParam,
+            tableLectureCustomOptions = lectureCustomOption,
         )
     }.stateIn(viewModelScope, SharingStarted.Eagerly, ThemeDetailUiState.Loading)
 
@@ -201,7 +213,11 @@ class ThemeDetailViewModel @Inject constructor(
 sealed interface ThemeDetailUiState {
     class Success(
         val editingTheme: EditingTheme,
-        val tableState: TableState,
+        val lectures: List<LocalLecture>,
+        val theme: TableTheme,
+        val previewTheme: TableTheme?,
+        val fittedTrimParam: TableTrimParam,
+        val tableLectureCustomOptions: TableLectureCustom,
     ) : ThemeDetailUiState
 
     data object Error : ThemeDetailUiState

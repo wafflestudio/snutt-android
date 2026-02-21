@@ -4,20 +4,23 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
+import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
+import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
+import com.wafflestudio.snutt2.domainmodel.LocalLecture
 import com.wafflestudio.snutt2.domainmodel.TableLectureCustom
+import com.wafflestudio.snutt2.domainmodel.TableTheme
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
+import com.wafflestudio.snutt2.lib.getFittingTrimParam
 import com.wafflestudio.snutt2.lib.network.AuthError
 import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
 import com.wafflestudio.snutt2.lib.network.DomainError
-import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.network.onFailure
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.TableState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -25,13 +28,10 @@ import javax.inject.Inject
 @HiltViewModel
 class TimetableConfigViewModel @Inject constructor(
     private val userRepository: UserRepository,
-    private val currentTableRepository: CurrentTableRepository,
+    currentTableRepository: CurrentTableRepository,
+    getCurrentTableThemeUseCase: GetCurrentTableThemeUseCase,
     private val displayMessageResolver: DisplayMessageResolver,
 ) : ViewModel() {
-    private val _tableTrimParam: StateFlow<TableTrimParam> = userRepository.tableTrimParam
-    private val _compactMode: StateFlow<Boolean> = userRepository.compactMode
-    private val _tableLectureCustom: StateFlow<TableLectureCustom> = userRepository.tableLectureCustomOption
-
     private val _timetableConfigUiEvent: MutableSharedFlow<TimetableConfigUiEvent> = MutableSharedFlow(replay = 1)
     val timetableConfigUiEvent = _timetableConfigUiEvent.asSharedFlow()
 
@@ -108,18 +108,23 @@ class TimetableConfigViewModel @Inject constructor(
     }
 
     val timeTableConfigUiState = combine(
-        _tableTrimParam, _compactMode, _tableLectureCustom, currentTableRepository.currentTable,
-    ) { tableTrimParam, compactMode, tableLectureCustom, currentTable ->
+        userRepository.tableTrimParam,
+        userRepository.compactMode,
+        userRepository.tableLectureCustomOption,
+        currentTableRepository.currentTableRefactored.filterNotNull(),
+        getCurrentTableThemeUseCase(),
+    ) { tableTrimParam, compactMode, tableLectureCustom, currentTable, theme ->
         TimeTableConfigUiState(
-            tableTrimParam,
-            compactMode,
-            tableLectureCustom,
-            TableState(
-                currentTable ?: TableDto.Default,
-                tableTrimParam,
-                tableLectureCustom,
-                null,
-            ),
+            tableTrimParam = tableTrimParam,
+            compactMode = compactMode,
+            tableLectureCustom = tableLectureCustom,
+            lectures = currentTable.lectures,
+            theme = theme,
+            fittedTrimParam = if (tableTrimParam.forceFitLectures) {
+                currentTable.lectures.getFittingTrimParam(TableTrimParam.Default)
+            } else {
+                tableTrimParam
+            },
         )
     }
         .stateIn(viewModelScope, SharingStarted.Eagerly, TimeTableConfigUiState.Default)
@@ -132,6 +137,7 @@ class TimetableConfigViewModel @Inject constructor(
                 userRepository.performLogout()
                 _timetableConfigUiEvent.emit(TimetableConfigUiEvent.NavigateToOnboard)
             }
+
             else -> {
                 _timetableConfigUiEvent.emit(TimetableConfigUiEvent.ShowToast(displayMessage))
             }
@@ -139,23 +145,22 @@ class TimetableConfigViewModel @Inject constructor(
     }
 }
 
-// TODO
-// 현재는 TableState가 TableTrimParam과 TableLectureCustom을 포함하고 있어 이 또한 중복이고
-// 사실 그러면 의미상 CompactMode도 포함해야 하는것이 아닌가라는 생각이 든다.
-// 이와 더불어 TableState와 CompactMode를 CompositionalLocal로 내려주고 있는데, 이 또한 개선해야 하지만
-// 많은 부분에 변화를 주어야 하고 Sheet에 대한 개선이 선행되어야 한다고 판단하여 일단 보류.
 data class TimeTableConfigUiState(
     val tableTrimParam: TableTrimParam,
     val compactMode: Boolean,
     val tableLectureCustom: TableLectureCustom,
-    val tableState: TableState,
+    val lectures: List<LocalLecture>,
+    val theme: TableTheme,
+    val fittedTrimParam: TableTrimParam,
 ) {
     companion object {
         val Default = TimeTableConfigUiState(
-            TableTrimParam.Default,
-            false,
-            TableLectureCustom.Default,
-            TableState.Default,
+            tableTrimParam = TableTrimParam.Default,
+            compactMode = false,
+            tableLectureCustom = TableLectureCustom.Default,
+            lectures = emptyList(),
+            theme = BuiltInTheme.SNUTT,
+            fittedTrimParam = TableTrimParam.Default,
         )
     }
 }

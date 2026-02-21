@@ -70,10 +70,9 @@ import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalModalState
 import com.wafflestudio.snutt2.views.LocalNavBottomSheetState
 import com.wafflestudio.snutt2.views.LocalCompactState
-import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingColumn
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.refactor.TimeTableNew
 import kotlinx.coroutines.launch
 
 @Composable
@@ -268,14 +267,15 @@ fun ThemeDetailScreen(
                                 )
                                 .align(Alignment.CenterHorizontally),
                         ) {
-                            TimeTable(
-                                table = themeDetailUiState.tableState.table,
-                                trimParam = themeDetailUiState.tableState.trimParam,
-                                tableLectureCustomOptions = themeDetailUiState.tableState.tableLectureCustomOptions,
-                                previewTheme = themeDetailUiState.tableState.previewTheme,
-                                compactMode = LocalCompactState.current,
-                                navigator = LocalNavController.current,
+                            TimeTableNew(
+                                lectures = themeDetailUiState.lectures,
                                 selectedLecture = null,
+                                fittedTrimParam = themeDetailUiState.fittedTrimParam,
+                                theme = themeDetailUiState.theme,
+                                previewTheme = themeDetailUiState.previewTheme,
+                                isDarkMode = isDarkMode(),
+                                compactMode = LocalCompactState.current,
+                                tableLectureCustomOptions = themeDetailUiState.tableLectureCustomOptions,
                                 touchEnabled = false,
                             )
                         }

@@ -53,15 +53,12 @@ import com.wafflestudio.snutt2.components.compose.PersonIcon
 import com.wafflestudio.snutt2.components.compose.QuestionCircleIcon
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.domainmodel.Friend
-import com.wafflestudio.snutt2.domainmodel.TableLectureCustom
-import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.toFormattedString
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.LocalCompactState
-import com.wafflestudio.snutt2.views.LocalNavController
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
+import com.wafflestudio.snutt2.ui.isDarkMode
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.refactor.TimeTableNew
 import kotlinx.coroutines.launch
 
 @Composable
@@ -410,23 +407,20 @@ private fun FriendsLoadedScreen(
                 // Friend Timetable
                 val friendTable = uiState.selectedFriendTable
                 if (uiState.selectedFriend != null && friendTable != null) {
-                    // FIXME: 리팩토링 전 컴포넌트 사용 중
-                    val tableDto = friendTable.toTableDto()
-
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
                             .background(SNUTTColors.White900),
                     ) {
-                        TimeTable(
-                            table = tableDto,
-                            trimParam = TableTrimParam.Default,
-                            tableLectureCustomOptions = TableLectureCustom.Default,
-                            previewTheme = null,
-                            compactMode = LocalCompactState.current,
-                            navigator = LocalNavController.current,
-                            touchEnabled = false, // 친구 시간표는 일단 터치 불가
+                        TimeTableNew(
+                            lectures = friendTable.lectures,
                             selectedLecture = null,
+                            fittedTrimParam = uiState.selectedFriendTableTrimParam,
+                            theme = uiState.selectedFriendTableTheme,
+                            isDarkMode = isDarkMode(),
+                            compactMode = uiState.compactMode,
+                            tableLectureCustomOptions = uiState.tableLectureCustomOptions,
+                            touchEnabled = false, // 친구 시간표는 일단 터치 불가
                         )
                     }
                 } else if (uiState.selectedFriend != null && uiState.selectedFriendCourseBooks.isEmpty()) {
