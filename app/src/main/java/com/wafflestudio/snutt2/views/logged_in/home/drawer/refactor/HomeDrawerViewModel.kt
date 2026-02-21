@@ -15,7 +15,6 @@ import com.wafflestudio.snutt2.domainmodel.TableSummary
 import com.wafflestudio.snutt2.domainmodel.TableTheme
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.lib.Selectable
-import com.wafflestudio.snutt2.lib.ifType
 import com.wafflestudio.snutt2.lib.logging.AnalyticsLogger
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
@@ -77,48 +76,48 @@ class HomeDrawerViewModel @Inject constructor(
                         // 가장 최신 학기는 생성된 시간표가 없어도 서랍에서 보여주기
                         val mostRecentCourseBook = coursebookList.first()
                         if (tableSummariesOfEachCourseBook.containsKey(mostRecentCourseBook)
-                            .not()
+                                .not()
                         ) {
                             tableSummariesOfEachCourseBook[mostRecentCourseBook] = emptyList()
                         }
 
-                        val state = _uiState.value
-
-                        // 기존 각 학기의 펼침 상태 map
-                        val courseBookDrawerItemListMap =
-                            when (state) {
-                                is HomeDrawerUiState.Loading -> emptyMap()
-                                is HomeDrawerUiState.Loaded -> state.courseBookDrawerItemList.associate { (item, expanded) ->
-                                    item.courseBook to expanded
+                        _uiState.update { state ->
+                            // 기존 각 학기의 펼침 상태 map
+                            val courseBookDrawerItemListMap =
+                                when (state) {
+                                    is HomeDrawerUiState.Loading -> emptyMap()
+                                    is HomeDrawerUiState.Loaded -> state.courseBookDrawerItemList.associate { (item, expanded) ->
+                                        item.courseBook to expanded
+                                    }
                                 }
-                            }
 
-                        val courseBookDrawerItemList = tableSummariesOfEachCourseBook
-                            .toList()
-                            .sortedBy { (coursebook, _) -> coursebook }
-                            .map { (courseBook, tableSummaries) ->
-                                CoursebookDrawerItem(
-                                    courseBook = courseBook,
-                                    showNewCoursebookDot = (courseBook == mostRecentCourseBook) && tableSummaries.isEmpty(),
-                                    tableList = tableSummaries,
-                                ).toDataWithState(
-                                    // FIXME: 로직 정리
-                                    currentTable.summary.courseBook == courseBook ||
-                                        courseBookDrawerItemListMap[courseBook] ?: false,
+                            val courseBookDrawerItemList = tableSummariesOfEachCourseBook
+                                .toList()
+                                .sortedBy { (coursebook, _) -> coursebook }
+                                .map { (courseBook, tableSummaries) ->
+                                    CoursebookDrawerItem(
+                                        courseBook = courseBook,
+                                        showNewCoursebookDot = (courseBook == mostRecentCourseBook) && tableSummaries.isEmpty(),
+                                        tableList = tableSummaries,
+                                    ).toDataWithState(
+                                        // FIXME: 로직 정리
+                                        currentTable.summary.courseBook == courseBook ||
+                                            courseBookDrawerItemListMap[courseBook] ?: false,
+                                    )
+                                }
+                            when (state) {
+                                is HomeDrawerUiState.Loaded -> state.copy(
+                                    courseBookDrawerItemList = courseBookDrawerItemList,
+                                    selectedTable = currentTable.summary,
+                                )
+
+                                is HomeDrawerUiState.Loading -> HomeDrawerUiState.Loaded(
+                                    courseBookDrawerItemList = courseBookDrawerItemList,
+                                    selectedTable = currentTable.summary,
+                                    homeDrawerBottomSheetType = HomeDrawerBottomSheetType.Empty,
+                                    dialogState = HomeDrawerUiState.DialogState.None,
                                 )
                             }
-                        _uiState.value = when (state) {
-                            is HomeDrawerUiState.Loaded -> state.copy(
-                                courseBookDrawerItemList = courseBookDrawerItemList,
-                                selectedTable = currentTable.summary,
-                            )
-
-                            is HomeDrawerUiState.Loading -> HomeDrawerUiState.Loaded(
-                                courseBookDrawerItemList = courseBookDrawerItemList,
-                                selectedTable = currentTable.summary,
-                                homeDrawerBottomSheetType = HomeDrawerBottomSheetType.Empty,
-                                dialogState = HomeDrawerUiState.DialogState.None,
-                            )
                         }
                     }.collect()
                 }
@@ -126,10 +125,14 @@ class HomeDrawerViewModel @Inject constructor(
     }
 
     fun toggleCourseBookDrawerItem(index: Int) {
-        _uiState.value.ifType<HomeDrawerUiState.Loaded> {
-            _uiState.value = it.copy(
-                courseBookDrawerItemList = it.courseBookDrawerItemList.toggleIndex(index),
-            )
+        _uiState.update { state ->
+            when (state) {
+                is HomeDrawerUiState.Loaded -> state.copy(
+                    courseBookDrawerItemList = state.courseBookDrawerItemList.toggleIndex(index),
+                )
+
+                else -> state
+            }
         }
     }
 
@@ -138,15 +141,18 @@ class HomeDrawerViewModel @Inject constructor(
             // FIXME: 이거 매번 이렇게 가져와?
             // TODO: 에러 처리
             courseBookRepository.getCourseBookNew().onSuccess { allCourseBook ->
-                _uiState.value.ifType<HomeDrawerUiState.Loaded> {
-                    _uiState.value = it.copy(
-                        homeDrawerBottomSheetType = HomeDrawerBottomSheetType.CreateNewTable.SelectCourseBook(
-                            initialCourseBook = it.selectedTable.courseBook,
-                            allCourseBook = allCourseBook,
-                        ),
-                    )
-                    _uiEvent.emit(HomeDrawerUiEvent.OpenBottomSheet)
+                _uiState.update { state ->
+                    when (state) {
+                        is HomeDrawerUiState.Loaded -> state.copy(
+                            homeDrawerBottomSheetType = HomeDrawerBottomSheetType.CreateNewTable.SelectCourseBook(
+                                initialCourseBook = state.selectedTable.courseBook,
+                                allCourseBook = allCourseBook,
+                            ),
+                        )
+                        else -> state
+                    }
                 }
+                _uiEvent.emit(HomeDrawerUiEvent.OpenBottomSheet)
             }.onFailure {
                 handleError(it)
             }
@@ -156,15 +162,18 @@ class HomeDrawerViewModel @Inject constructor(
     fun openCreateNewTableOfSpecificCourseBookSheet(
         courseBook: CourseBook,
     ) {
-        _uiState.value.ifType<HomeDrawerUiState.Loaded> {
-            _uiState.value = it.copy(
-                homeDrawerBottomSheetType = HomeDrawerBottomSheetType.CreateNewTable.SpecificCourseBook(
-                    courseBook = courseBook,
-                ),
-            )
-            viewModelScope.launch {
-                _uiEvent.emit(HomeDrawerUiEvent.OpenBottomSheet)
+        _uiState.update { state ->
+            when (state) {
+                is HomeDrawerUiState.Loaded -> state.copy(
+                    homeDrawerBottomSheetType = HomeDrawerBottomSheetType.CreateNewTable.SpecificCourseBook(
+                        courseBook = courseBook,
+                    ),
+                )
+                else -> state
             }
+        }
+        viewModelScope.launch {
+            _uiEvent.emit(HomeDrawerUiEvent.OpenBottomSheet)
         }
     }
 
@@ -187,10 +196,13 @@ class HomeDrawerViewModel @Inject constructor(
     }
 
     fun openMoreActionBottomSheet(tableSummary: TableSummary) {
-        _uiState.value.ifType<HomeDrawerUiState.Loaded> {
-            _uiState.value = it.copy(
-                homeDrawerBottomSheetType = HomeDrawerBottomSheetType.MoreAction(tableSummary),
-            )
+        _uiState.update { state ->
+            when (state) {
+                is HomeDrawerUiState.Loaded -> state.copy(
+                    homeDrawerBottomSheetType = HomeDrawerBottomSheetType.MoreAction(tableSummary),
+                )
+                else -> state
+            }
         }
         viewModelScope.launch {
             _uiEvent.emit(HomeDrawerUiEvent.OpenBottomSheet)
@@ -206,10 +218,13 @@ class HomeDrawerViewModel @Inject constructor(
                 handleError(it)
             }.onSuccess {
                 _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
-                _uiState.value.ifType<HomeDrawerUiState.Loaded> {
-                    _uiState.value = it.copy(
-                        homeDrawerBottomSheetType = HomeDrawerBottomSheetType.Empty,
-                    )
+                _uiState.update { state ->
+                    when (state) {
+                        is HomeDrawerUiState.Loaded -> state.copy(
+                            homeDrawerBottomSheetType = HomeDrawerBottomSheetType.Empty,
+                        )
+                        else -> state
+                    }
                 }
                 _uiEvent.emit(HomeDrawerUiEvent.CloseDrawer)
             }
@@ -217,10 +232,13 @@ class HomeDrawerViewModel @Inject constructor(
     }
 
     fun openChangeTableNameDialog(tableSummary: TableSummary) {
-        _uiState.value.ifType<HomeDrawerUiState.Loaded> {
-            _uiState.value = it.copy(
-                dialogState = HomeDrawerUiState.DialogState.ChangeTableName(tableSummary),
-            )
+        _uiState.update { state ->
+            when (state) {
+                is HomeDrawerUiState.Loaded -> state.copy(
+                    dialogState = HomeDrawerUiState.DialogState.ChangeTableName(tableSummary),
+                )
+                else -> state
+            }
         }
     }
 
@@ -287,29 +305,34 @@ class HomeDrawerViewModel @Inject constructor(
             // FIXME: 에러 처리하기. silent 하게 해도 될까?
             val selectedTheme = getCurrentTableThemeUseCase().first()
 
-            _uiState.value.ifType<HomeDrawerUiState.Loaded> {
-                _uiState.value = it.copy(
-                    homeDrawerBottomSheetType = HomeDrawerBottomSheetType.SelectTheme(
-                        customThemes = customThemes,
-                        builtInThemes = builtInThemes,
-                        selectedPreviewTheme = selectedTheme,
-                    ),
-                )
+            _uiState.update { state ->
+                when (state) {
+                    is HomeDrawerUiState.Loaded -> state.copy(
+                        homeDrawerBottomSheetType = HomeDrawerBottomSheetType.SelectTheme(
+                            customThemes = customThemes,
+                            builtInThemes = builtInThemes,
+                            selectedPreviewTheme = selectedTheme,
+                        ),
+                    )
+                    else -> state
+                }
             }
             _uiEvent.emit(HomeDrawerUiEvent.OpenBottomSheet)
         }
     }
 
     fun setPreviewTheme(theme: TableTheme) {
-        _uiState.value.ifType<HomeDrawerUiState.Loaded> { state ->
-            state.homeDrawerBottomSheetType.ifType<HomeDrawerBottomSheetType.SelectTheme> { sheetType ->
-                _uiState.update {
-                    state.copy(
-                        homeDrawerBottomSheetType = sheetType.copy(
+        _uiState.update { state ->
+            when (state) {
+                is HomeDrawerUiState.Loaded -> when (state.homeDrawerBottomSheetType) {
+                    is HomeDrawerBottomSheetType.SelectTheme -> state.copy(
+                        homeDrawerBottomSheetType = state.homeDrawerBottomSheetType.copy(
                             selectedPreviewTheme = theme,
                         ),
                     )
+                    else -> state
                 }
+                else -> state
             }
         }
     }
@@ -345,18 +368,24 @@ class HomeDrawerViewModel @Inject constructor(
     }
 
     fun onChangeSheetType(sheetType: HomeDrawerBottomSheetType) {
-        _uiState.value.ifType<HomeDrawerUiState.Loaded> {
-            _uiState.value = it.copy(
-                homeDrawerBottomSheetType = sheetType,
-            )
+        _uiState.update { state ->
+            when (state) {
+                is HomeDrawerUiState.Loaded -> state.copy(
+                    homeDrawerBottomSheetType = sheetType,
+                )
+                else -> state
+            }
         }
     }
 
     fun openDeleteTableDialog(tableSummary: TableSummary) {
-        _uiState.value.ifType<HomeDrawerUiState.Loaded> {
-            _uiState.value = it.copy(
-                dialogState = HomeDrawerUiState.DialogState.DeleteTable(tableSummary),
-            )
+        _uiState.update { state ->
+            when (state) {
+                is HomeDrawerUiState.Loaded -> state.copy(
+                    dialogState = HomeDrawerUiState.DialogState.DeleteTable(tableSummary),
+                )
+                else -> state
+            }
         }
     }
 
@@ -366,10 +395,13 @@ class HomeDrawerViewModel @Inject constructor(
                 .onFailure {
                     handleError(it)
                 }.onSuccess {
-                    _uiState.value.ifType<HomeDrawerUiState.Loaded> {
-                        _uiState.value = it.copy(
-                            dialogState = HomeDrawerUiState.DialogState.None,
-                        )
+                    _uiState.update { state ->
+                        when (state) {
+                            is HomeDrawerUiState.Loaded -> state.copy(
+                                dialogState = HomeDrawerUiState.DialogState.None,
+                            )
+                            else -> state
+                        }
                     }
                     _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
                 }
@@ -378,64 +410,73 @@ class HomeDrawerViewModel @Inject constructor(
 
     fun deleteTable(tableSummary: TableSummary) {
         viewModelScope.launch {
-            _uiState.value.ifType<HomeDrawerUiState.Loaded> { state ->
-                val allTables = state.courseBookDrawerItemList.flatMap { it.item.tableList }
-                val sameCourseBookTables =
-                    allTables.filter { it.courseBook == tableSummary.courseBook }
-                val indexInSameCourseBook =
-                    sameCourseBookTables.indexOfFirst { it.id == tableSummary.id }
-                val indexInAll = allTables.indexOfFirst { it.id == tableSummary.id }
+            when (val state = _uiState.value) {
+                is HomeDrawerUiState.Loaded -> {
+                    val allTables = state.courseBookDrawerItemList.flatMap { it.item.tableList }
+                    val sameCourseBookTables =
+                        allTables.filter { it.courseBook == tableSummary.courseBook }
+                    val indexInSameCourseBook =
+                        sameCourseBookTables.indexOfFirst { it.id == tableSummary.id }
+                    val indexInAll = allTables.indexOfFirst { it.id == tableSummary.id }
 
-                tableRepository.deleteTableNew(tableSummary.id)
-                    .onFailure {
-                        // TODO: 에러 처리
-                        handleError(it)
-                        // "하나 남은 시간표는 삭제할 수 없습니다" 는 클라로직 대신 서버로직으로 대체함
-                        // 에러나면 dialog 숨기고 바텀시트도 닫고..
-                    }
-                    .onSuccess {
-                        // 현재 시간표를 삭제한 경우, 다른 시간표로 전환
-                        if (state.selectedTable.id == tableSummary.id) {
-                            // 삭제 후 남은 같은 학기 시간표들
-                            val remainingSameCourseBookTables =
-                                sameCourseBookTables.filter { it.id != tableSummary.id }
+                    tableRepository.deleteTableNew(tableSummary.id)
+                        .onFailure {
+                            // TODO: 에러 처리
+                            handleError(it)
+                            // "하나 남은 시간표는 삭제할 수 없습니다" 는 클라로직 대신 서버로직으로 대체함
+                            // 에러나면 dialog 숨기고 바텀시트도 닫고..
+                        }
+                        .onSuccess {
+                            // 현재 시간표를 삭제한 경우, 다른 시간표로 전환
+                            if (state.selectedTable.id == tableSummary.id) {
+                                // 삭제 후 남은 같은 학기 시간표들
+                                val remainingSameCourseBookTables =
+                                    sameCourseBookTables.filter { it.id != tableSummary.id }
 
-                            val nextTableId = if (remainingSameCourseBookTables.isEmpty()) {
-                                // 같은 학기에 남은 시간표가 없으면 전체에서 선택
-                                val remainingAllTables =
-                                    allTables.filter { it.id != tableSummary.id }
-                                if (indexInAll == allTables.size) {
-                                    remainingAllTables.last().id
+                                val nextTableId = if (remainingSameCourseBookTables.isEmpty()) {
+                                    // 같은 학기에 남은 시간표가 없으면 전체에서 선택
+                                    val remainingAllTables =
+                                        allTables.filter { it.id != tableSummary.id }
+                                    if (indexInAll == allTables.size) {
+                                        remainingAllTables.last().id
+                                    } else {
+                                        remainingAllTables[indexInAll].id
+                                    }
                                 } else {
-                                    remainingAllTables[indexInAll].id
+                                    // 같은 학기에 남은 시간표가 있으면 그 중에서 선택
+                                    if (indexInSameCourseBook == sameCourseBookTables.size) {
+                                        remainingSameCourseBookTables.last().id
+                                    } else {
+                                        remainingSameCourseBookTables[indexInSameCourseBook].id
+                                    }
                                 }
-                            } else {
-                                // 같은 학기에 남은 시간표가 있으면 그 중에서 선택
-                                if (indexInSameCourseBook == sameCourseBookTables.size) {
-                                    remainingSameCourseBookTables.last().id
-                                } else {
-                                    remainingSameCourseBookTables[indexInSameCourseBook].id
+                                tableRepository.fetchTableById(nextTableId)
+                            }
+
+                            _uiState.update { s ->
+                                when (s) {
+                                    is HomeDrawerUiState.Loaded -> s.copy(
+                                        dialogState = HomeDrawerUiState.DialogState.None,
+                                    )
+                                    else -> s
                                 }
                             }
-                            tableRepository.fetchTableById(nextTableId)
+                            _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
                         }
-
-                        _uiState.value.ifType<HomeDrawerUiState.Loaded> {
-                            _uiState.value = it.copy(
-                                dialogState = HomeDrawerUiState.DialogState.None,
-                            )
-                        }
-                        _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
-                    }
+                }
+                else -> {}
             }
         }
     }
 
     fun dismissDialog() {
-        _uiState.value.ifType<HomeDrawerUiState.Loaded> {
-            _uiState.value = it.copy(
-                dialogState = HomeDrawerUiState.DialogState.None,
-            )
+        _uiState.update { state ->
+            when (state) {
+                is HomeDrawerUiState.Loaded -> state.copy(
+                    dialogState = HomeDrawerUiState.DialogState.None,
+                )
+                else -> state
+            }
         }
     }
 

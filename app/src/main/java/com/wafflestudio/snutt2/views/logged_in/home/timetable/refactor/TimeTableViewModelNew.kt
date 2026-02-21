@@ -15,7 +15,6 @@ import com.wafflestudio.snutt2.domainmodel.TableSummary
 import com.wafflestudio.snutt2.domainmodel.TableTheme
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.lib.getFittingTrimParam
-import com.wafflestudio.snutt2.lib.ifType
 import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
 import com.wafflestudio.snutt2.lib.network.DomainError
 import com.wafflestudio.snutt2.lib.network.onFailure
@@ -114,20 +113,29 @@ class TimeTableViewModelNew @Inject constructor(
     }
 
     fun setPreviewTheme(tableTheme: TableTheme) {
-        (_uiState.value as? TimeTableUiState.Loaded)?.let { state ->
-            _uiState.update { state.copy(previewTheme = tableTheme) }
+        _uiState.update { state ->
+            when (state) {
+                is TimeTableUiState.Loaded -> state.copy(previewTheme = tableTheme)
+                else -> state
+            }
         }
     }
 
     fun resetPreviewTheme() {
-        (_uiState.value as? TimeTableUiState.Loaded)?.let { state ->
-            _uiState.update { state.copy(previewTheme = null) }
+        _uiState.update { state ->
+            when (state) {
+                is TimeTableUiState.Loaded -> state.copy(previewTheme = null)
+                else -> state
+            }
         }
     }
 
     fun showTableTitleChangeDialog(tableSummary: TableSummary) {
-        (_uiState.value as? TimeTableUiState.Loaded)?.let { state ->
-            _uiState.update { state.copy(dialogState = TimeTableUiState.DialogState.ChangeTableName(tableSummary)) }
+        _uiState.update { state ->
+            when (state) {
+                is TimeTableUiState.Loaded -> state.copy(dialogState = TimeTableUiState.DialogState.ChangeTableName(tableSummary))
+                else -> state
+            }
         }
     }
 
@@ -137,11 +145,13 @@ class TimeTableViewModelNew @Inject constructor(
                 .onFailure {
                     handleError(it)
                 }.onSuccess {
-                    _uiState.value.ifType<TimeTableUiState.Loaded> { state ->
-                        _uiState.update {
-                            state.copy(
+                    _uiState.update { state ->
+                        when (state) {
+                            is TimeTableUiState.Loaded -> state.copy(
                                 dialogState = TimeTableUiState.DialogState.None,
                             )
+
+                            else -> state
                         }
                     }
                 }
@@ -149,8 +159,11 @@ class TimeTableViewModelNew @Inject constructor(
     }
 
     fun dismissDialog() {
-        (_uiState.value as? TimeTableUiState.Loaded)?.let { state ->
-            _uiState.update { state.copy(dialogState = TimeTableUiState.DialogState.None) }
+        _uiState.update { state ->
+            when (state) {
+                is TimeTableUiState.Loaded -> state.copy(dialogState = TimeTableUiState.DialogState.None)
+                else -> state
+            }
         }
     }
 

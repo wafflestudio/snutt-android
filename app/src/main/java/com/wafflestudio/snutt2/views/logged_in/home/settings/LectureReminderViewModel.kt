@@ -132,25 +132,22 @@ class LectureReminderViewModel @Inject constructor(
     }
 
     fun changeLectureReminderOption(lectureId: String, option: LectureWithReminderOption) {
-        val currentState = _lectureReminderUiState.value
-        _lectureReminderUiState.update { currentState ->
-            if (currentState is LectureReminderUiState.Success) {
-                currentState.copy(
-                    data = currentState.data.toMutableMap().apply {
+        val previousState = _lectureReminderUiState.value
+        _lectureReminderUiState.update { state ->
+            when (state) {
+                is LectureReminderUiState.Success -> state.copy(
+                    data = state.data.toMutableMap().apply {
                         this[lectureId] = option
                     },
                 )
-            } else {
-                currentState
+                else -> state
             }
         }
 
         viewModelScope.launch {
             _updateEvent.emit(
                 LectureReminderChangeEvent(lectureId, option) {
-                    _lectureReminderUiState.update { _ ->
-                        currentState
-                    }
+                    _lectureReminderUiState.update { previousState }
                 },
             )
         }

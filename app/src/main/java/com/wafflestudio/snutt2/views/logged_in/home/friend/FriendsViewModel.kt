@@ -67,53 +67,59 @@ class FriendsViewModel @Inject constructor(
                                                 selectedCourseBook.semester.toInt(),
                                             )
                                                 .onSuccess { table ->
-                                                    _uiState.value = FriendsUiState.Loaded(
-                                                        activeFriends = activeFriends,
-                                                        requestedFriends = requestedFriends,
-                                                        selectedFriend = selectedFriend,
-                                                        selectedFriendCourseBooks = courseBooks,
-                                                        selectedCourseBook = selectedCourseBook,
-                                                        selectedFriendTable = table,
-                                                    )
+                                                    _uiState.update {
+                                                        FriendsUiState.Loaded(
+                                                            activeFriends = activeFriends,
+                                                            requestedFriends = requestedFriends,
+                                                            selectedFriend = selectedFriend,
+                                                            selectedFriendCourseBooks = courseBooks,
+                                                            selectedCourseBook = selectedCourseBook,
+                                                            selectedFriendTable = table,
+                                                        )
+                                                    }
                                                 }
                                                 .onFailure { error ->
-                                                    _uiState.value = FriendsUiState.Error
+                                                    _uiState.update { FriendsUiState.Error }
                                                     handleFriendError(error)
                                                 }
                                         } else {
-                                            _uiState.value = FriendsUiState.Loaded(
-                                                activeFriends = activeFriends,
-                                                requestedFriends = requestedFriends,
-                                                selectedFriend = selectedFriend,
-                                                selectedFriendCourseBooks = courseBooks,
-                                                selectedCourseBook = null,
-                                                selectedFriendTable = null,
-                                            )
+                                            _uiState.update {
+                                                FriendsUiState.Loaded(
+                                                    activeFriends = activeFriends,
+                                                    requestedFriends = requestedFriends,
+                                                    selectedFriend = selectedFriend,
+                                                    selectedFriendCourseBooks = courseBooks,
+                                                    selectedCourseBook = null,
+                                                    selectedFriendTable = null,
+                                                )
+                                            }
                                         }
                                     }
                                     .onFailure { error ->
-                                        _uiState.value = FriendsUiState.Error
+                                        _uiState.update { FriendsUiState.Error }
                                         handleFriendError(error)
                                     }
                             } else {
-                                _uiState.value = FriendsUiState.Loaded(
-                                    activeFriends = activeFriends,
-                                    requestedFriends = requestedFriends,
-                                    selectedFriend = null,
-                                    selectedFriendCourseBooks = emptyList(),
-                                    selectedCourseBook = null,
-                                    selectedFriendTable = null,
-                                )
+                                _uiState.update {
+                                    FriendsUiState.Loaded(
+                                        activeFriends = activeFriends,
+                                        requestedFriends = requestedFriends,
+                                        selectedFriend = null,
+                                        selectedFriendCourseBooks = emptyList(),
+                                        selectedCourseBook = null,
+                                        selectedFriendTable = null,
+                                    )
+                                }
                             }
                         }
                         .onFailure { error ->
-                            _uiState.value = FriendsUiState.Error
+                            _uiState.update { FriendsUiState.Error }
                             handleFriendError(error)
                         }
                 }
                 .onFailure { error ->
                     Timber.tag("aaaa").d(error.toString())
-                    _uiState.value = FriendsUiState.Error
+                    _uiState.update { FriendsUiState.Error }
                     handleFriendError(error)
                 }
         }
@@ -131,16 +137,15 @@ class FriendsViewModel @Inject constructor(
                             selectedCourseBook.semester.toInt(),
                         )
                             .onSuccess { table ->
-                                _uiState.update { currentState ->
-                                    if (currentState is FriendsUiState.Loaded) {
-                                        currentState.copy(
+                                _uiState.update { state ->
+                                    when (state) {
+                                        is FriendsUiState.Loaded -> state.copy(
                                             selectedFriend = friend,
                                             selectedFriendCourseBooks = courseBooks,
                                             selectedCourseBook = selectedCourseBook,
                                             selectedFriendTable = table,
                                         )
-                                    } else {
-                                        currentState
+                                        else -> state
                                     }
                                 }
                             }
@@ -148,16 +153,15 @@ class FriendsViewModel @Inject constructor(
                                 handleFriendError(error)
                             }
                     } else {
-                        _uiState.update { currentState ->
-                            if (currentState is FriendsUiState.Loaded) {
-                                currentState.copy(
+                        _uiState.update { state ->
+                            when (state) {
+                                is FriendsUiState.Loaded -> state.copy(
                                     selectedFriend = friend,
                                     selectedFriendCourseBooks = courseBooks,
                                     selectedCourseBook = null,
                                     selectedFriendTable = null,
                                 )
-                            } else {
-                                currentState
+                                else -> state
                             }
                         }
                     }
@@ -180,13 +184,12 @@ class FriendsViewModel @Inject constructor(
             )
                 .onSuccess { table ->
                     _uiState.update { state ->
-                        if (state is FriendsUiState.Loaded) {
-                            state.copy(
+                        when (state) {
+                            is FriendsUiState.Loaded -> state.copy(
                                 selectedCourseBook = courseBook,
                                 selectedFriendTable = table,
                             )
-                        } else {
-                            state
+                            else -> state
                         }
                     }
                 }
@@ -210,10 +213,9 @@ class FriendsViewModel @Inject constructor(
 
     fun setDrawerTab(tab: FriendDrawerTab) {
         _uiState.update { state ->
-            if (state is FriendsUiState.Loaded) {
-                state.copy(drawerTab = tab)
-            } else {
-                state
+            when (state) {
+                is FriendsUiState.Loaded -> state.copy(drawerTab = tab)
+                else -> state
             }
         }
     }
@@ -221,10 +223,9 @@ class FriendsViewModel @Inject constructor(
     fun openRequestFriendBottomSheet() {
         viewModelScope.launch {
             _uiState.update { state ->
-                if (state is FriendsUiState.Loaded) {
-                    state.copy(bottomSheetContent = FriendBottomSheetContent.RequestMethodList)
-                } else {
-                    state
+                when (state) {
+                    is FriendsUiState.Loaded -> state.copy(bottomSheetContent = FriendBottomSheetContent.RequestMethodList)
+                    else -> state
                 }
             }
             _uiEvent.emit(FriendUiEvent.OpenBottomSheet)
@@ -234,10 +235,9 @@ class FriendsViewModel @Inject constructor(
     fun closeBottomSheet() {
         viewModelScope.launch {
             _uiState.update { state ->
-                if (state is FriendsUiState.Loaded) {
-                    state.copy(bottomSheetContent = FriendBottomSheetContent.Hidden)
-                } else {
-                    state
+                when (state) {
+                    is FriendsUiState.Loaded -> state.copy(bottomSheetContent = FriendBottomSheetContent.Hidden)
+                    else -> state
                 }
             }
             _uiEvent.emit(FriendUiEvent.CloseBottomSheet)
@@ -247,10 +247,9 @@ class FriendsViewModel @Inject constructor(
     fun showRequestWithNickname() {
         viewModelScope.launch {
             _uiState.update { state ->
-                if (state is FriendsUiState.Loaded) {
-                    state.copy(bottomSheetContent = FriendBottomSheetContent.RequestWithNickname())
-                } else {
-                    state
+                when (state) {
+                    is FriendsUiState.Loaded -> state.copy(bottomSheetContent = FriendBottomSheetContent.RequestWithNickname())
+                    else -> state
                 }
             }
             _uiEvent.emit(FriendUiEvent.OpenBottomSheet)
@@ -309,10 +308,9 @@ class FriendsViewModel @Inject constructor(
     fun openFriendDetailBottomSheet(friend: Friend) {
         viewModelScope.launch {
             _uiState.update { state ->
-                if (state is FriendsUiState.Loaded) {
-                    state.copy(bottomSheetContent = FriendBottomSheetContent.FriendDetail(friend))
-                } else {
-                    state
+                when (state) {
+                    is FriendsUiState.Loaded -> state.copy(bottomSheetContent = FriendBottomSheetContent.FriendDetail(friend))
+                    else -> state
                 }
             }
             _uiEvent.emit(FriendUiEvent.OpenBottomSheet)
@@ -322,15 +320,14 @@ class FriendsViewModel @Inject constructor(
     fun openEditDisplayNameBottomSheet(friend: Friend) {
         viewModelScope.launch {
             _uiState.update { state ->
-                if (state is FriendsUiState.Loaded) {
-                    state.copy(
+                when (state) {
+                    is FriendsUiState.Loaded -> state.copy(
                         bottomSheetContent = FriendBottomSheetContent.EditDisplayName(
                             friend,
                             friend.displayName ?: "",
                         ),
                     )
-                } else {
-                    state
+                    else -> state
                 }
             }
             _uiEvent.emit(FriendUiEvent.OpenBottomSheet)
@@ -352,10 +349,9 @@ class FriendsViewModel @Inject constructor(
 
     fun dismissDialog() {
         _uiState.update { state ->
-            if (state is FriendsUiState.Loaded) {
-                state.copy(dialogState = FriendDialogState.None)
-            } else {
-                state
+            when (state) {
+                is FriendsUiState.Loaded -> state.copy(dialogState = FriendDialogState.None)
+                else -> state
             }
         }
     }
@@ -363,13 +359,12 @@ class FriendsViewModel @Inject constructor(
     fun showDeleteFriendDialog(friend: Friend) {
         viewModelScope.launch {
             _uiState.update { state ->
-                if (state is FriendsUiState.Loaded) {
-                    state.copy(
+                when (state) {
+                    is FriendsUiState.Loaded -> state.copy(
                         dialogState = FriendDialogState.DeleteFriend(friend),
                         bottomSheetContent = FriendBottomSheetContent.Hidden,
                     )
-                } else {
-                    state
+                    else -> state
                 }
             }
             _uiEvent.emit(FriendUiEvent.CloseBottomSheet)
@@ -378,20 +373,18 @@ class FriendsViewModel @Inject constructor(
 
     fun showDeclineFriendDialog(friend: Friend) {
         _uiState.update { state ->
-            if (state is FriendsUiState.Loaded) {
-                state.copy(dialogState = FriendDialogState.DeclineFriend(friend))
-            } else {
-                state
+            when (state) {
+                is FriendsUiState.Loaded -> state.copy(dialogState = FriendDialogState.DeclineFriend(friend))
+                else -> state
             }
         }
     }
 
     fun showGuideDialog() {
         _uiState.update { state ->
-            if (state is FriendsUiState.Loaded) {
-                state.copy(dialogState = FriendDialogState.ShowGuide)
-            } else {
-                state
+            when (state) {
+                is FriendsUiState.Loaded -> state.copy(dialogState = FriendDialogState.ShowGuide)
+                else -> state
             }
         }
     }

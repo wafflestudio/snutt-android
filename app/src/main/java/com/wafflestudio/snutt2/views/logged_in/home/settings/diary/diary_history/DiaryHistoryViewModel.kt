@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
@@ -40,7 +41,7 @@ class DiaryHistoryViewModel @Inject constructor(
             diaryRepository.getMyDiarySubmissions()
                 .onSuccess { courseBookDiarySubmissionsList ->
                     if (courseBookDiarySubmissionsList.isEmpty()) {
-                        _uiState.value = DiaryHistoryUiState.Empty
+                        _uiState.update { DiaryHistoryUiState.Empty }
                         return@onSuccess
                     }
 
@@ -52,16 +53,18 @@ class DiaryHistoryViewModel @Inject constructor(
                         .map { it.courseBook }
                         .sorted()
 
-                    _uiState.value = DiaryHistoryUiState.Success(
-                        courseBooks = courseBooks,
-                        selectedCourseBook = courseBooks[0],
-                        diarySummariesByCourseBook = diarySummariesByCourseBook,
-                    )
+                    _uiState.update {
+                        DiaryHistoryUiState.Success(
+                            courseBooks = courseBooks,
+                            selectedCourseBook = courseBooks[0],
+                            diarySummariesByCourseBook = diarySummariesByCourseBook,
+                        )
+                    }
                 }
                 .onFailure { error ->
                     val displayMessage = displayMessageResolver.getDisplayMessage(error)
                     _uiEvent.emit(DiaryHistoryUiEvent.ShowToast(displayMessage))
-                    _uiState.value = DiaryHistoryUiState.Error
+                    _uiState.update { DiaryHistoryUiState.Error }
                 }
         }
     }
@@ -87,54 +90,59 @@ class DiaryHistoryViewModel @Inject constructor(
     }
 
     fun selectCourseBook(coursebookIndex: Int) {
-        val state = _uiState.value
-        if (state !is DiaryHistoryUiState.Success) {
-            return
+        _uiState.update { state ->
+            when (state) {
+                is DiaryHistoryUiState.Success -> state.copy(
+                    selectedCourseBook = state.courseBooks[coursebookIndex],
+                )
+                else -> state
+            }
         }
-
-        _uiState.value = state.copy(
-            selectedCourseBook = state.courseBooks[coursebookIndex],
-        )
     }
 
     fun toggleDateExpand(date: LocalDate) {
-        val state = _uiState.value
-        if (state !is DiaryHistoryUiState.Success) {
-            return
+        _uiState.update { state ->
+            when (state) {
+                is DiaryHistoryUiState.Success -> {
+                    val selectedCourseBook = state.selectedCourseBook
+                    val currentDiarySummariesByDate = state.diarySummariesByCourseBook[selectedCourseBook]
+                        ?: return@update state
+
+                    val updatedDiarySummariesByDate = currentDiarySummariesByDate + (date to currentDiarySummariesByDate[date]!!.toggle())
+
+                    state.copy(
+                        diarySummariesByCourseBook = state.diarySummariesByCourseBook + (selectedCourseBook to updatedDiarySummariesByDate),
+                    )
+                }
+                else -> state
+            }
         }
-
-        val selectedCourseBook = state.selectedCourseBook
-        val currentDiarySummariesByDate = state.diarySummariesByCourseBook[selectedCourseBook] ?: return
-
-        val updatedDiarySummariesByDate = currentDiarySummariesByDate + (date to currentDiarySummariesByDate[date]!!.toggle())
-
-        _uiState.value = state.copy(
-            diarySummariesByCourseBook = state.diarySummariesByCourseBook + (selectedCourseBook to updatedDiarySummariesByDate),
-        )
     }
 
     fun deleteDiary(diaryId: String) {
         viewModelScope.launch {
             diaryRepository.removeDiarySubmission(diaryId)
                 .onSuccess {
-                    // UI 상태에서 삭제된 일기 제거
-                    val state = _uiState.value
-                    if (state !is DiaryHistoryUiState.Success) return@onSuccess
+                    _uiState.update { state ->
+                        when (state) {
+                            is DiaryHistoryUiState.Success -> {
+                                val updatedDiarySummariesByCourseBook = state.diarySummariesByCourseBook
+                                    .mapValues { (_, diarySummariesByDate) ->
+                                        diarySummariesByDate
+                                            .mapValues { (_, selectableDiaryList) ->
+                                                val filteredList = selectableDiaryList.item.filter { it.id != diaryId }
+                                                selectableDiaryList.copy(item = filteredList)
+                                            }
+                                            .filterValues { it.item.isNotEmpty() }
+                                    }
 
-                    // 모든 CourseBook의 데이터에서 해당 일기 제거
-                    val updatedDiarySummariesByCourseBook = state.diarySummariesByCourseBook
-                        .mapValues { (_, diarySummariesByDate) ->
-                            diarySummariesByDate
-                                .mapValues { (_, selectableDiaryList) ->
-                                    val filteredList = selectableDiaryList.item.filter { it.id != diaryId }
-                                    selectableDiaryList.copy(item = filteredList)
-                                }
-                                .filterValues { it.item.isNotEmpty() } // 빈 날짜는 제거
+                                state.copy(
+                                    diarySummariesByCourseBook = updatedDiarySummariesByCourseBook,
+                                )
+                            }
+                            else -> state
                         }
-
-                    _uiState.value = state.copy(
-                        diarySummariesByCourseBook = updatedDiarySummariesByCourseBook,
-                    )
+                    }
                 }
                 .onFailure { error ->
                     val displayMessage = displayMessageResolver.getDisplayMessage(error)

@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -51,9 +52,9 @@ class VacancyViewModelNew @Inject constructor(
     // NOTE: loadVacancyLectures + refresh 효과 상태 관기
     fun reloadVacancyLectures() {
         viewModelScope.launch {
-            _vacancyUiState.value = _vacancyUiState.value.copyWithRefreshing(true)
+            _vacancyUiState.update { it.copyWithRefreshing(true) }
             loadVacancyLectures()
-            _vacancyUiState.value = _vacancyUiState.value.copyWithRefreshing(false)
+            _vacancyUiState.update { it.copyWithRefreshing(false) }
         }
     }
 
@@ -82,38 +83,28 @@ class VacancyViewModelNew @Inject constructor(
                 }
             }
             .onFailure { error ->
-                _vacancyUiState.value = VacancyUiState.Error
+                _vacancyUiState.update { VacancyUiState.Error }
                 handleVacancyError(error)
             }
     }
 
     fun showIntroDialog() {
-        val state = _vacancyUiState.value
-        when (state) {
-            is VacancyUiState.Success -> {
-                _vacancyUiState.value = state.copy(showIntroDialog = true)
+        _vacancyUiState.update { state ->
+            when (state) {
+                is VacancyUiState.Success -> state.copy(showIntroDialog = true)
+                is VacancyUiState.Empty -> state.copy(showIntroDialog = true)
+                else -> state
             }
-
-            is VacancyUiState.Empty -> {
-                _vacancyUiState.value = state.copy(showIntroDialog = true)
-            }
-
-            else -> {}
         }
     }
 
     fun hideIntroDialog() {
-        val state = _vacancyUiState.value
-        when (state) {
-            is VacancyUiState.Success -> {
-                _vacancyUiState.value = state.copy(showIntroDialog = false)
+        _vacancyUiState.update { state ->
+            when (state) {
+                is VacancyUiState.Success -> state.copy(showIntroDialog = false)
+                is VacancyUiState.Empty -> state.copy(showIntroDialog = false)
+                else -> state
             }
-
-            is VacancyUiState.Empty -> {
-                _vacancyUiState.value = state.copy(showIntroDialog = false)
-            }
-
-            else -> {}
         }
         viewModelScope.launch {
             vacancyRepository.setVacancyVisited()
@@ -122,33 +113,30 @@ class VacancyViewModelNew @Inject constructor(
     }
 
     fun toggleEditMode() {
-        val state = _vacancyUiState.value
-        when (state) {
-            is VacancyUiState.Success -> {
-                _vacancyUiState.value = state.copy(
+        _vacancyUiState.update { state ->
+            when (state) {
+                is VacancyUiState.Success -> state.copy(
                     isEditMode = state.isEditMode.not(),
                     vacancyLecturesWithSelection = state.vacancyLecturesWithSelection.unselectAll(),
                 )
+                else -> state
             }
-
-            else -> {}
         }
     }
 
     fun toggleLectureSelected(lectureId: String) {
-        val state = _vacancyUiState.value
-        when (state) {
-            is VacancyUiState.Success -> {
-                val newVacancyLecturesState =
-                    state.vacancyLecturesWithSelection.toggleWhen { it.id == lectureId }
-
-                _vacancyUiState.value = state.copy(
-                    vacancyLecturesWithSelection = newVacancyLecturesState,
-                    deleteButtonEnabled = newVacancyLecturesState.anySelected(),
-                )
+        _vacancyUiState.update { state ->
+            when (state) {
+                is VacancyUiState.Success -> {
+                    val newVacancyLecturesState =
+                        state.vacancyLecturesWithSelection.toggleWhen { it.id == lectureId }
+                    state.copy(
+                        vacancyLecturesWithSelection = newVacancyLecturesState,
+                        deleteButtonEnabled = newVacancyLecturesState.anySelected(),
+                    )
+                }
+                else -> state
             }
-
-            else -> {}
         }
     }
 

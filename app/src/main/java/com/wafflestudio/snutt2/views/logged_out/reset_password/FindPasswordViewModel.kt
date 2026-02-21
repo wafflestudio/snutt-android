@@ -6,6 +6,7 @@ import com.wafflestudio.snutt2.data.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,17 +41,17 @@ class FindPasswordViewModel @Inject constructor(
             is UIState.CheckId -> {}
             is UIState.EnterFullEmail -> {
                 val savedUserId = savedStateHandle["userId"] ?: ""
-                _uiState.value = UIState.CheckId(savedUserId)
+                _uiState.update { UIState.CheckId(savedUserId) }
             }
             is UIState.VerifyCode -> {
                 val savedUserId = savedStateHandle["userId"] ?: ""
                 val savedMaskedEmail = savedStateHandle["maskedEmail"] ?: ""
                 val savedFullEmail = savedStateHandle["fullEmail"] ?: ""
-                _uiState.value = UIState.EnterFullEmail(savedUserId, savedMaskedEmail, savedFullEmail)
+                _uiState.update { UIState.EnterFullEmail(savedUserId, savedMaskedEmail, savedFullEmail) }
             }
             is UIState.EnterNewPassword -> {
                 val savedUserId = savedStateHandle["userId"] ?: ""
-                _uiState.value = UIState.CheckId(savedUserId)
+                _uiState.update { UIState.CheckId(savedUserId) }
             }
         }
     }
@@ -60,20 +61,20 @@ class FindPasswordViewModel @Inject constructor(
         val maskedEmail = userRepository.checkEmailById(userId)
         savedStateHandle["maskedEmail"] = maskedEmail
         val savedFullEmail = savedStateHandle["fullEmail"] ?: ""
-        _uiState.value = UIState.EnterFullEmail(userId, maskedEmail, savedFullEmail)
+        _uiState.update { UIState.EnterFullEmail(userId, maskedEmail, savedFullEmail) }
     }
 
     suspend fun sendFullEmailAndRequestCode(fullEmail: String) {
         savedStateHandle["fullEmail"] = fullEmail
         userRepository.sendPwResetCodeToEmail(fullEmail)
-        _uiState.value = UIState.VerifyCode(fullEmail)
+        _uiState.update { UIState.VerifyCode(fullEmail) }
     }
 
     suspend fun verifyCode(code: String) {
         val savedUserId = savedStateHandle["userId"] ?: ""
         userRepository.verifyPwResetCode(savedUserId, code)
         savedStateHandle["code"] = code
-        _uiState.value = UIState.EnterNewPassword
+        _uiState.update { UIState.EnterNewPassword }
     }
 
     suspend fun resetPassword(password: String) {

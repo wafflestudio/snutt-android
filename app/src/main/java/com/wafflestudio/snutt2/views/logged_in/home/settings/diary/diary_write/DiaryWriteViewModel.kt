@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -49,16 +50,18 @@ class DiaryWriteViewModel @Inject constructor(
             // GET /v1/diary/dailyClassTypes 호출
             diaryRepository.getDailyClassTypes()
                 .onSuccess { dailyClassTypes ->
-                    _uiState.value = DiaryWriteUiState.Write(
-                        lectureName = courseTitle ?: "",
-                        dailyClassTypes = dailyClassTypes.map { Selectable(it, false) },
-                        activitySelectingState = ActivitySelectionState.InitialSelecting,
-                        questions = emptyList(),
-                    )
+                    _uiState.update {
+                        DiaryWriteUiState.Write(
+                            lectureName = courseTitle ?: "",
+                            dailyClassTypes = dailyClassTypes.map { Selectable(it, false) },
+                            activitySelectingState = ActivitySelectionState.InitialSelecting,
+                            questions = emptyList(),
+                        )
+                    }
                 }
                 .onFailure { error ->
                     handleDiaryWriteError(error)
-                    _uiState.value = DiaryWriteUiState.Error
+                    _uiState.update { DiaryWriteUiState.Error }
                 }
         }
     }
@@ -69,50 +72,52 @@ class DiaryWriteViewModel @Inject constructor(
         _uiEvent.asSharedFlow()
 
     fun toggleActivitySelection(index: Int) {
-        // 로컬 변수 둬도 뭐 큰 문제 없겠지?
-        val state = _uiState.value
-        if (state !is DiaryWriteUiState.Write) return
-
-        _uiState.value = state.copyWith(
-            dailyClassTypes = state.dailyClassTypes.toggleIndex(index),
-            activitySelectingState = when (state.activitySelectingState) {
-                ActivitySelectionState.InitialSelecting -> ActivitySelectionState.InitialSelecting
-                ActivitySelectionState.Complete -> ActivitySelectionState.ReSelecting
-                ActivitySelectionState.ReSelecting -> ActivitySelectionState.ReSelecting
-            },
-        )
+        _uiState.update { state ->
+            when (state) {
+                is DiaryWriteUiState.Write -> state.copyWith(
+                    dailyClassTypes = state.dailyClassTypes.toggleIndex(index),
+                    activitySelectingState = when (state.activitySelectingState) {
+                        ActivitySelectionState.InitialSelecting -> ActivitySelectionState.InitialSelecting
+                        ActivitySelectionState.Complete -> ActivitySelectionState.ReSelecting
+                        ActivitySelectionState.ReSelecting -> ActivitySelectionState.ReSelecting
+                    },
+                )
+                else -> state
+            }
+        }
     }
 
     fun setSelectingActivitiesState(newState: ActivitySelectionState) {
-        // 이거 안 해줬을 때 recompose skip 되는지 확인하기
-        // @Stable 같은 거 해줘야 할지도...
-        if ((_uiState.value as? DiaryWriteUiState.Write)?.activitySelectingState == newState) {
-            return
+        _uiState.update { state ->
+            when (state) {
+                is DiaryWriteUiState.Write -> {
+                    if (state.activitySelectingState == newState) state
+                    else state.copyWith(activitySelectingState = newState)
+                }
+                else -> state
+            }
         }
-
-        // 로컬 변수 안 두면 이렇게 해야 하는데...
-        _uiState.value =
-            (_uiState.value as? DiaryWriteUiState.Write)?.copyWith(activitySelectingState = newState)
-                ?: return
     }
 
     fun toggleAnswer(questionIndex: Int, answerIndex: Int) {
-        val state = _uiState.value
-        if (state !is DiaryWriteUiState.Write) return
-
-        _uiState.value = state.copyWith(
-            questions = state.questions.mapIndexed { index, question ->
-                if (index == questionIndex) {
-                    question.copy(
-                        selectableAnswers = question.selectableAnswers
-                            .toggleIndex(answerIndex)
-                            .unselectExcept(answerIndex),
-                    )
-                } else {
-                    question
-                }
-            },
-        )
+        _uiState.update { state ->
+            when (state) {
+                is DiaryWriteUiState.Write -> state.copyWith(
+                    questions = state.questions.mapIndexed { index, question ->
+                        if (index == questionIndex) {
+                            question.copy(
+                                selectableAnswers = question.selectableAnswers
+                                    .toggleIndex(answerIndex)
+                                    .unselectExcept(answerIndex),
+                            )
+                        } else {
+                            question
+                        }
+                    },
+                )
+                else -> state
+            }
+        }
     }
 
     // FIXME: comment 한 글자 한 글자 바뀌는 것도 전부 상태 hoist 하기 vs 로컬 상태로 뒀다가 한번에 제출하기
@@ -149,7 +154,7 @@ class DiaryWriteViewModel @Inject constructor(
                     } else {
                         DiaryNextAction.WriteReview
                     }
-                    _uiState.value = DiaryWriteUiState.Complete(nextAction)
+                    _uiState.update { DiaryWriteUiState.Complete(nextAction) }
                 }
                 .onFailure { error ->
                     handleDiaryWriteError(error)
@@ -177,10 +182,15 @@ class DiaryWriteViewModel @Inject constructor(
                     .onSuccess { questionnaireData ->
                         nextLectureId = questionnaireData.nextLectureId
                         nextLectureTitle = questionnaireData.nextLectureTitle
-                        _uiState.value = state.copyWith(
-                            activitySelectingState = ActivitySelectionState.Complete,
-                            questions = questionnaireData.questions,
-                        )
+                        _uiState.update { current ->
+                            when (current) {
+                                is DiaryWriteUiState.Write -> current.copyWith(
+                                    activitySelectingState = ActivitySelectionState.Complete,
+                                    questions = questionnaireData.questions,
+                                )
+                                else -> current
+                            }
+                        }
                     }
                     .onFailure { error ->
                         handleDiaryWriteError(error)
@@ -205,16 +215,18 @@ class DiaryWriteViewModel @Inject constructor(
             // GET /v1/diary/dailyClassTypes 호출
             diaryRepository.getDailyClassTypes()
                 .onSuccess { dailyClassTypes ->
-                    _uiState.value = DiaryWriteUiState.Write(
-                        lectureName = courseTitle,
-                        dailyClassTypes = dailyClassTypes.map { Selectable(it, false) },
-                        activitySelectingState = ActivitySelectionState.InitialSelecting,
-                        questions = emptyList(),
-                    )
+                    _uiState.update {
+                        DiaryWriteUiState.Write(
+                            lectureName = courseTitle,
+                            dailyClassTypes = dailyClassTypes.map { Selectable(it, false) },
+                            activitySelectingState = ActivitySelectionState.InitialSelecting,
+                            questions = emptyList(),
+                        )
+                    }
                 }
                 .onFailure { error ->
                     handleDiaryWriteError(error)
-                    _uiState.value = DiaryWriteUiState.Error
+                    _uiState.update { DiaryWriteUiState.Error }
                 }
         }
     }
