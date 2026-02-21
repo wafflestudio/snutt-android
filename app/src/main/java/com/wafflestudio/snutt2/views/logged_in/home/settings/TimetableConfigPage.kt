@@ -40,7 +40,8 @@ import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.LocalTableState
+import com.wafflestudio.snutt2.views.LocalCompactState
+import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 import kotlinx.coroutines.launch
@@ -224,9 +225,16 @@ fun TimetableConfigScreen(
                     )
                     .align(Alignment.CenterHorizontally),
             ) {
-                CompositionLocalProvider(LocalTableState provides uiState.tableState) {
-                    TimeTable(selectedLecture = null, touchEnabled = false)
-                }
+                TimeTable(
+                    table = uiState.tableState.table,
+                    trimParam = uiState.tableState.trimParam,
+                    tableLectureCustomOptions = uiState.tableState.tableLectureCustomOptions,
+                    previewTheme = uiState.tableState.previewTheme,
+                    compactMode = LocalCompactState.current,
+                    navigator = LocalNavController.current,
+                    selectedLecture = null,
+                    touchEnabled = false,
+                )
             }
             Margin(height = 25.dp)
         }

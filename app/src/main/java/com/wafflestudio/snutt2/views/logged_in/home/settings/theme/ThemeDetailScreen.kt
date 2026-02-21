@@ -69,7 +69,8 @@ import com.wafflestudio.snutt2.views.LocalApiOnError
 import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalModalState
 import com.wafflestudio.snutt2.views.LocalNavBottomSheetState
-import com.wafflestudio.snutt2.views.LocalTableState
+import com.wafflestudio.snutt2.views.LocalCompactState
+import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingColumn
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
@@ -267,9 +268,16 @@ fun ThemeDetailScreen(
                                 )
                                 .align(Alignment.CenterHorizontally),
                         ) {
-                            CompositionLocalProvider(LocalTableState provides themeDetailUiState.tableState) {
-                                TimeTable(selectedLecture = null, touchEnabled = false)
-                            }
+                            TimeTable(
+                                table = themeDetailUiState.tableState.table,
+                                trimParam = themeDetailUiState.tableState.trimParam,
+                                tableLectureCustomOptions = themeDetailUiState.tableState.tableLectureCustomOptions,
+                                previewTheme = themeDetailUiState.tableState.previewTheme,
+                                compactMode = LocalCompactState.current,
+                                navigator = LocalNavController.current,
+                                selectedLecture = null,
+                                touchEnabled = false,
+                            )
                         }
                     }
                     Spacer(modifier = Modifier.height(24.dp))

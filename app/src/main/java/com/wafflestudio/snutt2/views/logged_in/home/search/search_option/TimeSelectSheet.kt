@@ -20,7 +20,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
@@ -51,7 +50,6 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.ui.onSurfaceVariant
-import com.wafflestudio.snutt2.views.LocalCompactState
 import com.wafflestudio.snutt2.views.LocalTableState
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.DrawLectures
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.DrawTableGrid
@@ -220,19 +218,18 @@ fun TimeTableDragSheet(
             draggedTimeBlock[dayIndex][timeIndex].value = false
         },
     )
-    CompositionLocalProvider(
-        LocalCompactState provides true,
-    ) {
-        DrawLectures(
-            fittedTrimParam = TableTrimParam.SearchOption,
-            lectures = LocalTableState.current.table.lectureList.map {
-                it.copy(
-                    colorIndex = 0L,
-                    color = SearchOptionSheetConstants.TimeBlockColor,
-                )
-            },
-        )
-    }
+    DrawLectures(
+        fittedTrimParam = TableTrimParam.SearchOption,
+        lectures = LocalTableState.current.table.lectureList.map {
+            it.copy(
+                colorIndex = 0L,
+                color = SearchOptionSheetConstants.TimeBlockColor,
+            )
+        },
+        themeCode = LocalTableState.current.table.theme,
+        compactMode = true,
+        tableLectureCustomOptions = LocalTableState.current.tableLectureCustomOptions,
+    )
 }
 
 @Composable

@@ -3,7 +3,10 @@ package com.wafflestudio.snutt2.lib
 import android.content.Context
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domainmodel.CourseBook
+import com.wafflestudio.snutt2.domainmodel.Lecture
+import com.wafflestudio.snutt2.domainmodel.LectureSession
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
+import java.time.LocalTime
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
@@ -136,6 +139,44 @@ fun ClassTimeDto.trimByTrimParam(tableTrimParam: TableTrimParam): ClassTimeDto? 
         startMinute = max(tableTrimParam.hourFrom * 60, this.startMinute),
         endMinute = min(this.endMinute, (tableTrimParam.hourTo + 1) * 60),
     )
+}
+
+val LectureSession.startTimeInFloat: Float
+    get() = startTime.hour + startTime.minute / 60f
+
+val LectureSession.endTimeInFloat: Float
+    get() = endTime.hour + endTime.minute / 60f
+
+fun LectureSession.trimByTrimParam(tableTrimParam: TableTrimParam): LectureSession? {
+    val dayIdx = day.ordinal
+    if (tableTrimParam.dayOfWeekFrom > dayIdx || dayIdx > tableTrimParam.dayOfWeekTo) return null
+    if (tableTrimParam.hourFrom >= endTimeInFloat || tableTrimParam.hourTo + 1 <= startTimeInFloat) return null
+
+    val clampedStartMinutes = max(tableTrimParam.hourFrom * 60, startTime.hour * 60 + startTime.minute)
+    val clampedEndMinutes = min(endTime.hour * 60 + endTime.minute, (tableTrimParam.hourTo + 1) * 60)
+
+    return this.copy(
+        startTime = LocalTime.of(clampedStartMinutes / 60, clampedStartMinutes % 60),
+        endTime = LocalTime.of(clampedEndMinutes / 60, clampedEndMinutes % 60),
+    )
+}
+
+@JvmName("getFittingTrimParamForLecture")
+fun List<Lecture>.getFittingTrimParam(tableTrimParam: TableTrimParam): TableTrimParam =
+    TableTrimParam(
+        dayOfWeekFrom = (flatMap { it.lectureSessions.map { it.day.ordinal } } + tableTrimParam.dayOfWeekFrom).minOf { it },
+        dayOfWeekTo = (flatMap { it.lectureSessions.map { it.day.ordinal } } + tableTrimParam.dayOfWeekTo).maxOf { it },
+        hourFrom = (flatMap { it.lectureSessions.map { floor(it.startTimeInFloat).toInt() } } + tableTrimParam.hourFrom).minOf { it },
+        hourTo = (flatMap { it.lectureSessions.map { ceil(it.endTimeInFloat).toInt() - 1 } } + tableTrimParam.hourTo).maxOf { it },
+        forceFitLectures = true,
+    )
+
+fun Lecture.contains(queryDay: Int, queryTime: Float): Boolean {
+    for (session in this.lectureSessions) {
+        if (queryDay != session.day.ordinal) continue
+        if (queryTime in session.startTimeInFloat..session.endTimeInFloat) return true
+    }
+    return false
 }
 
 fun roundToCompact(f: Float): Float {

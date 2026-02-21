@@ -39,6 +39,7 @@ import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
+import com.wafflestudio.snutt2.views.LocalCompactState
 import com.wafflestudio.snutt2.views.LocalDrawerState
 import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.LocalRemoteConfig
@@ -137,7 +138,15 @@ fun TimetablePage(uncheckedNotification: Boolean) {
                 .weight(1f)
                 .fillMaxWidth(),
         ) {
-            TimeTable(selectedLecture = null)
+            TimeTable(
+                table = LocalTableState.current.table,
+                trimParam = LocalTableState.current.trimParam,
+                tableLectureCustomOptions = LocalTableState.current.tableLectureCustomOptions,
+                previewTheme = LocalTableState.current.previewTheme,
+                compactMode = LocalCompactState.current,
+                navigator = LocalNavController.current,
+                selectedLecture = null,
+            )
         }
     }
 }

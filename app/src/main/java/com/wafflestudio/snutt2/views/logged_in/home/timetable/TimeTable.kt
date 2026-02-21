@@ -34,24 +34,25 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.CustomTheme
+import com.wafflestudio.snutt2.domainmodel.TableLectureCustom
+import com.wafflestudio.snutt2.domainmodel.TableTheme
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.lib.contains
 import com.wafflestudio.snutt2.lib.getFittingTrimParam
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.roundToCompact
 import com.wafflestudio.snutt2.lib.toDayString
 import com.wafflestudio.snutt2.lib.trimByTrimParam
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.isDarkMode
-import com.wafflestudio.snutt2.views.LocalCompactState
-import com.wafflestudio.snutt2.views.LocalNavController
-import com.wafflestudio.snutt2.views.LocalTableState
 import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.ModeType
@@ -60,12 +61,17 @@ import kotlin.math.min
 
 @Composable
 fun TimeTable(
+    table: TableDto,
+    trimParam: TableTrimParam,
+    tableLectureCustomOptions: TableLectureCustom,
+    previewTheme: TableTheme?,
+    compactMode: Boolean,
+    navigator: NavController,
     touchEnabled: Boolean = true,
     selectedLecture: LectureDto?,
 ) {
-    val previewTheme = LocalTableState.current.previewTheme
     val lectures =
-        LocalTableState.current.table.lectureList.let { // 테마 미리보기용 색 배치 로직. 서버와 통일되어 있다(2024-01-12)
+        table.lectureList.let { // 테마 미리보기용 색 배치 로직. 서버와 통일되어 있다(2024-01-12)
             previewTheme?.let { theme ->
                 if (previewTheme is CustomTheme) {
                     val colors = theme.getColors(isDarkMode())
@@ -86,7 +92,6 @@ fun TimeTable(
             } ?: it
         }
 
-    val trimParam = LocalTableState.current.trimParam
     val fittedTrimParam =
         if (trimParam.forceFitLectures) {
             (selectedLecture?.let { lectures + it } ?: lectures).getFittingTrimParam(
@@ -96,21 +101,26 @@ fun TimeTable(
             trimParam
         }
 
-    if (touchEnabled) DrawClickEventDetector(lectures, fittedTrimParam)
+    val themeCode = (previewTheme as? BuiltInTheme)?.code ?: table.theme
+
+    if (touchEnabled) DrawClickEventDetector(lectures, fittedTrimParam, navigator, table)
     DrawTableGrid(fittedTrimParam)
-    DrawLectures(lectures, fittedTrimParam)
-    DrawSelectedLecture(selectedLecture, fittedTrimParam)
+    DrawLectures(lectures, fittedTrimParam, themeCode, compactMode, tableLectureCustomOptions)
+    DrawSelectedLecture(selectedLecture, fittedTrimParam, compactMode, tableLectureCustomOptions)
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-private fun DrawClickEventDetector(lectures: List<LectureDto>, fittedTrimParam: TableTrimParam) {
-    val navigator = LocalNavController.current
+private fun DrawClickEventDetector(
+    lectures: List<LectureDto>,
+    fittedTrimParam: TableTrimParam,
+    navigator: NavController,
+    table: TableDto,
+) {
     val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>()
     var canvasSize by remember { mutableStateOf(Size.Zero) }
     val hourLabelWidth = TimetableCanvasObjects.hourLabelWidth
     val dayLabelHeight = TimetableCanvasObjects.dayLabelHeight
-    val table = LocalTableState.current.table
     Canvas(
         modifier = Modifier
             .fillMaxSize()
@@ -232,7 +242,13 @@ fun DrawTableGrid(fittedTrimParam: TableTrimParam) {
 }
 
 @Composable
-fun DrawLectures(lectures: List<LectureDto>, fittedTrimParam: TableTrimParam) {
+fun DrawLectures(
+    lectures: List<LectureDto>,
+    fittedTrimParam: TableTrimParam,
+    themeCode: Int,
+    compactMode: Boolean,
+    tableLectureCustomOptions: TableLectureCustom,
+) {
     lectures.forEach { lecture ->
         lecture.class_time_json
             .mapNotNull {
@@ -240,8 +256,7 @@ fun DrawLectures(lectures: List<LectureDto>, fittedTrimParam: TableTrimParam) {
             }
             .forEach { classTime ->
                 val context = LocalContext.current
-                val code = (LocalTableState.current.previewTheme as? BuiltInTheme)?.code
-                    ?: LocalTableState.current.table.theme
+                val code = themeCode
                 val isDark = isDarkMode()
 
                 DrawClassTime(
@@ -264,6 +279,8 @@ fun DrawLectures(lectures: List<LectureDto>, fittedTrimParam: TableTrimParam) {
                         )
                     },
                     isCustom = lecture.isCustom,
+                    compactMode = compactMode,
+                    tableLectureCustomOptions = tableLectureCustomOptions,
                 )
             }
     }
@@ -280,13 +297,13 @@ private fun DrawClassTime(
     bgColor: Int,
     fgColor: Int,
     isCustom: Boolean = false,
+    compactMode: Boolean,
+    tableLectureCustomOptions: TableLectureCustom,
 ) {
     val hourLabelWidth = 24.5.dp
     val dayLabelHeight = 28.5.dp
     val cellPadding = 4.dp
-    val compactMode = LocalCompactState.current
     val textMeasurer = rememberTextMeasurer()
-    val tableLectureCustomOptions = LocalTableState.current.tableLectureCustomOptions
 
     val dayOffset = classTime.day - fittedTrimParam.dayOfWeekFrom
     val hourRangeOffset =
@@ -397,7 +414,12 @@ private fun DrawClassTime(
 }
 
 @Composable
-private fun DrawSelectedLecture(selectedLecture: LectureDto?, fittedTrimParam: TableTrimParam) {
+private fun DrawSelectedLecture(
+    selectedLecture: LectureDto?,
+    fittedTrimParam: TableTrimParam,
+    compactMode: Boolean,
+    tableLectureCustomOptions: TableLectureCustom,
+) {
     selectedLecture?.run {
         for (classTime in class_time_json) {
             DrawClassTime(
@@ -408,6 +430,8 @@ private fun DrawSelectedLecture(selectedLecture: LectureDto?, fittedTrimParam: T
                 instructor,
                 -0x1f1f20,
                 -0xcccccd,
+                compactMode = compactMode,
+                tableLectureCustomOptions = tableLectureCustomOptions,
             )
         }
     }

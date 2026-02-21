@@ -72,6 +72,9 @@ import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
 import com.wafflestudio.snutt2.views.LocalApiOnError
 import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.LocalBottomSheetState
+import com.wafflestudio.snutt2.views.LocalCompactState
+import com.wafflestudio.snutt2.views.LocalNavController
+import com.wafflestudio.snutt2.views.LocalTableState
 import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.bookmark.showDialog
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
@@ -495,7 +498,16 @@ fun SearchScreen(
                 .background(SNUTTColors.White900)
                 .fillMaxWidth(),
         ) {
-            TimeTable(touchEnabled = false, selectedLecture = selectedLecture)
+            TimeTable(
+                table = LocalTableState.current.table,
+                trimParam = LocalTableState.current.trimParam,
+                tableLectureCustomOptions = LocalTableState.current.tableLectureCustomOptions,
+                previewTheme = LocalTableState.current.previewTheme,
+                compactMode = LocalCompactState.current,
+                navigator = LocalNavController.current,
+                touchEnabled = false,
+                selectedLecture = selectedLecture,
+            )
             AnimatedContent(
                 targetState = pageMode,
                 modifier = Modifier.background(SNUTTColors.Dim2),

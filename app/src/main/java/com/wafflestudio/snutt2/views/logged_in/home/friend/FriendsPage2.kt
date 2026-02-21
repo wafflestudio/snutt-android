@@ -27,7 +27,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -60,8 +59,8 @@ import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.toFormattedString
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.LocalTableState
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.TableState
+import com.wafflestudio.snutt2.views.LocalCompactState
+import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 import kotlinx.coroutines.launch
 
@@ -414,25 +413,21 @@ private fun FriendsLoadedScreen(
                     // FIXME: 리팩토링 전 컴포넌트 사용 중
                     val tableDto = friendTable.toTableDto()
 
-                    // FIXME: TableState를 CompositionLocal로 주입
-                    val tableState = TableState(
-                        table = tableDto,
-                        trimParam = TableTrimParam.Default,
-                        tableLectureCustomOptions = TableLectureCustom.Default,
-                        previewTheme = null,
-                    )
-
-                    CompositionLocalProvider(LocalTableState provides tableState) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(SNUTTColors.White900),
-                        ) {
-                            TimeTable(
-                                touchEnabled = false, // 친구 시간표는 일단 터치 불가
-                                selectedLecture = null,
-                            )
-                        }
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(SNUTTColors.White900),
+                    ) {
+                        TimeTable(
+                            table = tableDto,
+                            trimParam = TableTrimParam.Default,
+                            tableLectureCustomOptions = TableLectureCustom.Default,
+                            previewTheme = null,
+                            compactMode = LocalCompactState.current,
+                            navigator = LocalNavController.current,
+                            touchEnabled = false, // 친구 시간표는 일단 터치 불가
+                            selectedLecture = null,
+                        )
                     }
                 } else if (uiState.selectedFriend != null && uiState.selectedFriendCourseBooks.isEmpty()) {
                     // 친구는 있지만 시간표가 없는 경우
