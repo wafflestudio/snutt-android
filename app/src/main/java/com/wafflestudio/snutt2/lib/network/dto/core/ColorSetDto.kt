@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.lib.network.dto.core
 
-import android.graphics.Color
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -16,8 +15,8 @@ data class ColorSetDto(
     )
 
     val fgColor: Int?
-        get() = if (fg != null) Color.parseColor(fg) else null
+        get() = fg?.let { parseHexColor(it) }
 
     val bgColor: Int?
-        get() = if (bg != null) Color.parseColor(bg) else null
+        get() = bg?.let { parseHexColor(it) }
 }

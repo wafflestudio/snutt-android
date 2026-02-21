@@ -20,9 +20,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
-import com.wafflestudio.snutt2.domainmodel.CustomColor
 import com.wafflestudio.snutt2.domainmodel.CustomTheme
 import com.wafflestudio.snutt2.domainmodel.TableTheme
+import com.wafflestudio.snutt2.domainmodel.ThemeColor
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.isDarkMode
 import kotlin.random.Random
@@ -36,7 +36,7 @@ fun ThemeIcon(
         Row(
             modifier = modifier,
         ) {
-            val colors = theme.getColors(isDarkMode()).map { it.background }
+            val colors = theme.getColors(isDarkMode()).map { Color(it.background) }
             when (colors.size) {
                 1 -> {
                     Box(
@@ -306,9 +306,9 @@ fun ThemeIconPreview() {
                 theme = CustomTheme(
                     id = "", name = "",
                     colors = List(it) {
-                        CustomColor(
-                            foreground = SNUTTColors.White,
-                            background = Color(Random.nextInt(0x0, 0xffffff)),
+                        ThemeColor(
+                            foreground = SNUTTColors.White.value.toInt(),
+                            background = (0xFF000000.toInt() or Random.nextInt(0x0, 0xffffff)),
                         )
                     },
                     isFromMarket = false,

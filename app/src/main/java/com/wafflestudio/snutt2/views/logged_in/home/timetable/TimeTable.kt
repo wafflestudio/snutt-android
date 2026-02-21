@@ -42,6 +42,7 @@ import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.lib.contains
 import com.wafflestudio.snutt2.lib.getFittingTrimParam
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
+import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.roundToCompact
 import com.wafflestudio.snutt2.lib.toDayString
@@ -69,9 +70,10 @@ fun TimeTable(
                 if (previewTheme is CustomTheme) {
                     val colors = theme.getColors(isDarkMode())
                     it.mapIndexed { idx, lecture ->
+                        val c = colors[idx % colors.size]
                         lecture.copy(
                             colorIndex = 0,
-                            color = colors[idx % colors.size].toColorDto(),
+                            color = ColorDto(c.foreground, c.background),
                         )
                     }
                 } else {
@@ -240,6 +242,7 @@ fun DrawLectures(lectures: List<LectureDto>, fittedTrimParam: TableTrimParam) {
                 val context = LocalContext.current
                 val code = (LocalTableState.current.previewTheme as? BuiltInTheme)?.code
                     ?: LocalTableState.current.table.theme
+                val isDark = isDarkMode()
 
                 DrawClassTime(
                     fittedTrimParam = fittedTrimParam,
@@ -251,9 +254,7 @@ fun DrawLectures(lectures: List<LectureDto>, fittedTrimParam: TableTrimParam) {
                     if (lecture.colorIndex == 0L && lecture.color.bgColor != null) {
                         lecture.color.bgColor!!
                     } else {
-                        BuiltInTheme.fromCode(code).getColorByIndexComposable(
-                            lecture.colorIndex,
-                        ).toArgb()
+                        BuiltInTheme.fromCode(code).getColors(isDark)[lecture.colorIndex.toInt() - 1].background
                     },
                     fgColor = if (lecture.colorIndex == 0L && lecture.color.fgColor != null) {
                         lecture.color.fgColor!!

@@ -10,7 +10,6 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import androidx.compose.ui.graphics.toArgb
 import androidx.core.content.res.ResourcesCompat
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.SNUTTStorage
@@ -252,9 +251,8 @@ class TimetableView : View {
                 if (lecture.colorIndex == 0L && lecture.color.bgColor != null) {
                     lecture.color.bgColor!!
                 } else {
-                    BuiltInTheme.fromCode(theme).getColorByIndex(
-                        lecture.colorIndex,
-                    ).toArgb()
+                    // FIXME: 다크모드 및 유저 설정 반영하기
+                    BuiltInTheme.fromCode(theme).getColors(false)[lecture.colorIndex.toInt() - 1].background
                 },
                 if (lecture.colorIndex == 0L && lecture.color.fgColor != null) {
                     lecture.color.fgColor!!

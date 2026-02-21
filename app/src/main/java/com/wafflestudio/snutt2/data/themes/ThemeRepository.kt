@@ -2,7 +2,7 @@ package com.wafflestudio.snutt2.data.themes
 
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.CustomTheme
-import com.wafflestudio.snutt2.domainmodel.LectureColor
+import com.wafflestudio.snutt2.domainmodel.ThemeColor
 import kotlinx.coroutines.flow.StateFlow
 
 interface ThemeRepository {
@@ -15,9 +15,9 @@ interface ThemeRepository {
 
     fun getTheme(themeId: String): CustomTheme
 
-    suspend fun createTheme(name: String, colors: List<LectureColor>): CustomTheme
+    suspend fun createTheme(name: String, colors: List<ThemeColor>): CustomTheme
 
-    suspend fun updateTheme(themeId: String, name: String, colors: List<LectureColor>): CustomTheme
+    suspend fun updateTheme(themeId: String, name: String, colors: List<ThemeColor>): CustomTheme
 
     suspend fun copyTheme(themeId: String)
 

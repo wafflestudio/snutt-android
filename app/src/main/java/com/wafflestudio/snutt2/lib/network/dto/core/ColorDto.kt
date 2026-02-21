@@ -1,8 +1,8 @@
 package com.wafflestudio.snutt2.lib.network.dto.core
 
-import android.graphics.Color
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import com.wafflestudio.snutt2.domainmodel.ThemeColor
 
 @JsonClass(generateAdapter = true)
 data class ColorDto(
@@ -14,12 +14,25 @@ data class ColorDto(
         "#%06X".format(0xFFFFFF and bgColor),
     )
 
-    /* TODO: Native Canvas 에서 그릴 땐 Int 가 필요하지만, Compose Color 은 ULong 이다.
-     *       native canvas 대체할 방법 찾으면 그때 개편하기
-    */
     val fgColor: Int?
-        get() = if (fgRaw != null) Color.parseColor(fgRaw) else null
+        get() = fgRaw?.let { parseHexColor(it) }
 
     val bgColor: Int?
-        get() = if (bgRaw != null) Color.parseColor(bgRaw) else null
+        get() = bgRaw?.let { parseHexColor(it) }
+}
+
+fun parseHexColor(hex: String): Int {
+    val stripped = if (hex.startsWith("#")) hex.substring(1) else hex
+    return when (stripped.length) {
+        6 -> (0xFF000000.toInt() or stripped.toLong(16).toInt())
+        8 -> stripped.toLong(16).toInt()
+        else -> throw IllegalArgumentException("Invalid hex color: $hex")
+    }
+}
+
+fun ColorDto.toThemeColor(): ThemeColor {
+    return ThemeColor(
+        foreground = fgRaw?.let { parseHexColor(it) } ?: 0xFFFFFFFF.toInt(),
+        background = bgRaw?.let { parseHexColor(it) } ?: 0xFFFFFFFF.toInt(),
+    )
 }

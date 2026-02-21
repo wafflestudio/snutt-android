@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings.theme
 
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,9 +9,9 @@ import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
-import com.wafflestudio.snutt2.domainmodel.CustomColor
 import com.wafflestudio.snutt2.domainmodel.CustomTheme
 import com.wafflestudio.snutt2.domainmodel.EditingTheme
+import com.wafflestudio.snutt2.domainmodel.ThemeColor
 import com.wafflestudio.snutt2.lib.network.ApiOnError
 import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.views.NavigationDestination
@@ -104,7 +103,7 @@ class ThemeDetailViewModel @Inject constructor(
         if (theme.isEditable.not()) return
 
         val newColors = theme.colors.toMutableList().apply {
-            add(CustomColor.Default.toDataWithState(true))
+            add(CustomTheme.Default.getColors(false).first().toDataWithState(true))
         }
         editingTheme.value = theme.copy(
             colors = newColors,
@@ -121,12 +120,12 @@ class ThemeDetailViewModel @Inject constructor(
         editingTheme.value = theme.copy(colors = newColors)
     }
 
-    fun updateColor(index: Int, fgColor: Color, bgColor: Color) {
+    fun updateColor(index: Int, fgColor: Int, bgColor: Int) {
         val theme = editingTheme.value ?: return
         if (theme.isEditable.not()) return
 
         val newColors = theme.colors.toMutableList().apply {
-            set(index, CustomColor(fgColor, bgColor).toDataWithState(get(index).state))
+            set(index, ThemeColor(fgColor, bgColor).toDataWithState(get(index).state))
         }
         editingTheme.value = theme.copy(
             colors = newColors,

@@ -1,12 +1,8 @@
 package com.wafflestudio.snutt2.lib.network.dto.core
 
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
-import androidx.core.graphics.toColorInt
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import com.wafflestudio.snutt2.domainmodel.BuiltInColor
-import com.wafflestudio.snutt2.domainmodel.CustomColor
+import com.wafflestudio.snutt2.domainmodel.LectureColor
 import com.wafflestudio.snutt2.domainmodel.CustomLecture
 import com.wafflestudio.snutt2.domainmodel.Lecture
 import com.wafflestudio.snutt2.domainmodel.LectureReviewInfo
@@ -99,11 +95,11 @@ data class LectureDto(
             remark = localLecture.remark,
             category = if (localLecture is SyllabusLecture) localLecture.category else null,
             categoryPre2025 = if (localLecture is SyllabusLecture) localLecture.categoryPre2025 else null,
-            colorIndex = (localLecture.color as? BuiltInColor)?.colorIndex?.toLong() ?: 0L,
-            color = ColorDto(
-                fgColor = localLecture.color.foreground.toArgb(),
-                localLecture.color.background.toArgb(),
-            ),
+            colorIndex = (localLecture.color as? LectureColor.BuiltIn)?.colorIndex ?: 0L,
+            color = when (val c = localLecture.color) {
+                is LectureColor.Custom -> ColorDto(fgColor = c.foreground, bgColor = c.background)
+                is LectureColor.BuiltIn -> ColorDto()
+            },
             registrationCount = 0L,
             wasFull = false,
             review = null,
@@ -176,16 +172,12 @@ data class LectureDto(
                 freshmanQuota = freshmanQuota ?: 0, // TODO,
                 originalLectureId = lecture_id,
                 color = if (colorIndex == 0L) {
-                    CustomColor(
-                        foreground = Color(color.fgRaw?.toColorInt() ?: 0xFFFFFF),
-                        background = Color(color.bgRaw?.toColorInt() ?: 0xFFFFFF),
+                    LectureColor.Custom(
+                        foreground = color.fgRaw?.let { parseHexColor(it) } ?: 0xFFFFFFFF.toInt(),
+                        background = color.bgRaw?.let { parseHexColor(it) } ?: 0xFFFFFFFF.toInt(),
                     )
                 } else {
-                    BuiltInColor(
-                        foreground = Color(color.fgRaw?.toColorInt() ?: 0xFFFFFF),
-                        background = Color(color.bgRaw?.toColorInt() ?: 0xFFFFFF),
-                        colorIndex = colorIndex,
-                    )
+                    LectureColor.BuiltIn(colorIndex = colorIndex)
                 },
             )
         } else {
@@ -206,16 +198,12 @@ data class LectureDto(
                 credit = credit,
                 remark = remark,
                 color = if (colorIndex == 0L) {
-                    CustomColor(
-                        foreground = Color(color.fgRaw?.toColorInt() ?: 0xFFFFFF),
-                        background = Color(color.bgRaw?.toColorInt() ?: 0xFFFFFF),
+                    LectureColor.Custom(
+                        foreground = color.fgRaw?.let { parseHexColor(it) } ?: 0xFFFFFFFF.toInt(),
+                        background = color.bgRaw?.let { parseHexColor(it) } ?: 0xFFFFFFFF.toInt(),
                     )
                 } else {
-                    BuiltInColor(
-                        foreground = Color(color.fgRaw?.toColorInt() ?: 0xFFFFFF),
-                        background = Color(color.bgRaw?.toColorInt() ?: 0xFFFFFF),
-                        colorIndex = colorIndex,
-                    )
+                    LectureColor.BuiltIn(colorIndex = colorIndex)
                 },
             )
         }

@@ -1,8 +1,7 @@
 package com.wafflestudio.snutt2.domainmodel.preview
 
-import androidx.compose.ui.graphics.Color
 import com.wafflestudio.snutt2.domainmodel.CourseBook
-import com.wafflestudio.snutt2.domainmodel.CustomColor
+import com.wafflestudio.snutt2.domainmodel.LectureColor
 import com.wafflestudio.snutt2.domainmodel.Friend
 import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
 import com.wafflestudio.snutt2.domainmodel.LectureSession
@@ -50,9 +49,9 @@ object PreviewData {
         ),
     )
 
-    private val customColor1 = CustomColor(
-        foreground = Color(0xFF3B41FF),
-        background = Color(0xFFCD4A2E),
+    private val customColor1 = LectureColor.Custom(
+        foreground = 0xFF3B41FF.toInt(),
+        background = 0xFFCD4A2E.toInt(),
     )
 
     val syllabusLecture = SyllabusLecture(

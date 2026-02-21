@@ -38,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -56,8 +57,7 @@ import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.components.compose.rememberModalState
 import com.wafflestudio.snutt2.components.compose.showColorPickerDialog
-import com.wafflestudio.snutt2.domainmodel.CustomColor
-import com.wafflestudio.snutt2.domainmodel.LectureColor
+import com.wafflestudio.snutt2.domainmodel.ThemeColor
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -109,7 +109,7 @@ fun ThemeDetailRoute(
             themeDetailViewModel.removeColor(it)
         },
         onUpdateColor = { index, fgColor, bgColor ->
-            themeDetailViewModel.updateColor(index, fgColor, bgColor)
+            themeDetailViewModel.updateColor(index, fgColor.toArgb(), bgColor.toArgb())
         },
         onAddColor = {
             themeDetailViewModel.addColor()
@@ -340,7 +340,7 @@ private fun ThemeDetailItem(
 private fun ThemeColorRow(
     index: Int,
     isEditable: Boolean,
-    color: LectureColor,
+    color: ThemeColor,
     isExpanded: Boolean,
     isDuplicateEnabled: Boolean,
     isRemoveEnabled: Boolean,
@@ -409,7 +409,10 @@ private fun ThemeColorRow(
                     }
                 },
             ) {
-                ColorBox(color)
+                ColorBox(
+                    foreground = Color(color.foreground),
+                    background = Color(color.background),
+                )
             }
             AnimatedVisibility(
                 visible = isExpanded && isEditable,
@@ -417,19 +420,19 @@ private fun ThemeColorRow(
                 exit = shrinkVertically(),
             ) {
                 ColorEditItem(
-                    fgColor = color.foreground,
-                    bgColor = color.background,
+                    fgColor = Color(color.foreground),
+                    bgColor = Color(color.background),
                     onFgColorPicked = { pickedColor ->
                         onUpdateColor(
                             index,
                             pickedColor,
-                            color.background,
+                            Color(color.background),
                         )
                     },
                     onBgColorPicked = { pickedColor ->
                         onUpdateColor(
                             index,
-                            color.foreground,
+                            Color(color.foreground),
                             pickedColor,
                         )
                     },
@@ -591,7 +594,7 @@ private fun ThemeColorRowPreview() {
             ThemeColorRow(
                 index = 0,
                 isEditable = true,
-                color = CustomColor.Default,
+                color = ThemeColor(foreground = 0xFFFFFFFF.toInt(), background = 0xFF1BD0C8.toInt()),
                 isExpanded = true,
                 isDuplicateEnabled = true,
                 isRemoveEnabled = true,

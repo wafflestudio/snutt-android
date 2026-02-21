@@ -91,12 +91,11 @@ import com.wafflestudio.snutt2.components.compose.snackbar.CustomSnackBarDuratio
 import com.wafflestudio.snutt2.components.compose.snackbar.CustomSnackBarHost
 import com.wafflestudio.snutt2.components.compose.snackbar.CustomSnackBarHostState
 import com.wafflestudio.snutt2.components.compose.snackbar.dismiss
-import com.wafflestudio.snutt2.domainmodel.BuiltInColor
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.CustomTheme
 import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
-import com.wafflestudio.snutt2.domainmodel.toCustomColor
+import com.wafflestudio.snutt2.lib.network.dto.core.toThemeColor
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
@@ -572,23 +571,28 @@ fun LectureDetailPage(
                                         navController.navigate(NavigationDestination.LectureColorSelector)
                                     },
                                 ) {
-                                    ColorBox(
-                                        if (tableColorTheme is CustomTheme) {
-                                            editingLectureDetail.color.toCustomColor()
+                                    if (tableColorTheme is CustomTheme) {
+                                        val customColor = editingLectureDetail.color.toThemeColor()
+                                        ColorBox(
+                                            foreground = Color(customColor.foreground),
+                                            background = Color(customColor.background),
+                                        )
+                                    } else {
+                                        if (editingLectureDetail.colorIndex == 0L) {
+                                            val customColor = editingLectureDetail.color.toThemeColor()
+                                            ColorBox(
+                                                foreground = Color(customColor.foreground),
+                                                background = Color(customColor.background),
+                                            )
                                         } else {
-                                            if (editingLectureDetail.colorIndex == 0L) {
-                                                editingLectureDetail.color.toCustomColor()
-                                            } else {
-                                                BuiltInColor(
-                                                    foreground = Color.White,
-                                                    background = (tableColorTheme as BuiltInTheme).getColorByIndex(
-                                                        editingLectureDetail.colorIndex,
-                                                    ),
-                                                    colorIndex = editingLectureDetail.colorIndex,
-                                                )
-                                            }
-                                        },
-                                    )
+                                            val paletteColor = (tableColorTheme as BuiltInTheme)
+                                                .getColors(isDarkMode)[editingLectureDetail.colorIndex.toInt() - 1]
+                                            ColorBox(
+                                                foreground = Color(paletteColor.foreground),
+                                                background = Color(paletteColor.background),
+                                            )
+                                        }
+                                    }
                                     Spacer(modifier = Modifier.weight(1f))
                                     AnimatedVisibility(visible = modeType is ModeType.Editing) {
                                         ArrowRight(

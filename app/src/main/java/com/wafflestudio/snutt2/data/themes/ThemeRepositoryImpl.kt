@@ -2,7 +2,8 @@ package com.wafflestudio.snutt2.data.themes
 
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.CustomTheme
-import com.wafflestudio.snutt2.domainmodel.LectureColor
+import com.wafflestudio.snutt2.domainmodel.ThemeColor
+import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.PatchThemeParams
 import com.wafflestudio.snutt2.lib.network.dto.PostThemeParams
@@ -36,9 +37,9 @@ class ThemeRepositoryImpl @Inject constructor(
         return _customThemes.value.find { it.id == themeId } ?: CustomTheme.Default
     }
 
-    override suspend fun createTheme(name: String, colors: List<LectureColor>): CustomTheme {
+    override suspend fun createTheme(name: String, colors: List<ThemeColor>): CustomTheme {
         val newTheme =
-            api._postTheme(PostThemeParams(name = name, colors = colors.map { it.toColorDto() }))
+            api._postTheme(PostThemeParams(name = name, colors = colors.map { ColorDto(it.foreground, it.background) }))
                 .toTableTheme() as CustomTheme
         _customThemes.value = _customThemes.value.toMutableList().apply { add(0, newTheme) }
         return newTheme
@@ -47,13 +48,13 @@ class ThemeRepositoryImpl @Inject constructor(
     override suspend fun updateTheme(
         themeId: String,
         name: String,
-        colors: List<LectureColor>,
+        colors: List<ThemeColor>,
     ): CustomTheme {
         val newTheme = api._patchTheme(
             themeId = themeId,
             patchThemeParams = PatchThemeParams(
                 name = name,
-                colors = colors.map { it.toColorDto() },
+                colors = colors.map { ColorDto(it.foreground, it.background) },
             ),
         ).toTableTheme() as CustomTheme
         _customThemes.value = _customThemes.value.toMutableList().apply {
