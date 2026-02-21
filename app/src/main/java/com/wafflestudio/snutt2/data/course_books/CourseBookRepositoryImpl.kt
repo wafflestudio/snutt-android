@@ -6,6 +6,7 @@ import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.network.dto.core.toDomainModel
 import com.wafflestudio.snutt2.lib.network.toDomainError
+import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -22,6 +23,17 @@ class CourseBookRepositoryImpl @Inject constructor(
         try {
             val result = api._getCoursebook()
             return Result.Success(result.map { it.toDomainModel() })
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
+
+    override val courseBooks: MutableStateFlow<List<CourseBook>> = MutableStateFlow(emptyList())
+
+    override suspend fun fetchCourseBooks(): Result<Unit> {
+        try {
+            courseBooks.value = api._getCoursebook().map { it.toDomainModel() }
+            return Result.Success(Unit)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
         }

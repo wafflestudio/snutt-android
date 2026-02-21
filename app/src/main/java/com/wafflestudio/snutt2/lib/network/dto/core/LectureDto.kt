@@ -95,7 +95,7 @@ data class LectureDto(
             remark = localLecture.remark,
             category = if (localLecture is SyllabusLecture) localLecture.category else null,
             categoryPre2025 = if (localLecture is SyllabusLecture) localLecture.categoryPre2025 else null,
-            colorIndex = (localLecture.color as? LectureColor.BuiltIn)?.colorIndex ?: 0L,
+            colorIndex = ((localLecture.color as? LectureColor.BuiltIn)?.colorIndex ?: -1).toLong() + 1,
             color = when (val c = localLecture.color) {
                 is LectureColor.Custom -> ColorDto(fgColor = c.foreground, bgColor = c.background)
                 is LectureColor.BuiltIn -> ColorDto()
@@ -177,7 +177,7 @@ data class LectureDto(
                         background = color.bgRaw?.let { parseHexColor(it) } ?: 0xFFFFFFFF.toInt(),
                     )
                 } else {
-                    LectureColor.BuiltIn(colorIndex = colorIndex)
+                    LectureColor.BuiltIn(colorIndex = (colorIndex - 1).toInt())
                 },
             )
         } else {
@@ -203,7 +203,7 @@ data class LectureDto(
                         background = color.bgRaw?.let { parseHexColor(it) } ?: 0xFFFFFFFF.toInt(),
                     )
                 } else {
-                    LectureColor.BuiltIn(colorIndex = colorIndex)
+                    LectureColor.BuiltIn(colorIndex = (colorIndex - 1).toInt())
                 },
             )
         }

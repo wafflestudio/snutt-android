@@ -94,7 +94,7 @@ data class TimetableLectureDto(
             remark = localLecture.remark,
             category = if (localLecture is SyllabusLecture) localLecture.category else null,
             categoryPre2025 = if (localLecture is SyllabusLecture) localLecture.categoryPre2025 else null,
-            colorIndex = (localLecture.color as? LectureColor.BuiltIn)?.colorIndex?.toInt() ?: 0,
+            colorIndex = ((localLecture.color as? LectureColor.BuiltIn)?.colorIndex ?: -1) + 1,
             color = when (val c = localLecture.color) {
                 is LectureColor.Custom -> ColorSetDto(fgColor = c.foreground, bgColor = c.background)
                 is LectureColor.BuiltIn -> null
@@ -174,7 +174,7 @@ data class TimetableLectureDto(
                         background = color?.bg?.let { parseHexColor(it) } ?: 0xFFFFFFFF.toInt(),
                     )
                 } else {
-                    LectureColor.BuiltIn(colorIndex = colorIndex.toLong())
+                    LectureColor.BuiltIn(colorIndex = colorIndex - 1)
                 },
             )
         } else {
@@ -200,7 +200,7 @@ data class TimetableLectureDto(
                         background = color?.bg?.let { parseHexColor(it) } ?: 0xFFFFFFFF.toInt(),
                     )
                 } else {
-                    LectureColor.BuiltIn(colorIndex = colorIndex.toLong())
+                    LectureColor.BuiltIn(colorIndex = colorIndex - 1)
                 },
             )
         }

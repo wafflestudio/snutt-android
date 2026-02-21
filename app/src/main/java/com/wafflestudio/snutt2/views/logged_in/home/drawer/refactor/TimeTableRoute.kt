@@ -11,31 +11,47 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.platform.LocalContext
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.wafflestudio.snutt2.domainmodel.LocalLecture
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.shareScreenshot
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.refactor.TimeTableScreenNew
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.refactor.TimeTableUiEvent
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.refactor.TimeTableViewModelNew
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @Composable
 fun TimeTableRoute(
     drawerViewModel: HomeDrawerViewModel = hiltViewModel(),
-    // FIXME: 리팩토링 안 된 TimeTable 쪽으로 상태 변경 시켜줄 때를 위해 임시 사용
-    timetableViewModel: TimetableViewModel = hiltViewModel(),
+    timeTableViewModel: TimeTableViewModelNew = hiltViewModel(),
     onNavigateBottomSheetThemeDetail: () -> Unit,
+    onNavigateLecturesOfTable: () -> Unit,
+    onNavigateNotification: () -> Unit,
+    onNavigateVacancyNotification: () -> Unit,
+    onNavigateLectureDetail: (LocalLecture) -> Unit,
+    onBottomNavigate: (HomeItem) -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
+    // FIXME: 뷰모델 refresh 함수 주석 참조
+    LaunchedEffect(Unit) {
+        timeTableViewModel.refresh()
+    }
+
     // HomeDrawer 관련
-    val uiState by drawerViewModel.uiState.collectAsStateWithLifecycle()
+    val drawerUiState by drawerViewModel.uiState.collectAsStateWithLifecycle()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val sheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
         skipHalfExpanded = true,
     )
+
+    // TimeTable 관련
+    val timeTableUiState by timeTableViewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         drawerViewModel.uiEvent.collect { uiEvent ->
@@ -92,14 +108,22 @@ fun TimeTableRoute(
         }
     }
 
+    LaunchedEffect(Unit) {
+        timeTableViewModel.uiEvent.collect { uiEvent ->
+            when (uiEvent) {
+                is TimeTableUiEvent.ShowToast -> {
+                    context.toast(uiEvent.displayMessage)
+                }
+            }
+        }
+    }
+
     HomeDrawerBottomSheetLayout(
-        uiState = uiState,
+        uiState = drawerUiState,
         sheetState = sheetState,
         onDismiss = {
-            // 시트가 닫힐 때 수행해야 할 로직은 Route에서 주입할 수밖에 없음
             scope.launch {
-                // FIXME: timetable 리팩 후 변경
-                timetableViewModel.setPreviewTheme(null)
+                timeTableViewModel.resetPreviewTheme()
                 sheetState.hide()
             }
         },
@@ -125,36 +149,30 @@ fun TimeTableRoute(
         onDismissDialog = drawerViewModel::dismissDialog,
         onConfirmChangeTableTitle = drawerViewModel::changeTableTitle,
         onConfirmDeleteTable = drawerViewModel::deleteTable,
-        onClickDrawerIcon = {
-            scope.launch {
-                drawerState.open()
-            }
-        },
         onClickPreviewTheme = { theme ->
             drawerViewModel.setPreviewTheme(theme)
-
-            // FIXME: timetable 리팩 후 변경
-            timetableViewModel.setPreviewTheme(theme)
+            timeTableViewModel.setPreviewTheme(theme)
         },
         onClickApplyTheme = drawerViewModel::applyTheme,
         onClickDisposeTheme = {
             scope.launch {
-                // FIXME: timetable 리팩 후 변경
-                timetableViewModel.setPreviewTheme(null)
+                timeTableViewModel.resetPreviewTheme()
                 sheetState.hide()
             }
         },
         onClickAddTheme = drawerViewModel::navigateToThemeDetail,
-    )
-}
-
-@Composable
-fun TimeTableScreen(
-    uiState: HomeDrawerUiState,
-    onClickDrawerIcon: () -> Unit,
-) {
-    // FIXME: 임시
-    TimetablePageTemp(false) {
-        onClickDrawerIcon()
+    ) {
+        TimeTableScreenNew(
+            uiState = timeTableUiState,
+            onClickDrawerIcon = { scope.launch { drawerState.open() } },
+            onClickTableTitle = timeTableViewModel::showTableTitleChangeDialog,
+            onClickTableLecturesListIcon = onNavigateLecturesOfTable,
+            onClickNotificationIcon = onNavigateNotification,
+            onClickVacancyBanner = onNavigateVacancyNotification,
+            onClickLectureCell = onNavigateLectureDetail,
+            onDismissDialog = timeTableViewModel::dismissDialog,
+            onConfirmChangeTableTitle = timeTableViewModel::changeTableTitle,
+            onBottomNavigate = onBottomNavigate,
+        )
     }
 }

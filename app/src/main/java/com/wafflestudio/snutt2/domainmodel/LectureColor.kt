@@ -24,6 +24,6 @@ sealed interface LectureColor {
     }
 
     data class BuiltIn(
-        val colorIndex: Long,
+        val colorIndex: Int,
     ) : LectureColor
 }

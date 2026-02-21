@@ -30,6 +30,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.layouts.ModalDrawerWithBottomSheetLayout
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
+import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.provider.TimetableWidgetProvider
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -56,6 +57,8 @@ import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TableState
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetablePage
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.ModeType
 import com.wafflestudio.snutt2.views.navigateAsOrigin
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
@@ -79,6 +82,7 @@ fun HomePage() {
     val timetableViewModel = hiltViewModel<TimetableViewModel>()
     val tableListViewModel = hiltViewModel<TableListViewModel>()
     val searchViewModel = hiltViewModel<SearchViewModel>()
+    val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>()
 
     val uncheckedNotification by homeViewModel.unCheckedNotificationExist.collectAsState()
     val table by timetableViewModel.currentTable.collectAsState()
@@ -154,6 +158,26 @@ fun HomePage() {
                 onNavigateBottomSheetThemeDetail = {
                     navController.navigate(NavigationDestination.ThemeDetail())
                 },
+                onNavigateLecturesOfTable = {
+                    navController.navigate(NavigationDestination.LecturesOfTable)
+                },
+                onNavigateNotification = {
+                    navController.navigate(NavigationDestination.Notification)
+                },
+                onNavigateVacancyNotification = {
+                    navController.navigate(NavigationDestination.VacancyNotification)
+                },
+                onNavigateLectureDetail = { lecture ->
+                    lectureDetailViewModel.initializeEditingLectureDetail(
+                        LectureDto.fromLocalLecture(lecture),
+                        ModeType.Normal,
+                        table,
+                    )
+                    navController.navigate(NavigationDestination.LectureDetail) {
+                        launchSingleTop = true
+                    }
+                },
+                onBottomNavigate = { pageController.update(it) },
             )
 
             return@CompositionLocalProvider

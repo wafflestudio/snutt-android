@@ -50,11 +50,11 @@ fun HomeDrawerBottomSheetLayout(
     onDismissDialog: () -> Unit,
     onConfirmChangeTableTitle: (newTitle: String, tableId: String) -> Unit,
     onConfirmDeleteTable: (tableSummary: TableSummary) -> Unit,
-    onClickDrawerIcon: () -> Unit,
     onClickPreviewTheme: (TableTheme) -> Unit,
     onClickApplyTheme: () -> Unit,
     onClickDisposeTheme: () -> Unit,
     onClickAddTheme: () -> Unit,
+    content: @Composable () -> Unit,
 ) {
     LaunchedEffect(sheetState.currentValue) {
         if (sheetState.currentValue == ModalBottomSheetValue.Hidden) {
@@ -126,10 +126,7 @@ fun HomeDrawerBottomSheetLayout(
             },
             drawerState = drawerState,
         ) {
-            TimeTableScreen(
-                uiState = uiState,
-                onClickDrawerIcon = onClickDrawerIcon,
-            )
+            content()
         }
     }
 }

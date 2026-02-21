@@ -15,17 +15,25 @@ fun DrawLecturesNew(
     lectures: List<LocalLecture>,
     fittedTrimParam: TableTrimParam,
     theme: TableTheme,
+    previewTheme: TableTheme? = null,
     isDarkMode: Boolean,
     compactMode: Boolean,
     tableLectureCustomOptions: TableLectureCustom,
 ) {
-    lectures.forEach { lecture ->
-        val (fg, bg) = when (val color = lecture.color) {
-            is LectureColor.Custom -> color.foreground to color.background
-            is LectureColor.BuiltIn -> {
-                val palette = theme.getColors(isDarkMode)
-                val entry = palette[(color.colorIndex.toInt() - 1).coerceIn(palette.indices)]
-                entry.foreground to entry.background
+    lectures.forEachIndexed { index, lecture ->
+        val (fg, bg) = if (previewTheme != null) {
+            val palette = previewTheme.getColors(isDarkMode)
+            val entry = palette[index % palette.size]
+            
+            entry.foreground to entry.background
+        } else {
+            when (val color = lecture.color) {
+                is LectureColor.Custom -> color.foreground to color.background
+                is LectureColor.BuiltIn -> {
+                    val palette = theme.getColors(isDarkMode)
+                    val entry = palette[color.colorIndex.coerceIn(palette.indices)]
+                    entry.foreground to entry.background
+                }
             }
         }
 

@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.lib.data
 import android.content.Context
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils
+import com.wafflestudio.snutt2.domainmodel.Lecture
 import com.wafflestudio.snutt2.domainmodel.LectureSession
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
@@ -152,6 +153,10 @@ object SNUTTStringUtils {
     }
 
     fun getCreditSumFromLectureList(lectureList: List<LectureDto>): Long {
+        return lectureList.fold(0L) { acc, lecture -> acc + lecture.credit }
+    }
+
+    fun getCreditSumFromLectureListNew(lectureList: List<Lecture>): Long {
         return lectureList.fold(0L) { acc, lecture -> acc + lecture.credit }
     }
 

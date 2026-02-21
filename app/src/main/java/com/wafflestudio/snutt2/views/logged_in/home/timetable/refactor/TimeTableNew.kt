@@ -14,6 +14,7 @@ fun TimeTableNew(
     selectedLecture: SearchedLecture?,
     fittedTrimParam: TableTrimParam,
     theme: TableTheme,
+    previewTheme: TableTheme? = null,
     isDarkMode: Boolean,
     compactMode: Boolean,
     tableLectureCustomOptions: TableLectureCustom,
@@ -24,6 +25,14 @@ fun TimeTableNew(
         DrawClickEventDetectorNew(lectures, fittedTrimParam, onLectureClick)
     }
     DrawTableGrid(fittedTrimParam)
-    DrawLecturesNew(lectures, fittedTrimParam, theme, isDarkMode, compactMode, tableLectureCustomOptions)
+    DrawLecturesNew(
+        lectures = lectures,
+        fittedTrimParam = fittedTrimParam,
+        theme = theme,
+        previewTheme = previewTheme,
+        isDarkMode = isDarkMode,
+        compactMode = compactMode,
+        tableLectureCustomOptions = tableLectureCustomOptions,
+    )
     DrawSelectedLectureNew(selectedLecture, fittedTrimParam, compactMode, tableLectureCustomOptions)
 }

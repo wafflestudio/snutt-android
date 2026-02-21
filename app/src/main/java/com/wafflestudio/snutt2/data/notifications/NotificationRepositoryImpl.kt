@@ -8,6 +8,7 @@ import com.wafflestudio.snutt2.domainmodel.Notification
 import com.wafflestudio.snutt2.domainmodel.domainModel
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -31,6 +32,12 @@ class NotificationRepositoryImpl @Inject constructor(private val api: SNUTTRestA
 
     override suspend fun getNotificationCount(): Long {
         return api._getNotificationCount().count
+    }
+
+    override val notificationCount: MutableStateFlow<Long> = MutableStateFlow(0)
+
+    override suspend fun fetchNotificationCount() {
+        notificationCount.value = api._getNotificationCount().count
     }
 
     companion object {
