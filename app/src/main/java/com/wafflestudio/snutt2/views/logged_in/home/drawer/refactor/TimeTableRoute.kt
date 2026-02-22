@@ -15,10 +15,13 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.domainmodel.LocalLecture
 import com.wafflestudio.snutt2.lib.android.toast
+import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.shareScreenshot
+import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
 import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.refactor.TimeTableScreenNew
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.refactor.TimeTableUiEvent
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.refactor.TimeTableUiState
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.refactor.TimeTableViewModelNew
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -36,6 +39,7 @@ fun TimeTableRoute(
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
+    val analyticsLogger = LocalAnalyticsLogger.current
 
     // FIXME: 뷰모델 refresh 함수 주석 참조
     LaunchedEffect(Unit) {
@@ -87,16 +91,6 @@ fun TimeTableRoute(
                     }
                 }
 
-                is HomeDrawerUiEvent.OpenShareScreenshotBottomSheet -> {
-                    scope.launch {
-                        shareScreenshot(
-                            uiEvent.tableDto,
-                            uiEvent.tableTrimParam,
-                            context,
-                        )
-                    }
-                }
-
                 is HomeDrawerUiEvent.ShowToast -> {
                     context.toast(uiEvent.displayMessage)
                 }
@@ -131,7 +125,6 @@ fun TimeTableRoute(
         onClickChangeTableName = drawerViewModel::openChangeTableNameDialog,
         onClickSetPrimary = drawerViewModel::setPrimaryTable,
         onClickUnsetPrimary = drawerViewModel::unsetPrimaryTable,
-        onClickShareTable = drawerViewModel::openShareTableBottomSheet,
         onClickSetTheme = drawerViewModel::onClickSetThemeSheet,
         onClickDeleteTable = drawerViewModel::openDeleteTableDialog,
         drawerState = drawerState,
@@ -167,6 +160,11 @@ fun TimeTableRoute(
             onClickDrawerIcon = { scope.launch { drawerState.open() } },
             onClickTableTitle = timeTableViewModel::showTableTitleChangeDialog,
             onClickTableLecturesListIcon = onNavigateLecturesOfTable,
+            onClickShareTable = {
+                val loaded = timeTableUiState as? TimeTableUiState.Loaded ?: return@TimeTableScreenNew
+                shareScreenshot(loaded.table.toTableDto(), loaded.tableTrimParam, context)
+                analyticsLogger.logScreen(AnalyticsScreen.TimetableShare)
+            },
             onClickNotificationIcon = onNavigateNotification,
             onClickVacancyBanner = onNavigateVacancyNotification,
             onClickLectureCell = onNavigateLectureDetail,

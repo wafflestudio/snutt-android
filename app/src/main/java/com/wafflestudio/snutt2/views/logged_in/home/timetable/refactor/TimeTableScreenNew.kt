@@ -20,6 +20,7 @@ import com.wafflestudio.snutt2.components.compose.DrawerIcon
 import com.wafflestudio.snutt2.components.compose.IconWithAlertDot
 import com.wafflestudio.snutt2.components.compose.LectureListIcon
 import com.wafflestudio.snutt2.components.compose.NotificationIcon
+import com.wafflestudio.snutt2.components.compose.ShareIcon
 import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.domainmodel.LocalLecture
@@ -40,6 +41,7 @@ fun TimeTableScreenNew(
     onClickDrawerIcon: () -> Unit,
     onClickTableTitle: (tableSummary: TableSummary) -> Unit,
     onClickTableLecturesListIcon: () -> Unit,
+    onClickShareTable: () -> Unit,
     onClickNotificationIcon: () -> Unit,
     onClickVacancyBanner: () -> Unit,
     onClickLectureCell: (LocalLecture) -> Unit,
@@ -98,6 +100,11 @@ fun TimeTableScreenNew(
                             modifier = Modifier
                                 .size(30.dp)
                                 .clicks { onClickTableLecturesListIcon() },
+                        )
+                        ShareIcon(
+                            modifier = Modifier
+                                .size(30.dp)
+                                .clicks { onClickShareTable() },
                         )
                         IconWithAlertDot(uiState.uncheckedNotificationExist) { centerAlignedModifier ->
                             NotificationIcon(

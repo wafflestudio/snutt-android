@@ -35,7 +35,6 @@ fun HomeDrawerBottomSheetLayout(
     onClickChangeTableName: (tableSummary: TableSummary) -> Unit,
     onClickSetPrimary: (tableSummary: TableSummary) -> Unit,
     onClickUnsetPrimary: (tableSummary: TableSummary) -> Unit,
-    onClickShareTable: (tableSummary: TableSummary) -> Unit,
     onClickSetTheme: (tableSummary: TableSummary) -> Unit,
     onClickDeleteTable: (tableSummary: TableSummary) -> Unit,
 
@@ -94,7 +93,6 @@ fun HomeDrawerBottomSheetLayout(
                             onClickChangeTableName = onClickChangeTableName,
                             onClickSetPrimary = onClickSetPrimary,
                             onClickUnsetPrimary = onClickUnsetPrimary,
-                            onClickShareTable = onClickShareTable,
                             onClickSetTheme = onClickSetTheme,
                             onClickDeleteTable = onClickDeleteTable,
                         )

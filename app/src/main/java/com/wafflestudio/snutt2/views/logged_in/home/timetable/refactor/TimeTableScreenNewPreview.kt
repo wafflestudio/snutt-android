@@ -43,6 +43,7 @@ private fun TimeTableScreenDefaultPreview() {
         onDismissDialog = {},
         onConfirmChangeTableTitle = { _, _ -> },
         onBottomNavigate = {},
+        onClickShareTable = {},
     )
 }
 
@@ -64,6 +65,7 @@ private fun TimeTableScreenAllBadgesPreview() {
         onDismissDialog = {},
         onConfirmChangeTableTitle = { _, _ -> },
         onBottomNavigate = {},
+        onClickShareTable = {},
     )
 }
 

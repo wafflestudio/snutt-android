@@ -6,21 +6,16 @@ import com.wafflestudio.snutt2.data.course_books.CourseBookRepository
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
-import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.CustomTheme
 import com.wafflestudio.snutt2.domainmodel.TableSummary
 import com.wafflestudio.snutt2.domainmodel.TableTheme
-import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.lib.Selectable
-import com.wafflestudio.snutt2.lib.logging.AnalyticsLogger
-import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
 import com.wafflestudio.snutt2.lib.network.DomainError
 import com.wafflestudio.snutt2.lib.network.NotSelectedTimetable
-import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.network.onFailure
 import com.wafflestudio.snutt2.lib.network.onSuccess
 import com.wafflestudio.snutt2.lib.toDataWithState
@@ -43,10 +38,8 @@ class HomeDrawerViewModel @Inject constructor(
     private val courseBookRepository: CourseBookRepository,
     private val tableRepository: TableRepository,
     private val currentTableRepository: CurrentTableRepository,
-    private val userRepository: UserRepository,
     private val themeRepository: ThemeRepository,
     private val getCurrentTableThemeUseCase: GetCurrentTableThemeUseCase,
-    private val analyticsLogger: AnalyticsLogger,
     private val displayMessageResolver: DisplayMessageResolver,
 ) : ViewModel() {
     private val _uiEvent = MutableSharedFlow<HomeDrawerUiEvent>()
@@ -272,20 +265,6 @@ class HomeDrawerViewModel @Inject constructor(
         }
     }
 
-    fun openShareTableBottomSheet(tableSummary: TableSummary) {
-        viewModelScope.launch {
-            val tableDto = tableRepository.searchTableById(tableSummary.id)
-            val tableTrimParam = userRepository.tableTrimParam.value
-            _uiEvent.emit(
-                HomeDrawerUiEvent.OpenShareScreenshotBottomSheet(
-                    tableDto = tableDto,
-                    tableTrimParam = tableTrimParam,
-                ),
-            )
-            analyticsLogger.logScreen(AnalyticsScreen.TimetableShare)
-        }
-    }
-
     fun onClickSetThemeSheet(tableSummary: TableSummary) {
         viewModelScope.launch {
             val currentTable = currentTableRepository.currentTable.value
@@ -496,10 +475,6 @@ sealed interface HomeDrawerUiEvent {
     ) : HomeDrawerUiEvent
 
     data object CloseDrawer : HomeDrawerUiEvent
-    data class OpenShareScreenshotBottomSheet(
-        val tableDto: TableDto,
-        val tableTrimParam: TableTrimParam,
-    ) : HomeDrawerUiEvent
 
     data object NavigateToThemeDetail : HomeDrawerUiEvent
 
