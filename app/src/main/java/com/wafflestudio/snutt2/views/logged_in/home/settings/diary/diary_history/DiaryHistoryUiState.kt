@@ -10,7 +10,16 @@ sealed interface DiaryHistoryUiState {
         val courseBooks: List<CourseBook>,
         val selectedCourseBook: CourseBook,
         val diarySummariesByCourseBook: DiarySummariesByCourseBook,
+        val dialogState: DialogState = DialogState.None,
     ) : DiaryHistoryUiState
+
+    sealed interface DialogState {
+        data object None : DialogState
+        data class DeleteDiary(
+            val diaryId: String,
+            val courseName: String,
+        ) : DialogState
+    }
 
     data object Error : DiaryHistoryUiState
     data object Loading : DiaryHistoryUiState

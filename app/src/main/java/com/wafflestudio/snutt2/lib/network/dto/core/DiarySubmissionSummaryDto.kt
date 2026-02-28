@@ -11,7 +11,7 @@ data class DiarySubmissionSummaryDto(
     @param:Json(name = "id") val id: String,
     @param:Json(name = "lectureId") val lectureId: String,
     @param:Json(name = "date") val date: String,
-    @param:Json(name = "lectureTitle") val lectureTitle: String,
+    @param:Json(name = "courseTitle") val courseTitle: String,
     @param:Json(name = "shortQuestionReplies") val shortQuestionReplies: List<DiaryShortQuestionReplyDto>,
     @param:Json(name = "comment") val comment: String,
 )
@@ -20,7 +20,7 @@ fun DiarySubmissionSummaryDto.toDomainModel(): DiarySummary {
     return DiarySummary(
         id = id,
         lectureId = lectureId,
-        lectureName = lectureTitle,
+        courseName = courseTitle,
         date = LocalDateTime.parse(date),
         questionAnswers = shortQuestionReplies.map {
             DiaryQuestionAnswer(

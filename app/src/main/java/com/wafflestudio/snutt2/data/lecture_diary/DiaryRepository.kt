@@ -1,8 +1,8 @@
 package com.wafflestudio.snutt2.data.lecture_diary
 
 import com.wafflestudio.snutt2.domainmodel.diary.CourseBookDiarySubmissions
-import com.wafflestudio.snutt2.domainmodel.diary.DiaryDailyClassType
 import com.wafflestudio.snutt2.domainmodel.diary.DiaryAnsweredQuestion
+import com.wafflestudio.snutt2.domainmodel.diary.DiaryDailyClassType
 import com.wafflestudio.snutt2.domainmodel.diary.DiaryQuestion
 import com.wafflestudio.snutt2.lib.network.Result
 
@@ -28,7 +28,7 @@ interface DiaryRepository {
 }
 
 data class DiaryQuestionnaireData(
-    val lectureTitle: String,
+    val courseTitle: String,
     val questions: List<DiaryQuestion>,
     val nextLectureId: String?,
     val nextLectureTitle: String?,

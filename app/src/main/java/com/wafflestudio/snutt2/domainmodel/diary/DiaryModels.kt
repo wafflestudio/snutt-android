@@ -28,7 +28,7 @@ data class DiaryQuestionAnswer(
 data class DiarySummary(
     val id: String,
     val lectureId: String,
-    val lectureName: String,
+    val courseName: String,
     val date: java.time.LocalDateTime,
     val questionAnswers: List<DiaryQuestionAnswer>,
     val comment: String?,

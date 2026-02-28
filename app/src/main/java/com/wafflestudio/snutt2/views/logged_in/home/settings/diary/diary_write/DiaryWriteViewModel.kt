@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.lecture_diary.DiaryRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
+import com.wafflestudio.snutt2.domainmodel.diary.DiaryAnsweredQuestion
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.isSelected
 import com.wafflestudio.snutt2.lib.network.AuthError
@@ -32,22 +33,24 @@ class DiaryWriteViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val displayMessageResolver: DisplayMessageResolver,
 ) : ViewModel() {
-    private val _uiState =
-        MutableStateFlow<DiaryWriteUiState>(
-            DiaryWriteUiState.Loading,
-        )
-    val uiState: StateFlow<DiaryWriteUiState> =
-        _uiState.asStateFlow()
+    private val lectureId: String
+        get() = savedStateHandle.get<String>("lectureId") ?: ""
+    private val courseTitle: String
+        get() = savedStateHandle.get<String>("courseTitle") ?: ""
 
+    private val _uiState =
+        MutableStateFlow<DiaryWriteUiState>(DiaryWriteUiState.Loading)
+    val uiState: StateFlow<DiaryWriteUiState> = _uiState.asStateFlow()
+
+    private val _uiEvent: MutableSharedFlow<DiaryWriteUiEvent> = MutableSharedFlow(1)
+    val uiEvent: SharedFlow<DiaryWriteUiEvent> = _uiEvent.asSharedFlow()
+
+    // FIXME: 얘의 존재에 대해서는 나중에 다시 고민하기
     private var nextLectureId: String? = null
     private var nextLectureTitle: String? = null
 
     init {
         viewModelScope.launch {
-            val lectureId = savedStateHandle.get<String>("lectureId")
-            val courseTitle = savedStateHandle.get<String>("courseTitle")
-
-            // GET /v1/diary/dailyClassTypes 호출
             diaryRepository.getDailyClassTypes()
                 .onSuccess { dailyClassTypes ->
                     _uiState.update {
@@ -66,15 +69,10 @@ class DiaryWriteViewModel @Inject constructor(
         }
     }
 
-    private val _uiEvent: MutableSharedFlow<DiaryWriteUiEvent> =
-        MutableSharedFlow(1)
-    val uiEvent: SharedFlow<DiaryWriteUiEvent> =
-        _uiEvent.asSharedFlow()
-
     fun toggleActivitySelection(index: Int) {
         _uiState.update { state ->
             when (state) {
-                is DiaryWriteUiState.Write -> state.copyWith(
+                is DiaryWriteUiState.Write -> state.copy(
                     dailyClassTypes = state.dailyClassTypes.toggleIndex(index),
                     activitySelectingState = when (state.activitySelectingState) {
                         ActivitySelectionState.InitialSelecting -> ActivitySelectionState.InitialSelecting
@@ -82,6 +80,7 @@ class DiaryWriteViewModel @Inject constructor(
                         ActivitySelectionState.ReSelecting -> ActivitySelectionState.ReSelecting
                     },
                 )
+
                 else -> state
             }
         }
@@ -91,9 +90,9 @@ class DiaryWriteViewModel @Inject constructor(
         _uiState.update { state ->
             when (state) {
                 is DiaryWriteUiState.Write -> {
-                    if (state.activitySelectingState == newState) state
-                    else state.copyWith(activitySelectingState = newState)
+                    state.copy(activitySelectingState = newState)
                 }
+
                 else -> state
             }
         }
@@ -102,7 +101,7 @@ class DiaryWriteViewModel @Inject constructor(
     fun toggleAnswer(questionIndex: Int, answerIndex: Int) {
         _uiState.update { state ->
             when (state) {
-                is DiaryWriteUiState.Write -> state.copyWith(
+                is DiaryWriteUiState.Write -> state.copy(
                     questions = state.questions.mapIndexed { index, question ->
                         if (index == questionIndex) {
                             question.copy(
@@ -115,119 +114,107 @@ class DiaryWriteViewModel @Inject constructor(
                         }
                     },
                 )
+
                 else -> state
             }
         }
     }
 
-    // FIXME: comment 한 글자 한 글자 바뀌는 것도 전부 상태 hoist 하기 vs 로컬 상태로 뒀다가 한번에 제출하기
-    // 후자는 일관성이 깨지는 느낌이 있는데...
     fun saveDiaryWrite(comment: String) {
-        viewModelScope.launch {
-            val state = _uiState.value
-            if (state !is DiaryWriteUiState.Write) return@launch
-
-            val lectureId = savedStateHandle.get<String>("lectureId") ?: return@launch
-
-            // POST /v1/diary도 name을 사용
-            val selectedDailyClassTypeNames = state.dailyClassTypes
-                .filter { it.isSelected() }
-                .map { it.item.name }
-
-            val questionAnswers = state.questions.mapIndexed { questionIndex, question ->
-                val answerIndex = question.selectableAnswers.indexOfFirst { it.isSelected() }
-                com.wafflestudio.snutt2.domainmodel.diary.DiaryAnsweredQuestion(
-                    questionId = question.id,
-                    answerIndex = answerIndex,
-                )
+        when (val state = _uiState.value) {
+            !is DiaryWriteUiState.Write -> {
+                return
             }
 
-            diaryRepository.submitDiary(
-                lectureId = lectureId,
-                dailyClassTypes = selectedDailyClassTypeNames,
-                questionAnswers = questionAnswers,
-                comment = comment,
-            )
-                .onSuccess {
-                    val nextAction = if (nextLectureId != null) {
-                        DiaryNextAction.WriteNext
-                    } else {
-                        DiaryNextAction.WriteReview
-                    }
-                    _uiState.update { DiaryWriteUiState.Complete(nextAction) }
+            is DiaryWriteUiState.Write -> {
+                val selectedDailyClassTypeNames = state.dailyClassTypes
+                    .filter { it.isSelected() }
+                    .map { it.item.name }
+
+                val questionAnswers = state.questions.map { question ->
+                    val answerIndex = question.selectableAnswers.indexOfFirst { it.isSelected() }
+                    DiaryAnsweredQuestion(
+                        questionId = question.id,
+                        answerIndex = answerIndex,
+                    )
                 }
-                .onFailure { error ->
-                    handleDiaryWriteError(error)
+
+                viewModelScope.launch {
+                    diaryRepository.submitDiary(
+                        lectureId = lectureId,
+                        dailyClassTypes = selectedDailyClassTypeNames,
+                        questionAnswers = questionAnswers,
+                        comment = comment,
+                    )
+                        .onSuccess {
+                            val nextAction = if (nextLectureId != null) {
+                                DiaryNextAction.WriteNext
+                            } else {
+                                DiaryNextAction.WriteReview
+                            }
+                            _uiState.update { DiaryWriteUiState.Complete(nextAction) }
+                        }
+                        .onFailure { error ->
+                            handleDiaryWriteError(error)
+                        }
                 }
+            }
         }
     }
 
     fun completeActivitySelection() {
-        viewModelScope.launch {
-            val state = _uiState.value
-            if (state !is DiaryWriteUiState.Write) return@launch
+        when (val state = _uiState.value) {
+            !is DiaryWriteUiState.Write -> {
+                return
+            }
 
-            val lectureId = savedStateHandle.get<String>("lectureId") ?: return@launch
-            // POST /v1/diary/questionnaire는 name을 사용
-            val selectedDailyClassTypeNames = state.dailyClassTypes
-                .filter { it.isSelected() }
-                .map { it.item.name }
+            is DiaryWriteUiState.Write -> {
+                val selectedDailyClassTypeNames = state.dailyClassTypes
+                    .filter { it.isSelected() }
+                    .map { it.item.name }
 
-            // InitialSelecting과 ReSelecting 모두 동일한 처리
-            if (state.activitySelectingState.isSelecting()) {
-                diaryRepository.getQuestionnaire(
-                    lectureId = lectureId,
-                    dailyClassTypes = selectedDailyClassTypeNames,
-                )
-                    .onSuccess { questionnaireData ->
-                        nextLectureId = questionnaireData.nextLectureId
-                        nextLectureTitle = questionnaireData.nextLectureTitle
-                        _uiState.update { current ->
-                            when (current) {
-                                is DiaryWriteUiState.Write -> current.copyWith(
-                                    activitySelectingState = ActivitySelectionState.Complete,
-                                    questions = questionnaireData.questions,
-                                )
-                                else -> current
+                // FIXME: 이런 Early return 이, 나중에 읽었을 때 도움이 될까?
+                if (state.activitySelectingState.isSelecting().not()) {
+                    return
+                }
+
+                viewModelScope.launch {
+                    diaryRepository.getQuestionnaire(
+                        lectureId = lectureId,
+                        dailyClassTypes = selectedDailyClassTypeNames,
+                    )
+                        .onSuccess { questionnaireData ->
+                            nextLectureId = questionnaireData.nextLectureId
+                            nextLectureTitle = questionnaireData.nextLectureTitle
+
+                            _uiState.update { current ->
+                                when (current) {
+                                    is DiaryWriteUiState.Write -> current.copy(
+                                        activitySelectingState = ActivitySelectionState.Complete,
+                                        questions = questionnaireData.questions,
+                                    )
+
+                                    else -> current
+                                }
                             }
                         }
-                    }
-                    .onFailure { error ->
-                        handleDiaryWriteError(error)
-                    }
+                        .onFailure { error ->
+                            handleDiaryWriteError(error)
+                        }
+                }
             }
         }
     }
 
+    // FIXME: 이름 이거 맞아?
     fun writeNextDiary() {
         viewModelScope.launch {
-            val lectureId = nextLectureId ?: return@launch
-            val courseTitle = nextLectureTitle ?: return@launch
-
-            // savedStateHandle 업데이트
-            savedStateHandle["lectureId"] = lectureId
-            savedStateHandle["courseTitle"] = courseTitle
-
-            // 다음 강의를 위한 정보 초기화
-            nextLectureId = null
-            nextLectureTitle = null
-
-            // GET /v1/diary/dailyClassTypes 호출
-            diaryRepository.getDailyClassTypes()
-                .onSuccess { dailyClassTypes ->
-                    _uiState.update {
-                        DiaryWriteUiState.Write(
-                            lectureName = courseTitle,
-                            dailyClassTypes = dailyClassTypes.map { Selectable(it, false) },
-                            activitySelectingState = ActivitySelectionState.InitialSelecting,
-                            questions = emptyList(),
-                        )
-                    }
-                }
-                .onFailure { error ->
-                    handleDiaryWriteError(error)
-                    _uiState.update { DiaryWriteUiState.Error }
-                }
+            _uiEvent.emit(
+                DiaryWriteUiEvent.NextDiary(
+                    nextLectureId ?: return@launch,
+                    nextLectureTitle ?: return@launch,
+                ),
+            )
         }
     }
 
@@ -260,7 +247,11 @@ sealed interface DiaryWriteUiEvent {
     data class ShowToast(val message: String) :
         DiaryWriteUiEvent
 
-    // TODO: 이름 컨벤션 논의
+    data class NextDiary(
+        val lectureId: String,
+        val courseTitle: String,
+    ) : DiaryWriteUiEvent
+
     data object ForceLogout : DiaryWriteUiEvent
     data object Return : DiaryWriteUiEvent
 }

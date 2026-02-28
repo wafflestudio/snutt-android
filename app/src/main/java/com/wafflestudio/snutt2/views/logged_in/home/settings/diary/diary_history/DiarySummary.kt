@@ -2,7 +2,6 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings.diary.diary_histor
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,6 +20,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,8 +30,8 @@ import com.wafflestudio.snutt2.components.compose.TrashIcon
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.domainmodel.diary.DiaryQuestionAnswer
 import com.wafflestudio.snutt2.domainmodel.diary.DiarySummary
-import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryTheme
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -41,32 +41,42 @@ fun DiarySummariesOfDay(
     listOfDiarySummary: List<DiarySummary>,
     expanded: Boolean,
     toggleExpended: () -> Unit,
-    onDeleteDiary: (lectureId: String) -> Unit,
+    onDeleteDiary: (diaryId: String, courseName: String) -> Unit,
 ) {
-    Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+    Column(modifier = Modifier.padding(vertical = 16.dp, horizontal = 20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Column {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                Row(
+                    modifier = Modifier.padding(vertical = 9.5.dp),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
                     Text(
                         date.format(DateTimeFormatter.ofPattern("yyyy.M.d")),
-                        style = SNUTTTypography.h3.copy(fontSize = 15.sp),
+                        style = SNUTTTypography.h3.copy(fontSize = 15.sp, color = DiaryTheme.colors.textPrimary),
                     )
-                    Text("금", style = SNUTTTypography.h3.copy(fontSize = 15.sp))
+                    Text(
+                        // FIXME: 다국어?
+                        date.format(DateTimeFormatter.ofPattern("E", java.util.Locale.KOREAN)),
+                        style = SNUTTTypography.h3.copy(fontSize = 15.sp, color = DiaryTheme.colors.textPrimary),
+                    )
                 }
             }
             Row(
                 modifier = Modifier
-                    .clickable { toggleExpended() }
+                    .clicks { toggleExpended() }
                     .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = "시각디자인기초, 배구",
-                    style = SNUTTTypography.body1, color = SNUTTColors.EditTextLabel,
+                    text = listOfDiarySummary.joinToString(separator = ", ") { it.courseName },
+                    style = SNUTTTypography.body1,
+                    color = DiaryTheme.colors.textSecondary,
+                    modifier = Modifier.weight(1f),
                 )
                 ArrowDownIcon(
                     modifier = Modifier
@@ -81,7 +91,7 @@ fun DiarySummariesOfDay(
                     DiarySummary(
                         diaryListLectureItem,
                         onClickDeleteButton = {
-                            onDeleteDiary(diaryListLectureItem.id)
+                            onDeleteDiary(diaryListLectureItem.id, diaryListLectureItem.courseName)
                         },
                     )
                 }
@@ -91,7 +101,7 @@ fun DiarySummariesOfDay(
 
     Divider(
         modifier = Modifier.height(0.5.dp),
-        color = SNUTTColors.Black250,
+        color = DiaryTheme.colors.sectionDivider,
     )
 }
 
@@ -107,13 +117,13 @@ private fun DiarySummary(
     )
     val widthInDp = with(LocalDensity.current) { textLayoutResult.size.width.toDp() }
     Column(
-        modifier = Modifier.padding(bottom = 16.dp),
+        modifier = Modifier,
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         Column(
             modifier = Modifier
                 .background(
-                    color = SNUTTColors.LectureDiaryGray,
+                    color = DiaryTheme.colors.summaryCardBackground,
                     shape = RoundedCornerShape(4.dp),
                 )
                 .padding(top = 16.dp, bottom = 20.dp, start = 16.dp, end = 16.dp),
@@ -125,14 +135,14 @@ private fun DiarySummary(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    diarySummary.lectureName,
-                    style = SNUTTTypography.body1.copy(color = SNUTTColors.EditTextLabel),
+                    diarySummary.courseName,
+                    style = SNUTTTypography.body1.copy(color = DiaryTheme.colors.textLabel),
                 )
                 TrashIcon(
                     modifier = Modifier
                         .size(28.dp, 28.dp)
                         .clicks { onClickDeleteButton() },
-                    colorFilter = ColorFilter.tint(SNUTTColors.EditTextHint),
+                    colorFilter = ColorFilter.tint(DiaryTheme.colors.iconSecondary),
                 )
             }
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -142,9 +152,12 @@ private fun DiarySummary(
                             modifier = Modifier
                                 .padding(end = 16.dp)
                                 .width(widthInDp),
-                            text = diaryQuestionAnswer.question, style = SNUTTTypography.subtitle2,
+                            text = diaryQuestionAnswer.question,
+                            style = SNUTTTypography.subtitle2,
+                            fontWeight = FontWeight.Bold,
+                            color = DiaryTheme.colors.textLabel,
                         )
-                        Text(diaryQuestionAnswer.answer, style = SNUTTTypography.body1)
+                        Text(diaryQuestionAnswer.answer, style = SNUTTTypography.body1, color = DiaryTheme.colors.textBody)
                     }
                 }
                 if (diarySummary.comment != null) {
@@ -153,9 +166,12 @@ private fun DiarySummary(
                             modifier = Modifier
                                 .padding(end = 16.dp)
                                 .width(widthInDp),
-                            text = "남기고 싶은 말", style = SNUTTTypography.subtitle2,
+                            text = "남기고 싶은 말",
+                            style = SNUTTTypography.subtitle2,
+                            fontWeight = FontWeight.Bold,
+                            color = DiaryTheme.colors.textLabel,
                         )
-                        Text(diarySummary.comment, style = SNUTTTypography.body1)
+                        Text(diarySummary.comment, style = SNUTTTypography.body1, color = DiaryTheme.colors.textBody)
                     }
                 }
             }
@@ -163,71 +179,76 @@ private fun DiarySummary(
     }
 }
 
+private val previewSummary1 = DiarySummary(
+    id = "preview-id-1",
+    lectureId = "",
+    courseName = "시각디자인기초",
+    date = java.time.LocalDateTime.of(2025, 3, 20, 12, 0),
+    questionAnswers = listOf(
+        DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
+        DiaryQuestionAnswer(question = "드랍여부", answer = "안했어요"),
+        DiaryQuestionAnswer(question = "수업 첫인상", answer = "하.."),
+    ),
+    comment = "좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.",
+)
+
+private val previewSummary2 = DiarySummary(
+    id = "preview-id-2",
+    lectureId = "",
+    courseName = "배구",
+    date = java.time.LocalDateTime.of(2025, 3, 20, 12, 0),
+    questionAnswers = listOf(
+        DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
+        DiaryQuestionAnswer(question = "드랍여부", answer = "안했어요"),
+        DiaryQuestionAnswer(question = "수업 첫인상", answer = "하.."),
+    ),
+    comment = "좋아요",
+)
+
 @Composable
 @Preview(showBackground = true)
 fun DiarySummariesOfDayFoldedPreview() {
-    DiarySummariesOfDay(
-        date = LocalDate.of(2025, 3, 20),
-        emptyList(),
-        false,
-        {},
-        {},
-    )
+    DiaryTheme {
+        DiarySummariesOfDay(LocalDate.of(2025, 3, 20), listOf(previewSummary1), false, {}, { _, _ -> })
+    }
+}
+
+@Composable
+@Preview(uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES, showBackground = true, backgroundColor = 0xFF1a1a1a)
+fun DiarySummariesOfDayFoldedDarkPreview() {
+    DiaryTheme(darkTheme = true) {
+        DiarySummariesOfDay(LocalDate.of(2025, 3, 20), listOf(previewSummary1), false, {}, { _, _ -> })
+    }
 }
 
 @Composable
 @Preview(showBackground = true)
 fun DiarySummariesOfDayExpandedPreview() {
-    DiarySummariesOfDay(
-        date = LocalDate.of(2025, 3, 20),
-        listOf(
-            DiarySummary(
-                id = "preview-id-1",
-                lectureId = "",
-                lectureName = "시각디자인기초",
-                date = java.time.LocalDateTime.now(),
-                questionAnswers = listOf(
-                    DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
-                    DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
-                    DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
-                ),
-                comment = "좋아요",
-            ),
-            DiarySummary(
-                id = "preview-id-2",
-                lectureId = "",
-                lectureName = "배구",
-                date = java.time.LocalDateTime.now(),
-                questionAnswers = listOf(
-                    DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
-                    DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
-                    DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
-                ),
-                comment = "좋아요",
-            ),
-        ),
-        true,
-        {},
-        {},
-    )
+    DiaryTheme {
+        DiarySummariesOfDay(LocalDate.of(2025, 3, 20), listOf(previewSummary1, previewSummary2), true, {}, { _, _ -> })
+    }
+}
+
+@Composable
+@Preview(uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES, showBackground = true, backgroundColor = 0xFF1a1a1a)
+fun DiarySummariesOfDayExpandedDarkPreview() {
+    DiaryTheme(darkTheme = true) {
+        DiarySummariesOfDay(LocalDate.of(2025, 3, 20), listOf(previewSummary1, previewSummary2), true, {}, { _, _ -> })
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun DiarySummaryPreview() {
-    DiarySummary(
-        DiarySummary(
-            id = "preview-id-3",
-            lectureId = "",
-            lectureName = "배구",
-            date = java.time.LocalDateTime.now(),
-            questionAnswers = listOf(
-                DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
-                DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
-                DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
-            ),
-            comment = "좋아요",
-        ),
-        {},
-    )
+    DiaryTheme {
+        DiarySummary(previewSummary2, {})
+    }
+}
+
+@Preview(uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES, showBackground = true, backgroundColor = 0xFF1a1a1a)
+@Composable
+fun DiarySummaryDarkPreview() {
+    DiaryTheme(darkTheme = true) {
+        DiarySummary(previewSummary2, {})
+    }
 }

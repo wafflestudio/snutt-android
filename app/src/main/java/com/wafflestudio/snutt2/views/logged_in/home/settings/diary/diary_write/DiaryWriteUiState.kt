@@ -15,13 +15,6 @@ sealed interface DiaryWriteUiState {
 
         fun allQuestionAnswered(): Boolean =
             questions.all { question -> question.selectableAnswers.anySelected() }
-
-        fun copyWith(
-            lectureName: String = this.lectureName,
-            dailyClassTypes: List<Selectable<DiaryDailyClassType>> = this.dailyClassTypes,
-            activitySelectingState: ActivitySelectionState = this.activitySelectingState,
-            questions: List<DiaryQuestion> = this.questions,
-        ): Write = this.copy(lectureName, dailyClassTypes, activitySelectingState, questions)
     }
 
     data object Error : DiaryWriteUiState

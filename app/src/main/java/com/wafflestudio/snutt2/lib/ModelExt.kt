@@ -61,7 +61,7 @@ fun CourseBook.toAbbvString(): String {
         4L -> "겨울"
         else -> ""
     }
-    return "${this.year}-$semesterStr"
+    return "${this.year.rem(2000)}-$semesterStr"
 }
 
 fun TagType.color(): androidx.compose.ui.graphics.Color {

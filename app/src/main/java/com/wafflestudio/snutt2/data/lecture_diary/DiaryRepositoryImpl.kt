@@ -1,7 +1,7 @@
 package com.wafflestudio.snutt2.data.lecture_diary
 
-import com.wafflestudio.snutt2.domainmodel.diary.DiaryDailyClassType
 import com.wafflestudio.snutt2.domainmodel.diary.DiaryAnsweredQuestion
+import com.wafflestudio.snutt2.domainmodel.diary.DiaryDailyClassType
 import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.DiaryQuestionnaireRequestDto
@@ -38,10 +38,10 @@ class DiaryRepositoryImpl @Inject constructor(
             )
             Result.Success(
                 DiaryQuestionnaireData(
-                    lectureTitle = result.lectureTitle,
+                    courseTitle = result.courseTitle,
                     questions = result.questions.map { it.toDomainModel() },
-                    nextLectureId = result.nextLectureId,
-                    nextLectureTitle = result.nextLectureTitle,
+                    nextLectureId = result.nextLecture?.lectureId,
+                    nextLectureTitle = result.nextLecture?.courseTitle,
                 ),
             )
         } catch (e: Exception) {

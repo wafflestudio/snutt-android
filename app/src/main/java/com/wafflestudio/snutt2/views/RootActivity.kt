@@ -269,7 +269,7 @@ class RootActivity : AppCompatActivity() {
                             navController.previousBackStackEntry?.destination?.hasRoute(
                                 NavigationDestination.LecturesOfTable::class,
                             ) == true
-                            -> DetailScreenReferrer.LectureList
+                                -> DetailScreenReferrer.LectureList
 
                             homePageController.homePageState.value == HomeItem.Timetable -> DetailScreenReferrer.Timetable
                             else -> null
@@ -466,7 +466,19 @@ class RootActivity : AppCompatActivity() {
                         navController.navigateAsOrigin(NavigationDestination.Onboard)
                     },
                     onNavigateHome = { navController.navigateAsOrigin(NavigationDestination.Home) },
-                    onNavigateReview = {},
+                    onNavigateReview = {
+                        homePageController.update(HomeItem.Review())
+                        navController.navigateAsOrigin(NavigationDestination.Home)
+                    },
+                    onNavigateNextDiaryWrite = { lectureId, courseTitle ->
+                        navController.navigate(
+                            NavigationDestination.LectureDiaryWrite(lectureId, courseTitle),
+                        ) {
+                            popUpTo<NavigationDestination.LectureDiaryWrite> {
+                                inclusive = true
+                            }
+                        }
+                    },
                 )
             }
             composableAnimated<NavigationDestination.LectureDiaryHistory> { entry ->
@@ -475,9 +487,6 @@ class RootActivity : AppCompatActivity() {
                         if (navController.currentDestination?.hasRoute(NavigationDestination.LectureDiaryHistory::class) == true) {
                             navController.popBackStack()
                         }
-                    },
-                    onNavigateOnboard = {
-                        navController.navigateAsOrigin(NavigationDestination.Onboard)
                     },
                 )
             }

@@ -1,7 +1,16 @@
 package com.wafflestudio.snutt2.components.compose
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Surface
@@ -15,6 +24,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
@@ -47,6 +57,77 @@ fun ProgressDialog(
                     CircularProgressIndicator()
                     Spacer(modifier = Modifier.width(30.dp))
                     Text(message)
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun ConfirmDialog(
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit,
+    title: String,
+    positiveButtonText: String = stringResource(R.string.common_ok),
+    negativeButtonText: String = stringResource(R.string.common_cancel),
+) {
+    val screenWidthInDp = with(LocalDensity.current) { LocalView.current.width.toDp() }
+    val dialogWidth = min(560.dp, screenWidthInDp - 80.dp)
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(usePlatformDefaultWidth = false),
+    ) {
+        Surface(
+            shape = RoundedCornerShape(10.dp),
+            elevation = 10.dp,
+        ) {
+            Column(
+                modifier = Modifier
+                    .widthIn(min = 280.dp)
+                    .width(dialogWidth)
+                    .background(SNUTTColors.White900)
+                    .padding(top = 36.dp, start = 24.dp, end = 24.dp, bottom = 12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    text = title,
+                    style = SNUTTTypography.body1,
+                    textAlign = TextAlign.Center,
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .weight(1f)
+                            .background(
+                                color = SNUTTColors.LectureDiaryGray,
+                                shape = RoundedCornerShape(6.dp),
+                            )
+                            .clicks { onDismiss() }
+                            .padding(vertical = 8.dp),
+                        text = negativeButtonText,
+                        style = SNUTTTypography.button.copy(color = SNUTTColors.Gray30),
+                        textAlign = TextAlign.Center,
+                    )
+                    Text(
+                        modifier = Modifier
+                            .weight(1f)
+                            .background(
+                                color = SNUTTColors.SNUTTTheme,
+                                shape = RoundedCornerShape(6.dp),
+                            )
+                            .clicks { onConfirm() }
+                            .padding(vertical = 8.dp),
+                        text = positiveButtonText,
+                        style = SNUTTTypography.button.copy(color = SNUTTColors.White900),
+                        textAlign = TextAlign.Center,
+                    )
                 }
             }
         }

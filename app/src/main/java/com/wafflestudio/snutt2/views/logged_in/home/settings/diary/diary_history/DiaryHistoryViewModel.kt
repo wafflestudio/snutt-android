@@ -119,7 +119,29 @@ class DiaryHistoryViewModel @Inject constructor(
         }
     }
 
-    fun deleteDiary(diaryId: String) {
+    fun openDeleteDiaryDialog(diaryId: String, courseName: String) {
+        _uiState.update { state ->
+            when (state) {
+                is DiaryHistoryUiState.Success -> state.copy(
+                    dialogState = DiaryHistoryUiState.DialogState.DeleteDiary(diaryId, courseName),
+                )
+                else -> state
+            }
+        }
+    }
+
+    fun dismissDialog() {
+        _uiState.update { state ->
+            when (state) {
+                is DiaryHistoryUiState.Success -> state.copy(
+                    dialogState = DiaryHistoryUiState.DialogState.None,
+                )
+                else -> state
+            }
+        }
+    }
+
+    fun confirmDeleteDiary(diaryId: String) {
         viewModelScope.launch {
             diaryRepository.removeDiarySubmission(diaryId)
                 .onSuccess {
@@ -138,6 +160,7 @@ class DiaryHistoryViewModel @Inject constructor(
 
                                 state.copy(
                                     diarySummariesByCourseBook = updatedDiarySummariesByCourseBook,
+                                    dialogState = DiaryHistoryUiState.DialogState.None,
                                 )
                             }
                             else -> state

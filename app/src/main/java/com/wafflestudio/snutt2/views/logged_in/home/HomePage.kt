@@ -252,10 +252,10 @@ fun HomePage() {
                         onNavigateDiaryWrite = {
                             navController.navigate(
                                 NavigationDestination.LectureDiaryWrite(
-                                    lectureId = "686e8d3c2afaf11b888e2722",
-                                    courseTitle = "테스트 강의", // FIXME: 임시 테스트 데이터
+                                    lectureId = "695affb59dfd1a77c7c20778",
+                                    courseTitle = "데이터사이언스를 위한 컴퓨팅 시스템",
                                 ),
-                            ) // 푸시 알림으로 트리거, 임시로 넣어둠
+                            )
                         },
                         onNavigateDiaryHistory = {
                             navController.navigate(NavigationDestination.LectureDiaryHistory) // 푸시 알림으로 트리거, 임시로 넣어둠
