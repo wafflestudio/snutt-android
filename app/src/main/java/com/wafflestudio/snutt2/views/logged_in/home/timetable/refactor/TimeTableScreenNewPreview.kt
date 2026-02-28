@@ -27,6 +27,7 @@ private val baseLoadedState = TimeTableUiState.Loaded(
     uncheckedNotificationExist = false,
     vacancyNotificationBannerEnabled = false,
     dialogState = TimeTableUiState.DialogState.None,
+    isSessionlessLectureHintVisible = true,
 )
 
 @Preview(showBackground = true, widthDp = 360, heightDp = 700, name = "Default")
@@ -37,13 +38,15 @@ private fun TimeTableScreenDefaultPreview() {
         onClickDrawerIcon = {},
         onClickTableTitle = {},
         onClickTableLecturesListIcon = {},
-        onClickNotificationIcon = {},
         onClickVacancyBanner = {},
         onClickLectureCell = {},
         onDismissDialog = {},
         onConfirmChangeTableTitle = { _, _ -> },
         onBottomNavigate = {},
-        onClickShareTable = {},
+        onClickBookmarkIcon = {},
+        onClickAddBySearch = {},
+        onClickAddManually = {},
+        onVisitSessionlessLectureList = {},
     )
 }
 
@@ -59,13 +62,15 @@ private fun TimeTableScreenAllBadgesPreview() {
         onClickDrawerIcon = {},
         onClickTableTitle = {},
         onClickTableLecturesListIcon = {},
-        onClickNotificationIcon = {},
         onClickVacancyBanner = {},
         onClickLectureCell = {},
         onDismissDialog = {},
         onConfirmChangeTableTitle = { _, _ -> },
         onBottomNavigate = {},
-        onClickShareTable = {},
+        onClickBookmarkIcon = {},
+        onClickAddBySearch = {},
+        onClickAddManually = {},
+        onVisitSessionlessLectureList = {},
     )
 }
 

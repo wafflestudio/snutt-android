@@ -238,7 +238,7 @@ data class LectureDto(
         wasFull = wasFull,
         reviewInfo = LectureReviewInfo(
             id = review?.id ?: "",
-            rating = review?.rating ?: 0.0,
+            rating = review?.rating,
             reviewCount = review?.reviewCount ?: 0,
         ),
     )

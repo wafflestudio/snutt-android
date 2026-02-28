@@ -31,6 +31,7 @@ fun Exception.toDomainError(): DomainError {
                 ErrorCode.WRONG_PASSWORD -> WrongPassword(displayTitle, displayMessage)
                 ErrorCode.PAST_SEMESTER -> PastSemester(displayTitle, displayMessage)
                 ErrorCode.DISABLED_FEATURE -> DisabledFeature(displayTitle, displayMessage)
+                ErrorCode.LECTURE_TIME_OVERLAP -> LectureOverlap(displayTitle, displayMessage)
                 else -> Unknown(displayTitle, displayMessage)
             }
         }

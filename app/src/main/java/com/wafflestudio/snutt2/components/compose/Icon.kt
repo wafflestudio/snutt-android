@@ -3,14 +3,17 @@ package com.wafflestudio.snutt2.components.compose
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -250,6 +253,19 @@ fun WriteIcon(
     Image(
         modifier = modifier,
         painter = painterResource(R.drawable.ic_write),
+        contentDescription = "",
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
+fun WriteUnderlineIcon(
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(R.drawable.ic_write_underline),
         contentDescription = "",
         colorFilter = colorFilter,
     )
@@ -539,6 +555,38 @@ fun RedDot() {
 }
 
 @Composable
+fun RedDotWithNumber(
+    modifier: Modifier = Modifier,
+    number: Long,
+) {
+    Canvas(
+        modifier = modifier.size(16.dp),
+    ) {
+        drawCircle(
+            color = SNUTTColors.Red,
+            radius = size.minDimension / 2,
+        )
+
+        drawContext.canvas.nativeCanvas.apply {
+            val text = number.toString()
+
+            val paint = android.graphics.Paint().apply {
+                color = android.graphics.Color.WHITE
+                textAlign = android.graphics.Paint.Align.CENTER
+                isAntiAlias = true
+                textSize = size.minDimension * 0.7f
+                typeface = android.graphics.Typeface.DEFAULT_BOLD
+            }
+
+            val x = size.width / 2
+            val y = size.height / 2 - (paint.descent() + paint.ascent()) / 2
+
+            drawText(text, x, y, paint)
+        }
+    }
+}
+
+@Composable
 fun BigSearchIcon(
     modifier: Modifier = Modifier,
 ) {
@@ -642,6 +690,8 @@ fun BookmarkPageIcon(
 @Composable
 fun IconWithAlertDot(
     redDotExist: Boolean = false,
+    dotSize: Dp = 5.dp,
+    dotYOffset: Dp = 0.dp,
     color: Color = SNUTTColors.Red,
     content: @Composable (Modifier) -> Unit,
 ) {
@@ -650,10 +700,52 @@ fun IconWithAlertDot(
         if (redDotExist) {
             Canvas(
                 modifier = Modifier
-                    .size(5.dp)
-                    .align(Alignment.TopEnd),
+                    .size(dotSize)
+                    .align(Alignment.TopEnd)
+                    .offset(y = dotYOffset),
             ) {
                 drawCircle(color)
+            }
+        }
+    }
+}
+
+@Composable
+fun IconWithAlertDotNumber(
+    modifier: Modifier = Modifier,
+    redDotNumber: Long = 0,
+    content: @Composable (Modifier) -> Unit,
+) {
+    Box {
+        content(Modifier.align(Alignment.Center))
+        if (redDotNumber > 0) {
+            Canvas(
+                modifier = Modifier
+                    .size(16.dp)
+                    .align(Alignment.TopEnd)
+                    .offset(x = 9.dp, y = (-5).dp),
+            ) {
+                drawCircle(
+                    color = SNUTTColors.Red,
+                    radius = size.minDimension / 2,
+                )
+
+                drawContext.canvas.nativeCanvas.apply {
+                    val text = redDotNumber.toString()
+
+                    val paint = android.graphics.Paint().apply {
+                        color = android.graphics.Color.WHITE
+                        textAlign = android.graphics.Paint.Align.CENTER
+                        isAntiAlias = true
+                        textSize = size.minDimension * 0.7f
+                        typeface = android.graphics.Typeface.DEFAULT_BOLD
+                    }
+
+                    val x = size.width / 2
+                    val y = size.height / 2 - (paint.descent() + paint.ascent()) / 2
+
+                    drawText(text, x, y, paint)
+                }
             }
         }
     }
@@ -845,7 +937,7 @@ fun MegaphoneIcon(
 @Composable
 fun NotificationVacancyIcon(
     modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = null,
+    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
     Image(
         modifier = modifier.size(30.dp),

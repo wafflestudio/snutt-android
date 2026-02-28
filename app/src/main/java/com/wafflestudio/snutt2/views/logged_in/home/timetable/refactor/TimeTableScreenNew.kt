@@ -1,26 +1,21 @@
 package com.wafflestudio.snutt2.views.logged_in.home.timetable.refactor
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.components.compose.BookmarkIcon
 import com.wafflestudio.snutt2.components.compose.DrawerIcon
 import com.wafflestudio.snutt2.components.compose.IconWithAlertDot
-import com.wafflestudio.snutt2.components.compose.LectureListIcon
-import com.wafflestudio.snutt2.components.compose.NotificationIcon
-import com.wafflestudio.snutt2.components.compose.ShareIcon
 import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.domainmodel.LocalLecture
@@ -30,10 +25,8 @@ import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.logged_in.home.BottomNavigation
 import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
-import com.wafflestudio.snutt2.views.logged_in.home.drawer.refactor.VacancyBanner
 
 @Composable
 fun TimeTableScreenNew(
@@ -41,10 +34,12 @@ fun TimeTableScreenNew(
     onClickDrawerIcon: () -> Unit,
     onClickTableTitle: (tableSummary: TableSummary) -> Unit,
     onClickTableLecturesListIcon: () -> Unit,
-    onClickShareTable: () -> Unit,
-    onClickNotificationIcon: () -> Unit,
     onClickVacancyBanner: () -> Unit,
     onClickLectureCell: (LocalLecture) -> Unit,
+    onClickBookmarkIcon: () -> Unit,
+    onClickAddBySearch: () -> Unit,
+    onClickAddManually: () -> Unit,
+    onVisitSessionlessLectureList: () -> Unit,
     onDismissDialog: () -> Unit,
     onConfirmChangeTableTitle: (newTitle: String, tableId: String) -> Unit,
     onBottomNavigate: (HomeItem) -> Unit,
@@ -96,52 +91,41 @@ fun TimeTableScreenNew(
                         }
                     },
                     actions = {
-                        LectureListIcon(
+                        BookmarkIcon(
                             modifier = Modifier
                                 .size(30.dp)
-                                .clicks { onClickTableLecturesListIcon() },
+                                .clicks { onClickBookmarkIcon() },
                         )
-                        ShareIcon(
-                            modifier = Modifier
-                                .size(30.dp)
-                                .clicks { onClickShareTable() },
+                        TimetableMoreAction(
+                            onClickAddBySearch = onClickAddBySearch,
+                            onClickAddManually = onClickAddManually,
+                            onClickTableLecturesListIcon = onClickTableLecturesListIcon,
+                            onClickVacancyIcon = onClickVacancyBanner,
                         )
-                        IconWithAlertDot(uiState.uncheckedNotificationExist) { centerAlignedModifier ->
-                            NotificationIcon(
-                                modifier = centerAlignedModifier
-                                    .size(30.dp)
-                                    .clicks { onClickNotificationIcon() },
-                                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
-                            )
-                        }
                     },
                 )
-                if (uiState.vacancyNotificationBannerEnabled) {
-                    VacancyBanner(
-                        onClick = onClickVacancyBanner,
-                    )
-                }
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth(),
-                ) {
-                    TimeTableNew(
-                        lectures = uiState.table.lectures,
-                        selectedLecture = null,
-                        fittedTrimParam = uiState.tableTrimParam,
-                        theme = uiState.theme,
-                        previewTheme = uiState.previewTheme,
-                        isDarkMode = isDarkMode(),
-                        compactMode = uiState.isCompactMode,
-                        tableLectureCustomOptions = uiState.tableLectureCustomOptions,
-                        touchEnabled = true,
-                        onLectureClick = onClickLectureCell,
-                    )
-                }
+
+
+                ScrollableTimetableContent(
+                    modifier = Modifier.weight(1f),
+                    lectures = uiState.table.lectures,
+                    vacancyNotificationBannerEnabled = uiState.vacancyNotificationBannerEnabled,
+                    isSessionlessLectureHintVisible = uiState.isSessionlessLectureHintVisible,
+                    onVisitSessionlessLectureList = onVisitSessionlessLectureList,
+                    onClickVacancyBanner = onClickVacancyBanner,
+                    onClickLectureCell = onClickLectureCell,
+
+                    fittedTrimParam = uiState.tableTrimParam,
+                    theme = uiState.theme,
+                    previewTheme = uiState.previewTheme,
+                    compactMode = uiState.isCompactMode,
+                    tableLectureCustomOptions = uiState.tableLectureCustomOptions,
+                )
+
                 BottomNavigation(
                     pageState = HomeItem.Timetable,
                     onUpdatePageState = onBottomNavigate,
+                    uncheckedNotificationExist = uiState.uncheckedNotificationExist,
                 )
             }
         }

@@ -29,7 +29,9 @@ sealed interface AddLocalIdError : DomainError
 sealed interface ChangePasswordError : DomainError
 sealed interface LectureReminderError : DomainError
 sealed interface VacancyError : DomainError
+sealed interface AddLectureError : DomainError
 
+data class LectureOverlap(override val displayTitle: String, override val displayMessage: String) : AddLectureError
 data class InvalidId(override val displayTitle: String, override val displayMessage: String) : SignupError, AddLocalIdError
 data class InvalidPassword(override val displayTitle: String, override val displayMessage: String) : SignupError, AddLocalIdError, ChangePasswordError
 data class DuplicateId(override val displayTitle: String, override val displayMessage: String) : SignupError, AddLocalIdError

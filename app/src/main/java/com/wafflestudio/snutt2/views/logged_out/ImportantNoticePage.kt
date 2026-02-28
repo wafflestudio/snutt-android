@@ -82,7 +82,7 @@ fun ImportantNoticePage() {
                     navController.navigate(NavigationDestination.AppReport)
                 },
             shape = RoundedCornerShape(18.dp),
-            color = SNUTTColors.SNUTTVacancy,
+            color = SNUTTColors.SNUTTDarkMintBlue,
         ) {
             Box(
                 contentAlignment = Alignment.Center,

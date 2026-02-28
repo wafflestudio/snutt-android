@@ -702,7 +702,7 @@ fun SugangSnuFloatingActionButton(
             .size(110.dp, 32.dp)
             .clicks { onClick() },
         shape = RoundedCornerShape(50),
-        color = SNUTTColors.SNUTTVacancy,
+        color = SNUTTColors.SNUTTDarkMintBlue,
         elevation = 3.dp,
     ) {
         Box(

@@ -84,7 +84,7 @@ fun HomePage() {
     val searchViewModel = hiltViewModel<SearchViewModel>()
     val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>()
 
-    val uncheckedNotification by homeViewModel.unCheckedNotificationExist.collectAsState()
+     val uncheckedNotification by homeViewModel.uncheckedNotification.collectAsState()
     val table by timetableViewModel.currentTable.collectAsState()
     val previewTheme by timetableViewModel.previewTheme.collectAsState()
     val trimParam by userViewModel.trimParam.collectAsState()
@@ -119,7 +119,7 @@ fun HomePage() {
     LaunchedEffect(pageController.homePageState.value) {
         if (pageController.homePageState.value == HomeItem.Timetable || pageController.homePageState.value == HomeItem.Settings) {
             launchSuspendApi(apiOnProgress, apiOnError) {
-                homeViewModel.checkUncheckedNotificationsExist()
+                homeViewModel.checkUncheckedNotifications()
             }
         }
     }
@@ -161,9 +161,6 @@ fun HomePage() {
                 onNavigateLecturesOfTable = {
                     navController.navigate(NavigationDestination.LecturesOfTable)
                 },
-                onNavigateNotification = {
-                    navController.navigate(NavigationDestination.Notification)
-                },
                 onNavigateVacancyNotification = {
                     navController.navigate(NavigationDestination.VacancyNotification)
                 },
@@ -177,6 +174,19 @@ fun HomePage() {
                         launchSingleTop = true
                     }
                 },
+                onNavigateBookmark = {
+                    navController.navigate(NavigationDestination.Bookmark)
+                },
+                onNavigateSearch = {
+                    pageController.update(HomeItem.Search)
+                },
+                onNavigateAddLecture = {
+                    lectureDetailViewModel.initializeEditingLectureDetail(
+                        LectureDto.Default,
+                        ModeType.Editing(true),
+                    )
+                    navController.navigate(NavigationDestination.LectureDetail)
+                },
                 onBottomNavigate = { pageController.update(it) },
             )
 
@@ -189,7 +199,7 @@ fun HomePage() {
                 contentAlignment = Alignment.BottomCenter,
             ) {
                 when (pageController.homePageState.value) {
-                    HomeItem.Timetable -> TimetablePage(uncheckedNotification)
+                    HomeItem.Timetable -> TimetablePage({ pageController.update(HomeItem.Search) })
                     HomeItem.Search -> SearchRoute(
                         searchResultPagingItems, searchResultListState,
                         onNavigateOnboardAsOrigin = {
@@ -197,6 +207,9 @@ fun HomePage() {
                         },
                         onNavigateVacancy = {
                             navController.navigate(NavigationDestination.VacancyNotification)
+                        },
+                        onNavigateBookmark = {
+                            navController.navigate(NavigationDestination.Bookmark)
                         },
                     )
 
@@ -208,8 +221,12 @@ fun HomePage() {
 
                     HomeItem.Friends -> FriendsRoute()
                     HomeItem.Settings -> SettingsRoute(
+                        uncheckedNotifications = uncheckedNotification,
                         onNavigateUserConfig = {
                             navController.navigate(NavigationDestination.UserConfig)
+                        },
+                        onNavigateNotification = {
+                            navController.navigate(NavigationDestination.Notification)
                         },
                         onNavigateThemeModeSelect = {
                             navController.navigate(NavigationDestination.ThemeModeSelect)
@@ -286,6 +303,7 @@ fun HomePage() {
             }
             BottomNavigation(
                 pageState = pageController.homePageState.value,
+                uncheckedNotificationExist = uncheckedNotification > 0,
                 onUpdatePageState = { pageController.update(it) },
             )
         }

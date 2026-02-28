@@ -28,9 +28,8 @@ class HomeViewModel @Inject constructor(
     private val remoteConfig: RemoteConfig,
 ) : ViewModel() {
 
-    private val _unCheckedNotificationExist = MutableStateFlow(false)
-    val unCheckedNotificationExist = _unCheckedNotificationExist.asStateFlow()
-
+    private val _uncheckedNotification = MutableStateFlow(0L)
+    val uncheckedNotification = _uncheckedNotification.asStateFlow()
     suspend fun refreshData() {
         try {
             coroutineScope {
@@ -54,7 +53,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    suspend fun checkUncheckedNotificationsExist() {
-        _unCheckedNotificationExist.emit(notificationRepository.getNotificationCount() > 0)
+    suspend fun checkUncheckedNotifications() {
+        _uncheckedNotification.emit(notificationRepository.getNotificationCount())
     }
 }

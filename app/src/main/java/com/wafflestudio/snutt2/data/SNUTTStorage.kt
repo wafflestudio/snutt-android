@@ -170,6 +170,16 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
+    val isVisitedSessionlessLectureList = PrefValue<Boolean>(
+        prefContext,
+        PrefValueMetaData(
+            domain = DOMAIN_SCOPE_LOGIN,
+            key = "is_visited_sessionless_lecture_list",
+            type = Boolean::class.java,
+            defaultValue = false,
+        ),
+    )
+
     val firstVacancyAdd = PrefValue(
         prefContext,
         PrefValueMetaData(

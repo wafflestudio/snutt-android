@@ -27,6 +27,7 @@ class TimetableViewModel @Inject constructor(
 ) : ViewModel() {
     val currentTable: StateFlow<TableDto?> = currentTableRepository.currentTable
 
+    val isVisitedSessionlessLectureList = currentTableRepository.isVisitedSessionlessLectureList
     private val _previewTheme = MutableStateFlow<TableTheme?>(null)
     val previewTheme: StateFlow<TableTheme?> = _previewTheme
 
@@ -62,5 +63,9 @@ class TimetableViewModel @Inject constructor(
 
     fun setPreviewTheme(previewTheme: TableTheme?) {
         _previewTheme.value = previewTheme
+    }
+
+    suspend fun visitSessionlessLectureList() {
+        currentTableRepository.visitSessionlessLectureList()
     }
 }

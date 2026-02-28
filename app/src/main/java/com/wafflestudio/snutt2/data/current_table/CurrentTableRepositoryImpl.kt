@@ -1,9 +1,15 @@
 package com.wafflestudio.snutt2.data.current_table
 
+import androidx.compose.ui.res.stringResource
 import com.wafflestudio.snutt2.data.SNUTTStorage
+import com.wafflestudio.snutt2.domainmodel.Lecture
+import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.domainmodel.Table
+import com.wafflestudio.snutt2.lib.network.DomainError
+import com.wafflestudio.snutt2.lib.network.EOF
 import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
+import com.wafflestudio.snutt2.lib.network.Unknown
 import com.wafflestudio.snutt2.lib.network.dto.PostBookmarkParams
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PostLectureParams
@@ -25,6 +31,8 @@ class CurrentTableRepositoryImpl @Inject constructor(
     private val storage: SNUTTStorage,
     externalScope: CoroutineScope,
 ) : CurrentTableRepository {
+
+    override val isVisitedSessionlessLectureList: StateFlow<Boolean> = storage.isVisitedSessionlessLectureList.asStateFlow()
 
     override val currentTable: StateFlow<TableDto?> = storage.lastViewedTable.asStateFlow()
         .unwrap(externalScope)
@@ -115,7 +123,7 @@ class CurrentTableRepositoryImpl @Inject constructor(
 
     override suspend fun updateCurrentTable() {
         val prevTable = storage.lastViewedTable.get().value
-            ?: throw IllegalStateException("cannot update table when current table not exists")
+            ?: return
         val response = api._getTableById(prevTable.id)
         storage.lastViewedTable.update(response.toOptional())
     }
@@ -137,4 +145,66 @@ class CurrentTableRepositoryImpl @Inject constructor(
                 }
             }
         }
+
+    override suspend fun visitSessionlessLectureList() {
+        storage.isVisitedSessionlessLectureList.update(true)
+    }
+
+    override suspend fun getBookmarksNew(): Result<List<SearchedLecture>> {
+        try {
+            val table = currentTable.value
+                ?: return Result.Success(listOf())
+            return Result.Success(
+                table.let {
+                    api._getBookmarkList(it.year, it.semester).lectures
+                }.map { lecture ->
+                    lecture.toSearchedLecture()
+                },
+            )
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun addBookmarkNew(lecture: Lecture): Result<Unit> {
+        try {
+            val response = api._addBookmark(PostBookmarkParams(lecture.id))
+            return Result.Success(response)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun deleteBookmark(lecture: Lecture): Result<Unit> {
+        try {
+            val response = api._deleteBookmark(PostBookmarkParams(lecture.id))
+            return Result.Success(response)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun addLectureNew(lectureId: String, isForced: Boolean): Result<Unit> {
+        val prevTable = storage.lastViewedTable.get().value
+            ?: return Result.Success(Unit)
+        try {
+            val response = api._postAddLecture(prevTable.id, lectureId, PostLectureParams(isForced))
+            storage.lastViewedTable.update(response.toOptional())
+            return Result.Success(Unit)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun removeLectureNew(lectureId: String): Result<Unit> {
+        val prevTable = storage.lastViewedTable.get().value
+            ?: return Result.Success(Unit)
+        try {
+            val response = api._deleteLecture(prevTable.id, lectureId)
+            storage.lastViewedTable.update(response.toOptional())
+            return Result.Success(Unit)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
 }

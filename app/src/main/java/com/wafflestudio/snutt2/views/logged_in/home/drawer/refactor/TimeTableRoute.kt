@@ -32,9 +32,11 @@ fun TimeTableRoute(
     timeTableViewModel: TimeTableViewModelNew = hiltViewModel(),
     onNavigateBottomSheetThemeDetail: () -> Unit,
     onNavigateLecturesOfTable: () -> Unit,
-    onNavigateNotification: () -> Unit,
     onNavigateVacancyNotification: () -> Unit,
     onNavigateLectureDetail: (LocalLecture) -> Unit,
+    onNavigateBookmark: () -> Unit,
+    onNavigateSearch: () -> Unit,
+    onNavigateAddLecture: () -> Unit,
     onBottomNavigate: (HomeItem) -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
@@ -160,14 +162,12 @@ fun TimeTableRoute(
             onClickDrawerIcon = { scope.launch { drawerState.open() } },
             onClickTableTitle = timeTableViewModel::showTableTitleChangeDialog,
             onClickTableLecturesListIcon = onNavigateLecturesOfTable,
-            onClickShareTable = {
-                val loaded = timeTableUiState as? TimeTableUiState.Loaded ?: return@TimeTableScreenNew
-                shareScreenshot(loaded.table.toTableDto(), loaded.tableTrimParam, context)
-                analyticsLogger.logScreen(AnalyticsScreen.TimetableShare)
-            },
-            onClickNotificationIcon = onNavigateNotification,
             onClickVacancyBanner = onNavigateVacancyNotification,
             onClickLectureCell = onNavigateLectureDetail,
+            onClickBookmarkIcon = onNavigateBookmark,
+            onClickAddBySearch = onNavigateSearch,
+            onClickAddManually = onNavigateAddLecture,
+            onVisitSessionlessLectureList = timeTableViewModel::visitSessionlessLectureList,
             onDismissDialog = timeTableViewModel::dismissDialog,
             onConfirmChangeTableTitle = timeTableViewModel::changeTableTitle,
             onBottomNavigate = onBottomNavigate,

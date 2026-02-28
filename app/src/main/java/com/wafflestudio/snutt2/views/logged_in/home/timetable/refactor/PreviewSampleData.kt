@@ -79,6 +79,11 @@ internal val builtInOnlyLectures: List<LocalLecture> = listOf(
             LectureSession(null, DayOfWeek.TUESDAY, LocalTime.of(14, 0), LocalTime.of(15, 30), "25-210"),
         ),
     ),
+    syllabusLecture(
+        id = "5", courseTitle = "통계학", instructor = "최수진",
+        color = LectureColor.BuiltIn(4),
+        sessions = listOf(),
+    ),
 )
 
 // BuiltIn 색인 + Custom 색 혼합 (빌트인 테마에서 일부 강의만 사용자 커스텀 색)

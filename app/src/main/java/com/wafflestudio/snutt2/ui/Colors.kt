@@ -94,8 +94,8 @@ object SNUTTColors {
     val Colors.SNUTTTheme @Composable get() = if (isLight) Color(0xff1BD0C8) else Color(0xff58c1b7)
     val SNUTTTheme @Composable get() = MaterialTheme.colors.SNUTTTheme
 
-    val Colors.SNUTTVacancy @Composable get() = if (isLight) Color(0xff1bd0c8) else Color(0xff00b8b0)
-    val SNUTTVacancy @Composable get() = MaterialTheme.colors.SNUTTVacancy
+    val Colors.SNUTTDarkMintBlue @Composable get() = if (isLight) Color(0xff1bd0c8) else Color(0xff00b8b0)
+    val SNUTTDarkMintBlue @Composable get() = MaterialTheme.colors.SNUTTDarkMintBlue
 
     val Colors.BannerBlue @Composable get() = if (isLight) Color(0xff26c1bb) else Color(0xff1ca6a0)
     val BannerBlue @Composable get() = MaterialTheme.colors.BannerBlue
@@ -158,6 +158,18 @@ object SNUTTColors {
 
     val Colors.TableGrid2 @Composable get() = if (isLight) Color(0xfff3f3f3) else Color(0xff3c3c3c)
     val TableGrid2 @Composable get() = MaterialTheme.colors.TableGrid2
+
+    val Colors.Hint1 @Composable get() = if (isLight) Color(0x66a6a6a6) else Color(0xff505050)
+    val Hint1 @Composable get() = MaterialTheme.colors.Hint1
+
+    val Colors.Hint2 @Composable get() = if (isLight) Color(0xffa6a6a6) else Color(0xffa6a6a6)
+    val Hint2 @Composable get() = MaterialTheme.colors.Hint2
+
+    val Colors.DropdownMenuTitle @Composable get() = if (isLight) Color(0xffffffff) else Color(0xffb3b3b3)
+    val DropdownMenuTitle @Composable get() = MaterialTheme.colors.DropdownMenuTitle
+
+    val Colors.DropdownMenuBackground @Composable get() = if (isLight) Color(0xffffffff) else Color(0xff3c3c3c)
+    val DropdownMenuBackground @Composable get() = MaterialTheme.colors.DropdownMenuBackground
 
     val Colors.AllWhite @Composable get() = Color(0xffffffff)
     val AllWhite @Composable get() = MaterialTheme.colors.AllWhite

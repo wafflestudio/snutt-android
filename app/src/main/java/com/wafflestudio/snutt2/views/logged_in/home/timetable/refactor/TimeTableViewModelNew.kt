@@ -80,9 +80,10 @@ class TimeTableViewModelNew @Inject constructor(
                 combine(
                     notificationRepository.notificationCount,
                     remoteConfig.vacancyNotificationBannerEnabled,
-                    ::Pair,
+                    currentTableRepository.isVisitedSessionlessLectureList,
+                    ::Triple,
                 ),
-            ) { table, theme, (tableTrimParam, compactMode, tableLectureCustomOption), (tableMap, coursebooks), (count, vacancy) ->
+            ) { table, theme, (tableTrimParam, compactMode, tableLectureCustomOption), (tableMap, coursebooks), (count, vacancy, isVisited) ->
                 val prevState = _uiState.value as? TimeTableUiState.Loaded
                 _uiState.update {
                     TimeTableUiState.Loaded(
@@ -105,10 +106,23 @@ class TimeTableViewModelNew @Inject constructor(
                         },
                         uncheckedNotificationExist = count > 0,
                         vacancyNotificationBannerEnabled = vacancy,
+                        isSessionlessLectureHintVisible = !isVisited && table.lectures.any { it.lectureSessions.isEmpty() },
                         dialogState = prevState?.dialogState ?: TimeTableUiState.DialogState.None,
                     )
                 }
             }.collect()
+        }
+    }
+
+    fun visitSessionlessLectureList() {
+        _uiState.update { state ->
+            when (state) {
+                is TimeTableUiState.Loaded -> state.copy(isSessionlessLectureHintVisible = false)
+                else -> state
+            }
+        }
+        viewModelScope.launch {
+            currentTableRepository.visitSessionlessLectureList()
         }
     }
 
@@ -187,6 +201,7 @@ sealed interface TimeTableUiState {
         val newSemesterExist: Boolean,
         val uncheckedNotificationExist: Boolean,
         val vacancyNotificationBannerEnabled: Boolean,
+        val isSessionlessLectureHintVisible: Boolean,
         val dialogState: DialogState,
     ) : TimeTableUiState
 

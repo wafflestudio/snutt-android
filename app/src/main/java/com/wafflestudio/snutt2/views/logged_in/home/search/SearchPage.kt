@@ -1,27 +1,20 @@
 package com.wafflestudio.snutt2.views.logged_in.home.search
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarResult
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -34,7 +27,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,11 +34,9 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.BookmarkIcon
 import com.wafflestudio.snutt2.components.compose.ComposableStatesWithScope
 import com.wafflestudio.snutt2.components.compose.ExitIcon
 import com.wafflestudio.snutt2.components.compose.FilterIcon
-import com.wafflestudio.snutt2.components.compose.IconWithAlertDot
 import com.wafflestudio.snutt2.components.compose.SearchIcon
 import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.clicks
@@ -78,8 +68,6 @@ import com.wafflestudio.snutt2.views.LocalTableState
 import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.bookmark.showDialog
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
-import com.wafflestudio.snutt2.views.logged_in.home.search.bookmark.BookmarkList
-import com.wafflestudio.snutt2.views.logged_in.home.search.bookmark.SearchPageMode
 import com.wafflestudio.snutt2.views.logged_in.home.search.search_option.SearchOptionSheet
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
@@ -97,6 +85,7 @@ fun SearchRoute(
     searchResultPagingItems: LazyPagingItems<DataWithState<LectureDto, LectureState>>,
     searchResultListState: SearchResultListState,
     onNavigateVacancy: () -> Unit,
+    onNavigateBookmark: () -> Unit,
     onNavigateOnboardAsOrigin: () -> Unit,
     timetableViewModel: TimetableViewModel = hiltViewModel(),
     tableListViewModel: TableListViewModel = hiltViewModel(),
@@ -113,10 +102,7 @@ fun SearchRoute(
     val bottomSheet = LocalBottomSheetState.current
     val analyticsLogger = LocalAnalyticsLogger.current
 
-    val bookmarks by searchViewModel.bookmarkList.collectAsState()
     val selectedLecture by searchViewModel.selectedLecture.collectAsState()
-    val pageMode by searchViewModel.pageMode.collectAsState()
-    val firstBookmarkAlert by searchViewModel.firstBookmarkAlert.collectAsState()
     val selectedTags by searchViewModel.selectedTags.collectAsState()
     val lazyListState = searchViewModel.lazyListState
     val tagsByTagType = searchViewModel.tagsByTagType.collectAsState()
@@ -180,7 +166,7 @@ fun SearchRoute(
                     }
                     val onActionPerformed = when (event) {
                         SearchSnackBarEvent.FIRST_VACANCY_ADD -> onNavigateVacancy
-                        SearchSnackBarEvent.FIRST_BOOKMARK_ADD -> searchViewModel::onTogglePageMode
+                        SearchSnackBarEvent.FIRST_BOOKMARK_ADD -> onNavigateBookmark
                     }
                     launch {
                         snackBarHostState.currentSnackBarData.dismiss()
@@ -242,10 +228,7 @@ fun SearchRoute(
                 searchResultListState = searchResultListState,
                 selectedTags = selectedTags,
                 lazyListState = lazyListState,
-                bookmarks = bookmarks,
                 selectedLecture = selectedLecture,
-                pageMode = pageMode,
-                firstBookmarkAlert = firstBookmarkAlert,
                 onSearch = searchViewModel::onSearch,
                 onClearEditText = searchViewModel::onClearEditText,
                 onFilter = {
@@ -275,7 +258,6 @@ fun SearchRoute(
                     }
                     scope.launch { bottomSheet.show() }
                 },
-                onToggleMode = searchViewModel::onTogglePageMode,
                 onToggleTagAndQuery = { tag ->
                     scope.launch {
                         searchViewModel.onToggleTag(tag)
@@ -287,14 +269,9 @@ fun SearchRoute(
                     lectureDetailViewModel.initializeEditingLectureDetail(
                         lecture, ModeType.Viewing,
                     )
-                    val referrer =
-                        if (pageMode == SearchPageMode.Bookmark) {
-                            DetailScreenReferrer.Bookmark
-                        } else {
-                            DetailScreenReferrer.Search(
-                                searchViewModel.searchTitle.value,
-                            )
-                        }
+                    val referrer = DetailScreenReferrer.Search(
+                        searchViewModel.searchTitle.value,
+                    )
                     bottomSheet.setSheetContent {
                         LectureDetailPage(
                             referrer = referrer,
@@ -325,9 +302,9 @@ fun SearchRoute(
                         scope.launch(Dispatchers.IO) {
                             launchSuspendApi(apiOnProgress, apiOnError) {
                                 timetableViewModel.removeLecture(lecture)
-                                searchViewModel.toggleLectureSelection(lecture)
-                                tableListViewModel.fetchTableMap()
                             }
+                            searchViewModel.toggleLectureSelection(lecture)
+                            tableListViewModel.fetchTableMap()
                         }
                     } else {
                         checkLectureOverlap(
@@ -339,10 +316,7 @@ fun SearchRoute(
                                             lectureId = lecture.lecture_id
                                                 ?: lecture.id,
                                             timetableId = timetableViewModel.currentTable.value?.id,
-                                            referrer = when (pageMode == SearchPageMode.Bookmark) {
-                                                true -> LectureActionReferrer.Bookmark
-                                                false -> LectureActionReferrer.Search(searchViewModel.searchTitle.value)
-                                            },
+                                            referrer = LectureActionReferrer.Search(searchViewModel.searchTitle.value),
                                         ),
                                     ),
                                 )
@@ -382,14 +356,10 @@ fun SearchScreen(
     searchResultListState: SearchResultListState,
     selectedTags: List<TagDto>,
     lazyListState: LazyListState,
-    bookmarks: List<DataWithState<LectureDto, LectureState>>,
     selectedLecture: LectureDto?,
-    pageMode: SearchPageMode,
-    firstBookmarkAlert: Boolean,
     onSearch: () -> Unit,
     onClearEditText: () -> Unit,
     onFilter: () -> Unit,
-    onToggleMode: () -> Unit,
     onToggleTagAndQuery: (tag: TagDto) -> Unit,
 
     onToggleLectureSelection: (LectureDto) -> Unit,
@@ -404,90 +374,42 @@ fun SearchScreen(
     Column {
         TopBar(
             title = {
-                AnimatedContent(
-                    targetState = pageMode,
-                    transitionSpec = {
-                        when (targetState) {
-                            SearchPageMode.Search -> {
-                                slideInHorizontally { width -> -width } + fadeIn() togetherWith
-                                    slideOutHorizontally { width -> width } + fadeOut() using SizeTransform(clip = false)
-                            }
-                            SearchPageMode.Bookmark -> {
-                                slideInHorizontally { width -> width } + fadeIn() togetherWith
-                                    slideOutHorizontally { width -> -width } + fadeOut() using SizeTransform(clip = false)
-                            }
-                        }
-                    },
-                    label = "top bar animation",
+                Row(
+                    modifier = Modifier
+                        .padding(start = 12.dp, top = 5.dp, bottom = 5.dp, end = 12.dp)
+                        .background(
+                            SNUTTColors.Gray100,
+                            shape = RoundedCornerShape(6.dp),
+                        )
+                        .fillMaxSize()
+                        .padding(horizontal = 8.dp, vertical = 3.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    when (it) {
-                        SearchPageMode.Search -> {
-                            Row(
-                                modifier = Modifier
-                                    .padding(start = 8.dp, top = 5.dp, bottom = 5.dp)
-                                    .background(
-                                        SNUTTColors.Gray100,
-                                        shape = RoundedCornerShape(6.dp),
-                                    )
-                                    .fillMaxHeight()
-                                    .weight(1f)
-                                    .padding(horizontal = 8.dp, vertical = 3.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                            ) {
-                                SearchIcon(
-                                    modifier = Modifier.clicks {
-                                        onSearch()
-                                    },
-                                )
-                                SearchEditText(
-                                    searchEditTextFocused = searchEditTextFocused,
-                                    onFocus = { isFocused ->
-                                        searchEditTextFocused = isFocused
-                                    },
-                                )
-                                if (searchEditTextFocused) {
-                                    ExitIcon(
-                                        modifier = Modifier.clicks {
-                                            onClearEditText()
-                                        },
-                                    )
-                                } else {
-                                    FilterIcon(
-                                        modifier = Modifier.clicks {
-                                            onFilter()
-                                        },
-                                    )
-                                }
-                            }
-                        }
-                        SearchPageMode.Bookmark -> {
-                            Row(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .fillMaxHeight()
-                                    .padding(start = 10.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                Text(
-                                    text = stringResource(R.string.bookmark_page_title),
-                                    style = SNUTTTypography.h2,
-                                )
-                            }
-                        }
-                    }
-                }
-            },
-            actions = {
-                IconWithAlertDot(firstBookmarkAlert) { centerAlignedModifier ->
-                    BookmarkIcon(
-                        modifier = centerAlignedModifier
-                            .size(30.dp)
-                            .clicks {
-                                onToggleMode()
-                            },
-                        marked = pageMode == SearchPageMode.Bookmark,
+                    SearchIcon(
+                        modifier = Modifier.clicks {
+                            onSearch()
+                        },
                     )
+                    SearchEditText(
+                        searchEditTextFocused = searchEditTextFocused,
+                        onFocus = { isFocused ->
+                            searchEditTextFocused = isFocused
+                        },
+                    )
+                    if (searchEditTextFocused) {
+                        ExitIcon(
+                            modifier = Modifier.clicks {
+                                onClearEditText()
+                            },
+                        )
+                    } else {
+                        FilterIcon(
+                            modifier = Modifier.clicks {
+                                onFilter()
+                            },
+                        )
+                    }
                 }
             },
         )
@@ -508,47 +430,24 @@ fun SearchScreen(
                 touchEnabled = false,
                 selectedLecture = selectedLecture,
             )
-            AnimatedContent(
-                targetState = pageMode,
-                modifier = Modifier.background(SNUTTColors.Dim2),
-                transitionSpec = {
-                    when (targetState) {
-                        SearchPageMode.Search -> {
-                            slideInHorizontally { width -> -width } + fadeIn() togetherWith
-                                slideOutHorizontally { width -> width } + fadeOut() using SizeTransform(clip = false)
-                        }
-                        SearchPageMode.Bookmark -> {
-                            slideInHorizontally { width -> width } + fadeIn() togetherWith
-                                slideOutHorizontally { width -> -width } + fadeOut() using SizeTransform(clip = false)
-                        }
-                    }
-                },
-                label = "body animation",
-            ) { pageMode ->
-                when (pageMode) {
-                    SearchPageMode.Search -> SearchResultList(
-                        searchResultPagingItems = searchResultPagingItems,
-                        searchResultListState = searchResultListState,
-                        selectedTags = selectedTags,
-                        lazyListState = lazyListState,
-                        onToggleTagAndQuery = onToggleTagAndQuery,
-                        onClickLectureDetail = onClickLectureDetail,
-                        onClickReview = onClickReview,
-                        onClickBookmark = onClickBookmark,
-                        onClickVacancy = onClickVacancy,
-                        onToggleLectureContained = onToggleLectureContained,
-                        onToggleLectureSelection = onToggleLectureSelection,
-                    )
-                    SearchPageMode.Bookmark -> BookmarkList(
-                        bookmarks = bookmarks,
-                        onClickLectureDetail = onClickLectureDetail,
-                        onClickReview = onClickReview,
-                        onClickBookmark = onClickBookmark,
-                        onClickVacancy = onClickVacancy,
-                        onToggleLectureContained = onToggleLectureContained,
-                        onToggleLectureSelection = onToggleLectureSelection,
-                    )
-                }
+            Box(
+                modifier = Modifier
+                    .background(SNUTTColors.Dim2)
+                    .fillMaxSize(),
+            ) {
+                SearchResultList(
+                    searchResultPagingItems = searchResultPagingItems,
+                    searchResultListState = searchResultListState,
+                    selectedTags = selectedTags,
+                    lazyListState = lazyListState,
+                    onToggleTagAndQuery = onToggleTagAndQuery,
+                    onClickLectureDetail = onClickLectureDetail,
+                    onClickReview = onClickReview,
+                    onClickBookmark = onClickBookmark,
+                    onClickVacancy = onClickVacancy,
+                    onToggleLectureContained = onToggleLectureContained,
+                    onToggleLectureSelection = onToggleLectureSelection,
+                )
             }
         }
     }

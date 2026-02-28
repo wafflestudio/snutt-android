@@ -34,7 +34,6 @@ import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.model.SearchTimeDto
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.model.TagType
-import com.wafflestudio.snutt2.views.logged_in.home.search.bookmark.SearchPageMode
 import com.wafflestudio.snutt2.views.logged_in.home.search.search_option.clusterToTimeBlocks
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -106,9 +105,6 @@ class SearchViewModel @Inject constructor(
 
     private val _querySignal = MutableSharedFlow<Unit>(replay = 0)
     private val _getBookmarkListSignal = MutableSharedFlow<Unit>(replay = 0)
-
-    private val _pageMode = MutableStateFlow(SearchPageMode.Search)
-    val pageMode: StateFlow<SearchPageMode> get() = _pageMode
 
     // 드래그하고 확정한 시간대 검색 격자 (월~금 5칸, 8시~22시 30분 간격 28칸)
     private val _draggedTimeBlock =
@@ -518,20 +514,7 @@ class SearchViewModel @Inject constructor(
         )
     }
 
-    fun onTogglePageMode() {
-        viewModelScope.launch {
-            _pageMode.update { mode ->
-                mode.toggled()
-            }
-        }
-    }
-
     fun onClickBack() {
-        viewModelScope.launch {
-            if (_pageMode.value == SearchPageMode.Bookmark) {
-                _pageMode.emit(SearchPageMode.Search)
-            }
-        }
     }
 
     private suspend fun handleSearchError(error: DomainError) {

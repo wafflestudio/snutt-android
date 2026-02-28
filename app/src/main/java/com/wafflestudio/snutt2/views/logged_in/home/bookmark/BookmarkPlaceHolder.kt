@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_in.home.search.bookmark
+package com.wafflestudio.snutt2.views.logged_in.home.bookmark
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

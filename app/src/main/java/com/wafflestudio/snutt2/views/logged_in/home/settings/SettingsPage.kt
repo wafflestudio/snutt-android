@@ -37,6 +37,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.CustomDialog
 import com.wafflestudio.snutt2.components.compose.HorizontalMoreIcon
 import com.wafflestudio.snutt2.components.compose.PersonIcon
+import com.wafflestudio.snutt2.components.compose.RedDotWithNumber
 import com.wafflestudio.snutt2.components.compose.RightArrowIcon
 import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.clicks
@@ -51,7 +52,9 @@ import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 @Composable
 fun SettingsRoute(
     viewModel: SettingsViewModel = hiltViewModel(),
+    uncheckedNotifications: Long,
     onNavigateUserConfig: () -> Unit,
+    onNavigateNotification: () -> Unit,
     onNavigateThemeModeSelect: () -> Unit,
     onNavigateTimeTableConfig: () -> Unit,
     onNavigateThemeConfig: () -> Unit,
@@ -80,7 +83,9 @@ fun SettingsRoute(
 
     SettingsScreen(
         uiState = uiState,
+        uncheckedNotifications = uncheckedNotifications,
         onClickUserConfig = onNavigateUserConfig,
+        onClickNotification = onNavigateNotification,
         onClickThemeModeSelect = onNavigateThemeModeSelect,
         onClickTimeTableConfig = onNavigateTimeTableConfig,
         onClickThemeConfig = onNavigateThemeConfig,
@@ -106,7 +111,9 @@ fun SettingsRoute(
 @Composable
 fun SettingsScreen(
     uiState: SettingsUiState,
+    uncheckedNotifications: Long,
     onClickUserConfig: () -> Unit,
+    onClickNotification: () -> Unit,
     onClickThemeModeSelect: () -> Unit,
     onClickTimeTableConfig: () -> Unit,
     onClickThemeConfig: () -> Unit,
@@ -173,6 +180,13 @@ fun SettingsScreen(
                     ),
                 )
             }
+            Margin(height = 10.dp)
+            SettingItem(
+                title = stringResource(R.string.settings_notification_title),
+                settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
+                redDotIconNumber = uncheckedNotifications,
+                onClick = onClickNotification,
+            )
             Margin(height = 10.dp)
             SettingColumn {
                 SettingItem(
@@ -364,6 +378,7 @@ fun SettingItem(
     leadingIcon: @Composable () -> Unit = {},
     hasNextPage: Boolean = true,
     settingPageNewBadgeTitles: List<String> = emptyList(),
+    redDotIconNumber: Long? = null,
     onClick: (() -> Unit)? = null,
     content: @Composable () -> Unit = {},
 ) {
@@ -383,6 +398,9 @@ fun SettingItem(
                 color = titleColor,
             ),
         )
+        if (redDotIconNumber != null && redDotIconNumber > 0) {
+            RedDotWithNumber(Modifier.padding(start = 8.dp), redDotIconNumber)
+        }
         if (settingPageNewBadgeTitles.contains(title)) {
             NewBadge(Modifier.padding(start = 5.dp))
         }
@@ -425,7 +443,9 @@ fun NewBadge(
 fun SettingsPagePreview() {
     SettingsScreen(
         uiState = SettingsUiState("양주현", "다크", false, listOf("빈자리 알림")),
+        uncheckedNotifications = 0L,
         onClickUserConfig = {},
+        onClickNotification = {},
         onClickThemeModeSelect = {},
         onClickTimeTableConfig = {},
         onClickThemeConfig = {},

@@ -308,6 +308,7 @@
     <string name="common_save">저장</string>
     <string name="common_yes">예</string>
     <string name="common_no">아니요</string>
+    <string name="common_notification">알림</string>
     <string name="home_drawer_table_delete">시간표 삭제</string>
     <string name="home_drawer_change_name_dialog_title">이름 변경하기</string>
     <string name="home_drawer_table_credit">(%d학점)</string>
@@ -318,6 +319,8 @@
     <string name="home_drawer_change_theme_unable_alert_message">현재 선택된 시간표의 테마만 변경할 수 있습니다.</string>
     <string name="home_drawer_create_table_bottom_sheet_title">새로운 시간표 만들기</string>
     <string name="home_drawer_create_table_bottom_sheet_hint">시간표 제목을 입력하세요</string>
+    <string name="home_menu_add_lecture_button">직접 추가</string>
+    <string name="home_menu_lecture_list_button">현재 시간표 목록</string>
     <string name="search_result_item_add_button">추가하기</string>
     <string name="search_result_item_remove_button">삭제하기</string>
     <string name="search_result_item_instructor_credit_text">%s / %s학점</string>
@@ -366,6 +369,13 @@
     <string name="home_drawer_table_theme_change">시간표 테마 설정</string>
     <string name="home_drawer_table_set_primary">학기 대표 시간표로 지정</string>
     <string name="home_drawer_table_set_not_primary">학기 대표 시간표 해제</string>
+    <string name="home_dropdown_menu_title_add_lecture">강의 추가</string>
+    <string name="home_dropdown_menu_content_add_lecture_by_search">검색으로 추가</string>
+    <string name="home_dropdown_menu_content_add_lecture_manually">직접 추가</string>
+    <string name="home_dropdown_menu_title_lecture_list">목록으로 보기</string>
+    <string name="home_dropdown_menu_content_current_timetable_lecture_list">현재 시간표 목록</string>
+    <string name="home_dropdown_menu_content_vacancy_lecture_list">빈자리 알림 목록</string>
+    <string name="timetable_sessionless_lecture_list_hint">스크롤하면 상시강의를 확인할 수 있어요.</string>
     <string name="table_delete_alert_message">시간표를 정말 삭제하시겠습니까?</string>
     <string name="notifications_app_bar_title">알림</string>
     <string name="home_timetable_drawer">서랍 메뉴</string>
@@ -373,6 +383,7 @@
     <string name="tutorial_sign_in_button">로그인</string>
     <string name="tutorial_sign_up_button">회원가입</string>
     <string name="tutorial_help_button">로그인/회원가입에 문제가 생겼나요?</string>
+    <string name="settings_notification_title">알림</string>
     <string name="settings_app_report_title">개발자 괴롭히기</string>
     <string name="settings_app_report_email">이메일</string>
     <string name="settings_app_report_detail">내용</string>
@@ -513,7 +524,7 @@
     <string name="lecture_detail_edit_class_time_sheet_end_time_label">종료</string>
     <string name="bookmark_remove_toast">관심강좌 목록에서 제거하였습니다.</string>
     <string name="bookmark_remove_check_message">강의를 관심강좌 목록에서 제외하시겠습니까?</string>
-    <string name="bookmark_first_alert_message">검색탭 우측 상단에서 관심강좌 목록을 확인해보세요.</string>
+    <string name="bookmark_first_alert_message">시간표탭 우측 상단에서 관심강좌 목록을 확인해보세요.</string>
     <string name="bookmark_page_title">관심강좌</string>
     <string name="bookmark_page_placeholder_1">추가한 관심강좌가 없습니다</string>
     <string name="bookmark_page_placeholder_2">고민되는 강의를 관심강좌에 추가하여</string>

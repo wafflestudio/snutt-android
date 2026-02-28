@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.table_lectures
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -31,7 +29,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.ClockIcon
 import com.wafflestudio.snutt2.components.compose.LocationIcon
-import com.wafflestudio.snutt2.components.compose.RightArrowIcon
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.TagIcon
 import com.wafflestudio.snutt2.components.compose.clicks
@@ -74,7 +71,6 @@ fun TableLecturesRoute(
         uiState = TableLecturesUIState(lectures),
         onClickLecture = { lecture ->
             // FIXME: 임시 코드
-            Log.d("table", viewModel.currentTable.value.toString())
             lectureDetailViewModel.initializeEditingLectureDetail(
                 LectureDto.fromLocalLecture(
                     lecture,
@@ -84,14 +80,6 @@ fun TableLecturesRoute(
             navController.navigate(NavigationDestination.LectureDetail) {
                 launchSingleTop = true
             }
-        },
-        onClickAddCustom = {
-            // FIXME: 임시 코드
-            lectureDetailViewModel.initializeEditingLectureDetail(
-                LectureDto.Default,
-                ModeType.Editing(true),
-            )
-            navController.navigate(NavigationDestination.LectureDetail)
         },
         onBack = {
             navController.popBackStack()
@@ -103,7 +91,6 @@ fun TableLecturesRoute(
 private fun TableLecturesScreen(
     uiState: TableLecturesUIState,
     onClickLecture: (LocalLecture) -> Unit,
-    onClickAddCustom: () -> Unit,
     onBack: () -> Unit,
 ) {
     Column(
@@ -126,12 +113,6 @@ private fun TableLecturesScreen(
                 Row(Modifier.padding(horizontal = 20.dp, vertical = 5.dp)) {
                     Divider(thickness = 1.dp, color = SNUTTColors.Black050)
                 }
-            }
-            item {
-                TableLectureAddNew(
-                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
-                    onClickAddCustom,
-                )
             }
         }
     }
@@ -199,36 +180,11 @@ fun TableLectureItemNew(
     }
 }
 
-@Composable
-private fun TableLectureAddNew(modifier: Modifier, onClickAdd: () -> Unit) {
-    Column(
-        modifier = modifier.clicks { onClickAdd.invoke() },
-    ) {
-        Row {
-            Text(
-                text = stringResource(R.string.lecture_list_add_button),
-                style = SNUTTTypography.body1,
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            RightArrowIcon(modifier = Modifier.size(22.dp, 22.dp))
-        }
-    }
-    Spacer(Modifier.height(20.dp))
-}
-
 @Preview(showBackground = true)
 @Composable
 fun TableLectureItemPreviewNew() {
     TableLectureItemNew(
         modifier = Modifier.padding(horizontal = 20.dp, vertical = 7.dp),
         lecture = PreviewData.syllabusLecture,
-    ) {}
-}
-
-@Preview(showBackground = true)
-@Composable
-fun TableLectureAddPreviewNew() {
-    TableLectureAddNew(
-        modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
     ) {}
 }

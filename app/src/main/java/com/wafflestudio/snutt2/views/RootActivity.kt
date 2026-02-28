@@ -62,6 +62,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.HomePage
 import com.wafflestudio.snutt2.views.logged_in.home.HomePageController
 import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.bookmark.BookmarkRoute
 import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.*
@@ -282,6 +283,18 @@ class RootActivity : AppCompatActivity() {
                             vm = lectureDetailViewModel,
                             searchViewModel = searchViewModel,
                             vacancyViewModel = vacancyViewModel,
+                        )
+                    }
+
+                    composableAnimated<NavigationDestination.Bookmark> { backstackEntry ->
+                        val parentEntry = remember(backstackEntry) {
+                            navController.getBackStackEntry(NavigationDestination.Home)
+                        }
+                        val homeViewModel = hiltViewModel<HomeViewModel>(parentEntry)
+                        BookmarkRoute(
+                            homeViewModel = homeViewModel,
+                            onNavigateBack = { navController.popBackStack() },
+                            onNavigateToOnboard = { navController.navigateAsOrigin(NavigationDestination.Onboard) },
                         )
                     }
 

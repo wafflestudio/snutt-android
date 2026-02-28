@@ -4,6 +4,7 @@ import android.content.Context
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.Lecture
+import com.wafflestudio.snutt2.domainmodel.LectureReviewInfo
 import com.wafflestudio.snutt2.domainmodel.LectureSession
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import java.time.LocalTime
@@ -122,6 +123,7 @@ fun LectureDto.isLectureNumberEquals(lectureDto: LectureDto): Boolean {
     return isCourseNumberEquals(lectureDto) && lecture_number != null && lecture_number == lectureDto.lecture_number
 }
 
+@JvmName("getFittingTrimParamDto")
 fun List<LectureDto>.getFittingTrimParam(tableTrimParam: TableTrimParam): TableTrimParam =
     TableTrimParam(
         dayOfWeekFrom = (flatMap { it.class_time_json.map { it.day } } + tableTrimParam.dayOfWeekFrom).minOf { it },
@@ -230,5 +232,11 @@ fun List<SearchTimeDto>.getComplement(): List<SearchTimeDto> {
                     },
             )
         }
+    }
+}
+
+fun LectureReviewInfo.getReviewUrl(context: Context): String? {
+    return id.let {
+        context.getString(R.string.review_base_url) + "/detail?id=$it"
     }
 }

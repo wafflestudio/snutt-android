@@ -1,5 +1,7 @@
 package com.wafflestudio.snutt2.data.current_table
 
+import com.wafflestudio.snutt2.domainmodel.Lecture
+import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
@@ -10,6 +12,8 @@ import com.wafflestudio.snutt2.lib.network.Result
 import kotlinx.coroutines.flow.StateFlow
 
 interface CurrentTableRepository {
+
+    val isVisitedSessionlessLectureList: StateFlow<Boolean>
     val currentTable: StateFlow<TableDto?>
 
     suspend fun addLecture(lectureId: String, isForced: Boolean)
@@ -46,4 +50,16 @@ interface CurrentTableRepository {
 
     // 여기부터 리팩토링 코드
     val currentTableRefactored: StateFlow<Table?>
+
+    suspend fun visitSessionlessLectureList()
+
+    suspend fun getBookmarksNew(): Result<List<SearchedLecture>>
+
+    suspend fun addBookmarkNew(lecture: Lecture): Result<Unit>
+
+    suspend fun deleteBookmark(lecture: Lecture): Result<Unit>
+
+    suspend fun addLectureNew(lectureId: String, isForced: Boolean): Result<Unit>
+
+    suspend fun removeLectureNew(lectureId: String): Result<Unit>
 }

@@ -12,6 +12,7 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 @Composable
 internal fun BottomNavigation(
     pageState: HomeItem,
+    uncheckedNotificationExist: Boolean,
     onUpdatePageState: (HomeItem) -> Unit,
 ) {
     Row(
@@ -93,11 +94,17 @@ internal fun BottomNavigation(
                 onUpdatePageState(HomeItem.Settings)
             },
         ) {
-            HorizontalMoreIcon(
-                modifier = Modifier.size(30.dp),
-                isSelected = pageState == HomeItem.Settings,
-                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
-            )
+            IconWithAlertDot(
+                redDotExist = uncheckedNotificationExist,
+                dotSize = 4.dp,
+                dotYOffset = 3.dp,
+            ) {
+                HorizontalMoreIcon(
+                    modifier = Modifier.size(30.dp),
+                    isSelected = pageState == HomeItem.Settings,
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                )
+            }
         }
     }
 }
