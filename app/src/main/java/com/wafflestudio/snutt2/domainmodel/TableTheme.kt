@@ -73,6 +73,11 @@ class CustomTheme(
     fun isAppliedToTable(table: TableDto): Boolean = table.themeId == this.id
 
     companion object {
+        // FIXME: 다국어 대응 미완료. "새 테마"가 영어 로케일에서도 그대로 노출됨.
+        //  Default가 색상 템플릿과 UI 표시용 기본 이름을 동시에 갖고 있어서,
+        //  name을 리소스화하려면 Context가 필요한데 도메인 모델에서는 접근할 수 없음.
+        //  새 테마 생성 시 초기값 + ThemeRepositoryImpl.getTheme() fallback 경로에서 노출되나,
+        //  사용자가 바로 수정하는 값이고 fallback은 에러 케이스이므로 현재는 감수.
         val Default = CustomTheme(
             id = "",
             name = "새 테마",

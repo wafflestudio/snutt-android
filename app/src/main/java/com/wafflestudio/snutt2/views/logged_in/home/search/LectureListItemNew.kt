@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -67,9 +68,10 @@ fun ExpandableLectureListItemNew(
         lectureDataWithState.item.instructor,
         lectureDataWithState.item.credit,
     )
+    val context = LocalContext.current
     val remarkText = lectureDataWithState.item.remark
-    val tagText = SNUTTStringUtils.getLectureTagText(lectureDataWithState.item)
-    val classTimeText = SNUTTStringUtils.getSimplifiedClassTimeForLecture(lectureDataWithState.item)
+    val tagText = SNUTTStringUtils.getLectureTagText(context, lectureDataWithState.item)
+    val classTimeText = SNUTTStringUtils.getSimplifiedClassTimeForLecture(context, lectureDataWithState.item)
     val backgroundColor = if (selected) SNUTTColors.Dim2 else SNUTTColors.Transparent
 
     Column(
@@ -162,7 +164,7 @@ fun ExpandableLectureListItemNew(
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
-                    text = SNUTTStringUtils.getSimplifiedLocation(lectureDataWithState.item),
+                    text = SNUTTStringUtils.getSimplifiedLocation(context, lectureDataWithState.item),
                     style = SNUTTTypography.body2.copy(
                         color = SNUTTColors.AllWhite,
                         fontWeight = FontWeight.Light,
@@ -177,7 +179,7 @@ fun ExpandableLectureListItemNew(
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
-                    text = remarkText.ifEmpty { "없음" },
+                    text = remarkText.ifEmpty { stringResource(R.string.search_result_remark_empty) },
                     style = SNUTTTypography.body2.copy(
                         color = SNUTTColors.AllWhite,
                         fontWeight = FontWeight.Light,

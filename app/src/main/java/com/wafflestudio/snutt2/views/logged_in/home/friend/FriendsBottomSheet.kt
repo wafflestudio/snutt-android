@@ -258,7 +258,7 @@ private fun EditDisplayNameBottomSheet(
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
-                text = "(공백 포함 한/영/숫자 10자 이내)",
+                text = stringResource(R.string.friend_display_name_char_limit),
                 style = SNUTTTypography.body2.copy(color = SNUTTColors.Gray600),
             )
         }

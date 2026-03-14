@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -113,9 +114,10 @@ private fun TableLectureItem(
     lecture: LectureDto,
     onClickLecture: (lecture: LectureDto) -> Unit,
 ) {
-    val tagText = SNUTTStringUtils.getLectureTagText(lecture)
-    val classTimeText = SNUTTStringUtils.getSimplifiedClassTimeForLecture(lecture)
-    val locationText = SNUTTStringUtils.getSimplifiedLocation(lecture)
+    val context = LocalContext.current
+    val tagText = SNUTTStringUtils.getLectureTagText(context, lecture)
+    val classTimeText = SNUTTStringUtils.getSimplifiedClassTimeForLecture(context, lecture)
+    val locationText = SNUTTStringUtils.getSimplifiedLocation(context, lecture)
 
     Column(
         modifier = Modifier
@@ -132,7 +134,7 @@ private fun TableLectureItem(
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
-                text = SNUTTStringUtils.getInstructorAndCreditText(lecture),
+                text = SNUTTStringUtils.getInstructorAndCreditText(context, lecture),
                 style = SNUTTTypography.body2,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,

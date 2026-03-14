@@ -24,6 +24,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.ExitIcon
 import com.wafflestudio.snutt2.components.compose.VividCheckedIcon
 import com.wafflestudio.snutt2.components.compose.VividUncheckedIcon
@@ -59,7 +61,7 @@ fun TagsColumn(
         if (recentSearchedDepartments.isNotEmpty()) {
             item {
                 Text(
-                    text = "최근 찾아본 학과",
+                    text = stringResource(R.string.search_option_recent_departments),
                     style = SNUTTTypography.body1.copy(
                         fontSize = 13.sp,
                         color = SNUTTColors.Gray600,

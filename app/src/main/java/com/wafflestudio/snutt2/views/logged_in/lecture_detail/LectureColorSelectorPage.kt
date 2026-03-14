@@ -39,6 +39,7 @@ import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.components.compose.showColorPickerDialog
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.CustomTheme
+import com.wafflestudio.snutt2.components.compose.displayName
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.dto.core.toThemeColor
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -131,7 +132,7 @@ fun LectureColorSelectorPage(
                 ColorItem(
                     foreground = Color(color.foreground),
                     background = Color(color.background),
-                    title = "${theme.name} ${idx + 1}",
+                    title = "${theme.displayName()} ${idx + 1}",
                     isSelected = idx == selectedIndex,
                     onClick = {
                         selectedIndex = idx
@@ -145,7 +146,7 @@ fun LectureColorSelectorPage(
                 ColorItem(
                     foreground = Color(paletteColor.foreground),
                     background = Color(paletteColor.background),
-                    title = "${theme.name} $colorIndex",
+                    title = "${theme.displayName()} $colorIndex",
                     isSelected = colorIndex.toInt() - 1 == selectedIndex,
                 ) {
                     selectedIndex = colorIndex.toInt() - 1

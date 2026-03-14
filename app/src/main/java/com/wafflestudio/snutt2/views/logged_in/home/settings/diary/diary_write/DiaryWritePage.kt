@@ -54,6 +54,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.ExitIcon
+import androidx.compose.ui.res.stringResource
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -205,12 +206,12 @@ private fun DiaryWriting(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Text(
-                    text = "오늘 수강한 '${uiState.lectureName}' 에 대한 의견을 남겨보세요.",
+                    text = stringResource(R.string.diary_write_header_title, uiState.lectureName),
                     style = SNUTTTypography.h3.copy(fontSize = 17.sp, lineHeight = 25.sp, color = DiaryTheme.colors.textPrimary),
                 )
 
                 Text(
-                    text = "더보기 > 강의일기장에서 확인할 수 있어요.",
+                    text = stringResource(R.string.diary_write_header_subtitle),
                     style = SNUTTTypography.body1.copy(color = DiaryTheme.colors.textSecondary),
                 )
             }
@@ -300,7 +301,7 @@ private fun DiaryWriting(
                             vertical = 12.dp,
                             horizontal = 48.dp,
                         ),
-                    text = "다음",
+                    text = stringResource(R.string.diary_write_next_button),
                     style = if (uiState.allQuestionAnswered()) {
                         SNUTTTypography.button.copy(
                             color = DiaryTheme.colors.submitButtonTextEnabled,
@@ -346,12 +347,12 @@ private fun DiaryComplete(
             )
             Text(
                 modifier = Modifier.padding(top = 24.dp),
-                text = "강의일기가 등록되었습니다.",
+                text = stringResource(R.string.diary_write_complete_title),
                 style = SNUTTTypography.h3.copy(fontSize = 15.sp, fontWeight = FontWeight.SemiBold),
             )
             Text(
                 modifier = Modifier.padding(top = 8.dp),
-                text = "작성한 강의일기는 더보기>강의일기장에서 확인할 수 있어요.",
+                text = stringResource(R.string.diary_write_complete_subtitle),
                 style = SNUTTTypography.body1.copy(color = DiaryTheme.colors.textSubtitle),
                 textAlign = TextAlign.Center,
             )
@@ -379,8 +380,8 @@ private fun DiaryComplete(
                     ) {
                         Text(
                             text = when (uiState.nextAction) {
-                                DiaryNextAction.WriteNext -> "더 기록하기"
-                                DiaryNextAction.WriteReview -> "강의평 남기기"
+                                DiaryNextAction.WriteNext -> stringResource(R.string.diary_write_more_button)
+                                DiaryNextAction.WriteReview -> stringResource(R.string.diary_write_review_button)
                             },
                             style = SNUTTTypography.button.copy(fontSize = 15.sp, color = DiaryTheme.colors.textPrimary),
                         )
@@ -401,7 +402,7 @@ private fun DiaryComplete(
                 .fillMaxWidth()
                 .background(color = DiaryTheme.colors.theme, shape = RoundedCornerShape(6.dp))
                 .padding(12.dp),
-            text = "홈으로",
+            text = stringResource(R.string.diary_write_home_button),
             textAlign = TextAlign.Center,
             style = SNUTTTypography.button.copy(color = DiaryTheme.colors.submitButtonTextEnabled, fontSize = 15.sp),
         )

@@ -29,6 +29,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.res.stringResource
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.ArrowBackIcon
 import com.wafflestudio.snutt2.components.compose.ConfirmDialog
 import com.wafflestudio.snutt2.components.compose.TopBar
@@ -103,7 +105,7 @@ fun DiaryHistoryScreen(
         TopBar(
             title = {
                 Text(
-                    text = "강의 일기장",
+                    text = stringResource(R.string.diary_app_bar_title),
                     style = SNUTTTypography.h3,
                     fontWeight = FontWeight.SemiBold,
                 )
@@ -143,7 +145,7 @@ fun DiaryHistoryScreen(
                             contentAlignment = Alignment.Center,
                         ) {
                             Text(
-                                courseBook.toAbbvString(),
+                                courseBook.toAbbvString(LocalContext.current),
                                 color = if (isSelected) DiaryTheme.colors.filterPillSelectedText else DiaryTheme.colors.filterPillUnselectedText,
                                 style = SNUTTTypography.subtitle1.copy(fontSize = 15.sp, fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal),
                             )
@@ -229,7 +231,7 @@ private fun DiaryHistoryDialogs(
             ConfirmDialog(
                 onDismiss = onDismiss,
                 onConfirm = { onConfirmDeleteDiary(dialogState.diaryId) },
-                title = "'${dialogState.courseName}'\n강의일기를 삭제하시겠습니까?",
+                title = stringResource(R.string.diary_delete_confirm_message, dialogState.courseName),
             )
         }
     }

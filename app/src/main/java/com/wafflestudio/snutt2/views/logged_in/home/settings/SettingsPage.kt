@@ -195,7 +195,7 @@ fun SettingsScreen(
                     onClick = onClickThemeModeSelect,
                 ) {
                     Text(
-                        text = uiState.themeModeName,
+                        text = stringResource(uiState.themeMode.labelResId),
                         style = SNUTTTypography.body1.copy(color = SNUTTColors.Black500),
                     )
                 }
@@ -310,7 +310,7 @@ fun SettingsScreen(
             if (BuildConfig.DEBUG) {
                 Margin(height = 10.dp)
                 SettingItem(
-                    title = "네트워크 로그",
+                    title = stringResource(R.string.debug_network_log_title),
                     settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
                     onClick = onClickNetworkLog,
                 )
@@ -442,7 +442,7 @@ fun NewBadge(
 @Composable
 fun SettingsPagePreview() {
     SettingsScreen(
-        uiState = SettingsUiState("양주현", "다크", false, listOf("빈자리 알림")),
+        uiState = SettingsUiState("양주현", com.wafflestudio.snutt2.ui.ThemeMode.DARK, false, listOf("빈자리 알림")),
         uncheckedNotifications = 0L,
         onClickUserConfig = {},
         onClickNotification = {},

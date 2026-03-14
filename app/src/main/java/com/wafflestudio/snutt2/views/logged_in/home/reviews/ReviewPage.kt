@@ -127,7 +127,7 @@ private fun WebViewErrorPage(modifier: Modifier, onRetry: () -> Unit) {
             Image(
                 modifier = Modifier.size(width = 50.dp, height = 58.dp),
                 painter = painterResource(id = R.drawable.ic_cat_retry),
-                contentDescription = "네트워크 연결을 확인해주세요.",
+                contentDescription = stringResource(R.string.reviews_error_content_description),
             )
 
             Spacer(modifier = Modifier.height(20.dp))

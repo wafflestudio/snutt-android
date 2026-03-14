@@ -1,5 +1,7 @@
 package com.wafflestudio.snutt2.lib.data
 
+import android.content.Context
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domainmodel.CustomLecture
 import com.wafflestudio.snutt2.domainmodel.Lecture
 import com.wafflestudio.snutt2.domainmodel.LectureSession
@@ -10,8 +12,8 @@ import java.time.format.TextStyle
 import java.util.Locale
 
 object SNUTTStringUtilsNew {
-    fun getInstructorAndCreditText(lecture: Lecture): String {
-        val creditText = "${lecture.credit}학점"
+    fun getInstructorAndCreditText(context: Context, lecture: Lecture): String {
+        val creditText = "${lecture.credit}${context.getString(R.string.lecture_detail_credit)}"
 
         if (lecture.instructor.isBlank()) {
             return creditText
@@ -20,7 +22,7 @@ object SNUTTStringUtilsNew {
         return "${lecture.instructor} / $creditText"
     }
 
-    fun getLectureTagText(lecture: LocalLecture): String {
+    fun getLectureTagText(context: Context, lecture: LocalLecture): String {
         return when (lecture) {
             is SyllabusLecture -> {
                 listOf(
@@ -33,7 +35,7 @@ object SNUTTStringUtilsNew {
             }
 
             is CustomLecture -> {
-                "(없음)"
+                context.getString(R.string.lecture_detail_hint_nothing)
             }
         }
     }
@@ -42,9 +44,9 @@ object SNUTTStringUtilsNew {
      * 강의의 모든 classTime을 text로 변환
      * ex) 월, 수 09:30 ~ 10:45 이면 -> "월(09:30~10:45), 수(09:30~10:45)"
      */
-    fun getSimplifiedClassTimeForLecture(lecture: Lecture): String {
+    fun getSimplifiedClassTimeForLecture(context: Context, lecture: Lecture): String {
         if (lecture.lectureSessions.isEmpty()) {
-            return "(없음)"
+            return context.getString(R.string.lecture_detail_hint_nothing)
         }
 
         return lecture.lectureSessions.joinToString(", ", transform = ::getLectureSessionString)
@@ -56,7 +58,7 @@ object SNUTTStringUtilsNew {
      */
     private fun getLectureSessionString(lectureSession: LectureSession): String = buildString {
         append(
-            lectureSession.day.getDisplayName(TextStyle.SHORT, Locale.KOREA),
+            lectureSession.day.getDisplayName(TextStyle.SHORT, Locale.getDefault()),
         )
         append("(")
         append(lectureSession.startTime.format(DateTimeFormatter.ofPattern("HH:mm")))
@@ -65,13 +67,13 @@ object SNUTTStringUtilsNew {
         append(")")
     }
 
-    fun getSimplifiedLocation(lecture: Lecture): String {
+    fun getSimplifiedLocation(context: Context, lecture: Lecture): String {
         val places = lecture.lectureSessions.map { it.place }
             .filter { it.isNotBlank() }
             .distinct()
 
         if (places.isEmpty()) {
-            return "(없음)"
+            return context.getString(R.string.lecture_detail_hint_nothing)
         }
 
         return places.joinToString(" / ")

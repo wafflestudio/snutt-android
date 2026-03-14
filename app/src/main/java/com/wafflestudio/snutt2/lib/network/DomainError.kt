@@ -44,5 +44,7 @@ data class DisabledFeature(override val displayTitle: String, override val displ
 // 클라에서 발생하는 에러는 2가지뿐, 문자열을 하드코딩해 처리한다.
 object NotSelectedTimetable : DomainError {
     override val displayTitle = ""
+    // FIXME: 하드코딩 한국어. 실제로는 DisplayMessageResolverImpl에서 리소스로 대체되므로 사용되지 않지만,
+    //  displayMessage를 직접 참조하는 코드가 추가될 경우 문제 발생 가능. DomainError를 @StringRes 기반으로 전환 검토.
     override val displayMessage = "현재 선택된 시간표의 테마만 변경할 수 있습니다."
 }

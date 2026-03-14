@@ -24,16 +24,17 @@ object SNUTTUtils {
 
     @JvmStatic
     fun numberToWday(wday: Int): String? {
-        when (wday) {
-            0 -> return "월"
-            1 -> return "화"
-            2 -> return "수"
-            3 -> return "목"
-            4 -> return "금"
-            5 -> return "토"
-            6 -> return "일"
+        val dayOfWeek = when (wday) {
+            0 -> java.time.DayOfWeek.MONDAY
+            1 -> java.time.DayOfWeek.TUESDAY
+            2 -> java.time.DayOfWeek.WEDNESDAY
+            3 -> java.time.DayOfWeek.THURSDAY
+            4 -> java.time.DayOfWeek.FRIDAY
+            5 -> java.time.DayOfWeek.SATURDAY
+            6 -> java.time.DayOfWeek.SUNDAY
+            else -> return null
         }
-        return null
+        return dayOfWeek.getDisplayName(java.time.format.TextStyle.SHORT, java.util.Locale.getDefault())
     }
 
     fun numberToTime(num: Float): String {

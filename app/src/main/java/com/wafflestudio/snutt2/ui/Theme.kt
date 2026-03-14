@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.ui
 
 import android.content.Context
 import android.content.res.Configuration
+import androidx.annotation.StringRes
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
@@ -9,6 +10,7 @@ import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.views.LocalThemeState
 
 private val LightThemeColors @Composable get() = lightColors(
@@ -40,16 +42,11 @@ private val DarkThemeColors @Composable get() = darkColors(
 val Colors.onSurfaceVariant: Color
     get() = if (isLight) SNUTTColors.DarkerGray else SNUTTColors.Gray30
 
-enum class ThemeMode {
-    DARK, LIGHT, AUTO, ;
-
-    override fun toString(): String {
-        return when (this) {
-            DARK -> "다크"
-            LIGHT -> "라이트"
-            AUTO -> "자동"
-        }
-    }
+enum class ThemeMode(@StringRes val labelResId: Int) {
+    DARK(R.string.theme_mode_dark),
+    LIGHT(R.string.theme_mode_light),
+    AUTO(R.string.theme_mode_auto),
+    ;
 }
 
 @Composable

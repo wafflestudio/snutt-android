@@ -34,6 +34,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.res.stringResource
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.ArrowBackIcon
 import com.wafflestudio.snutt2.components.compose.ArrowDownIcon
 import com.wafflestudio.snutt2.components.compose.DuplicateIcon
@@ -57,7 +59,7 @@ fun NetworkLogPage(
     Column {
         TopBar(
             title = {
-                Text("네트워크 로그", style = SNUTTTypography.h2)
+                Text(stringResource(R.string.debug_network_log_title), style = SNUTTTypography.h2)
             },
             navigationIcon = {
                 ArrowBackIcon(
@@ -67,7 +69,7 @@ fun NetworkLogPage(
             },
             actions = {
                 Text(
-                    "지우기", style = SNUTTTypography.button,
+                    stringResource(R.string.debug_network_log_clear), style = SNUTTTypography.button,
                     modifier = Modifier.clicks {
                         viewModel.clearNetworkLog()
                     },

@@ -22,9 +22,9 @@ object SNUTTStringUtils {
      * 강의의 모든 classTime을 text로 변환
      * ex) 월, 수 09:30 ~ 10:45 이면 -> "월(09:30~10:45), 수(09:30~10:45)"
      */
-    fun getSimplifiedClassTimeForLecture(lectureDto: LectureDto): String {
+    fun getSimplifiedClassTimeForLecture(context: Context, lectureDto: LectureDto): String {
         if (lectureDto.class_time_json.isEmpty()) {
-            return "(없음)"
+            return context.getString(R.string.lecture_detail_hint_nothing)
         }
 
         return lectureDto.class_time_json.joinToString(
@@ -37,9 +37,9 @@ object SNUTTStringUtils {
      * 강의의 모든 lectureSession을 text로 변환
      * ex) 월, 수 09:30 ~ 10:45 이면 -> "월(09:30~10:45), 수(09:30~10:45)"
      */
-    fun getSimplifiedClassTimeForLecture(lecture: SearchedLecture): String {
+    fun getSimplifiedClassTimeForLecture(context: Context, lecture: SearchedLecture): String {
         if (lecture.lectureSessions.isEmpty()) {
-            return "(없음)"
+            return context.getString(R.string.lecture_detail_hint_nothing)
         }
 
         return lecture.lectureSessions.joinToString(", ", transform = ::getClassTimeTextForLecture)
@@ -82,25 +82,25 @@ object SNUTTStringUtils {
         append("%02d:%02d".format(classTime.endTimeHour, classTime.endTimeMinute))
     }
 
-    fun getSimplifiedLocation(lectureDto: LectureDto): String {
+    fun getSimplifiedLocation(context: Context, lectureDto: LectureDto): String {
         val text = StringBuilder()
         val places = lectureDto.class_time_json.map { it.place }.distinct()
         places.forEachIndexed { index, place ->
             text.append(place)
             if (index != places.size - 1 && place.isNotEmpty()) text.append(" / ")
         }
-        if (text.isEmpty()) text.append("(없음)")
+        if (text.isEmpty()) text.append(context.getString(R.string.lecture_detail_hint_nothing))
         return text.toString()
     }
 
-    fun getSimplifiedLocation(lecture: SearchedLecture): String {
+    fun getSimplifiedLocation(context: Context, lecture: SearchedLecture): String {
         val text = StringBuilder()
         val places = lecture.lectureSessions.map { it.place }.distinct()
         places.forEachIndexed { index, place ->
             text.append(place)
             if (index != places.size - 1 && place.isNotEmpty()) text.append(" / ")
         }
-        if (text.isEmpty()) text.append("(없음)")
+        if (text.isEmpty()) text.append(context.getString(R.string.lecture_detail_hint_nothing))
         return text.toString()
     }
 
@@ -128,7 +128,7 @@ object SNUTTStringUtils {
         }
     }
 
-    fun getLectureTagText(lecture: LectureDto): String {
+    fun getLectureTagText(context: Context, lecture: LectureDto): String {
         return listOf(
             lecture.category,
             lecture.department,
@@ -136,11 +136,11 @@ object SNUTTStringUtils {
         )
             .filter { it.isNullOrBlank().not() }
             .let {
-                if (it.isEmpty()) "(없음)" else it.joinToString(", ")
+                if (it.isEmpty()) context.getString(R.string.lecture_detail_hint_nothing) else it.joinToString(", ")
             }
     }
 
-    fun getLectureTagText(lecture: SearchedLecture): String {
+    fun getLectureTagText(context: Context, lecture: SearchedLecture): String {
         return listOf(
             lecture.category,
             lecture.department,
@@ -148,7 +148,7 @@ object SNUTTStringUtils {
         )
             .filter { it.isBlank().not() }
             .let {
-                if (it.isEmpty()) "(없음)" else it.joinToString(", ")
+                if (it.isEmpty()) context.getString(R.string.lecture_detail_hint_nothing) else it.joinToString(", ")
             }
     }
 
@@ -160,17 +160,17 @@ object SNUTTStringUtils {
         return lectureList.fold(0L) { acc, lecture -> acc + lecture.credit }
     }
 
-    fun getInstructorAndCreditText(lecture: LectureDto): String {
-        return lecture.instructor + " / " + lecture.credit + "학점"
+    fun getInstructorAndCreditText(context: Context, lecture: LectureDto): String {
+        return lecture.instructor + " / " + lecture.credit + context.getString(R.string.lecture_detail_credit)
     }
 
-    // 570 -> 오전 09:30
-    fun Int.toFormattedTimeString(): String {
-        val amPm = if (this < SearchTimeDto.MIDDAY) "오전" else "오후"
+    // 570 -> 오전 09:30 / 9:30 AM
+    fun Int.toFormattedTimeString(context: Context): String {
+        val amPm = if (this < SearchTimeDto.MIDDAY) context.getString(R.string.morning) else context.getString(R.string.afternoon)
         val hour = (this / 60).let {
             if (it != 12) it % 12 else it
         }
-        return String.format("%s %d:%02d", amPm, hour, this % 60)
+        return context.getString(R.string.time_format_am_pm, amPm, hour, this % 60)
     }
 
     fun String.creditStringToLong(): Long {
@@ -215,13 +215,6 @@ object SNUTTStringUtils {
         append("%02d:%02d".format(this@getHourMinuteString.hour, this@getHourMinuteString.minute))
     }
 
-    fun DayOfWeek.getString(): String = when (this) {
-        DayOfWeek.MONDAY -> "월"
-        DayOfWeek.TUESDAY -> "화"
-        DayOfWeek.WEDNESDAY -> "수"
-        DayOfWeek.THURSDAY -> "목"
-        DayOfWeek.FRIDAY -> "금"
-        DayOfWeek.SATURDAY -> "토"
-        DayOfWeek.SUNDAY -> "일"
-    }
+    fun DayOfWeek.getString(): String =
+        this.getDisplayName(java.time.format.TextStyle.SHORT, java.util.Locale.getDefault())
 }

@@ -110,7 +110,7 @@ private fun DeclineFriendDialog(
         negativeButtonText = stringResource(R.string.common_cancel),
     ) {
         Text(
-            text = "${friend.nickname.nickname}#${friend.nickname.tag}님의 친구 요청을 거절하시겠습니까?",
+            text = stringResource(R.string.friend_decline_confirm_message, "${friend.nickname.nickname}#${friend.nickname.tag}"),
             style = SNUTTTypography.body2,
         )
     }

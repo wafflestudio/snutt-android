@@ -25,6 +25,8 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.ArrowDownIcon
 import com.wafflestudio.snutt2.components.compose.TrashIcon
 import com.wafflestudio.snutt2.components.compose.clicks
@@ -59,8 +61,7 @@ fun DiarySummariesOfDay(
                         style = SNUTTTypography.h3.copy(fontSize = 15.sp, color = DiaryTheme.colors.textPrimary),
                     )
                     Text(
-                        // FIXME: 다국어?
-                        date.format(DateTimeFormatter.ofPattern("E", java.util.Locale.KOREAN)),
+                        date.format(DateTimeFormatter.ofPattern("E", java.util.Locale.getDefault())),
                         style = SNUTTTypography.h3.copy(fontSize = 15.sp, color = DiaryTheme.colors.textPrimary),
                     )
                 }
@@ -112,7 +113,7 @@ private fun DiarySummary(
 ) {
     val textMeasurer = rememberTextMeasurer()
     val textLayoutResult = textMeasurer.measure(
-        text = AnnotatedString("남기고 싶은 말"),
+        text = AnnotatedString(stringResource(R.string.diary_summary_more_text_label)),
         style = SNUTTTypography.subtitle2,
     )
     val widthInDp = with(LocalDensity.current) { textLayoutResult.size.width.toDp() }
@@ -166,7 +167,7 @@ private fun DiarySummary(
                             modifier = Modifier
                                 .padding(end = 16.dp)
                                 .width(widthInDp),
-                            text = "남기고 싶은 말",
+                            text = stringResource(R.string.diary_summary_more_text_label),
                             style = SNUTTTypography.subtitle2,
                             fontWeight = FontWeight.Bold,
                             color = DiaryTheme.colors.textLabel,

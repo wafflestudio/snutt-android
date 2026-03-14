@@ -22,6 +22,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -49,6 +50,7 @@ fun LazyItemScope.VacancyListItem(
     editing: Boolean = false,
     onClick: () -> Unit = {},
 ) {
+    val context = LocalContext.current
     val hasVacancy = lecture.item.wasFull && lecture.item.registrationCount < lecture.item.quota
     val lectureTitle = lecture.item.courseTitle
     val instructorCreditText = stringResource(
@@ -61,8 +63,8 @@ fun LazyItemScope.VacancyListItem(
         lecture.item.registrationCount,
         lecture.item.quota,
     )
-    val tagText = SNUTTStringUtils.getLectureTagText(lecture.item)
-    val classTimeText = SNUTTStringUtils.getSimplifiedClassTimeForLecture(lecture.item)
+    val tagText = SNUTTStringUtils.getLectureTagText(context, lecture.item)
+    val classTimeText = SNUTTStringUtils.getSimplifiedClassTimeForLecture(context, lecture.item)
     val backgroundColor = if (hasVacancy) SNUTTColors.VacancyRedBg else SNUTTColors.White900
 
     Row(
@@ -188,7 +190,7 @@ fun LazyItemScope.VacancyListItem(
                     )
                     Spacer(modifier = Modifier.width(7.dp))
                     Text(
-                        text = SNUTTStringUtils.getSimplifiedLocation(lecture.item),
+                        text = SNUTTStringUtils.getSimplifiedLocation(context, lecture.item),
                         style = SNUTTTypography.body2.copy(
                             fontSize = 13.sp,
                             fontWeight = FontWeight.Normal,

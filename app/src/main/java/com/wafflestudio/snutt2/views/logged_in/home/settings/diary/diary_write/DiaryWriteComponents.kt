@@ -39,6 +39,8 @@ import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.domainmodel.diary.DiaryDailyClassType
 import com.wafflestudio.snutt2.domainmodel.diary.DiaryQuestion
+import androidx.compose.ui.res.stringResource
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.anySelected
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -69,7 +71,7 @@ fun DiaryActivitySelectSection(
     ) {
         DiaryQuestionItem(
             true,
-            "오늘 무엇을 했나요?",
+            stringResource(R.string.diary_write_activity_question),
             options = dailyClassTypes.map { (dailyClassType, selected) ->
                 Selectable(
                     dailyClassType.name,
@@ -86,7 +88,7 @@ fun DiaryActivitySelectSection(
         if (activitySelectionState.isSelecting() && dailyClassTypes.anySelected()) {
             Box(modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    "완료",
+                    stringResource(R.string.common_complete),
                     style = SNUTTTypography.button.copy(
                         fontSize = 14.sp,
                         color = DiaryTheme.colors.accentStrong,
@@ -165,7 +167,7 @@ fun DiaryQuestionItem(
             Spacer(modifier = Modifier.padding(6.dp))
             if (isDuplicate) {
                 Text(
-                    "중복 가능",
+                    stringResource(R.string.diary_write_duplicate_allowed),
                     fontSize = 13.sp,
                     color = DiaryTheme.colors.textSecondary,
                 )
@@ -245,7 +247,7 @@ fun MoreTextItem(
                 ),
             ) {
                 Text(
-                    "더 남기고 싶은 말을 작성해주세요.",
+                    stringResource(R.string.diary_write_more_text_title),
                     style = SNUTTTypography.h4.copy(
                         fontSize = 15.sp,
                         fontWeight = FontWeight.SemiBold,
@@ -253,7 +255,7 @@ fun MoreTextItem(
                     ),
                 )
                 Text(
-                    "선택",
+                    stringResource(R.string.diary_write_optional),
                     style = SNUTTTypography.subtitle2.copy(
                         fontSize = 13.sp,
                         color = DiaryTheme.colors.textSecondary,
@@ -293,7 +295,7 @@ fun MoreTextItem(
                             onChange(moretext.take(200))
                         }
                     },
-                    hint = "오늘 수업에서 배운 내용, 느낀 점 등을 간단하게 적어보세요.",
+                    hint = stringResource(R.string.diary_write_more_text_hint),
                     underlineEnabled = false,
                     modifier = Modifier
                         .padding(vertical = 16.dp)

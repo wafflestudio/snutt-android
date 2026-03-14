@@ -7,6 +7,7 @@ import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.lib.logging.AnalyticsLogger
+import com.wafflestudio.snutt2.ui.ThemeMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -69,7 +70,7 @@ class SettingsViewModel @Inject constructor(
 
         SettingsUiState(
             user.nickname.toString(),
-            themeMode.toString(),
+            themeMode,
             showLogoutDialog,
             settingPageNewBadgeTitles,
         )
@@ -78,11 +79,11 @@ class SettingsViewModel @Inject constructor(
 
 data class SettingsUiState(
     val userName: String,
-    val themeModeName: String,
+    val themeMode: ThemeMode,
     val showLogoutDialog: Boolean,
     val settingPageNewBadgeTitles: List<String>,
 ) {
     companion object {
-        val DEFAULT = SettingsUiState("", "", false, emptyList())
+        val DEFAULT = SettingsUiState("", ThemeMode.AUTO, false, emptyList())
     }
 }

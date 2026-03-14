@@ -20,6 +20,7 @@ class DisplayMessageResolverImpl @Inject constructor(
     override fun getDisplayMessage(error: DomainError): String {
         return when (error) {
             is NetworkDisconnect -> context.getString(R.string.error_no_network)
+            is NotSelectedTimetable -> context.getString(R.string.home_drawer_change_theme_unable_alert_message)
             is Unknown -> error.displayMessage.takeUnless { it.isBlank() } ?: context.getString(R.string.error_unknown)
             else -> error.displayMessage
         }

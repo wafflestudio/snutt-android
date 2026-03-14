@@ -519,6 +519,7 @@
     <string name="reviews_error_message">네트워크 연결을 확인해주세요</string>
     <string name="reviews_error_retry">다시 불러오기</string>
     <string name="lecture_overlap_error_message">시간대 겹침</string>
+    <string name="time_format_am_pm">%1$s %2$d:%3$02d</string>
     <string name="morning">오전</string>
     <string name="afternoon">오후</string>
     <string name="lecture_detail_edit_class_time_sheet_start_time_label">시작</string>
@@ -648,4 +649,49 @@
     <string name="theme_market_webview_error_retry">다시 불러오기</string>
     <string name="common_copied_to_clipboard">클립보드에 복사되었습니다.</string>
     <string name="firebase_messaging_service_channel_name">앱 알림</string>
+
+    <!-- Diary Write -->
+    <string name="diary_write_header_title">오늘 수강한 \'%s\' 에 대한 의견을 남겨보세요.</string>
+    <string name="diary_write_header_subtitle">더보기 > 강의일기장에서 확인할 수 있어요.</string>
+    <string name="diary_write_next_button">다음</string>
+    <string name="diary_write_complete_title">강의일기가 등록되었습니다.</string>
+    <string name="diary_write_complete_subtitle">작성한 강의일기는 더보기>강의일기장에서 확인할 수 있어요.</string>
+    <string name="diary_write_more_button">더 기록하기</string>
+    <string name="diary_write_review_button">강의평 남기기</string>
+    <string name="diary_write_home_button">홈으로</string>
+    <string name="diary_write_activity_question">오늘 무엇을 했나요?</string>
+    <string name="diary_write_duplicate_allowed">중복 가능</string>
+    <string name="diary_write_more_text_title">더 남기고 싶은 말을 작성해주세요.</string>
+    <string name="diary_write_optional">선택</string>
+    <string name="diary_write_more_text_hint">오늘 수업에서 배운 내용, 느낀 점 등을 간단하게 적어보세요.</string>
+    <string name="diary_delete_confirm_message">\'%s\'\n강의일기를 삭제하시겠습니까?</string>
+    <string name="diary_summary_more_text_label">남기고 싶은 말</string>
+
+    <!-- Search -->
+    <string name="search_result_remark_empty">없음</string>
+    <string name="search_option_recent_departments">최근 찾아본 학과</string>
+
+    <!-- Debug -->
+    <string name="debug_network_log_title">네트워크 로그</string>
+    <string name="debug_network_log_clear">지우기</string>
+
+    <!-- Friend -->
+    <string name="friend_display_name_char_limit">(공백 포함 한/영/숫자 10자 이내)</string>
+    <string name="friend_decline_confirm_message">%s님의 친구 요청을 거절하시겠습니까?</string>
+
+    <!-- Review -->
+    <string name="reviews_error_content_description">네트워크 연결을 확인해주세요.</string>
+
+    <!-- Course Book Format -->
+    <string name="course_book_year_semester_format">%1$d년 %2$s</string>
+    <string name="course_book_abbv_summer">여름</string>
+    <string name="course_book_abbv_winter">겨울</string>
+
+    <!-- Theme Mode (short form) -->
+    <string name="theme_mode_dark">다크</string>
+    <string name="theme_mode_light">라이트</string>
+    <string name="theme_mode_auto">자동</string>
+
+    <!-- Theme Default Name -->
+    <string name="theme_new_default_name">새 테마</string>
 </resources>

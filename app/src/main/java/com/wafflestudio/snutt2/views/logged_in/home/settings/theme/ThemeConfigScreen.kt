@@ -53,6 +53,7 @@ import com.wafflestudio.snutt2.components.compose.ThemeIcon
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.CustomTheme
+import com.wafflestudio.snutt2.components.compose.displayName
 import com.wafflestudio.snutt2.domainmodel.TableTheme
 import com.wafflestudio.snutt2.lib.featureflag.FeatureFlag
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
@@ -392,7 +393,7 @@ private fun ThemeItem(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = theme.name,
+                text = theme.displayName(),
                 modifier = Modifier.weight(1f, false),
                 textAlign = TextAlign.Center,
                 maxLines = 1,

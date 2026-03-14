@@ -39,7 +39,7 @@ fun CourseBookDto.toFormattedString(context: Context): String {
         4L -> context.getString(R.string.course_book_winter)
         else -> "-"
     }
-    return "${this.year}년 $semesterStr"
+    return context.getString(R.string.course_book_year_semester_format, this.year, semesterStr)
 }
 
 fun CourseBook.toFormattedString(context: Context): String {
@@ -50,15 +50,15 @@ fun CourseBook.toFormattedString(context: Context): String {
         4L -> context.getString(R.string.course_book_winter)
         else -> "-"
     }
-    return "${this.year}년 $semesterStr"
+    return context.getString(R.string.course_book_year_semester_format, this.year, semesterStr)
 }
 
-fun CourseBook.toAbbvString(): String {
+fun CourseBook.toAbbvString(context: Context): String {
     val semesterStr = when (this.semester) {
         1L -> "1"
-        2L -> "여름"
+        2L -> context.getString(R.string.course_book_abbv_summer)
         3L -> "2"
-        4L -> "겨울"
+        4L -> context.getString(R.string.course_book_abbv_winter)
         else -> ""
     }
     return "${this.year.rem(2000)}-$semesterStr"
