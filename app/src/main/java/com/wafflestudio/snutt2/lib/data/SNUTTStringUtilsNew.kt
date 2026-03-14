@@ -5,6 +5,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domainmodel.CustomLecture
 import com.wafflestudio.snutt2.domainmodel.Lecture
 import com.wafflestudio.snutt2.domainmodel.LectureSession
+import com.wafflestudio.snutt2.domainmodel.LectureSyllabusInfo
 import com.wafflestudio.snutt2.domainmodel.LocalLecture
 import com.wafflestudio.snutt2.domainmodel.SyllabusLecture
 import java.time.format.DateTimeFormatter
@@ -56,7 +57,7 @@ object SNUTTStringUtilsNew {
      * 하나의 session을 텍스트로 변환
      * ex) 월 09:30 ~ 10:45 이면 -> "월(09:30~10:45)"
      */
-    private fun getLectureSessionString(lectureSession: LectureSession): String = buildString {
+    fun getLectureSessionString(lectureSession: LectureSession): String = buildString {
         append(
             lectureSession.day.getDisplayName(TextStyle.SHORT, Locale.getDefault()),
         )
@@ -77,5 +78,27 @@ object SNUTTStringUtilsNew {
         }
 
         return places.joinToString(" / ")
+    }
+
+    /**
+     * 정원 타이틀 (신입생 정원이 있으면 "(재학생)" 표시)
+     * ex) "정원" 또는 "정원(재학생)"
+     */
+    fun getQuotaTitle(info: LectureSyllabusInfo, context: Context): String = buildString {
+        append(context.getString(R.string.lecture_detail_quota))
+        if (info.freshmanQuota != 0L) {
+            append("(${context.getString(R.string.lecture_detail_senior)})")
+        }
+    }
+
+    /**
+     * 정원 표시 (신입생 정원이 있으면 재학생 정원도 표시)
+     * ex) "150" 또는 "150(120)"
+     */
+    fun getFullQuota(info: LectureSyllabusInfo): String = buildString {
+        append(info.quota)
+        if (info.freshmanQuota != 0L) {
+            append("(${info.quota - info.freshmanQuota})")
+        }
     }
 }

@@ -1,14 +1,16 @@
 package com.wafflestudio.snutt2.data.current_table
 
 import com.wafflestudio.snutt2.domainmodel.Lecture
+import com.wafflestudio.snutt2.domainmodel.LectureReviewInfo
+import com.wafflestudio.snutt2.domainmodel.LocalLecture
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
+import com.wafflestudio.snutt2.domainmodel.Table
+import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureReviewDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
-import com.wafflestudio.snutt2.domainmodel.Table
-import com.wafflestudio.snutt2.lib.network.Result
 import kotlinx.coroutines.flow.StateFlow
 
 interface CurrentTableRepository {
@@ -62,4 +64,12 @@ interface CurrentTableRepository {
     suspend fun addLectureNew(lectureId: String, isForced: Boolean): Result<Unit>
 
     suspend fun removeLectureNew(lectureId: String): Result<Unit>
+
+    suspend fun updateLectureNew(lecture: Lecture, isForced: Boolean): Result<Unit>
+
+    suspend fun resetLectureNew(lectureId: String): Result<LocalLecture>
+
+    suspend fun getSyllabusUrlNew(courseNumber: String, lectureNumber: String): Result<String>
+
+    suspend fun getReviewInfoNew(lectureId: String): Result<LectureReviewInfo?>
 }

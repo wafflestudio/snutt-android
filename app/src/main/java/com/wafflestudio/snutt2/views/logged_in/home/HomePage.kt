@@ -84,7 +84,7 @@ fun HomePage() {
     val searchViewModel = hiltViewModel<SearchViewModel>()
     val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>()
 
-     val uncheckedNotification by homeViewModel.uncheckedNotification.collectAsState()
+    val uncheckedNotification by homeViewModel.uncheckedNotification.collectAsState()
     val table by timetableViewModel.currentTable.collectAsState()
     val previewTheme by timetableViewModel.previewTheme.collectAsState()
     val trimParam by userViewModel.trimParam.collectAsState()
@@ -165,12 +165,12 @@ fun HomePage() {
                     navController.navigate(NavigationDestination.VacancyNotification)
                 },
                 onNavigateLectureDetail = { lecture ->
-                    lectureDetailViewModel.initializeEditingLectureDetail(
-                        LectureDto.fromLocalLecture(lecture),
-                        ModeType.Normal,
-                        table,
-                    )
-                    navController.navigate(NavigationDestination.LectureDetail) {
+                    navController.navigate(
+                        NavigationDestination.LectureDetailNew(
+                            lectureId = lecture.id,
+                            tableId = table?.id,
+                        ),
+                    ) {
                         launchSingleTop = true
                     }
                 },

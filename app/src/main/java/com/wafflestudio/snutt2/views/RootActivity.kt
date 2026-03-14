@@ -42,13 +42,14 @@ import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.google.firebase.FirebaseApp
 import com.wafflestudio.snutt2.BuildConfig
-import com.wafflestudio.snutt2.lib.featureflag.FeatureFlag
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.deeplink.InstallInAppDeeplinkExecutor
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.CustomTheme
+import com.wafflestudio.snutt2.domainmodel.LectureColor
+import com.wafflestudio.snutt2.lib.featureflag.FeatureFlag
 import com.wafflestudio.snutt2.lib.logging.AnalyticsLogger
 import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
 import com.wafflestudio.snutt2.lib.network.ApiOnError
@@ -71,9 +72,11 @@ import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.diary_history
 import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.diary_write.DiaryWriteRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailRoute
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureColorSelectorPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.current_table.CurrentTableLectureDetailRoute
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.current_table.LectureColorSelectorRoute
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.current_table.LectureColorSelectorViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.deeplink.TimetableLectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.notifications.NotificationRoute
 import com.wafflestudio.snutt2.views.logged_in.table_lectures.TableLecturesRoute
@@ -287,6 +290,32 @@ class RootActivity : AppCompatActivity() {
                         )
                     }
 
+                    composableAnimated<NavigationDestination.LectureDetailNew> {
+                        val referrer = when {
+                            navController.previousBackStackEntry?.destination?.hasRoute(
+                                NavigationDestination.LecturesOfTable::class,
+                            ) == true
+                                -> DetailScreenReferrer.LectureList
+
+                            homePageController.homePageState.value == HomeItem.Timetable -> DetailScreenReferrer.Timetable
+                            else -> null
+                        }
+
+                        CurrentTableLectureDetailRoute(
+                            referrer = referrer,
+                            onNavigateBack = { navController.popBackStack() },
+                            onNavigateColorSelector = { currentColor ->
+                                val (idx, fg, bg) = when (currentColor) {
+                                    is LectureColor.BuiltIn -> Triple(currentColor.colorIndex, 0, 0)
+                                    is LectureColor.Custom -> Triple(-1, currentColor.foreground, currentColor.background)
+                                }
+                                navController.navigate(NavigationDestination.LectureColorSelectorNew(idx, fg, bg))
+                            },
+                            onNavigateLectureReminder = { navController.navigate(NavigationDestination.LectureReminder) },
+                            onNavigateOnboard = { navController.navigateAsOrigin(NavigationDestination.Onboard) },
+                        )
+                    }
+
                     composableAnimated<NavigationDestination.Bookmark> { backstackEntry ->
                         val parentEntry = remember(backstackEntry) {
                             navController.getBackStackEntry(NavigationDestination.Home)
@@ -317,12 +346,20 @@ class RootActivity : AppCompatActivity() {
                     }
 
                     composableAnimated<NavigationDestination.LectureColorSelector> {
-                        val parentEntry = remember(it) {
-                            navController.getBackStackEntry(NavigationDestination.Home)
-                        }
-                        val lectureDetailViewModel =
-                            hiltViewModel<LectureDetailViewModel>(parentEntry)
-                        LectureColorSelectorPage(lectureDetailViewModel)
+                        LectureColorSelectorRoute(
+                            onNavigateBackWithResult = { selectedColor ->
+                                val (idx, fg, bg) = when (selectedColor) {
+                                    is LectureColor.BuiltIn -> Triple(selectedColor.colorIndex, 0, 0)
+                                    is LectureColor.Custom -> Triple(-1, selectedColor.foreground, selectedColor.background)
+                                }
+                                navController.previousBackStackEntry?.savedStateHandle?.apply {
+                                    set(LectureColorSelectorViewModel.RESULT_COLOR_INDEX, idx)
+                                    set(LectureColorSelectorViewModel.RESULT_FG, fg)
+                                    set(LectureColorSelectorViewModel.RESULT_BG, bg)
+                                }
+                                navController.popBackStack()
+                            },
+                        )
                     }
 
                     bottomSheet<NavigationDestination.ThemeDetail> {

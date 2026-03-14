@@ -4,7 +4,10 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.wafflestudio.snutt2.data.SNUTTStorage
+import com.wafflestudio.snutt2.data.lecture_cache.LectureCache
+import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
+import com.wafflestudio.snutt2.lib.network.toDomainError
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.model.SearchTimeDto
@@ -20,6 +23,7 @@ import javax.inject.Singleton
 class LectureSearchRepositoryImpl @Inject constructor(
     private val api: SNUTTRestApi,
     private val storage: SNUTTStorage,
+    private val lectureCache: LectureCache,
 ) : LectureSearchRepository {
 
     override val recentSearchedDepartments = storage.recentSearchedDepartments.asStateFlow()
@@ -42,6 +46,7 @@ class LectureSearchRepositoryImpl @Inject constructor(
             pagingSourceFactory = {
                 LectureSearchPagingSource(
                     api,
+                    lectureCache,
                     year = year,
                     semester = semester,
                     title = title,
@@ -88,6 +93,17 @@ class LectureSearchRepositoryImpl @Inject constructor(
 
     override fun setFirstBookmarkAlertShown() {
         storage.firstBookmarkAlert.update(false)
+    }
+
+    override suspend fun getBuildingsNew(places: List<String>): Result<List<LectureBuildingDto>> {
+        val joined = places.joinToString(",")
+        if (joined.isBlank()) return Result.Success(emptyList())
+        try {
+            val response = api._getBuildings(joined)
+            return Result.Success(response.content)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
     }
 
     companion object {

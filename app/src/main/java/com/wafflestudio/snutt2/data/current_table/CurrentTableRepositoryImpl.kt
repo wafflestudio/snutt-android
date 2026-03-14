@@ -1,12 +1,12 @@
 package com.wafflestudio.snutt2.data.current_table
 
-import androidx.compose.ui.res.stringResource
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.domainmodel.Lecture
+import com.wafflestudio.snutt2.domainmodel.LectureReviewInfo
+import com.wafflestudio.snutt2.domainmodel.LocalLecture
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
+import com.wafflestudio.snutt2.domainmodel.SyllabusLecture
 import com.wafflestudio.snutt2.domainmodel.Table
-import com.wafflestudio.snutt2.lib.network.DomainError
-import com.wafflestudio.snutt2.lib.network.EOF
 import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.Unknown
@@ -207,4 +207,81 @@ class CurrentTableRepositoryImpl @Inject constructor(
             return Result.Fail(e.toDomainError())
         }
     }
+
+    override suspend fun updateLectureNew(lecture: Lecture, isForced: Boolean): Result<Unit> {
+        val prevTable = storage.lastViewedTable.get().value
+            ?: return Result.Success(Unit)
+        try {
+            val params = LectureDto.fromLecture(lecture).toParams()
+            params.isForced = isForced
+            val response = api._putLecture(prevTable.id, lecture.id, params)
+            storage.lastViewedTable.update(response.toOptional())
+            return Result.Success(Unit)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun resetLectureNew(lectureId: String): Result<LocalLecture> {
+        val prevTable = storage.lastViewedTable.get().value
+            ?: return Result.Fail(Unknown("", ""))
+        try {
+            val response = api._resetLecture(prevTable.id, lectureId)
+            storage.lastViewedTable.update(response.toOptional())
+            val lecture = response.lectureList.find { it.id == lectureId }!!.toLocalLecture()
+            return Result.Success(lecture)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun getSyllabusUrlNew(courseNumber: String, lectureNumber: String): Result<String> {
+        val prevTable = storage.lastViewedTable.get().value
+            ?: return Result.Fail(Unknown("", ""))
+        try {
+            val url = api._getCoursebooksOfficial(
+                prevTable.year,
+                prevTable.semester,
+                courseNumber,
+                lectureNumber,
+            ).url
+            return Result.Success(url)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun getReviewInfoNew(lectureId: String): Result<LectureReviewInfo?> {
+        try {
+            val dto = api._getLectureReviewSummary(lectureId)
+            val reviewInfo = LectureReviewInfo(id = dto.id, rating = dto.rating, reviewCount = dto.reviewCount ?: 0)
+            return Result.Success(reviewInfo)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
+
+    // NOTE: 서버 API에 보낼 강의 ID 필드를 결정한다.
+    // 이 ID 선택 로직은 서버 스펙에 종속된 관심사이므로 data layer(repository)에서 처리한다.
+    // VacancyRepositoryImpl 에도 동일 로직 존재. 필요 시 공유 유틸로 추출할 것.
+    private fun Lecture.resolveApiId(): String = when (this) {
+        is SyllabusLecture -> originalLectureId
+        else -> id
+    }
+
+    private fun LectureDto.toParams() = PostCustomLectureParams(
+        id = id,
+        course_title = course_title,
+        instructor = instructor,
+        colorIndex = colorIndex,
+        color = color,
+        department = department,
+        academic_year = academic_year,
+        credit = credit,
+        classification = classification,
+        category = category,
+        categoryPre2025 = categoryPre2025,
+        remark = remark,
+        class_time_json = class_time_json,
+    )
 }

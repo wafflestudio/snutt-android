@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.data.lecture_search
 
 import androidx.paging.PagingData
+import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.model.SearchTimeDto
@@ -34,4 +35,6 @@ interface LectureSearchRepository {
     fun removeRecentSearchedDepartment(tag: TagDto)
 
     fun setFirstBookmarkAlertShown()
+
+    suspend fun getBuildingsNew(places: List<String>): Result<List<LectureBuildingDto>>
 }

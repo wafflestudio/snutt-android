@@ -1,5 +1,7 @@
 package com.wafflestudio.snutt2.di
 
+import com.wafflestudio.snutt2.data.bookmark.BookmarkRepository
+import com.wafflestudio.snutt2.data.bookmark.BookmarkRepositoryImpl
 import com.wafflestudio.snutt2.data.course_books.CourseBookRepository
 import com.wafflestudio.snutt2.data.course_books.CourseBookRepositoryImpl
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
@@ -32,6 +34,9 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 @Module
 abstract class RepositoryModule {
+
+    @Binds
+    abstract fun bindsBookmarkRepository(impl: BookmarkRepositoryImpl): BookmarkRepository
 
     @Binds
     abstract fun bindsCourseBookRepository(impl: CourseBookRepositoryImpl): CourseBookRepository

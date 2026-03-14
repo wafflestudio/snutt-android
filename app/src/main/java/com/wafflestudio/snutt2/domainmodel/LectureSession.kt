@@ -9,4 +9,14 @@ data class LectureSession(
     val startTime: LocalTime,
     val endTime: LocalTime,
     val place: String,
-)
+) {
+    companion object {
+        val Default = LectureSession(
+            id = null,
+            day = DayOfWeek.MONDAY,
+            startTime = LocalTime.of(9, 0),
+            endTime = LocalTime.of(10, 0),
+            place = "",
+        )
+    }
+}

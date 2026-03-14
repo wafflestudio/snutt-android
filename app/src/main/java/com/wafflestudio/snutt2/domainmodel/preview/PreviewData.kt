@@ -2,12 +2,15 @@ package com.wafflestudio.snutt2.domainmodel.preview
 
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.CourseBook
+import com.wafflestudio.snutt2.domainmodel.CustomLecture
 import com.wafflestudio.snutt2.domainmodel.LectureColor
 import com.wafflestudio.snutt2.domainmodel.Friend
 import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
+import com.wafflestudio.snutt2.domainmodel.LectureReviewInfo
 import com.wafflestudio.snutt2.domainmodel.LectureSession
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
 import com.wafflestudio.snutt2.domainmodel.Nickname
+import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.domainmodel.SyllabusLecture
 import com.wafflestudio.snutt2.domainmodel.Table
 import com.wafflestudio.snutt2.domainmodel.TableSummary
@@ -456,6 +459,96 @@ object PreviewData {
         ),
         lectures = listOf(sampleFriendLecture),
         themeRef = ThemeReference.BuiltIn(0),
+    )
+
+    // --- LectureDetail 프리뷰 ---
+
+    val customLecture = CustomLecture(
+        id = "custom1",
+        courseTitle = "스터디",
+        instructor = "홍길동",
+        credit = 0,
+        remark = "매주 월요일 저녁",
+        color = LectureColor.Custom(
+            foreground = 0xFFFFFFFF.toInt(),
+            background = 0xFF333333.toInt(),
+        ),
+        lectureSessions = listOf(
+            LectureSession(
+                id = null,
+                day = DayOfWeek.MONDAY,
+                startTime = LocalTime.of(19, 0),
+                endTime = LocalTime.of(20, 30),
+                place = "카페",
+            ),
+        ),
+    )
+
+    val searchedLecture = SearchedLecture(
+        id = "search1",
+        courseTitle = "알고리즘",
+        instructor = "이정우",
+        credit = 3,
+        remark = "ⓔ 컴퓨터공학부 주전공만 신청 가능",
+        lectureSessions = listOf(
+            LectureSession(null, DayOfWeek.TUESDAY, LocalTime.of(14, 0), LocalTime.of(15, 30), "302-208"),
+            LectureSession(null, DayOfWeek.THURSDAY, LocalTime.of(14, 0), LocalTime.of(15, 30), "302-208"),
+        ),
+        classification = "전선",
+        department = "컴퓨터공학부",
+        academicYear = "3학년",
+        courseNumber = "M1522.001400",
+        lectureNumber = "001",
+        category = "",
+        categoryPre2025 = "",
+        quota = 60,
+        freshmanQuota = 20,
+        registrationCount = 45,
+        wasFull = false,
+        reviewInfo = LectureReviewInfo(id = "12345", rating = 4.2, reviewCount = 38),
+    )
+
+    val sampleReviewInfo = LectureReviewInfo(
+        id = "review1",
+        rating = 4.2,
+        reviewCount = 38,
+    )
+
+    val sampleReminderOption = LectureWithReminderOption(
+        lectureId = "1",
+        lectureTitle = "논리설계",
+        lectureReminderOffset = LectureReminderOffset.TEN_MINUTES_BEFORE,
+    )
+
+    val sampleReminderOptionDefault = LectureWithReminderOption.Default
+
+    val builtInColorLecture = SyllabusLecture(
+        id = "builtin1",
+        courseTitle = "이산수학",
+        lectureSessions = listOf(
+            LectureSession(null, DayOfWeek.TUESDAY, LocalTime.of(10, 30), LocalTime.of(12, 0), "302-208"),
+            LectureSession(null, DayOfWeek.THURSDAY, LocalTime.of(10, 30), LocalTime.of(12, 0), "302-208"),
+        ),
+        instructor = "김민수",
+        credit = 3,
+        remark = "",
+        color = LectureColor.BuiltIn(2),
+        classification = "전선",
+        department = "컴퓨터공학부",
+        academicYear = "2학년",
+        courseNumber = "M1522.000800",
+        lectureNumber = "001",
+        category = "",
+        categoryPre2025 = "",
+        quota = 80,
+        freshmanQuota = 0,
+        originalLectureId = "61e4c9437d86910064ed3740",
+    )
+
+    val emptyReminderOption = LectureWithReminderOption(
+        lectureId = "",
+        lectureTitle = "",
+        lectureReminderOffset = LectureReminderOffset.NONE,
     )
 
     val sampleFriendsUiState = FriendsUiState.Loaded(
