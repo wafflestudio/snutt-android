@@ -240,21 +240,21 @@ fun SettingsScreen(
                         onClick = onClickLectureReminder,
                     )
                 }
+                if (FeatureFlag.LECTURE_DIARY.isEnabled) {
+                    SettingItem(
+                        title = stringResource(R.string.settings_item_lecture_diary),
+                        settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
+                        hasNextPage = true,
+                        onClick = onClickDiaryHistory,
+                    )
+                }
                 if (BuildConfig.DEBUG) {
-                    if (FeatureFlag.LECTURE_DIARY.isEnabled) {
-                        SettingItem(
-                            title = stringResource(R.string.settings_item_lecture_diary),
-                            settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
-                            hasNextPage = true,
-                            onClick = onClickDiaryHistory,
-                        )
-                        SettingItem(
-                            title = stringResource(R.string.settings_item_write_lecture_diary),
-                            settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
-                            hasNextPage = true,
-                            onClick = onClickDiaryWrite,
-                        )
-                    }
+                    SettingItem(
+                        title = stringResource(R.string.settings_item_write_lecture_diary),
+                        settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
+                        hasNextPage = true,
+                        onClick = onClickDiaryWrite,
+                    )
                 }
             }
             Margin(height = 10.dp)

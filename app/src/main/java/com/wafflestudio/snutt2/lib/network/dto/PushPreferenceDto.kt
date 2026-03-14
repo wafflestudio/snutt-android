@@ -12,5 +12,6 @@ fun PushPreferenceDto.toDomainModel(): PushPreferences {
     return PushPreferences(
         lectureUpdate = map["LECTURE_UPDATE"]?.isEnabled ?: true,
         vacancyNotification = map["VACANCY_NOTIFICATION"]?.isEnabled ?: true,
+        lectureDiary = map["DIARY"]?.isEnabled ?: true,
     )
 }

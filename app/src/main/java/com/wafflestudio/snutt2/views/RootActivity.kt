@@ -42,6 +42,7 @@ import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.google.firebase.FirebaseApp
 import com.wafflestudio.snutt2.BuildConfig
+import com.wafflestudio.snutt2.lib.featureflag.FeatureFlag
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.components.compose.*
@@ -454,7 +455,7 @@ class RootActivity : AppCompatActivity() {
         composableAnimated<NavigationDestination.SocialLink> { SocialLinkPage() }
         composableAnimated<NavigationDestination.PersonalInformationPolicy> { PersonalInformationPolicyPage() }
         composableAnimated<NavigationDestination.ThemeModeSelect> { ColorModeSelectPage() }
-        if (BuildConfig.DEBUG) {
+        if (FeatureFlag.LECTURE_DIARY.isEnabled) {
             composableAnimated<NavigationDestination.LectureDiaryWrite> { entry ->
                 DiaryWriteRoute(
                     onNavigateBack = {

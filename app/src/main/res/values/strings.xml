@@ -394,6 +394,7 @@
     <string name="settings_push_preferences_title">푸시알림 설정</string>
     <string name="settings_push_preferences_lecture_update">강의 업데이트</string>
     <string name="settings_push_preferences_vacancy">빈자리 알림</string>
+    <string name="settings_push_preferences_lecture_diary">강의 일기장</string>
     <string name="settings_lecture_reminder_title">강의 리마인더</string>
     <string name="settings_lecture_reminder_my_reminders">나의 리마인더</string>
     <string name="settings_lecture_reminder_none">없음</string>

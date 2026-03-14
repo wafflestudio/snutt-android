@@ -107,6 +107,15 @@ fun PushPreferencesScreen(
                     ) {
                         PoorSwitch(state = uiState.pushPreferences.vacancyNotification)
                     }
+                    SettingItem(
+                        title = stringResource(R.string.settings_push_preferences_lecture_diary),
+                        hasNextPage = false,
+                        onClick = {
+                            toggleUiState(PushPreferenceType.DIARY)
+                        },
+                    ) {
+                        PoorSwitch(state = uiState.pushPreferences.lectureDiary)
+                    }
                 }
             }
         }
@@ -168,7 +177,7 @@ fun PushPreferencesSuccessPreview() {
     PushPreferencesScreen(
         onClickBack = {},
         uiState = PushPreferencesUiState.Success(
-            PushPreferences(lectureUpdate = false, vacancyNotification = true),
+            PushPreferences(lectureUpdate = false, vacancyNotification = true, lectureDiary = true),
         ),
         toggleUiState = {},
     )

@@ -57,6 +57,10 @@ class PushPreferencesViewModel @Inject constructor(
                     PushPreferenceType.VACANCY_NOTIFICATION -> currentPrefs.copy(
                         vacancyNotification = !currentPrefs.vacancyNotification,
                     )
+
+                    PushPreferenceType.DIARY -> currentPrefs.copy(
+                        lectureDiary = !currentPrefs.lectureDiary,
+                    )
                 }
 
                 userRepository.postPushPreferences(updatedPrefs)
