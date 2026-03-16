@@ -9,6 +9,7 @@ import androidx.compose.material.ModalDrawer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import com.wafflestudio.snutt2.components.compose.ModalBottomSheetPlaceholder
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.TableSummary
 import com.wafflestudio.snutt2.domainmodel.TableTheme
@@ -64,9 +65,15 @@ fun HomeDrawerBottomSheetLayout(
     ModalBottomSheetLayout(
         sheetContent = {
             when (uiState) {
-                is HomeDrawerUiState.Loading -> {}
+                is HomeDrawerUiState.Loading -> {
+                    ModalBottomSheetPlaceholder()
+                }
+
                 is HomeDrawerUiState.Loaded -> when (uiState.homeDrawerBottomSheetType) {
-                    HomeDrawerBottomSheetType.Empty -> {}
+                    HomeDrawerBottomSheetType.Empty -> {
+                        ModalBottomSheetPlaceholder()
+                    }
+
                     is HomeDrawerBottomSheetType.SelectTheme -> {
                         SelectThemeSheetContent(
                             sheetType = uiState.homeDrawerBottomSheetType,
@@ -77,7 +84,10 @@ fun HomeDrawerBottomSheetLayout(
                         )
                     }
 
-                    HomeDrawerBottomSheetType.CreateNewTheme -> {}
+                    HomeDrawerBottomSheetType.CreateNewTheme -> {
+                        ModalBottomSheetPlaceholder()
+                    }
+
                     is HomeDrawerBottomSheetType.CreateNewTable -> {
                         CreateTableBottomSheet(
                             sheetState = sheetState,

@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.lecture_detail.current_table
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.size
+import com.wafflestudio.snutt2.components.compose.ModalBottomSheetPlaceholder
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
@@ -45,7 +44,7 @@ fun CurrentTableLectureDetailBottomSheetLayout(
         sheetContent = {
             when (val sheetType = uiState.sheetType) {
                 CurrentTableLectureDetailUiState.SheetType.None -> {
-                    Box(modifier = Modifier.size(1.dp))
+                    ModalBottomSheetPlaceholder()
                 }
 
                 is CurrentTableLectureDetailUiState.SheetType.TimePicker -> {

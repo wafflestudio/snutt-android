@@ -23,6 +23,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.CustomDialog
 import com.wafflestudio.snutt2.components.compose.snackbar.CustomSnackBarDuration
 import com.wafflestudio.snutt2.components.compose.snackbar.CustomSnackBarHostState
+import com.wafflestudio.snutt2.components.compose.snackbar.SnackBarScaffold
 import com.wafflestudio.snutt2.components.compose.snackbar.dismiss
 import com.wafflestudio.snutt2.domainmodel.LectureColor
 import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
@@ -167,7 +168,7 @@ fun CurrentTableLectureDetailRoute(
         )
     }
 
-    CurrentTableLectureDetailSnackBarLayout(
+    SnackBarScaffold(
         snackBarHostState = snackBarHostState,
         hazeState = hazeState,
     ) { contentPadding ->

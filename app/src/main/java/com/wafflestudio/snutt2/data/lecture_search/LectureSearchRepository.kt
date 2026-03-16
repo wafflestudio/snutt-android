@@ -1,6 +1,9 @@
 package com.wafflestudio.snutt2.data.lecture_search
 
 import androidx.paging.PagingData
+import com.wafflestudio.snutt2.domainmodel.SearchTag
+import com.wafflestudio.snutt2.domainmodel.SearchTime
+import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
@@ -33,6 +36,25 @@ interface LectureSearchRepository {
     fun storeRecentSearchedDepartment(tag: TagDto)
 
     fun removeRecentSearchedDepartment(tag: TagDto)
+
+    // region Domain model (SearchTag-based)
+    val recentSearchedDepartmentTags: Flow<List<SearchTag>>
+
+    fun getLectureSearchResultStreamNew(
+        year: Long,
+        semester: Long,
+        title: String,
+        tags: List<SearchTag>,
+        times: List<SearchTime>?,
+        timesToExclude: List<SearchTime>?,
+    ): Flow<PagingData<SearchedLecture>>
+
+    suspend fun getSearchTagsDomain(year: Long, semester: Long): List<SearchTag>
+    fun storeRecentSearchedDepartment(tag: SearchTag)
+
+    fun removeRecentSearchedDepartment(tag: SearchTag)
+
+    // endregion
 
     fun setFirstBookmarkAlertShown()
 

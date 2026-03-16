@@ -52,6 +52,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.popups.Popup
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewPage
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchRoute
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
+import com.wafflestudio.snutt2.views.logged_in.home.search.refactor.SearchRouteNew
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingsRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TableState
@@ -186,6 +187,20 @@ fun HomePage() {
                         ModeType.Editing(true),
                     )
                     navController.navigate(NavigationDestination.LectureDetail)
+                },
+                onBottomNavigate = { pageController.update(it) },
+            )
+
+            return@CompositionLocalProvider
+        }
+
+        if (BuildConfig.DEBUG && pageController.homePageState.value == HomeItem.Search) {
+            SearchRouteNew(
+                onNavigateVacancy = {
+                    navController.navigate(NavigationDestination.VacancyNotification)
+                },
+                onNavigateOnboardAsOrigin = {
+                    navController.navigateAsOrigin(NavigationDestination.Onboard)
                 },
                 onBottomNavigate = { pageController.update(it) },
             )

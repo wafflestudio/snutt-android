@@ -5,6 +5,7 @@ import androidx.annotation.ColorInt
 import androidx.compose.animation.core.spring
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.toColorInt
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.ui.isDarkMode
 
@@ -17,7 +18,8 @@ object SearchOptionSheetConstants {
         stiffness = 200f,
     )
 
-    @ColorInt val BackgroundLectureBlockColor = Color.argb(153, 27, 208, 200)
+    @ColorInt
+    val BackgroundLectureBlockColor = Color.argb(153, 27, 208, 200)
     val TimeBlockColor: ColorDto
         @Composable get() = if (isDarkMode()) {
             ColorDto(
@@ -30,4 +32,14 @@ object SearchOptionSheetConstants {
                 bgRaw = "#B3DADADA",
             )
         }
+
+    @ColorInt
+    val TimeBlockFgColorLight = "#FFFFFF".toColorInt()
+
+    @ColorInt
+    val TimeBlockFgColorDark = "#777777".toColorInt()
+    @ColorInt
+    val TimeBlockBgColorLight = "#B3DADADA".toColorInt()
+    @ColorInt
+    val TimeBlockBgColorDark = "#B3505050".toColorInt()
 }

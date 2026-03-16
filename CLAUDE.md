@@ -56,6 +56,10 @@ Jetpack Navigation 을 뼈대로 한다.
     - data source 로 요청을 전송하거나,
     - UiEvent 를 발생시키거나.
 
+원칙
+
+- UiState와 무관하게 비즈니스 로직에만 사용되는 값(주로 SavedStateHandle로 주입된 값)은 UiState 밖에 ViewModel 멤버 변수로 둔다.
+
 **UiState**
 
 의미
@@ -68,12 +72,44 @@ Jetpack Navigation 을 뼈대로 한다.
     - 예: Success / Loading / Empty / Error
     - 하나밖에 없다면 data class 로 바로 표시
 - 각 개별 하위 상태별 UI를 그리기 위한 모든 값을 필드로 표현
+- 다이얼로그·바텀시트 등 "어떤 UI를 띄울지"에 대한 상태도 UiState의 일부로 포함한다.
+    - 보통 nested sealed interface (예: `DialogState`, `SheetType`) 로 표현
 
 사용
 
 - 인스턴스 생성은 오직 ViewModel이 담당
-- ViewModel 은 StateFlow<UiState> 를 UI에게 제공
-    - StateFlow 의 값 변경 또한 오직 ViewModel이 담당 (필드에 var 절대 없음)
+- ViewModel은 `private val _uiState: MutableStateFlow<UiState>` 하나만 갖는다.
+    - `val uiState: StateFlow<UiState> = _uiState.asStateFlow()` 로 노출
+    - 별도 StateFlow 변수(내부 상태 전용 data class를 담은 MutableStateFlow 등)를 추가로 두지 않는다.
+    - 모든 상태 변경은 `_uiState.update { current -> ... }` 로 처리한다.
+        - 사용자 이벤트: 이벤트 핸들러 함수에서 `_uiState.update` 직접 호출
+        - 외부 데이터 변화: init의 combine collectLatest에서 `_uiState.update` 호출
+
+UiState를 구성하는 외부 데이터는 종류에 따라 아래와 같이 처리한다.
+
+| 종류 | 설명 | 처리 방식 |
+|---|---|---|
+| **A. 동기 구독** | Repository/UseCase의 StateFlow | init에서 `combine`으로 묶어 `_uiState.update` |
+| **B-1. 초기 블로킹 API** | 첫 진입 시 데이터 로드 전까지 Loading 유지해야 하는 1회 API | `flow { emit(null); emit(apiCall()) }` 형태로 A와 함께 `combine`에 포함. null이면 Loading 유지. |
+| **B-2. 비동기 1회 API** | 비동기로 늦게 반영돼도 되는 1회 API | `private suspend fun` → init에서 async 호출 → A 타입 StateFlow 갱신 |
+| **C-1. UI 이벤트 트리거 refetch** | UI 이벤트 발생 시 refetch가 필요한 데이터 | `private suspend fun` → 이벤트 핸들러에서 호출 |
+| **C-2. 내부 로직 트리거 refetch** | 내부 상태 변경(학기 변경 등)으로 refetch가 필요한 데이터 | `flatMapLatest` 형태로 `combine`에 포함 |
+
+- A, B-1, C-2는 init에서 하나의 `combine`으로 묶어 처리한다.
+- B-1과 C-2가 겹치는 경우(예: 초기 로드 + 내부 key 변경 시 재조회)는 `flatMapLatest`로 동시 처리한다.
+- B-2, C-1은 `private suspend fun`으로 분리하고, init에서 비동기 호출하거나 이벤트 핸들러에서 호출한다.
+- B-1의 API 호출 실패 시 combine 전체가 멈추지 않도록 flow 내부에서 예외를 처리해야 한다.
+
+**UiEvent**
+
+의미
+
+- 한 번 소비되고 사라지는 일회성 이벤트 (토스트, 네비게이션, 바텀시트 열기/닫기 등)
+
+원칙
+
+- UiState는 영속적인 상태, UiEvent는 소비 후 사라지는 이벤트로 역할을 명확히 구분한다.
+- 컴포즈 UI 라이브러리의 상태(예: `ModalBottomSheetState`)는 Route가 소유한다. ViewModel은 직접 제어하지 않고 UiEvent를 통해 제어를 요청한다.
 
 ---
 
@@ -85,6 +121,12 @@ Jetpack Navigation 을 뼈대로 한다.
 
 - data source 로의 요청 및 data source 로부터의 데이터 수신을 추상화
 - (SNUTTStorage 한정) SNUTTStorage의 StateFlow 를 단순 전달
+
+원칙
+
+- 서버 스펙에서 기원하는 관심사(API에 전달할 ID 결정, DTO 필드 매핑 등)는 Repository(data layer)에서 처리한다. ViewModel/도메인 로직이 이를 알아서는 안 된다.
+- 캐시 무효화·재조회 등 데이터 갱신 시점 판단은 Repository가 투명하게 처리한다. ViewModel은 mutate 후 "refetch해야겠다"는 것을 신경 쓰지 않는다.
+- 성공/실패는 예외를 throw하지 않고 `Result.Success` / `Result.Fail` 타입으로 반환한다.
 
 ---
 

@@ -346,6 +346,10 @@
     <string name="search_option_tag_type_general_pre2025">구)</string>
     <string name="search_option_tag_type_sort_criteria">정렬 기준</string>
     <string name="search_option_tag_type_etc">기타</string>
+    <string name="search_tag_time_empty">빈 시간대로 검색</string>
+    <string name="search_tag_time_select">시간대 직접 선택</string>
+    <string name="search_tag_etc_eng">영어진행 강의</string>
+    <string name="search_tag_etc_military">군휴학 원격수업</string>
     <string name="search_option_apply_button">필터 적용</string>
     <string name="search_option_select_empty_time_slots">빈시간대 선택하기</string>
     <string name="search_option_select_clear_time_slots">초기화</string>

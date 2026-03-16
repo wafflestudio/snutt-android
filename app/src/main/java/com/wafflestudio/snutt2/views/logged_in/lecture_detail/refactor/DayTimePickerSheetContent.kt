@@ -31,8 +31,8 @@ import com.wafflestudio.snutt2.components.compose.Picker
 import com.wafflestudio.snutt2.components.compose.RoundBorderButton
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.domainmodel.LectureSession
+import com.wafflestudio.snutt2.domainmodel.SearchTime
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.toFormattedTimeString
-import com.wafflestudio.snutt2.model.SearchTimeDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import java.time.DayOfWeek
@@ -80,9 +80,9 @@ fun DayTimePickerSheetContent(
                 onSelected = { selected ->
                     startMinute = selected
                     if (startMinute >= endMinute) {
-                        if (startMinute == SearchTimeDto.LAST) {
-                            startMinute = SearchTimeDto.LAST - 5
-                            endMinute = SearchTimeDto.LAST
+                        if (startMinute == SearchTime.LAST_MINUTE) {
+                            startMinute = SearchTime.LAST_MINUTE - 5
+                            endMinute = SearchTime.LAST_MINUTE
                         } else {
                             endMinute = startMinute + 5
                         }
@@ -98,9 +98,9 @@ fun DayTimePickerSheetContent(
                 onSelected = { selected ->
                     endMinute = selected
                     if (startMinute >= endMinute) {
-                        if (endMinute == SearchTimeDto.FIRST) {
-                            startMinute = SearchTimeDto.FIRST
-                            endMinute = SearchTimeDto.FIRST + 5
+                        if (endMinute == SearchTime.FIRST_MINUTE) {
+                            startMinute = SearchTime.FIRST_MINUTE
+                            endMinute = SearchTime.FIRST_MINUTE + 5
                         } else {
                             startMinute = endMinute - 5
                         }
@@ -246,10 +246,10 @@ private fun TimePickerDialog(
             Box(modifier = Modifier.weight(1f)) {
                 Picker(
                     list = amPmList,
-                    initialCenterIndex = if (initialMinute < SearchTimeDto.MIDDAY) 0 else 1,
+                    initialCenterIndex = if (initialMinute < SearchTime.MIDDAY_MINUTE) 0 else 1,
                     columnHeightDp = 45.dp,
                     onValueChanged = {
-                        tempMinute = (tempMinute % SearchTimeDto.MIDDAY) + SearchTimeDto.MIDDAY * it
+                        tempMinute = (tempMinute % SearchTime.MIDDAY_MINUTE) + SearchTime.MIDDAY_MINUTE * it
                     },
                 ) {
                     Text(
@@ -264,7 +264,7 @@ private fun TimePickerDialog(
                     initialCenterIndex = initialMinute / 60,
                     columnHeightDp = 45.dp,
                     onValueChanged = {
-                        tempMinute = it * 60 + tempMinute % 60 + if (tempMinute < SearchTimeDto.MIDDAY) 0 else SearchTimeDto.MIDDAY
+                        tempMinute = it * 60 + tempMinute % 60 + if (tempMinute < SearchTime.MIDDAY_MINUTE) 0 else SearchTime.MIDDAY_MINUTE
                     },
                 ) {
                     Text(

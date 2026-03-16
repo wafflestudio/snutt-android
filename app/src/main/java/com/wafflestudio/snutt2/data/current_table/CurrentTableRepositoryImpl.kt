@@ -208,6 +208,22 @@ class CurrentTableRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun removeLectureNewNew(lecture: SearchedLecture): Result<Unit> {
+        val table = storage.lastViewedTable.get().value
+            ?: return Result.Success(Unit)
+        val lectureId = table.lectureList
+            .find { it.lecture_id == lecture.id }
+            ?.id ?: return Result.Success(Unit)
+
+        return try {
+            val response = api._deleteLecture(table.id, lectureId)
+            storage.lastViewedTable.update(response.toOptional())
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
+    }
+
     override suspend fun updateLectureNew(lecture: Lecture, isForced: Boolean): Result<Unit> {
         val prevTable = storage.lastViewedTable.get().value
             ?: return Result.Success(Unit)

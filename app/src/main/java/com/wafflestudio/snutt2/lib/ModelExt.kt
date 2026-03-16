@@ -6,8 +6,8 @@ import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.Lecture
 import com.wafflestudio.snutt2.domainmodel.LectureReviewInfo
 import com.wafflestudio.snutt2.domainmodel.LectureSession
+import com.wafflestudio.snutt2.domainmodel.SyllabusLecture
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
-import java.time.LocalTime
 import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
 import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
@@ -15,6 +15,7 @@ import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.model.SearchTimeDto
 import com.wafflestudio.snutt2.model.TagType
 import com.wafflestudio.snutt2.ui.SNUTTColors
+import java.time.LocalTime
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.max
@@ -121,6 +122,10 @@ fun LectureDto.isCourseNumberEquals(lectureDto: LectureDto): Boolean {
 
 fun LectureDto.isLectureNumberEquals(lectureDto: LectureDto): Boolean {
     return isCourseNumberEquals(lectureDto) && lecture_number != null && lecture_number == lectureDto.lecture_number
+}
+
+fun SyllabusLecture.isLectureNumberEqualsNew(other: SyllabusLecture): Boolean {
+    return courseNumber == other.courseNumber && lectureNumber == other.lectureNumber
 }
 
 @JvmName("getFittingTrimParamDto")

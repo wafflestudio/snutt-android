@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_in.lecture_detail.current_table
+package com.wafflestudio.snutt2.components.compose.snackbar
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -8,15 +8,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.wafflestudio.snutt2.components.compose.snackbar.CustomSnackBar
-import com.wafflestudio.snutt2.components.compose.snackbar.CustomSnackBarHost
-import com.wafflestudio.snutt2.components.compose.snackbar.CustomSnackBarHostState
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import dev.chrisbanes.haze.HazeState
 
 @Composable
-fun CurrentTableLectureDetailSnackBarLayout(
+fun SnackBarScaffold(
     snackBarHostState: CustomSnackBarHostState,
     hazeState: HazeState,
     content: @Composable (PaddingValues) -> Unit,

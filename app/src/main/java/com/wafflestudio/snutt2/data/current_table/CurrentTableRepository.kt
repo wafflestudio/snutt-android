@@ -65,6 +65,8 @@ interface CurrentTableRepository {
 
     suspend fun removeLectureNew(lectureId: String): Result<Unit>
 
+    suspend fun removeLectureNewNew(lecture: SearchedLecture): Result<Unit>
+
     suspend fun updateLectureNew(lecture: Lecture, isForced: Boolean): Result<Unit>
 
     suspend fun resetLectureNew(lectureId: String): Result<LocalLecture>

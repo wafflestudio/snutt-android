@@ -189,7 +189,7 @@ fun SearchRoute(
     }
 
     BackHandler {
-        searchViewModel::onClickBack
+        searchViewModel.onClickBack()
     }
 
     Scaffold(

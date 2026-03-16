@@ -167,6 +167,10 @@
     <string name="search_option_tag_type_general_pre2025">Former</string>
     <string name="search_option_tag_type_sort_criteria">Sort By</string>
     <string name="search_option_tag_type_etc">Other</string>
+    <string name="search_tag_time_empty">Search by Empty Time Slots</string>
+    <string name="search_tag_time_select">Select Time Slots</string>
+    <string name="search_tag_etc_eng">English Courses</string>
+    <string name="search_tag_etc_military">Military Leave Courses</string>
     <string name="search_option_apply_button">Apply Filters</string>
     <string name="search_option_select_empty_time_slots">Select Empty Time Slots</string>
     <string name="search_option_select_clear_time_slots">Reset</string>

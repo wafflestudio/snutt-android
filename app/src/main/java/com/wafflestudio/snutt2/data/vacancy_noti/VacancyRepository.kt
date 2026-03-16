@@ -37,4 +37,10 @@ interface VacancyRepository {
     suspend fun removeVacancyLectureNewNew(lecture: Lecture): Result<Unit>
 
     suspend fun setVacancyVisitedNew(): Result<Unit>
+
+    val vacancyLectures: StateFlow<List<SearchedLecture>>
+
+    suspend fun fetchVacancyLectures(): Result<Unit>
+
+    suspend fun isLectureVacancyRegistered(lecture: Lecture): Result<Boolean>
 }

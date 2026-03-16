@@ -8,6 +8,10 @@ import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.toDomainError
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -80,11 +84,23 @@ class VacancyRepositoryImpl @Inject constructor(
     }
 
     override suspend fun addVacancyLectureNewNew(lecture: Lecture): Result<Unit> {
-        return addVacancyLectureNew(lecture.resolveApiId())
+        return try {
+            api._postVacancyLecture(lecture.resolveApiId())
+            refetch()
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
     }
 
     override suspend fun removeVacancyLectureNewNew(lecture: Lecture): Result<Unit> {
-        return removeVacancyLectureNew(lecture.resolveApiId())
+        return try {
+            api._deleteVacancyLecture(lecture.resolveApiId())
+            refetch()
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
     }
 
     // NOTE: 서버 API에 보낼 강의 ID 필드를 결정한다.
@@ -101,6 +117,35 @@ class VacancyRepositoryImpl @Inject constructor(
             return Result.Success(Unit)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
+        }
+    }
+
+    // 신규 방식 Repository
+    private val _vacancyLectures = MutableStateFlow<List<SearchedLecture>>(emptyList())
+    override val vacancyLectures: StateFlow<List<SearchedLecture>> = _vacancyLectures.asStateFlow()
+
+    private suspend fun refetch(): List<SearchedLecture> {
+        val lectures = api._getVacancyLectures().lectures.map { it.toSearchedLecture() }
+        _vacancyLectures.update { lectures }
+        return lectures
+    }
+
+    override suspend fun fetchVacancyLectures(): Result<Unit> {
+        return try {
+            refetch()
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun isLectureVacancyRegistered(lecture: Lecture): Result<Boolean> {
+        return try {
+            val list = refetch()
+            val targetId = lecture.resolveApiId()
+            Result.Success(list.any { it.id == targetId })
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
         }
     }
 }
