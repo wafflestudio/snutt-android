@@ -1,6 +1,8 @@
 package com.wafflestudio.snutt2.data.lecture_search
 
 import androidx.paging.PagingData
+import com.wafflestudio.snutt2.domainmodel.CourseBook
+import com.wafflestudio.snutt2.domainmodel.LectureReviewInfo
 import com.wafflestudio.snutt2.domainmodel.SearchTag
 import com.wafflestudio.snutt2.domainmodel.SearchTime
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
@@ -59,4 +61,8 @@ interface LectureSearchRepository {
     fun setFirstBookmarkAlertShown()
 
     suspend fun getBuildingsNew(places: List<String>): Result<List<LectureBuildingDto>>
+
+    suspend fun getSyllabusUrl(courseBook: CourseBook, courseNumber: String, lectureNumber: String): Result<String>
+
+    suspend fun getReviewInfo(lectureId: String): Result<LectureReviewInfo?>
 }

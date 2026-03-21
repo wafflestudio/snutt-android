@@ -78,6 +78,8 @@ import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewM
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.current_table.CurrentTableLectureDetailRoute
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.current_table.LectureColorSelectorRoute
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.current_table.LectureColorSelectorViewModel
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.deeplink.DeeplinkBookmarkLectureDetailRoute
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.deeplink.DeeplinkTimetableLectureDetailRoute
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.deeplink.TimetableLectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.notifications.NotificationRoute
 import com.wafflestudio.snutt2.views.logged_in.table_lectures.TableLecturesRoute
@@ -306,7 +308,19 @@ class RootActivity : AppCompatActivity() {
 
                     composableAnimated<NavigationDestination.ImportantNotice> { ImportantNoticePage() }
 
-                    composableAnimated<NavigationDestination.Notification> { NotificationRoute() }
+                    composableAnimated<NavigationDestination.Notification> {
+                        NotificationRoute(
+                            onNavigateBack = { navController.popBackStack() },
+                            onNavigateToTimetableLectureDetail = { lectureId, timetableId ->
+                                navController.navigate(NavigationDestination.DeeplinkTimetableLectureDetail(lectureId, timetableId))
+                            },
+                            onNavigateToBookmarkLectureDetail = { lectureId, year, semester ->
+                                navController.navigate(NavigationDestination.DeeplinkBookmarkLectureDetail(lectureId, year, semester))
+                            },
+                            // TODO: Home 탭들을 별도 NavigationDestination으로 분리한 뒤, 친구 탭 이동 구현
+                            onNavigateToFriends = {},
+                        )
+                    }
 
                     composableAnimated<NavigationDestination.LecturesOfTable> { TableLecturesRoute() }
 
@@ -409,6 +423,19 @@ class RootActivity : AppCompatActivity() {
 
                     bottomSheet<NavigationDestination.ThemeDetail> {
                         ThemeDetailRoute(
+                            onNavigateBack = { navController.popBackStack() },
+                        )
+                    }
+
+                    composableAnimated<NavigationDestination.DeeplinkTimetableLectureDetail> {
+                        DeeplinkTimetableLectureDetailRoute(
+                            onNavigateBack = { navController.popBackStack() },
+                            onNavigateHome = { navController.navigateAsOrigin(NavigationDestination.Home) },
+                        )
+                    }
+
+                    composableAnimated<NavigationDestination.DeeplinkBookmarkLectureDetail> {
+                        DeeplinkBookmarkLectureDetailRoute(
                             onNavigateBack = { navController.popBackStack() },
                         )
                     }

@@ -4,6 +4,8 @@
 
 `View - ViewModel - Repository - Data source`
 
+의존 방향: 각 레이어는 바로 아래 레이어에만 의존한다. ViewModel → Repository → Data source. 레이어를 건너뛰는 의존(예: ViewModel → Data source)은 허용하지 않는다.
+
 ---
 
 ### **UI 레이어**
@@ -126,6 +128,8 @@ UiState를 구성하는 외부 데이터는 종류에 따라 아래와 같이 �
 
 - 서버 스펙에서 기원하는 관심사(API에 전달할 ID 결정, DTO 필드 매핑 등)는 Repository(data layer)에서 처리한다. ViewModel/도메인 로직이 이를 알아서는 안 된다.
 - 캐시 무효화·재조회 등 데이터 갱신 시점 판단은 Repository가 투명하게 처리한다. ViewModel은 mutate 후 "refetch해야겠다"는 것을 신경 쓰지 않는다.
+- 도메인 모델을 반환한다. DTO를 상위 레이어에 노출하지 않는다.
+  - 단, 구 Repository 코드 중 일부는 아직 DTO를 반환하며, 추후 리팩토링 대상이다.
 - 성공/실패는 예외를 throw하지 않고 `Result.Success` / `Result.Fail` 타입으로 반환한다.
 
 ---

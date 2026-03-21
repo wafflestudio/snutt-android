@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -27,7 +28,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
@@ -43,7 +43,6 @@ import com.wafflestudio.snutt2.components.compose.RefreshTimeIcon
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.WarningIcon
 import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.deeplink.DeeplinkExecutor
 import com.wafflestudio.snutt2.domainmodel.Notification
 import com.wafflestudio.snutt2.domainmodel.NotificationType
 import com.wafflestudio.snutt2.domainmodel.preview.PreviewData
@@ -51,27 +50,41 @@ import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getNotificationTime
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
-import com.wafflestudio.snutt2.views.LocalNavController
-import com.wafflestudio.snutt2.views.NavigationDestination
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun NotificationRoute(
     modifier: Modifier = Modifier,
     viewModel: NotificationsViewModel = hiltViewModel(),
+    onNavigateBack: () -> Unit,
+    onNavigateToTimetableLectureDetail: (lectureId: String, timetableId: String) -> Unit,
+    onNavigateToBookmarkLectureDetail: (lectureId: String, year: Long, semester: Long) -> Unit,
+    onNavigateToFriends: () -> Unit,
 ) {
-    val navController = LocalNavController.current
     val notificationList = viewModel.notificationList.collectAsLazyPagingItems()
     val notificationUiState = notificationList.notificationUiState()
 
-    NotificationScreen(
-        onBackClick = {
-            if (navController.currentDestination?.hasRoute(NavigationDestination.Notification::class) == true) {
-                navController.popBackStack()
+
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                is NotificationUiEvent.NavigateToTimetableLectureDetail ->
+                    onNavigateToTimetableLectureDetail(event.lectureId, event.timetableId)
+
+                is NotificationUiEvent.NavigateToBookmarkLectureDetail ->
+                    onNavigateToBookmarkLectureDetail(event.lectureId, event.year, event.semester)
+
+                is NotificationUiEvent.NavigateToFriends ->
+                    onNavigateToFriends()
             }
-        },
+        }
+    }
+
+    NotificationScreen(
         uiState = notificationUiState,
         modifier = modifier,
+        onBackClick = onNavigateBack,
+        onNotificationClick = viewModel::onNotificationClick,
     )
 }
 
@@ -80,6 +93,7 @@ fun NotificationScreen(
     modifier: Modifier = Modifier,
     uiState: NotificationUiState,
     onBackClick: () -> Unit,
+    onNotificationClick: (Notification) -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -99,7 +113,7 @@ fun NotificationScreen(
                 items(uiState.notificationList) { notification ->
                     notification?.let {
                         NotificationItem(notification) {
-                            DeeplinkExecutor.execute(it.deeplink)
+                            onNotificationClick(it)
                         }
                     }
                 }
@@ -261,5 +275,5 @@ fun NotificationPagePreview() {
         PagingData.from(PreviewData.sampleNotifications)
     val flow = flowOf(data)
     val a = flow.collectAsLazyPagingItems()
-    NotificationScreen(uiState = NotificationUiState.Success(a), onBackClick = {})
+    NotificationScreen(uiState = NotificationUiState.Success(a), onNotificationClick = {}, onBackClick = {})
 }

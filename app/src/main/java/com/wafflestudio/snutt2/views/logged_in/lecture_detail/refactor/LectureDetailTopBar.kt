@@ -26,6 +26,7 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 internal fun LectureDetailTopBar(
     lecture: Lecture,
     editMode: Boolean,
+    hideEditButton: Boolean = false,
     isBookmarked: Boolean,
     isVacancyRegistered: Boolean,
     onBackPressed: () -> Unit,
@@ -67,7 +68,7 @@ internal fun LectureDetailTopBar(
                 )
             }
 
-            if (lecture is LocalLecture) {
+            if (hideEditButton.not() && lecture is LocalLecture) {
                 Text(
                     text = if (editMode) {
                         stringResource(R.string.lecture_detail_top_bar_complete)

@@ -171,4 +171,19 @@ sealed interface NavigationDestination {
     @Serializable
     @DeepLinkPath("important_notice")
     data object ImportantNotice : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("deeplink_timetable_lecture_detail")
+    data class DeeplinkTimetableLectureDetail(
+        val lectureId: String,
+        val timetableId: String,
+    ) : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("deeplink_bookmark_lecture_detail")
+    data class DeeplinkBookmarkLectureDetail(
+        val lectureId: String,
+        val year: Long,
+        val semester: Long,
+    ) : NavigationDestination
 }

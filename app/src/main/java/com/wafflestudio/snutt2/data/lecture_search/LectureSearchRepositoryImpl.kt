@@ -6,6 +6,8 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.data.lecture_cache.LectureCache
+import com.wafflestudio.snutt2.domainmodel.CourseBook
+import com.wafflestudio.snutt2.domainmodel.LectureReviewInfo
 import com.wafflestudio.snutt2.domainmodel.SearchTag
 import com.wafflestudio.snutt2.domainmodel.SearchTime
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
@@ -155,6 +157,28 @@ class LectureSearchRepositoryImpl @Inject constructor(
         try {
             val response = api._getBuildings(joined)
             return Result.Success(response.content)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun getSyllabusUrl(
+        courseBook: CourseBook,
+        courseNumber: String,
+        lectureNumber: String,
+    ): Result<String> {
+        try {
+            val url = api._getCoursebooksOfficial(courseBook.year, courseBook.semester, courseNumber, lectureNumber).url
+            return Result.Success(url)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun getReviewInfo(lectureId: String): Result<LectureReviewInfo?> {
+        try {
+            val dto = api._getLectureReviewSummary(lectureId)
+            return Result.Success(LectureReviewInfo(id = dto.id, rating = dto.rating, reviewCount = dto.reviewCount ?: 0))
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
         }

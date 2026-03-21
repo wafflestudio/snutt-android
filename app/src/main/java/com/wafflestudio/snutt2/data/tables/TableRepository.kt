@@ -3,9 +3,11 @@ package com.wafflestudio.snutt2.data.tables
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
+import com.wafflestudio.snutt2.domainmodel.Table
 import com.wafflestudio.snutt2.domainmodel.TableSummary
 import com.wafflestudio.snutt2.domainmodel.TimetableLectureReminders
 import com.wafflestudio.snutt2.lib.network.Result
+import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import kotlinx.coroutines.flow.StateFlow
@@ -60,4 +62,6 @@ interface TableRepository {
     suspend fun unsetPrimaryTableNew(id: String): Result<Unit>
     suspend fun deleteTableNew(tableId: String): Result<Unit>
     suspend fun copyTableNew(id: String): Result<Unit>
+
+    suspend fun getTableById(id: String): Result<Table>
 }

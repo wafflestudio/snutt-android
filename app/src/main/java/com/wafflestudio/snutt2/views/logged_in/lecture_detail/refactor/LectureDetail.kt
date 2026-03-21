@@ -33,6 +33,7 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 fun LectureDetail(
     lecture: Lecture,
     editMode: Boolean,
+    hideEditButton: Boolean = false,
     tableTheme: TableTheme,
     reviewInfo: LectureReviewInfo?,
     buildings: List<LectureBuildingDto>,
@@ -44,6 +45,7 @@ fun LectureDetail(
     lectureWithReminderOption: LectureWithReminderOption,
     enableLectureReminderPicker: Boolean,
     showFloatingButton: Boolean,
+    hideDeleteButton: Boolean = false,
 
     onBackPressed: () -> Unit,
     onEditModeToggle: () -> Unit,
@@ -83,6 +85,7 @@ fun LectureDetail(
             LectureDetailTopBar(
                 lecture = lecture,
                 editMode = editMode,
+                hideEditButton = hideEditButton,
                 isBookmarked = isBookmarked,
                 isVacancyRegistered = vacancyRegistered,
                 onBackPressed = onBackPressed,
@@ -168,6 +171,7 @@ fun LectureDetail(
                 LectureActionButtons(
                     lecture = lecture,
                     editMode = editMode,
+                    hideDeleteButton = hideDeleteButton,
                     onSyllabus = onSyllabus,
                     onReview = onReview,
                     onDelete = onDelete,

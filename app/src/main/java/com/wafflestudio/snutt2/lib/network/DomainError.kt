@@ -42,6 +42,16 @@ data class DisabledFeature(override val displayTitle: String, override val displ
 
 // 3. Local Errors (클라이언트에서 처리하는 에러)
 // 클라에서 발생하는 에러는 2가지뿐, 문자열을 하드코딩해 처리한다.
+object TimetableLectureNotFound : DomainError {
+    override val displayTitle = ""
+    override val displayMessage = "시간표에서 삭제된 강좌입니다"
+}
+
+object BookmarkLectureNotFound : DomainError {
+    override val displayTitle = ""
+    override val displayMessage = "관심강좌 목록에서 삭제된 강좌입니다"
+}
+
 object NotSelectedTimetable : DomainError {
     override val displayTitle = ""
     // FIXME: 하드코딩 한국어. 실제로는 DisplayMessageResolverImpl에서 리소스로 대체되므로 사용되지 않지만,

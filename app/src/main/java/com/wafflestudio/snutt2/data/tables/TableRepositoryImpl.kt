@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.data.tables
 
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.domainmodel.CourseBook
+import com.wafflestudio.snutt2.domainmodel.Table
 import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
 import com.wafflestudio.snutt2.domainmodel.TableSummary
@@ -288,6 +289,15 @@ class TableRepositoryImpl @Inject constructor(
             val response = api._copyTable(id)
             snuttStorage.tableMap.update(response.associateBy { it.id })
             return Result.Success(Unit)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun getTableById(id: String): Result<Table> {
+        try {
+            val dto = api._getTableById(id)
+            return Result.Success(Table.fromTableDto(dto))
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
         }

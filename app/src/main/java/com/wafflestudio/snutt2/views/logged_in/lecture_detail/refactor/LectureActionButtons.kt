@@ -30,6 +30,7 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 internal fun LectureActionButtons(
     lecture: Lecture,
     editMode: Boolean,
+    hideDeleteButton: Boolean = false,
     onSyllabus: () -> Unit,
     onReview: () -> Unit,
     onDelete: () -> Unit,
@@ -50,40 +51,42 @@ internal fun LectureActionButtons(
     }
 
     // 삭제 / 초기화
-    when (lecture) {
-        is CustomLecture -> {
-            AnimatedVisibility(visible = !editMode) {
+    if (hideDeleteButton.not()) {
+        when (lecture) {
+            is CustomLecture -> {
+                AnimatedVisibility(visible = !editMode) {
+                    Box(modifier = Modifier.background(Color.White)) {
+                        LectureDetailActionButton(
+                            title = stringResource(R.string.lecture_detail_delete_button),
+                            textStyle = SNUTTTypography.body1.copy(
+                                fontSize = 15.sp,
+                                color = SNUTTColors.Red,
+                            ),
+                            onClick = onDelete,
+                        )
+                    }
+                }
+            }
+
+            is SyllabusLecture -> {
                 Box(modifier = Modifier.background(Color.White)) {
                     LectureDetailActionButton(
-                        title = stringResource(R.string.lecture_detail_delete_button),
+                        title = if (editMode) {
+                            stringResource(R.string.lecture_detail_reset_button)
+                        } else {
+                            stringResource(R.string.lecture_detail_delete_button)
+                        },
                         textStyle = SNUTTTypography.body1.copy(
                             fontSize = 15.sp,
                             color = SNUTTColors.Red,
                         ),
-                        onClick = onDelete,
+                        onClick = if (editMode) onReset else onDelete,
                     )
                 }
             }
-        }
 
-        is SyllabusLecture -> {
-            Box(modifier = Modifier.background(Color.White)) {
-                LectureDetailActionButton(
-                    title = if (editMode) {
-                        stringResource(R.string.lecture_detail_reset_button)
-                    } else {
-                        stringResource(R.string.lecture_detail_delete_button)
-                    },
-                    textStyle = SNUTTTypography.body1.copy(
-                        fontSize = 15.sp,
-                        color = SNUTTColors.Red,
-                    ),
-                    onClick = if (editMode) onReset else onDelete,
-                )
-            }
+            else -> {}
         }
-
-        else -> {}
     }
 }
 
