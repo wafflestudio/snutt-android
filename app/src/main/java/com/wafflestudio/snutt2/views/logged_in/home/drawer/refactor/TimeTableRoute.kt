@@ -18,7 +18,6 @@ import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.shareScreenshot
 import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
-import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.refactor.TimeTableScreenNew
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.refactor.TimeTableUiEvent
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.refactor.TimeTableUiState
@@ -37,7 +36,6 @@ fun TimeTableRoute(
     onNavigateBookmark: () -> Unit,
     onNavigateSearch: () -> Unit,
     onNavigateAddLecture: () -> Unit,
-    onBottomNavigate: (HomeItem) -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -170,7 +168,6 @@ fun TimeTableRoute(
             onVisitSessionlessLectureList = timeTableViewModel::visitSessionlessLectureList,
             onDismissDialog = timeTableViewModel::dismissDialog,
             onConfirmChangeTableTitle = timeTableViewModel::changeTableTitle,
-            onBottomNavigate = onBottomNavigate,
         )
     }
 }

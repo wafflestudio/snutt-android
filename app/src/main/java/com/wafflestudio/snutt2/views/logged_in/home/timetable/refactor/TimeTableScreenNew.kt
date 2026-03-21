@@ -25,8 +25,6 @@ import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.logged_in.home.BottomNavigation
-import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 
 @Composable
 fun TimeTableScreenNew(
@@ -42,7 +40,6 @@ fun TimeTableScreenNew(
     onVisitSessionlessLectureList: () -> Unit,
     onDismissDialog: () -> Unit,
     onConfirmChangeTableTitle: (newTitle: String, tableId: String) -> Unit,
-    onBottomNavigate: (HomeItem) -> Unit,
 ) {
     when (uiState) {
         is TimeTableUiState.Loading -> {}
@@ -120,12 +117,6 @@ fun TimeTableScreenNew(
                     previewTheme = uiState.previewTheme,
                     compactMode = uiState.isCompactMode,
                     tableLectureCustomOptions = uiState.tableLectureCustomOptions,
-                )
-
-                BottomNavigation(
-                    pageState = HomeItem.Timetable,
-                    onUpdatePageState = onBottomNavigate,
-                    uncheckedNotificationExist = uiState.uncheckedNotificationExist,
                 )
             }
         }

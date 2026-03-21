@@ -51,8 +51,6 @@ import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
-import com.wafflestudio.snutt2.views.logged_in.home.BottomNavigation
-import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import com.wafflestudio.snutt2.views.logged_in.home.search.LectureState
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.refactor.TimeTableNew
 
@@ -73,7 +71,6 @@ fun SearchScreenNew(
     onClickBookmark: (SearchedLecture, Boolean) -> Unit,
     onClickVacancy: (SearchedLecture, Boolean) -> Unit,
     onToggleLectureContained: (SearchedLecture, Boolean) -> Unit,
-    onBottomNavigate: (HomeItem) -> Unit,
 ) {
     val isSearchMode = uiState.pageMode == PageMode.Search
 
@@ -204,13 +201,6 @@ fun SearchScreenNew(
                 }
             }
         }
-
-        BottomNavigation(
-            pageState = HomeItem.Search,
-            // TODO: 리팩토링 중간 단계 코드라 여기에 BottomNavigation 이 임시로 있음
-            uncheckedNotificationExist = false,
-            onUpdatePageState = onBottomNavigate,
-        )
     }
 }
 

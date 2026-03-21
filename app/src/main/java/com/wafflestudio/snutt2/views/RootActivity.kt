@@ -62,6 +62,7 @@ import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import com.wafflestudio.snutt2.views.logged_in.home.HomePage
 import com.wafflestudio.snutt2.views.logged_in.home.HomePageController
+import com.wafflestudio.snutt2.views.logged_in.home.HomePageNewRoute
 import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.bookmark.BookmarkRoute
@@ -257,7 +258,51 @@ class RootActivity : AppCompatActivity() {
                 ) {
                     onboardGraph()
 
-                    composableRoot<NavigationDestination.Home> { HomePage() }
+                    composableRoot<NavigationDestination.Home> {
+                        if (BuildConfig.DEBUG) {
+                            HomePageNewRoute(
+                                onNavigateLectureDetailNew = { lectureId, tableId ->
+                                    navController.navigate(
+                                        NavigationDestination.LectureDetailNew(lectureId = lectureId, tableId = tableId),
+                                    ) {
+                                        launchSingleTop = true
+                                    }
+                                },
+                                onNavigateThemeDetail = { navController.navigate(NavigationDestination.ThemeDetail()) },
+                                onNavigateLecturesOfTable = { navController.navigate(NavigationDestination.LecturesOfTable) },
+                                onNavigateVacancyNotification = { navController.navigate(NavigationDestination.VacancyNotification) },
+                                onNavigateBookmark = { navController.navigate(NavigationDestination.Bookmark) },
+                                onNavigateAddLecture = { navController.navigate(NavigationDestination.LectureDetail) },
+                                onNavigateOnboardAsOrigin = { navController.navigateAsOrigin(NavigationDestination.Onboard) },
+                                onNavigateUserConfig = { navController.navigate(NavigationDestination.UserConfig) },
+                                onNavigateNotification = { navController.navigate(NavigationDestination.Notification) },
+                                onNavigateThemeModeSelect = { navController.navigate(NavigationDestination.ThemeModeSelect) },
+                                onNavigateTimeTableConfig = { navController.navigate(NavigationDestination.TimeTableConfig) },
+                                onNavigateThemeConfig = { navController.navigate(NavigationDestination.ThemeConfig) },
+                                onNavigateThemeMarket = { navController.navigate(NavigationDestination.ThemeMarket) },
+                                onNavigatePushPreference = { navController.navigate(NavigationDestination.PushPreferences) },
+                                onNavigateLectureReminder = { navController.navigate(NavigationDestination.LectureReminder) },
+                                onNavigateDiaryWrite = {
+                                    navController.navigate(
+                                        NavigationDestination.LectureDiaryWrite(
+                                            lectureId = "695affb59dfd1a77c7c20778",
+                                            courseTitle = "데이터사이언스를 위한 컴퓨팅 시스템",
+                                        ),
+                                    )
+                                },
+                                onNavigateDiaryHistory = { navController.navigate(NavigationDestination.LectureDiaryHistory) },
+                                onNavigateTeamInfo = { navController.navigate(NavigationDestination.TeamInfo) },
+                                onNavigateAppReport = { navController.navigate(NavigationDestination.AppReport) },
+                                onNavigateOpenLicenses = { navController.navigate(NavigationDestination.OpenLicenses) },
+                                onNavigateServiceInfo = { navController.navigate(NavigationDestination.ServiceInfo) },
+                                onNavigatePersonalInformationPolicy = { navController.navigate(NavigationDestination.PersonalInformationPolicy) },
+                                onNavigateNetworkLog = { navController.navigate(NavigationDestination.NetworkLog) },
+                                onNavigateTest = { navController.navigate(NavigationDestination.Test) },
+                            )
+                        } else {
+                            HomePage()
+                        }
+                    }
 
                     composableAnimated<NavigationDestination.ImportantNotice> { ImportantNoticePage() }
 

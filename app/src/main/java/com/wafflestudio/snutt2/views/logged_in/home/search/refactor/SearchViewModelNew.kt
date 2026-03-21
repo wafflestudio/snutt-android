@@ -420,6 +420,10 @@ class SearchViewModelNew @Inject constructor(
     }
 
     fun onClickBack() {
+        if (_uiState.value.bottomSheetType != SearchUiState.BottomSheetType.None) {
+            closeBottomSheet()
+            return
+        }
         _uiState.update { current ->
             if (current.pageMode == PageMode.Bookmark) current.copy(pageMode = PageMode.Search) else current
         }

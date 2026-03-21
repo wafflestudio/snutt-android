@@ -27,10 +27,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.layouts.ModalDrawerWithBottomSheetLayout
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.provider.TimetableWidgetProvider
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -46,20 +44,16 @@ import com.wafflestudio.snutt2.views.LocalReviewWebView
 import com.wafflestudio.snutt2.views.LocalTableState
 import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.launchSuspendApi
-import com.wafflestudio.snutt2.views.logged_in.home.drawer.refactor.TimeTableRoute
 import com.wafflestudio.snutt2.views.logged_in.home.friend.FriendsRoute
 import com.wafflestudio.snutt2.views.logged_in.home.popups.Popup
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewPage
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchRoute
 import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
-import com.wafflestudio.snutt2.views.logged_in.home.search.refactor.SearchRouteNew
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingsRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TableState
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetablePage
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.ModeType
 import com.wafflestudio.snutt2.views.navigateAsOrigin
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
@@ -83,7 +77,6 @@ fun HomePage() {
     val timetableViewModel = hiltViewModel<TimetableViewModel>()
     val tableListViewModel = hiltViewModel<TableListViewModel>()
     val searchViewModel = hiltViewModel<SearchViewModel>()
-    val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>()
 
     val uncheckedNotification by homeViewModel.uncheckedNotification.collectAsState()
     val table by timetableViewModel.currentTable.collectAsState()
@@ -154,60 +147,6 @@ fun HomePage() {
         LocalTableState provides tableState,
         LocalDrawerState provides drawerState,
     ) {
-        if (BuildConfig.DEBUG && pageController.homePageState.value == HomeItem.Timetable) {
-            TimeTableRoute(
-                onNavigateBottomSheetThemeDetail = {
-                    navController.navigate(NavigationDestination.ThemeDetail())
-                },
-                onNavigateLecturesOfTable = {
-                    navController.navigate(NavigationDestination.LecturesOfTable)
-                },
-                onNavigateVacancyNotification = {
-                    navController.navigate(NavigationDestination.VacancyNotification)
-                },
-                onNavigateLectureDetail = { lecture ->
-                    navController.navigate(
-                        NavigationDestination.LectureDetailNew(
-                            lectureId = lecture.id,
-                            tableId = table?.id,
-                        ),
-                    ) {
-                        launchSingleTop = true
-                    }
-                },
-                onNavigateBookmark = {
-                    navController.navigate(NavigationDestination.Bookmark)
-                },
-                onNavigateSearch = {
-                    pageController.update(HomeItem.Search)
-                },
-                onNavigateAddLecture = {
-                    lectureDetailViewModel.initializeEditingLectureDetail(
-                        LectureDto.Default,
-                        ModeType.Editing(true),
-                    )
-                    navController.navigate(NavigationDestination.LectureDetail)
-                },
-                onBottomNavigate = { pageController.update(it) },
-            )
-
-            return@CompositionLocalProvider
-        }
-
-        if (BuildConfig.DEBUG && pageController.homePageState.value == HomeItem.Search) {
-            SearchRouteNew(
-                onNavigateVacancy = {
-                    navController.navigate(NavigationDestination.VacancyNotification)
-                },
-                onNavigateOnboardAsOrigin = {
-                    navController.navigateAsOrigin(NavigationDestination.Onboard)
-                },
-                onBottomNavigate = { pageController.update(it) },
-            )
-
-            return@CompositionLocalProvider
-        }
-
         ModalDrawerWithBottomSheetLayout(drawerState = drawerState) {
             Box(
                 modifier = Modifier.weight(1f),

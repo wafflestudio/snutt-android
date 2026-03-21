@@ -30,7 +30,6 @@ import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.ui.isDarkMode
-import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
@@ -41,7 +40,6 @@ fun SearchRouteNew(
     searchViewModelNew: SearchViewModelNew = hiltViewModel(),
     onNavigateVacancy: () -> Unit,
     onNavigateOnboardAsOrigin: () -> Unit,
-    onBottomNavigate: (HomeItem) -> Unit,
     userViewModel: UserViewModel = hiltViewModel(),
 ) {
     val scope = rememberCoroutineScope()
@@ -84,7 +82,10 @@ fun SearchRouteNew(
         }
     }
 
-    BackHandler {
+    BackHandler(
+        enabled = uiState.bottomSheetType != SearchUiState.BottomSheetType.None ||
+            uiState.pageMode == PageMode.Bookmark,
+    ) {
         searchViewModelNew.onClickBack()
     }
 
@@ -215,7 +216,6 @@ fun SearchRouteNew(
                     onClickBookmark = searchViewModelNew::onClickBookmark,
                     onClickVacancy = searchViewModelNew::onClickVacancy,
                     onToggleLectureContained = searchViewModelNew::onToggleLectureContained,
-                    onBottomNavigate = onBottomNavigate,
                 )
             }
         }

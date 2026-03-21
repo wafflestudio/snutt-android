@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
@@ -50,6 +51,11 @@ class HomeDrawerViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            // TODO: 진짜 필요한건지 레거시코드 지우고 확인하기
+            tableRepository.getTableList()
+        }
+
+        viewModelScope.launch {
             courseBookRepository.getCourseBookNew()
                 .onFailure {
                     handleError(it)
@@ -58,7 +64,7 @@ class HomeDrawerViewModel @Inject constructor(
                 // 콜백지옥인데..
                 .onSuccess { coursebookList ->
                     combine(
-                        tableRepository.tableSummaryList,
+                        tableRepository.tableSummaryList.filter { it.isNotEmpty() },
                         currentTableRepository.currentTableRefactored.filterNotNull(),
                     ) { tableSummaryList, currentTable ->
                         // 유저의 전체 시간표 목록을 학기 별로 그룹핑 한 뒤 학기 순으로 정렬
@@ -142,6 +148,7 @@ class HomeDrawerViewModel @Inject constructor(
                                 allCourseBook = allCourseBook,
                             ),
                         )
+
                         else -> state
                     }
                 }
@@ -162,6 +169,7 @@ class HomeDrawerViewModel @Inject constructor(
                         courseBook = courseBook,
                     ),
                 )
+
                 else -> state
             }
         }
@@ -194,6 +202,7 @@ class HomeDrawerViewModel @Inject constructor(
                 is HomeDrawerUiState.Loaded -> state.copy(
                     homeDrawerBottomSheetType = HomeDrawerBottomSheetType.MoreAction(tableSummary),
                 )
+
                 else -> state
             }
         }
@@ -216,6 +225,7 @@ class HomeDrawerViewModel @Inject constructor(
                         is HomeDrawerUiState.Loaded -> state.copy(
                             homeDrawerBottomSheetType = HomeDrawerBottomSheetType.Empty,
                         )
+
                         else -> state
                     }
                 }
@@ -230,6 +240,7 @@ class HomeDrawerViewModel @Inject constructor(
                 is HomeDrawerUiState.Loaded -> state.copy(
                     dialogState = HomeDrawerUiState.DialogState.ChangeTableName(tableSummary),
                 )
+
                 else -> state
             }
         }
@@ -293,6 +304,7 @@ class HomeDrawerViewModel @Inject constructor(
                             selectedPreviewTheme = selectedTheme,
                         ),
                     )
+
                     else -> state
                 }
             }
@@ -309,8 +321,10 @@ class HomeDrawerViewModel @Inject constructor(
                             selectedPreviewTheme = theme,
                         ),
                     )
+
                     else -> state
                 }
+
                 else -> state
             }
         }
@@ -352,6 +366,7 @@ class HomeDrawerViewModel @Inject constructor(
                 is HomeDrawerUiState.Loaded -> state.copy(
                     homeDrawerBottomSheetType = sheetType,
                 )
+
                 else -> state
             }
         }
@@ -363,6 +378,7 @@ class HomeDrawerViewModel @Inject constructor(
                 is HomeDrawerUiState.Loaded -> state.copy(
                     dialogState = HomeDrawerUiState.DialogState.DeleteTable(tableSummary),
                 )
+
                 else -> state
             }
         }
@@ -379,6 +395,7 @@ class HomeDrawerViewModel @Inject constructor(
                             is HomeDrawerUiState.Loaded -> state.copy(
                                 dialogState = HomeDrawerUiState.DialogState.None,
                             )
+
                             else -> state
                         }
                     }
@@ -437,12 +454,14 @@ class HomeDrawerViewModel @Inject constructor(
                                     is HomeDrawerUiState.Loaded -> s.copy(
                                         dialogState = HomeDrawerUiState.DialogState.None,
                                     )
+
                                     else -> s
                                 }
                             }
                             _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
                         }
                 }
+
                 else -> {}
             }
         }
@@ -454,6 +473,7 @@ class HomeDrawerViewModel @Inject constructor(
                 is HomeDrawerUiState.Loaded -> state.copy(
                     dialogState = HomeDrawerUiState.DialogState.None,
                 )
+
                 else -> state
             }
         }
