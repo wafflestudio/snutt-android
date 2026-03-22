@@ -1,8 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.home.timetable.refactor
 
-import com.wafflestudio.snutt2.domainmodel.TableLectureCustom
-import com.wafflestudio.snutt2.domainmodel.TableTheme
-import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -23,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -37,11 +33,14 @@ import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.LocalLecture
+import com.wafflestudio.snutt2.domainmodel.TableLectureCustom
+import com.wafflestudio.snutt2.domainmodel.TableTheme
+import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.logged_in.home.drawer.refactor.VacancyBanner
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.HomeSessionlessLectureHint
-import com.wafflestudio.snutt2.views.logged_in.table_lectures.TableLectureItemNew
+import com.wafflestudio.snutt2.views.logged_in.table_lectures.refactor.TableLectureItemNew
 
 @Composable
 fun ScrollableTimetableContent(
@@ -107,7 +106,9 @@ fun ScrollableTimetableContent(
                     if (vacancyNotificationBannerEnabled) {
                         VacancyBanner(onClick = onClickVacancyBanner)
                     }
-                    Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                    Box(modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()) {
                         TimeTableNew(
                             lectures = lectures,
                             selectedLecture = null,

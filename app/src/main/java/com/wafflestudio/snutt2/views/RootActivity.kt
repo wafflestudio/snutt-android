@@ -82,7 +82,7 @@ import com.wafflestudio.snutt2.views.logged_in.lecture_detail.deeplink.DeeplinkB
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.deeplink.DeeplinkTimetableLectureDetailRoute
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.deeplink.TimetableLectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.notifications.NotificationRoute
-import com.wafflestudio.snutt2.views.logged_in.table_lectures.TableLecturesRoute
+import com.wafflestudio.snutt2.views.logged_in.table_lectures.refactor.TableLecturesRoute
 import com.wafflestudio.snutt2.views.logged_in.thememarket.ThemeMarketRoute
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyRoute
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
@@ -322,7 +322,14 @@ class RootActivity : AppCompatActivity() {
                         )
                     }
 
-                    composableAnimated<NavigationDestination.LecturesOfTable> { TableLecturesRoute() }
+                    composableAnimated<NavigationDestination.LecturesOfTable> {
+                        TableLecturesRoute(
+                            onNavigateBack = { navController.popBackStack() },
+                            onNavigateLectureDetail = { lectureId, tableId ->
+                                navController.navigate(NavigationDestination.LectureDetailNew(lectureId, tableId))
+                            },
+                        )
+                    }
 
                     composableAnimated<NavigationDestination.LectureDetail> {
                         val parentEntry = remember(it) {

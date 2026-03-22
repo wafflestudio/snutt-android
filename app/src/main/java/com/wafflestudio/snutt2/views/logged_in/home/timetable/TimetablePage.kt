@@ -92,11 +92,10 @@ import com.wafflestudio.snutt2.views.LocalTableState
 import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.showTitleChangeDialog
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.refactor.TimetableDropdownOverlay
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.ModeType
-import com.wafflestudio.snutt2.views.logged_in.table_lectures.TableLectureItemNew
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.refactor.TimetableDropdownOverlay
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.refactor.TimetableMoreAction
+import com.wafflestudio.snutt2.views.logged_in.table_lectures.refactor.TableLectureItemNew
 import kotlinx.coroutines.launch
 
 @Composable
@@ -120,7 +119,7 @@ fun TimetablePage(
     val isSessionlessLectureExists = !sessionlessLectures.isEmpty()
     val isVisitedSessionlessLectureList by timetableViewModel.isVisitedSessionlessLectureList.collectAsState(false)
     val vacancyNotificationBannerEnabled by remoteConfig.vacancyNotificationBannerEnabled.collectAsState(
-        false
+        false,
     )
     val analyticsLogger = LocalAnalyticsLogger.current
     var dropdownMenuExpanded by remember { mutableStateOf(false) }
@@ -144,8 +143,8 @@ fun TimetablePage(
     ) {
         value =
             !isVisitedSessionlessLectureList &&
-            isSessionlessLectureExists &&
-            !scrollUnlocked
+                isSessionlessLectureExists &&
+                !scrollUnlocked
     }
 
     var timetableHeightPx by remember { mutableStateOf(0) }
@@ -182,182 +181,183 @@ fun TimetablePage(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(SNUTTColors.White900)
-            .logImpression(AnalyticsScreen.TimetableHome),
-    ) {
-        TopBar(
-            title = {
-                Text(
-                    text = table.title,
-                    style = SNUTTTypography.h2,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier
-                        .weight(1f, fill = false)
-                        .clicks {
-                            showTitleChangeDialog(
-                                table.title,
-                                table.id,
-                                composableStates,
-                                tableListViewModel::changeTableName,
-                            )
-                        },
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = stringResource(
-                        R.string.timetable_credit,
-                        getCreditSumFromLectureList(table.lectureList),
-                    ),
-                    style = SNUTTTypography.body2,
-                    maxLines = 1,
-                    color = SNUTTColors.Gray200,
-                )
-            },
-            navigationIcon = {
-                IconWithAlertDot(newSemesterNotify) { centerAlignedModifier ->
-                    DrawerIcon(
-                        modifier = centerAlignedModifier
-                            .size(30.dp)
-                            .clicks { scope.launch { drawerState.open() } },
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(SNUTTColors.White900)
+                .logImpression(AnalyticsScreen.TimetableHome),
+        ) {
+            TopBar(
+                title = {
+                    Text(
+                        text = table.title,
+                        style = SNUTTTypography.h2,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .weight(1f, fill = false)
+                            .clicks {
+                                showTitleChangeDialog(
+                                    table.title,
+                                    table.id,
+                                    composableStates,
+                                    tableListViewModel::changeTableName,
+                                )
+                            },
                     )
-                }
-            },
-            actions = {
-                BookmarkIcon(
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clicks { navController.navigate(NavigationDestination.Bookmark) },
-                )
-                ExitIcon(
-                    modifier = Modifier
-                        .size(30.dp)
-                        .graphicsLayer { rotationZ = iconRotation }
-                        .clicks { dropdownMenuExpanded = true },
-                )
-            },
-        )
-        Box {
-            if (isScrolled) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp)
-                        .background(
-                            brush = Brush.verticalGradient(
-                                colors = listOf(
-                                    SNUTTColors.Black.copy(alpha = 0.05f),
-                                    SNUTTColors.Transparent,
-                                ),
-                            ),
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = stringResource(
+                            R.string.timetable_credit,
+                            getCreditSumFromLectureList(table.lectureList),
                         ),
-                )
-            }
-            LazyColumn(
-                modifier = Modifier.fillMaxSize()
-                    .onGloballyPositioned {
-                        timetableHeightPx = it.size.height
-                    }
-                    .nestedScroll(connection),
-                state = scrollState,
-                userScrollEnabled = isSessionlessLectureExists,
-            ) {
-                item {
-                    if (vacancyNotificationBannerEnabled) {
-                        VacancyBanner(
-                            modifier = Modifier.onGloballyPositioned {
-                                vacancyBannerHeightPx = it.size.height
-                            },
-                            onClick = {
-                                navController.navigate(NavigationDestination.VacancyNotification)
-                            },
+                        style = SNUTTTypography.body2,
+                        maxLines = 1,
+                        color = SNUTTColors.Gray200,
+                    )
+                },
+                navigationIcon = {
+                    IconWithAlertDot(newSemesterNotify) { centerAlignedModifier ->
+                        DrawerIcon(
+                            modifier = centerAlignedModifier
+                                .size(30.dp)
+                                .clicks { scope.launch { drawerState.open() } },
                         )
                     }
-                }
-                item {
+                },
+                actions = {
+                    BookmarkIcon(
+                        modifier = Modifier
+                            .size(30.dp)
+                            .clicks { navController.navigate(NavigationDestination.Bookmark) },
+                    )
+                    ExitIcon(
+                        modifier = Modifier
+                            .size(30.dp)
+                            .graphicsLayer { rotationZ = iconRotation }
+                            .clicks { dropdownMenuExpanded = true },
+                    )
+                },
+            )
+            Box {
+                if (isScrolled) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(
-                                with(LocalDensity.current) {
-                                    timetableHeightPx.toDp() - vacancyBannerHeightPx.toDp()
-                                },
+                            .height(50.dp)
+                            .background(
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(
+                                        SNUTTColors.Black.copy(alpha = 0.05f),
+                                        SNUTTColors.Transparent,
+                                    ),
+                                ),
                             ),
-                    ) {
-                        TimeTable(
-                            table = LocalTableState.current.table,
-                            trimParam = LocalTableState.current.trimParam,
-                            tableLectureCustomOptions = LocalTableState.current.tableLectureCustomOptions,
-                            previewTheme = LocalTableState.current.previewTheme,
-                            compactMode = LocalCompactState.current,
-                            navigator = LocalNavController.current,
-                            selectedLecture = null,
-                        )
-                    }
-                }
-                item {
-                    Divider(thickness = 2.dp)
-                }
-                items(sessionlessLectures) {
-                    TableLectureItemNew(
-                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 7.dp),
-                        lecture = it,
-                        onClickLecture = { lecture ->
-                            // FIXME: 임시 코드
-                            lectureDetailViewModel.initializeEditingLectureDetail(LectureDto.fromLocalLecture(lecture), ModeType.Normal, timetableViewModel.currentTable.value)
-                            navController.navigate(NavigationDestination.LectureDetail) {
-                                launchSingleTop = true
-                            }
-                        },
                     )
-                    Row(Modifier.padding(vertical = 5.dp)) {
-                        Divider(thickness = 1.dp, color = SNUTTColors.Black050)
-                    }
                 }
-                if (sessionlessLectures.isNotEmpty()) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .onGloballyPositioned {
+                            timetableHeightPx = it.size.height
+                        }
+                        .nestedScroll(connection),
+                    state = scrollState,
+                    userScrollEnabled = isSessionlessLectureExists,
+                ) {
                     item {
-                        Spacer(modifier = Modifier.size(52.dp))
+                        if (vacancyNotificationBannerEnabled) {
+                            VacancyBanner(
+                                modifier = Modifier.onGloballyPositioned {
+                                    vacancyBannerHeightPx = it.size.height
+                                },
+                                onClick = {
+                                    navController.navigate(NavigationDestination.VacancyNotification)
+                                },
+                            )
+                        }
+                    }
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(
+                                    with(LocalDensity.current) {
+                                        timetableHeightPx.toDp() - vacancyBannerHeightPx.toDp()
+                                    },
+                                ),
+                        ) {
+                            TimeTable(
+                                table = LocalTableState.current.table,
+                                trimParam = LocalTableState.current.trimParam,
+                                tableLectureCustomOptions = LocalTableState.current.tableLectureCustomOptions,
+                                previewTheme = LocalTableState.current.previewTheme,
+                                compactMode = LocalCompactState.current,
+                                navigator = LocalNavController.current,
+                                selectedLecture = null,
+                            )
+                        }
+                    }
+                    item {
+                        Divider(thickness = 2.dp)
+                    }
+                    items(sessionlessLectures) {
+                        TableLectureItemNew(
+                            modifier = Modifier.padding(horizontal = 20.dp, vertical = 7.dp),
+                            lecture = it,
+                            onClickLecture = { lecture ->
+                                // FIXME: 임시 코드
+                                lectureDetailViewModel.initializeEditingLectureDetail(LectureDto.fromLocalLecture(lecture), ModeType.Normal, timetableViewModel.currentTable.value)
+                                navController.navigate(NavigationDestination.LectureDetail) {
+                                    launchSingleTop = true
+                                }
+                            },
+                        )
+                        Row(Modifier.padding(vertical = 5.dp)) {
+                            Divider(thickness = 1.dp, color = SNUTTColors.Black050)
+                        }
+                    }
+                    if (sessionlessLectures.isNotEmpty()) {
+                        item {
+                            Spacer(modifier = Modifier.size(52.dp))
+                        }
                     }
                 }
             }
         }
-    }
 
-    AnimatedVisibility(
-        modifier = Modifier.padding(bottom = 10.dp),
-        visible = isHintVisible,
-        exit = fadeOut(
-            animationSpec = tween(
-                durationMillis = 400,
-                easing = FastOutSlowInEasing,
+        AnimatedVisibility(
+            modifier = Modifier.padding(bottom = 10.dp),
+            visible = isHintVisible,
+            exit = fadeOut(
+                animationSpec = tween(
+                    durationMillis = 400,
+                    easing = FastOutSlowInEasing,
+                ),
             ),
-        ),
-    ) {
-        HomeSessionlessLectureHint()
-    }
+        ) {
+            HomeSessionlessLectureHint()
+        }
 
-    if (dropdownMenuExpanded) {
-        TimetableDropdownOverlay(
-            onDismiss = { dropdownMenuExpanded = false },
-            onClickAddBySearch = onNavigateToSearch,
-            onClickAddManually = {
-                lectureDetailViewModel.initializeEditingLectureDetail(
-                    LectureDto.Default,
-                    ModeType.Editing(true),
-                )
-                navController.navigate(NavigationDestination.LectureDetail)
-            },
-            onClickTableLecturesListIcon = {
-                navController.navigate(NavigationDestination.LecturesOfTable)
-            },
-            onClickVacancyIcon = {
-                navController.navigate(NavigationDestination.VacancyNotification)
-            },
-        )
-    }
+        if (dropdownMenuExpanded) {
+            TimetableDropdownOverlay(
+                onDismiss = { dropdownMenuExpanded = false },
+                onClickAddBySearch = onNavigateToSearch,
+                onClickAddManually = {
+                    lectureDetailViewModel.initializeEditingLectureDetail(
+                        LectureDto.Default,
+                        ModeType.Editing(true),
+                    )
+                    navController.navigate(NavigationDestination.LectureDetail)
+                },
+                onClickTableLecturesListIcon = {
+                    navController.navigate(NavigationDestination.LecturesOfTable)
+                },
+                onClickVacancyIcon = {
+                    navController.navigate(NavigationDestination.VacancyNotification)
+                },
+            )
+        }
     }
 }
 
@@ -488,11 +488,15 @@ fun HomeSessionlessLectureHint(
             )
         }
         ArrowLeftBold(
-            modifier = Modifier.rotate(-90F).offset(x = 5.dp + yOffsetTop),
+            modifier = Modifier
+                .rotate(-90F)
+                .offset(x = 5.dp + yOffsetTop),
             colorFilter = ColorFilter.tint(SNUTTColors.Hint1),
         )
         ArrowLeftBold(
-            modifier = Modifier.rotate(-90F).offset(x = 40.dp + yOffsetBottom),
+            modifier = Modifier
+                .rotate(-90F)
+                .offset(x = 40.dp + yOffsetBottom),
             colorFilter = ColorFilter.tint(SNUTTColors.Hint2),
         )
     }

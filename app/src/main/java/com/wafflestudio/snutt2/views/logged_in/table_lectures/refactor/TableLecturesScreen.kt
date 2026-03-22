@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_in.table_lectures
+package com.wafflestudio.snutt2.views.logged_in.table_lectures.refactor
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -15,8 +15,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -38,59 +38,37 @@ import com.wafflestudio.snutt2.domainmodel.preview.PreviewData
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtilsNew
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.logImpression
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.LocalNavController
-import com.wafflestudio.snutt2.views.NavigationDestination
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableViewModel
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.ModeType
-import kotlinx.coroutines.flow.map
 
 @Composable
 fun TableLecturesRoute(
-    viewModel: TimetableViewModel = hiltViewModel(),
+    viewModel: TableLecturesViewModel = hiltViewModel(),
+    onNavigateLectureDetail: (lectureId: String, tableId: String?) -> Unit,
+    onNavigateBack: () -> Unit,
 ) {
-    val navController = LocalNavController.current
-    val lectures by viewModel.currentTable.map { table ->
-        // FIXME: Table 도메인 모델 생성 후 수정
-        table?.lectureList?.map {
-            // FIXME: ViewModel 단에서 LectureDTO 걷어 내고 제거
-            it.toLocalLecture()
-        } ?: emptyList()
-    }.collectAsStateWithLifecycle(emptyList())
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    // FIXME: 임시 코드
-    // share viewModel
-    val backStackEntry = remember(navController.currentBackStackEntry) {
-        navController.getBackStackEntry(NavigationDestination.Home)
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                is TableLecturesUiEvent.NavigateToLectureDetail -> {
+                    onNavigateLectureDetail(event.lectureId, event.tableId)
+                }
+            }
+        }
     }
-    val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>(backStackEntry)
 
     TableLecturesScreen(
-        uiState = TableLecturesUIState(lectures),
-        onClickLecture = { lecture ->
-            // FIXME: 임시 코드
-            lectureDetailViewModel.initializeEditingLectureDetail(
-                LectureDto.fromLocalLecture(
-                    lecture,
-                ),
-                ModeType.Normal, viewModel.currentTable.value,
-            )
-            navController.navigate(NavigationDestination.LectureDetail) {
-                launchSingleTop = true
-            }
-        },
-        onBack = {
-            navController.popBackStack()
-        },
+        uiState = uiState,
+        onClickLecture = viewModel::onNavigateLectureDetail,
+        onBack = onNavigateBack,
     )
 }
 
 @Composable
 private fun TableLecturesScreen(
-    uiState: TableLecturesUIState,
+    uiState: TableLecturesUiState,
     onClickLecture: (LocalLecture) -> Unit,
     onBack: () -> Unit,
 ) {
