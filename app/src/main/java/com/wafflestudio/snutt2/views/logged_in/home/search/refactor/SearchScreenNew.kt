@@ -71,7 +71,19 @@ fun SearchScreenNew(
     onClickBookmark: (SearchedLecture, Boolean) -> Unit,
     onClickVacancy: (SearchedLecture, Boolean) -> Unit,
     onToggleLectureContained: (SearchedLecture, Boolean) -> Unit,
+    onDismissDialog: () -> Unit,
+    onConfirmDeleteBookmark: (SearchedLecture) -> Unit,
+    onConfirmDeleteVacancy: (SearchedLecture) -> Unit,
+    onConfirmAddWithOverlap: (SearchedLecture) -> Unit,
 ) {
+    SearchDialogs(
+        uiState = uiState,
+        onDismiss = onDismissDialog,
+        onConfirmDeleteBookmark = onConfirmDeleteBookmark,
+        onConfirmDeleteVacancy = onConfirmDeleteVacancy,
+        onConfirmAddWithOverlap = onConfirmAddWithOverlap,
+    )
+
     val isSearchMode = uiState.pageMode == PageMode.Search
 
     Column {

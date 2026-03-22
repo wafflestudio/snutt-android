@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.data.current_table
 
+import com.wafflestudio.snutt2.domainmodel.CustomLecture
 import com.wafflestudio.snutt2.domainmodel.Lecture
 import com.wafflestudio.snutt2.domainmodel.LectureReviewInfo
 import com.wafflestudio.snutt2.domainmodel.LocalLecture
@@ -74,4 +75,6 @@ interface CurrentTableRepository {
     suspend fun getSyllabusUrlNew(courseNumber: String, lectureNumber: String): Result<String>
 
     suspend fun getReviewInfoNew(lectureId: String): Result<LectureReviewInfo?>
+
+    suspend fun createCustomLectureNew(lecture: CustomLecture, isForced: Boolean = false): Result<Unit>
 }

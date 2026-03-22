@@ -58,6 +58,10 @@ sealed interface NavigationDestination {
     data class TimetableLecture(val tableId: String? = null) : NavigationDestination
 
     @Serializable
+    @DeepLinkPath("add_custom_lecture")
+    data object AddCustomLectureNew : NavigationDestination
+
+    @Serializable
     @DeepLinkPath("lecture_color_selector")
     data object LectureColorSelector : NavigationDestination
 

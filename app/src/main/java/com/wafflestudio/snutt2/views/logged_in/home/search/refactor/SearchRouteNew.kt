@@ -164,14 +164,6 @@ fun SearchRouteNew(
         }
     }
 
-    SearchDialogs(
-        uiState = uiState,
-        onDismiss = searchViewModelNew::dismissDialog,
-        onConfirmDeleteBookmark = searchViewModelNew::confirmDeleteBookmark,
-        onConfirmDeleteVacancy = searchViewModelNew::confirmDeleteVacancy,
-        onConfirmAddWithOverlap = searchViewModelNew::confirmAddWithOverlap,
-    )
-
     SnackBarScaffold(
         snackBarHostState = snackBarHostState,
         hazeState = hazeState,
@@ -216,6 +208,10 @@ fun SearchRouteNew(
                     onClickBookmark = searchViewModelNew::onClickBookmark,
                     onClickVacancy = searchViewModelNew::onClickVacancy,
                     onToggleLectureContained = searchViewModelNew::onToggleLectureContained,
+                    onDismissDialog = searchViewModelNew::dismissDialog,
+                    onConfirmDeleteBookmark = searchViewModelNew::confirmDeleteBookmark,
+                    onConfirmDeleteVacancy = searchViewModelNew::confirmDeleteVacancy,
+                    onConfirmAddWithOverlap = searchViewModelNew::confirmAddWithOverlap,
                 )
             }
         }

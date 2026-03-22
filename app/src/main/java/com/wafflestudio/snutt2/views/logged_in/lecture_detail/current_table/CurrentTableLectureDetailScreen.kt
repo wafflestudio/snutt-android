@@ -33,7 +33,23 @@ fun CurrentTableLectureDetailScreen(
     onDelete: () -> Unit,
     onReset: () -> Unit,
     onFloatingButtonClick: () -> Unit,
+    onDismissDialog: () -> Unit,
+    onConfirmExitEditMode: () -> Unit,
+    onConfirmDeleteSession: () -> Unit,
+    onConfirmDeleteLecture: () -> Unit,
+    onConfirmResetLecture: () -> Unit,
+    onConfirmForceUpdate: () -> Unit,
 ) {
+    CurrentTableLectureDetailDialogs(
+        uiState = uiState,
+        onDismiss = onDismissDialog,
+        onConfirmExitEditMode = onConfirmExitEditMode,
+        onConfirmDeleteSession = onConfirmDeleteSession,
+        onConfirmDeleteLecture = onConfirmDeleteLecture,
+        onConfirmResetLecture = onConfirmResetLecture,
+        onConfirmForceUpdate = onConfirmForceUpdate,
+    )
+
     LectureDetail(
         lecture = uiState.lecture,
         editMode = uiState.editMode,

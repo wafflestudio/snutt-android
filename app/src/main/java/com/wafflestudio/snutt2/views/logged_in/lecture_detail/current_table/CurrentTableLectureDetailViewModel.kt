@@ -83,27 +83,8 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
     val accessToken: StateFlow<String> = userRepository.accessToken
 
     init {
-        observeColorSelectorResult(savedStateHandle)
         loadSecondaryData()
         observeThemeAndConfig()
-    }
-
-    private fun observeColorSelectorResult(savedStateHandle: SavedStateHandle) {
-        viewModelScope.launch {
-            savedStateHandle.getStateFlow(LectureColorSelectorViewModel.RESULT_COLOR_INDEX, Int.MIN_VALUE)
-                .collect { colorIndex ->
-                    if (colorIndex == Int.MIN_VALUE) return@collect
-                    val fg = savedStateHandle.get<Int>(LectureColorSelectorViewModel.RESULT_FG) ?: return@collect
-                    val bg = savedStateHandle.get<Int>(LectureColorSelectorViewModel.RESULT_BG) ?: return@collect
-                    val color = if (colorIndex == -1) {
-                        LectureColor.Custom(fg, bg)
-                    } else {
-                        LectureColor.BuiltIn(colorIndex)
-                    }
-                    editColor(color)
-                    savedStateHandle.remove<Int>(LectureColorSelectorViewModel.RESULT_COLOR_INDEX)
-                }
-        }
     }
 
     private fun loadSecondaryData() {

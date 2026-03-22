@@ -69,7 +69,19 @@ data class CustomLecture(
     override val remark: String,
 
     override val color: LectureColor,
-) : LocalLecture(color)
+) : LocalLecture(color) {
+    companion object {
+        val Empty = CustomLecture(
+            id = "",
+            courseTitle = "",
+            lectureSessions = emptyList(),
+            instructor = "",
+            credit = 0L,
+            remark = "",
+            color = LectureColor.BuiltIn(0),
+        )
+    }
+}
 
 interface LectureSyllabusInfo {
     val classification: String

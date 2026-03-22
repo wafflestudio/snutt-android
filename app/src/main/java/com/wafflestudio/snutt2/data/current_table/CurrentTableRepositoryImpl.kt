@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.data.current_table
 
 import com.wafflestudio.snutt2.data.SNUTTStorage
+import com.wafflestudio.snutt2.domainmodel.CustomLecture
 import com.wafflestudio.snutt2.domainmodel.Lecture
 import com.wafflestudio.snutt2.domainmodel.LectureReviewInfo
 import com.wafflestudio.snutt2.domainmodel.LocalLecture
@@ -264,6 +265,19 @@ class CurrentTableRepositoryImpl @Inject constructor(
             return Result.Success(url)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun createCustomLectureNew(lecture: CustomLecture, isForced: Boolean): Result<Unit> {
+        val prevTable = storage.lastViewedTable.get().value
+            ?: return Result.Fail(Unknown("", ""))
+        return try {
+            val params = LectureDto.fromLocalLecture(lecture).toParams().also { it.isForced = isForced }
+            val response = api._postCustomLecture(prevTable.id, params)
+            storage.lastViewedTable.update(response.toOptional())
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
         }
     }
 

@@ -75,6 +75,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigRo
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailRoute
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.current_table.AddCustomLectureRoute
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.current_table.CurrentTableLectureDetailRoute
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.current_table.LectureColorSelectorRoute
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.current_table.LectureColorSelectorViewModel
@@ -274,7 +275,7 @@ class RootActivity : AppCompatActivity() {
                                 onNavigateLecturesOfTable = { navController.navigate(NavigationDestination.LecturesOfTable) },
                                 onNavigateVacancyNotification = { navController.navigate(NavigationDestination.VacancyNotification) },
                                 onNavigateBookmark = { navController.navigate(NavigationDestination.Bookmark) },
-                                onNavigateAddLecture = { navController.navigate(NavigationDestination.LectureDetail) },
+                                onNavigateAddLecture = { navController.navigate(NavigationDestination.AddCustomLectureNew) },
                                 onNavigateOnboardAsOrigin = { navController.navigateAsOrigin(NavigationDestination.Onboard) },
                                 onNavigateUserConfig = { navController.navigate(NavigationDestination.UserConfig) },
                                 onNavigateNotification = { navController.navigate(NavigationDestination.Notification) },
@@ -425,6 +426,37 @@ class RootActivity : AppCompatActivity() {
                                 }
                                 navController.popBackStack()
                             },
+                        )
+                    }
+
+                    composableAnimated<NavigationDestination.LectureColorSelectorNew> {
+                        LectureColorSelectorRoute(
+                            onNavigateBackWithResult = { selectedColor ->
+                                val (idx, fg, bg) = when (selectedColor) {
+                                    is LectureColor.BuiltIn -> Triple(selectedColor.colorIndex, 0, 0)
+                                    is LectureColor.Custom -> Triple(-1, selectedColor.foreground, selectedColor.background)
+                                }
+                                navController.previousBackStackEntry?.savedStateHandle?.apply {
+                                    set(LectureColorSelectorViewModel.RESULT_COLOR_INDEX, idx)
+                                    set(LectureColorSelectorViewModel.RESULT_FG, fg)
+                                    set(LectureColorSelectorViewModel.RESULT_BG, bg)
+                                }
+                                navController.popBackStack()
+                            },
+                        )
+                    }
+
+                    composableAnimated<NavigationDestination.AddCustomLectureNew> {
+                        AddCustomLectureRoute(
+                            onNavigateBack = { navController.popBackStack() },
+                            onNavigateColorSelector = { currentColor ->
+                                val (idx, fg, bg) = when (currentColor) {
+                                    is LectureColor.BuiltIn -> Triple(currentColor.colorIndex, 0, 0)
+                                    is LectureColor.Custom -> Triple(-1, currentColor.foreground, currentColor.background)
+                                }
+                                navController.navigate(NavigationDestination.LectureColorSelectorNew(idx, fg, bg))
+                            },
+                            onNavigateOnboard = { navController.navigateAsOrigin(NavigationDestination.Onboard) },
                         )
                     }
 

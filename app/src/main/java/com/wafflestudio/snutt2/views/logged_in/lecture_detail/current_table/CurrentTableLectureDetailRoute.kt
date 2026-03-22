@@ -5,7 +5,6 @@ import android.content.Intent
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.SnackbarResult
-import androidx.compose.material.Text
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -15,12 +14,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.stringResource
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.CustomDialog
 import com.wafflestudio.snutt2.components.compose.snackbar.CustomSnackBarDuration
 import com.wafflestudio.snutt2.components.compose.snackbar.CustomSnackBarHostState
 import com.wafflestudio.snutt2.components.compose.snackbar.SnackBarScaffold
@@ -39,9 +36,9 @@ import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
 import com.wafflestudio.snutt2.lib.logging.LectureActionReferrer
 import com.wafflestudio.snutt2.lib.logging.LectureDetailParameter
 import com.wafflestudio.snutt2.lib.logging.LectureSyllabusParameter
-import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
+import com.wafflestudio.snutt2.views.LocalNavController
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.launch
@@ -59,8 +56,23 @@ fun CurrentTableLectureDetailRoute(
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
     val analyticsLogger = LocalAnalyticsLogger.current
+    val navController = LocalNavController.current
 
     val uiState by vm.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        // FIXME: ColorSelector 방식 다시 고민하기
+        val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle ?: return@LaunchedEffect
+        savedStateHandle.getStateFlow(LectureColorSelectorViewModel.RESULT_COLOR_INDEX, Int.MIN_VALUE)
+            .collect { colorIndex ->
+                if (colorIndex == Int.MIN_VALUE) return@collect
+                val fg = savedStateHandle.get<Int>(LectureColorSelectorViewModel.RESULT_FG) ?: return@collect
+                val bg = savedStateHandle.get<Int>(LectureColorSelectorViewModel.RESULT_BG) ?: return@collect
+                val color = if (colorIndex == -1) LectureColor.Custom(fg, bg) else LectureColor.BuiltIn(colorIndex)
+                vm.editColor(color)
+                savedStateHandle.remove<Int>(LectureColorSelectorViewModel.RESULT_COLOR_INDEX)
+            }
+    }
 
     val snackBarHostState = remember { CustomSnackBarHostState() }
     val hazeState = rememberHazeState()
@@ -147,16 +159,6 @@ fun CurrentTableLectureDetailRoute(
         }
     }
 
-    CurrentTableLectureDetailDialogs(
-        uiState = uiState,
-        onDismiss = vm::dismissDialog,
-        onConfirmExitEditMode = vm::confirmExitEditMode,
-        onConfirmDeleteSession = vm::confirmDeleteSession,
-        onConfirmDeleteLecture = vm::confirmDeleteLecture,
-        onConfirmResetLecture = vm::confirmResetLecture,
-        onConfirmForceUpdate = vm::confirmForceUpdateLecture,
-    )
-
     LaunchedEffect(Unit) {
         analyticsLogger.logScreen(
             AnalyticsScreen.LectureDetail(
@@ -184,6 +186,12 @@ fun CurrentTableLectureDetailRoute(
         ) {
             CurrentTableLectureDetailScreen(
                 uiState = uiState,
+                onDismissDialog = vm::dismissDialog,
+                onConfirmExitEditMode = vm::confirmExitEditMode,
+                onConfirmDeleteSession = vm::confirmDeleteSession,
+                onConfirmDeleteLecture = vm::confirmDeleteLecture,
+                onConfirmResetLecture = vm::confirmResetLecture,
+                onConfirmForceUpdate = vm::confirmForceUpdateLecture,
                 onBackPressed = {
                     if (uiState.sheetType !is CurrentTableLectureDetailUiState.SheetType.None) {
                         vm.closeSheet()
@@ -266,72 +274,3 @@ fun CurrentTableLectureDetailRoute(
     }
 }
 
-@Composable
-private fun CurrentTableLectureDetailDialogs(
-    uiState: CurrentTableLectureDetailUiState,
-    onDismiss: () -> Unit,
-    onConfirmExitEditMode: () -> Unit,
-    onConfirmDeleteSession: () -> Unit,
-    onConfirmDeleteLecture: () -> Unit,
-    onConfirmResetLecture: () -> Unit,
-    onConfirmForceUpdate: () -> Unit,
-) {
-    when (val dialogState = uiState.dialogState) {
-        CurrentTableLectureDetailUiState.DialogState.None -> {}
-
-        CurrentTableLectureDetailUiState.DialogState.ExitEditMode -> {
-            CustomDialog(
-                onDismiss = onDismiss,
-                onConfirm = onConfirmExitEditMode,
-                title = stringResource(R.string.lecture_detail_exit_edit_dialog_message),
-            ) {}
-        }
-
-        is CurrentTableLectureDetailUiState.DialogState.DeleteSession -> {
-            CustomDialog(
-                onDismiss = onDismiss,
-                onConfirm = onConfirmDeleteSession,
-                title = stringResource(R.string.lecture_detail_delete_class_time_message),
-            ) {}
-        }
-
-        CurrentTableLectureDetailUiState.DialogState.DeleteLecture -> {
-            CustomDialog(
-                onDismiss = onDismiss,
-                onConfirm = onConfirmDeleteLecture,
-                title = stringResource(R.string.lecture_detail_delete_dialog_title),
-            ) {
-                Text(
-                    text = stringResource(R.string.lecture_detail_delete_dialog_message),
-                    style = SNUTTTypography.body1,
-                )
-            }
-        }
-
-        CurrentTableLectureDetailUiState.DialogState.ResetLecture -> {
-            CustomDialog(
-                onDismiss = onDismiss,
-                onConfirm = onConfirmResetLecture,
-                title = stringResource(R.string.lecture_detail_reset_dialog_title),
-            ) {
-                Text(
-                    text = stringResource(R.string.lecture_detail_reset_dialog_message),
-                    style = SNUTTTypography.body2,
-                )
-            }
-        }
-
-        is CurrentTableLectureDetailUiState.DialogState.LectureTimeOverlap -> {
-            CustomDialog(
-                onDismiss = onDismiss,
-                onConfirm = onConfirmForceUpdate,
-                title = stringResource(R.string.lecture_overlap_error_message),
-            ) {
-                Text(
-                    text = dialogState.message,
-                    style = SNUTTTypography.body1,
-                )
-            }
-        }
-    }
-}
