@@ -2,274 +2,366 @@ package com.wafflestudio.snutt2.views.logged_in.home.bookmark
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.wafflestudio.snutt2.RemoteConfig
+import com.wafflestudio.snutt2.data.bookmark.BookmarkRepository
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
+import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
+import com.wafflestudio.snutt2.data.notifications.NotificationRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.data.vacancy_noti.VacancyRepository
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
-import com.wafflestudio.snutt2.domainmodel.CustomLecture
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.domainmodel.SyllabusLecture
 import com.wafflestudio.snutt2.domainmodel.Table
+import com.wafflestudio.snutt2.domainmodel.TableLectureCustom
 import com.wafflestudio.snutt2.domainmodel.TableTheme
+import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.lib.DataWithState
+import com.wafflestudio.snutt2.lib.getFittingTrimParam
 import com.wafflestudio.snutt2.lib.network.AuthError
 import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
 import com.wafflestudio.snutt2.lib.network.DomainError
 import com.wafflestudio.snutt2.lib.network.LectureOverlap
+import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
 import com.wafflestudio.snutt2.lib.network.onFailure
 import com.wafflestudio.snutt2.lib.network.onSuccess
+import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.views.logged_in.home.search.LectureState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.collections.map
-import kotlin.collections.toSet
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class BookmarkViewModel @Inject constructor(
-    val currentTableRepository: CurrentTableRepository,
-    val userRepository: UserRepository,
-    val vacancyRepository: VacancyRepository,
+    private val currentTableRepository: CurrentTableRepository,
+    private val bookmarkRepository: BookmarkRepository,
+    private val userRepository: UserRepository,
+    private val vacancyRepository: VacancyRepository,
+    private val notificationRepository: NotificationRepository,
+    private val lectureSearchRepository: LectureSearchRepository,
     private val getCurrentTableThemeUseCase: GetCurrentTableThemeUseCase,
+    private val remoteConfig: RemoteConfig,
     private val displayMessageResolver: DisplayMessageResolver,
 ) : ViewModel() {
-    private val bookmarkLectures = MutableStateFlow<List<SearchedLecture>>(emptyList())
-    private val currentTable = currentTableRepository.currentTableRefactored
-    private val tableTheme = getCurrentTableThemeUseCase()
-    private val trimParam = userRepository.tableTrimParam
-    private val tableLectureCustomOption = userRepository.tableLectureCustomOption
-    private val vacancyLectures = MutableStateFlow<List<SearchedLecture>>(emptyList())
-    private val selectedLecture = MutableStateFlow<SearchedLecture?>(null)
 
-    private val _uiEvent = MutableSharedFlow<BookmarkUiEvent>()
-    val uiEvent: SharedFlow<BookmarkUiEvent> = _uiEvent.asSharedFlow()
+    private val _uiEvent = MutableSharedFlow<BookmarkUiEvent>(replay = 0)
+    val uiEvent = _uiEvent.asSharedFlow()
+
+    private val _uiState: MutableStateFlow<BookmarkUiState> = MutableStateFlow(BookmarkUiState.Loading)
+    val uiState: StateFlow<BookmarkUiState> = _uiState.asStateFlow()
+
+    val accessToken: StateFlow<String> get() = userRepository.accessToken
 
     init {
-        fetchBookmarkList()
         viewModelScope.launch {
-            currentTableRepository.updateCurrentTable()
+            combine(
+                currentTableRepository.currentTableRefactored.filterNotNull(),
+                combine(
+                    userRepository.tableTrimParam,
+                    userRepository.tableLectureCustomOption,
+                    userRepository.compactMode,
+                    ::Triple,
+                ),
+                combine(
+                    getCurrentTableThemeUseCase(),
+                    notificationRepository.notificationCount,
+                    remoteConfig.disableMapFeature,
+                    ::Triple,
+                ),
+                vacancyRepository.vacancyLectures,
+                // C-2: courseBook 변경 시 bookmark refetch
+                currentTableRepository.currentTableRefactored
+                    .filterNotNull()
+                    .distinctUntilChanged { o, n -> o.summary.courseBook == n.summary.courseBook }
+                    .flatMapLatest { table ->
+                        val courseBook = table.summary.courseBook
+                        flow {
+                            try {
+                                bookmarkRepository.fetchBookmarks(courseBook)
+                            } catch (_: Exception) {
+                                // B-1 API 호출 실패 시 combine 전체가 멈추지 않도록 예외 처리
+                            }
+                            emitAll(bookmarkRepository.bookmarks.map { it[courseBook] ?: emptyList() })
+                        }
+                    },
+            ) { table, (trimParam, lectureCustom, compact), (theme, notifCount, disableMapFeature), vacancy, bookmarks ->
+                _uiState.update { current ->
+                    val prev = current as? BookmarkUiState.Success
+                    val selectedLecture = prev?.selectedLecture
+
+                    BookmarkUiState.Success(
+                        currentTable = table,
+                        tableTheme = theme,
+                        bookmarkList = bookmarks.map { lecture ->
+                            lecture.toDataWithState(
+                                LectureState(
+                                    selected = lecture.id == selectedLecture?.id,
+                                    contained = table.lectures
+                                        .filterIsInstance<SyllabusLecture>()
+                                        .any { it.originalLectureId == lecture.id },
+                                    isBookmarked = true,
+                                    isVacancyRegistered = vacancy.any { it.id == lecture.id },
+                                ),
+                            )
+                        },
+                        selectedLecture = selectedLecture,
+                        tableTrimParam = (table.lectures + listOfNotNull(selectedLecture))
+                            .getFittingTrimParam(trimParam),
+                        tableLectureCustomOptions = lectureCustom,
+                        isCompactMode = compact,
+                        uncheckedNotificationCount = notifCount,
+                        disableMapFeature = disableMapFeature,
+                        vacancyList = vacancy,
+                        dialogState = prev?.dialogState ?: BookmarkUiState.DialogState.None,
+                        bottomSheetType = when (val bt = prev?.bottomSheetType) {
+                            is BookmarkUiState.BottomSheetType.LectureDetail -> bt.copy(
+                                isBookmarked = bookmarks.any { it.id == bt.lecture.id },
+                                isVacancyRegistered = vacancy.any { it.id == bt.lecture.id },
+                            )
+
+                            else -> prev?.bottomSheetType ?: BookmarkUiState.BottomSheetType.None
+                        },
+                    )
+                }
+            }.collect()
         }
+
+        // B-2: vacancy 초기 로드
+        viewModelScope.launch { vacancyRepository.fetchVacancyLectures() }
     }
 
-    private val bookmarkList = kotlinx.coroutines.flow.combine(
-        bookmarkLectures,
-        currentTable,
-        vacancyLectures,
-        selectedLecture,
-    ) { bookmarkLectures, currentTable, vacancyLectures, selectedLecture ->
-        val currentTableIds =
-            currentTable?.lectures
-                ?.map {
-                    when (it) {
-                        is SyllabusLecture -> it.originalLectureId
-                        is CustomLecture -> it.id
-                    }
-                }
-                ?.toSet()
-                ?: emptySet()
+    // region Public methods
 
-        val vacancyIds =
-            vacancyLectures
-                .map { it.id }
-                .toSet()
-
-        bookmarkLectures.map { lecture ->
-            DataWithState(
-                item = lecture,
-                state = LectureState(
-                    selected = lecture == selectedLecture,
-                    contained = lecture.id in currentTableIds,
-                    isBookmarked = true,
-                    isVacancyRegistered = lecture.id in vacancyIds,
-                ),
+    fun onToggleLectureSelection(lecture: SearchedLecture) {
+        _uiState.update { current ->
+            if (current !is BookmarkUiState.Success) return@update current
+            val newSelection = if (lecture.id == current.selectedLecture?.id) null else lecture
+            current.copy(
+                selectedLecture = newSelection,
+                bookmarkList = current.bookmarkList.map { item ->
+                    item.copy(state = item.state.copy(selected = item.item.id == newSelection?.id))
+                },
             )
         }
     }
 
-    private val dialogState = MutableStateFlow<BookmarkUiState.DialogState>(BookmarkUiState.DialogState.None)
-    private val bottomSheetState = MutableStateFlow<BookmarkUiState.BottomSheetState>(BookmarkUiState.BottomSheetState.None)
+    fun onClickBookmark(lecture: SearchedLecture) {
+        val state = _uiState.value as? BookmarkUiState.Success ?: return
+        val isBookmarked = state.bookmarkList.any { it.item.id == lecture.id }
 
-    val uiState = combine(
-        bookmarkList,
-        trimParam,
-        tableLectureCustomOption,
-        currentTable,
-        combine (
-            tableTheme,
-            dialogState,
-            bottomSheetState,
-            ::Triple,
-        )
-    ) { bookmarkList, trimParam, tableLectureCustomOption, currentTable, (tableTheme, dialogState, bottomSheetState) ->
-        BookmarkUiState.Success(
-            currentTable = currentTable,
-            tableTheme = tableTheme,
-            bookmarkList = bookmarkList,
-            dialogState = dialogState,
-            bottomSheetState = bottomSheetState,
-        )
-    }
-
-    fun onClickLectureDetail(lecture: SearchedLecture) {
-        viewModelScope.launch {
-            bottomSheetState.emit(BookmarkUiState.BottomSheetState.LectureDetail(lecture))
-        }
-    }
-
-    fun onClickReview(lecture: SearchedLecture) {
-        viewModelScope.launch {
-            bottomSheetState.emit(BookmarkUiState.BottomSheetState.Review(lecture))
-        }
-    }
-
-    fun onClickBookmark(lecture: SearchedLecture, isBookmarked: Boolean) {
-        viewModelScope.launch {
-            if (isBookmarked) {
-                dialogState.emit(BookmarkUiState.DialogState.DeleteBookmark(lecture))
+        if (isBookmarked) {
+            _uiState.update { state ->
+                if (state !is BookmarkUiState.Success) return@update state
+                state.copy(dialogState = BookmarkUiState.DialogState.DeleteBookmark(lecture))
+            }
+        } else {
+            viewModelScope.launch {
+                val courseBook = currentTableRepository.currentTableRefactored.value?.summary?.courseBook ?: return@launch
+                bookmarkRepository.addBookmark(courseBook, lecture)
+                    .onFailure { handleError(it) }
             }
         }
     }
 
     fun onConfirmDeleteBookmark(lecture: SearchedLecture) {
         viewModelScope.launch {
-            currentTableRepository.deleteBookmark(lecture)
-                .onSuccess {
-                    fetchBookmarkList()
-                    dialogState.emit(BookmarkUiState.DialogState.None)
+            val courseBook = currentTableRepository.currentTableRefactored.value?.summary?.courseBook ?: return@launch
+            bookmarkRepository.deleteBookmark(courseBook, lecture)
+                .onFailure { handleError(it) }
+
+            _uiState.update { state ->
+                if (state !is BookmarkUiState.Success) return@update state
+                state.copy(
+                    dialogState = BookmarkUiState.DialogState.None,
+                    selectedLecture = if (state.selectedLecture?.id == lecture.id) null else state.selectedLecture,
+                )
+            }
+        }
+    }
+
+    fun onClickVacancy(lecture: SearchedLecture) {
+        val state = _uiState.value as? BookmarkUiState.Success ?: return
+        val isVacancyRegistered = state.vacancyList.any { it.id == lecture.id }
+
+        viewModelScope.launch {
+            if (isVacancyRegistered) {
+                _uiState.update { state ->
+                    if (state !is BookmarkUiState.Success) return@update state
+                    state.copy(dialogState = BookmarkUiState.DialogState.DeleteVacancyNotification(lecture))
                 }
-                .onFailure {
-                    handleError(it)
-                }
+            } else {
+                vacancyRepository.addVacancyLectureNewNew(lecture)
+                    .onFailure { handleError(it) }
+            }
         }
     }
 
     fun onConfirmDeleteVacancyNotification(lecture: SearchedLecture) {
         viewModelScope.launch {
-            vacancyRepository.removeVacancyLectureNew(lecture.id)
-                .onSuccess {
-                    fetchBookmarkList()
-                    dialogState.emit(BookmarkUiState.DialogState.None)
-                }
-                .onFailure {
-                    handleError(it)
-                }
-        }
-    }
-
-    fun onDismissDialog() {
-        viewModelScope.launch {
-            dialogState.emit(BookmarkUiState.DialogState.None)
-        }
-    }
-
-    fun onDismissBottomSheet() {
-        viewModelScope.launch {
-            bottomSheetState.emit(BookmarkUiState.BottomSheetState.None)
-        }
-    }
-
-    fun onClickVacancy(lecture: SearchedLecture, isVacancyRegistered: Boolean) {
-        viewModelScope.launch {
-            if (isVacancyRegistered) {
-                dialogState.emit(BookmarkUiState.DialogState.DeleteVacancyNotification(lecture))
-            } else {
-                vacancyRepository.addVacancyLectureNew(lecture.id)
-                    .onSuccess {
-                        vacancyLectures.update { vacancyLectures ->
-                            vacancyLectures + lecture
-                        }
-                    }
-                    .onFailure {
-                        handleError(it)
-                    }
+            _uiState.update { state ->
+                if (state !is BookmarkUiState.Success) return@update state
+                state.copy(dialogState = BookmarkUiState.DialogState.None)
             }
+            vacancyRepository.removeVacancyLectureNewNew(lecture)
+                .onFailure { handleError(it) }
         }
     }
 
-    fun onToggleLectureSelection(lecture: SearchedLecture) {
+    fun onToggleLectureContained(lecture: SearchedLecture) {
+        val state = _uiState.value as? BookmarkUiState.Success ?: return
+        val contained = state.currentTable.lectures
+            .filterIsInstance<SyllabusLecture>()
+            .any { it.originalLectureId == lecture.id }
+
         viewModelScope.launch {
-            selectedLecture.update { selectedLecture ->
-                if (selectedLecture == lecture) {
-                    null
-                } else {
-                    lecture
-                }
+            if (contained) {
+                currentTableRepository.removeLectureNewNew(lecture)
+                    .onSuccess { onToggleLectureSelection(lecture) }
+                    .onFailure { handleError(it) }
+            } else {
+                addLecture(lecture, isForced = false)
             }
         }
     }
 
     fun onConfirmForceAddLecture(lecture: SearchedLecture) {
         viewModelScope.launch {
-            currentTableRepository.addLectureNew(lecture.id, true)
-                .onSuccess {
-                    selectedLecture.update { null }
-                    dialogState.emit(BookmarkUiState.DialogState.None)
-                }
-                .onFailure {
-                    handleError(it)
-                }
-        }
-    }
+            addLecture(lecture, isForced = true)
 
-    fun onToggleLectureContained(lecture: SearchedLecture, contained: Boolean) {
-        viewModelScope.launch {
-            if (contained) {
-                val localLectureId = currentTable.value?.lectures?.find {
-                    when (it) {
-                        is SyllabusLecture -> it.originalLectureId == lecture.id
-                        is CustomLecture -> it.id == lecture.id
-                    }
-                }?.id
-                localLectureId?.let {
-                    currentTableRepository.removeLectureNew(it)
-                        .onSuccess {
-                            currentTableRepository.updateCurrentTable()
-                            selectedLecture.update { null }
-                        }
-                        .onFailure { error ->
-                            handleError(error)
-                        }
-                }
-            } else {
-                currentTableRepository.addLectureNew(lecture.id, false)
-                    .onSuccess {
-                        selectedLecture.update { null }
-                    }
-                    .onFailure { error ->
-                        if (error is LectureOverlap) {
-                            val displayMessage = displayMessageResolver.getDisplayMessage(error)
-                            dialogState.emit(BookmarkUiState.DialogState.LectureTimeOverlap(lecture, displayMessage))
-                        } else {
-                            handleError(error)
-                        }
-                    }
+            _uiState.update { state ->
+                if (state !is BookmarkUiState.Success) return@update state
+                state.copy(dialogState = BookmarkUiState.DialogState.None)
             }
         }
     }
 
-    private fun fetchBookmarkList() {
-        viewModelScope.launch {
-            currentTableRepository.getBookmarksNew()
-                .onSuccess {
-                    bookmarkLectures.value = it
-                }
-                .onFailure {
-                    handleError(it)
-                }
-            vacancyRepository.getVacancyLecturesNew()
-                .onSuccess {
-                    vacancyLectures.value = it
-                }
-                .onFailure {
-                    handleError(it)
-                }
+    fun onDismissDialog() {
+        _uiState.update { state ->
+            if (state !is BookmarkUiState.Success) return@update state
+            state.copy(dialogState = BookmarkUiState.DialogState.None)
         }
+    }
+
+    fun openLectureDetailSheet(lecture: SearchedLecture) {
+        viewModelScope.launch {
+            _uiState.update { state ->
+                if (state !is BookmarkUiState.Success) return@update state
+                state.copy(
+                    bottomSheetType = BookmarkUiState.BottomSheetType.LectureDetail(
+                        lecture = lecture,
+                        isBookmarked = state.bookmarkList.any { it.item.id == lecture.id },
+                        isVacancyRegistered = state.vacancyList.any { it.id == lecture.id },
+                    ),
+                )
+            }
+            _uiEvent.emit(BookmarkUiEvent.OpenBottomSheet)
+            fetchBuildings(lecture)
+        }
+    }
+
+    fun openReviewSheet(lecture: SearchedLecture) {
+        viewModelScope.launch {
+            _uiState.update { current ->
+                if (current !is BookmarkUiState.Success) return@update current
+                current.copy(bottomSheetType = BookmarkUiState.BottomSheetType.Review(lecture))
+            }
+            _uiEvent.emit(BookmarkUiEvent.OpenBottomSheet)
+        }
+    }
+
+    fun closeBottomSheet() {
+        viewModelScope.launch {
+            _uiState.update { current ->
+                if (current !is BookmarkUiState.Success) return@update current
+                current.copy(bottomSheetType = BookmarkUiState.BottomSheetType.None)
+            }
+            _uiEvent.emit(BookmarkUiEvent.CloseBottomSheet)
+        }
+    }
+
+    fun openDetailReview() {
+        _uiState.update { state ->
+            if (state !is BookmarkUiState.Success) return@update state
+            val bt = state.bottomSheetType
+            if (bt is BookmarkUiState.BottomSheetType.LectureDetail) {
+                state.copy(bottomSheetType = bt.copy(reviewVisible = true))
+            } else state
+        }
+        viewModelScope.launch { _uiEvent.emit(BookmarkUiEvent.OpenDetailReviewSheet) }
+    }
+
+    fun closeDetailReview() {
+        _uiState.update { state ->
+            if (state !is BookmarkUiState.Success) return@update state
+            val bt = state.bottomSheetType
+            if (bt is BookmarkUiState.BottomSheetType.LectureDetail) {
+                state.copy(bottomSheetType = bt.copy(reviewVisible = false))
+            } else state
+        }
+        viewModelScope.launch { _uiEvent.emit(BookmarkUiEvent.CloseDetailReviewSheet) }
+    }
+
+    fun openSyllabus(lecture: SearchedLecture) {
+        viewModelScope.launch {
+            currentTableRepository.getSyllabusUrlNew(lecture.courseNumber, lecture.lectureNumber)
+                .onSuccess { url -> _uiEvent.emit(BookmarkUiEvent.OpenUrl(url)) }
+                .onFailure { handleError(it) }
+        }
+    }
+
+    // endregion
+
+    // region Private methods
+
+    private suspend fun addLecture(lecture: SearchedLecture, isForced: Boolean) {
+        currentTableRepository.addLectureNew(lecture.id, isForced)
+            .onSuccess {
+                onToggleLectureSelection(lecture)
+            }
+            .onFailure { error ->
+                if (error is LectureOverlap) {
+                    _uiState.update { state ->
+                        if (state !is BookmarkUiState.Success) return@update state
+                        state.copy(
+                            dialogState = BookmarkUiState.DialogState.LectureTimeOverlap(
+                                lecture,
+                                error.displayMessage,
+                            ),
+                        )
+                    }
+                } else {
+                    handleError(error)
+                }
+            }
+    }
+
+    private suspend fun fetchBuildings(lecture: SearchedLecture) {
+        lectureSearchRepository.getBuildingsNew(lecture.lectureSessions.map { it.place }.distinct())
+            .onSuccess { buildings ->
+                _uiState.update { current ->
+                    if (current !is BookmarkUiState.Success) return@update current
+                    val bt = current.bottomSheetType
+                    if (bt is BookmarkUiState.BottomSheetType.LectureDetail && bt.lecture.id == lecture.id) {
+                        current.copy(bottomSheetType = bt.copy(buildings = buildings))
+                    } else current
+                }
+            }
     }
 
     private suspend fun handleError(error: DomainError) {
@@ -277,58 +369,64 @@ class BookmarkViewModel @Inject constructor(
         when (error) {
             is AuthError -> {
                 _uiEvent.emit(BookmarkUiEvent.ShowToast(displayMessage))
-                userRepository.performLogout()
+                userRepository.postForceLogout()
                 _uiEvent.emit(BookmarkUiEvent.NavigateToOnboard)
             }
+
             else -> {
                 _uiEvent.emit(BookmarkUiEvent.ShowToast(displayMessage))
             }
         }
     }
+
+    // endregion
 }
 
 sealed interface BookmarkUiEvent {
     data class ShowToast(val message: String) : BookmarkUiEvent
     data object NavigateToOnboard : BookmarkUiEvent
+    data object OpenBottomSheet : BookmarkUiEvent
+    data object CloseBottomSheet : BookmarkUiEvent
+    data object OpenDetailReviewSheet : BookmarkUiEvent
+    data object CloseDetailReviewSheet : BookmarkUiEvent
+    data class OpenUrl(val url: String) : BookmarkUiEvent
 }
 
 sealed interface BookmarkUiState {
+    data object Loading : BookmarkUiState
+
     data class Success(
-        val currentTable: Table?,
+        val currentTable: Table,
         val tableTheme: TableTheme,
         val bookmarkList: List<DataWithState<SearchedLecture, LectureState>>,
+        val selectedLecture: SearchedLecture?,
+        val tableTrimParam: TableTrimParam,
+        val tableLectureCustomOptions: TableLectureCustom,
+        val isCompactMode: Boolean,
+        val uncheckedNotificationCount: Long,
+        val disableMapFeature: Boolean,
+        val vacancyList: List<SearchedLecture>,
         val dialogState: DialogState = DialogState.None,
-        val bottomSheetState: BottomSheetState = BottomSheetState.None,
+        val bottomSheetType: BottomSheetType = BottomSheetType.None,
     ) : BookmarkUiState
 
     sealed interface DialogState {
         data object None : DialogState
-        data class DeleteBookmark(
-            val lecture: SearchedLecture,
-        ) : DialogState
-
-        data class DeleteVacancyNotification(
-            val lecture: SearchedLecture,
-        ) : DialogState
-
-        data class LectureTimeOverlap(
-            val lecture: SearchedLecture,
-            val displayMessage: String,
-        ) : DialogState
+        data class DeleteBookmark(val lecture: SearchedLecture) : DialogState
+        data class DeleteVacancyNotification(val lecture: SearchedLecture) : DialogState
+        data class LectureTimeOverlap(val lecture: SearchedLecture, val displayMessage: String) : DialogState
     }
 
-    sealed interface BottomSheetState {
-        data object None : BottomSheetState
+    sealed interface BottomSheetType {
+        data object None : BottomSheetType
         data class LectureDetail(
             val lecture: SearchedLecture,
-        ) : BottomSheetState
+            val buildings: List<LectureBuildingDto> = emptyList(),
+            val reviewVisible: Boolean = false,
+            val isBookmarked: Boolean = false,
+            val isVacancyRegistered: Boolean = false,
+        ) : BottomSheetType
 
-        data class Review(
-            val lecture: SearchedLecture,
-        ) : BottomSheetState
+        data class Review(val lecture: SearchedLecture) : BottomSheetType
     }
-
-    data object Loading : BookmarkUiState
-    data object Error : BookmarkUiState
-    data object Empty : BookmarkUiState
 }

@@ -383,13 +383,8 @@ class RootActivity : AppCompatActivity() {
                         )
                     }
 
-                    composableAnimated<NavigationDestination.Bookmark> { backstackEntry ->
-                        val parentEntry = remember(backstackEntry) {
-                            navController.getBackStackEntry(NavigationDestination.Home)
-                        }
-                        val homeViewModel = hiltViewModel<HomeViewModel>(parentEntry)
+                    composableAnimated<NavigationDestination.Bookmark> {
                         BookmarkRoute(
-                            homeViewModel = homeViewModel,
                             onNavigateBack = { navController.popBackStack() },
                             onNavigateToOnboard = { navController.navigateAsOrigin(NavigationDestination.Onboard) },
                         )
