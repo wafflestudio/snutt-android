@@ -17,7 +17,6 @@ import com.wafflestudio.snutt2.components.compose.snackbar.CustomSnackBarHostSta
 import com.wafflestudio.snutt2.components.compose.snackbar.SnackBarScaffold
 import com.wafflestudio.snutt2.domainmodel.LectureColor
 import com.wafflestudio.snutt2.lib.android.toast
-import com.wafflestudio.snutt2.views.LocalNavController
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.launch
@@ -25,6 +24,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun AddCustomLectureRoute(
     vm: AddCustomLectureViewModel = hiltViewModel(),
+    colorSelectorSavedStateHandle: androidx.lifecycle.SavedStateHandle? = null,
     onNavigateBack: () -> Unit,
     onNavigateColorSelector: (LectureColor) -> Unit,
     onNavigateOnboard: () -> Unit,
@@ -32,13 +32,12 @@ fun AddCustomLectureRoute(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
-    val navController = LocalNavController.current
 
     val uiState by vm.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         // FIXME: ColorSelector 동작 전반적으로 다시 고민하기
-        val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle ?: return@LaunchedEffect
+        val savedStateHandle = colorSelectorSavedStateHandle ?: return@LaunchedEffect
         savedStateHandle.getStateFlow(LectureColorSelectorViewModel.RESULT_COLOR_INDEX, Int.MIN_VALUE)
             .collect { colorIndex ->
                 if (colorIndex == Int.MIN_VALUE) return@collect

@@ -45,15 +45,15 @@ import com.wafflestudio.snutt2.model.getString
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.LocalApiOnError
 import com.wafflestudio.snutt2.views.LocalApiOnProgress
-import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 import kotlinx.coroutines.launch
 
 @Composable
-fun SocialLinkPage() {
+fun SocialLinkPage(
+    onNavigateBack: () -> Unit,
+) {
     val context = LocalContext.current
-    val navController = LocalNavController.current
     val coroutineScope = rememberCoroutineScope()
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
@@ -225,7 +225,7 @@ fun SocialLinkPage() {
     ) {
         SimpleTopBar(
             title = stringResource(R.string.social_link_title),
-            onClickNavigateBack = { navController.popBackStack() },
+            onClickNavigateBack = onNavigateBack,
         )
 
         Column(

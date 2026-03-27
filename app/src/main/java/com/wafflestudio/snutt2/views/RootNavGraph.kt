@@ -71,7 +71,7 @@ import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyRoute
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import com.wafflestudio.snutt2.views.logged_out.EmailVerificationPage
 import com.wafflestudio.snutt2.views.logged_out.FindIdPage
-import com.wafflestudio.snutt2.views.logged_out.ImportantNoticePage
+import com.wafflestudio.snutt2.views.logged_out.ImportantNoticeRoute
 import com.wafflestudio.snutt2.views.logged_out.SignInPage
 import com.wafflestudio.snutt2.views.logged_out.SignUpPage
 import com.wafflestudio.snutt2.views.logged_out.TutorialPage
@@ -83,7 +83,7 @@ internal fun NavGraphBuilder.buildRootNavGraph(
     modalState: ModalState,
     scheme: String,
 ) {
-    onboardGraph(scheme)
+    onboardGraph(navController, scheme)
 
     composableRoot<NavigationDestination.Home> {
         if (BuildConfig.DEBUG) {
@@ -131,7 +131,11 @@ internal fun NavGraphBuilder.buildRootNavGraph(
         }
     }
 
-    composableAnimated<NavigationDestination.ImportantNotice>(scheme) { ImportantNoticePage() }
+    composableAnimated<NavigationDestination.ImportantNotice>(scheme) {
+        ImportantNoticeRoute(
+            onNavigateAppReport = { navController.navigate(NavigationDestination.AppReport) },
+        )
+    }
 
     composableAnimated<NavigationDestination.Notification>(scheme) {
         NotificationRoute(
@@ -181,7 +185,7 @@ internal fun NavGraphBuilder.buildRootNavGraph(
         )
     }
 
-    composableAnimated<NavigationDestination.LectureDetailNew>(scheme) {
+    composableAnimated<NavigationDestination.LectureDetailNew>(scheme) { backStackEntry ->
         val referrer = when {
             navController.previousBackStackEntry?.destination?.hasRoute(
                 NavigationDestination.LecturesOfTable::class,
@@ -194,6 +198,7 @@ internal fun NavGraphBuilder.buildRootNavGraph(
 
         CurrentTableLectureDetailRoute(
             referrer = referrer,
+            colorSelectorSavedStateHandle = backStackEntry.savedStateHandle,
             onNavigateBack = { navController.popBackStack() },
             onNavigateColorSelector = { currentColor ->
                 val (idx, fg, bg) = when (currentColor) {
@@ -265,8 +270,9 @@ internal fun NavGraphBuilder.buildRootNavGraph(
         )
     }
 
-    composableAnimated<NavigationDestination.AddCustomLectureNew>(scheme) {
+    composableAnimated<NavigationDestination.AddCustomLectureNew>(scheme) { backStackEntry ->
         AddCustomLectureRoute(
+            colorSelectorSavedStateHandle = backStackEntry.savedStateHandle,
             onNavigateBack = { navController.popBackStack() },
             onNavigateColorSelector = { currentColor ->
                 val (idx, fg, bg) = when (currentColor) {
@@ -301,30 +307,49 @@ internal fun NavGraphBuilder.buildRootNavGraph(
     settingComposables(navController, homePageController, modalState, scheme)
 }
 
-private fun NavGraphBuilder.onboardGraph(scheme: String) {
+private fun NavGraphBuilder.onboardGraph(navController: NavController, scheme: String) {
     navigation<NavigationDestination.Onboard>(
         startDestination = NavigationDestination.Tutorial,
     ) {
         composableRoot<NavigationDestination.Tutorial> {
-            TutorialPage()
+            TutorialPage(
+                onNavigateHome = { navController.navigateAsOrigin(NavigationDestination.Home) },
+                onNavigateSignIn = { navController.navigate(NavigationDestination.SignIn) },
+                onNavigateSignUp = { navController.navigate(NavigationDestination.SignUp) },
+                onNavigateAppReport = { navController.navigate(NavigationDestination.AppReport) },
+            )
         }
         composableAnimated<NavigationDestination.SignIn>(scheme) {
-            SignInPage()
+            SignInPage(
+                onNavigateHome = { navController.navigateAsOrigin(NavigationDestination.Home) },
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateFindId = { navController.navigate(NavigationDestination.FindId) },
+                onNavigateFindPassword = { navController.navigate(NavigationDestination.FindPassword) },
+            )
         }
         composableAnimated<NavigationDestination.SignUp>(scheme) {
-            SignUpPage()
+            SignUpPage(
+                onNavigateEmailVerification = { navController.navigate(NavigationDestination.EmailVerification) },
+                onNavigateBack = { navController.popBackStack() },
+            )
         }
 
         composableAnimated<NavigationDestination.FindId>(scheme) {
-            FindIdPage()
+            FindIdPage(
+                onNavigateBack = { navController.popBackStack() },
+            )
         }
 
         composableAnimated<NavigationDestination.FindPassword>(scheme) {
-            ResetPasswordPage()
+            ResetPasswordPage(
+                onNavigateBack = { navController.popBackStack() },
+            )
         }
 
         composableAnimated<NavigationDestination.EmailVerification>(scheme) {
-            EmailVerificationPage()
+            EmailVerificationPage(
+                onNavigateHome = { navController.navigateAsOrigin(NavigationDestination.Home) },
+            )
         }
     }
 }
@@ -335,17 +360,39 @@ private fun NavGraphBuilder.settingComposables(
     modalState: ModalState,
     scheme: String,
 ) {
-    composableAnimated<NavigationDestination.AppReport>(scheme) { AppReportPage() }
-    composableAnimated<NavigationDestination.OpenLicenses>(scheme) { OpenSourceLicensePage() }
+    composableAnimated<NavigationDestination.AppReport>(scheme) {
+        AppReportPage(
+            onNavigateBack = { navController.popBackStack() },
+        )
+    }
+    composableAnimated<NavigationDestination.OpenLicenses>(scheme) {
+        OpenSourceLicensePage(
+            onNavigateBack = { navController.popBackStack() },
+            onNavigateLicenseDetail = { licenseName ->
+                navController.navigate(NavigationDestination.LicenseDetail(licenseName))
+            },
+        )
+    }
 
     composableAnimated<NavigationDestination.LicenseDetail>(scheme) { backStackEntry ->
         val licenseName =
             backStackEntry.toRoute<NavigationDestination.LicenseDetail>().licenseName
-        LicenseDetailPage(licenseName)
+        LicenseDetailPage(
+            licenseName = licenseName,
+            onNavigateBack = { navController.popBackStack() },
+        )
     }
 
-    composableAnimated<NavigationDestination.ServiceInfo>(scheme) { ServiceInfoPage() }
-    composableAnimated<NavigationDestination.TeamInfo>(scheme) { TeamInfoPage() }
+    composableAnimated<NavigationDestination.ServiceInfo>(scheme) {
+        ServiceInfoPage(
+            onNavigateBack = { navController.popBackStack() },
+        )
+    }
+    composableAnimated<NavigationDestination.TeamInfo>(scheme) {
+        TeamInfoPage(
+            onNavigateBack = { navController.popBackStack() },
+        )
+    }
     composableAnimated<NavigationDestination.TimeTableConfig>(scheme) {
         TimetableConfigRoute(
             onNavigateBack = {
@@ -376,10 +423,30 @@ private fun NavGraphBuilder.settingComposables(
             },
         )
     }
-    composableAnimated<NavigationDestination.ChangeNickname>(scheme) { ChangeNicknamePage() }
-    composableAnimated<NavigationDestination.SocialLink>(scheme) { SocialLinkPage() }
-    composableAnimated<NavigationDestination.PersonalInformationPolicy>(scheme) { PersonalInformationPolicyPage() }
-    composableAnimated<NavigationDestination.ThemeModeSelect>(scheme) { ColorModeSelectPage() }
+    composableAnimated<NavigationDestination.ChangeNickname>(scheme) {
+        ChangeNicknamePage(
+            onNavigateBack = {
+                if (navController.currentDestination?.hasRoute(NavigationDestination.ChangeNickname::class) == true) {
+                    navController.popBackStack()
+                }
+            },
+        )
+    }
+    composableAnimated<NavigationDestination.SocialLink>(scheme) {
+        SocialLinkPage(
+            onNavigateBack = { navController.popBackStack() },
+        )
+    }
+    composableAnimated<NavigationDestination.PersonalInformationPolicy>(scheme) {
+        PersonalInformationPolicyPage(
+            onNavigateBack = { navController.popBackStack() },
+        )
+    }
+    composableAnimated<NavigationDestination.ThemeModeSelect>(scheme) {
+        ColorModeSelectPage(
+            onNavigateBack = { navController.popBackStack() },
+        )
+    }
     if (FeatureFlag.LECTURE_DIARY.isEnabled) {
         composableAnimated<NavigationDestination.LectureDiaryWrite>(scheme) { entry ->
             DiaryWriteRoute(
@@ -483,7 +550,11 @@ private fun NavGraphBuilder.settingComposables(
             },
         )
     }
-    if (BuildConfig.DEBUG) composableAnimated<NavigationDestination.NetworkLog>(scheme) { NetworkLogPage() }
+    if (BuildConfig.DEBUG) composableAnimated<NavigationDestination.NetworkLog>(scheme) {
+        NetworkLogPage(
+            onNavigateBack = { navController.popBackStack() },
+        )
+    }
 
     if (BuildConfig.DEBUG) {
         composableAnimated<NavigationDestination.Test>(scheme) {

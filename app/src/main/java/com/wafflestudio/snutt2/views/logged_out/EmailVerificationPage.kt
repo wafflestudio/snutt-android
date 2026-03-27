@@ -35,8 +35,9 @@ private enum class VerifyEmailState {
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalComposeUiApi::class)
 @Composable
-fun EmailVerificationPage() {
-    val navController = LocalNavController.current
+fun EmailVerificationPage(
+    onNavigateHome: () -> Unit,
+) {
     val focusManager = LocalFocusManager.current
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
@@ -67,7 +68,7 @@ fun EmailVerificationPage() {
                     keyboardManager?.hide()
                     context.toast(context.getString(R.string.find_password_enter_verification_code_success_alert))
                     timerState.pause()
-                    navController.navigateAsOrigin(NavigationDestination.Home)
+                    onNavigateHome()
                 }
             }
         }
@@ -75,7 +76,7 @@ fun EmailVerificationPage() {
 
     val onBackPressed: () -> Unit = {
         when (flowState) {
-            VerifyEmailState.AskContinue -> navController.navigateAsOrigin(NavigationDestination.Home)
+            VerifyEmailState.AskContinue -> onNavigateHome()
             VerifyEmailState.SendCode -> {
                 flowState = VerifyEmailState.AskContinue
                 codeField = ""
@@ -138,7 +139,7 @@ fun EmailVerificationPage() {
                         WebViewStyleButton(
                             modifier = Modifier.fillMaxWidth(),
                             enabledColor = SNUTTColors.Gray200,
-                            onClick = { navController.navigateAsOrigin(NavigationDestination.Home) },
+                            onClick = { onNavigateHome() },
                         ) {
                             Text(
                                 text = stringResource(R.string.verify_email_later_button),

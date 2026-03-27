@@ -41,8 +41,10 @@ import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun SignUpPage() {
-    val navController = LocalNavController.current
+fun SignUpPage(
+    onNavigateEmailVerification: () -> Unit,
+    onNavigateBack: () -> Unit,
+) {
     val context = LocalContext.current
     val apiOnError = LocalApiOnError.current
     val apiOnProgress = LocalApiOnProgress.current
@@ -82,7 +84,7 @@ fun SignUpPage() {
                     analyticsLogger.logEvent(AnalyticsEvent.SignUp)
                     userViewModel.signUpLocal(idField, emailField.plus(context.getString(R.string.sign_up_email_form)), passwordField)
                     homeViewModel.refreshData()
-                    navController.navigate(NavigationDestination.EmailVerification)
+                    onNavigateEmailVerification()
                 }
             }
         }
@@ -96,7 +98,7 @@ fun SignUpPage() {
     ) {
         SimpleTopBar(
             title = stringResource(R.string.sign_up_app_bar_title),
-            onClickNavigateBack = { navController.popBackStack() },
+            onClickNavigateBack = onNavigateBack,
         )
 
         Column(
@@ -261,5 +263,5 @@ fun SignUpPage() {
 @Preview
 @Composable
 fun SignUpPagePreview() {
-    SignUpPage()
+    SignUpPage(onNavigateEmailVerification = {}, onNavigateBack = {})
 }

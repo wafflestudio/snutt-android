@@ -17,11 +17,11 @@ import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.ui.ThemeMode
-import com.wafflestudio.snutt2.views.LocalNavController
 
 @Composable
-fun TeamInfoPage() {
-    val navController = LocalNavController.current
+fun TeamInfoPage(
+    onNavigateBack: () -> Unit,
+) {
     val context = LocalContext.current
     val userViewModel = hiltViewModel<UserViewModel>()
     val webViewClient = WebViewClient()
@@ -49,7 +49,7 @@ fun TeamInfoPage() {
     ) {
         SimpleTopBar(
             title = stringResource(R.string.settings_team_info),
-            onClickNavigateBack = { navController.popBackStack() },
+            onClickNavigateBack = onNavigateBack,
         )
         AndroidView(factory = {
             WebView(context).apply {
@@ -63,5 +63,5 @@ fun TeamInfoPage() {
 @Preview
 @Composable
 fun TeamInfoPagePreview() {
-    TeamInfoPage()
+    TeamInfoPage(onNavigateBack = {})
 }

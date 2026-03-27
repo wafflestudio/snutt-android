@@ -46,14 +46,12 @@ import com.wafflestudio.snutt2.lib.network.NetworkLog
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTColors.SettingBackground
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.LocalNavController
 
 @Composable
 fun NetworkLogPage(
+    onNavigateBack: () -> Unit,
     viewModel: DebugViewModel = hiltViewModel(),
 ) {
-    val navController = LocalNavController.current
-
     val logList by viewModel.networkLog.collectAsState()
 
     Column {
@@ -63,7 +61,7 @@ fun NetworkLogPage(
             },
             navigationIcon = {
                 ArrowBackIcon(
-                    modifier = Modifier.clicks { navController.popBackStack() },
+                    modifier = Modifier.clicks { onNavigateBack() },
                     colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
             },

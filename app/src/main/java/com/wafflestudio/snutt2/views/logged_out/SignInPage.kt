@@ -38,8 +38,12 @@ import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun SignInPage() {
-    val navController = LocalNavController.current
+fun SignInPage(
+    onNavigateHome: () -> Unit,
+    onNavigateBack: () -> Unit,
+    onNavigateFindId: () -> Unit,
+    onNavigateFindPassword: () -> Unit,
+) {
     val apiOnError = LocalApiOnError.current
     val apiOnProgress = LocalApiOnProgress.current
     val context = LocalContext.current
@@ -64,7 +68,7 @@ fun SignInPage() {
                 analyticsLogger.logEvent(AnalyticsEvent.Login(LoginParameter(LoginParameter.Provider.LOCAL)))
                 userViewModel.loginLocal(idField, passwordField)
                 homeViewModel.refreshData()
-                navController.navigateAsOrigin(NavigationDestination.Home)
+                onNavigateHome()
             }
         }
     }
@@ -78,7 +82,7 @@ fun SignInPage() {
     ) {
         SimpleTopBar(
             title = stringResource(R.string.sign_in_app_bar_title),
-            onClickNavigateBack = { navController.popBackStack() },
+            onClickNavigateBack = onNavigateBack,
         )
 
         Column(
@@ -133,7 +137,7 @@ fun SignInPage() {
                         text = stringResource(R.string.sign_in_find_id_button),
                         style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
                         textDecoration = TextDecoration.Underline,
-                        modifier = Modifier.clicks { navController.navigate(NavigationDestination.FindId) },
+                        modifier = Modifier.clicks { onNavigateFindId() },
                     )
 
                     Text(
@@ -146,7 +150,7 @@ fun SignInPage() {
                         text = stringResource(R.string.sign_in_find_password_button),
                         style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
                         textDecoration = TextDecoration.Underline,
-                        modifier = Modifier.clicks { navController.navigate(NavigationDestination.FindPassword) },
+                        modifier = Modifier.clicks { onNavigateFindPassword() },
                     )
                 }
             }
@@ -173,5 +177,5 @@ fun SignInPage() {
 @Preview(showBackground = true)
 @Composable
 fun SignInPagePreview() {
-    SignInPage()
+    SignInPage(onNavigateHome = {}, onNavigateBack = {}, onNavigateFindId = {}, onNavigateFindPassword = {})
 }

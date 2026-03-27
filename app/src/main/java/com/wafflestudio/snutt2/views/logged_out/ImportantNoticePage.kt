@@ -15,7 +15,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,21 +24,33 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.lib.network.dto.core.RemoteConfigDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.LocalNavController
-import com.wafflestudio.snutt2.views.LocalRemoteConfig
-import com.wafflestudio.snutt2.views.NavigationDestination
 
 @Composable
-fun ImportantNoticePage() {
-    val navController = LocalNavController.current
-    val remoteConfig = LocalRemoteConfig.current
-    val noticeConfig by remoteConfig.noticeConfig.collectAsState(RemoteConfigDto.NoticeConfig())
+fun ImportantNoticeRoute(
+    onNavigateAppReport: () -> Unit,
+    viewModel: ImportantNoticeViewModel = hiltViewModel(),
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    ImportantNoticePage(
+        title = uiState.title,
+        content = uiState.content,
+        onNavigateAppReport = onNavigateAppReport,
+    )
+}
+
+@Composable
+fun ImportantNoticePage(
+    title: String,
+    content: String,
+    onNavigateAppReport: () -> Unit,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -57,7 +68,7 @@ fun ImportantNoticePage() {
         Spacer(modifier = Modifier.height(32.dp))
 
         Text(
-            text = noticeConfig.title ?: "",
+            text = title,
             style = SNUTTTypography.h3.copy(
                 fontSize = 17.sp,
             ),
@@ -68,7 +79,7 @@ fun ImportantNoticePage() {
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = noticeConfig.content ?: "",
+            text = content,
             style = SNUTTTypography.body1,
             textAlign = TextAlign.Center,
         )
@@ -79,7 +90,7 @@ fun ImportantNoticePage() {
             modifier = Modifier
                 .size(121.dp, 33.dp)
                 .clicks {
-                    navController.navigate(NavigationDestination.AppReport)
+                    onNavigateAppReport()
                 },
             shape = RoundedCornerShape(18.dp),
             color = SNUTTColors.SNUTTDarkMintBlue,

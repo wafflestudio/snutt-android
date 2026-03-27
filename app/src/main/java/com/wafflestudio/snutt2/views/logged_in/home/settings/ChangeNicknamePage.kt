@@ -38,7 +38,6 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavDestination.Companion.hasRoute
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.ArrowBackIcon
 import com.wafflestudio.snutt2.components.compose.CloseCircleIcon
@@ -51,15 +50,14 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalApiOnError
 import com.wafflestudio.snutt2.views.LocalApiOnProgress
-import com.wafflestudio.snutt2.views.LocalNavController
-import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 import kotlinx.coroutines.launch
 
 @Composable
-fun ChangeNicknamePage() {
-    val navController = LocalNavController.current
+fun ChangeNicknamePage(
+    onNavigateBack: () -> Unit,
+) {
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
     val scope = rememberCoroutineScope()
@@ -75,9 +73,7 @@ fun ChangeNicknamePage() {
     )
 
     val onBackPressed = {
-        if (navController.currentDestination?.hasRoute(NavigationDestination.ChangeNickname::class) == true) {
-            navController.popBackStack()
-        }
+        onNavigateBack()
     }
 
     val handleChangeNickname = {

@@ -20,13 +20,13 @@ import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.ThemeMode
-import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 import kotlinx.coroutines.launch
 
 @Composable
-fun ColorModeSelectPage() {
-    val navController = LocalNavController.current
+fun ColorModeSelectPage(
+    onNavigateBack: () -> Unit,
+) {
     val scope = rememberCoroutineScope()
     val userViewModel = hiltViewModel<UserViewModel>()
     val themeMode by userViewModel.themeMode.collectAsState()
@@ -40,7 +40,7 @@ fun ColorModeSelectPage() {
         SimpleTopBar(
             title = stringResource(R.string.settings_select_color_mode_title),
         ) {
-            navController.popBackStack()
+            onNavigateBack()
         }
         Column(
             modifier = Modifier

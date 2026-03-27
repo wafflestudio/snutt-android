@@ -83,6 +83,7 @@ fun SearchBottomSheetLayout(
                         vacancyList = uiState.vacancyList,
                         tableTheme = uiState.tableTheme,
                         courseBook = uiState.courseBook,
+                        disableMapFeature = uiState.disableMapFeature,
                         detailReviewSheetState = detailReviewSheetState,
                         detailReviewWebViewContainer = detailReviewWebViewContainer,
                         onDismiss = onDismiss,

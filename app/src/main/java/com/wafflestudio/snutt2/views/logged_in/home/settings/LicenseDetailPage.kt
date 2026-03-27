@@ -17,14 +17,12 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.LocalNavController
 
 @Composable
 fun LicenseDetailPage(
     licenseName: String?,
+    onNavigateBack: () -> Unit,
 ) {
-    val navController = LocalNavController.current
-
     val title: String
     val name: String
     val content: String
@@ -70,7 +68,7 @@ fun LicenseDetailPage(
     ) {
         SimpleTopBar(
             title = title,
-            onClickNavigateBack = { navController.popBackStack() },
+            onClickNavigateBack = onNavigateBack,
         )
 
         Text(

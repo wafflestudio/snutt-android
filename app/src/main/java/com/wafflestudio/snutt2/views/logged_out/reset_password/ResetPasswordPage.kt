@@ -20,7 +20,6 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.IOSStyleTopBar
 import com.wafflestudio.snutt2.views.LocalApiOnError
 import com.wafflestudio.snutt2.views.LocalApiOnProgress
-import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_out.reset_password.FindPasswordViewModel.UIState.CheckId
 import com.wafflestudio.snutt2.views.logged_out.reset_password.FindPasswordViewModel.UIState.EnterFullEmail
@@ -29,17 +28,18 @@ import com.wafflestudio.snutt2.views.logged_out.reset_password.FindPasswordViewM
 import kotlinx.coroutines.launch
 
 @Composable
-fun ResetPasswordPage() {
+fun ResetPasswordPage(
+    onNavigateBack: () -> Unit,
+) {
     val scope = rememberCoroutineScope()
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
-    val navController = LocalNavController.current
     val viewModel = hiltViewModel<FindPasswordViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     BackHandler {
         if (uiState is CheckId) {
-            navController.popBackStack()
+            onNavigateBack()
         } else {
             viewModel.goToPreviousStep()
         }
@@ -61,7 +61,7 @@ fun ResetPasswordPage() {
             },
         ) {
             if (uiState is CheckId) {
-                navController.popBackStack()
+                onNavigateBack()
             } else {
                 viewModel.goToPreviousStep()
             }
@@ -124,7 +124,7 @@ fun ResetPasswordPage() {
                         showCompleteDialog = showCompleteDialog,
                         onComplete = {
                             showCompleteDialog.value = false
-                            navController.popBackStack()
+                            onNavigateBack()
                         },
                     )
                 }

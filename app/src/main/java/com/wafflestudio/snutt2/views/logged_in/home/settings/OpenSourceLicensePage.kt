@@ -11,14 +11,14 @@ import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.views.LocalNavController
-import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 
 @Composable
-fun OpenSourceLicensePage() {
+fun OpenSourceLicensePage(
+    onNavigateBack: () -> Unit,
+    onNavigateLicenseDetail: (String) -> Unit,
+) {
     val context = LocalContext.current
-    val navController = LocalNavController.current
 
     Column(
         modifier = Modifier
@@ -27,7 +27,7 @@ fun OpenSourceLicensePage() {
     ) {
         SimpleTopBar(
             title = stringResource(R.string.settings_licenses_title),
-            onClickNavigateBack = { navController.popBackStack() },
+            onClickNavigateBack = onNavigateBack,
         )
 
         Margin(height = 10.dp)
@@ -35,65 +35,35 @@ fun OpenSourceLicensePage() {
         SettingItem(
             title = stringResource(R.string.license_colorpicker_title),
             onClick = {
-                navController.navigate(
-                    NavigationDestination.LicenseDetail(
-                        context.getString(
-                            R.string.license_colorpicker_route,
-                        ),
-                    ),
-                )
+                onNavigateLicenseDetail(context.getString(R.string.license_colorpicker_route))
             },
         )
 
         SettingItem(
             title = stringResource(R.string.license_guava_title),
             onClick = {
-                navController.navigate(
-                    NavigationDestination.LicenseDetail(
-                        context.getString(
-                            R.string.license_guava_route,
-                        ),
-                    ),
-                )
+                onNavigateLicenseDetail(context.getString(R.string.license_guava_route))
             },
         )
 
         SettingItem(
             title = stringResource(R.string.license_retrofit_title),
             onClick = {
-                navController.navigate(
-                    NavigationDestination.LicenseDetail(
-                        context.getString(
-                            R.string.license_retrofit_route,
-                        ),
-                    ),
-                )
+                onNavigateLicenseDetail(context.getString(R.string.license_retrofit_route))
             },
         )
 
         SettingItem(
             title = stringResource(R.string.license_okhttp_title),
             onClick = {
-                navController.navigate(
-                    NavigationDestination.LicenseDetail(
-                        context.getString(
-                            R.string.license_okhttp_route,
-                        ),
-                    ),
-                )
+                onNavigateLicenseDetail(context.getString(R.string.license_okhttp_route))
             },
         )
 
         SettingItem(
             title = stringResource(R.string.license_pretendard_title),
             onClick = {
-                navController.navigate(
-                    NavigationDestination.LicenseDetail(
-                        context.getString(
-                            R.string.license_pretendard_route,
-                        ),
-                    ),
-                )
+                onNavigateLicenseDetail(context.getString(R.string.license_pretendard_route))
             },
         )
     }

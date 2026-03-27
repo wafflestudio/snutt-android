@@ -38,7 +38,6 @@ import com.wafflestudio.snutt2.lib.logging.LectureDetailParameter
 import com.wafflestudio.snutt2.lib.logging.LectureSyllabusParameter
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
-import com.wafflestudio.snutt2.views.LocalNavController
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.launch
@@ -47,6 +46,7 @@ import kotlinx.coroutines.launch
 fun CurrentTableLectureDetailRoute(
     vm: CurrentTableLectureDetailViewModel = hiltViewModel(),
     referrer: DetailScreenReferrer? = null,
+    colorSelectorSavedStateHandle: androidx.lifecycle.SavedStateHandle? = null,
     onNavigateBack: () -> Unit,
     onNavigateColorSelector: (LectureColor) -> Unit,
     onNavigateLectureReminder: () -> Unit,
@@ -56,13 +56,12 @@ fun CurrentTableLectureDetailRoute(
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
     val analyticsLogger = LocalAnalyticsLogger.current
-    val navController = LocalNavController.current
 
     val uiState by vm.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         // FIXME: ColorSelector 방식 다시 고민하기
-        val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle ?: return@LaunchedEffect
+        val savedStateHandle = colorSelectorSavedStateHandle ?: return@LaunchedEffect
         savedStateHandle.getStateFlow(LectureColorSelectorViewModel.RESULT_COLOR_INDEX, Int.MIN_VALUE)
             .collect { colorIndex ->
                 if (colorIndex == Int.MIN_VALUE) return@collect

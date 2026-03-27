@@ -7,15 +7,12 @@ import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.domainmodel.TableTheme
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.views.LocalRemoteConfig
 import com.wafflestudio.snutt2.views.LocalReviewWebView
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebView
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.refactor.LectureDetail
@@ -27,6 +24,7 @@ fun SearchLectureDetailSheetContent(
     vacancyList: List<SearchedLecture>,
     tableTheme: TableTheme,
     courseBook: CourseBook,
+    disableMapFeature: Boolean,
     detailReviewSheetState: ModalBottomSheetState,
     detailReviewWebViewContainer: ReviewWebViewContainer,
     onDismiss: () -> Unit,
@@ -39,7 +37,6 @@ fun SearchLectureDetailSheetContent(
     val lecture = bottomSheetType.lecture
     val isBookmarked = bookmarks.any { it.id == lecture.id }
     val isVacancyRegistered = vacancyList.any { it.id == lecture.id }
-    val disableMapFeature by LocalRemoteConfig.current.disableMapFeature.collectAsState(initial = true)
     val showCategoryPre2025 = (courseBook.year * 10 + courseBook.semester) > 20250L
 
     LaunchedEffect(detailReviewSheetState.currentValue) {

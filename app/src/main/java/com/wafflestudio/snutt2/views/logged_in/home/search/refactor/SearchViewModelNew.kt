@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
+import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.data.bookmark.BookmarkRepository
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
@@ -80,6 +81,7 @@ class SearchViewModelNew @Inject constructor(
     private val displayMessageResolver: DisplayMessageResolver,
     private val analyticsLogger: AnalyticsLogger,
     private val getCurrentTableThemeUseCase: GetCurrentTableThemeUseCase,
+    private val remoteConfig: RemoteConfig,
 ) : ViewModel() {
 
     private val _querySignal = MutableSharedFlow<Unit>(replay = 0)
@@ -101,6 +103,7 @@ class SearchViewModelNew @Inject constructor(
                 firstBookmarkAlert = lectureSearchRepository.firstBookmarkAlert.value,
                 bookmarks = bookmarkRepository.bookmarks.value[table.summary.courseBook] ?: emptyList(),
                 vacancyList = vacancyRepository.vacancyLectures.value,
+                disableMapFeature = true,
                 bottomSheetType = SearchUiState.BottomSheetType.None,
                 dialogState = SearchUiState.DialogState.None,
                 searchTitle = "",
@@ -187,7 +190,8 @@ class SearchViewModelNew @Inject constructor(
                                 emitAll(bookmarkRepository.bookmarks.map { it[courseBook] ?: emptyList() })
                             }
                         },
-                    ::Pair,
+                    remoteConfig.disableMapFeature,
+                    ::Triple,
                 ),
                 // C-2: 초기 로드 + 학기 변경 시 재조회
                 currentTableRepository.currentTableRefactored
@@ -202,7 +206,7 @@ class SearchViewModelNew @Inject constructor(
                             }
                         }
                     },
-            ) { table, (trimParam, lectureCustom, compact), (firstAlert, recentDepts, theme), (vacancy, bookmarks), searchTags ->
+            ) { table, (trimParam, lectureCustom, compact), (firstAlert, recentDepts, theme), (vacancy, bookmarks, disableMap), searchTags ->
                 val prevState = _uiState.value
                 val courseBook = table.summary.courseBook
                 val courseBookChanged = prevState.courseBook != courseBook
@@ -223,6 +227,7 @@ class SearchViewModelNew @Inject constructor(
                         firstBookmarkAlert = firstAlert,
                         bookmarks = bookmarks,
                         vacancyList = vacancy,
+                        disableMapFeature = disableMap,
                         tagTypes = tagTypes,
                         selectedTagType = selectedTagType,
                         allSearchTags = allTags,
@@ -628,6 +633,7 @@ data class SearchUiState(
     val firstBookmarkAlert: Boolean,
     val bookmarks: List<SearchedLecture>,
     val vacancyList: List<SearchedLecture>,
+    val disableMapFeature: Boolean,
     val bottomSheetType: BottomSheetType,
     val dialogState: DialogState,
 

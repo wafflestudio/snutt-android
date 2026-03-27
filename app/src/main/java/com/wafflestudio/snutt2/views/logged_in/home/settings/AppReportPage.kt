@@ -46,15 +46,15 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalApiOnError
 import com.wafflestudio.snutt2.views.LocalApiOnProgress
-import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.launchSuspendApi
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun AppReportPage() {
+fun AppReportPage(
+    onNavigateBack: () -> Unit,
+) {
     val context = LocalContext.current
-    val navController = LocalNavController.current
     val apiOnError = LocalApiOnError.current
     val apiOnProgress = LocalApiOnProgress.current
     val keyboardManager = LocalSoftwareKeyboardController.current
@@ -86,7 +86,7 @@ fun AppReportPage() {
                     userViewModel.sendFeedback(email, detail)
                     keyboardManager?.hide()
                     context.toast(context.getString(R.string.feedback_send_success_message))
-                    navController.popBackStack()
+                    onNavigateBack()
                 }
             }
         }
@@ -110,7 +110,7 @@ fun AppReportPage() {
                     modifier = Modifier
                         .size(30.dp)
                         .clicks {
-                            navController.popBackStack()
+                            onNavigateBack()
                         },
                     colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
@@ -177,5 +177,5 @@ fun AppReportPage() {
 @Preview
 @Composable
 fun AppReportPagePreview() {
-    AppReportPage()
+    AppReportPage(onNavigateBack = {})
 }

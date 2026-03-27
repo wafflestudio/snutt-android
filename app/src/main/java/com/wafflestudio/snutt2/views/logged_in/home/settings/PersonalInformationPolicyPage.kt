@@ -14,11 +14,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.ui.ThemeMode
-import com.wafflestudio.snutt2.views.LocalNavController
 
 @Composable
-fun PersonalInformationPolicyPage() {
-    val navController = LocalNavController.current
+fun PersonalInformationPolicyPage(
+    onNavigateBack: () -> Unit,
+) {
     val context = LocalContext.current
     val userViewModel = hiltViewModel<UserViewModel>()
     val webViewClient = WebViewClient()
@@ -42,7 +42,7 @@ fun PersonalInformationPolicyPage() {
     Column(modifier = Modifier.fillMaxSize()) {
         SimpleTopBar(
             title = stringResource(R.string.settings_personal_information_policy),
-            onClickNavigateBack = { navController.popBackStack() },
+            onClickNavigateBack = onNavigateBack,
         )
         AndroidView(factory = {
             WebView(context).apply {

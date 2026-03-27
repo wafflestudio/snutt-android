@@ -48,8 +48,12 @@ import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun TutorialPage() {
-    val navController = LocalNavController.current
+fun TutorialPage(
+    onNavigateHome: () -> Unit,
+    onNavigateSignIn: () -> Unit,
+    onNavigateSignUp: () -> Unit,
+    onNavigateAppReport: () -> Unit,
+) {
     val coroutineScope = rememberCoroutineScope()
     val apiOnError = LocalApiOnError.current
     val apiOnProgress = LocalApiOnProgress.current
@@ -76,7 +80,7 @@ fun TutorialPage() {
                     loginResult.accessToken.token,
                 )
                 homeViewModel.refreshData()
-                navController.navigateAsOrigin(NavigationDestination.Home)
+                onNavigateHome()
             }
         }
     }
@@ -97,7 +101,7 @@ fun TutorialPage() {
                     analyticsLogger.logEvent(AnalyticsEvent.Login(LoginParameter(LoginParameter.Provider.GOOGLE)))
                     userViewModel.loginGoogle(googleAccessToken)
                     homeViewModel.refreshData()
-                    navController.navigateAsOrigin(NavigationDestination.Home)
+                    onNavigateHome()
                 } else {
                     context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
                 }
@@ -156,7 +160,7 @@ fun TutorialPage() {
                     analyticsLogger.logEvent(AnalyticsEvent.Login(LoginParameter(LoginParameter.Provider.KAKAO)))
                     userViewModel.loginKakao(kakaoAccessToken)
                     homeViewModel.refreshData()
-                    navController.navigateAsOrigin(NavigationDestination.Home)
+                    onNavigateHome()
                 } else {
                     context.toast(context.getString(R.string.sign_in_kakao_failed_unknown))
                 }
@@ -238,7 +242,7 @@ fun TutorialPage() {
                 bgColor = colorResource(R.color.theme_snutt_5),
                 color = colorResource(R.color.theme_snutt_5),
                 cornerRadius = 6.dp,
-                onClick = { navController.navigate(NavigationDestination.SignIn) },
+                onClick = { onNavigateSignIn() },
             ) {
                 Text(
                     text = stringResource(R.string.tutorial_sign_in_button),
@@ -253,7 +257,7 @@ fun TutorialPage() {
                 modifier = Modifier
                     .padding(top = 14.dp)
                     .clicks {
-                        navController.navigate(NavigationDestination.SignUp)
+                        onNavigateSignUp()
                     },
             )
 
@@ -300,7 +304,7 @@ fun TutorialPage() {
                 style = SNUTTTypography.subtitle2,
                 text = stringResource(R.string.tutorial_help_button),
                 modifier = Modifier.clicks {
-                    navController.navigate(NavigationDestination.AppReport)
+                    onNavigateAppReport()
                 },
             )
 
@@ -312,5 +316,5 @@ fun TutorialPage() {
 @Preview(showBackground = true)
 @Composable
 fun TutorialPagePreview() {
-    TutorialPage()
+    TutorialPage(onNavigateHome = {}, onNavigateSignIn = {}, onNavigateSignUp = {}, onNavigateAppReport = {})
 }

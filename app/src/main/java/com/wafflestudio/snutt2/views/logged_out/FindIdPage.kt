@@ -25,14 +25,14 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalApiOnError
 import com.wafflestudio.snutt2.views.LocalApiOnProgress
-import com.wafflestudio.snutt2.views.LocalNavController
 import com.wafflestudio.snutt2.views.launchSuspendApi
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun FindIdPage() {
-    val navController = LocalNavController.current
+fun FindIdPage(
+    onNavigateBack: () -> Unit,
+) {
     val apiOnError = LocalApiOnError.current
     val apiOnProgress = LocalApiOnProgress.current
     val context = LocalContext.current
@@ -54,7 +54,7 @@ fun FindIdPage() {
                 launchSuspendApi(apiOnProgress, apiOnError) {
                     userViewModel.findIdByEmail(emailField)
                     context.toast(context.getString(R.string.find_id_send_email_success_message).format(emailField))
-                    navController.popBackStack()
+                    onNavigateBack()
                 }
             }
         }
@@ -69,7 +69,7 @@ fun FindIdPage() {
         SimpleTopBar(
             title = stringResource(R.string.sign_in_find_id_button),
             onClickNavigateBack = {
-                navController.popBackStack()
+                onNavigateBack()
             },
         )
 
