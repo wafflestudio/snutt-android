@@ -16,7 +16,7 @@ sealed interface NavigationDestination {
 
     @Serializable
     @DeepLinkPath("home")
-    data object Home : NavigationDestination
+    data class Home(val initialTab: String? = null) : NavigationDestination
 
     @Serializable
     @DeepLinkPath("signIn")
@@ -51,6 +51,7 @@ sealed interface NavigationDestination {
     data class LectureDetailNew(
         val lectureId: String? = null,
         val tableId: String? = null,
+        val isFromTimetable: Boolean = false,
     ) : NavigationDestination
 
     @Serializable

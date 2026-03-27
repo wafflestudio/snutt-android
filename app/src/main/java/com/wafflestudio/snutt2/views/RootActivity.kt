@@ -86,11 +86,12 @@ class RootActivity : AppCompatActivity() {
             }
             isLoading = false
         }
+        val initialDeeplinkTab = parseHomePageDeeplink()
         setUpContents(
             if (token.isEmpty()) {
                 NavigationDestination.Onboard
             } else {
-                NavigationDestination.Home
+                NavigationDestination.Home(initialTab = initialDeeplinkTab?.toTabString())
             },
         )
         setWindowAppearance()

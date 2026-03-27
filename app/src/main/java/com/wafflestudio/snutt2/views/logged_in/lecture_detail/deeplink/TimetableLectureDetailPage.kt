@@ -54,7 +54,7 @@ fun TimetableLectureDetailPage(
                         onClick = {
                             scope.launch {
                                 tableListViewModel.changeSelectedTable(tableId)
-                                navController.navigateAsOrigin(NavigationDestination.Home)
+                                navController.navigateAsOrigin(NavigationDestination.Home())
                             }
                         },
                     )

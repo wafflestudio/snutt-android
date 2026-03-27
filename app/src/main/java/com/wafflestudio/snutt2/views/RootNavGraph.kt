@@ -88,9 +88,9 @@ internal fun NavGraphBuilder.buildRootNavGraph(
     composableRoot<NavigationDestination.Home> {
         if (BuildConfig.DEBUG) {
             HomePageNewRoute(
-                onNavigateLectureDetailNew = { lectureId, tableId ->
+                onNavigateLectureDetailNew = { lectureId, tableId, isFromTimetable ->
                     navController.navigate(
-                        NavigationDestination.LectureDetailNew(lectureId = lectureId, tableId = tableId),
+                        NavigationDestination.LectureDetailNew(lectureId = lectureId, tableId = tableId, isFromTimetable = isFromTimetable),
                     ) {
                         launchSingleTop = true
                     }
@@ -146,8 +146,9 @@ internal fun NavGraphBuilder.buildRootNavGraph(
             onNavigateToBookmarkLectureDetail = { lectureId, year, semester ->
                 navController.navigate(NavigationDestination.DeeplinkBookmarkLectureDetail(lectureId, year, semester))
             },
-            // TODO: Home 탭들을 별도 NavigationDestination으로 분리한 뒤, 친구 탭 이동 구현
-            onNavigateToFriends = {},
+            onNavigateToFriends = {
+                navController.navigateAsOrigin(NavigationDestination.Home(initialTab = "friends"))
+            },
         )
     }
 
@@ -162,7 +163,7 @@ internal fun NavGraphBuilder.buildRootNavGraph(
 
     composableAnimated<NavigationDestination.LectureDetail>(scheme) {
         val parentEntry = remember(it) {
-            navController.getBackStackEntry(NavigationDestination.Home)
+            navController.getBackStackEntry(NavigationDestination.Home())
         }
         val referrer = when {
             navController.previousBackStackEntry?.destination?.hasRoute(
@@ -186,13 +187,14 @@ internal fun NavGraphBuilder.buildRootNavGraph(
     }
 
     composableAnimated<NavigationDestination.LectureDetailNew>(scheme) { backStackEntry ->
+        val route = backStackEntry.toRoute<NavigationDestination.LectureDetailNew>()
         val referrer = when {
             navController.previousBackStackEntry?.destination?.hasRoute(
                 NavigationDestination.LecturesOfTable::class,
             ) == true
                 -> DetailScreenReferrer.LectureList
 
-            homePageController.homePageState.value == HomeItem.Timetable -> DetailScreenReferrer.Timetable
+            route.isFromTimetable -> DetailScreenReferrer.Timetable
             else -> null
         }
 
@@ -221,7 +223,7 @@ internal fun NavGraphBuilder.buildRootNavGraph(
 
     composableAnimated<NavigationDestination.TimetableLecture>(scheme) { backStackEntry ->
         val homeBackStackEntry = remember(backStackEntry) {
-            navController.getBackStackEntry(NavigationDestination.Home)
+            navController.getBackStackEntry(NavigationDestination.Home())
         }
         val tableId =
             backStackEntry.toRoute<NavigationDestination.TimetableLecture>().tableId
@@ -294,7 +296,7 @@ internal fun NavGraphBuilder.buildRootNavGraph(
     composableAnimated<NavigationDestination.DeeplinkTimetableLectureDetail>(scheme) {
         DeeplinkTimetableLectureDetailRoute(
             onNavigateBack = { navController.popBackStack() },
-            onNavigateHome = { navController.navigateAsOrigin(NavigationDestination.Home) },
+            onNavigateHome = { navController.navigateAsOrigin(NavigationDestination.Home()) },
         )
     }
 
@@ -313,7 +315,7 @@ private fun NavGraphBuilder.onboardGraph(navController: NavController, scheme: S
     ) {
         composableRoot<NavigationDestination.Tutorial> {
             TutorialPage(
-                onNavigateHome = { navController.navigateAsOrigin(NavigationDestination.Home) },
+                onNavigateHome = { navController.navigateAsOrigin(NavigationDestination.Home()) },
                 onNavigateSignIn = { navController.navigate(NavigationDestination.SignIn) },
                 onNavigateSignUp = { navController.navigate(NavigationDestination.SignUp) },
                 onNavigateAppReport = { navController.navigate(NavigationDestination.AppReport) },
@@ -321,7 +323,7 @@ private fun NavGraphBuilder.onboardGraph(navController: NavController, scheme: S
         }
         composableAnimated<NavigationDestination.SignIn>(scheme) {
             SignInPage(
-                onNavigateHome = { navController.navigateAsOrigin(NavigationDestination.Home) },
+                onNavigateHome = { navController.navigateAsOrigin(NavigationDestination.Home()) },
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateFindId = { navController.navigate(NavigationDestination.FindId) },
                 onNavigateFindPassword = { navController.navigate(NavigationDestination.FindPassword) },
@@ -348,7 +350,7 @@ private fun NavGraphBuilder.onboardGraph(navController: NavController, scheme: S
 
         composableAnimated<NavigationDestination.EmailVerification>(scheme) {
             EmailVerificationPage(
-                onNavigateHome = { navController.navigateAsOrigin(NavigationDestination.Home) },
+                onNavigateHome = { navController.navigateAsOrigin(NavigationDestination.Home()) },
             )
         }
     }
@@ -457,10 +459,9 @@ private fun NavGraphBuilder.settingComposables(
                 onNavigateOnboard = {
                     navController.navigateAsOrigin(NavigationDestination.Onboard)
                 },
-                onNavigateHome = { navController.navigateAsOrigin(NavigationDestination.Home) },
+                onNavigateHome = { navController.navigateAsOrigin(NavigationDestination.Home()) },
                 onNavigateReview = {
-                    homePageController.update(HomeItem.Review())
-                    navController.navigateAsOrigin(NavigationDestination.Home)
+                    navController.navigateAsOrigin(NavigationDestination.Home(initialTab = "review"))
                 },
                 onNavigateNextDiaryWrite = { lectureId, courseTitle ->
                     navController.navigate(

@@ -48,7 +48,7 @@ fun InstallInAppDeeplinkExecutor() {
     val apiOnProgress = LocalApiOnProgress.current
     val apiOnError = LocalApiOnError.current
     val homePageBackStackEntry = remember(navController.currentBackStackEntry) {
-        navController.getBackStackEntry(NavigationDestination.Home)
+        navController.getBackStackEntry(NavigationDestination.Home())
     }
     val homePageLectureDetailViewModel =
         hiltViewModel<LectureDetailViewModel>(homePageBackStackEntry)
@@ -117,7 +117,7 @@ fun InstallInAppDeeplinkExecutor() {
     fun handleFriendsDeeplink() {
         // TODO: 친구탭 서랍 열기
         val openDrawer = deeplinkUri.getQueryParameter("openDrawer") ?: return
-        navController.navigateAsOrigin(NavigationDestination.Home)
+        navController.navigateAsOrigin(NavigationDestination.Home())
         homePageController.update(HomeItem.Friends)
     }
 

@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.views.logged_in.home
 
 import android.content.Context
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
@@ -27,6 +28,7 @@ import javax.inject.Inject
 @OptIn(ExperimentalAnimationApi::class)
 @HiltViewModel
 class HomePageNewViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     @ApplicationContext private val context: Context,
     private val notificationRepository: NotificationRepository,
     private val currentTableRepository: CurrentTableRepository,
@@ -34,7 +36,11 @@ class HomePageNewViewModel @Inject constructor(
     private val popupState: PopupState,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(HomePageNewUiState())
+    private val _uiState = MutableStateFlow(
+        HomePageNewUiState(
+            currentTab = HomeItem.fromTabString(savedStateHandle["initialTab"]) ?: HomeItem.Timetable,
+        ),
+    )
     val uiState: StateFlow<HomePageNewUiState> = _uiState.asStateFlow()
 
     private val _uiEvent = MutableSharedFlow<HomePageUiEvent>()

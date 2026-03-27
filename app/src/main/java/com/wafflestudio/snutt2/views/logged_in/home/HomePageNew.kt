@@ -34,7 +34,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingsRoute
 @Composable
 fun HomePageNewRoute(
     viewModel: HomePageNewViewModel = hiltViewModel(),
-    onNavigateLectureDetailNew: (lectureId: String, tableId: String?) -> Unit,
+    onNavigateLectureDetailNew: (lectureId: String, tableId: String?, isFromTimetable: Boolean) -> Unit,
     onNavigateThemeDetail: () -> Unit,
     onNavigateLecturesOfTable: () -> Unit,
     onNavigateVacancyNotification: () -> Unit,
@@ -75,7 +75,8 @@ fun HomePageNewRoute(
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is HomePageUiEvent.NavigateToLectureDetail -> {
-                    onNavigateLectureDetailNew(event.lectureId, event.tableId)
+                    val isFromTimetable = viewModel.uiState.value.currentTab == HomeItem.Timetable
+                    onNavigateLectureDetailNew(event.lectureId, event.tableId, isFromTimetable)
                 }
 
                 is HomePageUiEvent.OpenUrl -> {

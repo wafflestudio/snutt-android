@@ -52,7 +52,7 @@ fun LecturesOfTablePage() {
 
     // share viewModel
     val backStackEntry = remember(navController.currentBackStackEntry) {
-        navController.getBackStackEntry(NavigationDestination.Home)
+        navController.getBackStackEntry(NavigationDestination.Home())
     }
     val lectureDetailViewModel = hiltViewModel<LectureDetailViewModel>(backStackEntry)
 
