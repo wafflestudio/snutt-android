@@ -36,29 +36,29 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.MagicIcon
 import com.wafflestudio.snutt2.components.compose.ResetIcon
 import com.wafflestudio.snutt2.components.compose.clicks
-import androidx.compose.ui.tooling.preview.Preview
 import com.wafflestudio.snutt2.domainmodel.CustomLecture
-import com.wafflestudio.snutt2.domainmodel.preview.PreviewData
 import com.wafflestudio.snutt2.domainmodel.LectureSession
 import com.wafflestudio.snutt2.domainmodel.LectureSyllabusInfo
 import com.wafflestudio.snutt2.domainmodel.LocalLecture
 import com.wafflestudio.snutt2.domainmodel.TableLectureCustom
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
+import com.wafflestudio.snutt2.domainmodel.preview.PreviewData
 import com.wafflestudio.snutt2.lib.trimByTrimParam
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.ui.onSurfaceVariant
 import com.wafflestudio.snutt2.views.logged_in.home.search.search_option.SearchOptionSheetConstants
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.DrawTableGrid
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableCanvasObjects
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.refactor.DrawClassTimeNew
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.refactor.DrawTableGrid
 
 @Composable
 fun TimeSelectSheet(

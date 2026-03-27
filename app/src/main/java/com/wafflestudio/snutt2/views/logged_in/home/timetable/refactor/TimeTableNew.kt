@@ -6,7 +6,6 @@ import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.domainmodel.TableLectureCustom
 import com.wafflestudio.snutt2.domainmodel.TableTheme
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.DrawTableGrid
 
 @Composable
 fun TimeTableNew(
