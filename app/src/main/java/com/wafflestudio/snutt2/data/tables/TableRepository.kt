@@ -64,4 +64,7 @@ interface TableRepository {
     suspend fun copyTableNew(id: String): Result<Unit>
 
     suspend fun getTableById(id: String): Result<Table>
+    suspend fun fetchTableByIdNew(id: String): Result<Unit>
+    suspend fun updateTableThemeNew(tableId: String, code: Int): Result<Unit>
+    suspend fun updateTableThemeNew(tableId: String, themeId: String): Result<Unit>
 }

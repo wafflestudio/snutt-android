@@ -2,6 +2,9 @@ package com.wafflestudio.snutt2.domainmodel.preview
 
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.CourseBook
+import com.wafflestudio.snutt2.domainmodel.CustomTheme
+import com.wafflestudio.snutt2.domainmodel.EditingTheme
+import com.wafflestudio.snutt2.domainmodel.ThemeColor
 import com.wafflestudio.snutt2.domainmodel.CustomLecture
 import com.wafflestudio.snutt2.domainmodel.LectureColor
 import com.wafflestudio.snutt2.domainmodel.Friend
@@ -460,6 +463,47 @@ object PreviewData {
         lectures = listOf(sampleFriendLecture),
         themeRef = ThemeReference.BuiltIn(0),
     )
+
+    // --- Theme 프리뷰 ---
+
+    val previewCustomTheme1 = CustomTheme(
+        id = "p1", name = "봄 테마", isFromMarket = false,
+        colors = listOf(
+            ThemeColor(0xFFFFFFFF.toInt(), 0xFFFF6B6B.toInt()),
+            ThemeColor(0xFFFFFFFF.toInt(), 0xFFFF8E53.toInt()),
+            ThemeColor(0xFF000000.toInt(), 0xFFFFD93D.toInt()),
+            ThemeColor(0xFFFFFFFF.toInt(), 0xFF6BCB77.toInt()),
+            ThemeColor(0xFFFFFFFF.toInt(), 0xFF4D96FF.toInt()),
+        ),
+    )
+
+    val previewCustomTheme2 = CustomTheme(
+        id = "p2", name = "오션 테마", isFromMarket = false,
+        colors = listOf(
+            ThemeColor(0xFFFFFFFF.toInt(), 0xFF0077B6.toInt()),
+            ThemeColor(0xFFFFFFFF.toInt(), 0xFF0096C7.toInt()),
+            ThemeColor(0xFFFFFFFF.toInt(), 0xFF00B4D8.toInt()),
+            ThemeColor(0xFF000000.toInt(), 0xFF90E0EF.toInt()),
+            ThemeColor(0xFF000000.toInt(), 0xFFCAF0F8.toInt()),
+        ),
+    )
+
+    val previewMarketTheme = CustomTheme(
+        id = "mkt", name = "갤럭시 테마", isFromMarket = true,
+        colors = listOf(
+            ThemeColor(0xFFFFFFFF.toInt(), 0xFF845EC2.toInt()),
+            ThemeColor(0xFFFFFFFF.toInt(), 0xFFD65DB1.toInt()),
+            ThemeColor(0xFFFFFFFF.toInt(), 0xFFFF6F91.toInt()),
+            ThemeColor(0xFFFFFFFF.toInt(), 0xFFFF9671.toInt()),
+            ThemeColor(0xFF000000.toInt(), 0xFFFFC75F.toInt()),
+        ),
+    )
+
+    // --- ThemeDetail 프리뷰 ---
+
+    val previewEditingThemeCustom = EditingTheme.fromTableTheme(previewCustomTheme1)
+    val previewEditingThemeMarket = EditingTheme.fromTableTheme(previewMarketTheme)
+    val previewEditingThemeBuiltIn = EditingTheme.fromTableTheme(BuiltInTheme.SNUTT)
 
     // --- LectureDetail 프리뷰 ---
 

@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.DuplicateIcon
@@ -17,6 +18,7 @@ import com.wafflestudio.snutt2.components.compose.MoreActionItem
 import com.wafflestudio.snutt2.components.compose.PaletteIcon
 import com.wafflestudio.snutt2.components.compose.TimetableIcon
 import com.wafflestudio.snutt2.components.compose.TrashIcon
+import com.wafflestudio.snutt2.ui.SNUTTTheme
 
 @Composable
 fun MyCustomThemeMoreActionBottomSheet(
@@ -155,3 +157,43 @@ fun BuiltInThemeClickBottomSheet(
         )
     }
 }
+
+// region Previews
+
+@Preview(name = "커스텀 테마")
+@Composable
+private fun MyCustomThemeMoreActionBottomSheetPreview() {
+    SNUTTTheme {
+        MyCustomThemeMoreActionBottomSheet(
+            onClickDetail = {},
+            onClickApply = {},
+            onClickDuplicate = {},
+            onClickDelete = {},
+        )
+    }
+}
+
+@Preview(name = "테마마켓 테마")
+@Composable
+private fun MarketCustomThemeMoreActionBottomSheetPreview() {
+    SNUTTTheme {
+        MarketCustomThemeMoreActionBottomSheet(
+            onClickDetail = {},
+            onClickApply = {},
+            onClickDelete = {},
+        )
+    }
+}
+
+@Preview(name = "빌트인 테마")
+@Composable
+private fun BuiltInThemeClickBottomSheetPreview() {
+    SNUTTTheme {
+        BuiltInThemeClickBottomSheet(
+            onClickDetail = {},
+            onClickApply = {},
+        )
+    }
+}
+
+// endregion

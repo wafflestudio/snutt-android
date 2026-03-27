@@ -302,4 +302,48 @@ class TableRepositoryImpl @Inject constructor(
             return Result.Fail(e.toDomainError())
         }
     }
+
+    override suspend fun fetchTableByIdNew(id: String): Result<Unit> {
+        return try {
+            val response = api._getTableById(id)
+            snuttStorage.lastViewedTable.update(response.toOptional())
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun updateTableThemeNew(tableId: String, code: Int): Result<Unit> {
+        return try {
+            val response = api._putTableTheme(tableId, PutTableThemeParams(theme = code))
+            val prev = snuttStorage.lastViewedTable.get().value
+            snuttStorage.lastViewedTable.update(
+                if (prev?.id == tableId) {
+                    response.toOptional()
+                } else {
+                    prev.toOptional()
+                },
+            )
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun updateTableThemeNew(tableId: String, themeId: String): Result<Unit> {
+        return try {
+            val response = api._putTableTheme(tableId, PutTableThemeParams(themeId = themeId))
+            val prev = snuttStorage.lastViewedTable.get().value
+            snuttStorage.lastViewedTable.update(
+                if (prev?.id == tableId) {
+                    response.toOptional()
+                } else {
+                    prev.toOptional()
+                },
+            )
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
+    }
 }

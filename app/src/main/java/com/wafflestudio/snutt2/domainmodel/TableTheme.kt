@@ -1,8 +1,8 @@
 package com.wafflestudio.snutt2.domainmodel
 
+import androidx.compose.ui.graphics.toArgb
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
-import androidx.compose.ui.graphics.toArgb
 import com.wafflestudio.snutt2.ui.SNUTTColors
 
 sealed class TableTheme(
@@ -70,6 +70,8 @@ class CustomTheme(
     lightColors = colors,
     darkColors = colors,
 ) {
+    fun getColors(): List<ThemeColor> = getColors(false)
+
     fun isAppliedToTable(table: TableDto): Boolean = table.themeId == this.id
 
     companion object {
@@ -85,7 +87,7 @@ class CustomTheme(
             colors = listOf(
                 ThemeColor(
                     foreground = SNUTTColors.White.toArgb(),
-                    background = SNUTTColors.MainBlue.toArgb()
+                    background = SNUTTColors.MainBlue.toArgb(),
                 ),
             ),
         )
@@ -278,17 +280,27 @@ data class EditingTheme(
     val name: String,
     val colors: List<Selectable<ThemeColor>>,
     private val originalTheme: TableTheme,
-    private val isDarkMode: Boolean,
 ) {
     val isEditable get() = originalTheme.isEditable
     val isNew get() = originalTheme.isNew
     val isCustomTheme get() = originalTheme is CustomTheme
     val isFromMarket get() = originalTheme is CustomTheme && originalTheme.isFromMarket
+    val canAddColor get() = isEditable && colors.size < 9
+    val canRemoveColor get() = isEditable && colors.size > 1
+    val canDuplicateColor get() = canAddColor
+
+    fun getDisplayColors(isDarkMode: Boolean): List<Selectable<ThemeColor>> {
+        return if (isEditable) {
+            colors
+        } else {
+            originalTheme.getColors(isDarkMode).map { Selectable(it, false) }
+        }
+    }
 
     fun hasChange(): Boolean {
         return if (originalTheme.isEditable) {
             name != originalTheme.name ||
-                    colors.map { it.item } != originalTheme.getColors(isDarkMode)
+                colors.map { it.item } != originalTheme.getColors(false)
         } else {
             false
         }
@@ -310,14 +322,13 @@ data class EditingTheme(
     }
 
     companion object {
-        fun fromTableTheme(tableTheme: TableTheme, isDarkMode: Boolean): EditingTheme {
+        fun fromTableTheme(tableTheme: TableTheme): EditingTheme {
             return EditingTheme(
                 name = tableTheme.name,
-                colors = tableTheme.getColors(isDarkMode).mapIndexed { index, color ->
+                colors = tableTheme.getColors(false).mapIndexed { index, color ->
                     Selectable(color, tableTheme.isEditable && index == 0)
                 },
                 originalTheme = tableTheme,
-                isDarkMode = isDarkMode,
             )
         }
     }
