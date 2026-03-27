@@ -173,7 +173,7 @@ fun HomePage() {
                         }
                     }
 
-                    HomeItem.Friends -> FriendsRoute()
+                    HomeItem.Friends -> FriendsRoute(bottomBar = {})
                     HomeItem.Settings -> SettingsRoute(
                         uncheckedNotifications = uncheckedNotification,
                         onNavigateUserConfig = {
@@ -238,6 +238,7 @@ fun HomePage() {
                         onNavigateOnboardAsOrigin = {
                             navController.navigateAsOrigin(NavigationDestination.Onboard)
                         },
+                        bottomBar = {},
                     )
                 }
 

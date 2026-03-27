@@ -4,12 +4,16 @@ import androidx.compose.material.DrawerValue
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.withFrameNanos
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -29,6 +33,7 @@ import kotlinx.coroutines.launch
 fun TimeTableRoute(
     drawerViewModel: HomeDrawerViewModel = hiltViewModel(),
     timeTableViewModel: TimeTableViewModelNew = hiltViewModel(),
+    bottomBar: @Composable () -> Unit,
     onNavigateBottomSheetThemeDetail: () -> Unit,
     onNavigateLecturesOfTable: () -> Unit,
     onNavigateVacancyNotification: () -> Unit,
@@ -155,19 +160,24 @@ fun TimeTableRoute(
         },
         onClickAddTheme = drawerViewModel::navigateToThemeDetail,
     ) {
-        TimeTableScreenNew(
-            uiState = timeTableUiState,
-            onClickDrawerIcon = { scope.launch { drawerState.open() } },
-            onClickTableTitle = timeTableViewModel::showTableTitleChangeDialog,
-            onClickTableLecturesListIcon = onNavigateLecturesOfTable,
-            onClickVacancyBanner = onNavigateVacancyNotification,
-            onClickLectureCell = onNavigateLectureDetail,
-            onClickBookmarkIcon = onNavigateBookmark,
-            onClickAddBySearch = onNavigateSearch,
-            onClickAddManually = onNavigateAddLecture,
-            onVisitSessionlessLectureList = timeTableViewModel::visitSessionlessLectureList,
-            onDismissDialog = timeTableViewModel::dismissDialog,
-            onConfirmChangeTableTitle = timeTableViewModel::changeTableTitle,
-        )
+        Column(modifier = Modifier.fillMaxSize()) {
+            Box(modifier = Modifier.weight(1f)) {
+                TimeTableScreenNew(
+                    uiState = timeTableUiState,
+                    onClickDrawerIcon = { scope.launch { drawerState.open() } },
+                    onClickTableTitle = timeTableViewModel::showTableTitleChangeDialog,
+                    onClickTableLecturesListIcon = onNavigateLecturesOfTable,
+                    onClickVacancyBanner = onNavigateVacancyNotification,
+                    onClickLectureCell = onNavigateLectureDetail,
+                    onClickBookmarkIcon = onNavigateBookmark,
+                    onClickAddBySearch = onNavigateSearch,
+                    onClickAddManually = onNavigateAddLecture,
+                    onVisitSessionlessLectureList = timeTableViewModel::visitSessionlessLectureList,
+                    onDismissDialog = timeTableViewModel::dismissDialog,
+                    onConfirmChangeTableTitle = timeTableViewModel::changeTableTitle,
+                )
+            }
+            bottomBar()
+        }
     }
 }

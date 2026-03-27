@@ -3,6 +3,8 @@ package com.wafflestudio.snutt2.views.logged_in.home.search.refactor
 import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.ModalBottomSheetValue
@@ -38,6 +40,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun SearchRouteNew(
     searchViewModelNew: SearchViewModelNew = hiltViewModel(),
+    bottomBar: @Composable () -> Unit,
     onNavigateVacancy: () -> Unit,
     onNavigateOnboardAsOrigin: () -> Unit,
     userViewModel: UserViewModel = hiltViewModel(),
@@ -192,27 +195,32 @@ fun SearchRouteNew(
                 detailReviewWebViewContainer = detailReviewWebViewContainer,
                 reviewWebViewContainer = reviewWebViewContainer,
             ) {
-                SearchScreenNew(
-                    uiState = uiState,
-                    searchResultPagingItems = queryResults,
-                    lazyListState = lazyListState,
-                    onSearch = searchViewModelNew::onSearch,
-                    onSearchTitleChange = searchViewModelNew::setTitle,
-                    onClearEditText = searchViewModelNew::onClearEditText,
-                    onFilter = searchViewModelNew::openFilterSheet,
-                    onToggleMode = searchViewModelNew::onTogglePageMode,
-                    onToggleTagAndQuery = searchViewModelNew::onToggleTagAndQuery,
-                    onToggleLectureSelection = searchViewModelNew::onToggleLectureSelection,
-                    onClickLectureDetail = searchViewModelNew::openLectureDetailSheet,
-                    onClickReview = searchViewModelNew::openReviewSheet,
-                    onClickBookmark = searchViewModelNew::onClickBookmark,
-                    onClickVacancy = searchViewModelNew::onClickVacancy,
-                    onToggleLectureContained = searchViewModelNew::onToggleLectureContained,
-                    onDismissDialog = searchViewModelNew::dismissDialog,
-                    onConfirmDeleteBookmark = searchViewModelNew::confirmDeleteBookmark,
-                    onConfirmDeleteVacancy = searchViewModelNew::confirmDeleteVacancy,
-                    onConfirmAddWithOverlap = searchViewModelNew::confirmAddWithOverlap,
-                )
+                Column(modifier = Modifier.fillMaxSize()) {
+                    Box(modifier = Modifier.weight(1f)) {
+                        SearchScreenNew(
+                            uiState = uiState,
+                            searchResultPagingItems = queryResults,
+                            lazyListState = lazyListState,
+                            onSearch = searchViewModelNew::onSearch,
+                            onSearchTitleChange = searchViewModelNew::setTitle,
+                            onClearEditText = searchViewModelNew::onClearEditText,
+                            onFilter = searchViewModelNew::openFilterSheet,
+                            onToggleMode = searchViewModelNew::onTogglePageMode,
+                            onToggleTagAndQuery = searchViewModelNew::onToggleTagAndQuery,
+                            onToggleLectureSelection = searchViewModelNew::onToggleLectureSelection,
+                            onClickLectureDetail = searchViewModelNew::openLectureDetailSheet,
+                            onClickReview = searchViewModelNew::openReviewSheet,
+                            onClickBookmark = searchViewModelNew::onClickBookmark,
+                            onClickVacancy = searchViewModelNew::onClickVacancy,
+                            onToggleLectureContained = searchViewModelNew::onToggleLectureContained,
+                            onDismissDialog = searchViewModelNew::dismissDialog,
+                            onConfirmDeleteBookmark = searchViewModelNew::confirmDeleteBookmark,
+                            onConfirmDeleteVacancy = searchViewModelNew::confirmDeleteVacancy,
+                            onConfirmAddWithOverlap = searchViewModelNew::confirmAddWithOverlap,
+                        )
+                    }
+                    bottomBar()
+                }
             }
         }
     }

@@ -64,6 +64,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun FriendsRoute(
     viewModel: FriendsViewModel = hiltViewModel(),
+    bottomBar: @Composable () -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -148,6 +149,7 @@ fun FriendsRoute(
 
     FriendsScreen(
         uiState = uiState,
+        bottomBar = bottomBar,
         drawerState = drawerState,
         bottomSheetState = bottomSheetState,
         onSelectFriend = viewModel::selectFriend,
@@ -181,6 +183,7 @@ fun FriendsRoute(
 @Composable
 fun FriendsScreen(
     uiState: FriendsUiState,
+    bottomBar: @Composable () -> Unit,
     drawerState: androidx.compose.material.DrawerState,
     bottomSheetState: androidx.compose.material.ModalBottomSheetState,
     onSelectFriend: (com.wafflestudio.snutt2.domainmodel.Friend) -> Unit,
@@ -206,17 +209,21 @@ fun FriendsScreen(
 ) {
     when (uiState) {
         is FriendsUiState.Loading -> {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center,
-            ) {
-                CircularProgressIndicator()
+            Column(modifier = Modifier.fillMaxSize()) {
+                Box(
+                    modifier = Modifier.weight(1f).fillMaxWidth(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    CircularProgressIndicator()
+                }
+                bottomBar()
             }
         }
 
         is FriendsUiState.Loaded -> {
             FriendsLoadedScreen(
                 uiState = uiState,
+                bottomBar = bottomBar,
                 drawerState = drawerState,
                 bottomSheetState = bottomSheetState,
                 onSelectFriend = onSelectFriend,
@@ -243,14 +250,17 @@ fun FriendsScreen(
         }
 
         is FriendsUiState.Error -> {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(
-                    text = stringResource(R.string.friend_load_error),
-                    style = SNUTTTypography.body1,
-                )
+            Column(modifier = Modifier.fillMaxSize()) {
+                Box(
+                    modifier = Modifier.weight(1f).fillMaxWidth(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = stringResource(R.string.friend_load_error),
+                        style = SNUTTTypography.body1,
+                    )
+                }
+                bottomBar()
             }
         }
     }
@@ -259,6 +269,7 @@ fun FriendsScreen(
 @Composable
 private fun FriendsLoadedScreen(
     uiState: FriendsUiState.Loaded,
+    bottomBar: @Composable () -> Unit,
     drawerState: androidx.compose.material.DrawerState,
     bottomSheetState: androidx.compose.material.ModalBottomSheetState,
     onSelectFriend: (com.wafflestudio.snutt2.domainmodel.Friend) -> Unit,
@@ -325,6 +336,7 @@ private fun FriendsLoadedScreen(
                     .fillMaxSize()
                     .background(SNUTTColors.White900),
             ) {
+                Column(modifier = Modifier.weight(1f)) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -519,6 +531,8 @@ private fun FriendsLoadedScreen(
                         }
                     }
                 }
+                }
+                bottomBar()
             }
         }
     }

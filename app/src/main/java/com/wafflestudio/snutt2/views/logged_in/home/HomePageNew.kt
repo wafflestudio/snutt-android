@@ -63,9 +63,10 @@ fun HomePageNewRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val isDarkMode = isDarkMode()
+
+    // FIXME: 강의평 탭의 웹뷰를 미리 로딩하기 위해 상위에서 관리하고 있는데, 더 좋은 방법은 없을까?
     val reviewWebViewContainer =
         remember { ReviewWebViewContainer(context, viewModel.accessToken, isDarkMode) }
-
     LaunchedEffect((uiState.currentTab as? HomeItem.Review)?.landingPage) {
         reviewWebViewContainer.openPage((uiState.currentTab as? HomeItem.Review)?.landingPage)
     }
@@ -157,62 +158,8 @@ private fun HomePageNewScreen(
     onPopupClickClose: () -> Unit,
     onPopupClickImage: () -> Unit,
 ) {
-    Column {
-        Box(
-            modifier = Modifier.weight(1f),
-            contentAlignment = Alignment.BottomCenter,
-        ) {
-            when (uiState.currentTab) {
-                HomeItem.Timetable -> {
-                    TimeTableRoute(
-                        onNavigateBottomSheetThemeDetail = onNavigateThemeDetail,
-                        onNavigateLecturesOfTable = onNavigateLecturesOfTable,
-                        onNavigateVacancyNotification = onNavigateVacancyNotification,
-                        onNavigateLectureDetail = onNavigateLectureDetail,
-                        onNavigateBookmark = onNavigateBookmark,
-                        onNavigateSearch = { onTabSelected(HomeItem.Search) },
-                        onNavigateAddLecture = onNavigateAddLecture,
-                    )
-                }
-
-                HomeItem.Search -> SearchRouteNew(
-                    onNavigateVacancy = onNavigateVacancyNotification,
-                    onNavigateOnboardAsOrigin = onNavigateOnboardAsOrigin,
-                )
-
-                is HomeItem.Review -> {
-                    ReviewPageNew(
-                        reviewWebViewContainer = reviewWebViewContainer,
-                        onBack = { onTabSelected(HomeItem.Timetable) },
-                    )
-                }
-
-                HomeItem.Friends -> FriendsRoute()
-
-                HomeItem.Settings -> SettingsRoute(
-                    uncheckedNotifications = uiState.uncheckedNotificationCount,
-                    onNavigateUserConfig = onNavigateUserConfig,
-                    onNavigateNotification = onNavigateNotification,
-                    onNavigateThemeModeSelect = onNavigateThemeModeSelect,
-                    onNavigateTimeTableConfig = onNavigateTimeTableConfig,
-                    onNavigateThemeConfig = onNavigateThemeConfig,
-                    onNavigateVacancyNotification = onNavigateVacancyNotification,
-                    onNavigateThemeMarket = onNavigateThemeMarket,
-                    onNavigatePushPreference = onNavigatePushPreference,
-                    onNavigateLectureReminder = onNavigateLectureReminder,
-                    onNavigateDiaryWrite = onNavigateDiaryWrite,
-                    onNavigateDiaryHistory = onNavigateDiaryHistory,
-                    onNavigateTeamInfo = onNavigateTeamInfo,
-                    onNavigateAppReport = onNavigateAppReport,
-                    onNavigateOpenLicenses = onNavigateOpenLicenses,
-                    onNavigateServiceInfo = onNavigateServiceInfo,
-                    onNavigatePersonalInformationPolicy = onNavigatePersonalInformationPolicy,
-                    onNavigateNetworkLog = onNavigateNetworkLog,
-                    onNavigateTest = onNavigateTest,
-                    onNavigateOnboardAsOrigin = onNavigateOnboardAsOrigin,
-                )
-            }
-
+    val bottomBar: @Composable () -> Unit = {
+        Column {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -226,11 +173,66 @@ private fun HomePageNewScreen(
                         ),
                     ),
             )
+            BottomNavigation(
+                pageState = uiState.currentTab,
+                uncheckedNotificationExist = uiState.uncheckedNotificationCount > 0,
+                onUpdatePageState = onTabSelected,
+            )
         }
-        BottomNavigation(
-            pageState = uiState.currentTab,
-            uncheckedNotificationExist = uiState.uncheckedNotificationCount > 0,
-            onUpdatePageState = onTabSelected,
+    }
+
+    when (uiState.currentTab) {
+        HomeItem.Timetable -> {
+            TimeTableRoute(
+                bottomBar = bottomBar,
+                onNavigateBottomSheetThemeDetail = onNavigateThemeDetail,
+                onNavigateLecturesOfTable = onNavigateLecturesOfTable,
+                onNavigateVacancyNotification = onNavigateVacancyNotification,
+                onNavigateLectureDetail = onNavigateLectureDetail,
+                onNavigateBookmark = onNavigateBookmark,
+                onNavigateSearch = { onTabSelected(HomeItem.Search) },
+                onNavigateAddLecture = onNavigateAddLecture,
+            )
+        }
+
+        HomeItem.Search -> SearchRouteNew(
+            bottomBar = bottomBar,
+            onNavigateVacancy = onNavigateVacancyNotification,
+            onNavigateOnboardAsOrigin = onNavigateOnboardAsOrigin,
+        )
+
+        is HomeItem.Review -> {
+            ReviewPageNew(
+                bottomBar = bottomBar,
+                reviewWebViewContainer = reviewWebViewContainer,
+                onBack = { onTabSelected(HomeItem.Timetable) },
+            )
+        }
+
+        HomeItem.Friends -> FriendsRoute(bottomBar = bottomBar)
+
+        HomeItem.Settings -> SettingsRoute(
+            bottomBar = bottomBar,
+            uncheckedNotifications = uiState.uncheckedNotificationCount,
+            onNavigateUserConfig = onNavigateUserConfig,
+            onNavigateNotification = onNavigateNotification,
+            onNavigateThemeModeSelect = onNavigateThemeModeSelect,
+            onNavigateTimeTableConfig = onNavigateTimeTableConfig,
+            onNavigateThemeConfig = onNavigateThemeConfig,
+            onNavigateVacancyNotification = onNavigateVacancyNotification,
+            onNavigateThemeMarket = onNavigateThemeMarket,
+            onNavigatePushPreference = onNavigatePushPreference,
+            onNavigateLectureReminder = onNavigateLectureReminder,
+            onNavigateDiaryWrite = onNavigateDiaryWrite,
+            onNavigateDiaryHistory = onNavigateDiaryHistory,
+            onNavigateTeamInfo = onNavigateTeamInfo,
+            onNavigateAppReport = onNavigateAppReport,
+            onNavigateOpenLicenses = onNavigateOpenLicenses,
+            onNavigateServiceInfo = onNavigateServiceInfo,
+            onNavigatePersonalInformationPolicy = onNavigatePersonalInformationPolicy,
+            onNavigateNetworkLog = onNavigateNetworkLog,
+            onNavigateTest = onNavigateTest,
+            onNavigateOnboardAsOrigin = onNavigateOnboardAsOrigin,
         )
     }
 

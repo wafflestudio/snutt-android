@@ -52,6 +52,7 @@ import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 @Composable
 fun SettingsRoute(
     viewModel: SettingsViewModel = hiltViewModel(),
+    bottomBar: @Composable () -> Unit,
     uncheckedNotifications: Long,
     onNavigateUserConfig: () -> Unit,
     onNavigateNotification: () -> Unit,
@@ -83,6 +84,7 @@ fun SettingsRoute(
 
     SettingsScreen(
         uiState = uiState,
+        bottomBar = bottomBar,
         uncheckedNotifications = uncheckedNotifications,
         onClickUserConfig = onNavigateUserConfig,
         onClickNotification = onNavigateNotification,
@@ -111,6 +113,7 @@ fun SettingsRoute(
 @Composable
 fun SettingsScreen(
     uiState: SettingsUiState,
+    bottomBar: @Composable () -> Unit = {},
     uncheckedNotifications: Long,
     onClickUserConfig: () -> Unit,
     onClickNotification: () -> Unit,
@@ -157,6 +160,7 @@ fun SettingsScreen(
         )
         Column(
             modifier = Modifier
+                .weight(1f)
                 .verticalScroll(rememberScrollState()),
         ) {
             Margin(height = 10.dp)
@@ -325,6 +329,7 @@ fun SettingsScreen(
             }
             Margin(height = 10.dp)
         }
+        bottomBar()
     }
 
     if (uiState.showLogoutDialog) {

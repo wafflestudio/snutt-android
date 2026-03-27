@@ -1,12 +1,22 @@
 package com.wafflestudio.snutt2.views.logged_in.home
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
-import com.wafflestudio.snutt2.components.compose.*
+import com.wafflestudio.snutt2.components.compose.BigPeopleIcon
+import com.wafflestudio.snutt2.components.compose.BorderButton
+import com.wafflestudio.snutt2.components.compose.HorizontalMoreIcon
+import com.wafflestudio.snutt2.components.compose.IconWithAlertDot
+import com.wafflestudio.snutt2.components.compose.ReviewIcon
+import com.wafflestudio.snutt2.components.compose.SearchIcon
+import com.wafflestudio.snutt2.components.compose.TimetableIcon
 import com.wafflestudio.snutt2.ui.SNUTTColors
 
 @Composable
