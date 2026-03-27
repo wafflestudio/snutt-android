@@ -39,7 +39,7 @@ import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.logged_in.home.drawer.refactor.VacancyBanner
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.HomeSessionlessLectureHint
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.refactor.ScrollableTimetableContent
 import com.wafflestudio.snutt2.views.logged_in.table_lectures.refactor.TableLectureItemNew
 
 @Composable
