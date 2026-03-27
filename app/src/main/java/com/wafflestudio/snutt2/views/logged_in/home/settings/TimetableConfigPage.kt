@@ -9,13 +9,28 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,7 +57,6 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.refactor.TimeTableNew
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 import kotlinx.coroutines.launch
 import kotlin.math.max
 import kotlin.math.min
@@ -118,7 +132,7 @@ fun TimetableConfigScreen(
             modifier = Modifier
                 .verticalScroll(rememberScrollState()),
         ) {
-            Margin(height = 10.dp)
+            Spacer(Modifier.height(10.dp))
             SettingItem(
                 title = stringResource(R.string.settings_timetable_config_force_fit),
                 hasNextPage = false,
@@ -126,7 +140,7 @@ fun TimetableConfigScreen(
             ) {
                 PoorSwitch(state = uiState.tableTrimParam.forceFitLectures)
             }
-            Margin(height = 10.dp)
+            Spacer(Modifier.height(10.dp))
             AnimatedVisibility(visible = uiState.tableTrimParam.forceFitLectures.not()) {
                 Column {
                     RangeBarCell(title = stringResource(R.string.settings_timetable_config_week_day)) {
@@ -137,7 +151,7 @@ fun TimetableConfigScreen(
                             onChange = onSetDayOfWeekRange,
                         )
                     }
-                    Margin(height = 10.dp)
+                    Spacer(Modifier.height(10.dp))
                     RangeBarCell(title = stringResource(R.string.settings_timetable_config_time)) {
                         RangeBar(
                             initStart = uiState.tableTrimParam.hourFrom,
@@ -146,7 +160,7 @@ fun TimetableConfigScreen(
                             onChange = onSetHourRange,
                         )
                     }
-                    Margin(height = 10.dp)
+                    Spacer(Modifier.height(10.dp))
                 }
             }
             SettingItem(
@@ -208,7 +222,7 @@ fun TimetableConfigScreen(
                 style = SNUTTTypography.subtitle2.copy(fontSize = 12.sp),
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 5.dp),
             )
-            Margin(height = 20.dp)
+            Spacer(Modifier.height(20.dp))
             Text(
                 text = stringResource(R.string.settings_timetable_preview),
                 style = SNUTTTypography.subtitle2.copy(fontSize = 12.sp),
@@ -236,7 +250,7 @@ fun TimetableConfigScreen(
                     touchEnabled = false,
                 )
             }
-            Margin(height = 25.dp)
+            Spacer(Modifier.height(25.dp))
         }
     }
 }

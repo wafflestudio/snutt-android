@@ -3,9 +3,11 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -26,7 +28,6 @@ import com.wafflestudio.snutt2.domainmodel.PushPreferenceType
 import com.wafflestudio.snutt2.domainmodel.PushPreferences
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 
 @Composable
 fun PushPreferencesRoute(
@@ -89,7 +90,7 @@ fun PushPreferencesScreen(
             is PushPreferencesUiState.Error -> PushPreferencesError()
             is PushPreferencesUiState.Success -> {
                 Column {
-                    Margin(height = 10.dp)
+                    Spacer(Modifier.height(10.dp))
                     SettingItem(
                         title = stringResource(R.string.settings_push_preferences_lecture_update),
                         hasNextPage = false,

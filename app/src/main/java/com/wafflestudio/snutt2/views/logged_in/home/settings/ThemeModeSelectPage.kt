@@ -1,7 +1,11 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -20,7 +24,6 @@ import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.ThemeMode
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 import kotlinx.coroutines.launch
 
 @Composable
@@ -46,7 +49,7 @@ fun ColorModeSelectPage(
             modifier = Modifier
                 .verticalScroll(rememberScrollState()),
         ) {
-            Margin(height = 10.dp)
+            Spacer(Modifier.height(10.dp))
             SettingColumn {
                 SettingItem(
                     title = stringResource(R.string.settings_select_color_mode_auto),

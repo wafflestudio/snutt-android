@@ -1,10 +1,12 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
@@ -43,7 +45,6 @@ import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 
 @Composable
 fun UserConfigRoute(
@@ -147,9 +148,10 @@ fun UserConfigScreen(
 
         Column(
             modifier = Modifier
+                .padding(vertical = 10.dp)
                 .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            Margin(height = 10.dp)
             SettingColumn {
                 SettingItem(
                     title = stringResource(R.string.settings_user_config_change_nickname),
@@ -173,7 +175,6 @@ fun UserConfigScreen(
                     )
                 }
             }
-            Margin(height = 10.dp)
             SettingColumn {
                 if (uiState.localId.isNullOrEmpty().not()) {
                     SettingItem(
@@ -198,12 +199,10 @@ fun UserConfigScreen(
                     )
                 }
             }
-            Margin(height = 10.dp)
             SettingItem(
                 title = stringResource(R.string.social_link_title),
                 onClick = onNavigateSocialLink,
             )
-            Margin(height = 10.dp)
             SettingItem(
                 title = stringResource(R.string.settings_app_report_email),
                 hasNextPage = false,
@@ -215,13 +214,11 @@ fun UserConfigScreen(
                     ),
                 )
             }
-            Margin(height = 10.dp)
             SettingItem(
                 title = stringResource(R.string.settings_user_config_leave),
                 titleColor = SNUTTColors.Red,
                 onClick = onClickLeave,
             )
-            Margin(height = 10.dp)
         }
     }
 

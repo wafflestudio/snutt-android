@@ -5,7 +5,9 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -46,7 +48,6 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.LocalApiOnError
 import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.launchSuspendApi
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 import kotlinx.coroutines.launch
 
 @Composable
@@ -234,7 +235,7 @@ fun SocialLinkPage(
             modifier = Modifier
                 .verticalScroll(rememberScrollState()),
         ) {
-            Margin(height = 10.dp)
+            Spacer(Modifier.height(10.dp))
 
             if (socialProviders.kakao) {
                 SettingItem(
@@ -251,7 +252,7 @@ fun SocialLinkPage(
                 )
             }
 
-            Margin(height = 10.dp)
+            Spacer(Modifier.height(10.dp))
 
             if (socialProviders.google) {
                 SettingItem(
@@ -272,7 +273,7 @@ fun SocialLinkPage(
                 )
             }
 
-            Margin(height = 10.dp)
+            Spacer(Modifier.height(10.dp))
 
             if (socialProviders.facebook) {
                 SettingItem(

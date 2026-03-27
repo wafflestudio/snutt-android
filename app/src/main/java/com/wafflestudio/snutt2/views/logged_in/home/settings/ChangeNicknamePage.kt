@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -51,7 +52,6 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.LocalApiOnError
 import com.wafflestudio.snutt2.views.LocalApiOnProgress
 import com.wafflestudio.snutt2.views.launchSuspendApi
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 import kotlinx.coroutines.launch
 
 @Composable
@@ -137,7 +137,7 @@ fun ChangeNicknamePage(
                     hint = initialNickname,
                 )
             }
-            Margin(12.dp)
+            Spacer(Modifier.height(12.dp))
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -149,7 +149,7 @@ fun ChangeNicknamePage(
                         color = SNUTTColors.Black500,
                     ),
                 )
-                Margin(30.dp)
+                Spacer(Modifier.height(30.dp))
                 Column(
                     verticalArrangement = Arrangement.spacedBy(2.sp.toDp()),
                 ) {
@@ -169,7 +169,7 @@ fun ChangeNicknamePage(
                     }
                 }
             }
-            Margin(height = 10.dp)
+            Spacer(Modifier.height(10.dp))
         }
     }
 }

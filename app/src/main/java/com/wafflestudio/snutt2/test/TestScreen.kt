@@ -31,7 +31,6 @@ import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 
 @Composable
 fun TestRoute(
@@ -107,7 +106,7 @@ fun TestScreen(
             modifier = Modifier
                 .verticalScroll(rememberScrollState()),
         ) {
-            Margin(height = 10.dp)
+            Spacer(Modifier.height(10.dp))
 
             SettingItemForTest(
                 title = "현재 상태: $text",
@@ -115,7 +114,7 @@ fun TestScreen(
                 onClick = {},
             )
 
-            Margin(height = 10.dp)
+            Spacer(Modifier.height(10.dp))
 
             // 누르면 WrongUserToken에 해당하는 Toast가 뜬 후 Onboard 화면으로 이동해야 한다.
             SettingItemForTest(
@@ -124,7 +123,7 @@ fun TestScreen(
                 onClick = onFirstTestCase,
             )
 
-            Margin(height = 10.dp)
+            Spacer(Modifier.height(10.dp))
 
             SettingItemForTest(
                 title = "Global Exception - NoAdminPrivilege Test",
@@ -132,7 +131,7 @@ fun TestScreen(
                 onClick = onSecondTestCase,
             )
 
-            Margin(height = 10.dp)
+            Spacer(Modifier.height(10.dp))
 
             // 누르면 DuplicateLocalId에 해당하는 Toast가 떠야 한다.
             SettingItemForTest(
@@ -141,7 +140,7 @@ fun TestScreen(
                 onClick = { onThirdTestCase("plgafhd", "testtest1234", "plgafhdtest@snu.ac.kr") },
             )
 
-            Margin(height = 10.dp)
+            Spacer(Modifier.height(10.dp))
 
             // 누르면 현재 상태에, 알림 개수가 반영되어야 한다.
             SettingItemForTest(

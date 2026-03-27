@@ -2,7 +2,9 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -11,7 +13,6 @@ import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 
 @Composable
 fun OpenSourceLicensePage(
@@ -30,7 +31,7 @@ fun OpenSourceLicensePage(
             onClickNavigateBack = onNavigateBack,
         )
 
-        Margin(height = 10.dp)
+        Spacer(modifier = Modifier.height(10.dp))
 
         SettingItem(
             title = stringResource(R.string.license_colorpicker_title),

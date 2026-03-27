@@ -80,7 +80,6 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTheme
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 import kotlinx.coroutines.launch
 
 @Composable
@@ -358,7 +357,7 @@ fun VacancyPlaceholder(
                 .height(180.dp)
                 .fillMaxSize(),
         )
-        Margin(height = 14.dp)
+        Spacer(Modifier.height(14.dp))
         Row(
             modifier = Modifier
                 .clicks { onClickDetail() },

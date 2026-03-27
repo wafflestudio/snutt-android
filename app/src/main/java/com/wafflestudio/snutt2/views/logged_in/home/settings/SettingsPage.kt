@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -47,7 +48,6 @@ import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.onSurfaceVariant
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.Margin
 
 @Composable
 fun SettingsRoute(
@@ -161,9 +161,10 @@ fun SettingsScreen(
         Column(
             modifier = Modifier
                 .weight(1f)
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(rememberScrollState())
+                .padding(vertical = 10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            Margin(height = 10.dp)
             SettingItem(
                 title = stringResource(R.string.user_settings_app_bar_title),
                 modifier = Modifier.height(66.dp),
@@ -184,14 +185,12 @@ fun SettingsScreen(
                     ),
                 )
             }
-            Margin(height = 10.dp)
             SettingItem(
                 title = stringResource(R.string.settings_notification_title),
                 settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
                 redDotIconNumber = uncheckedNotifications,
                 onClick = onClickNotification,
             )
-            Margin(height = 10.dp)
             SettingColumn {
                 SettingItem(
                     title = stringResource(R.string.settings_select_color_mode_title),
@@ -214,7 +213,6 @@ fun SettingsScreen(
                     onClick = onClickThemeConfig,
                 )
             }
-            Margin(height = 10.dp)
             SettingColumn {
                 SettingItem(
                     title = stringResource(R.string.settings_item_vacancy),
@@ -261,7 +259,6 @@ fun SettingsScreen(
                     )
                 }
             }
-            Margin(height = 10.dp)
             SettingColumn {
                 SettingItem(
                     title = stringResource(R.string.settings_version_info),
@@ -279,13 +276,11 @@ fun SettingsScreen(
                     onClick = onClickTeamInfo,
                 )
             }
-            Margin(height = 10.dp)
             SettingItem(
                 title = stringResource(R.string.settings_app_report_title),
                 settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
                 onClick = onClickAppReport,
             )
-            Margin(height = 10.dp)
             SettingColumn {
                 SettingItem(
                     title = stringResource(R.string.settings_licenses_title),
@@ -303,7 +298,6 @@ fun SettingsScreen(
                     onClick = onClickPersonalInformationPolicy,
                 )
             }
-            Margin(height = 10.dp)
             SettingItem(
                 title = stringResource(R.string.settings_logout_title),
                 titleColor = SNUTTColors.Red,
@@ -312,7 +306,6 @@ fun SettingsScreen(
             )
 
             if (BuildConfig.DEBUG) {
-                Margin(height = 10.dp)
                 SettingItem(
                     title = stringResource(R.string.debug_network_log_title),
                     settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
@@ -321,13 +314,11 @@ fun SettingsScreen(
             }
 
             if (BuildConfig.DEBUG) {
-                Margin(height = 10.dp)
                 SettingItem(
                     title = "리팩토링 테스트",
                     onClick = onClickTest,
                 )
             }
-            Margin(height = 10.dp)
         }
         bottomBar()
     }
