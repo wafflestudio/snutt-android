@@ -42,7 +42,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.AddFriendIcon
@@ -337,200 +337,200 @@ private fun FriendsLoadedScreen(
                     .background(SNUTTColors.White900),
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 12.dp, vertical = 10.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    IconWithAlertDot(uiState.requestedFriends.isNotEmpty()) { centerAlignedModifier ->
-                        DrawerIcon(
-                            modifier = centerAlignedModifier
-                                .size(30.dp)
-                                .clicks { onOpenDrawer() },
-                        )
-                    }
                     Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 12.dp, vertical = 10.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Text(
-                            stringResource(R.string.friend_timetable_title),
-                            style = SNUTTTypography.subtitle1.copy(color = SNUTTColors.Black900),
-                        )
-                        Spacer(modifier = Modifier.width(6.dp))
-                        QuestionCircleIcon(
+                        IconWithAlertDot(uiState.requestedFriends.isNotEmpty()) { centerAlignedModifier ->
+                            DrawerIcon(
+                                modifier = centerAlignedModifier
+                                    .size(30.dp)
+                                    .clicks { onOpenDrawer() },
+                            )
+                        }
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(
+                                stringResource(R.string.friend_timetable_title),
+                                style = SNUTTTypography.subtitle1.copy(color = SNUTTColors.Black900),
+                            )
+                            Spacer(modifier = Modifier.width(6.dp))
+                            QuestionCircleIcon(
+                                modifier = Modifier
+                                    .size(16.dp)
+                                    .clicks {
+                                        onShowGuideDialog()
+                                    },
+                            )
+                        }
+                        AddFriendIcon(
                             modifier = Modifier
-                                .size(16.dp)
-                                .clicks {
+                                .size(25.dp)
+                                .clicks { onOpenRequestFriendBottomSheet() },
+                            colorFilter = ColorFilter.tint(SNUTTColors.Gray600),
+                        )
+                    }
+
+                    Divider(
+                        modifier = Modifier.fillMaxWidth(),
+                        color = SNUTTColors.Gray200,
+                        thickness = 0.5.dp,
+                    )
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 36.dp, end = 36.dp, top = 20.dp, bottom = 15.dp),
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        if (uiState.selectedFriend != null) {
+                            Row(
+                                modifier = Modifier.weight(1f, fill = false),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                PersonIcon(
+                                    modifier = Modifier.size(15.dp),
+                                    colorFilter = ColorFilter.tint(SNUTTColors.SNUTTTheme),
+                                )
+                                Spacer(modifier = Modifier.size(2.dp))
+                                Text(
+                                    text = uiState.selectedFriend.let {
+                                        it.displayName ?: "${it.nickname.nickname}#${it.nickname.tag}"
+                                    },
+                                    style = SNUTTTypography.body1.copy(color = SNUTTColors.SNUTTTheme),
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.width(8.dp))
+
+                            SemesterDropdown(
+                                courseBooks = uiState.selectedFriendCourseBooks,
+                                selectedCourseBook = uiState.selectedCourseBook,
+                                onSelectCourseBook = onSelectCourseBook,
+                            )
+                        }
+                    }
+
+                    // Friend Timetable
+                    val friendTable = uiState.selectedFriendTable
+                    if (uiState.selectedFriend != null && friendTable != null) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(SNUTTColors.White900),
+                        ) {
+                            TimeTableNew(
+                                lectures = friendTable.lectures,
+                                selectedLecture = null,
+                                fittedTrimParam = uiState.selectedFriendTableTrimParam,
+                                theme = uiState.selectedFriendTableTheme,
+                                isDarkMode = isDarkMode(),
+                                compactMode = uiState.compactMode,
+                                tableLectureCustomOptions = uiState.tableLectureCustomOptions,
+                                touchEnabled = false, // 친구 시간표는 일단 터치 불가
+                            )
+                        }
+                    } else if (uiState.selectedFriend != null && uiState.selectedFriendCourseBooks.isEmpty()) {
+                        // 친구는 있지만 시간표가 없는 경우
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(16.dp),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                text = stringResource(R.string.friend_timetable_empty),
+                                style = SNUTTTypography.body1,
+                                color = SNUTTColors.Gray600,
+                            )
+                        }
+                    } else {
+                        // 친구가 없는 경우
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(top = 169.5.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            Image(
+                                modifier = Modifier.size(width = 50.dp, height = 58.dp),
+                                painter = painterResource(id = R.drawable.ic_cat_retry),
+                                contentDescription = stringResource(R.string.friend_list_empty),
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                text = stringResource(R.string.friend_list_empty),
+                                style = SNUTTTypography.subtitle1,
+                                color = SNUTTColors.Black900,
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(1.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.friend_empty_guide_action),
+                                    style = SNUTTTypography.subtitle2.copy(fontSize = 12.sp),
+                                    color = SNUTTColors.Gray600,
+                                )
+                                AddFriendIcon(
+                                    modifier = Modifier.size(12.5.dp),
+                                    colorFilter = ColorFilter.tint(SNUTTColors.Gray600),
+                                )
+                                Text(
+                                    text = stringResource(R.string.friend_empty_guide_action2),
+                                    style = SNUTTTypography.subtitle2.copy(fontSize = 12.sp),
+                                    color = SNUTTColors.Gray600,
+                                )
+                            }
+                            Text(
+                                text = stringResource(R.string.friend_empty_guide_message),
+                                style = SNUTTTypography.subtitle2.copy(fontSize = 12.sp),
+                                color = SNUTTColors.TextMed,
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(1.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.friend_empty_guide_sidebar),
+                                    style = SNUTTTypography.subtitle2.copy(fontSize = 12.sp),
+                                    color = SNUTTColors.TextMed,
+                                )
+                                DrawerIcon(
+                                    modifier = Modifier.size(12.5.dp),
+                                    colorFilter = ColorFilter.tint(SNUTTColors.TextMed),
+                                )
+                                Text(
+                                    text = stringResource(R.string.friend_empty_guide_sidebar2),
+                                    style = SNUTTTypography.subtitle2.copy(fontSize = 12.sp),
+                                    color = SNUTTColors.TextMed,
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(19.dp))
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(1.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.clicks {
                                     onShowGuideDialog()
                                 },
-                        )
-                    }
-                    AddFriendIcon(
-                        modifier = Modifier
-                            .size(25.dp)
-                            .clicks { onOpenRequestFriendBottomSheet() },
-                        colorFilter = ColorFilter.tint(SNUTTColors.Gray600),
-                    )
-                }
-
-                Divider(
-                    modifier = Modifier.fillMaxWidth(),
-                    color = SNUTTColors.Gray200,
-                    thickness = 0.5.dp,
-                )
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 36.dp, end = 36.dp, top = 20.dp, bottom = 15.dp),
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    if (uiState.selectedFriend != null) {
-                        Row(
-                            modifier = Modifier.weight(1f, fill = false),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            PersonIcon(
-                                modifier = Modifier.size(15.dp),
-                                colorFilter = ColorFilter.tint(SNUTTColors.SNUTTTheme),
-                            )
-                            Spacer(modifier = Modifier.size(2.dp))
-                            Text(
-                                text = uiState.selectedFriend.let {
-                                    it.displayName ?: "${it.nickname.nickname}#${it.nickname.tag}"
-                                },
-                                style = SNUTTTypography.body1.copy(color = SNUTTColors.SNUTTTheme),
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        SemesterDropdown(
-                            courseBooks = uiState.selectedFriendCourseBooks,
-                            selectedCourseBook = uiState.selectedCourseBook,
-                            onSelectCourseBook = onSelectCourseBook,
-                        )
-                    }
-                }
-
-                // Friend Timetable
-                val friendTable = uiState.selectedFriendTable
-                if (uiState.selectedFriend != null && friendTable != null) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(SNUTTColors.White900),
-                    ) {
-                        TimeTableNew(
-                            lectures = friendTable.lectures,
-                            selectedLecture = null,
-                            fittedTrimParam = uiState.selectedFriendTableTrimParam,
-                            theme = uiState.selectedFriendTableTheme,
-                            isDarkMode = isDarkMode(),
-                            compactMode = uiState.compactMode,
-                            tableLectureCustomOptions = uiState.tableLectureCustomOptions,
-                            touchEnabled = false, // 친구 시간표는 일단 터치 불가
-                        )
-                    }
-                } else if (uiState.selectedFriend != null && uiState.selectedFriendCourseBooks.isEmpty()) {
-                    // 친구는 있지만 시간표가 없는 경우
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Text(
-                            text = stringResource(R.string.friend_timetable_empty),
-                            style = SNUTTTypography.body1,
-                            color = SNUTTColors.Gray600,
-                        )
-                    }
-                } else {
-                    // 친구가 없는 경우
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(top = 169.5.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Image(
-                            modifier = Modifier.size(width = 50.dp, height = 58.dp),
-                            painter = painterResource(id = R.drawable.ic_cat_retry),
-                            contentDescription = stringResource(R.string.friend_list_empty),
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = stringResource(R.string.friend_list_empty),
-                            style = SNUTTTypography.subtitle1,
-                            color = SNUTTColors.Black900,
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(1.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Text(
-                                text = stringResource(R.string.friend_empty_guide_action),
-                                style = SNUTTTypography.subtitle2.copy(fontSize = 12.sp),
-                                color = SNUTTColors.Gray600,
-                            )
-                            AddFriendIcon(
-                                modifier = Modifier.size(12.5.dp),
-                                colorFilter = ColorFilter.tint(SNUTTColors.Gray600),
-                            )
-                            Text(
-                                text = stringResource(R.string.friend_empty_guide_action2),
-                                style = SNUTTTypography.subtitle2.copy(fontSize = 12.sp),
-                                color = SNUTTColors.Gray600,
-                            )
-                        }
-                        Text(
-                            text = stringResource(R.string.friend_empty_guide_message),
-                            style = SNUTTTypography.subtitle2.copy(fontSize = 12.sp),
-                            color = SNUTTColors.TextMed,
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(1.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Text(
-                                text = stringResource(R.string.friend_empty_guide_sidebar),
-                                style = SNUTTTypography.subtitle2.copy(fontSize = 12.sp),
-                                color = SNUTTColors.TextMed,
-                            )
-                            DrawerIcon(
-                                modifier = Modifier.size(12.5.dp),
-                                colorFilter = ColorFilter.tint(SNUTTColors.TextMed),
-                            )
-                            Text(
-                                text = stringResource(R.string.friend_empty_guide_sidebar2),
-                                style = SNUTTTypography.subtitle2.copy(fontSize = 12.sp),
-                                color = SNUTTColors.TextMed,
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(19.dp))
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(1.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.clicks {
-                                onShowGuideDialog()
-                            },
-                        ) {
-                            QuestionCircleIcon(modifier = Modifier.size(11.5.dp))
-                            Text(
-                                text = stringResource(R.string.friend_guide_detail),
-                                style = SNUTTTypography.subtitle2.copy(fontSize = 11.sp),
-                                color = SNUTTColors.Gray600,
-                                textDecoration = TextDecoration.Underline,
-                            )
+                            ) {
+                                QuestionCircleIcon(modifier = Modifier.size(11.5.dp))
+                                Text(
+                                    text = stringResource(R.string.friend_guide_detail),
+                                    style = SNUTTTypography.subtitle2.copy(fontSize = 11.sp),
+                                    color = SNUTTColors.Gray600,
+                                    textDecoration = TextDecoration.Underline,
+                                )
+                            }
                         }
                     }
-                }
                 }
                 bottomBar()
             }

@@ -13,7 +13,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
@@ -87,11 +87,13 @@ fun FindIdPage(
                 value = emailField,
                 onValueChange = { emailField = it },
                 hint = stringResource(R.string.settings_user_config_enter_email),
-                keyboardActions = KeyboardActions(onNext = {
-                    focusManager.moveFocus(
-                        FocusDirection.Down,
-                    )
-                },),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        focusManager.moveFocus(
+                            FocusDirection.Down,
+                        )
+                    },
+                ),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 singleLine = true,
                 modifier = Modifier

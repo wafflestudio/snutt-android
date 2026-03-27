@@ -60,7 +60,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.core.net.toUri
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.ArrowBackIcon
 import com.wafflestudio.snutt2.components.compose.CustomDialog
@@ -527,6 +527,7 @@ fun VacancySuccess(
                     onDismiss = onDismissDialog,
                 )
             }
+
             VacancyUiState.DialogState.ConfirmDeleteSelected -> {
                 CustomDialog(
                     onDismiss = onDismissDialog,

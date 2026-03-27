@@ -33,7 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.wafflestudio.snutt2.R
@@ -266,11 +266,11 @@ fun DrawLectures(
                     lectureNumber = lecture.lecture_number.orEmpty(),
                     instructorName = lecture.instructor,
                     bgColor =
-                    if (lecture.colorIndex == 0L && lecture.color.bgColor != null) {
-                        lecture.color.bgColor!!
-                    } else {
-                        BuiltInTheme.fromCode(code).getColors(isDark)[lecture.colorIndex.toInt() - 1].background
-                    },
+                        if (lecture.colorIndex == 0L && lecture.color.bgColor != null) {
+                            lecture.color.bgColor!!
+                        } else {
+                            BuiltInTheme.fromCode(code).getColors(isDark)[lecture.colorIndex.toInt() - 1].background
+                        },
                     fgColor = if (lecture.colorIndex == 0L && lecture.color.fgColor != null) {
                         lecture.color.fgColor!!
                     } else {

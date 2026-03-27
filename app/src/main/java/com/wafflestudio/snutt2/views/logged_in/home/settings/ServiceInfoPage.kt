@@ -11,7 +11,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.ui.ThemeMode
@@ -45,12 +45,14 @@ fun ServiceInfoPage(
             title = stringResource(R.string.settings_service_info),
             onClickNavigateBack = onNavigateBack,
         )
-        AndroidView(factory = {
-            WebView(context).apply {
-                this.webViewClient = webViewClient
-                loadUrl(url, headers)
-            }
-        },)
+        AndroidView(
+            factory = {
+                WebView(context).apply {
+                    this.webViewClient = webViewClient
+                    loadUrl(url, headers)
+                }
+            },
+        )
     }
 }
 

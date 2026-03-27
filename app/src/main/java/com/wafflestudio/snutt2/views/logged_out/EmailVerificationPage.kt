@@ -19,7 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.android.toast
@@ -164,11 +164,13 @@ fun EmailVerificationPage(
                             value = codeField,
                             onValueChange = { codeField = it },
                             hint = stringResource(R.string.find_password_send_code_hint),
-                            keyboardActions = KeyboardActions(onNext = {
-                                focusManager.moveFocus(
-                                    FocusDirection.Down,
-                                )
-                            },),
+                            keyboardActions = KeyboardActions(
+                                onNext = {
+                                    focusManager.moveFocus(
+                                        FocusDirection.Down,
+                                    )
+                                },
+                            ),
                             keyboardOptions = KeyboardOptions(
                                 imeAction = ImeAction.Done, keyboardType = KeyboardType.Number,
                             ),

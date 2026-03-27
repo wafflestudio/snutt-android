@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.clearFocusOnKeyboardDismiss
@@ -34,10 +34,12 @@ fun RowScope.SearchEditText(
             .onFocusChanged { onFocus(it.isFocused) }
             .clearFocusOnKeyboardDismiss(),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-        keyboardActions = KeyboardActions(onSearch = {
-            onFocus(false)
-            searchViewModel.onSearch()
-        },),
+        keyboardActions = KeyboardActions(
+            onSearch = {
+                onFocus(false)
+                searchViewModel.onSearch()
+            },
+        ),
         value = searchKeyword,
         onValueChange = {
             scope.launch {

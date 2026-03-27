@@ -64,7 +64,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -210,13 +210,13 @@ fun LectureDetailPage(
                     val message = when (uiEvent.event) {
                         LectureDetailEvent.LECTURE_REMINDER_UPDATE_SUCCESS_NONE -> ""
                         LectureDetailEvent.LECTURE_REMINDER_UPDATE_SUCCESS_TEN_MINUTES_BEFORE,
-                        -> context.getString(R.string.settings_lecture_reminder_update_success_ten_minutes_before)
+                            -> context.getString(R.string.settings_lecture_reminder_update_success_ten_minutes_before)
 
                         LectureDetailEvent.LECTURE_REMINDER_UPDATE_SUCCESS_AT_START_TIME,
-                        -> context.getString(R.string.settings_lecture_reminder_update_success_at_start_time)
+                            -> context.getString(R.string.settings_lecture_reminder_update_success_at_start_time)
 
                         LectureDetailEvent.LECTURE_REMINDER_UPDATE_SUCCESS_TEN_MINUTES_AFTER,
-                        -> context.getString(R.string.settings_lecture_reminder_update_success_ten_minutes_after)
+                            -> context.getString(R.string.settings_lecture_reminder_update_success_ten_minutes_after)
                     }
                     if (message.isNotEmpty()) {
                         launch {

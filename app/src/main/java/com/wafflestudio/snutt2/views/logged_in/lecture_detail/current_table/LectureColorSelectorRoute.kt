@@ -2,7 +2,7 @@ package com.wafflestudio.snutt2.views.logged_in.lecture_detail.current_table
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.domainmodel.LectureColor
 

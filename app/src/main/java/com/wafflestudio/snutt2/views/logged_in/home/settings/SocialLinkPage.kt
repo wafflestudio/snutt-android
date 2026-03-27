@@ -20,7 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.facebook.login.LoginManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -196,9 +196,11 @@ fun SocialLinkPage(
                     context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
                 }
             }
+
             Activity.RESULT_CANCELED -> {
                 context.toast(context.getString(R.string.sign_in_sign_in_google_cancelled))
             }
+
             else -> {
                 context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
             }

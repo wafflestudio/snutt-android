@@ -31,7 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.ComposableStatesWithScope
@@ -137,13 +137,16 @@ fun SearchRoute(
                     val displayMessage = uiEvent.displayMessage
                     context.toast(displayMessage)
                 }
+
                 is SearchUiEvent.ShowToast -> {
                     val resId = uiEvent.resId
                     context.toast(context.getString(resId))
                 }
+
                 is SearchUiEvent.LoggedOut -> {
                     onNavigateOnboardAsOrigin()
                 }
+
                 is SearchUiEvent.ShowAlertByEvent -> {
                     val onConfirm = uiEvent.onConfirm
                     val event = uiEvent.event

@@ -36,7 +36,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
@@ -77,15 +77,18 @@ fun LectureReminderRoute(
                         context.toast(message)
                     }
                 }
+
                 is LectureReminderUiEvent.ShowSnackBarByEvent -> {
                     val message = when (uiEvent.event) {
                         LectureReminderEvent.LECTURE_REMINDER_UPDATE_SUCCESS_NONE -> ""
                         LectureReminderEvent.LECTURE_REMINDER_UPDATE_SUCCESS_TEN_MINUTES_BEFORE,
-                        -> context.getString(R.string.settings_lecture_reminder_update_success_ten_minutes_before)
+                            -> context.getString(R.string.settings_lecture_reminder_update_success_ten_minutes_before)
+
                         LectureReminderEvent.LECTURE_REMINDER_UPDATE_SUCCESS_AT_START_TIME,
-                        -> context.getString(R.string.settings_lecture_reminder_update_success_at_start_time)
+                            -> context.getString(R.string.settings_lecture_reminder_update_success_at_start_time)
+
                         LectureReminderEvent.LECTURE_REMINDER_UPDATE_SUCCESS_TEN_MINUTES_AFTER,
-                        -> context.getString(R.string.settings_lecture_reminder_update_success_ten_minutes_after)
+                            -> context.getString(R.string.settings_lecture_reminder_update_success_ten_minutes_after)
                     }
                     if (message.isNotEmpty()) {
                         launch {
@@ -101,6 +104,7 @@ fun LectureReminderRoute(
                         }
                     }
                 }
+
                 is LectureReminderUiEvent.LoggedOut -> {
                     onNavigateOnboard()
                 }

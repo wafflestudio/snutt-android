@@ -26,7 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.android.toast
@@ -125,11 +125,13 @@ fun SignUpPage(
                         hint = stringResource(R.string.sign_up_id_hint),
                         textStyle = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                        keyboardActions = KeyboardActions(onNext = {
-                            focusManager.moveFocus(
-                                FocusDirection.Down,
-                            )
-                        },),
+                        keyboardActions = KeyboardActions(
+                            onNext = {
+                                focusManager.moveFocus(
+                                    FocusDirection.Down,
+                                )
+                            },
+                        ),
                         singleLine = true,
                     )
                 }
@@ -150,11 +152,13 @@ fun SignUpPage(
                             keyboardType = KeyboardType.Password,
                             imeAction = ImeAction.Next,
                         ),
-                        keyboardActions = KeyboardActions(onNext = {
-                            focusManager.moveFocus(
-                                FocusDirection.Down,
-                            )
-                        },),
+                        keyboardActions = KeyboardActions(
+                            onNext = {
+                                focusManager.moveFocus(
+                                    FocusDirection.Down,
+                                )
+                            },
+                        ),
                         visualTransformation = PasswordVisualTransformation(),
                         singleLine = true,
                     )
@@ -176,11 +180,13 @@ fun SignUpPage(
                             keyboardType = KeyboardType.Password,
                             imeAction = ImeAction.Next,
                         ),
-                        keyboardActions = KeyboardActions(onNext = {
-                            focusManager.moveFocus(
-                                FocusDirection.Down,
-                            )
-                        },),
+                        keyboardActions = KeyboardActions(
+                            onNext = {
+                                focusManager.moveFocus(
+                                    FocusDirection.Down,
+                                )
+                            },
+                        ),
                         visualTransformation = PasswordVisualTransformation(),
                         singleLine = true,
                     )

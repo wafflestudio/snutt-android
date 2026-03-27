@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.ui.ThemeMode
@@ -44,11 +44,13 @@ fun PersonalInformationPolicyPage(
             title = stringResource(R.string.settings_personal_information_policy),
             onClickNavigateBack = onNavigateBack,
         )
-        AndroidView(factory = {
-            WebView(context).apply {
-                this.webViewClient = WebViewClient()
-                loadUrl(url, headers)
-            }
-        },)
+        AndroidView(
+            factory = {
+                WebView(context).apply {
+                    this.webViewClient = WebViewClient()
+                    loadUrl(url, headers)
+                }
+            },
+        )
     }
 }

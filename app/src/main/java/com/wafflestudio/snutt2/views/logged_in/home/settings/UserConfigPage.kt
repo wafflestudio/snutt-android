@@ -30,7 +30,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.CustomDialog
@@ -66,6 +66,7 @@ fun UserConfigRoute(
                         context.toast(message)
                     }
                 }
+
                 is UserConfigUiEvent.ShowToastByEvent -> {
                     val message = when (uiEvent.event) {
                         UserConfigEvent.InvalidIdError -> context.getString(R.string.error_invalid_id)
@@ -76,6 +77,7 @@ fun UserConfigRoute(
                     }
                     context.toast(message)
                 }
+
                 is UserConfigUiEvent.NavigateToOnboard -> {
                     onNavigateOnboard()
                 }
