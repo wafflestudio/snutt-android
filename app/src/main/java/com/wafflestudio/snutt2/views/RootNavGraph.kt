@@ -304,7 +304,7 @@ internal fun NavGraphBuilder.buildRootNavGraph(
         )
     }
 
-    settingComposables(navController, homePageController, modalState, scheme)
+    settingComposables(navController, homePageController, scheme)
 }
 
 private fun NavGraphBuilder.onboardGraph(navController: NavController, scheme: String) {
@@ -357,7 +357,6 @@ private fun NavGraphBuilder.onboardGraph(navController: NavController, scheme: S
 private fun NavGraphBuilder.settingComposables(
     navController: NavController,
     homePageController: HomePageController,
-    modalState: ModalState,
     scheme: String,
 ) {
     composableAnimated<NavigationDestination.AppReport>(scheme) {
@@ -492,18 +491,6 @@ private fun NavGraphBuilder.settingComposables(
                 }
             },
             onNavigateOnboard = { navController.navigateAsOrigin(NavigationDestination.Onboard) },
-            onShowDeleteModal = { modalProperties ->
-                modalState.set(
-                    title = modalProperties.title,
-                    positiveButton = modalProperties.positiveButton,
-                    negativeButton = modalProperties.negativeButton,
-                    onDismiss = modalProperties.onDismiss,
-                    onConfirm = modalProperties.onConfirm,
-                    width = modalProperties.width,
-                    content = modalProperties.content,
-                ).show()
-            },
-            onHideDeleteModal = modalState::hide,
         )
     }
     composableAnimated<NavigationDestination.PushPreferences>(scheme) {

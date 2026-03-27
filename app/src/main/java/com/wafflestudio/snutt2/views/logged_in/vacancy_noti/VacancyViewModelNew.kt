@@ -64,7 +64,7 @@ class VacancyViewModelNew @Inject constructor(
                 if (data.isEmpty()) {
                     _vacancyUiState.emit(
                         VacancyUiState.Empty(
-                            showIntroDialog = false,
+                            dialogState = VacancyUiState.DialogState.None,
                             isRefreshing = false,
                         ),
                     )
@@ -74,7 +74,7 @@ class VacancyViewModelNew @Inject constructor(
                             vacancyLecturesWithSelection = data
                                 .sortedByDescending { it.wasFull && it.registrationCount < it.quota }
                                 .map { it.toDataWithState(false) },
-                            showIntroDialog = false,
+                            dialogState = VacancyUiState.DialogState.None,
                             isEditMode = false,
                             isRefreshing = false,
                             deleteButtonEnabled = false,
@@ -91,24 +91,40 @@ class VacancyViewModelNew @Inject constructor(
     fun showIntroDialog() {
         _vacancyUiState.update { state ->
             when (state) {
-                is VacancyUiState.Success -> state.copy(showIntroDialog = true)
-                is VacancyUiState.Empty -> state.copy(showIntroDialog = true)
+                is VacancyUiState.Success -> state.copy(dialogState = VacancyUiState.DialogState.Intro)
+                is VacancyUiState.Empty -> state.copy(dialogState = VacancyUiState.DialogState.Intro)
                 else -> state
             }
         }
     }
 
-    fun hideIntroDialog() {
+    fun showDeleteDialog() {
         _vacancyUiState.update { state ->
             when (state) {
-                is VacancyUiState.Success -> state.copy(showIntroDialog = false)
-                is VacancyUiState.Empty -> state.copy(showIntroDialog = false)
+                is VacancyUiState.Success -> state.copy(dialogState = VacancyUiState.DialogState.ConfirmDeleteSelected)
                 else -> state
             }
         }
-        viewModelScope.launch {
-            vacancyRepository.setVacancyVisited()
-            // TODO: 에러 처리?
+    }
+
+    fun dismissDialog() {
+        val wasIntro = when (val state = _vacancyUiState.value) {
+            is VacancyUiState.Success -> state.dialogState is VacancyUiState.DialogState.Intro
+            is VacancyUiState.Empty -> state.dialogState is VacancyUiState.DialogState.Intro
+            else -> false
+        }
+        _vacancyUiState.update { state ->
+            when (state) {
+                is VacancyUiState.Success -> state.copy(dialogState = VacancyUiState.DialogState.None)
+                is VacancyUiState.Empty -> state.copy(dialogState = VacancyUiState.DialogState.None)
+                else -> state
+            }
+        }
+        if (wasIntro) {
+            viewModelScope.launch {
+                vacancyRepository.setVacancyVisited()
+                // TODO: 에러 처리?
+            }
         }
     }
 
@@ -143,6 +159,13 @@ class VacancyViewModelNew @Inject constructor(
     fun deleteSelectedLectures() {
         val state = _vacancyUiState.value
         if (state !is VacancyUiState.Success) return
+
+        _vacancyUiState.update { s ->
+            when (s) {
+                is VacancyUiState.Success -> s.copy(dialogState = VacancyUiState.DialogState.None)
+                else -> s
+            }
+        }
 
         viewModelScope.launch {
             state.vacancyLecturesWithSelection.filter { it.state }.map { it.item.id }.forEach {
@@ -184,9 +207,15 @@ class VacancyViewModelNew @Inject constructor(
 }
 
 sealed interface VacancyUiState {
+    sealed interface DialogState {
+        data object None : DialogState
+        data object Intro : DialogState
+        data object ConfirmDeleteSelected : DialogState
+    }
+
     data class Success(
         val vacancyLecturesWithSelection: List<Selectable<SearchedLecture>>,
-        val showIntroDialog: Boolean,
+        val dialogState: DialogState,
         val isEditMode: Boolean,
         val isRefreshing: Boolean,
         val deleteButtonEnabled: Boolean,
@@ -195,7 +224,7 @@ sealed interface VacancyUiState {
     data object Error : VacancyUiState
     data object Loading : VacancyUiState
     data class Empty(
-        val showIntroDialog: Boolean,
+        val dialogState: DialogState,
         val isRefreshing: Boolean,
     ) : VacancyUiState
 }

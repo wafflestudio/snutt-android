@@ -63,7 +63,7 @@ import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.ArrowBackIcon
-import com.wafflestudio.snutt2.components.compose.ModalProperties
+import com.wafflestudio.snutt2.components.compose.CustomDialog
 import com.wafflestudio.snutt2.components.compose.QuestionCircleIcon
 import com.wafflestudio.snutt2.components.compose.RightArrowIcon
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
@@ -88,8 +88,6 @@ fun VacancyRoute(
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit,
     onNavigateOnboard: () -> Unit,
-    onShowDeleteModal: (ModalProperties) -> Unit,
-    onHideDeleteModal: () -> Unit,
     viewModel: VacancyViewModelNew = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -135,12 +133,11 @@ fun VacancyRoute(
             }
         },
         onShowIntroDialog = viewModel::showIntroDialog,
-        onHideIntroDialog = viewModel::hideIntroDialog,
+        onDismissDialog = viewModel::dismissDialog,
         onToggleEditMode = viewModel::toggleEditMode,
         onReloadVacancyLectures = viewModel::reloadVacancyLectures,
         onToggleLectureSelected = viewModel::toggleLectureSelected,
-        onShowDeleteModal = onShowDeleteModal,
-        onHideDeleteModal = onHideDeleteModal,
+        onShowDeleteDialog = viewModel::showDeleteDialog,
         onDeleteSelectedLectures = viewModel::deleteSelectedLectures,
         onOpenSugangSnu = viewModel::openSugangSnu,
     )
@@ -152,12 +149,11 @@ fun VacancyScreen(
     uiState: VacancyUiState,
     onClickBack: () -> Unit,
     onShowIntroDialog: () -> Unit,
-    onHideIntroDialog: () -> Unit,
+    onDismissDialog: () -> Unit,
     onToggleEditMode: () -> Unit,
     onReloadVacancyLectures: () -> Unit,
     onToggleLectureSelected: (String) -> Unit,
-    onShowDeleteModal: (ModalProperties) -> Unit,
-    onHideDeleteModal: () -> Unit,
+    onShowDeleteDialog: () -> Unit,
     onDeleteSelectedLectures: () -> Unit,
     onOpenSugangSnu: () -> Unit,
 ) {
@@ -181,7 +177,7 @@ fun VacancyScreen(
             uiState = uiState,
             onClickBack = onClickBack,
             onShowIntroDialog = onShowIntroDialog,
-            onHideIntroDialog = onHideIntroDialog,
+            onDismissDialog = onDismissDialog,
             onReloadVacancyLectures = onReloadVacancyLectures,
             onOpenSugangSnu = onOpenSugangSnu,
         )
@@ -191,12 +187,11 @@ fun VacancyScreen(
             uiState = uiState,
             onClickBack = onClickBack,
             onShowIntroDialog = onShowIntroDialog,
-            onHideIntroDialog = onHideIntroDialog,
+            onDismissDialog = onDismissDialog,
             onToggleEditMode = onToggleEditMode,
             onReloadVacancyLectures = onReloadVacancyLectures,
             onToggleLectureSelected = onToggleLectureSelected,
-            onShowDeleteModal = onShowDeleteModal,
-            onHideDeleteModal = onHideDeleteModal,
+            onShowDeleteDialog = onShowDeleteDialog,
             onDeleteSelectedLectures = onDeleteSelectedLectures,
             onOpenSugangSnu = onOpenSugangSnu,
         )
@@ -275,7 +270,7 @@ fun VacancyEmpty(
     uiState: VacancyUiState.Empty,
     onClickBack: () -> Unit,
     onShowIntroDialog: () -> Unit,
-    onHideIntroDialog: () -> Unit,
+    onDismissDialog: () -> Unit,
     onReloadVacancyLectures: () -> Unit,
     onOpenSugangSnu: () -> Unit,
 ) {
@@ -339,9 +334,9 @@ fun VacancyEmpty(
             onClick = onOpenSugangSnu,
         )
 
-        if (uiState.showIntroDialog) {
+        if (uiState.dialogState is VacancyUiState.DialogState.Intro) {
             VacancyIntroDialog(
-                onDismiss = onHideIntroDialog,
+                onDismiss = onDismissDialog,
             )
         }
     }
@@ -393,16 +388,14 @@ fun VacancySuccess(
     uiState: VacancyUiState.Success,
     onClickBack: () -> Unit,
     onShowIntroDialog: () -> Unit,
-    onHideIntroDialog: () -> Unit,
+    onDismissDialog: () -> Unit,
     onToggleEditMode: () -> Unit,
     onReloadVacancyLectures: () -> Unit,
     onToggleLectureSelected: (String) -> Unit,
-    onShowDeleteModal: (ModalProperties) -> Unit,
-    onHideDeleteModal: () -> Unit,
+    onShowDeleteDialog: () -> Unit,
     onDeleteSelectedLectures: () -> Unit,
     onOpenSugangSnu: () -> Unit,
 ) {
-    val context = LocalContext.current
     val density = LocalDensity.current
     val pullRefreshState = rememberPullRefreshState(uiState.isRefreshing, onReloadVacancyLectures)
     Box(
@@ -497,26 +490,7 @@ fun VacancySuccess(
                     WebViewStyleButton(
                         modifier = Modifier
                             .fillMaxWidth(),
-                        onClick = {
-                            onShowDeleteModal(
-                                ModalProperties(
-                                    title = context.getString(R.string.vacancy_delete_selected_title),
-                                    positiveButton = context.getString(R.string.common_ok),
-                                    negativeButton = context.getString(R.string.common_cancel),
-                                    onDismiss = onHideDeleteModal,
-                                    onConfirm = {
-                                        onDeleteSelectedLectures()
-                                        onHideDeleteModal()
-                                    },
-                                    content = {
-                                        Text(
-                                            text = context.getString(R.string.vacancy_delete_selected_message),
-                                            style = SNUTTTypography.body1,
-                                        )
-                                    },
-                                ),
-                            )
-                        },
+                        onClick = onShowDeleteDialog,
                         enabled = uiState.deleteButtonEnabled,
                         disabledColor = SNUTTColors.VacancyGray,
                     ) {
@@ -546,10 +520,25 @@ fun VacancySuccess(
                 onClick = onOpenSugangSnu,
             )
         }
-        if (uiState.showIntroDialog) {
-            VacancyIntroDialog(
-                onDismiss = onHideIntroDialog,
-            )
+        when (uiState.dialogState) {
+            VacancyUiState.DialogState.None -> {}
+            VacancyUiState.DialogState.Intro -> {
+                VacancyIntroDialog(
+                    onDismiss = onDismissDialog,
+                )
+            }
+            VacancyUiState.DialogState.ConfirmDeleteSelected -> {
+                CustomDialog(
+                    onDismiss = onDismissDialog,
+                    onConfirm = onDeleteSelectedLectures,
+                    title = stringResource(R.string.vacancy_delete_selected_title),
+                ) {
+                    Text(
+                        text = stringResource(R.string.vacancy_delete_selected_message),
+                        style = SNUTTTypography.body1,
+                    )
+                }
+            }
         }
     }
 }
@@ -724,12 +713,11 @@ fun VacancyScreenLoadingPreview() {
         uiState = VacancyUiState.Loading,
         onClickBack = {},
         onShowIntroDialog = {},
-        onHideIntroDialog = {},
+        onDismissDialog = {},
         onToggleEditMode = {},
         onReloadVacancyLectures = {},
         onToggleLectureSelected = { _ -> },
-        onShowDeleteModal = {},
-        onHideDeleteModal = {},
+        onShowDeleteDialog = {},
         onDeleteSelectedLectures = {},
         onOpenSugangSnu = {},
     )
@@ -742,12 +730,11 @@ fun VacancyScreenErrorPreview() {
         uiState = VacancyUiState.Error,
         onClickBack = {},
         onShowIntroDialog = {},
-        onHideIntroDialog = {},
+        onDismissDialog = {},
         onToggleEditMode = {},
         onReloadVacancyLectures = {},
         onToggleLectureSelected = { _ -> },
-        onShowDeleteModal = {},
-        onHideDeleteModal = {},
+        onShowDeleteDialog = {},
         onDeleteSelectedLectures = {},
         onOpenSugangSnu = {},
     )
@@ -760,18 +747,17 @@ fun VacancyScreenIntroPreview() {
         uiState = VacancyUiState.Success(
             vacancyLecturesWithSelection = PreviewData.sampleLectures.map { it.toDataWithState(false) },
             isEditMode = false,
-            showIntroDialog = true,
+            dialogState = VacancyUiState.DialogState.Intro,
             isRefreshing = false,
             deleteButtonEnabled = false,
         ),
         onClickBack = {},
         onShowIntroDialog = {},
-        onHideIntroDialog = {},
+        onDismissDialog = {},
         onToggleEditMode = {},
         onReloadVacancyLectures = {},
         onToggleLectureSelected = { _ -> },
-        onShowDeleteModal = {},
-        onHideDeleteModal = {},
+        onShowDeleteDialog = {},
         onDeleteSelectedLectures = {},
         onOpenSugangSnu = {},
     )
@@ -784,18 +770,17 @@ fun VacancyScreenNormalModePreview() {
         uiState = VacancyUiState.Success(
             vacancyLecturesWithSelection = PreviewData.sampleLectures.map { it.toDataWithState(false) },
             isEditMode = false,
-            showIntroDialog = false,
+            dialogState = VacancyUiState.DialogState.None,
             isRefreshing = false,
             deleteButtonEnabled = false,
         ),
         onClickBack = {},
         onShowIntroDialog = {},
-        onHideIntroDialog = {},
+        onDismissDialog = {},
         onToggleEditMode = {},
         onReloadVacancyLectures = {},
         onToggleLectureSelected = { _ -> },
-        onShowDeleteModal = {},
-        onHideDeleteModal = {},
+        onShowDeleteDialog = {},
         onDeleteSelectedLectures = {},
         onOpenSugangSnu = {},
     )
@@ -806,17 +791,16 @@ fun VacancyScreenNormalModePreview() {
 fun VacancyScreenEmptyPreview() {
     VacancyScreen(
         uiState = VacancyUiState.Empty(
-            showIntroDialog = false,
+            dialogState = VacancyUiState.DialogState.None,
             isRefreshing = false,
         ),
         onClickBack = {},
         onShowIntroDialog = {},
-        onHideIntroDialog = {},
+        onDismissDialog = {},
         onToggleEditMode = {},
         onReloadVacancyLectures = {},
         onToggleLectureSelected = { _ -> },
-        onShowDeleteModal = {},
-        onHideDeleteModal = {},
+        onShowDeleteDialog = {},
         onDeleteSelectedLectures = {},
         onOpenSugangSnu = {},
     )
@@ -829,18 +813,17 @@ fun VacancyScreenEditModePreview() {
         uiState = VacancyUiState.Success(
             vacancyLecturesWithSelection = PreviewData.sampleLectures.map { it.toDataWithState(false) },
             isEditMode = true,
-            showIntroDialog = false,
+            dialogState = VacancyUiState.DialogState.None,
             isRefreshing = false,
             deleteButtonEnabled = false,
         ),
         onClickBack = {},
         onShowIntroDialog = {},
-        onHideIntroDialog = {},
+        onDismissDialog = {},
         onToggleEditMode = {},
         onReloadVacancyLectures = {},
         onToggleLectureSelected = { _ -> },
-        onShowDeleteModal = {},
-        onHideDeleteModal = {},
+        onShowDeleteDialog = {},
         onDeleteSelectedLectures = {},
         onOpenSugangSnu = {},
     )
@@ -857,18 +840,17 @@ fun VacancyScreenDeleteEnabledPreview() {
                 )
             },
             isEditMode = true,
-            showIntroDialog = false,
+            dialogState = VacancyUiState.DialogState.None,
             isRefreshing = false,
             deleteButtonEnabled = true,
         ),
         onClickBack = {},
         onShowIntroDialog = {},
-        onHideIntroDialog = {},
+        onDismissDialog = {},
         onToggleEditMode = {},
         onReloadVacancyLectures = {},
         onToggleLectureSelected = { _ -> },
-        onShowDeleteModal = {},
-        onHideDeleteModal = {},
+        onShowDeleteDialog = {},
         onDeleteSelectedLectures = {},
         onOpenSugangSnu = {},
     )
