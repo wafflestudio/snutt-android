@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -35,27 +36,48 @@ import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.isPasswordInvalid
 import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.*
-import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
-import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
-import kotlinx.coroutines.launch
+import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 fun SignUpPage(
+    viewModel: SignUpViewModel = hiltViewModel<SignUpViewModel>(),
     onNavigateEmailVerification: () -> Unit,
     onNavigateBack: () -> Unit,
 ) {
     val context = LocalContext.current
-    val apiOnError = LocalApiOnError.current
-    val apiOnProgress = LocalApiOnProgress.current
     val analyticsLogger = LocalAnalyticsLogger.current
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                is SignUpUiEvent.ShowToast -> context.toast(event.message)
+                is SignUpUiEvent.NavigateEmailVerification -> onNavigateEmailVerification()
+            }
+        }
+    }
+
+    SignUpScreen(
+        isLoading = uiState.isLoading,
+        onSignUp = { id, email, password ->
+            analyticsLogger.logEvent(AnalyticsEvent.SignUp)
+            viewModel.signUp(id, email, password)
+        },
+        onNavigateBack = onNavigateBack,
+    )
+}
+
+@Composable
+private fun SignUpScreen(
+    isLoading: Boolean,
+    onSignUp: (id: String, email: String, password: String) -> Unit,
+    onNavigateBack: () -> Unit,
+) {
+    val context = LocalContext.current
     val focusManager = LocalFocusManager.current
-    val coroutineScope = rememberCoroutineScope()
 
-    val userViewModel = hiltViewModel<UserViewModel>()
-    val homeViewModel = hiltViewModel<HomeViewModel>()
-
+    // TODO: 상태 뷰모델로 올리기
     var idField by remember { mutableStateOf("") }
     var passwordField by remember { mutableStateOf("") }
     var passwordConfirmField by remember { mutableStateOf("") }
@@ -75,199 +97,161 @@ fun SignUpPage(
         } else if (isPasswordConfirmPassed.not()) {
             context.toast(context.getString(R.string.sign_up_password_confirm_invalid_toast))
         } else {
-            coroutineScope.launch {
-                launchSuspendApi(
-                    apiOnProgress = apiOnProgress,
-                    apiOnError = apiOnError,
-                    loadingIndicatorTitle = context.getString(R.string.sign_up_sign_up_button),
-                ) {
-                    analyticsLogger.logEvent(AnalyticsEvent.SignUp)
-                    userViewModel.signUpLocal(idField, emailField.plus(context.getString(R.string.sign_up_email_form)), passwordField)
-                    homeViewModel.refreshData()
-                    onNavigateEmailVerification()
-                }
-            }
+            onSignUp(idField, emailField.plus(context.getString(R.string.sign_up_email_form)), passwordField)
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(SNUTTColors.White900)
-            .clicks { focusManager.clearFocus() },
-    ) {
-        SimpleTopBar(
-            title = stringResource(R.string.sign_up_app_bar_title),
-            onClickNavigateBack = onNavigateBack,
-        )
-
+    Box {
         Column(
             modifier = Modifier
-                .padding(16.dp),
+                .fillMaxSize()
+                .background(SNUTTColors.White900)
+                .clicks { focusManager.clearFocus() },
         ) {
-            Column(
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.spacedBy(20.dp),
-                modifier = Modifier
-                    .weight(1f)
-                    .verticalScroll(rememberScrollState()),
-            ) {
+            SimpleTopBar(
+                title = stringResource(R.string.sign_up_app_bar_title),
+                onClickNavigateBack = onNavigateBack,
+            )
+
+            Column(modifier = Modifier.padding(16.dp)) {
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.spacedBy(20.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .verticalScroll(rememberScrollState()),
                 ) {
-                    Text(
-                        text = stringResource(R.string.sign_up_id_title),
-                        style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
-                    )
-                    EditText(
-                        value = idField,
-                        onValueChange = { idField = it },
-                        hint = stringResource(R.string.sign_up_id_hint),
-                        textStyle = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                        keyboardActions = KeyboardActions(
-                            onNext = {
-                                focusManager.moveFocus(
-                                    FocusDirection.Down,
+                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        Text(
+                            text = stringResource(R.string.sign_up_id_title),
+                            style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
+                        )
+                        EditText(
+                            value = idField,
+                            onValueChange = { idField = it },
+                            hint = stringResource(R.string.sign_up_id_hint),
+                            textStyle = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
+                            singleLine = true,
+                        )
+                    }
+
+                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        Text(
+                            text = stringResource(R.string.sign_up_password_title),
+                            style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
+                        )
+                        EditText(
+                            value = passwordField,
+                            onValueChange = { passwordField = it },
+                            hint = stringResource(R.string.sign_up_password_hint),
+                            textStyle = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
+                            visualTransformation = PasswordVisualTransformation(),
+                            singleLine = true,
+                        )
+                    }
+
+                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        Text(
+                            text = stringResource(R.string.sign_up_password_confirm_title),
+                            style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
+                        )
+                        EditText(
+                            value = passwordConfirmField,
+                            onValueChange = { passwordConfirmField = it },
+                            hint = stringResource(R.string.sign_up_password_confirm_hint),
+                            textStyle = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
+                            visualTransformation = PasswordVisualTransformation(),
+                            singleLine = true,
+                        )
+                    }
+
+                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        Text(
+                            text = stringResource(R.string.sign_up_email_input_title),
+                            style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
+                        )
+                        EditText(
+                            value = emailField,
+                            onValueChange = { emailField = it },
+                            hint = stringResource(R.string.sign_up_email_input_hint),
+                            textStyle = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                            keyboardActions = KeyboardActions(onDone = { handleLocalSignUp() }),
+                            singleLine = true,
+                            trailingIcon = {
+                                Text(
+                                    text = stringResource(R.string.sign_up_email_form),
+                                    style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
+                                    textAlign = TextAlign.Right,
+                                    maxLines = 1,
                                 )
                             },
-                        ),
-                        singleLine = true,
-                    )
+                        )
+                    }
                 }
 
                 Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
-                    Text(
-                        text = stringResource(R.string.sign_up_password_title),
-                        style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
-                    )
-                    EditText(
-                        value = passwordField,
-                        onValueChange = { passwordField = it },
-                        hint = stringResource(R.string.sign_up_password_hint),
-                        textStyle = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Password,
-                            imeAction = ImeAction.Next,
-                        ),
-                        keyboardActions = KeyboardActions(
-                            onNext = {
-                                focusManager.moveFocus(
-                                    FocusDirection.Down,
-                                )
+                    Row(modifier = Modifier.padding(top = 20.dp)) {
+                        Text(text = stringResource(id = R.string.sign_up_terms_1) + " ", style = SNUTTTypography.body2)
+                        Text(
+                            text = stringResource(id = R.string.sign_up_terms_2),
+                            style = SNUTTTypography.body2.copy(fontWeight = FontWeight.Bold),
+                            textDecoration = TextDecoration.Underline,
+                            modifier = Modifier.clicks {
+                                val termsPageUrl = context.getString(R.string.api_server) + context.getString(R.string.terms)
+                                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(termsPageUrl)))
                             },
-                        ),
-                        visualTransformation = PasswordVisualTransformation(),
-                        singleLine = true,
-                    )
-                }
+                        )
+                        Text(text = stringResource(id = R.string.sign_up_terms_3), style = SNUTTTypography.body2)
+                    }
 
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
-                ) {
-                    Text(
-                        text = stringResource(R.string.sign_up_password_confirm_title),
-                        style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
-                    )
-                    EditText(
-                        value = passwordConfirmField,
-                        onValueChange = { passwordConfirmField = it },
-                        hint = stringResource(R.string.sign_up_password_confirm_hint),
-                        textStyle = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Password,
-                            imeAction = ImeAction.Next,
-                        ),
-                        keyboardActions = KeyboardActions(
-                            onNext = {
-                                focusManager.moveFocus(
-                                    FocusDirection.Down,
-                                )
-                            },
-                        ),
-                        visualTransformation = PasswordVisualTransformation(),
-                        singleLine = true,
-                    )
-                }
-
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
-                ) {
-                    Text(
-                        text = stringResource(R.string.sign_up_email_input_title),
-                        style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
-                    )
-                    EditText(
-                        value = emailField,
-                        onValueChange = { emailField = it },
-                        hint = stringResource(R.string.sign_up_email_input_hint),
-                        textStyle = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                        keyboardActions = KeyboardActions(onDone = { handleLocalSignUp() }),
-                        singleLine = true,
-                        trailingIcon = {
-                            Text(
-                                text = stringResource(R.string.sign_up_email_form),
-                                style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
-                                textAlign = TextAlign.Right,
-                                maxLines = 1,
-                            )
-                        },
-                    )
+                    WebViewStyleButton(
+                        enabled = buttonEnabled,
+                        onClick = { handleLocalSignUp() },
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(10.dp))
+                            .height(45.dp)
+                            .fillMaxWidth(),
+                    ) {
+                        Text(
+                            text = stringResource(R.string.sign_up_sign_up_button),
+                            style = SNUTTTypography.button.copy(
+                                color = if (buttonEnabled) SNUTTColors.AllWhite else SNUTTColors.Gray600,
+                            ),
+                        )
+                    }
                 }
             }
+        }
 
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(10.dp),
+        if (isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(SNUTTColors.Black.copy(alpha = 0.4f)),
+                contentAlignment = Alignment.Center,
             ) {
-                Row(modifier = Modifier.padding(top = 20.dp)) {
-                    Text(
-                        text = stringResource(id = R.string.sign_up_terms_1) + " ",
-                        style = SNUTTTypography.body2,
-                    )
-                    Text(
-                        text = stringResource(id = R.string.sign_up_terms_2),
-                        style = SNUTTTypography.body2.copy(fontWeight = FontWeight.Bold),
-                        textDecoration = TextDecoration.Underline,
-                        modifier = Modifier.clicks {
-                            val termsPageUrl =
-                                context.getString(R.string.api_server) + context.getString(R.string.terms)
-                            val intent =
-                                Intent(Intent.ACTION_VIEW, Uri.parse(termsPageUrl))
-                            context.startActivity(intent)
-                        },
-                    )
-                    Text(
-                        text = stringResource(id = R.string.sign_up_terms_3),
-                        style = SNUTTTypography.body2,
-                    )
-                }
-
-                WebViewStyleButton(
-                    enabled = buttonEnabled,
-                    onClick = { handleLocalSignUp() },
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(10.dp))
-                        .height(45.dp)
-                        .fillMaxWidth(),
-                ) {
-                    Text(
-                        text = stringResource(R.string.sign_up_sign_up_button),
-                        style = SNUTTTypography.button.copy(
-                            color = if (buttonEnabled) SNUTTColors.AllWhite else SNUTTColors.Gray600,
-                        ),
-                    )
-                }
+                CircularProgressIndicator(color = SNUTTColors.AllWhite)
             }
         }
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
-fun SignUpPagePreview() {
-    SignUpPage(onNavigateEmailVerification = {}, onNavigateBack = {})
+private fun SignUpScreenPreview() {
+    SignUpScreen(
+        isLoading = false,
+        onSignUp = { _, _, _ -> },
+        onNavigateBack = {},
+    )
 }

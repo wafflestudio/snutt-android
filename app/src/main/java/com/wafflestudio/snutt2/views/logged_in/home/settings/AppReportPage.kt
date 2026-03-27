@@ -13,10 +13,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -44,28 +44,49 @@ import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.LocalApiOnError
-import com.wafflestudio.snutt2.views.LocalApiOnProgress
-import com.wafflestudio.snutt2.views.launchSuspendApi
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AppReportPage(
+    viewModel: AppReportViewModel = hiltViewModel<AppReportViewModel>(),
     onNavigateBack: () -> Unit,
 ) {
     val context = LocalContext.current
-    val apiOnError = LocalApiOnError.current
-    val apiOnProgress = LocalApiOnProgress.current
     val keyboardManager = LocalSoftwareKeyboardController.current
+
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                is AppReportUiEvent.ShowToast -> context.toast(event.message)
+                is AppReportUiEvent.Success -> {
+                    keyboardManager?.hide()
+                    context.toast(context.getString(R.string.feedback_send_success_message))
+                    onNavigateBack()
+                }
+            }
+        }
+    }
+
+    AppReportScreen(
+        initialEmail = viewModel.initialEmail,
+        onSendFeedback = { email, detail -> viewModel.sendFeedback(email, detail) },
+        onNavigateBack = onNavigateBack,
+    )
+}
+
+@Composable
+private fun AppReportScreen(
+    initialEmail: String,
+    onSendFeedback: (email: String, detail: String) -> Unit,
+    onNavigateBack: () -> Unit,
+) {
+    val context = LocalContext.current
     val focusManager = LocalFocusManager.current
-    val scope = rememberCoroutineScope()
-    val userViewModel = hiltViewModel<UserViewModel>()
 
-    var email by remember { mutableStateOf(userViewModel.userInfo.value?.email ?: "") }
+    var email by remember { mutableStateOf(initialEmail) }
     var detail by remember { mutableStateOf("") }
-
     var sentEnabled by remember { mutableStateOf(true) }
+
     val sendFeedback = {
         if (detail.isEmpty()) {
             context.toast(context.getString(R.string.feedback_empty_detail_warning))
@@ -73,22 +94,7 @@ fun AppReportPage(
             context.toast(context.getString(R.string.feedback_invalid_email_warning))
         } else {
             sentEnabled = false
-            scope.launch {
-                launchSuspendApi(
-                    apiOnProgress,
-                    apiOnError,
-                    onError = {
-                        sentEnabled = true
-                        apiOnProgress.hideProgress()
-                    },
-                    context.getString(R.string.settings_app_report_loading_indicator_title),
-                ) {
-                    userViewModel.sendFeedback(email, detail)
-                    keyboardManager?.hide()
-                    context.toast(context.getString(R.string.feedback_send_success_message))
-                    onNavigateBack()
-                }
-            }
+            onSendFeedback(email, detail)
         }
     }
 
@@ -109,9 +115,7 @@ fun AppReportPage(
                 ArrowBackIcon(
                     modifier = Modifier
                         .size(30.dp)
-                        .clicks {
-                            onNavigateBack()
-                        },
+                        .clicks { onNavigateBack() },
                     colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
             },
@@ -146,11 +150,7 @@ fun AppReportPage(
                     keyboardType = KeyboardType.Email,
                 ),
                 keyboardActions = KeyboardActions(
-                    onNext = {
-                        focusManager.moveFocus(
-                            FocusDirection.Down,
-                        )
-                    },
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) },
                 ),
             )
             Spacer(modifier = Modifier.height(20.dp))
@@ -174,8 +174,12 @@ fun AppReportPage(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
-fun AppReportPagePreview() {
-    AppReportPage(onNavigateBack = {})
+private fun AppReportScreenPreview() {
+    AppReportScreen(
+        initialEmail = "user@snu.ac.kr",
+        onSendFeedback = { _, _ -> },
+        onNavigateBack = {},
+    )
 }

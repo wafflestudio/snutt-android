@@ -17,17 +17,16 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ParagraphStyle
@@ -36,6 +35,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextIndent
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -46,44 +46,49 @@ import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.clearFocusOnKeyboardDismiss
 import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.toDp
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.LocalApiOnError
-import com.wafflestudio.snutt2.views.LocalApiOnProgress
-import com.wafflestudio.snutt2.views.launchSuspendApi
-import kotlinx.coroutines.launch
 
 @Composable
 fun ChangeNicknamePage(
+    viewModel: ChangeNicknameViewModel = hiltViewModel<ChangeNicknameViewModel>(),
     onNavigateBack: () -> Unit,
 ) {
-    val apiOnProgress = LocalApiOnProgress.current
-    val apiOnError = LocalApiOnError.current
-    val scope = rememberCoroutineScope()
-    val userViewModel = hiltViewModel<UserViewModel>()
+    val context = LocalContext.current
 
-    val user by userViewModel.userInfo.collectAsState()
-    val initialNickname = user?.nickname?.nickname ?: ""
-    var nicknameField by remember { mutableStateOf(user?.nickname?.nickname ?: "") }
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                is ChangeNicknameUiEvent.ShowToast -> context.toast(event.message)
+                is ChangeNicknameUiEvent.Success -> onNavigateBack()
+            }
+        }
+    }
+
+    ChangeNicknameScreen(
+        initialNickname = viewModel.initialNickname,
+        onSave = { nickname -> viewModel.changeNickname(nickname) },
+        onNavigateBack = onNavigateBack,
+    )
+}
+
+@Composable
+private fun ChangeNicknameScreen(
+    initialNickname: String,
+    onSave: (String) -> Unit,
+    onNavigateBack: () -> Unit,
+) {
+    var nicknameField by remember { mutableStateOf(initialNickname) }
     val nicknameRequirementTexts = listOf(
         stringResource(R.string.settings_change_nickname_requirement_0),
         stringResource(R.string.settings_change_nickname_requirement_1),
         stringResource(R.string.settings_change_nickname_requirement_2),
     )
 
-    val onBackPressed = {
-        onNavigateBack()
-    }
-
-    val handleChangeNickname = {
-        scope.launch {
-            launchSuspendApi(apiOnProgress, apiOnError) {
-                userViewModel.changeNickname(nicknameField)
-                onBackPressed()
-            }
-        }
-    }
+    val canSave = nicknameField.isNotEmpty() && nicknameField != initialNickname
+    val handleSave = { if (canSave) onSave(nicknameField) }
 
     Column(
         modifier = Modifier
@@ -101,7 +106,7 @@ fun ChangeNicknamePage(
                 ArrowBackIcon(
                     modifier = Modifier
                         .size(30.dp)
-                        .clicks { onBackPressed() },
+                        .clicks { onNavigateBack() },
                     colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
             },
@@ -109,19 +114,13 @@ fun ChangeNicknamePage(
                 Text(
                     text = stringResource(R.string.settings_change_nickname_app_bar_save),
                     style = SNUTTTypography.body1,
-                    color = if (nicknameField.isEmpty() || nicknameField == initialNickname) SNUTTColors.Black500 else SNUTTColors.Black900,
-                    modifier = Modifier
-                        .clicks {
-                            if (nicknameField.isNotEmpty() && nicknameField != initialNickname) {
-                                handleChangeNickname()
-                            }
-                        },
+                    color = if (canSave) SNUTTColors.Black900 else SNUTTColors.Black500,
+                    modifier = Modifier.clicks { handleSave() },
                 )
             },
         )
         Column(
-            modifier = Modifier
-                .verticalScroll(rememberScrollState()),
+            modifier = Modifier.verticalScroll(rememberScrollState()),
         ) {
             SettingColumn(
                 title = stringResource(R.string.settings_change_nickname_title),
@@ -129,11 +128,7 @@ fun ChangeNicknamePage(
                 NicknameEditText(
                     value = nicknameField,
                     onValueChange = { nicknameField = it },
-                    onDone = {
-                        if (nicknameField.isNotEmpty() && nicknameField != initialNickname) {
-                            handleChangeNickname()
-                        }
-                    },
+                    onDone = { handleSave() },
                     hint = initialNickname,
                 )
             }
@@ -145,26 +140,18 @@ fun ChangeNicknamePage(
             ) {
                 Text(
                     text = stringResource(R.string.settings_change_nickname_guide),
-                    style = SNUTTTypography.body2.copy(
-                        color = SNUTTColors.Black500,
-                    ),
+                    style = SNUTTTypography.body2.copy(color = SNUTTColors.Black500),
                 )
                 Spacer(Modifier.height(30.dp))
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(2.sp.toDp()),
-                ) {
+                Column(verticalArrangement = Arrangement.spacedBy(2.sp.toDp())) {
                     Text(
                         text = stringResource(R.string.settings_change_nickname_requirement_title),
-                        style = SNUTTTypography.h5.copy(
-                            color = SNUTTColors.Black500,
-                        ),
+                        style = SNUTTTypography.h5.copy(color = SNUTTColors.Black500),
                     )
                     nicknameRequirementTexts.forEach {
                         BulletedParagraph(
                             text = it,
-                            style = SNUTTTypography.body2.copy(
-                                color = SNUTTColors.Black500,
-                            ),
+                            style = SNUTTTypography.body2.copy(color = SNUTTColors.Black500),
                         )
                     }
                 }
@@ -174,9 +161,8 @@ fun ChangeNicknamePage(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun NicknameEditText(
+private fun NicknameEditText(
     value: String,
     onValueChange: (String) -> Unit,
     onDone: (KeyboardActionScope.() -> Unit),
@@ -205,9 +191,7 @@ fun NicknameEditText(
             onValueChange = onValueChange,
             hint = hint,
             underlineEnabled = false,
-            textStyle = SNUTTTypography.body1.copy(
-                fontSize = 16.sp,
-            ),
+            textStyle = SNUTTTypography.body1.copy(fontSize = 16.sp),
         )
         if (isFocused && value.isNotEmpty()) {
             CloseCircleIcon(
@@ -221,16 +205,13 @@ fun NicknameEditText(
         }
         Text(
             text = "#NNNN",
-            style = SNUTTTypography.body1.copy(
-                color = SNUTTColors.Black300,
-                fontSize = 16.sp,
-            ),
+            style = SNUTTTypography.body1.copy(color = SNUTTColors.Black300, fontSize = 16.sp),
         )
     }
 }
 
 @Composable
-fun BulletedParagraph(
+private fun BulletedParagraph(
     text: String,
     style: TextStyle,
 ) {
@@ -243,5 +224,15 @@ fun BulletedParagraph(
             }
         },
         style = style,
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ChangeNicknameScreenPreview() {
+    ChangeNicknameScreen(
+        initialNickname = "와플",
+        onSave = {},
+        onNavigateBack = {},
     )
 }

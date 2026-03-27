@@ -15,6 +15,7 @@ import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApiForGoogle
 import com.wafflestudio.snutt2.lib.network.dto.*
+import com.wafflestudio.snutt2.lib.network.Unknown
 import com.wafflestudio.snutt2.lib.network.toDomainError
 import com.wafflestudio.snutt2.lib.preferences.model.toDomainModel
 import com.wafflestudio.snutt2.lib.toOptional
@@ -459,6 +460,214 @@ class UserRepositoryImpl @Inject constructor(
         val response = api._deleteUserKakao()
         storage.accessToken.update(response.token)
     }
+
+    // region New methods (Result-returning)
+
+    override suspend fun postSignInNew(id: String, password: String): Result<Unit> {
+        return try {
+            postSignIn(id, password)
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun postSignUpNew(id: String, password: String, email: String): Result<Unit> {
+        return try {
+            postSignUp(id, password, email)
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun patchUserInfoNew(nickname: String): Result<Unit> {
+        return try {
+            patchUserInfo(nickname)
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun postFeedbackNew(email: String, detail: String): Result<Unit> {
+        return try {
+            postFeedback(email, detail)
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun findIdByEmailNew(email: String): Result<Unit> {
+        return try {
+            findIdByEmail(email)
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun checkEmailByIdNew(id: String): Result<String> {
+        return try {
+            Result.Success(checkEmailById(id))
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun sendPwResetCodeToEmailNew(email: String): Result<Unit> {
+        return try {
+            sendPwResetCodeToEmail(email)
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun verifyPwResetCodeNew(id: String, code: String): Result<Unit> {
+        return try {
+            verifyPwResetCode(id, code)
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun resetPasswordNew(id: String, password: String, code: String): Result<Unit> {
+        return try {
+            resetPassword(id, password, code)
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun sendCodeToEmailNew(email: String): Result<Unit> {
+        return try {
+            sendCodeToEmail(email)
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun verifyEmailCodeNew(code: String): Result<Unit> {
+        return try {
+            verifyEmailCode(code)
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun getAccessTokenByAuthCodeNew(
+        authCode: String,
+        clientId: String,
+        clientSecret: String,
+    ): Result<String> {
+        return try {
+            val accessToken = getAccessTokenByAuthCode(authCode, clientId, clientSecret)
+            if (accessToken != null) {
+                Result.Success(accessToken)
+            } else {
+                Result.Fail(Unknown("", ""))
+            }
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun getSocialProvidersNew(): Result<GetSocialProvidersResults> {
+        return try {
+            Result.Success(getSocialProviders())
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun postLoginFacebookNew(facebookToken: String): Result<Unit> {
+        return try {
+            postLoginFacebook(facebookToken)
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun postLoginGoogleNew(googleAccessToken: String): Result<Unit> {
+        return try {
+            postLoginGoogle(googleAccessToken)
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun postLoginKakaoNew(kakaoAccessToken: String): Result<Unit> {
+        return try {
+            postLoginKakao(kakaoAccessToken)
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun postUserFacebookNew(facebookToken: String): Result<Unit> {
+        return try {
+            postUserFacebook(facebookToken)
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun postUserGoogleNew(googleAccessToken: String): Result<Unit> {
+        return try {
+            postUserGoogle(googleAccessToken)
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun postUserKakaoNew(kakaoAccessToken: String): Result<Unit> {
+        return try {
+            postUserKakao(kakaoAccessToken)
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun deleteUserFacebookNew(): Result<Unit> {
+        return try {
+            deleteUserFacebook()
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun deleteUserGoogleNew(): Result<Unit> {
+        return try {
+            deleteUserGoogle()
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun deleteUserKakaoNew(): Result<Unit> {
+        return try {
+            deleteUserKakao()
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
+    }
+
+    // endregion
 
     private suspend fun getFirebaseToken(): String {
         return suspendCoroutine { cont ->

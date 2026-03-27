@@ -1,63 +1,152 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.facebook.login.LoginManager
 import com.wafflestudio.snutt2.data.user.UserRepository
+import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
+import com.wafflestudio.snutt2.lib.network.DomainError
 import com.wafflestudio.snutt2.lib.network.dto.GetSocialProvidersResults
+import com.wafflestudio.snutt2.lib.network.onFailure
+import com.wafflestudio.snutt2.lib.network.onSuccess
 import com.wafflestudio.snutt2.model.SocialLoginType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SocialLinkViewModel @Inject constructor(
     private val userRepository: UserRepository,
+    private val displayMessageResolver: DisplayMessageResolver,
 ) : ViewModel() {
-    private val _socialProviders: MutableStateFlow<GetSocialProvidersResults> = MutableStateFlow(GetSocialProvidersResults(false, false, false, false, false))
-    val socialProviders = _socialProviders.asStateFlow()
 
-    suspend fun fetchUserInfo() {
-        userRepository.fetchUserInfo()
+    private val _uiState = MutableStateFlow(SocialLinkUiState())
+    val uiState: StateFlow<SocialLinkUiState> = _uiState.asStateFlow()
+
+    private val _uiEvent = MutableSharedFlow<SocialLinkUiEvent>()
+    val uiEvent = _uiEvent.asSharedFlow()
+
+    init {
+        fetchSocialProviders()
     }
 
-    suspend fun fetchSocialProviders() {
-        _socialProviders.emit(userRepository.getSocialProviders())
-    }
+    // region 소셜 연동 요청 → UiEvent로 SDK 실행 위임
 
-    suspend fun connectFacebook(token: String) {
-        userRepository.postUserFacebook(token)
-    }
-
-    suspend fun connectKakao(token: String) {
-        userRepository.postUserKakao(token)
-    }
-
-    suspend fun connectGoogle(token: String) {
-        userRepository.postUserGoogle(token)
-    }
-
-    suspend fun getAccessTokenByAuthCode(authCode: String, clientId: String, clientSecret: String): String? {
-        return userRepository.getAccessTokenByAuthCode(authCode = authCode, clientId = clientId, clientSecret = clientSecret)
-    }
-
-    suspend fun disconnectSocialLogin(type: SocialLoginType) {
-        when (type) {
-            SocialLoginType.FACEBOOK -> disconnectFacebook()
-            SocialLoginType.KAKAO -> disconnectKakao()
-            SocialLoginType.GOOGLE -> disconnectGoogle()
-            else -> {}
+    fun onFacebookConnectRequested() {
+        viewModelScope.launch {
+            _uiEvent.emit(SocialLinkUiEvent.LaunchFacebookLogin)
         }
     }
 
-    private suspend fun disconnectFacebook() {
-        userRepository.deleteUserFacebook()
+    fun onFacebookTokenReceived(token: String) {
+        viewModelScope.launch {
+            userRepository.postUserFacebookNew(token)
+                .onSuccess { refreshAfterConnect() }
+                .onFailure { handleError(it) }
+        }
     }
 
-    private suspend fun disconnectKakao() {
-        userRepository.deleteUserKakao()
+    fun onGoogleConnectRequested() {
+        viewModelScope.launch {
+            _uiEvent.emit(SocialLinkUiEvent.LaunchGoogleSignIn)
+        }
     }
 
-    private suspend fun disconnectGoogle() {
-        userRepository.deleteUserGoogle()
+    fun onGoogleAuthCodeReceived(authCode: String, clientId: String, clientSecret: String) {
+        viewModelScope.launch {
+            userRepository.getAccessTokenByAuthCodeNew(authCode, clientId, clientSecret)
+                .onSuccess { googleAccessToken ->
+                    userRepository.postUserGoogleNew(googleAccessToken)
+                        .onSuccess { refreshAfterConnect() }
+                        .onFailure { handleError(it) }
+                }
+                .onFailure { handleError(it) }
+        }
     }
+
+    fun onKakaoConnectRequested() {
+        viewModelScope.launch {
+            _uiEvent.emit(SocialLinkUiEvent.LaunchKakaoLogin)
+        }
+    }
+
+    fun onKakaoTokenReceived(token: String) {
+        viewModelScope.launch {
+            userRepository.postUserKakaoNew(token)
+                .onSuccess { refreshAfterConnect() }
+                .onFailure { handleError(it) }
+        }
+    }
+
+    // endregion
+
+    // region 연동 해제
+
+    fun showDisconnectDialog(type: SocialLoginType) {
+        _uiState.update { it.copy(disconnectDialogType = type) }
+    }
+
+    fun dismissDisconnectDialog() {
+        _uiState.update { it.copy(disconnectDialogType = SocialLoginType.NONE) }
+    }
+
+    fun confirmDisconnect() {
+        val type = _uiState.value.disconnectDialogType
+        viewModelScope.launch {
+            LoginManager.getInstance().logOut()
+            val result = when (type) {
+                SocialLoginType.FACEBOOK -> userRepository.deleteUserFacebookNew()
+                SocialLoginType.KAKAO -> userRepository.deleteUserKakaoNew()
+                SocialLoginType.GOOGLE -> userRepository.deleteUserGoogleNew()
+                else -> return@launch
+            }
+            result
+                .onSuccess {
+                    _uiState.update { it.copy(disconnectDialogType = SocialLoginType.NONE) }
+                    refreshAfterConnect()
+                }
+                .onFailure { handleError(it) }
+        }
+    }
+
+    // endregion
+
+    private fun fetchSocialProviders() {
+        viewModelScope.launch {
+            userRepository.getSocialProvidersNew()
+                .onSuccess { providers ->
+                    _uiState.update { it.copy(socialProviders = providers) }
+                }
+                .onFailure { handleError(it) }
+        }
+    }
+
+    private suspend fun refreshAfterConnect() {
+        userRepository.fetchUserInfo()
+        fetchSocialProviders()
+    }
+
+    private suspend fun handleError(error: DomainError) {
+        _uiEvent.emit(SocialLinkUiEvent.ShowToast(displayMessageResolver.getDisplayMessage(error)))
+    }
+}
+
+data class SocialLinkUiState(
+    val socialProviders: GetSocialProvidersResults = GetSocialProvidersResults(
+        local = false, facebook = false, google = false, kakao = false, apple = false,
+    ),
+    val disconnectDialogType: SocialLoginType = SocialLoginType.NONE,
+)
+
+sealed interface SocialLinkUiEvent {
+    data class ShowToast(val message: String) : SocialLinkUiEvent
+    data object LaunchGoogleSignIn : SocialLinkUiEvent
+    data object LaunchFacebookLogin : SocialLinkUiEvent
+    data object LaunchKakaoLogin : SocialLinkUiEvent
 }

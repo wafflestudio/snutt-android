@@ -130,4 +130,56 @@ interface UserRepository {
     suspend fun postUserKakao(kakaoAccessToken: String)
 
     suspend fun deleteUserKakao()
+
+    // region New methods (Result-returning)
+
+    suspend fun postSignInNew(id: String, password: String): Result<Unit>
+
+    suspend fun postSignUpNew(id: String, password: String, email: String): Result<Unit>
+
+    suspend fun patchUserInfoNew(nickname: String): Result<Unit>
+
+    suspend fun postFeedbackNew(email: String, detail: String): Result<Unit>
+
+    suspend fun findIdByEmailNew(email: String): Result<Unit>
+
+    suspend fun checkEmailByIdNew(id: String): Result<String>
+
+    suspend fun sendPwResetCodeToEmailNew(email: String): Result<Unit>
+
+    suspend fun verifyPwResetCodeNew(id: String, code: String): Result<Unit>
+
+    suspend fun resetPasswordNew(id: String, password: String, code: String): Result<Unit>
+
+    suspend fun sendCodeToEmailNew(email: String): Result<Unit>
+
+    suspend fun verifyEmailCodeNew(code: String): Result<Unit>
+
+    suspend fun getAccessTokenByAuthCodeNew(
+        authCode: String,
+        clientId: String,
+        clientSecret: String,
+    ): Result<String>
+
+    suspend fun getSocialProvidersNew(): Result<GetSocialProvidersResults>
+
+    suspend fun postLoginFacebookNew(facebookToken: String): Result<Unit>
+
+    suspend fun postLoginGoogleNew(googleAccessToken: String): Result<Unit>
+
+    suspend fun postLoginKakaoNew(kakaoAccessToken: String): Result<Unit>
+
+    suspend fun postUserFacebookNew(facebookToken: String): Result<Unit>
+
+    suspend fun postUserGoogleNew(googleAccessToken: String): Result<Unit>
+
+    suspend fun postUserKakaoNew(kakaoAccessToken: String): Result<Unit>
+
+    suspend fun deleteUserFacebookNew(): Result<Unit>
+
+    suspend fun deleteUserGoogleNew(): Result<Unit>
+
+    suspend fun deleteUserKakaoNew(): Result<Unit>
+
+    // endregion
 }

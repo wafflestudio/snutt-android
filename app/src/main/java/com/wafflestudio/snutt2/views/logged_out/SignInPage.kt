@@ -1,12 +1,26 @@
 package com.wafflestudio.snutt2.views.logged_out
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,154 +35,170 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.WebViewStyleButton
 import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.LoginParameter
 import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.*
-import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
-import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
-import kotlinx.coroutines.launch
+import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
 
 @Composable
 fun SignInPage(
+    viewModel: SignInViewModel = hiltViewModel<SignInViewModel>(),
     onNavigateHome: () -> Unit,
     onNavigateBack: () -> Unit,
     onNavigateFindId: () -> Unit,
     onNavigateFindPassword: () -> Unit,
 ) {
-    val apiOnError = LocalApiOnError.current
-    val apiOnProgress = LocalApiOnProgress.current
     val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
-    val focusManager = LocalFocusManager.current
     val analyticsLogger = LocalAnalyticsLogger.current
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val userViewModel = hiltViewModel<UserViewModel>()
-    val homeViewModel = hiltViewModel<HomeViewModel>()
-
-    var idField by remember { mutableStateOf("") }
-    var passwordField by remember { mutableStateOf("") }
-    val buttonEnabled by remember { derivedStateOf { idField.isNotEmpty() && passwordField.isNotEmpty() } }
-
-    val handleLocalSignIn = {
-        coroutineScope.launch {
-            launchSuspendApi(
-                apiOnProgress = apiOnProgress,
-                apiOnError = apiOnError,
-                loadingIndicatorTitle = context.getString(R.string.sign_in_sign_in_button),
-            ) {
-                analyticsLogger.logEvent(AnalyticsEvent.Login(LoginParameter(LoginParameter.Provider.LOCAL)))
-                userViewModel.loginLocal(idField, passwordField)
-                homeViewModel.refreshData()
-                onNavigateHome()
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                is SignInUiEvent.ShowToast -> context.toast(event.message)
+                is SignInUiEvent.NavigateHome -> onNavigateHome()
             }
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(SNUTTColors.White900)
-            .clicks { focusManager.clearFocus() }
-            .logImpression(AnalyticsScreen.Login),
-    ) {
-        SimpleTopBar(
-            title = stringResource(R.string.sign_in_app_bar_title),
-            onClickNavigateBack = onNavigateBack,
-        )
+    SignInScreen(
+        isLoading = uiState.isLoading,
+        onSignIn = { id, password ->
+            analyticsLogger.logEvent(AnalyticsEvent.Login(LoginParameter(LoginParameter.Provider.LOCAL)))
+            viewModel.signIn(id, password)
+        },
+        onNavigateBack = onNavigateBack,
+        onNavigateFindId = onNavigateFindId,
+        onNavigateFindPassword = onNavigateFindPassword,
+    )
+}
 
+@Composable
+private fun SignInScreen(
+    isLoading: Boolean,
+    onSignIn: (id: String, password: String) -> Unit,
+    onNavigateBack: () -> Unit,
+    onNavigateFindId: () -> Unit,
+    onNavigateFindPassword: () -> Unit,
+) {
+    val focusManager = LocalFocusManager.current
+
+    // TODO: 상태 뷰모델로 올리기
+    var idField by remember { mutableStateOf("") }
+    var passwordField by remember { mutableStateOf("") }
+    val buttonEnabled by remember { derivedStateOf { idField.isNotEmpty() && passwordField.isNotEmpty() } }
+
+    Box {
         Column(
             modifier = Modifier
-                .padding(20.dp),
+                .fillMaxSize()
+                .background(SNUTTColors.White900)
+                .clicks { focusManager.clearFocus() }
+                .logImpression(AnalyticsScreen.Login),
         ) {
+            SimpleTopBar(
+                title = stringResource(R.string.sign_in_app_bar_title),
+                onClickNavigateBack = onNavigateBack,
+            )
+
             Column(
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.spacedBy(20.dp),
-                modifier = Modifier
-                    .weight(1f),
+                modifier = Modifier.padding(20.dp),
             ) {
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(6.dp),
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.spacedBy(20.dp),
+                    modifier = Modifier.weight(1f),
                 ) {
-                    Text(
-                        text = stringResource(R.string.sign_in_id_title),
-                        style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
-                    )
-                    EditText(
-                        value = idField,
-                        onValueChange = { idField = it },
-                        hint = stringResource(R.string.sign_in_id_hint),
-                        textStyle = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
-                        keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                        singleLine = true,
-                    )
+                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Text(
+                            text = stringResource(R.string.sign_in_id_title),
+                            style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
+                        )
+                        EditText(
+                            value = idField,
+                            onValueChange = { idField = it },
+                            hint = stringResource(R.string.sign_in_id_hint),
+                            textStyle = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
+                            keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            singleLine = true,
+                        )
+                    }
+
+                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Text(
+                            text = stringResource(R.string.sign_in_password_title),
+                            style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
+                        )
+                        EditText(
+                            value = passwordField,
+                            onValueChange = { passwordField = it },
+                            hint = stringResource(R.string.sign_in_password_hint),
+                            textStyle = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                            keyboardActions = KeyboardActions(onDone = { onSignIn(idField, passwordField) }),
+                            visualTransformation = PasswordVisualTransformation(),
+                            singleLine = true,
+                        )
+                    }
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = stringResource(R.string.sign_in_find_id_button),
+                            style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
+                            textDecoration = TextDecoration.Underline,
+                            modifier = Modifier.clicks { onNavigateFindId() },
+                        )
+                        Text(
+                            text = "|",
+                            style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
+                            modifier = Modifier.padding(horizontal = 15.dp),
+                        )
+                        Text(
+                            text = stringResource(R.string.sign_in_find_password_button),
+                            style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
+                            textDecoration = TextDecoration.Underline,
+                            modifier = Modifier.clicks { onNavigateFindPassword() },
+                        )
+                    }
                 }
 
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(6.dp),
+                WebViewStyleButton(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .height(45.dp)
+                        .fillMaxWidth(),
+                    enabled = buttonEnabled,
+                    onClick = { onSignIn(idField, passwordField) },
                 ) {
                     Text(
-                        text = stringResource(R.string.sign_in_password_title),
-                        style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
-                    )
-                    EditText(
-                        value = passwordField,
-                        onValueChange = { passwordField = it },
-                        hint = stringResource(R.string.sign_in_password_hint),
-                        textStyle = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                        keyboardActions = KeyboardActions(onDone = { handleLocalSignIn() }),
-                        visualTransformation = PasswordVisualTransformation(),
-                        singleLine = true,
-                    )
-                }
-
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = stringResource(R.string.sign_in_find_id_button),
-                        style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
-                        textDecoration = TextDecoration.Underline,
-                        modifier = Modifier.clicks { onNavigateFindId() },
-                    )
-
-                    Text(
-                        text = "|",
-                        style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
-                        modifier = Modifier.padding(horizontal = 15.dp),
-                    )
-
-                    Text(
-                        text = stringResource(R.string.sign_in_find_password_button),
-                        style = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black600),
-                        textDecoration = TextDecoration.Underline,
-                        modifier = Modifier.clicks { onNavigateFindPassword() },
+                        text = stringResource(R.string.sign_in_sign_in_button),
+                        style = SNUTTTypography.button.copy(
+                            color = if (buttonEnabled) SNUTTColors.AllWhite else SNUTTColors.Gray600,
+                        ),
                     )
                 }
             }
+        }
 
-            WebViewStyleButton(
+        if (isLoading) {
+            Box(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(10.dp))
-                    .height(45.dp)
-                    .fillMaxWidth(),
-                enabled = buttonEnabled,
-                onClick = { handleLocalSignIn() },
+                    .fillMaxSize()
+                    .background(SNUTTColors.Black.copy(alpha = 0.4f)),
+                contentAlignment = Alignment.Center,
             ) {
-                Text(
-                    text = stringResource(R.string.sign_in_sign_in_button),
-                    style = SNUTTTypography.button.copy(
-                        color = if (buttonEnabled) SNUTTColors.AllWhite else SNUTTColors.Gray600,
-                    ),
-                )
+                CircularProgressIndicator(color = SNUTTColors.AllWhite)
             }
         }
     }
@@ -176,6 +206,12 @@ fun SignInPage(
 
 @Preview(showBackground = true)
 @Composable
-fun SignInPagePreview() {
-    SignInPage(onNavigateHome = {}, onNavigateBack = {}, onNavigateFindId = {}, onNavigateFindPassword = {})
+private fun SignInScreenPreview() {
+    SignInScreen(
+        isLoading = false,
+        onSignIn = { _, _ -> },
+        onNavigateBack = {},
+        onNavigateFindId = {},
+        onNavigateFindPassword = {},
+    )
 }
