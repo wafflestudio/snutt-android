@@ -1,12 +1,13 @@
 package com.wafflestudio.snutt2.views.logged_in.home.bookmark
 
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Modifier
 import com.wafflestudio.snutt2.components.compose.ModalBottomSheetPlaceholder
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
@@ -14,8 +15,7 @@ import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.domainmodel.TableTheme
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.views.LocalReviewWebView
-import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebView
+import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebViewNew
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.refactor.LectureDetail
 
 @Composable
@@ -61,9 +61,7 @@ fun BookmarkBottomSheetLayout(
                 }
 
                 is BookmarkUiState.BottomSheetType.Review -> {
-                    CompositionLocalProvider(LocalReviewWebView provides reviewWebViewContainer) {
-                        ReviewWebView(height = 0.95f)
-                    }
+                    ReviewWebViewNew(modifier = Modifier.fillMaxHeight(0.95f), reviewWebViewContainer = reviewWebViewContainer)
                 }
 
                 else -> {
@@ -106,9 +104,7 @@ private fun BookmarkLectureDetailSheetContent(
 
     ModalBottomSheetLayout(
         sheetContent = {
-            CompositionLocalProvider(LocalReviewWebView provides detailReviewWebViewContainer) {
-                ReviewWebView(height = 0.95f)
-            }
+            ReviewWebViewNew(modifier = Modifier.fillMaxHeight(0.95f), reviewWebViewContainer = detailReviewWebViewContainer)
         },
         sheetState = detailReviewSheetState,
         sheetShape = RoundedCornerShape(topStartPercent = 5, topEndPercent = 5),

@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
@@ -11,7 +12,6 @@ import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -30,8 +30,7 @@ import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.lib.getReviewUrl
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.isDarkMode
-import com.wafflestudio.snutt2.views.LocalReviewWebView
-import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebView
+import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebViewNew
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.refactor.LectureDetail
 import kotlinx.coroutines.launch
 
@@ -103,9 +102,7 @@ fun DeeplinkBookmarkLectureDetailRoute(
         is DeeplinkBookmarkLectureDetailUiState.Success -> {
             ModalBottomSheetLayout(
                 sheetContent = {
-                    CompositionLocalProvider(LocalReviewWebView provides reviewWebViewContainer) {
-                        ReviewWebView(height = 0.95f)
-                    }
+                    ReviewWebViewNew(modifier = Modifier.fillMaxHeight(0.95f), reviewWebViewContainer = reviewWebViewContainer)
                 },
                 sheetState = sheetState,
                 sheetShape = RoundedCornerShape(topStartPercent = 5, topEndPercent = 5),

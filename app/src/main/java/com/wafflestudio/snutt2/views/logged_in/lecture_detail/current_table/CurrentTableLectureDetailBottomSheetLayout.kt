@@ -1,15 +1,14 @@
 package com.wafflestudio.snutt2.views.logged_in.lecture_detail.current_table
 
-import com.wafflestudio.snutt2.components.compose.ModalBottomSheetPlaceholder
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import com.wafflestudio.snutt2.components.compose.ModalBottomSheetPlaceholder
 import com.wafflestudio.snutt2.domainmodel.LectureSession
 import com.wafflestudio.snutt2.domainmodel.SyllabusLecture
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
@@ -18,8 +17,7 @@ import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
 import com.wafflestudio.snutt2.lib.logging.ReviewDetailParameter
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
-import com.wafflestudio.snutt2.views.LocalReviewWebView
-import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebView
+import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebViewNew
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.refactor.DayTimePickerSheetContent
 
 @Composable
@@ -72,10 +70,8 @@ fun CurrentTableLectureDetailBottomSheetLayout(
                             ),
                         )
                     }
-                    // FIXME: 웹뷰 정리할 때 신경쓰기
-                    CompositionLocalProvider(LocalReviewWebView provides reviewWebViewContainer) {
-                        ReviewWebView(height = 0.95f)
-                    }
+                    ReviewWebViewNew(modifier = Modifier.fillMaxHeight(0.95f), reviewWebViewContainer = reviewWebViewContainer)
+
                 }
             }
         },
