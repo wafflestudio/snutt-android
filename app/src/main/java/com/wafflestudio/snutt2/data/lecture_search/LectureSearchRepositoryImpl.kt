@@ -5,15 +5,10 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.wafflestudio.snutt2.data.SNUTTStorage
-import com.wafflestudio.snutt2.domainmodel.CourseBook
-import com.wafflestudio.snutt2.domainmodel.LectureReviewInfo
 import com.wafflestudio.snutt2.domainmodel.SearchTag
 import com.wafflestudio.snutt2.domainmodel.SearchTime
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
-import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
-import com.wafflestudio.snutt2.lib.network.toDomainError
 import com.wafflestudio.snutt2.model.SearchTimeDto
 import com.wafflestudio.snutt2.model.TagDto
 import com.wafflestudio.snutt2.model.TagType
@@ -89,39 +84,6 @@ class LectureSearchRepositoryImpl @Inject constructor(
         val tagDto = TagDto(tag.type, tag.name)
         val previousStoredTags = storage.recentSearchedDepartments.get()
         storage.recentSearchedDepartments.update(previousStoredTags - tagDto)
-    }
-
-    override suspend fun getBuildings(places: List<String>): Result<List<LectureBuildingDto>> {
-        val joined = places.joinToString(",")
-        if (joined.isBlank()) return Result.Success(emptyList())
-        try {
-            val response = api._getBuildings(joined)
-            return Result.Success(response.content)
-        } catch (e: Exception) {
-            return Result.Fail(e.toDomainError())
-        }
-    }
-
-    override suspend fun getSyllabusUrl(
-        courseBook: CourseBook,
-        courseNumber: String,
-        lectureNumber: String,
-    ): Result<String> {
-        try {
-            val url = api._getCoursebooksOfficial(courseBook.year, courseBook.semester, courseNumber, lectureNumber).url
-            return Result.Success(url)
-        } catch (e: Exception) {
-            return Result.Fail(e.toDomainError())
-        }
-    }
-
-    override suspend fun getReviewInfo(lectureId: String): Result<LectureReviewInfo?> {
-        try {
-            val dto = api._getLectureReviewSummary(lectureId)
-            return Result.Success(LectureReviewInfo(id = dto.id, rating = dto.rating, reviewCount = dto.reviewCount ?: 0))
-        } catch (e: Exception) {
-            return Result.Fail(e.toDomainError())
-        }
     }
 
     companion object {

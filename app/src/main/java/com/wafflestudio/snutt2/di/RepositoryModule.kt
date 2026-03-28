@@ -8,6 +8,8 @@ import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepositoryImpl
 import com.wafflestudio.snutt2.data.friends.FriendRepository
 import com.wafflestudio.snutt2.data.friends.FriendRepositoryImpl
+import com.wafflestudio.snutt2.data.lecture_info.LectureInfoRepository
+import com.wafflestudio.snutt2.data.lecture_info.LectureInfoRepositoryImpl
 import com.wafflestudio.snutt2.data.lecture_diary.DiaryRepository
 import com.wafflestudio.snutt2.data.lecture_diary.DiaryRepositoryImpl
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
@@ -83,4 +85,7 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindsFriendRepository(impl: FriendRepositoryImpl): FriendRepository
+
+    @Binds
+    abstract fun bindsLectureInfoRepository(impl: LectureInfoRepositoryImpl): LectureInfoRepository
 }
