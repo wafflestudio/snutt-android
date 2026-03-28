@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2
 
-import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.lib.network.NetworkConnectivityManager
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.core.RemoteConfigDto
@@ -20,7 +19,6 @@ import javax.inject.Singleton
 @Singleton
 class RemoteConfig @Inject constructor(
     api: SNUTTRestApi,
-    userRepository: UserRepository,
     networkConnectivityManager: NetworkConnectivityManager,
 ) {
     private val config = MutableStateFlow(RemoteConfigDto())

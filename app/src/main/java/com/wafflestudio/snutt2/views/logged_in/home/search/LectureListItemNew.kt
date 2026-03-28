@@ -278,6 +278,32 @@ fun ExpandableLectureListItemNew(
 }
 
 @Composable
+fun LectureListItemButton(
+    title: String,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
+    content: @Composable () -> Unit,
+) {
+    Column(
+        modifier = modifier
+            .clicks {
+                onClick()
+            },
+        verticalArrangement = Arrangement.spacedBy(2.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        content()
+        Text(
+            text = title,
+            style = SNUTTTypography.body2.copy(
+                color = SNUTTColors.AllWhite,
+                fontSize = 10.sp,
+            ),
+        )
+    }
+}
+
+@Composable
 @Preview(showBackground = true)
 fun ExpandableLectureListItemNewPreview() {
     ExpandableLectureListItemNew(

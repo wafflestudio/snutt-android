@@ -10,9 +10,7 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.material.navigation.bottomSheet
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.IntOffset
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -22,7 +20,6 @@ import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.wafflestudio.snutt2.BuildConfig
-import com.wafflestudio.snutt2.components.compose.ModalState
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.CustomTheme
 import com.wafflestudio.snutt2.domainmodel.LectureColor
@@ -30,13 +27,8 @@ import com.wafflestudio.snutt2.lib.featureflag.FeatureFlag
 import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
 import com.wafflestudio.snutt2.navigation.getDeepLinkPath
 import com.wafflestudio.snutt2.test.TestRoute
-import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
-import com.wafflestudio.snutt2.views.logged_in.home.HomePage
-import com.wafflestudio.snutt2.views.logged_in.home.HomePageController
 import com.wafflestudio.snutt2.views.logged_in.home.HomePageNewRoute
-import com.wafflestudio.snutt2.views.logged_in.home.TableListViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.bookmark.BookmarkRoute
-import com.wafflestudio.snutt2.views.logged_in.home.search.SearchViewModel
 import com.wafflestudio.snutt2.views.logged_in.home.settings.AppReportPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.ChangeNicknamePage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.ColorModeSelectPage
@@ -55,20 +47,16 @@ import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.diary_history
 import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.diary_write.DiaryWriteRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailRoute
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailPage
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetailViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.current_table.AddCustomLectureRoute
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.current_table.CurrentTableLectureDetailRoute
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.current_table.LectureColorSelectorRoute
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.current_table.LectureColorSelectorViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.deeplink.DeeplinkBookmarkLectureDetailRoute
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.deeplink.DeeplinkTimetableLectureDetailRoute
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.deeplink.TimetableLectureDetailPage
 import com.wafflestudio.snutt2.views.logged_in.notifications.NotificationRoute
 import com.wafflestudio.snutt2.views.logged_in.table_lectures.refactor.TableLecturesRoute
 import com.wafflestudio.snutt2.views.logged_in.thememarket.ThemeMarketRoute
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyRoute
-import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyViewModel
 import com.wafflestudio.snutt2.views.logged_out.EmailVerificationPage
 import com.wafflestudio.snutt2.views.logged_out.FindIdPage
 import com.wafflestudio.snutt2.views.logged_out.ImportantNoticeRoute
@@ -79,56 +67,50 @@ import com.wafflestudio.snutt2.views.logged_out.reset_password.ResetPasswordPage
 
 internal fun NavGraphBuilder.buildRootNavGraph(
     navController: NavController,
-    homePageController: HomePageController,
-    modalState: ModalState,
     scheme: String,
 ) {
     onboardGraph(navController, scheme)
 
     composableRoot<NavigationDestination.Home> {
-        if (BuildConfig.DEBUG) {
-            HomePageNewRoute(
-                onNavigateLectureDetailNew = { lectureId, tableId, isFromTimetable ->
-                    navController.navigate(
-                        NavigationDestination.LectureDetailNew(lectureId = lectureId, tableId = tableId, isFromTimetable = isFromTimetable),
-                    ) {
-                        launchSingleTop = true
-                    }
-                },
-                onNavigateThemeDetail = { navController.navigate(NavigationDestination.ThemeDetail()) },
-                onNavigateLecturesOfTable = { navController.navigate(NavigationDestination.LecturesOfTable) },
-                onNavigateVacancyNotification = { navController.navigate(NavigationDestination.VacancyNotification) },
-                onNavigateBookmark = { navController.navigate(NavigationDestination.Bookmark) },
-                onNavigateAddLecture = { navController.navigate(NavigationDestination.AddCustomLectureNew) },
-                onNavigateOnboardAsOrigin = { navController.navigateAsOrigin(NavigationDestination.Onboard) },
-                onNavigateUserConfig = { navController.navigate(NavigationDestination.UserConfig) },
-                onNavigateNotification = { navController.navigate(NavigationDestination.Notification) },
-                onNavigateThemeModeSelect = { navController.navigate(NavigationDestination.ThemeModeSelect) },
-                onNavigateTimeTableConfig = { navController.navigate(NavigationDestination.TimeTableConfig) },
-                onNavigateThemeConfig = { navController.navigate(NavigationDestination.ThemeConfig) },
-                onNavigateThemeMarket = { navController.navigate(NavigationDestination.ThemeMarket) },
-                onNavigatePushPreference = { navController.navigate(NavigationDestination.PushPreferences) },
-                onNavigateLectureReminder = { navController.navigate(NavigationDestination.LectureReminder) },
-                onNavigateDiaryWrite = {
-                    navController.navigate(
-                        NavigationDestination.LectureDiaryWrite(
-                            lectureId = "695affb59dfd1a77c7c20778",
-                            courseTitle = "데이터사이언스를 위한 컴퓨팅 시스템",
-                        ),
-                    )
-                },
-                onNavigateDiaryHistory = { navController.navigate(NavigationDestination.LectureDiaryHistory) },
-                onNavigateTeamInfo = { navController.navigate(NavigationDestination.TeamInfo) },
-                onNavigateAppReport = { navController.navigate(NavigationDestination.AppReport) },
-                onNavigateOpenLicenses = { navController.navigate(NavigationDestination.OpenLicenses) },
-                onNavigateServiceInfo = { navController.navigate(NavigationDestination.ServiceInfo) },
-                onNavigatePersonalInformationPolicy = { navController.navigate(NavigationDestination.PersonalInformationPolicy) },
-                onNavigateNetworkLog = { navController.navigate(NavigationDestination.NetworkLog) },
-                onNavigateTest = { navController.navigate(NavigationDestination.Test) },
-            )
-        } else {
-            HomePage()
-        }
+        HomePageNewRoute(
+            onNavigateLectureDetailNew = { lectureId, tableId, isFromTimetable ->
+                navController.navigate(
+                    NavigationDestination.LectureDetailNew(lectureId = lectureId, tableId = tableId, isFromTimetable = isFromTimetable),
+                ) {
+                    launchSingleTop = true
+                }
+            },
+            onNavigateThemeDetail = { navController.navigate(NavigationDestination.ThemeDetail()) },
+            onNavigateLecturesOfTable = { navController.navigate(NavigationDestination.LecturesOfTable) },
+            onNavigateVacancyNotification = { navController.navigate(NavigationDestination.VacancyNotification) },
+            onNavigateBookmark = { navController.navigate(NavigationDestination.Bookmark) },
+            onNavigateAddLecture = { navController.navigate(NavigationDestination.AddCustomLectureNew) },
+            onNavigateOnboardAsOrigin = { navController.navigateAsOrigin(NavigationDestination.Onboard) },
+            onNavigateUserConfig = { navController.navigate(NavigationDestination.UserConfig) },
+            onNavigateNotification = { navController.navigate(NavigationDestination.Notification) },
+            onNavigateThemeModeSelect = { navController.navigate(NavigationDestination.ThemeModeSelect) },
+            onNavigateTimeTableConfig = { navController.navigate(NavigationDestination.TimeTableConfig) },
+            onNavigateThemeConfig = { navController.navigate(NavigationDestination.ThemeConfig) },
+            onNavigateThemeMarket = { navController.navigate(NavigationDestination.ThemeMarket) },
+            onNavigatePushPreference = { navController.navigate(NavigationDestination.PushPreferences) },
+            onNavigateLectureReminder = { navController.navigate(NavigationDestination.LectureReminder) },
+            onNavigateDiaryWrite = {
+                navController.navigate(
+                    NavigationDestination.LectureDiaryWrite(
+                        lectureId = "695affb59dfd1a77c7c20778",
+                        courseTitle = "데이터사이언스를 위한 컴퓨팅 시스템",
+                    ),
+                )
+            },
+            onNavigateDiaryHistory = { navController.navigate(NavigationDestination.LectureDiaryHistory) },
+            onNavigateTeamInfo = { navController.navigate(NavigationDestination.TeamInfo) },
+            onNavigateAppReport = { navController.navigate(NavigationDestination.AppReport) },
+            onNavigateOpenLicenses = { navController.navigate(NavigationDestination.OpenLicenses) },
+            onNavigateServiceInfo = { navController.navigate(NavigationDestination.ServiceInfo) },
+            onNavigatePersonalInformationPolicy = { navController.navigate(NavigationDestination.PersonalInformationPolicy) },
+            onNavigateNetworkLog = { navController.navigate(NavigationDestination.NetworkLog) },
+            onNavigateTest = { navController.navigate(NavigationDestination.Test) },
+        )
     }
 
     composableAnimated<NavigationDestination.ImportantNotice>(scheme) {
@@ -158,31 +140,6 @@ internal fun NavGraphBuilder.buildRootNavGraph(
             onNavigateLectureDetail = { lectureId, tableId ->
                 navController.navigate(NavigationDestination.LectureDetailNew(lectureId, tableId))
             },
-        )
-    }
-
-    composableAnimated<NavigationDestination.LectureDetail>(scheme) {
-        val parentEntry = remember(it) {
-            navController.getBackStackEntry(NavigationDestination.Home())
-        }
-        val referrer = when {
-            navController.previousBackStackEntry?.destination?.hasRoute(
-                NavigationDestination.LecturesOfTable::class,
-            ) == true
-                -> DetailScreenReferrer.LectureList
-
-            homePageController.homePageState.value == HomeItem.Timetable -> DetailScreenReferrer.Timetable
-            else -> null
-        }
-        val lectureDetailViewModel =
-            hiltViewModel<LectureDetailViewModel>(parentEntry)
-        val searchViewModel = hiltViewModel<SearchViewModel>(parentEntry)
-        val vacancyViewModel = hiltViewModel<VacancyViewModel>(parentEntry)
-        LectureDetailPage(
-            referrer = referrer,
-            vm = lectureDetailViewModel,
-            searchViewModel = searchViewModel,
-            vacancyViewModel = vacancyViewModel,
         )
     }
 
@@ -218,40 +175,6 @@ internal fun NavGraphBuilder.buildRootNavGraph(
         BookmarkRoute(
             onNavigateBack = { navController.popBackStack() },
             onNavigateToOnboard = { navController.navigateAsOrigin(NavigationDestination.Onboard) },
-        )
-    }
-
-    composableAnimated<NavigationDestination.TimetableLecture>(scheme) { backStackEntry ->
-        val homeBackStackEntry = remember(backStackEntry) {
-            navController.getBackStackEntry(NavigationDestination.Home())
-        }
-        val tableId =
-            backStackEntry.toRoute<NavigationDestination.TimetableLecture>().tableId
-        val lectureDetailViewModel =
-            hiltViewModel<LectureDetailViewModel>(homeBackStackEntry)
-        val tableListViewModel =
-            hiltViewModel<TableListViewModel>(homeBackStackEntry)
-        TimetableLectureDetailPage(
-            tableId,
-            lectureDetailViewModel,
-            tableListViewModel,
-        )
-    }
-
-    composableAnimated<NavigationDestination.LectureColorSelector>(scheme) {
-        LectureColorSelectorRoute(
-            onNavigateBackWithResult = { selectedColor ->
-                val (idx, fg, bg) = when (selectedColor) {
-                    is LectureColor.BuiltIn -> Triple(selectedColor.colorIndex, 0, 0)
-                    is LectureColor.Custom -> Triple(-1, selectedColor.foreground, selectedColor.background)
-                }
-                navController.previousBackStackEntry?.savedStateHandle?.apply {
-                    set(LectureColorSelectorViewModel.RESULT_COLOR_INDEX, idx)
-                    set(LectureColorSelectorViewModel.RESULT_FG, fg)
-                    set(LectureColorSelectorViewModel.RESULT_BG, bg)
-                }
-                navController.popBackStack()
-            },
         )
     }
 
@@ -306,7 +229,7 @@ internal fun NavGraphBuilder.buildRootNavGraph(
         )
     }
 
-    settingComposables(navController, homePageController, scheme)
+    settingComposables(navController, scheme)
 }
 
 private fun NavGraphBuilder.onboardGraph(navController: NavController, scheme: String) {
@@ -358,7 +281,6 @@ private fun NavGraphBuilder.onboardGraph(navController: NavController, scheme: S
 
 private fun NavGraphBuilder.settingComposables(
     navController: NavController,
-    homePageController: HomePageController,
     scheme: String,
 ) {
     composableAnimated<NavigationDestination.AppReport>(scheme) {

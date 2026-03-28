@@ -31,18 +31,13 @@ import com.google.firebase.FirebaseApp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.components.compose.*
-import com.wafflestudio.snutt2.deeplink.InstallInAppDeeplinkExecutor
 import com.wafflestudio.snutt2.lib.logging.AnalyticsLogger
-import com.wafflestudio.snutt2.lib.network.ApiOnError
-import com.wafflestudio.snutt2.lib.network.ApiOnProgress
 import com.wafflestudio.snutt2.navigation.getDeepLinkPath
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTheme
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
-import com.wafflestudio.snutt2.views.logged_in.home.HomePageController
 import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
-import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -54,12 +49,6 @@ class RootActivity : AppCompatActivity() {
     private val userViewModel: UserViewModel by viewModels()
 
     private val homeViewModel: HomeViewModel by viewModels()
-
-    @Inject
-    lateinit var popupState: PopupState
-
-    @Inject
-    lateinit var apiOnError: ApiOnError
 
     @Inject
     lateinit var remoteConfig: RemoteConfig
@@ -130,51 +119,8 @@ class RootActivity : AppCompatActivity() {
             )
         }
         val navController = rememberNavController(bottomSheetNavigator)
-        val initialHomeTab = remember {
-            parseHomePageDeeplink() ?: HomeItem.Timetable
-        }
-        val homePageController = remember {
-            HomePageController(initialHomeTab)
-        }
-        val compactMode by userViewModel.compactMode.collectAsState()
-
-        val bottomSheet = BottomSheet()
-        val dialogState = rememberModalState()
-        ShowModal(state = dialogState)
-
-        val apiOnProgress = remember {
-            object : ApiOnProgress {
-                override var progressShowing: Boolean = false
-
-                override fun showProgress(title: String?) {
-                    if (title != null) {
-                        progressShowing = true
-                        dialogState.set(onDismiss = {}, title = title) {
-                            LoadingIndicator()
-                        }.show()
-                    }
-                }
-
-                override fun hideProgress() {
-                    if (progressShowing) {
-                        dialogState.hide()
-                        progressShowing = false
-                    }
-                }
-            }
-        }
 
         CompositionLocalProvider(
-            LocalNavController provides navController,
-            LocalApiOnProgress provides apiOnProgress,
-            LocalApiOnError provides apiOnError,
-            LocalHomePageController provides homePageController,
-            LocalPopupState provides popupState,
-            LocalModalState provides dialogState,
-            LocalCompactState provides compactMode,
-            LocalBottomSheetState provides bottomSheet,
-            LocalRemoteConfig provides remoteConfig,
-            LocalNavBottomSheetState provides navBottomSheetState,
             LocalAnalyticsLogger provides analyticsLogger,
         ) {
             LaunchedEffect(Unit) {
@@ -204,7 +150,6 @@ class RootActivity : AppCompatActivity() {
                 }
             }
 
-            InstallInAppDeeplinkExecutor()
             ModalBottomSheetLayout(
                 bottomSheetNavigator = bottomSheetNavigator,
                 sheetGesturesEnabled = false,
@@ -217,8 +162,6 @@ class RootActivity : AppCompatActivity() {
                 ) {
                     buildRootNavGraph(
                         navController = navController,
-                        homePageController = homePageController,
-                        modalState = dialogState,
                         scheme = applicationContext.getString(R.string.scheme),
                     )
                 }
