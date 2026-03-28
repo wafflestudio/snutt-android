@@ -6,10 +6,7 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.domainmodel.PushPreferences
-import com.wafflestudio.snutt2.domainmodel.TableLectureCustom
-import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.domainmodel.User
-import com.wafflestudio.snutt2.domainmodel.toDataModel
 import com.wafflestudio.snutt2.domainmodel.toNetworkModel
 import com.wafflestudio.snutt2.lib.map
 import com.wafflestudio.snutt2.lib.network.dto.core.toDomainModel
@@ -19,13 +16,11 @@ import com.wafflestudio.snutt2.lib.network.SNUTTRestApiForGoogle
 import com.wafflestudio.snutt2.lib.network.dto.*
 import com.wafflestudio.snutt2.lib.network.Unknown
 import com.wafflestudio.snutt2.lib.network.toDomainError
-import com.wafflestudio.snutt2.lib.preferences.model.toDomainModel
 import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.lib.unwrap
 import com.wafflestudio.snutt2.ui.ThemeMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.resume
@@ -44,20 +39,9 @@ class UserRepositoryImpl @Inject constructor(
         .unwrap(externalScope)
         .map(externalScope) { it?.toDomainModel() }
 
-    override val tableTrimParam: StateFlow<TableTrimParam> = storage.tableTrimParam.asStateFlow().map(externalScope) {
-        it.toDomainModel()
-    }
-
-    override val tableLectureCustomOption: StateFlow<TableLectureCustom> =
-        storage.tableLectureCustom.asStateFlow().map(externalScope) {
-            it.toDomainModel()
-        }
-
     override val accessToken = storage.accessToken.asStateFlow()
 
     override val themeMode = storage.themeMode.asStateFlow()
-
-    override val compactMode = storage.compactMode.asStateFlow()
 
     override suspend fun postSignIn(id: String, password: String): Result<Unit> {
         return try {
@@ -171,70 +155,6 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun toggleForceFit(): Result<Unit> {
-        try {
-            val prevTrimParam = storage.tableTrimParam.get()
-            storage.tableTrimParam.update(
-                TableTrimParam(
-                    dayOfWeekFrom = prevTrimParam.dayOfWeekFrom,
-                    dayOfWeekTo = prevTrimParam.dayOfWeekTo,
-                    hourFrom = prevTrimParam.hourFrom,
-                    hourTo = prevTrimParam.hourTo,
-                    forceFitLectures = prevTrimParam.forceFitLectures.not(),
-                ).toDataModel(),
-            )
-            return Result.Success(Unit)
-        } catch (e: Exception) {
-            return Result.Fail(e.toDomainError())
-        }
-    }
-
-    override suspend fun setDayOfWeekRange(from: Int, to: Int): Result<Unit> {
-        try {
-            val prevTrimParam = storage.tableTrimParam.get()
-            storage.tableTrimParam.update(
-                TableTrimParam(
-                    dayOfWeekFrom = from,
-                    dayOfWeekTo = to,
-                    hourFrom = prevTrimParam.hourFrom,
-                    hourTo = prevTrimParam.hourTo,
-                    forceFitLectures = prevTrimParam.forceFitLectures,
-                ).toDataModel(),
-            )
-            return Result.Success(Unit)
-        } catch (e: Exception) {
-            return Result.Fail(e.toDomainError())
-        }
-    }
-
-    override suspend fun setHourRange(from: Int, to: Int): Result<Unit> {
-        try {
-            val prevTrimParam = storage.tableTrimParam.get()
-            storage.tableTrimParam.update(
-                TableTrimParam(
-                    dayOfWeekFrom = prevTrimParam.dayOfWeekFrom,
-                    dayOfWeekTo = prevTrimParam.dayOfWeekTo,
-                    hourFrom = from,
-                    hourTo = to,
-                    forceFitLectures = prevTrimParam.forceFitLectures,
-                ).toDataModel(),
-            )
-            return Result.Success(Unit)
-        } catch (e: Exception) {
-            return Result.Fail(e.toDomainError())
-        }
-    }
-
-    override suspend fun toggleCompactMode(): Result<Unit> {
-        try {
-            val compactMode = storage.compactMode.get()
-            storage.compactMode.update(compactMode.not())
-            return Result.Success(Unit)
-        } catch (e: Exception) {
-            return Result.Fail(e.toDomainError())
-        }
-    }
-
     override suspend fun getAccessToken(): Result<String> {
         return try {
             Result.Success(storage.accessToken.get())
@@ -337,54 +257,6 @@ class UserRepositoryImpl @Inject constructor(
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Fail(e.toDomainError())
-        }
-    }
-
-    override suspend fun toggleTitleVisible(): Result<Unit> {
-        try {
-            val prevTrimParam = storage.tableLectureCustom.get()
-            storage.tableLectureCustom.update(
-                prevTrimParam.copy(title = prevTrimParam.title.not()),
-            )
-            return Result.Success(Unit)
-        } catch (e: Exception) {
-            return Result.Fail(e.toDomainError())
-        }
-    }
-
-    override suspend fun togglePlaceVisible(): Result<Unit> {
-        try {
-            val prevTrimParam = storage.tableLectureCustom.get()
-            storage.tableLectureCustom.update(
-                prevTrimParam.copy(place = prevTrimParam.place.not()),
-            )
-            return Result.Success(Unit)
-        } catch (e: Exception) {
-            return Result.Fail(e.toDomainError())
-        }
-    }
-
-    override suspend fun toggleLectureNumberVisible(): Result<Unit> {
-        try {
-            val prevTrimParam = storage.tableLectureCustom.get()
-            storage.tableLectureCustom.update(
-                prevTrimParam.copy(lectureNumber = prevTrimParam.lectureNumber.not()),
-            )
-            return Result.Success(Unit)
-        } catch (e: Exception) {
-            return Result.Fail(e.toDomainError())
-        }
-    }
-
-    override suspend fun toggleInstructorVisible(): Result<Unit> {
-        try {
-            val prevTrimParam = storage.tableLectureCustom.get()
-            storage.tableLectureCustom.update(
-                prevTrimParam.copy(instructor = prevTrimParam.instructor.not()),
-            )
-            return Result.Success(Unit)
-        } catch (e: Exception) {
-            return Result.Fail(e.toDomainError())
         }
     }
 
@@ -539,9 +411,5 @@ class UserRepositoryImpl @Inject constructor(
                 },
             )
         }
-    }
-
-    companion object {
-        const val INFINITE_LONG_MILLIS = Long.MAX_VALUE
     }
 }
