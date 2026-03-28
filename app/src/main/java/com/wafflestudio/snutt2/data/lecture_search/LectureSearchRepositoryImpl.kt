@@ -33,8 +33,6 @@ class LectureSearchRepositoryImpl @Inject constructor(
             dtos.map { SearchTag.Regular(it.type, it.name) }
         }
 
-    override val firstBookmarkAlert = storage.firstBookmarkAlert.asStateFlow()
-
     override fun getLectureSearchResultStream(
         year: Long,
         semester: Long,
@@ -91,10 +89,6 @@ class LectureSearchRepositoryImpl @Inject constructor(
         val tagDto = TagDto(tag.type, tag.name)
         val previousStoredTags = storage.recentSearchedDepartments.get()
         storage.recentSearchedDepartments.update(previousStoredTags - tagDto)
-    }
-
-    override fun setFirstBookmarkAlertShown() {
-        storage.firstBookmarkAlert.update(false)
     }
 
     override suspend fun getBuildings(places: List<String>): Result<List<LectureBuildingDto>> {

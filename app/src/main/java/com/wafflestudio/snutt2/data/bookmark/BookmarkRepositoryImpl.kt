@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.data.bookmark
 
+import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.Lecture
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
@@ -18,6 +19,7 @@ import javax.inject.Singleton
 @Singleton
 class BookmarkRepositoryImpl @Inject constructor(
     private val api: SNUTTRestApi,
+    private val storage: SNUTTStorage,
 ) : BookmarkRepository {
 
     private val _bookmarks = MutableStateFlow<Map<CourseBook, List<SearchedLecture>>>(emptyMap())
@@ -66,6 +68,12 @@ class BookmarkRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
         }
+    }
+
+    override val firstBookmarkAlert = storage.firstBookmarkAlert.asStateFlow()
+
+    override fun setFirstBookmarkAlertShown() {
+        storage.firstBookmarkAlert.update(false)
     }
 
     private suspend fun getOrFetch(courseBook: CourseBook): List<SearchedLecture> {

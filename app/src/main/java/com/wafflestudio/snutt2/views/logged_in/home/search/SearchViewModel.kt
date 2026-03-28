@@ -100,7 +100,7 @@ class SearchViewModel @Inject constructor(
                 tableLectureCustomOptions = userRepository.tableLectureCustomOption.value,
                 tableTheme = BuiltInTheme.SNUTT,
                 isCompactMode = userRepository.compactMode.value,
-                firstBookmarkAlert = lectureSearchRepository.firstBookmarkAlert.value,
+                firstBookmarkAlert = bookmarkRepository.firstBookmarkAlert.value,
                 bookmarks = bookmarkRepository.bookmarks.value[table.summary.courseBook] ?: emptyList(),
                 vacancyList = vacancyRepository.vacancyLectures.value,
                 disableMapFeature = true,
@@ -172,7 +172,7 @@ class SearchViewModel @Inject constructor(
                     ::Triple,
                 ),
                 combine(
-                    lectureSearchRepository.firstBookmarkAlert,
+                    bookmarkRepository.firstBookmarkAlert,
                     lectureSearchRepository.recentSearchedDepartmentTags,
                     getCurrentTableThemeUseCase(),
                     ::Triple,
@@ -369,8 +369,8 @@ class SearchViewModel @Inject constructor(
                 val courseBook = currentTableRepository.currentTable.value?.summary?.courseBook ?: return@launch
                 bookmarkRepository.addBookmark(courseBook, lecture).onFailure { handleSearchError(it); return@launch }
 
-                if (lectureSearchRepository.firstBookmarkAlert.value) {
-                    lectureSearchRepository.setFirstBookmarkAlertShown()
+                if (bookmarkRepository.firstBookmarkAlert.value) {
+                    bookmarkRepository.setFirstBookmarkAlertShown()
                     _uiEvent.emit(SearchUiEvent.ShowSnackBar(SearchUiEvent.ShowSnackBar.SearchSnackBarEvent.FIRST_BOOKMARK_ADD))
                 }
             }
