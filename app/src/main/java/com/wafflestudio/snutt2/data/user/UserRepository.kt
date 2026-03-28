@@ -1,8 +1,6 @@
 package com.wafflestudio.snutt2.data.user
 
 import com.wafflestudio.snutt2.domainmodel.PushPreferences
-import com.wafflestudio.snutt2.domainmodel.TableLectureCustom
-import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.domainmodel.User
 import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.dto.GetSocialProvidersResults
@@ -12,15 +10,9 @@ import kotlinx.coroutines.flow.StateFlow
 interface UserRepository {
     val user: StateFlow<User?>
 
-    val tableTrimParam: StateFlow<TableTrimParam>
-
-    val tableLectureCustomOption: StateFlow<TableLectureCustom>
-
     val accessToken: StateFlow<String>
 
     val themeMode: StateFlow<ThemeMode>
-
-    val compactMode: StateFlow<Boolean>
 
     suspend fun postSignIn(id: String, password: String): Result<Unit>
 
@@ -40,23 +32,9 @@ interface UserRepository {
 
     suspend fun postForceLogout(): Result<Unit>
 
-    suspend fun toggleForceFit(): Result<Unit>
-
-    suspend fun setDayOfWeekRange(from: Int, to: Int): Result<Unit>
-
-    suspend fun setHourRange(from: Int, to: Int): Result<Unit>
-
-    suspend fun toggleCompactMode(): Result<Unit>
-
     suspend fun getAccessToken(): Result<String>
 
     suspend fun performLogout(): Result<Unit>
-
-    suspend fun fetchAndSetPopup(): Result<Unit>
-
-    suspend fun closePopupWithHiddenDays(): Result<Unit>
-
-    suspend fun closePopup(): Result<Unit>
 
     suspend fun registerToken(): Result<Unit>
 
@@ -75,14 +53,6 @@ interface UserRepository {
     suspend fun sendCodeToEmail(email: String): Result<Unit>
 
     suspend fun verifyEmailCode(code: String): Result<Unit>
-
-    suspend fun toggleTitleVisible(): Result<Unit>
-
-    suspend fun togglePlaceVisible(): Result<Unit>
-
-    suspend fun toggleLectureNumberVisible(): Result<Unit>
-
-    suspend fun toggleInstructorVisible(): Result<Unit>
 
     suspend fun getAccessTokenByAuthCode(
         authCode: String,

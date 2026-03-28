@@ -2,7 +2,6 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings.theme
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
@@ -32,7 +31,6 @@ import javax.inject.Inject
 class ThemeConfigViewModel @Inject constructor(
     private val themeRepository: ThemeRepository,
     private val tableRepository: TableRepository,
-    private val currentTableRepository: CurrentTableRepository,
     private val userRepository: UserRepository,
     private val displayMessageResolver: DisplayMessageResolver,
 ) : ViewModel() {
@@ -109,7 +107,7 @@ class ThemeConfigViewModel @Inject constructor(
             }
             _uiEvent.emit(ThemeConfigUiEvent.CloseBottomSheet)
 
-            val currentTableId = currentTableRepository.currentTable.value?.summary?.id ?: return@launch
+            val currentTableId = tableRepository.currentTable.value?.summary?.id ?: return@launch
             when (theme) {
                 is CustomTheme -> tableRepository.updateTableTheme(currentTableId, theme.id)
                 is BuiltInTheme -> tableRepository.updateTableTheme(currentTableId, theme.code)
@@ -148,10 +146,10 @@ class ThemeConfigViewModel @Inject constructor(
 
             themeRepository.deleteTheme(theme.id)
                 .onSuccess {
-                    val currentTable = currentTableRepository.currentTable.value ?: return@onSuccess
+                    val currentTable = tableRepository.currentTable.value ?: return@onSuccess
                     val isApplied = (currentTable.themeRef as? ThemeReference.Custom)?.themeId == theme.id
                     if (isApplied) {
-                        tableRepository.fetchTableById(currentTable.summary.id)
+                        tableRepository.fetchAndSelectTable(currentTable.summary.id)
                             .onFailure { error -> handleError(error) }
                     }
                 }

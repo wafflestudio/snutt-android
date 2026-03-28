@@ -2,7 +2,8 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
+import com.wafflestudio.snutt2.data.table_display.TableDisplayRepository
+import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
@@ -27,8 +28,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TimetableConfigViewModel @Inject constructor(
+    private val tableDisplayRepository: TableDisplayRepository,
     private val userRepository: UserRepository,
-    currentTableRepository: CurrentTableRepository,
+    tableRepository: TableRepository,
     getCurrentTableThemeUseCase: GetCurrentTableThemeUseCase,
     private val displayMessageResolver: DisplayMessageResolver,
 ) : ViewModel() {
@@ -37,7 +39,7 @@ class TimetableConfigViewModel @Inject constructor(
 
     fun toggleAutoTrim() {
         viewModelScope.launch {
-            userRepository.toggleForceFit()
+            tableDisplayRepository.toggleForceFit()
                 .onFailure { error ->
                     handleTimetableConfigError(error)
                 }
@@ -46,7 +48,7 @@ class TimetableConfigViewModel @Inject constructor(
 
     fun setDayOfWeekRange(from: Int, to: Int) {
         viewModelScope.launch {
-            userRepository.setDayOfWeekRange(from, to)
+            tableDisplayRepository.setDayOfWeekRange(from, to)
                 .onFailure { error ->
                     handleTimetableConfigError(error)
                 }
@@ -55,7 +57,7 @@ class TimetableConfigViewModel @Inject constructor(
 
     fun setHourRange(from: Int, to: Int) {
         viewModelScope.launch {
-            userRepository.setHourRange(from, to)
+            tableDisplayRepository.setHourRange(from, to)
                 .onFailure { error ->
                     handleTimetableConfigError(error)
                 }
@@ -64,7 +66,7 @@ class TimetableConfigViewModel @Inject constructor(
 
     fun toggleCompactMode() {
         viewModelScope.launch {
-            userRepository.toggleCompactMode()
+            tableDisplayRepository.toggleCompactMode()
                 .onFailure { error ->
                     handleTimetableConfigError(error)
                 }
@@ -73,7 +75,7 @@ class TimetableConfigViewModel @Inject constructor(
 
     fun toggleTitleVisible() {
         viewModelScope.launch {
-            userRepository.toggleTitleVisible()
+            tableDisplayRepository.toggleTitleVisible()
                 .onFailure { error ->
                     handleTimetableConfigError(error)
                 }
@@ -82,7 +84,7 @@ class TimetableConfigViewModel @Inject constructor(
 
     fun togglePlaceVisible() {
         viewModelScope.launch {
-            userRepository.togglePlaceVisible()
+            tableDisplayRepository.togglePlaceVisible()
                 .onFailure { error ->
                     handleTimetableConfigError(error)
                 }
@@ -91,7 +93,7 @@ class TimetableConfigViewModel @Inject constructor(
 
     fun toggleLectureNumberVisible() {
         viewModelScope.launch {
-            userRepository.toggleLectureNumberVisible()
+            tableDisplayRepository.toggleLectureNumberVisible()
                 .onFailure { error ->
                     handleTimetableConfigError(error)
                 }
@@ -100,7 +102,7 @@ class TimetableConfigViewModel @Inject constructor(
 
     fun toggleInstructorVisible() {
         viewModelScope.launch {
-            userRepository.toggleInstructorVisible()
+            tableDisplayRepository.toggleInstructorVisible()
                 .onFailure { error ->
                     handleTimetableConfigError(error)
                 }
@@ -108,10 +110,10 @@ class TimetableConfigViewModel @Inject constructor(
     }
 
     val timeTableConfigUiState = combine(
-        userRepository.tableTrimParam,
-        userRepository.compactMode,
-        userRepository.tableLectureCustomOption,
-        currentTableRepository.currentTable.filterNotNull(),
+        tableDisplayRepository.tableTrimParam,
+        tableDisplayRepository.compactMode,
+        tableDisplayRepository.tableLectureCustomOption,
+        tableRepository.currentTable.filterNotNull(),
         getCurrentTableThemeUseCase(),
     ) { tableTrimParam, compactMode, tableLectureCustom, currentTable, theme ->
         TimeTableConfigUiState(

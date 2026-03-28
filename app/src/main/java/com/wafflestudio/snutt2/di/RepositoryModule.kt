@@ -4,18 +4,24 @@ import com.wafflestudio.snutt2.data.bookmark.BookmarkRepository
 import com.wafflestudio.snutt2.data.bookmark.BookmarkRepositoryImpl
 import com.wafflestudio.snutt2.data.course_books.CourseBookRepository
 import com.wafflestudio.snutt2.data.course_books.CourseBookRepositoryImpl
-import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
-import com.wafflestudio.snutt2.data.current_table.CurrentTableRepositoryImpl
+import com.wafflestudio.snutt2.data.current_table_lecture.CurrentTableLectureRepository
+import com.wafflestudio.snutt2.data.current_table_lecture.CurrentTableLectureRepositoryImpl
 import com.wafflestudio.snutt2.data.friends.FriendRepository
 import com.wafflestudio.snutt2.data.friends.FriendRepositoryImpl
 import com.wafflestudio.snutt2.data.lecture_diary.DiaryRepository
 import com.wafflestudio.snutt2.data.lecture_diary.DiaryRepositoryImpl
+import com.wafflestudio.snutt2.data.lecture_info.LectureInfoRepository
+import com.wafflestudio.snutt2.data.lecture_info.LectureInfoRepositoryImpl
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepositoryImpl
 import com.wafflestudio.snutt2.data.notifications.NotificationRepository
 import com.wafflestudio.snutt2.data.notifications.NotificationRepositoryImpl
+import com.wafflestudio.snutt2.data.popup.PopupRepository
+import com.wafflestudio.snutt2.data.popup.PopupRepositoryImpl
 import com.wafflestudio.snutt2.data.semester_status.SemesterStatusRepository
 import com.wafflestudio.snutt2.data.semester_status.SemesterStatusRepositoryImpl
+import com.wafflestudio.snutt2.data.table_display.TableDisplayRepository
+import com.wafflestudio.snutt2.data.table_display.TableDisplayRepositoryImpl
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.tables.TableRepositoryImpl
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
@@ -42,13 +48,19 @@ abstract class RepositoryModule {
     abstract fun bindsCourseBookRepository(impl: CourseBookRepositoryImpl): CourseBookRepository
 
     @Binds
-    abstract fun bindsCurrentTableRepository(impl: CurrentTableRepositoryImpl): CurrentTableRepository
+    abstract fun bindsCurrentTableLectureRepository(impl: CurrentTableLectureRepositoryImpl): CurrentTableLectureRepository
 
     @Binds
     abstract fun bindsLectureRepository(impl: LectureSearchRepositoryImpl): LectureSearchRepository
 
     @Binds
     abstract fun bindsNotificationRepository(impl: NotificationRepositoryImpl): NotificationRepository
+
+    @Binds
+    abstract fun bindsPopupRepository(impl: PopupRepositoryImpl): PopupRepository
+
+    @Binds
+    abstract fun bindsTableDisplayRepository(impl: TableDisplayRepositoryImpl): TableDisplayRepository
 
     @Binds
     abstract fun bindsTableRepository(impl: TableRepositoryImpl): TableRepository
@@ -73,4 +85,7 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindsFriendRepository(impl: FriendRepositoryImpl): FriendRepository
+
+    @Binds
+    abstract fun bindsLectureInfoRepository(impl: LectureInfoRepositoryImpl): LectureInfoRepository
 }

@@ -28,6 +28,23 @@ class TableRepositoryImpl @Inject constructor(
     private val snuttStorage: SNUTTStorage,
 ) : TableRepository {
 
+    override val currentTable: StateFlow<Table?>
+        get() = object : StateFlow<Table?> {
+            private val source = snuttStorage.lastViewedTable.asStateFlow()
+
+            override val value: Table?
+                get() = source.value.value?.let { Table.fromTableDto(it) }
+
+            override val replayCache: List<Table?>
+                get() = listOf(value)
+
+            override suspend fun collect(collector: kotlinx.coroutines.flow.FlowCollector<Table?>): Nothing {
+                source.collect { optionalDto ->
+                    collector.emit(optionalDto.value?.let { Table.fromTableDto(it) })
+                }
+            }
+        }
+
     override val tableSummaryList: StateFlow<List<TableSummary>>
         get() = object : StateFlow<List<TableSummary>> {
             private val source = snuttStorage.tableMap.asStateFlow()
@@ -51,7 +68,14 @@ class TableRepositoryImpl @Inject constructor(
             }
         }
 
-    override suspend fun fetchDefaultTable(): Result<Unit> {
+    override suspend fun updateCurrentTable() {
+        val prevTable = snuttStorage.lastViewedTable.get().value
+            ?: return
+        val response = api._getTableById(prevTable.id)
+        snuttStorage.lastViewedTable.update(response.toOptional())
+    }
+
+    override suspend fun fetchAndSelectDefaultTable(): Result<Unit> {
         return try {
             val response = api._getRecentTable()
             snuttStorage.lastViewedTable.update(response.toOptional())
@@ -71,7 +95,7 @@ class TableRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun fetchTableById(id: String): Result<Unit> {
+    override suspend fun fetchAndSelectTable(id: String): Result<Unit> {
         return try {
             val response = api._getTableById(id)
             snuttStorage.lastViewedTable.update(response.toOptional())
@@ -90,7 +114,7 @@ class TableRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun createTable(courseBook: CourseBook, title: String): Result<Unit> {
+    override suspend fun createAndSelectTable(courseBook: CourseBook, title: String): Result<Unit> {
         try {
             val response = api._postTable(
                 PostTableParams(
@@ -104,7 +128,7 @@ class TableRepositoryImpl @Inject constructor(
             response
                 .firstOrNull { it.year == courseBook.year && it.semester == courseBook.semester && it.title == title }
                 ?.let {
-                    fetchTableById(it.id)
+                    fetchAndSelectTable(it.id)
                 }
 
             return Result.Success(Unit)

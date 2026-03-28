@@ -17,4 +17,8 @@ interface BookmarkRepository {
     suspend fun addBookmark(courseBook: CourseBook, lecture: Lecture): Result<Unit>
 
     suspend fun deleteBookmark(courseBook: CourseBook, lecture: Lecture): Result<Unit>
+
+    val firstBookmarkAlert: StateFlow<Boolean>
+
+    fun setFirstBookmarkAlertShown()
 }

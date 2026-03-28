@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.views.logged_in.home.friend
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.friends.FriendRepository
+import com.wafflestudio.snutt2.data.table_display.TableDisplayRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.CourseBook
@@ -31,6 +32,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FriendsViewModel @Inject constructor(
     private val friendRepository: FriendRepository,
+    private val tableDisplayRepository: TableDisplayRepository,
     private val userRepository: UserRepository,
     private val displayMessageResolver: DisplayMessageResolver,
 ) : ViewModel() {
@@ -84,8 +86,8 @@ class FriendsViewModel @Inject constructor(
                                                                 is ThemeReference.Custom -> BuiltInTheme.SNUTT
                                                             },
                                                             selectedFriendTableTrimParam = table.lectures.getFittingTrimParam(TableTrimParam.Default),
-                                                            compactMode = userRepository.compactMode.value,
-                                                            tableLectureCustomOptions = userRepository.tableLectureCustomOption.value,
+                                                            compactMode = tableDisplayRepository.compactMode.value,
+                                                            tableLectureCustomOptions = tableDisplayRepository.tableLectureCustomOption.value,
                                                         )
                                                     }
                                                 }
@@ -102,9 +104,9 @@ class FriendsViewModel @Inject constructor(
                                                     selectedFriendCourseBooks = courseBooks,
                                                     selectedCourseBook = null,
                                                     selectedFriendTable = null,
-                                                    compactMode = userRepository.compactMode.value,
-                                                    tableLectureCustomOptions = userRepository.tableLectureCustomOption.value,
-                                                    selectedFriendTableTrimParam = userRepository.tableTrimParam.value,
+                                                    compactMode = tableDisplayRepository.compactMode.value,
+                                                    tableLectureCustomOptions = tableDisplayRepository.tableLectureCustomOption.value,
+                                                    selectedFriendTableTrimParam = tableDisplayRepository.tableTrimParam.value,
                                                     selectedFriendTableTheme = BuiltInTheme.SNUTT,
                                                 )
                                             }
@@ -123,9 +125,9 @@ class FriendsViewModel @Inject constructor(
                                         selectedFriendCourseBooks = emptyList(),
                                         selectedCourseBook = null,
                                         selectedFriendTable = null,
-                                        compactMode = userRepository.compactMode.value,
-                                        tableLectureCustomOptions = userRepository.tableLectureCustomOption.value,
-                                        selectedFriendTableTrimParam = userRepository.tableTrimParam.value,
+                                        compactMode = tableDisplayRepository.compactMode.value,
+                                        tableLectureCustomOptions = tableDisplayRepository.tableLectureCustomOption.value,
+                                        selectedFriendTableTrimParam = tableDisplayRepository.tableTrimParam.value,
                                         selectedFriendTableTheme = BuiltInTheme.SNUTT,
                                     )
                                 }

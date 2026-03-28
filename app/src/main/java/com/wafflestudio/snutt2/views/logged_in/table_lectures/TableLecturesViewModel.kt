@@ -2,7 +2,7 @@ package com.wafflestudio.snutt2.views.logged_in.table_lectures
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
+import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.domainmodel.LocalLecture
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -14,11 +14,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TableLecturesViewModel @Inject constructor(
-    private val currentTableRepository: CurrentTableRepository,
+    private val tableRepository: TableRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(
         TableLecturesUiState(
-            lectures = currentTableRepository.currentTable.value?.lectures ?: emptyList(),
+            lectures = tableRepository.currentTable.value?.lectures ?: emptyList(),
         ),
     )
     val uiState = _uiState.asStateFlow()
@@ -28,7 +28,7 @@ class TableLecturesViewModel @Inject constructor(
 
     fun onNavigateLectureDetail(lecture: LocalLecture) {
         viewModelScope.launch {
-            val tableId = currentTableRepository.currentTable.value?.summary?.id
+            val tableId = tableRepository.currentTable.value?.summary?.id
             _uiEvent.emit(TableLecturesUiEvent.NavigateToLectureDetail(lecture.id, tableId))
         }
     }

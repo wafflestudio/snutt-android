@@ -1,6 +1,6 @@
 package com.wafflestudio.snutt2.domain
 
-import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
+import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.TableTheme
@@ -11,11 +11,11 @@ import javax.inject.Inject
 
 class GetCurrentTableThemeUseCase @Inject constructor(
     private val themeRepository: ThemeRepository,
-    private val currentTableRepository: CurrentTableRepository,
+    private val tableRepository: TableRepository,
 ) {
     operator fun invoke(): Flow<TableTheme> {
         return combine(
-            currentTableRepository.currentTable,
+            tableRepository.currentTable,
             themeRepository.customThemes,
         ) { table, _ ->
             table?.themeRef?.let { ref ->

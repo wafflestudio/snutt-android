@@ -4,10 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.data.course_books.CourseBookRepository
-import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.notifications.NotificationRepository
+import com.wafflestudio.snutt2.data.table_display.TableDisplayRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
-import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
 import com.wafflestudio.snutt2.domainmodel.Table
 import com.wafflestudio.snutt2.domainmodel.TableLectureCustom
@@ -33,8 +32,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TimeTableViewModel @Inject constructor(
-    private val currentTableRepository: CurrentTableRepository,
-    private val userRepository: UserRepository,
+    private val tableDisplayRepository: TableDisplayRepository,
     private val getCurrentTableThemeUseCase: GetCurrentTableThemeUseCase,
     private val tableRepository: TableRepository,
     private val notificationRepository: NotificationRepository,
@@ -64,12 +62,12 @@ class TimeTableViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             combine(
-                currentTableRepository.currentTable.filterNotNull(),
+                tableRepository.currentTable.filterNotNull(),
                 getCurrentTableThemeUseCase(),
                 combine(
-                    userRepository.tableTrimParam,
-                    userRepository.compactMode,
-                    userRepository.tableLectureCustomOption,
+                    tableDisplayRepository.tableTrimParam,
+                    tableDisplayRepository.compactMode,
+                    tableDisplayRepository.tableLectureCustomOption,
                     ::Triple,
                 ),
                 combine(
@@ -80,7 +78,7 @@ class TimeTableViewModel @Inject constructor(
                 combine(
                     notificationRepository.notificationCount,
                     remoteConfig.vacancyNotificationBannerEnabled,
-                    currentTableRepository.isVisitedSessionlessLectureList,
+                    tableDisplayRepository.isVisitedSessionlessLectureList,
                     ::Triple,
                 ),
             ) { table, theme, (tableTrimParam, compactMode, tableLectureCustomOption), (tableMap, coursebooks), (count, vacancy, isVisited) ->
@@ -122,7 +120,7 @@ class TimeTableViewModel @Inject constructor(
             }
         }
         viewModelScope.launch {
-            currentTableRepository.visitSessionlessLectureList()
+            tableDisplayRepository.visitSessionlessLectureList()
         }
     }
 

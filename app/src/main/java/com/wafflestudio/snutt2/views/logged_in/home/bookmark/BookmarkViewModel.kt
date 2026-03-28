@@ -4,9 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.data.bookmark.BookmarkRepository
-import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
-import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
+import com.wafflestudio.snutt2.data.current_table_lecture.CurrentTableLectureRepository
+import com.wafflestudio.snutt2.data.lecture_info.LectureInfoRepository
 import com.wafflestudio.snutt2.data.notifications.NotificationRepository
+import com.wafflestudio.snutt2.data.table_display.TableDisplayRepository
+import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.data.vacancy_noti.VacancyRepository
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
@@ -49,12 +51,14 @@ import javax.inject.Inject
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class BookmarkViewModel @Inject constructor(
-    private val currentTableRepository: CurrentTableRepository,
+    private val currentTableLectureRepository: CurrentTableLectureRepository,
+    private val tableRepository: TableRepository,
     private val bookmarkRepository: BookmarkRepository,
+    private val tableDisplayRepository: TableDisplayRepository,
     private val userRepository: UserRepository,
     private val vacancyRepository: VacancyRepository,
     private val notificationRepository: NotificationRepository,
-    private val lectureSearchRepository: LectureSearchRepository,
+    private val lectureInfoRepository: LectureInfoRepository,
     private val getCurrentTableThemeUseCase: GetCurrentTableThemeUseCase,
     private val remoteConfig: RemoteConfig,
     private val displayMessageResolver: DisplayMessageResolver,
@@ -71,11 +75,11 @@ class BookmarkViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             combine(
-                currentTableRepository.currentTable.filterNotNull(),
+                tableRepository.currentTable.filterNotNull(),
                 combine(
-                    userRepository.tableTrimParam,
-                    userRepository.tableLectureCustomOption,
-                    userRepository.compactMode,
+                    tableDisplayRepository.tableTrimParam,
+                    tableDisplayRepository.tableLectureCustomOption,
+                    tableDisplayRepository.compactMode,
                     ::Triple,
                 ),
                 combine(
@@ -86,7 +90,7 @@ class BookmarkViewModel @Inject constructor(
                 ),
                 vacancyRepository.vacancyLectures,
                 // C-2: courseBook 변경 시 bookmark refetch
-                currentTableRepository.currentTable
+                tableRepository.currentTable
                     .filterNotNull()
                     .distinctUntilChanged { o, n -> o.summary.courseBook == n.summary.courseBook }
                     .flatMapLatest { table ->
@@ -172,7 +176,7 @@ class BookmarkViewModel @Inject constructor(
             }
         } else {
             viewModelScope.launch {
-                val courseBook = currentTableRepository.currentTable.value?.summary?.courseBook ?: return@launch
+                val courseBook = tableRepository.currentTable.value?.summary?.courseBook ?: return@launch
                 bookmarkRepository.addBookmark(courseBook, lecture)
                     .onFailure { handleError(it) }
             }
@@ -181,7 +185,7 @@ class BookmarkViewModel @Inject constructor(
 
     fun onConfirmDeleteBookmark(lecture: SearchedLecture) {
         viewModelScope.launch {
-            val courseBook = currentTableRepository.currentTable.value?.summary?.courseBook ?: return@launch
+            val courseBook = tableRepository.currentTable.value?.summary?.courseBook ?: return@launch
             bookmarkRepository.deleteBookmark(courseBook, lecture)
                 .onFailure { handleError(it) }
 
@@ -231,7 +235,7 @@ class BookmarkViewModel @Inject constructor(
 
         viewModelScope.launch {
             if (contained) {
-                currentTableRepository.removeLecture(lecture)
+                currentTableLectureRepository.removeLecture(lecture)
                     .onSuccess { onToggleLectureSelection(lecture) }
                     .onFailure { handleError(it) }
             } else {
@@ -319,7 +323,8 @@ class BookmarkViewModel @Inject constructor(
 
     fun openSyllabus(lecture: SearchedLecture) {
         viewModelScope.launch {
-            currentTableRepository.getSyllabusUrl(lecture.courseNumber, lecture.lectureNumber)
+            val courseBook = tableRepository.currentTable.value?.summary?.courseBook ?: return@launch
+            lectureInfoRepository.getSyllabusUrl(courseBook, lecture.courseNumber, lecture.lectureNumber)
                 .onSuccess { url -> _uiEvent.emit(BookmarkUiEvent.OpenUrl(url)) }
                 .onFailure { handleError(it) }
         }
@@ -330,7 +335,7 @@ class BookmarkViewModel @Inject constructor(
     // region Private methods
 
     private suspend fun addLecture(lecture: SearchedLecture, isForced: Boolean) {
-        currentTableRepository.addLecture(lecture.id, isForced)
+        currentTableLectureRepository.addLecture(lecture.id, isForced)
             .onSuccess {
                 onToggleLectureSelection(lecture)
             }
@@ -352,7 +357,7 @@ class BookmarkViewModel @Inject constructor(
     }
 
     private suspend fun fetchBuildings(lecture: SearchedLecture) {
-        lectureSearchRepository.getBuildings(lecture.lectureSessions.map { it.place }.distinct())
+        lectureInfoRepository.getBuildings(lecture.lectureSessions.map { it.place }.distinct())
             .onSuccess { buildings ->
                 _uiState.update { current ->
                     if (current !is BookmarkUiState.Success) return@update current

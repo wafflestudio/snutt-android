@@ -3,7 +3,7 @@ package com.wafflestudio.snutt2.views.logged_in.lecture_detail.current_table
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.RemoteConfig
-import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
+import com.wafflestudio.snutt2.data.current_table_lecture.CurrentTableLectureRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
@@ -30,7 +30,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddCustomLectureViewModel @Inject constructor(
-    private val currentTableRepository: CurrentTableRepository,
+    private val currentTableLectureRepository: CurrentTableLectureRepository,
     private val userRepository: UserRepository,
     private val remoteConfig: RemoteConfig,
     private val displayMessageResolver: DisplayMessageResolver,
@@ -69,7 +69,7 @@ class AddCustomLectureViewModel @Inject constructor(
 
     fun saveLecture() {
         viewModelScope.launch {
-            currentTableRepository.createCustomLecture(_uiState.value.lecture)
+            currentTableLectureRepository.createCustomLecture(_uiState.value.lecture)
                 .onSuccess {
                     _uiEvent.emit(AddCustomLectureUiEvent.LectureCreated)
                 }
@@ -87,7 +87,7 @@ class AddCustomLectureViewModel @Inject constructor(
 
     fun confirmForceCreateLecture() {
         viewModelScope.launch {
-            currentTableRepository.createCustomLecture(_uiState.value.lecture, isForced = true)
+            currentTableLectureRepository.createCustomLecture(_uiState.value.lecture, isForced = true)
                 .onSuccess {
                     _uiState.update { it.copy(dialogState = AddCustomLectureUiState.DialogState.None) }
                     _uiEvent.emit(AddCustomLectureUiEvent.LectureCreated)
