@@ -18,9 +18,9 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils.displayHeight
 import com.wafflestudio.snutt2.SNUTTUtils.displayWidth
 import com.wafflestudio.snutt2.components.view.TimetableView
-import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
+import com.wafflestudio.snutt2.data.table_display.TableDisplayRepository
+import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
-import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.views.RootActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -31,10 +31,10 @@ class
 TimetableWidgetProvider : AppWidgetProvider() {
 
     @Inject
-    lateinit var currentLectureRepository: CurrentTableRepository
+    lateinit var tableRepository: TableRepository
 
     @Inject
-    lateinit var userRepository: UserRepository
+    lateinit var tableDisplayRepository: TableDisplayRepository
 
     @Inject
     lateinit var themeRepository: ThemeRepository
@@ -113,17 +113,17 @@ TimetableWidgetProvider : AppWidgetProvider() {
         views.setViewVisibility(R.id.table, View.GONE)
 
         // render views
-        val compactMode = userRepository.compactMode.value
+        val compactMode = tableDisplayRepository.compactMode.value
 
         views.setViewVisibility(R.id.placeholder, View.VISIBLE)
         views.setViewVisibility(R.id.table, View.GONE)
-        currentLectureRepository.currentTable.value?.let { table ->
+        tableRepository.currentTable.value?.let { table ->
             val tableDto = table.toTableDto()
             val tableView = TimetableView(context, compactMode)
 
             tableView.theme = tableDto.theme
             tableView.lectures = tableDto.lectureList
-            tableView.trimParam = userRepository.tableTrimParam.value
+            tableView.trimParam = tableDisplayRepository.tableTrimParam.value
 
             val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(bitmap)

@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.data.bookmark.BookmarkRepository
-import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
+import com.wafflestudio.snutt2.data.lecture_info.LectureInfoRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.data.vacancy_noti.VacancyRepository
 import com.wafflestudio.snutt2.domainmodel.CourseBook
@@ -35,7 +35,7 @@ class DeeplinkBookmarkLectureDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val bookmarkRepository: BookmarkRepository,
     private val vacancyRepository: VacancyRepository,
-    private val lectureSearchRepository: LectureSearchRepository,
+    private val lectureInfoRepository: LectureInfoRepository,
     private val userRepository: UserRepository,
     private val displayMessageResolver: DisplayMessageResolver,
     private val remoteConfig: RemoteConfig,
@@ -137,7 +137,7 @@ class DeeplinkBookmarkLectureDetailViewModel @Inject constructor(
     private suspend fun fetchBuildings(lecture: Lecture): List<LectureBuildingDto> {
         val places = lecture.lectureSessions.map { it.place }.distinct()
         var buildings: List<LectureBuildingDto> = emptyList()
-        lectureSearchRepository.getBuildings(places)
+        lectureInfoRepository.getBuildings(places)
             .onSuccess { buildings = it }
         return buildings
     }
@@ -189,7 +189,7 @@ class DeeplinkBookmarkLectureDetailViewModel @Inject constructor(
     fun openSyllabus() {
         viewModelScope.launch {
             val lecture = (_uiState.value as? DeeplinkBookmarkLectureDetailUiState.Success)?.lecture as? LectureSyllabusInfo ?: return@launch
-            lectureSearchRepository.getSyllabusUrl(
+            lectureInfoRepository.getSyllabusUrl(
                 CourseBook(year = year, semester = semester),
                 lecture.courseNumber,
                 lecture.lectureNumber,

@@ -7,8 +7,11 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.data.bookmark.BookmarkRepository
-import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
+import com.wafflestudio.snutt2.data.current_table.CurrentTableLectureRepository
+import com.wafflestudio.snutt2.data.lecture_info.LectureInfoRepository
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
+import com.wafflestudio.snutt2.data.tables.TableRepository
+import com.wafflestudio.snutt2.data.table_display.TableDisplayRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.data.vacancy_noti.VacancyRepository
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
@@ -71,10 +74,13 @@ import javax.inject.Inject
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val currentTableRepository: CurrentTableRepository,
+    private val currentTableLectureRepository: CurrentTableLectureRepository,
+    private val tableRepository: TableRepository,
     private val lectureSearchRepository: LectureSearchRepository,
+    private val lectureInfoRepository: LectureInfoRepository,
     private val vacancyRepository: VacancyRepository,
     private val bookmarkRepository: BookmarkRepository,
+    private val tableDisplayRepository: TableDisplayRepository,
     private val userRepository: UserRepository,
     private val displayMessageResolver: DisplayMessageResolver,
     private val analyticsLogger: AnalyticsLogger,
@@ -90,16 +96,16 @@ class SearchViewModel @Inject constructor(
     val uiEvent = _uiEvent.asSharedFlow()
 
     private val _uiState: MutableStateFlow<SearchUiState> = MutableStateFlow(
-        checkNotNull(currentTableRepository.currentTable.value).let { table ->
+        checkNotNull(tableRepository.currentTable.value).let { table ->
             SearchUiState(
                 pageMode = PageMode.Search,
                 courseBook = table.summary.courseBook,
                 selectedLecture = null,
                 currentTableLectures = table.lectures,
-                tableTrimParam = table.lectures.getFittingTrimParam(userRepository.tableTrimParam.value),
-                tableLectureCustomOptions = userRepository.tableLectureCustomOption.value,
+                tableTrimParam = table.lectures.getFittingTrimParam(tableDisplayRepository.tableTrimParam.value),
+                tableLectureCustomOptions = tableDisplayRepository.tableLectureCustomOption.value,
                 tableTheme = BuiltInTheme.SNUTT,
-                isCompactMode = userRepository.compactMode.value,
+                isCompactMode = tableDisplayRepository.compactMode.value,
                 firstBookmarkAlert = bookmarkRepository.firstBookmarkAlert.value,
                 bookmarks = bookmarkRepository.bookmarks.value[table.summary.courseBook] ?: emptyList(),
                 vacancyList = vacancyRepository.vacancyLectures.value,
@@ -124,7 +130,7 @@ class SearchViewModel @Inject constructor(
     val queryResults: StateFlow<PagingData<DataWithState<SearchedLecture, LectureState>>> = combine(
         _querySignal.flatMapLatest {
             combine(
-                currentTableRepository.currentTable.filterNotNull(),
+                tableRepository.currentTable.filterNotNull(),
                 uiState.filter { it.pageMode == PageMode.Search },
                 ::Pair,
             ).take(1).flatMapLatest { (table, state) ->
@@ -142,7 +148,7 @@ class SearchViewModel @Inject constructor(
                 ).cachedIn(viewModelScope)
             }
         },
-        currentTableRepository.currentTable.filterNotNull(),
+        tableRepository.currentTable.filterNotNull(),
         uiState.filter { it.pageMode == PageMode.Search },
     ) { pagingDataResult, table, state ->
         pagingDataResult.map { searchedLecture ->
@@ -164,11 +170,11 @@ class SearchViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             combine(
-                currentTableRepository.currentTable.filterNotNull(),
+                tableRepository.currentTable.filterNotNull(),
                 combine(
-                    userRepository.tableTrimParam,
-                    userRepository.tableLectureCustomOption,
-                    userRepository.compactMode,
+                    tableDisplayRepository.tableTrimParam,
+                    tableDisplayRepository.tableLectureCustomOption,
+                    tableDisplayRepository.compactMode,
                     ::Triple,
                 ),
                 combine(
@@ -179,7 +185,7 @@ class SearchViewModel @Inject constructor(
                 ),
                 combine(
                     vacancyRepository.vacancyLectures,
-                    currentTableRepository.currentTable
+                    tableRepository.currentTable
                         .filterNotNull()
                         .distinctUntilChanged { o, n -> o.summary.courseBook == n.summary.courseBook }
                         .flatMapLatest { table ->
@@ -194,7 +200,7 @@ class SearchViewModel @Inject constructor(
                     ::Triple,
                 ),
                 // C-2: 초기 로드 + 학기 변경 시 재조회
-                currentTableRepository.currentTable
+                tableRepository.currentTable
                     .filterNotNull()
                     .distinctUntilChanged { o, n -> o.summary.courseBook == n.summary.courseBook }
                     .flatMapLatest { table ->
@@ -366,7 +372,7 @@ class SearchViewModel @Inject constructor(
                         ),
                     ),
                 )
-                val courseBook = currentTableRepository.currentTable.value?.summary?.courseBook ?: return@launch
+                val courseBook = tableRepository.currentTable.value?.summary?.courseBook ?: return@launch
                 bookmarkRepository.addBookmark(courseBook, lecture).onFailure { handleSearchError(it); return@launch }
 
                 if (bookmarkRepository.firstBookmarkAlert.value) {
@@ -380,7 +386,7 @@ class SearchViewModel @Inject constructor(
     fun confirmDeleteBookmark(lecture: SearchedLecture) {
         viewModelScope.launch {
             _uiState.update { it.copy(dialogState = SearchUiState.DialogState.None) }
-            val courseBook = currentTableRepository.currentTable.value?.summary?.courseBook ?: return@launch
+            val courseBook = tableRepository.currentTable.value?.summary?.courseBook ?: return@launch
             bookmarkRepository.deleteBookmark(courseBook, lecture)
                 .onFailure { handleSearchError(it); return@launch }
         }
@@ -437,7 +443,7 @@ class SearchViewModel @Inject constructor(
     fun onToggleLectureContained(lecture: SearchedLecture, contained: Boolean) {
         viewModelScope.launch {
             if (contained) {
-                currentTableRepository.removeLecture(lecture).onFailure { handleSearchError(it); return@launch }
+                currentTableLectureRepository.removeLecture(lecture).onFailure { handleSearchError(it); return@launch }
                 onToggleLectureSelection(lecture)
             } else {
                 addLecture(lecture, isForced = false)
@@ -474,7 +480,7 @@ class SearchViewModel @Inject constructor(
     }
 
     private suspend fun fetchBuildings(lecture: SearchedLecture) {
-        lectureSearchRepository.getBuildings(lecture.lectureSessions.map { it.place }.distinct())
+        lectureInfoRepository.getBuildings(lecture.lectureSessions.map { it.place }.distinct())
             .onSuccess { buildings ->
                 _uiState.update { current ->
                     val bt = current.bottomSheetType
@@ -507,7 +513,8 @@ class SearchViewModel @Inject constructor(
 
     fun openSyllabus(lecture: SearchedLecture) {
         viewModelScope.launch {
-            currentTableRepository.getSyllabusUrl(lecture.courseNumber, lecture.lectureNumber)
+            val courseBook = tableRepository.currentTable.value?.summary?.courseBook ?: return@launch
+            lectureInfoRepository.getSyllabusUrl(courseBook, lecture.courseNumber, lecture.lectureNumber)
                 .onSuccess { url -> _uiEvent.emit(SearchUiEvent.OpenUrl(url)) }
                 .onFailure { handleSearchError(it) }
         }
@@ -552,14 +559,14 @@ class SearchViewModel @Inject constructor(
             AnalyticsEvent.SearchLecture(
                 SearchLectureParameter(
                     query = state.searchTitle,
-                    quarter = currentTableRepository.currentTable.value?.summary?.courseBook?.semester?.toString() ?: "",
+                    quarter = tableRepository.currentTable.value?.summary?.courseBook?.semester?.toString() ?: "",
                 ),
             ),
         )
     }
 
     private suspend fun addLecture(lecture: SearchedLecture, isForced: Boolean) {
-        currentTableRepository.addLecture(lecture.id, isForced).onFailure { error ->
+        currentTableLectureRepository.addLecture(lecture.id, isForced).onFailure { error ->
             if (error is LectureOverlap) {
                 _uiState.update {
                     it.copy(

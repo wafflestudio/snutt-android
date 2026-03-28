@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.domain
 
-import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.semester_status.SemesterStatusRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
@@ -12,7 +11,6 @@ import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
 class RefreshInitialDataUseCase @Inject constructor(
-    private val currentTableRepository: CurrentTableRepository,
     private val tableRepository: TableRepository,
     private val userRepository: UserRepository,
     private val themeRepository: ThemeRepository,
@@ -22,10 +20,10 @@ class RefreshInitialDataUseCase @Inject constructor(
         coroutineScope {
             awaitAll(
                 async {
-                    currentTableRepository.currentTable.value?.let {
-                        tableRepository.fetchTableById(it.summary.id)
-                            .onFailure { tableRepository.fetchDefaultTable() }
-                    } ?: tableRepository.fetchDefaultTable()
+                    tableRepository.currentTable.value?.let {
+                        tableRepository.fetchAndSelectTable(it.summary.id)
+                            .onFailure { tableRepository.fetchAndSelectDefaultTable() }
+                    } ?: tableRepository.fetchAndSelectDefaultTable()
                 },
                 async { userRepository.fetchUserInfo() },
                 async { themeRepository.fetchThemes() },

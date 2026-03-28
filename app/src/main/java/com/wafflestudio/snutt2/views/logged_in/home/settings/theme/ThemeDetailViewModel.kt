@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
+import com.wafflestudio.snutt2.data.table_display.TableDisplayRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
@@ -45,7 +45,7 @@ class ThemeDetailViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val themeRepository: ThemeRepository,
     private val tableRepository: TableRepository,
-    private val currentTableRepository: CurrentTableRepository,
+    private val tableDisplayRepository: TableDisplayRepository,
     private val userRepository: UserRepository,
     private val getCurrentTableThemeUseCase: GetCurrentTableThemeUseCase,
     private val displayMessageResolver: DisplayMessageResolver,
@@ -62,12 +62,12 @@ class ThemeDetailViewModel @Inject constructor(
 
         viewModelScope.launch {
             combine(
-                currentTableRepository.currentTable.filterNotNull(),
+                tableRepository.currentTable.filterNotNull(),
                 getCurrentTableThemeUseCase(),
                 combine(
-                    userRepository.tableTrimParam,
-                    userRepository.tableLectureCustomOption,
-                    userRepository.compactMode,
+                    tableDisplayRepository.tableTrimParam,
+                    tableDisplayRepository.tableLectureCustomOption,
+                    tableDisplayRepository.compactMode,
                     ::Triple,
                 ),
             ) { table, theme, (trimParam, lectureCustomOption, compactMode) ->
@@ -228,11 +228,11 @@ class ThemeDetailViewModel @Inject constructor(
                     )
                 }
                 if (!isNew) {
-                    val currentTable = currentTableRepository.currentTable.value
+                    val currentTable = tableRepository.currentTable.value
                     if (currentTable != null &&
                         (currentTable.themeRef as? ThemeReference.Custom)?.themeId == newTheme.id
                     ) {
-                        tableRepository.fetchTableById(currentTable.summary.id)
+                        tableRepository.fetchAndSelectTable(currentTable.summary.id)
                             .onFailure { handleError(it) }
                     }
                     _uiEvent.emit(ThemeDetailUiEvent.NavigateBack)
@@ -243,7 +243,7 @@ class ThemeDetailViewModel @Inject constructor(
 
     fun onConfirmApplyToTable() {
         viewModelScope.launch {
-            val currentTable = currentTableRepository.currentTable.value
+            val currentTable = tableRepository.currentTable.value
             val theme = (_uiState.value as? ThemeDetailUiState.Success)
                 ?.editingTheme?.toTableTheme() as? CustomTheme
             if (currentTable != null && theme != null) {

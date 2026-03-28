@@ -3,7 +3,6 @@ package com.wafflestudio.snutt2.views.logged_in.home.drawer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.course_books.CourseBookRepository
-import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
@@ -38,7 +37,6 @@ import javax.inject.Inject
 class HomeDrawerViewModel @Inject constructor(
     private val courseBookRepository: CourseBookRepository,
     private val tableRepository: TableRepository,
-    private val currentTableRepository: CurrentTableRepository,
     private val themeRepository: ThemeRepository,
     private val getCurrentTableThemeUseCase: GetCurrentTableThemeUseCase,
     private val displayMessageResolver: DisplayMessageResolver,
@@ -65,7 +63,7 @@ class HomeDrawerViewModel @Inject constructor(
                 .onSuccess { coursebookList ->
                     combine(
                         tableRepository.tableSummaryList.filter { it.isNotEmpty() },
-                        currentTableRepository.currentTable.filterNotNull(),
+                        tableRepository.currentTable.filterNotNull(),
                     ) { tableSummaryList, currentTable ->
                         // 유저의 전체 시간표 목록을 학기 별로 그룹핑 한 뒤 학기 순으로 정렬
                         val tableSummariesOfEachCourseBook = tableSummaryList.groupBy {
@@ -182,7 +180,7 @@ class HomeDrawerViewModel @Inject constructor(
         viewModelScope.launch {
             // 이걸 불러야 하는 게 참 암묵적이다
             // TODO: data layer 리팩토링 + 에러 처리
-            tableRepository.fetchTableById(tableId)
+            tableRepository.fetchAndSelectTable(tableId)
             _uiEvent.emit(HomeDrawerUiEvent.CloseDrawer)
         }
     }
@@ -213,7 +211,7 @@ class HomeDrawerViewModel @Inject constructor(
 
     fun createNewTable(courseBook: CourseBook, title: String) {
         viewModelScope.launch {
-            tableRepository.createTable(
+            tableRepository.createAndSelectTable(
                 courseBook = courseBook,
                 title = title,
             ).onFailure {
@@ -255,7 +253,7 @@ class HomeDrawerViewModel @Inject constructor(
                 .onSuccess {
                     // FIXME: 구 동작 일단 옮겨오기. 이걸 해야, 상태가 변한다.
                     tableRepository.fetchTableList()
-                    currentTableRepository.updateCurrentTable()
+                    tableRepository.updateCurrentTable()
                     _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
                 }
         }
@@ -270,7 +268,7 @@ class HomeDrawerViewModel @Inject constructor(
                 .onSuccess {
                     // FIXME: 구 동작 일단 옮겨오기. 이걸 해야, 상태가 변한다.
                     tableRepository.fetchTableList()
-                    currentTableRepository.updateCurrentTable()
+                    tableRepository.updateCurrentTable()
                     _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
                 }
         }
@@ -278,7 +276,7 @@ class HomeDrawerViewModel @Inject constructor(
 
     fun onClickSetThemeSheet(tableSummary: TableSummary) {
         viewModelScope.launch {
-            val currentTable = currentTableRepository.currentTable.value
+            val currentTable = tableRepository.currentTable.value
             if (currentTable?.summary?.id == tableSummary.id) {
                 _uiEvent.emit(HomeDrawerUiEvent.CloseDrawer)
                 openSelectThemeSheet()
@@ -332,7 +330,7 @@ class HomeDrawerViewModel @Inject constructor(
 
     fun applyTheme() {
         viewModelScope.launch {
-            val currentTable = currentTableRepository.currentTable.value
+            val currentTable = tableRepository.currentTable.value
             val previewTheme = (_uiState.value as? HomeDrawerUiState.Loaded)
                 ?.homeDrawerBottomSheetType
                 ?.let { it as? HomeDrawerBottomSheetType.SelectTheme }
@@ -446,7 +444,7 @@ class HomeDrawerViewModel @Inject constructor(
                                         remainingSameCourseBookTables[indexInSameCourseBook].id
                                     }
                                 }
-                                tableRepository.fetchTableById(nextTableId)
+                                tableRepository.fetchAndSelectTable(nextTableId)
                             }
 
                             _uiState.update { s ->

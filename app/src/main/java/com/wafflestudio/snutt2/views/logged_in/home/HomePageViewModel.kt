@@ -5,8 +5,10 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.notifications.NotificationRepository
+import com.wafflestudio.snutt2.data.popup.PopupRepository
+import com.wafflestudio.snutt2.data.tables.TableRepository
+import com.wafflestudio.snutt2.data.table_display.TableDisplayRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.domainmodel.LocalLecture
 import com.wafflestudio.snutt2.provider.TimetableWidgetProvider
@@ -31,8 +33,10 @@ class HomePageViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     @ApplicationContext private val context: Context,
     private val notificationRepository: NotificationRepository,
-    private val currentTableRepository: CurrentTableRepository,
+    private val tableRepository: TableRepository,
+    private val tableDisplayRepository: TableDisplayRepository,
     private val userRepository: UserRepository,
+    private val popupRepository: PopupRepository,
     private val popupState: PopupState,
 ) : ViewModel() {
 
@@ -56,15 +60,15 @@ class HomePageViewModel @Inject constructor(
         }
 
         combine(
-            currentTableRepository.currentTable,
-            userRepository.tableTrimParam,
+            tableRepository.currentTable,
+            tableDisplayRepository.tableTrimParam,
         ) { _, _ ->
             TimetableWidgetProvider.refreshWidget(context)
         }.launchIn(viewModelScope)
 
         viewModelScope.launch {
             if (popupState.fetched.not()) {
-                runCatching { userRepository.fetchAndSetPopup() }
+                runCatching { popupRepository.fetchAndSetPopup() }
                 popupState.fetched = true
                 updatePopupUiState()
             }
@@ -73,7 +77,7 @@ class HomePageViewModel @Inject constructor(
 
     fun onNavigateLectureDetail(lecture: LocalLecture) {
         viewModelScope.launch {
-            val tableId = currentTableRepository.currentTable.value?.summary?.id
+            val tableId = tableRepository.currentTable.value?.summary?.id
             _uiEvent.emit(HomePageUiEvent.NavigateToLectureDetail(lecture.id, tableId))
         }
     }
@@ -89,14 +93,14 @@ class HomePageViewModel @Inject constructor(
 
     fun closePopupWithHiddenDays() {
         viewModelScope.launch {
-            runCatching { userRepository.closePopupWithHiddenDays() }
+            runCatching { popupRepository.closePopupWithHiddenDays() }
             updatePopupUiState()
         }
     }
 
     fun closePopup() {
         viewModelScope.launch {
-            runCatching { userRepository.closePopup() }
+            runCatching { popupRepository.closePopup() }
             updatePopupUiState()
         }
     }
