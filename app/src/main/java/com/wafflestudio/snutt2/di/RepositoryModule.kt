@@ -14,6 +14,8 @@ import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
 import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepositoryImpl
 import com.wafflestudio.snutt2.data.notifications.NotificationRepository
 import com.wafflestudio.snutt2.data.notifications.NotificationRepositoryImpl
+import com.wafflestudio.snutt2.data.popup.PopupRepository
+import com.wafflestudio.snutt2.data.popup.PopupRepositoryImpl
 import com.wafflestudio.snutt2.data.semester_status.SemesterStatusRepository
 import com.wafflestudio.snutt2.data.semester_status.SemesterStatusRepositoryImpl
 import com.wafflestudio.snutt2.data.tables.TableRepository
@@ -49,6 +51,9 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindsNotificationRepository(impl: NotificationRepositoryImpl): NotificationRepository
+
+    @Binds
+    abstract fun bindsPopupRepository(impl: PopupRepositoryImpl): PopupRepository
 
     @Binds
     abstract fun bindsTableRepository(impl: TableRepositoryImpl): TableRepository

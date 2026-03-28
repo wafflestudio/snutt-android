@@ -52,12 +52,6 @@ interface UserRepository {
 
     suspend fun performLogout(): Result<Unit>
 
-    suspend fun fetchAndSetPopup(): Result<Unit>
-
-    suspend fun closePopupWithHiddenDays(): Result<Unit>
-
-    suspend fun closePopup(): Result<Unit>
-
     suspend fun registerToken(): Result<Unit>
 
     suspend fun setThemeMode(mode: ThemeMode): Result<Unit>
