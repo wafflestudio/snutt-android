@@ -4,6 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.domain.RefreshInitialDataUseCase
+import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
+import com.wafflestudio.snutt2.lib.logging.AnalyticsLogger
+import com.wafflestudio.snutt2.lib.logging.LoginParameter
 import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
 import com.wafflestudio.snutt2.lib.network.DomainError
 import com.wafflestudio.snutt2.lib.network.onFailure
@@ -23,6 +26,7 @@ class TutorialViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val refreshInitialDataUseCase: RefreshInitialDataUseCase,
     private val displayMessageResolver: DisplayMessageResolver,
+    private val analyticsLogger: AnalyticsLogger,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TutorialUiState())
@@ -40,6 +44,7 @@ class TutorialViewModel @Inject constructor(
     fun onFacebookTokenReceived(token: String) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
+            analyticsLogger.logEvent(AnalyticsEvent.Login(LoginParameter(LoginParameter.Provider.FACEBOOK)))
             userRepository.postLoginFacebook(token)
                 .onSuccess {
                     refreshInitialDataUseCase()
@@ -60,6 +65,7 @@ class TutorialViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true) }
             userRepository.getAccessTokenByAuthCode(authCode, clientId, clientSecret)
                 .onSuccess { googleAccessToken ->
+                    analyticsLogger.logEvent(AnalyticsEvent.Login(LoginParameter(LoginParameter.Provider.GOOGLE)))
                     userRepository.postLoginGoogle(googleAccessToken)
                         .onSuccess {
                             refreshInitialDataUseCase()
@@ -80,6 +86,7 @@ class TutorialViewModel @Inject constructor(
     fun onKakaoTokenReceived(token: String) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
+            analyticsLogger.logEvent(AnalyticsEvent.Login(LoginParameter(LoginParameter.Provider.KAKAO)))
             userRepository.postLoginKakao(token)
                 .onSuccess {
                     refreshInitialDataUseCase()

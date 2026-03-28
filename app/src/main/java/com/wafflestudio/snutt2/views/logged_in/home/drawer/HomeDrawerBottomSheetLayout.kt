@@ -13,7 +13,9 @@ import com.wafflestudio.snutt2.components.compose.ModalBottomSheetPlaceholder
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.TableSummary
 import com.wafflestudio.snutt2.domainmodel.TableTheme
+import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.compose.HomeDrawerLoggingEffect
+import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.logged_in.home.drawer.bottom_sheet.CreateTableBottomSheet
 import com.wafflestudio.snutt2.views.logged_in.home.drawer.bottom_sheet.MoreActionSheet
@@ -56,6 +58,8 @@ fun HomeDrawerBottomSheetLayout(
     onClickAddTheme: () -> Unit,
     content: @Composable () -> Unit,
 ) {
+    val analyticsLogger = LocalAnalyticsLogger.current
+
     LaunchedEffect(sheetState.currentValue) {
         if (sheetState.currentValue == ModalBottomSheetValue.Hidden) {
             onDismiss()
@@ -75,6 +79,9 @@ fun HomeDrawerBottomSheetLayout(
                     }
 
                     is HomeDrawerBottomSheetType.SelectTheme -> {
+                        LaunchedEffect(Unit) {
+                            analyticsLogger.logScreen(AnalyticsScreen.ThemePreview)
+                        }
                         SelectThemeSheetContent(
                             sheetType = uiState.homeDrawerBottomSheetType,
                             onClickPreviewTheme = onClickPreviewTheme,

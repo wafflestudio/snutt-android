@@ -13,6 +13,9 @@ import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.domainmodel.TableTheme
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
+import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.lib.logging.ReviewDetailParameter
+import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebView
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetail
@@ -34,6 +37,7 @@ fun SearchLectureDetailSheetContent(
     onReviewFromDetail: () -> Unit,
     onCloseDetailReview: () -> Unit,
 ) {
+    val analyticsLogger = LocalAnalyticsLogger.current
     val lecture = bottomSheetType.lecture
     val isBookmarked = bookmarks.any { it.id == lecture.id }
     val isVacancyRegistered = vacancyList.any { it.id == lecture.id }
@@ -47,6 +51,18 @@ fun SearchLectureDetailSheetContent(
 
     ModalBottomSheetLayout(
         sheetContent = {
+            LaunchedEffect(detailReviewSheetState.isVisible) {
+                if (detailReviewSheetState.isVisible) {
+                    analyticsLogger.logScreen(
+                        AnalyticsScreen.ReviewDetail(
+                            ReviewDetailParameter(
+                                lectureId = lecture.id,
+                                referrer = bottomSheetType.referrer,
+                            ),
+                        ),
+                    )
+                }
+            }
             ReviewWebView(modifier = Modifier.fillMaxHeight(0.95f), reviewWebViewContainer = detailReviewWebViewContainer)
         },
         sheetState = detailReviewSheetState,

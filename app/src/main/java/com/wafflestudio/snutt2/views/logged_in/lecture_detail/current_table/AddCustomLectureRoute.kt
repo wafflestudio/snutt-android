@@ -17,6 +17,8 @@ import com.wafflestudio.snutt2.components.compose.snackbar.CustomSnackBarHostSta
 import com.wafflestudio.snutt2.components.compose.snackbar.SnackBarScaffold
 import com.wafflestudio.snutt2.domainmodel.LectureColor
 import com.wafflestudio.snutt2.lib.android.toast
+import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.lib.logging.logImpression
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.launch
@@ -93,7 +95,8 @@ fun AddCustomLectureRoute(
             onEditSessionTime = vm::editSessionTime,
             modifier = Modifier
                 .padding(contentPadding)
-                .hazeSource(hazeState),
+                .hazeSource(hazeState)
+                .logImpression(AnalyticsScreen.LectureCreate),
         ) {
             AddCustomLectureScreen(
                 uiState = uiState,

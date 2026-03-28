@@ -1,27 +1,5 @@
 package com.wafflestudio.snutt2.lib.logging.compose
 
-// TODO: 바텀시트 로깅 찍어야 함
-//import androidx.compose.runtime.Composable
-//import androidx.compose.runtime.LaunchedEffect
-//import androidx.compose.runtime.snapshotFlow
-//import com.wafflestudio.snutt2.components.compose.BottomSheet
-//import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
-//import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
-//import kotlinx.coroutines.flow.distinctUntilChanged
-//
-//@Composable
-//fun BottomSheetLoggingEffect(
-//    bottomSheetState: BottomSheet,
-//    analyticsScreen: AnalyticsScreen,
-//) {
-//    val analyticsLogger = LocalAnalyticsLogger.current
-//    LaunchedEffect(bottomSheetState) {
-//        snapshotFlow { bottomSheetState.isVisible }
-//            .distinctUntilChanged()
-//            .collect { isOpen ->
-//                if (isOpen) {
-//                    analyticsLogger.logScreen(analyticsScreen)
-//                }
-//            }
-//    }
-//}
+// 구 BottomSheet 방식에 의존하던 BottomSheetLoggingEffect 는 제거됨.
+// 신규 바텀시트 방식에서는 각 BottomSheetLayout의 sheetContent when 분기에서
+// LaunchedEffect(Unit) { analyticsLogger.logScreen(...) } 패턴으로 개별 로깅.

@@ -36,6 +36,7 @@ import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
 import com.wafflestudio.snutt2.lib.logging.LectureActionReferrer
 import com.wafflestudio.snutt2.lib.logging.LectureDetailParameter
 import com.wafflestudio.snutt2.lib.logging.LectureSyllabusParameter
+import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
 import dev.chrisbanes.haze.hazeSource
@@ -158,17 +159,6 @@ fun CurrentTableLectureDetailRoute(
         }
     }
 
-    LaunchedEffect(Unit) {
-        analyticsLogger.logScreen(
-            AnalyticsScreen.LectureDetail(
-                LectureDetailParameter(
-                    lectureId = vm.getLoggingLectureId(),
-                    referrer = referrer,
-                ),
-            ),
-        )
-    }
-
     SnackBarScaffold(
         snackBarHostState = snackBarHostState,
         hazeState = hazeState,
@@ -181,7 +171,15 @@ fun CurrentTableLectureDetailRoute(
             reviewWebViewContainer = reviewWebViewContainer,
             modifier = Modifier
                 .padding(contentPadding)
-                .hazeSource(hazeState),
+                .hazeSource(hazeState)
+                .logImpression(
+                    AnalyticsScreen.LectureDetail(
+                        LectureDetailParameter(
+                            lectureId = vm.getLoggingLectureId(),
+                            referrer = referrer,
+                        ),
+                    ),
+                ),
         ) {
             CurrentTableLectureDetailScreen(
                 uiState = uiState,
