@@ -2,6 +2,13 @@
 #Build Setting
 /app/src/live/
 /app/src/staging/
+# Archive files
+*.zip
+*.tgz
+*.tar.gz
+*.tar
+*.rar
+*.7z
 
 # Created by https://www.toptal.com/developers/gitignore/api/androidstudio
 # Edit at https://www.toptal.com/developers/gitignore?templates=androidstudio
