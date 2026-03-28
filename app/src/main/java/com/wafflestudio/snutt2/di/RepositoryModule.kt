@@ -4,8 +4,8 @@ import com.wafflestudio.snutt2.data.bookmark.BookmarkRepository
 import com.wafflestudio.snutt2.data.bookmark.BookmarkRepositoryImpl
 import com.wafflestudio.snutt2.data.course_books.CourseBookRepository
 import com.wafflestudio.snutt2.data.course_books.CourseBookRepositoryImpl
-import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
-import com.wafflestudio.snutt2.data.current_table.CurrentTableRepositoryImpl
+import com.wafflestudio.snutt2.data.current_table.CurrentTableLectureRepository
+import com.wafflestudio.snutt2.data.current_table.CurrentTableLectureRepositoryImpl
 import com.wafflestudio.snutt2.data.friends.FriendRepository
 import com.wafflestudio.snutt2.data.friends.FriendRepositoryImpl
 import com.wafflestudio.snutt2.data.lecture_info.LectureInfoRepository
@@ -48,7 +48,7 @@ abstract class RepositoryModule {
     abstract fun bindsCourseBookRepository(impl: CourseBookRepositoryImpl): CourseBookRepository
 
     @Binds
-    abstract fun bindsCurrentTableRepository(impl: CurrentTableRepositoryImpl): CurrentTableRepository
+    abstract fun bindsCurrentTableLectureRepository(impl: CurrentTableLectureRepositoryImpl): CurrentTableLectureRepository
 
     @Binds
     abstract fun bindsLectureRepository(impl: LectureSearchRepositoryImpl): LectureSearchRepository

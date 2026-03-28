@@ -11,17 +11,21 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface TableRepository {
 
+    val currentTable: StateFlow<Table?>
+
     val tableSummaryList: StateFlow<List<TableSummary>>
 
-    suspend fun fetchDefaultTable(): Result<Unit>
+    suspend fun updateCurrentTable()
+
+    suspend fun fetchAndSelectDefaultTable(): Result<Unit>
 
     suspend fun fetchTableList(): Result<Unit>
 
-    suspend fun fetchTableById(id: String): Result<Unit>
+    suspend fun fetchAndSelectTable(id: String): Result<Unit>
 
     suspend fun getTableById(id: String): Result<Table>
 
-    suspend fun createTable(courseBook: CourseBook, title: String): Result<Unit>
+    suspend fun createAndSelectTable(courseBook: CourseBook, title: String): Result<Unit>
 
     suspend fun updateTableName(newTitle: String, tableId: String): Result<Unit>
 
