@@ -24,7 +24,7 @@ class FindIdViewModel @Inject constructor(
 
     fun findIdByEmail(email: String) {
         viewModelScope.launch {
-            userRepository.findIdByEmailNew(email)
+            userRepository.findIdByEmail(email)
                 .onSuccess {
                     _uiEvent.emit(FindIdUiEvent.Success(email))
                 }

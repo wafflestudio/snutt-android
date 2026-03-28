@@ -17,6 +17,7 @@ import com.wafflestudio.snutt2.domainmodel.TableLectureCustom
 import com.wafflestudio.snutt2.domainmodel.TableTheme
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.domainmodel.ThemeColor
+import com.wafflestudio.snutt2.domainmodel.ThemeReference
 import com.wafflestudio.snutt2.lib.getFittingTrimParam
 import com.wafflestudio.snutt2.lib.network.AuthError
 import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
@@ -61,7 +62,7 @@ class ThemeDetailViewModel @Inject constructor(
 
         viewModelScope.launch {
             combine(
-                currentTableRepository.currentTableRefactored.filterNotNull(),
+                currentTableRepository.currentTable.filterNotNull(),
                 getCurrentTableThemeUseCase(),
                 combine(
                     userRepository.tableTrimParam,
@@ -207,9 +208,9 @@ class ThemeDetailViewModel @Inject constructor(
             val isNew = theme.isNew
             val colors = theme.getColors()
             val result = if (isNew) {
-                themeRepository.createThemeNew(theme.name, colors)
+                themeRepository.createTheme(theme.name, colors)
             } else {
-                themeRepository.updateThemeNew(theme.id, theme.name, colors)
+                themeRepository.updateTheme(theme.id, theme.name, colors)
             }
 
             result.onSuccess { newTheme ->
@@ -228,8 +229,10 @@ class ThemeDetailViewModel @Inject constructor(
                 }
                 if (!isNew) {
                     val currentTable = currentTableRepository.currentTable.value
-                    if (currentTable != null && newTheme.isAppliedToTable(currentTable)) {
-                        tableRepository.fetchTableByIdNew(currentTable.id)
+                    if (currentTable != null &&
+                        (currentTable.themeRef as? ThemeReference.Custom)?.themeId == newTheme.id
+                    ) {
+                        tableRepository.fetchTableById(currentTable.summary.id)
                             .onFailure { handleError(it) }
                     }
                     _uiEvent.emit(ThemeDetailUiEvent.NavigateBack)
@@ -244,7 +247,7 @@ class ThemeDetailViewModel @Inject constructor(
             val theme = (_uiState.value as? ThemeDetailUiState.Success)
                 ?.editingTheme?.toTableTheme() as? CustomTheme
             if (currentTable != null && theme != null) {
-                tableRepository.updateTableThemeNew(currentTable.id, theme.id)
+                tableRepository.updateTableTheme(currentTable.summary.id, theme.id)
                     .onFailure { handleError(it) }
             }
             _uiState.update { current ->

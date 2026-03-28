@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.components.compose
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.ComposeShader
@@ -58,7 +57,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toRect
-import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
@@ -172,10 +170,12 @@ fun ColorPicker(
                         .width(85.dp)
                         .fillMaxHeight(),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(onDone = {
-                        setHsvWithHexCode()
-                        focusManager.clearFocus()
-                    },),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            setHsvWithHexCode()
+                            focusManager.clearFocus()
+                        },
+                    ),
                     textStyle = SNUTTTypography.body1.copy(
                         textAlign = TextAlign.Center,
                         letterSpacing = 1.sp,
@@ -210,7 +210,8 @@ fun HueBar(
         modifier = modifier
             .clip(CircleShape),
     ) {
-        HueBackground( // hue에 따라 변하는 부분과 변하지 않는 부분을 분리하여 recompose 최적화
+        HueBackground(
+            // hue에 따라 변하는 부분과 변하지 않는 부분을 분리하여 recompose 최적화
             modifier = Modifier.fillMaxSize(),
         )
         HueCircle(
@@ -298,7 +299,8 @@ fun SatValPanel(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp)),
     ) {
-        SatValBackground( // sat, val에 따라 변하는 부분과 변하지 않는 부분을 분리하여 recompose 최적화
+        SatValBackground(
+            // sat, val에 따라 변하는 부분과 변하지 않는 부분을 분리하여 recompose 최적화
             hue = hue,
             modifier = Modifier.fillMaxSize(),
         )
@@ -315,7 +317,8 @@ fun SatValBackground(
     hue: Float,
     modifier: Modifier = Modifier,
 ) {
-    Canvas( // TODO: hue가 바뀌면 전부 다시 그려야 함. 최적화?
+    Canvas(
+        // TODO: hue가 바뀌면 전부 다시 그려야 함. 최적화?
         modifier = modifier,
     ) {
         val bitmap =
@@ -381,34 +384,6 @@ fun SatValCircle(
             style = Stroke(width = 2.dp.toPx()),
         )
     }
-}
-
-fun showColorPickerDialog(
-    context: Context,
-    modalState: ModalState,
-    initialColor: Color,
-    onColorPicked: (Color) -> Unit,
-) {
-    var currentColor = initialColor
-    modalState.set(
-        onDismiss = {
-            modalState.hide()
-        },
-        onConfirm = {
-            onColorPicked(currentColor)
-            modalState.hide()
-        },
-        title = context.getString(R.string.color_picker_dialog_title),
-        positiveButton = context.getString(R.string.common_ok),
-        negativeButton = context.getString(R.string.common_cancel),
-    ) {
-        ColorPicker(
-            initialColor = initialColor,
-            onColorChanged = {
-                currentColor = it
-            },
-        )
-    }.show()
 }
 
 private fun colorToHsv(color: Color): Triple<Float, Float, Float> {

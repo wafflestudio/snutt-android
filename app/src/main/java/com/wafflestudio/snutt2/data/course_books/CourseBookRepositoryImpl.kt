@@ -3,7 +3,6 @@ package com.wafflestudio.snutt2.data.course_books
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
-import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.network.dto.core.toDomainModel
 import com.wafflestudio.snutt2.lib.network.toDomainError
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,12 +13,10 @@ import javax.inject.Singleton
 class CourseBookRepositoryImpl @Inject constructor(
     private val api: SNUTTRestApi,
 ) : CourseBookRepository {
-    override suspend fun getCourseBook(): List<CourseBookDto> {
-        return api._getCoursebook()
-    }
 
-    // 여기부터 리팩토링 코드
-    override suspend fun getCourseBookNew(): Result<List<CourseBook>> {
+    override val courseBooks: MutableStateFlow<List<CourseBook>> = MutableStateFlow(emptyList())
+
+    override suspend fun getCourseBooks(): Result<List<CourseBook>> {
         try {
             val result = api._getCoursebook()
             return Result.Success(result.map { it.toDomainModel() })
@@ -27,8 +24,6 @@ class CourseBookRepositoryImpl @Inject constructor(
             return Result.Fail(e.toDomainError())
         }
     }
-
-    override val courseBooks: MutableStateFlow<List<CourseBook>> = MutableStateFlow(emptyList())
 
     override suspend fun fetchCourseBooks(): Result<Unit> {
         try {

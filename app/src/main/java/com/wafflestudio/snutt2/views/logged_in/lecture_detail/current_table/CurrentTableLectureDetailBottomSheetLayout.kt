@@ -17,8 +17,8 @@ import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
 import com.wafflestudio.snutt2.lib.logging.ReviewDetailParameter
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
-import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebViewNew
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.refactor.DayTimePickerSheetContent
+import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebView
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.DayTimePickerSheetContent
 
 @Composable
 fun CurrentTableLectureDetailBottomSheetLayout(
@@ -70,7 +70,7 @@ fun CurrentTableLectureDetailBottomSheetLayout(
                             ),
                         )
                     }
-                    ReviewWebViewNew(modifier = Modifier.fillMaxHeight(0.95f), reviewWebViewContainer = reviewWebViewContainer)
+                    ReviewWebView(modifier = Modifier.fillMaxHeight(0.95f), reviewWebViewContainer = reviewWebViewContainer)
 
                 }
             }

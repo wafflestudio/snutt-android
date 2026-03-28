@@ -111,7 +111,7 @@ class TimetableConfigViewModel @Inject constructor(
         userRepository.tableTrimParam,
         userRepository.compactMode,
         userRepository.tableLectureCustomOption,
-        currentTableRepository.currentTableRefactored.filterNotNull(),
+        currentTableRepository.currentTable.filterNotNull(),
         getCurrentTableThemeUseCase(),
     ) { tableTrimParam, compactMode, tableLectureCustom, currentTable, theme ->
         TimeTableConfigUiState(

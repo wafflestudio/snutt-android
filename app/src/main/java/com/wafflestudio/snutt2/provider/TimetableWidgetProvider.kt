@@ -118,10 +118,11 @@ TimetableWidgetProvider : AppWidgetProvider() {
         views.setViewVisibility(R.id.placeholder, View.VISIBLE)
         views.setViewVisibility(R.id.table, View.GONE)
         currentLectureRepository.currentTable.value?.let { table ->
+            val tableDto = table.toTableDto()
             val tableView = TimetableView(context, compactMode)
 
-            tableView.theme = table.theme
-            tableView.lectures = table.lectureList
+            tableView.theme = tableDto.theme
+            tableView.lectures = tableDto.lectureList
             tableView.trimParam = userRepository.tableTrimParam.value
 
             val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)

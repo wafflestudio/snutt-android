@@ -14,9 +14,7 @@ import com.wafflestudio.snutt2.lib.network.Unknown
 import com.wafflestudio.snutt2.lib.network.dto.PostBookmarkParams
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PostLectureParams
-import com.wafflestudio.snutt2.lib.network.dto.PutLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureReviewDto
 import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.lib.network.toDomainError
 import com.wafflestudio.snutt2.lib.toOptional
@@ -35,102 +33,10 @@ class CurrentTableRepositoryImpl @Inject constructor(
 
     override val isVisitedSessionlessLectureList: StateFlow<Boolean> = storage.isVisitedSessionlessLectureList.asStateFlow()
 
-    override val currentTable: StateFlow<TableDto?> = storage.lastViewedTable.asStateFlow()
+    private val currentTableDto: StateFlow<TableDto?> = storage.lastViewedTable.asStateFlow()
         .unwrap(externalScope)
 
-    override suspend fun addLecture(lectureId: String, isForced: Boolean) {
-        val prevTable = storage.lastViewedTable.get().value
-            ?: throw IllegalStateException("cannot add lecture when current table not exists")
-        val response = api._postAddLecture(prevTable.id, lectureId, PostLectureParams(isForced))
-        storage.lastViewedTable.update(response.toOptional())
-    }
-
-    override suspend fun removeLecture(lectureId: String) {
-        val prevTable = storage.lastViewedTable.get().value
-            ?: throw IllegalStateException("cannot remove lecture when current table not exists")
-        val response = api._deleteLecture(prevTable.id, lectureId)
-        storage.lastViewedTable.update(response.toOptional())
-    }
-
-    override suspend fun createCustomLecture(lecture: PostCustomLectureParams) {
-        val prevTable = storage.lastViewedTable.get().value
-            ?: throw IllegalStateException("cannot create custom lecture when current table not exists")
-        val response = api._postCustomLecture(prevTable.id, lecture)
-        storage.lastViewedTable.update(response.toOptional())
-    }
-
-    override suspend fun resetLecture(lectureId: String): LectureDto {
-        val prevTable = storage.lastViewedTable.get().value
-            ?: throw IllegalStateException("cannot reset lecture when current table not exists")
-        val response = api._resetLecture(prevTable.id, lectureId)
-        storage.lastViewedTable.update(response.toOptional())
-        return response.lectureList.find { it.id == lectureId }!!
-    }
-
-    override suspend fun updateLecture(lectureId: String, target: PutLectureParams) {
-        val prevTable = storage.lastViewedTable.get().value
-            ?: throw IllegalStateException("cannot update lecture when current table not exists")
-        val response = api._putLecture(prevTable.id, lectureId, target)
-        storage.lastViewedTable.update(response.toOptional())
-    }
-
-    override suspend fun getLectureSyllabusUrl(
-        courseNumber: String,
-        lectureNumber: String,
-    ): String {
-        val prevTable = storage.lastViewedTable.get().value
-            ?: throw IllegalStateException("cannot update lecture when current table not exists")
-        return api._getCoursebooksOfficial(
-            prevTable.year,
-            prevTable.semester,
-            courseNumber,
-            lectureNumber,
-        ).url
-    }
-
-    override suspend fun getBookmarks(): List<LectureDto> {
-        return currentTable.value?.let {
-            api._getBookmarkList(it.year, it.semester).lectures
-        } ?: emptyList()
-    }
-
-    override suspend fun getBookmarksOfSemester(year: Long, semester: Long): List<LectureDto> {
-        return api._getBookmarkList(year, semester).lectures
-    }
-
-    // 유저 시간표 내의 강의는 id가 바뀌어 저장되기 때문에, parent id인 lecture_id 필드를 사용한다.
-    // 검색 결과 혹은 관심강좌의 강의는 원본 그대로이므로 lecture_id == null이며, id 필드를 그대로 사용한다.
-    override suspend fun addBookmark(lecture: LectureDto): Result<Unit> {
-        try {
-            val response = api._addBookmark(PostBookmarkParams(lecture.lecture_id ?: lecture.id))
-            return Result.Success(response)
-        } catch (e: Exception) {
-            return Result.Fail(e.toDomainError())
-        }
-    }
-
-    override suspend fun deleteBookmark(lecture: LectureDto): Result<Unit> {
-        try {
-            val response = api._deleteBookmark(PostBookmarkParams(lecture.lecture_id ?: lecture.id))
-            return Result.Success(response)
-        } catch (e: Exception) {
-            return Result.Fail(e.toDomainError())
-        }
-    }
-
-    override suspend fun getLectureReviewSummary(lectureId: String): LectureReviewDto {
-        return api._getLectureReviewSummary(lectureId)
-    }
-
-    override suspend fun updateCurrentTable() {
-        val prevTable = storage.lastViewedTable.get().value
-            ?: return
-        val response = api._getTableById(prevTable.id)
-        storage.lastViewedTable.update(response.toOptional())
-    }
-
-    // 여기부터 리팩토링 코드
-    override val currentTableRefactored: StateFlow<Table?>
+    override val currentTable: StateFlow<Table?>
         get() = object : StateFlow<Table?> {
             private val source = storage.lastViewedTable.asStateFlow()
 
@@ -147,13 +53,20 @@ class CurrentTableRepositoryImpl @Inject constructor(
             }
         }
 
+    override suspend fun updateCurrentTable() {
+        val prevTable = storage.lastViewedTable.get().value
+            ?: return
+        val response = api._getTableById(prevTable.id)
+        storage.lastViewedTable.update(response.toOptional())
+    }
+
     override suspend fun visitSessionlessLectureList() {
         storage.isVisitedSessionlessLectureList.update(true)
     }
 
-    override suspend fun getBookmarksNew(): Result<List<SearchedLecture>> {
+    override suspend fun getBookmarks(): Result<List<SearchedLecture>> {
         try {
-            val table = currentTable.value
+            val table = currentTableDto.value
                 ?: return Result.Success(listOf())
             return Result.Success(
                 table.let {
@@ -167,7 +80,7 @@ class CurrentTableRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun addBookmarkNew(lecture: Lecture): Result<Unit> {
+    override suspend fun addBookmark(lecture: Lecture): Result<Unit> {
         try {
             val response = api._addBookmark(PostBookmarkParams(lecture.id))
             return Result.Success(response)
@@ -185,7 +98,7 @@ class CurrentTableRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun addLectureNew(lectureId: String, isForced: Boolean): Result<Unit> {
+    override suspend fun addLecture(lectureId: String, isForced: Boolean): Result<Unit> {
         val prevTable = storage.lastViewedTable.get().value
             ?: return Result.Success(Unit)
         try {
@@ -197,7 +110,7 @@ class CurrentTableRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun removeLectureNew(lectureId: String): Result<Unit> {
+    override suspend fun removeLecture(lectureId: String): Result<Unit> {
         val prevTable = storage.lastViewedTable.get().value
             ?: return Result.Success(Unit)
         try {
@@ -209,7 +122,7 @@ class CurrentTableRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun removeLectureNewNew(lecture: SearchedLecture): Result<Unit> {
+    override suspend fun removeLecture(lecture: SearchedLecture): Result<Unit> {
         val table = storage.lastViewedTable.get().value
             ?: return Result.Success(Unit)
         val lectureId = table.lectureList
@@ -225,7 +138,7 @@ class CurrentTableRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateLectureNew(lecture: Lecture, isForced: Boolean): Result<Unit> {
+    override suspend fun updateLecture(lecture: Lecture, isForced: Boolean): Result<Unit> {
         val prevTable = storage.lastViewedTable.get().value
             ?: return Result.Success(Unit)
         try {
@@ -239,7 +152,7 @@ class CurrentTableRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun resetLectureNew(lectureId: String): Result<LocalLecture> {
+    override suspend fun resetLecture(lectureId: String): Result<LocalLecture> {
         val prevTable = storage.lastViewedTable.get().value
             ?: return Result.Fail(Unknown("", ""))
         try {
@@ -252,7 +165,7 @@ class CurrentTableRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getSyllabusUrlNew(courseNumber: String, lectureNumber: String): Result<String> {
+    override suspend fun getSyllabusUrl(courseNumber: String, lectureNumber: String): Result<String> {
         val prevTable = storage.lastViewedTable.get().value
             ?: return Result.Fail(Unknown("", ""))
         try {
@@ -268,7 +181,7 @@ class CurrentTableRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun createCustomLectureNew(lecture: CustomLecture, isForced: Boolean): Result<Unit> {
+    override suspend fun createCustomLecture(lecture: CustomLecture, isForced: Boolean): Result<Unit> {
         val prevTable = storage.lastViewedTable.get().value
             ?: return Result.Fail(Unknown("", ""))
         return try {
@@ -281,7 +194,7 @@ class CurrentTableRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getReviewInfoNew(lectureId: String): Result<LectureReviewInfo?> {
+    override suspend fun getReviewInfo(lectureId: String): Result<LectureReviewInfo?> {
         try {
             val dto = api._getLectureReviewSummary(lectureId)
             val reviewInfo = LectureReviewInfo(id = dto.id, rating = dto.rating, reviewCount = dto.reviewCount ?: 0)

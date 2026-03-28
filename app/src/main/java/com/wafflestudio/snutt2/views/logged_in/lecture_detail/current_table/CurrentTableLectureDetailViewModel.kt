@@ -62,7 +62,7 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
     private val getCurrentTableThemeUseCase: GetCurrentTableThemeUseCase,
 ) : ViewModel() {
 
-    private val table = checkNotNull(currentTableRepository.currentTableRefactored.value)
+    private val table = checkNotNull(currentTableRepository.currentTable.value)
     private val lectureId: String = checkNotNull(savedStateHandle["lectureId"])
     private val tableId: String = checkNotNull(savedStateHandle["tableId"])
 
@@ -138,7 +138,7 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
 
         if (state.editMode) {
             viewModelScope.launch {
-                currentTableRepository.updateLectureNew(state.lecture, isForced = false)
+                currentTableRepository.updateLecture(state.lecture, isForced = false)
                     .onSuccess {
                         originalLecture = state.lecture
                         _uiState.update { state.copy(editMode = false) }
@@ -310,7 +310,7 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
 
     fun confirmDeleteLecture() {
         viewModelScope.launch {
-            currentTableRepository.removeLectureNew(originalLecture.id)
+            currentTableRepository.removeLecture(originalLecture.id)
                 .onSuccess {
                     _uiState.update { it.copy(dialogState = CurrentTableLectureDetailUiState.DialogState.None) }
                     _uiEvent.emit(CurrentTableLectureDetailUiEvent.LectureDeleted)
@@ -328,7 +328,7 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
 
     fun confirmResetLecture() {
         viewModelScope.launch {
-            currentTableRepository.resetLectureNew(originalLecture.id)
+            currentTableRepository.resetLecture(originalLecture.id)
                 .onSuccess { resetLecture ->
                     originalLecture = resetLecture
                     val buildings = fetchBuildings(resetLecture)
@@ -356,7 +356,7 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
         val state = _uiState.value
 
         viewModelScope.launch {
-            currentTableRepository.updateLectureNew(state.lecture, isForced = true)
+            currentTableRepository.updateLecture(state.lecture, isForced = true)
                 .onSuccess {
                     originalLecture = state.lecture
                     _uiState.update {
@@ -396,11 +396,11 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
         viewModelScope.launch {
             val state = _uiState.value
             if (state.vacancyRegistered) {
-                vacancyRepository.removeVacancyLectureNewNew(originalLecture)
+                vacancyRepository.removeVacancyLecture(originalLecture)
                     .onSuccess { _uiState.update { it.copy(vacancyRegistered = false) } }
                     .onFailure { handleError(it) }
             } else {
-                vacancyRepository.addVacancyLectureNewNew(originalLecture)
+                vacancyRepository.addVacancyLecture(originalLecture)
                     .onSuccess { _uiState.update { it.copy(vacancyRegistered = true) } }
                     .onFailure { handleError(it) }
             }
@@ -437,7 +437,7 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
     fun openSyllabus() {
         viewModelScope.launch {
             val syllabusLecture = _uiState.value.lecture as? SyllabusLecture ?: return@launch
-            currentTableRepository.getSyllabusUrlNew(
+            currentTableRepository.getSyllabusUrl(
                 syllabusLecture.courseNumber,
                 syllabusLecture.lectureNumber,
             ).onSuccess { url ->
@@ -517,7 +517,7 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
     private suspend fun fetchReviewInfo(lecture: Lecture): LectureReviewInfo? {
         if (lecture !is SyllabusLecture) return null
         var reviewInfo: LectureReviewInfo? = null
-        currentTableRepository.getReviewInfoNew(lecture.originalLectureId)
+        currentTableRepository.getReviewInfo(lecture.originalLectureId)
             .onSuccess { reviewInfo = it }
         return reviewInfo
     }
@@ -553,7 +553,7 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
     private suspend fun fetchBuildings(lecture: Lecture): List<LectureBuildingDto> {
         val places = lecture.lectureSessions.map { it.place }.distinct()
         var buildings: List<LectureBuildingDto> = emptyList()
-        lectureSearchRepository.getBuildingsNew(places)
+        lectureSearchRepository.getBuildings(places)
             .onSuccess { buildings = it }
         return buildings
     }

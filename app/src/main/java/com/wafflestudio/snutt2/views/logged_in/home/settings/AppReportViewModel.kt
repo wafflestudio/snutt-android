@@ -26,7 +26,7 @@ class AppReportViewModel @Inject constructor(
 
     fun sendFeedback(email: String, detail: String) {
         viewModelScope.launch {
-            userRepository.postFeedbackNew(email, detail)
+            userRepository.postFeedback(email, detail)
                 .onSuccess {
                     _uiEvent.emit(AppReportUiEvent.Success)
                 }

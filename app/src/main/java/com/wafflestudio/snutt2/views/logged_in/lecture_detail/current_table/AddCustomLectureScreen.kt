@@ -8,7 +8,7 @@ import com.wafflestudio.snutt2.components.compose.CustomDialog
 import com.wafflestudio.snutt2.domainmodel.LectureSession
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.refactor.LectureDetail
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetail
 
 @Composable
 fun AddCustomLectureScreen(

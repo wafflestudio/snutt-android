@@ -30,8 +30,8 @@ import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.lib.getReviewUrl
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.isDarkMode
-import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebViewNew
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.refactor.LectureDetail
+import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebView
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetail
 import kotlinx.coroutines.launch
 
 @Composable
@@ -102,7 +102,7 @@ fun DeeplinkBookmarkLectureDetailRoute(
         is DeeplinkBookmarkLectureDetailUiState.Success -> {
             ModalBottomSheetLayout(
                 sheetContent = {
-                    ReviewWebViewNew(modifier = Modifier.fillMaxHeight(0.95f), reviewWebViewContainer = reviewWebViewContainer)
+                    ReviewWebView(modifier = Modifier.fillMaxHeight(0.95f), reviewWebViewContainer = reviewWebViewContainer)
                 },
                 sheetState = sheetState,
                 sheetShape = RoundedCornerShape(topStartPercent = 5, topEndPercent = 5),

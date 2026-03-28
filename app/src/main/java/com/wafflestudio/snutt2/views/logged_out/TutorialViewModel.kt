@@ -40,7 +40,7 @@ class TutorialViewModel @Inject constructor(
     fun onFacebookTokenReceived(token: String) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            userRepository.postLoginFacebookNew(token)
+            userRepository.postLoginFacebook(token)
                 .onSuccess {
                     refreshInitialDataUseCase()
                     _uiEvent.emit(TutorialUiEvent.NavigateHome)
@@ -58,9 +58,9 @@ class TutorialViewModel @Inject constructor(
     fun onGoogleAuthCodeReceived(authCode: String, clientId: String, clientSecret: String) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            userRepository.getAccessTokenByAuthCodeNew(authCode, clientId, clientSecret)
+            userRepository.getAccessTokenByAuthCode(authCode, clientId, clientSecret)
                 .onSuccess { googleAccessToken ->
-                    userRepository.postLoginGoogleNew(googleAccessToken)
+                    userRepository.postLoginGoogle(googleAccessToken)
                         .onSuccess {
                             refreshInitialDataUseCase()
                             _uiEvent.emit(TutorialUiEvent.NavigateHome)
@@ -80,7 +80,7 @@ class TutorialViewModel @Inject constructor(
     fun onKakaoTokenReceived(token: String) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            userRepository.postLoginKakaoNew(token)
+            userRepository.postLoginKakao(token)
                 .onSuccess {
                     refreshInitialDataUseCase()
                     _uiEvent.emit(TutorialUiEvent.NavigateHome)

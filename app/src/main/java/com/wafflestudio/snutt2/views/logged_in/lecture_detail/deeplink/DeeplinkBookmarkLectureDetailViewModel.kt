@@ -137,7 +137,7 @@ class DeeplinkBookmarkLectureDetailViewModel @Inject constructor(
     private suspend fun fetchBuildings(lecture: Lecture): List<LectureBuildingDto> {
         val places = lecture.lectureSessions.map { it.place }.distinct()
         var buildings: List<LectureBuildingDto> = emptyList()
-        lectureSearchRepository.getBuildingsNew(places)
+        lectureSearchRepository.getBuildings(places)
             .onSuccess { buildings = it }
         return buildings
     }
@@ -175,11 +175,11 @@ class DeeplinkBookmarkLectureDetailViewModel @Inject constructor(
         viewModelScope.launch {
             val state = _uiState.value as? DeeplinkBookmarkLectureDetailUiState.Success ?: return@launch
             if (state.vacancyRegistered) {
-                vacancyRepository.removeVacancyLectureNewNew(state.lecture)
+                vacancyRepository.removeVacancyLecture(state.lecture)
                     .onSuccess { _uiState.update { (it as? DeeplinkBookmarkLectureDetailUiState.Success)?.copy(vacancyRegistered = false) ?: it } }
                     .onFailure { handleError(it) }
             } else {
-                vacancyRepository.addVacancyLectureNewNew(state.lecture)
+                vacancyRepository.addVacancyLecture(state.lecture)
                     .onSuccess { _uiState.update { (it as? DeeplinkBookmarkLectureDetailUiState.Success)?.copy(vacancyRegistered = true) ?: it } }
                     .onFailure { handleError(it) }
             }

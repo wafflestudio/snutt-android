@@ -87,7 +87,7 @@ fun VacancyRoute(
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit,
     onNavigateOnboard: () -> Unit,
-    viewModel: VacancyViewModelNew = hiltViewModel(),
+    viewModel: VacancyViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     val uiState by viewModel.vacancyUiState.collectAsState()

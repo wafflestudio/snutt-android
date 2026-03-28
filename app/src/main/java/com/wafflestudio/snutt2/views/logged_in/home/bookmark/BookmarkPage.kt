@@ -27,8 +27,8 @@ import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.isDarkMode
-import com.wafflestudio.snutt2.views.logged_in.home.search.refactor.BookmarkList
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.refactor.TimeTableNew
+import com.wafflestudio.snutt2.views.logged_in.home.search.BookmarkList
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 import kotlinx.coroutines.launch
 
 @Composable
@@ -185,7 +185,7 @@ fun BookmarkScreen(
                                 .weight(1f)
                                 .background(SNUTTColors.White900),
                         ) {
-                            TimeTableNew(
+                            TimeTable(
                                 lectures = uiState.currentTable.lectures,
                                 selectedLecture = uiState.selectedLecture,
                                 fittedTrimParam = uiState.tableTrimParam,

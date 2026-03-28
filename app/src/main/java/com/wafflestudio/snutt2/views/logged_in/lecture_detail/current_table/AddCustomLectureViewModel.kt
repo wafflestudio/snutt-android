@@ -69,7 +69,7 @@ class AddCustomLectureViewModel @Inject constructor(
 
     fun saveLecture() {
         viewModelScope.launch {
-            currentTableRepository.createCustomLectureNew(_uiState.value.lecture)
+            currentTableRepository.createCustomLecture(_uiState.value.lecture)
                 .onSuccess {
                     _uiEvent.emit(AddCustomLectureUiEvent.LectureCreated)
                 }
@@ -87,7 +87,7 @@ class AddCustomLectureViewModel @Inject constructor(
 
     fun confirmForceCreateLecture() {
         viewModelScope.launch {
-            currentTableRepository.createCustomLectureNew(_uiState.value.lecture, isForced = true)
+            currentTableRepository.createCustomLecture(_uiState.value.lecture, isForced = true)
                 .onSuccess {
                     _uiState.update { it.copy(dialogState = AddCustomLectureUiState.DialogState.None) }
                     _uiEvent.emit(AddCustomLectureUiEvent.LectureCreated)

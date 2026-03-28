@@ -4,7 +4,6 @@ import android.content.Context
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domainmodel.SearchTime
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
-import com.wafflestudio.snutt2.model.SearchTimeDto
 import java.time.DayOfWeek
 import java.time.LocalTime
 import kotlin.math.roundToInt
@@ -56,7 +55,7 @@ fun timeSlotsToFormattedString(context: Context, booleanArray: List<List<Boolean
 }
 
 // 리팩토링 함수
-fun List<List<Boolean>>.clusterToTimeBlocksNew(): List<SearchTime> {
+fun List<List<Boolean>>.clusterToTimeBlocks(): List<SearchTime> {
     val timeSlots =
         (TableTrimParam.SearchOption.hourFrom * 2..(TableTrimParam.SearchOption.hourTo + 1) * 2).map { it / 2f }
     val list = mutableListOf<SearchTime>()

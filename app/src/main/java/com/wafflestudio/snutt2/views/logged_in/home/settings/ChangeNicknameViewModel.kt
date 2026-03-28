@@ -26,7 +26,7 @@ class ChangeNicknameViewModel @Inject constructor(
 
     fun changeNickname(nickname: String) {
         viewModelScope.launch {
-            userRepository.patchUserInfoNew(nickname)
+            userRepository.patchUserInfo(nickname)
                 .onSuccess {
                     _uiEvent.emit(ChangeNicknameUiEvent.Success)
                 }

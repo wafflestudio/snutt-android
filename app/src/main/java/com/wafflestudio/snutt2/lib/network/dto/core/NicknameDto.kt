@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.lib.network.dto.core
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import com.wafflestudio.snutt2.domainmodel.Nickname
 
 @JsonClass(generateAdapter = true)
 data class NicknameDto(
@@ -11,4 +12,6 @@ data class NicknameDto(
     override fun toString(): String {
         return "$nickname#$tag"
     }
+
+    fun toDomainModel(): Nickname = Nickname(nickname, tag)
 }

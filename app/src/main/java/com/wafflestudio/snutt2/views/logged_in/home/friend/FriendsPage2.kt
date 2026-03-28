@@ -58,7 +58,7 @@ import com.wafflestudio.snutt2.lib.toFormattedString
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.refactor.TimeTableNew
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 import kotlinx.coroutines.launch
 
 @Composable
@@ -424,7 +424,7 @@ private fun FriendsLoadedScreen(
                                 .fillMaxSize()
                                 .background(SNUTTColors.White900),
                         ) {
-                            TimeTableNew(
+                            TimeTable(
                                 lectures = friendTable.lectures,
                                 selectedLecture = null,
                                 fittedTrimParam = uiState.selectedFriendTableTrimParam,

@@ -56,7 +56,7 @@ import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.refactor.TimeTableNew
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 import kotlinx.coroutines.launch
 import kotlin.math.max
 import kotlin.math.min
@@ -239,7 +239,7 @@ fun TimetableConfigScreen(
                     )
                     .align(Alignment.CenterHorizontally),
             ) {
-                TimeTableNew(
+                TimeTable(
                     lectures = uiState.lectures,
                     selectedLecture = null,
                     fittedTrimParam = uiState.fittedTrimParam,

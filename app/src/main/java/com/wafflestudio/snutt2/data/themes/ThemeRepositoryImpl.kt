@@ -25,58 +25,26 @@ class ThemeRepositoryImpl @Inject constructor(
     private val _builtInThemes = MutableStateFlow<List<BuiltInTheme>>(emptyList())
     override val builtInThemes: StateFlow<List<BuiltInTheme>> = _builtInThemes
 
-    override suspend fun fetchThemes() {
-        api._getThemes().let { themes ->
-            _customThemes.value =
-                themes.filter { it.isCustom == true }.map { it.toTableTheme() as CustomTheme }
-            _builtInThemes.value = (0..5).map { code ->
-                BuiltInTheme.fromCode(code)
-            }
-        }
-    }
-
     override fun getTheme(themeId: String): CustomTheme {
         return _customThemes.value.find { it.id == themeId } ?: CustomTheme.Default
     }
 
-    override suspend fun createTheme(name: String, colors: List<ThemeColor>): CustomTheme {
-        val newTheme =
-            api._postTheme(PostThemeParams(name = name, colors = colors.map { ColorDto(it.foreground, it.background) }))
-                .toTableTheme() as CustomTheme
-        _customThemes.value = _customThemes.value.toMutableList().apply { add(0, newTheme) }
-        return newTheme
-    }
-
-    override suspend fun updateTheme(
-        themeId: String,
-        name: String,
-        colors: List<ThemeColor>,
-    ): CustomTheme {
-        val newTheme = api._patchTheme(
-            themeId = themeId,
-            patchThemeParams = PatchThemeParams(
-                name = name,
-                colors = colors.map { ColorDto(it.foreground, it.background) },
-            ),
-        ).toTableTheme() as CustomTheme
-        _customThemes.value = _customThemes.value.toMutableList().apply {
-            set(indexOfFirst { it.id == newTheme.id }, newTheme)
+    override suspend fun fetchThemes(): Result<Unit> {
+        return try {
+            api._getThemes().let { themes ->
+                _customThemes.value =
+                    themes.filter { it.isCustom == true }.map { it.toTableTheme() as CustomTheme }
+                _builtInThemes.value = (0..5).map { code ->
+                    BuiltInTheme.fromCode(code)
+                }
+            }
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
         }
-        return newTheme
     }
 
-    override suspend fun copyTheme(themeId: String) {
-        val newTheme = api._postCopyTheme(themeId = themeId).toTableTheme() as CustomTheme
-        _customThemes.value = _customThemes.value.toMutableList().apply { add(0, newTheme) }
-    }
-
-    override suspend fun deleteTheme(themeId: String) {
-        api._deleteTheme(themeId = themeId)
-        _customThemes.value =
-            _customThemes.value.toMutableList().apply { removeIf { it.id == themeId } }
-    }
-
-    override suspend fun createThemeNew(name: String, colors: List<ThemeColor>): Result<CustomTheme> {
+    override suspend fun createTheme(name: String, colors: List<ThemeColor>): Result<CustomTheme> {
         return try {
             val newTheme =
                 api._postTheme(PostThemeParams(name = name, colors = colors.map { ColorDto(it.foreground, it.background) }))
@@ -88,7 +56,7 @@ class ThemeRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateThemeNew(
+    override suspend fun updateTheme(
         themeId: String,
         name: String,
         colors: List<ThemeColor>,
@@ -110,22 +78,7 @@ class ThemeRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun fetchThemesNew(): Result<Unit> {
-        return try {
-            api._getThemes().let { themes ->
-                _customThemes.value =
-                    themes.filter { it.isCustom == true }.map { it.toTableTheme() as CustomTheme }
-                _builtInThemes.value = (0..5).map { code ->
-                    BuiltInTheme.fromCode(code)
-                }
-            }
-            Result.Success(Unit)
-        } catch (e: Exception) {
-            Result.Fail(e.toDomainError())
-        }
-    }
-
-    override suspend fun copyThemeNew(themeId: String): Result<Unit> {
+    override suspend fun copyTheme(themeId: String): Result<Unit> {
         return try {
             val newTheme = api._postCopyTheme(themeId = themeId).toTableTheme() as CustomTheme
             _customThemes.value = _customThemes.value.toMutableList().apply { add(0, newTheme) }
@@ -135,7 +88,7 @@ class ThemeRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteThemeNew(themeId: String): Result<Unit> {
+    override suspend fun deleteTheme(themeId: String): Result<Unit> {
         return try {
             api._deleteTheme(themeId = themeId)
             _customThemes.value =

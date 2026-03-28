@@ -17,9 +17,9 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.domainmodel.CustomTheme
 import com.wafflestudio.snutt2.ui.isDarkMode
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.refactor.ColorItem
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.refactor.ColorPickerDialog
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.refactor.CustomColorSection
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.ColorItem
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.ColorPickerDialog
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.CustomColorSection
 
 @Composable
 fun LectureColorSelectorScreen(

@@ -49,7 +49,7 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.ui.onSurfaceVariant
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingColumn
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.refactor.TimeTableNew
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 
 @Composable
 fun ThemeDetailRoute(
@@ -227,7 +227,7 @@ fun ThemeDetailScreen(
                                 )
                                 .align(Alignment.CenterHorizontally),
                         ) {
-                            TimeTableNew(
+                            TimeTable(
                                 lectures = uiState.lectures,
                                 selectedLecture = null,
                                 fittedTrimParam = uiState.fittedTrimParam,

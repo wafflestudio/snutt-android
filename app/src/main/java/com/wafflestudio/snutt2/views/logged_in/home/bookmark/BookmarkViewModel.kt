@@ -71,7 +71,7 @@ class BookmarkViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             combine(
-                currentTableRepository.currentTableRefactored.filterNotNull(),
+                currentTableRepository.currentTable.filterNotNull(),
                 combine(
                     userRepository.tableTrimParam,
                     userRepository.tableLectureCustomOption,
@@ -86,7 +86,7 @@ class BookmarkViewModel @Inject constructor(
                 ),
                 vacancyRepository.vacancyLectures,
                 // C-2: courseBook 변경 시 bookmark refetch
-                currentTableRepository.currentTableRefactored
+                currentTableRepository.currentTable
                     .filterNotNull()
                     .distinctUntilChanged { o, n -> o.summary.courseBook == n.summary.courseBook }
                     .flatMapLatest { table ->
@@ -172,7 +172,7 @@ class BookmarkViewModel @Inject constructor(
             }
         } else {
             viewModelScope.launch {
-                val courseBook = currentTableRepository.currentTableRefactored.value?.summary?.courseBook ?: return@launch
+                val courseBook = currentTableRepository.currentTable.value?.summary?.courseBook ?: return@launch
                 bookmarkRepository.addBookmark(courseBook, lecture)
                     .onFailure { handleError(it) }
             }
@@ -181,7 +181,7 @@ class BookmarkViewModel @Inject constructor(
 
     fun onConfirmDeleteBookmark(lecture: SearchedLecture) {
         viewModelScope.launch {
-            val courseBook = currentTableRepository.currentTableRefactored.value?.summary?.courseBook ?: return@launch
+            val courseBook = currentTableRepository.currentTable.value?.summary?.courseBook ?: return@launch
             bookmarkRepository.deleteBookmark(courseBook, lecture)
                 .onFailure { handleError(it) }
 
@@ -206,7 +206,7 @@ class BookmarkViewModel @Inject constructor(
                     state.copy(dialogState = BookmarkUiState.DialogState.DeleteVacancyNotification(lecture))
                 }
             } else {
-                vacancyRepository.addVacancyLectureNewNew(lecture)
+                vacancyRepository.addVacancyLecture(lecture)
                     .onFailure { handleError(it) }
             }
         }
@@ -218,7 +218,7 @@ class BookmarkViewModel @Inject constructor(
                 if (state !is BookmarkUiState.Success) return@update state
                 state.copy(dialogState = BookmarkUiState.DialogState.None)
             }
-            vacancyRepository.removeVacancyLectureNewNew(lecture)
+            vacancyRepository.removeVacancyLecture(lecture)
                 .onFailure { handleError(it) }
         }
     }
@@ -231,7 +231,7 @@ class BookmarkViewModel @Inject constructor(
 
         viewModelScope.launch {
             if (contained) {
-                currentTableRepository.removeLectureNewNew(lecture)
+                currentTableRepository.removeLecture(lecture)
                     .onSuccess { onToggleLectureSelection(lecture) }
                     .onFailure { handleError(it) }
             } else {
@@ -319,7 +319,7 @@ class BookmarkViewModel @Inject constructor(
 
     fun openSyllabus(lecture: SearchedLecture) {
         viewModelScope.launch {
-            currentTableRepository.getSyllabusUrlNew(lecture.courseNumber, lecture.lectureNumber)
+            currentTableRepository.getSyllabusUrl(lecture.courseNumber, lecture.lectureNumber)
                 .onSuccess { url -> _uiEvent.emit(BookmarkUiEvent.OpenUrl(url)) }
                 .onFailure { handleError(it) }
         }
@@ -330,7 +330,7 @@ class BookmarkViewModel @Inject constructor(
     // region Private methods
 
     private suspend fun addLecture(lecture: SearchedLecture, isForced: Boolean) {
-        currentTableRepository.addLectureNew(lecture.id, isForced)
+        currentTableRepository.addLecture(lecture.id, isForced)
             .onSuccess {
                 onToggleLectureSelection(lecture)
             }
@@ -352,7 +352,7 @@ class BookmarkViewModel @Inject constructor(
     }
 
     private suspend fun fetchBuildings(lecture: SearchedLecture) {
-        lectureSearchRepository.getBuildingsNew(lecture.lectureSessions.map { it.place }.distinct())
+        lectureSearchRepository.getBuildings(lecture.lectureSessions.map { it.place }.distinct())
             .onSuccess { buildings ->
                 _uiState.update { current ->
                     if (current !is BookmarkUiState.Success) return@update current

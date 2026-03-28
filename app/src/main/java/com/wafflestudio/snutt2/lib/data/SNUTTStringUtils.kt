@@ -2,12 +2,9 @@ package com.wafflestudio.snutt2.lib.data
 
 import android.content.Context
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.SNUTTUtils
 import com.wafflestudio.snutt2.domainmodel.Lecture
 import com.wafflestudio.snutt2.domainmodel.LectureSession
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
-import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.model.SearchTimeDto
 import java.time.DayOfWeek
 import java.time.Duration
@@ -18,21 +15,6 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 object SNUTTStringUtils {
-    /**
-     * 강의의 모든 classTime을 text로 변환
-     * ex) 월, 수 09:30 ~ 10:45 이면 -> "월(09:30~10:45), 수(09:30~10:45)"
-     */
-    fun getSimplifiedClassTimeForLecture(context: Context, lectureDto: LectureDto): String {
-        if (lectureDto.class_time_json.isEmpty()) {
-            return context.getString(R.string.lecture_detail_hint_nothing)
-        }
-
-        return lectureDto.class_time_json.joinToString(
-            ", ",
-            transform = ::getClassTimeTextForLecture,
-        )
-    }
-
     /**
      * 강의의 모든 lectureSession을 text로 변환
      * ex) 월, 수 09:30 ~ 10:45 이면 -> "월(09:30~10:45), 수(09:30~10:45)"
@@ -49,19 +31,6 @@ object SNUTTStringUtils {
      * 하나의 classTime을 텍스트로 변환, 강의 내의 모든 classTime에 대해 필요할 때
      * ex) 월 09:30 ~ 10:45 이면 -> "월(09:30~10:45)"
      */
-    private fun getClassTimeTextForLecture(classTime: ClassTimeDto): String = buildString {
-        append(SNUTTUtils.numberToWday(classTime.day))
-        append("(")
-        append("%02d:%02d".format(classTime.startTimeHour, classTime.startTimeMinute))
-        append("~")
-        append("%02d:%02d".format(classTime.endTimeHour, classTime.endTimeMinute))
-        append(")")
-    }
-
-    /**
-     * 하나의 classTime을 텍스트로 변환, 강의 내의 모든 classTime에 대해 필요할 때
-     * ex) 월 09:30 ~ 10:45 이면 -> "월(09:30~10:45)"
-     */
     private fun getClassTimeTextForLecture(session: LectureSession): String = buildString {
         append(session.day.getString())
         append("(")
@@ -69,28 +38,6 @@ object SNUTTStringUtils {
         append("~")
         append(session.endTime.getHourMinuteString())
         append(")")
-    }
-
-    /**
-     * 하나의 classTime을 텍스트로 변환, 하나의 classTime에 대해 필요할 때
-     * ex) 월 09:30 ~ 10:45 이면 -> "월 09:30~10:45"
-     */
-    fun getSingleClassTimeText(classTime: ClassTimeDto): String = buildString {
-        append(SNUTTUtils.numberToWday(classTime.day))
-        append(" %02d:%02d".format(classTime.startTimeHour, classTime.startTimeMinute))
-        append("~")
-        append("%02d:%02d".format(classTime.endTimeHour, classTime.endTimeMinute))
-    }
-
-    fun getSimplifiedLocation(context: Context, lectureDto: LectureDto): String {
-        val text = StringBuilder()
-        val places = lectureDto.class_time_json.map { it.place }.distinct()
-        places.forEachIndexed { index, place ->
-            text.append(place)
-            if (index != places.size - 1 && place.isNotEmpty()) text.append(" / ")
-        }
-        if (text.isEmpty()) text.append(context.getString(R.string.lecture_detail_hint_nothing))
-        return text.toString()
     }
 
     fun getSimplifiedLocation(context: Context, lecture: SearchedLecture): String {
@@ -128,18 +75,6 @@ object SNUTTStringUtils {
         }
     }
 
-    fun getLectureTagText(context: Context, lecture: LectureDto): String {
-        return listOf(
-            lecture.category,
-            lecture.department,
-            lecture.academic_year,
-        )
-            .filter { it.isNullOrBlank().not() }
-            .let {
-                if (it.isEmpty()) context.getString(R.string.lecture_detail_hint_nothing) else it.joinToString(", ")
-            }
-    }
-
     fun getLectureTagText(context: Context, lecture: SearchedLecture): String {
         return listOf(
             lecture.category,
@@ -152,16 +87,8 @@ object SNUTTStringUtils {
             }
     }
 
-    fun getCreditSumFromLectureList(lectureList: List<LectureDto>): Long {
+    fun getCreditSumFromLectureList(lectureList: List<Lecture>): Long {
         return lectureList.fold(0L) { acc, lecture -> acc + lecture.credit }
-    }
-
-    fun getCreditSumFromLectureListNew(lectureList: List<Lecture>): Long {
-        return lectureList.fold(0L) { acc, lecture -> acc + lecture.credit }
-    }
-
-    fun getInstructorAndCreditText(context: Context, lecture: LectureDto): String {
-        return lecture.instructor + " / " + lecture.credit + context.getString(R.string.lecture_detail_credit)
     }
 
     // 570 -> 오전 09:30 / 9:30 AM
@@ -172,26 +99,6 @@ object SNUTTStringUtils {
         }
         return context.getString(R.string.time_format_am_pm, amPm, hour, this % 60)
     }
-
-    fun String.creditStringToLong(): Long {
-        return try {
-            this.toLong().coerceAtLeast(0L)
-        } catch (e: Exception) {
-            0
-        }
-    }
-
-    fun LectureDto.getQuotaTitle(context: Context): String = StringBuilder().apply {
-        append(context.getString(R.string.lecture_detail_quota))
-        if (freshmanQuota != null && freshmanQuota != 0L) append("(${context.getString(R.string.lecture_detail_senior)})")
-    }.toString()
-
-    fun LectureDto.getFullQuota(): String = StringBuilder().apply {
-        append(quota)
-        if (freshmanQuota != null && freshmanQuota != 0L) {
-            append("(${quota - freshmanQuota})")
-        }
-    }.toString()
 
     fun String.isEmailInvalid(): Boolean {
         val regex = Regex(

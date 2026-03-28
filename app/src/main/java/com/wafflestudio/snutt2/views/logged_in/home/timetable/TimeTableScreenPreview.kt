@@ -1,0 +1,74 @@
+package com.wafflestudio.snutt2.views.logged_in.home.timetable
+
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
+import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
+import com.wafflestudio.snutt2.domainmodel.Table
+import com.wafflestudio.snutt2.domainmodel.TableLectureCustom
+import com.wafflestudio.snutt2.domainmodel.TableSummary
+import com.wafflestudio.snutt2.domainmodel.TableTrimParam
+import com.wafflestudio.snutt2.domainmodel.ThemeReference
+import com.wafflestudio.snutt2.lib.getFittingTrimParam
+
+private val sampleTable = Table(
+    summary = TableSummary.Default,
+    lectures = builtInOnlyLectures,
+    themeRef = ThemeReference.BuiltIn(0),
+)
+
+private val baseLoadedState = TimeTableUiState.Loaded(
+    table = sampleTable,
+    theme = BuiltInTheme.SNUTT,
+    previewTheme = null,
+    tableTrimParam = builtInOnlyLectures.getFittingTrimParam(TableTrimParam.Default),
+    isCompactMode = false,
+    tableLectureCustomOptions = TableLectureCustom.Default,
+    newSemesterExist = false,
+    uncheckedNotificationExist = false,
+    vacancyNotificationBannerEnabled = false,
+    dialogState = TimeTableUiState.DialogState.None,
+    isSessionlessLectureHintVisible = true,
+)
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 700, name = "Default")
+@Composable
+private fun TimeTableScreenDefaultPreview() {
+    TimeTableScreen(
+        uiState = baseLoadedState,
+        onClickDrawerIcon = {},
+        onClickTableTitle = {},
+        onClickTableLecturesListIcon = {},
+        onClickVacancyBanner = {},
+        onClickLectureCell = {},
+        onDismissDialog = {},
+        onConfirmChangeTableTitle = { _, _ -> },
+        onClickBookmarkIcon = {},
+        onClickAddBySearch = {},
+        onClickAddManually = {},
+        onVisitSessionlessLectureList = {},
+    )
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 700, name = "All Badges + Banner")
+@Composable
+private fun TimeTableScreenAllBadgesPreview() {
+    TimeTableScreen(
+        uiState = baseLoadedState.copy(
+            newSemesterExist = true,
+            uncheckedNotificationExist = true,
+            vacancyNotificationBannerEnabled = true,
+        ),
+        onClickDrawerIcon = {},
+        onClickTableTitle = {},
+        onClickTableLecturesListIcon = {},
+        onClickVacancyBanner = {},
+        onClickLectureCell = {},
+        onDismissDialog = {},
+        onConfirmChangeTableTitle = { _, _ -> },
+        onClickBookmarkIcon = {},
+        onClickAddBySearch = {},
+        onClickAddManually = {},
+        onVisitSessionlessLectureList = {},
+    )
+}
+

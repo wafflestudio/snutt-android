@@ -3,14 +3,14 @@ package com.wafflestudio.snutt2.data.user
 import com.wafflestudio.snutt2.domainmodel.PushPreferences
 import com.wafflestudio.snutt2.domainmodel.TableLectureCustom
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
+import com.wafflestudio.snutt2.domainmodel.User
 import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.dto.GetSocialProvidersResults
-import com.wafflestudio.snutt2.lib.network.dto.core.UserDto
 import com.wafflestudio.snutt2.ui.ThemeMode
 import kotlinx.coroutines.flow.StateFlow
 
 interface UserRepository {
-    val user: StateFlow<UserDto?>
+    val user: StateFlow<User?>
 
     val tableTrimParam: StateFlow<TableTrimParam>
 
@@ -22,27 +22,23 @@ interface UserRepository {
 
     val compactMode: StateFlow<Boolean>
 
-    // login with local id
-    suspend fun postSignIn(id: String, password: String)
+    suspend fun postSignIn(id: String, password: String): Result<Unit>
 
-    suspend fun postSignUp(id: String, password: String, email: String)
+    suspend fun postSignUp(id: String, password: String, email: String): Result<Unit>
 
     suspend fun fetchUserInfo(): Result<Unit>
 
-    suspend fun patchUserInfo(nickname: String)
+    suspend fun patchUserInfo(nickname: String): Result<Unit>
 
     suspend fun deleteUserAccount(): Result<Unit>
 
     suspend fun putUserPassword(oldPassword: String, newPassword: String): Result<Unit>
 
-    // 새로운 local_id 추가
     suspend fun postUserPassword(id: String, password: String): Result<Unit>
 
-    suspend fun postFeedback(email: String, detail: String)
+    suspend fun postFeedback(email: String, detail: String): Result<Unit>
 
-    suspend fun deleteFirebaseToken()
-
-    suspend fun postForceLogout()
+    suspend fun postForceLogout(): Result<Unit>
 
     suspend fun toggleForceFit(): Result<Unit>
 
@@ -52,35 +48,33 @@ interface UserRepository {
 
     suspend fun toggleCompactMode(): Result<Unit>
 
-    suspend fun getAccessToken(): String
+    suspend fun getAccessToken(): Result<String>
 
-    suspend fun performLogout()
+    suspend fun performLogout(): Result<Unit>
 
-    suspend fun fetchAndSetPopup()
+    suspend fun fetchAndSetPopup(): Result<Unit>
 
-    suspend fun closePopupWithHiddenDays()
+    suspend fun closePopupWithHiddenDays(): Result<Unit>
 
-    suspend fun closePopup()
+    suspend fun closePopup(): Result<Unit>
 
-    suspend fun registerToken()
+    suspend fun registerToken(): Result<Unit>
 
-    suspend fun setThemeMode(mode: ThemeMode)
+    suspend fun setThemeMode(mode: ThemeMode): Result<Unit>
 
-    suspend fun findIdByEmail(email: String)
+    suspend fun findIdByEmail(email: String): Result<Unit>
 
-    suspend fun checkEmailById(id: String): String
+    suspend fun checkEmailById(id: String): Result<String>
 
-    suspend fun sendPwResetCodeToEmail(email: String)
+    suspend fun sendPwResetCodeToEmail(email: String): Result<Unit>
 
-    suspend fun verifyPwResetCode(id: String, code: String)
+    suspend fun verifyPwResetCode(id: String, code: String): Result<Unit>
 
-    suspend fun resetPassword(id: String, password: String, code: String)
+    suspend fun resetPassword(id: String, password: String, code: String): Result<Unit>
 
-    suspend fun sendCodeToEmail(email: String)
+    suspend fun sendCodeToEmail(email: String): Result<Unit>
 
-    suspend fun verifyEmailCode(code: String)
-
-    suspend fun setCompactMode(compact: Boolean)
+    suspend fun verifyEmailCode(code: String): Result<Unit>
 
     suspend fun toggleTitleVisible(): Result<Unit>
 
@@ -90,96 +84,33 @@ interface UserRepository {
 
     suspend fun toggleInstructorVisible(): Result<Unit>
 
-    suspend fun setFirstBookmarkAlertShown()
-
     suspend fun getAccessTokenByAuthCode(
-        authCode: String,
-        clientId: String,
-        clientSecret: String,
-    ): String?
-
-    suspend fun getPushPreferences(): Result<PushPreferences>
-
-    suspend fun postPushPreferences(pushPreferences: PushPreferences): Result<Unit>
-
-    /**
-     * 소셜 로그인 관련.
-     *
-     * postLogin: 로그인
-     *
-     * postUser: 연동
-     *
-     * deleteUser: 연동 해제
-     */
-    suspend fun getSocialProviders(): GetSocialProvidersResults
-
-    suspend fun postLoginFacebook(facebookToken: String)
-
-    suspend fun postUserFacebook(facebookToken: String)
-
-    suspend fun deleteUserFacebook()
-
-    suspend fun postLoginGoogle(googleAccessToken: String)
-
-    suspend fun postUserGoogle(googleAccessToken: String)
-
-    suspend fun deleteUserGoogle()
-
-    suspend fun postLoginKakao(kakaoAccessToken: String)
-
-    suspend fun postUserKakao(kakaoAccessToken: String)
-
-    suspend fun deleteUserKakao()
-
-    // region New methods (Result-returning)
-
-    suspend fun postSignInNew(id: String, password: String): Result<Unit>
-
-    suspend fun postSignUpNew(id: String, password: String, email: String): Result<Unit>
-
-    suspend fun patchUserInfoNew(nickname: String): Result<Unit>
-
-    suspend fun postFeedbackNew(email: String, detail: String): Result<Unit>
-
-    suspend fun findIdByEmailNew(email: String): Result<Unit>
-
-    suspend fun checkEmailByIdNew(id: String): Result<String>
-
-    suspend fun sendPwResetCodeToEmailNew(email: String): Result<Unit>
-
-    suspend fun verifyPwResetCodeNew(id: String, code: String): Result<Unit>
-
-    suspend fun resetPasswordNew(id: String, password: String, code: String): Result<Unit>
-
-    suspend fun sendCodeToEmailNew(email: String): Result<Unit>
-
-    suspend fun verifyEmailCodeNew(code: String): Result<Unit>
-
-    suspend fun getAccessTokenByAuthCodeNew(
         authCode: String,
         clientId: String,
         clientSecret: String,
     ): Result<String>
 
-    suspend fun getSocialProvidersNew(): Result<GetSocialProvidersResults>
+    suspend fun getPushPreferences(): Result<PushPreferences>
 
-    suspend fun postLoginFacebookNew(facebookToken: String): Result<Unit>
+    suspend fun postPushPreferences(pushPreferences: PushPreferences): Result<Unit>
 
-    suspend fun postLoginGoogleNew(googleAccessToken: String): Result<Unit>
+    suspend fun getSocialProviders(): Result<GetSocialProvidersResults>
 
-    suspend fun postLoginKakaoNew(kakaoAccessToken: String): Result<Unit>
+    suspend fun postLoginFacebook(facebookToken: String): Result<Unit>
 
-    suspend fun postUserFacebookNew(facebookToken: String): Result<Unit>
+    suspend fun postLoginGoogle(googleAccessToken: String): Result<Unit>
 
-    suspend fun postUserGoogleNew(googleAccessToken: String): Result<Unit>
+    suspend fun postLoginKakao(kakaoAccessToken: String): Result<Unit>
 
-    suspend fun postUserKakaoNew(kakaoAccessToken: String): Result<Unit>
+    suspend fun postUserFacebook(facebookToken: String): Result<Unit>
 
-    suspend fun deleteUserFacebookNew(): Result<Unit>
+    suspend fun postUserGoogle(googleAccessToken: String): Result<Unit>
 
-    suspend fun deleteUserGoogleNew(): Result<Unit>
+    suspend fun postUserKakao(kakaoAccessToken: String): Result<Unit>
 
-    suspend fun deleteUserKakaoNew(): Result<Unit>
+    suspend fun deleteUserFacebook(): Result<Unit>
 
-    // endregion
+    suspend fun deleteUserGoogle(): Result<Unit>
+
+    suspend fun deleteUserKakao(): Result<Unit>
 }

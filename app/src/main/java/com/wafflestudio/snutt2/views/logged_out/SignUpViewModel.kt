@@ -34,7 +34,7 @@ class SignUpViewModel @Inject constructor(
     fun signUp(id: String, email: String, password: String) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            userRepository.postSignUpNew(id, password, email)
+            userRepository.postSignUp(id, password, email)
                 .onSuccess {
                     refreshInitialDataUseCase()
                     _uiEvent.emit(SignUpUiEvent.NavigateEmailVerification)

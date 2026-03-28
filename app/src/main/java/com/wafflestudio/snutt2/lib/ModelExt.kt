@@ -6,13 +6,8 @@ import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.Lecture
 import com.wafflestudio.snutt2.domainmodel.LectureReviewInfo
 import com.wafflestudio.snutt2.domainmodel.LectureSession
-import com.wafflestudio.snutt2.domainmodel.SyllabusLecture
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
-import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
-import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
-import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
-import com.wafflestudio.snutt2.model.SearchTimeDto
 import com.wafflestudio.snutt2.model.TagType
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import java.time.LocalTime
@@ -30,17 +25,6 @@ fun LectureDto.contains(queryDay: Int, queryTime: Float): Boolean {
         if (queryTime in start..end) return true
     }
     return false
-}
-
-fun CourseBookDto.toFormattedString(context: Context): String {
-    val semesterStr = when (this.semester) {
-        1L -> context.getString(R.string.course_book_spring_semster)
-        2L -> context.getString(R.string.course_book_summer_semester)
-        3L -> context.getString(R.string.course_book_authum)
-        4L -> context.getString(R.string.course_book_winter)
-        else -> "-"
-    }
-    return context.getString(R.string.course_book_year_semester_format, this.year, semesterStr)
 }
 
 fun CourseBook.toFormattedString(context: Context): String {
@@ -92,42 +76,6 @@ fun String.toCreditNumber(): Long {
     return substring(0, length - 2).toLong()
 }
 
-// FIXME: 앞으로 index 를 가지고 color 설정하지 않는다.
-fun Long.getDefaultFgColorHex(): Int {
-    val DEFAULT_FG =
-        listOf(-0x1, -0x1, -0x1, -0x1, -0x1, -0x1, -0x1, -0x1, -0x1, -0x1)
-    return DEFAULT_FG[this.toInt()]
-}
-
-// FIXME: 앞으로 index 를 가지고 color 설정하지 않는다.
-fun Long.getDefaultBgColorHex(): Int {
-    val DEFAULT_BG = listOf(
-        -0x1abba7,
-        -0xa72c3,
-        -0x53ad3,
-        -0x5926d0,
-        -0xd43c9a,
-        -0xe42f37,
-        -0xe26617,
-        -0xb0b73c,
-        -0x50a94d,
-        -0x1f1f20,
-    )
-    return DEFAULT_BG[this.toInt()]
-}
-
-fun LectureDto.isCourseNumberEquals(lectureDto: LectureDto): Boolean {
-    return course_number != null && course_number == lectureDto.course_number
-}
-
-fun LectureDto.isLectureNumberEquals(lectureDto: LectureDto): Boolean {
-    return isCourseNumberEquals(lectureDto) && lecture_number != null && lecture_number == lectureDto.lecture_number
-}
-
-fun SyllabusLecture.isLectureNumberEqualsNew(other: SyllabusLecture): Boolean {
-    return courseNumber == other.courseNumber && lectureNumber == other.lectureNumber
-}
-
 @JvmName("getFittingTrimParamDto")
 fun List<LectureDto>.getFittingTrimParam(tableTrimParam: TableTrimParam): TableTrimParam =
     TableTrimParam(
@@ -137,16 +85,6 @@ fun List<LectureDto>.getFittingTrimParam(tableTrimParam: TableTrimParam): TableT
         hourTo = (flatMap { it.class_time_json.map { ceil(it.endTimeInFloat).toInt() - 1 } } + tableTrimParam.hourTo).maxOf { it },
         forceFitLectures = true,
     )
-
-fun ClassTimeDto.trimByTrimParam(tableTrimParam: TableTrimParam): ClassTimeDto? {
-    if (tableTrimParam.dayOfWeekFrom > this.day || this.day > tableTrimParam.dayOfWeekTo) return null
-    if (tableTrimParam.hourFrom >= this.endTimeInFloat || tableTrimParam.hourTo + 1 <= this.startTimeInFloat) return null
-
-    return this.copy(
-        startMinute = max(tableTrimParam.hourFrom * 60, this.startMinute),
-        endMinute = min(this.endMinute, (tableTrimParam.hourTo + 1) * 60),
-    )
-}
 
 val LectureSession.startTimeInFloat: Float
     get() = startTime.hour + startTime.minute / 60f
@@ -193,50 +131,6 @@ fun roundToCompact(f: Float): Float {
         f.toInt() + 0.5f
     } else {
         f.toInt() + 1f
-    }
-}
-
-fun SimpleTableDto.courseBookEquals(other: SimpleTableDto): Boolean {
-    return this.semester == other.semester && this.year == other.year
-}
-
-fun SimpleTableDto.courseBookEquals(other: CourseBookDto): Boolean {
-    return this.semester == other.semester && this.year == other.year
-}
-
-fun List<LectureDto>.flatMapToSearchTimeDto(): List<SearchTimeDto> =
-    flatMap { it.class_time_json }.map { SearchTimeDto(it.day, it.startMinute, it.endMinute) }
-
-fun List<SearchTimeDto>.getComplement(): List<SearchTimeDto> {
-    val groupedByDay = groupBy { it.day }
-    return buildList {
-        for (day in 0..6) {
-            var start = 0
-            addAll(
-                (groupedByDay[day] ?: emptyList())
-                    .sortedByDescending { it.startMinute }
-                    .foldRight(emptyList<SearchTimeDto>()) { a, b ->
-                        b.toMutableList().apply {
-                            if (start < a.startMinute) {
-                                add(SearchTimeDto(day, start, a.startMinute))
-                            }
-                            start = a.endMinute
-                        }
-                    }
-                    .toMutableList()
-                    .apply {
-                        if (start < SearchTimeDto.LAST) {
-                            add(
-                                SearchTimeDto(
-                                    day,
-                                    start,
-                                    SearchTimeDto.LAST,
-                                ),
-                            )
-                        }
-                    },
-            )
-        }
     }
 }
 

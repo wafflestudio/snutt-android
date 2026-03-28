@@ -8,9 +8,11 @@ import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.domainmodel.PushPreferences
 import com.wafflestudio.snutt2.domainmodel.TableLectureCustom
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
+import com.wafflestudio.snutt2.domainmodel.User
 import com.wafflestudio.snutt2.domainmodel.toDataModel
 import com.wafflestudio.snutt2.domainmodel.toNetworkModel
 import com.wafflestudio.snutt2.lib.map
+import com.wafflestudio.snutt2.lib.network.dto.core.toDomainModel
 import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApiForGoogle
@@ -40,8 +42,9 @@ class UserRepositoryImpl @Inject constructor(
     externalScope: CoroutineScope,
 ) : UserRepository {
 
-    override val user = storage.user.asStateFlow()
+    override val user: StateFlow<User?> = storage.user.asStateFlow()
         .unwrap(externalScope)
+        .map(externalScope) { it?.toDomainModel() }
 
     override val tableTrimParam: StateFlow<TableTrimParam> = storage.tableTrimParam.asStateFlow().map(externalScope) {
         it.toDomainModel()
@@ -58,16 +61,26 @@ class UserRepositoryImpl @Inject constructor(
 
     override val compactMode = storage.compactMode.asStateFlow()
 
-    override suspend fun postSignIn(id: String, password: String) {
-        val response = api._postSignIn(PostSignInParams(id, password))
-        storage.prefKeyUserId.update(response.userId.toOptional())
-        storage.accessToken.update(response.token)
+    override suspend fun postSignIn(id: String, password: String): Result<Unit> {
+        return try {
+            val response = api._postSignIn(PostSignInParams(id, password))
+            storage.prefKeyUserId.update(response.userId.toOptional())
+            storage.accessToken.update(response.token)
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
     }
 
-    override suspend fun postSignUp(id: String, password: String, email: String) {
-        val response = api._postSignUp(PostSignUpParams(id, password, email))
-        storage.prefKeyUserId.update(response.userId.toOptional())
-        storage.accessToken.update(response.token)
+    override suspend fun postSignUp(id: String, password: String, email: String): Result<Unit> {
+        return try {
+            val response = api._postSignUp(PostSignUpParams(id, password, email))
+            storage.prefKeyUserId.update(response.userId.toOptional())
+            storage.accessToken.update(response.token)
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
     }
 
     override suspend fun fetchUserInfo(): Result<Unit> {
@@ -80,9 +93,14 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun patchUserInfo(nickname: String) {
-        val response = api._patchUserInfo(PatchUserInfoParams(nickname))
-        storage.user.update(response.toOptional())
+    override suspend fun patchUserInfo(nickname: String): Result<Unit> {
+        return try {
+            val response = api._patchUserInfo(PatchUserInfoParams(nickname))
+            storage.user.update(response.toOptional())
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
     }
 
     override suspend fun deleteUserAccount(): Result<Unit> {
@@ -128,29 +146,31 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun postFeedback(email: String, detail: String) {
-        api._postFeedback(PostFeedbackParams(email = email, message = detail))
+    override suspend fun postFeedback(email: String, detail: String): Result<Unit> {
+        return try {
+            api._postFeedback(PostFeedbackParams(email = email, message = detail))
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
     }
 
-    override suspend fun deleteFirebaseToken() {
-        val firebaseToken = getFirebaseToken()
-        api._deleteFirebaseToken(firebaseToken)
-    }
-
-    override suspend fun postForceLogout() {
-        val firebaseToken = getFirebaseToken()
-        val userId = storage.prefKeyUserId.get().value ?: return
-        api._postForceLogout(
-            PostForceLogoutParams(
-                userId = userId,
-                registrationId = firebaseToken,
-            ),
-        )
-        performLogout()
-    }
-
-    override suspend fun getAccessToken(): String {
-        return storage.accessToken.get()
+    override suspend fun postForceLogout(): Result<Unit> {
+        return try {
+            val firebaseToken = getFirebaseToken()
+            val userId = storage.prefKeyUserId.get().value
+                ?: return Result.Success(Unit)
+            api._postForceLogout(
+                PostForceLogoutParams(
+                    userId = userId,
+                    registrationId = firebaseToken,
+                ),
+            )
+            performLogout()
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
     }
 
     override suspend fun toggleForceFit(): Result<Unit> {
@@ -217,101 +237,157 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun performLogout() {
-        LoginManager.getInstance().logOut()
-        storage.clearLoginScope()
-        CookieManager.getInstance().removeAllCookies(null)
-    }
-
-    override suspend fun fetchAndSetPopup() {
-        val popups = api._getPopup().popups.filter {
-            val expireMillis: Long? = storage.shownPopupIdsAndTimestamp.get()[it.key]
-            val currentMillis = System.currentTimeMillis()
-
-            (expireMillis == null || currentMillis >= expireMillis)
+    override suspend fun getAccessToken(): Result<String> {
+        return try {
+            Result.Success(storage.accessToken.get())
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
         }
-        popupState.popup = popups
     }
 
-    override suspend fun closePopupWithHiddenDays() {
-        val popup = popupState.popup.firstOrNull()
-        if (popup != null) {
-            val expiredDay: Long = popup.popupHideDays?.let { hideDays ->
-                System.currentTimeMillis() + TimeUnit.DAYS.toMillis(hideDays.toLong())
-            } ?: INFINITE_LONG_MILLIS
+    override suspend fun performLogout(): Result<Unit> {
+        return try {
+            LoginManager.getInstance().logOut()
+            storage.clearLoginScope()
+            CookieManager.getInstance().removeAllCookies(null)
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
+    }
 
-            storage.shownPopupIdsAndTimestamp.update(
-                storage.shownPopupIdsAndTimestamp.get()
-                    .toMutableMap()
-                    .also {
-                        it[popup.key] = expiredDay
-                    },
-            )
+    override suspend fun fetchAndSetPopup(): Result<Unit> {
+        return try {
+            val popups = api._getPopup().popups.filter {
+                val expireMillis: Long? = storage.shownPopupIdsAndTimestamp.get()[it.key]
+                val currentMillis = System.currentTimeMillis()
 
+                (expireMillis == null || currentMillis >= expireMillis)
+            }
+            popupState.popup = popups
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun closePopupWithHiddenDays(): Result<Unit> {
+        return try {
+            val popup = popupState.popup.firstOrNull()
+            if (popup != null) {
+                val expiredDay: Long = popup.popupHideDays?.let { hideDays ->
+                    System.currentTimeMillis() + TimeUnit.DAYS.toMillis(hideDays.toLong())
+                } ?: INFINITE_LONG_MILLIS
+
+                storage.shownPopupIdsAndTimestamp.update(
+                    storage.shownPopupIdsAndTimestamp.get()
+                        .toMutableMap()
+                        .also {
+                            it[popup.key] = expiredDay
+                        },
+                )
+
+                popupState.popup = popupState.popup.drop(1)
+            }
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun closePopup(): Result<Unit> {
+        return try {
             popupState.popup = popupState.popup.drop(1)
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
         }
     }
 
-    override suspend fun closePopup() {
-        popupState.popup = popupState.popup.drop(1)
+    override suspend fun registerToken(): Result<Unit> {
+        return try {
+            val token = getFirebaseToken()
+            api._registerFirebaseToken(
+                token,
+                RegisterFirebaseTokenParams(),
+            )
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
     }
 
-    override suspend fun registerToken() {
-        val token = getFirebaseToken()
-        api._registerFirebaseToken(
-            token,
-            RegisterFirebaseTokenParams(),
-        )
+    override suspend fun setThemeMode(mode: ThemeMode): Result<Unit> {
+        return try {
+            storage.themeMode.update(mode)
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
     }
 
-    override suspend fun setThemeMode(mode: ThemeMode) {
-        storage.themeMode.update(mode)
+    override suspend fun findIdByEmail(email: String): Result<Unit> {
+        return try {
+            api._postFindId(PostFindIdParams(email))
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
     }
 
-    override suspend fun findIdByEmail(email: String) {
-        api._postFindId(
-            PostFindIdParams(email),
-        )
+    override suspend fun checkEmailById(id: String): Result<String> {
+        return try {
+            Result.Success(
+                api._postCheckEmailById(PostCheckEmailByIdParams(id)).email,
+            )
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
     }
 
-    override suspend fun checkEmailById(id: String): String {
-        return api._postCheckEmailById(
-            PostCheckEmailByIdParams(id),
-        ).email
+    override suspend fun sendPwResetCodeToEmail(email: String): Result<Unit> {
+        return try {
+            api._postSendPwResetCodeToEmailById(PostSendPwResetCodeParams(email))
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
     }
 
-    override suspend fun sendPwResetCodeToEmail(email: String) {
-        api._postSendPwResetCodeToEmailById(
-            PostSendPwResetCodeParams(email),
-        )
+    override suspend fun verifyPwResetCode(id: String, code: String): Result<Unit> {
+        return try {
+            api._postVerifyCodeToResetPassword(PostVerifyPwResetCodeParams(id, code))
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
     }
 
-    override suspend fun verifyPwResetCode(id: String, code: String) {
-        api._postVerifyCodeToResetPassword(
-            PostVerifyPwResetCodeParams(id, code),
-        )
+    override suspend fun resetPassword(id: String, password: String, code: String): Result<Unit> {
+        return try {
+            api._postResetPassword(PostResetPasswordParams(id, password, code))
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
     }
 
-    override suspend fun resetPassword(id: String, password: String, code: String) {
-        api._postResetPassword(
-            PostResetPasswordParams(id, password, code),
-        )
+    override suspend fun sendCodeToEmail(email: String): Result<Unit> {
+        return try {
+            api._postSendCodeToEmail(PostSendCodeToEmailParams(email))
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
     }
 
-    override suspend fun sendCodeToEmail(email: String) {
-        api._postSendCodeToEmail(
-            PostSendCodeToEmailParams(email),
-        )
-    }
-
-    override suspend fun verifyEmailCode(code: String) {
-        api._postVerifyEmailCode(
-            PostVerifyEmailCodeParams(code),
-        )
-    }
-
-    override suspend fun setCompactMode(compact: Boolean) {
-        storage.compactMode.update(compact)
+    override suspend fun verifyEmailCode(code: String): Result<Unit> {
+        return try {
+            api._postVerifyEmailCode(PostVerifyEmailCodeParams(code))
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
     }
 
     override suspend fun toggleTitleVisible(): Result<Unit> {
@@ -362,18 +438,23 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun setFirstBookmarkAlertShown() {
-        storage.firstBookmarkAlert.update(false)
-    }
-
-    override suspend fun getAccessTokenByAuthCode(authCode: String, clientId: String, clientSecret: String): String? {
-        return apiGoogle._getAccessTokenByAuthCode(
-            PostAccessTokenByAuthCodeParams(
-                authCode = authCode,
-                clientId = clientId,
-                clientSecret = clientSecret,
-            ),
-        ).accessToken
+    override suspend fun getAccessTokenByAuthCode(authCode: String, clientId: String, clientSecret: String): Result<String> {
+        return try {
+            val accessToken = apiGoogle._getAccessTokenByAuthCode(
+                PostAccessTokenByAuthCodeParams(
+                    authCode = authCode,
+                    clientId = clientId,
+                    clientSecret = clientSecret,
+                ),
+            ).accessToken
+            if (accessToken != null) {
+                Result.Success(accessToken)
+            } else {
+                Result.Fail(Unknown("", ""))
+            }
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
     }
 
     override suspend fun getPushPreferences(): Result<PushPreferences> {
@@ -394,280 +475,106 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    /**
-     * 소셜 로그인 관련.
-     *
-     * postLogin: 로그인
-     *
-     * postUser: 연동
-     *
-     * deleteUser: 연동 해제
-     */
-    override suspend fun getSocialProviders(): GetSocialProvidersResults {
-        return api._getSocialProviders()
-    }
-
-    override suspend fun postLoginFacebook(facebookToken: String) {
-        val response = api._postLoginFacebook(PostSocialLoginParams(facebookToken))
-        storage.prefKeyUserId.update(response.userId.toOptional())
-        storage.accessToken.update(response.token)
-    }
-
-    override suspend fun postUserFacebook(
-        facebookToken: String,
-    ) {
-        val response = api._postUserFacebook(PostSocialLoginParams(facebookToken))
-        storage.accessToken.update(response.token)
-    }
-
-    override suspend fun deleteUserFacebook() {
-        val response = api._deleteUserFacebook()
-        storage.accessToken.update(response.token)
-    }
-
-    override suspend fun postLoginGoogle(googleAccessToken: String) {
-        val response = api._postLoginGoogle(PostSocialLoginParams(googleAccessToken))
-        storage.prefKeyUserId.update(response.userId.toOptional())
-        storage.accessToken.update(response.token)
-    }
-
-    override suspend fun postUserGoogle(
-        googleAccessToken: String,
-    ) {
-        val response = api._postUserGoogle(PostSocialLoginParams(googleAccessToken))
-        storage.accessToken.update(response.token)
-    }
-
-    override suspend fun deleteUserGoogle() {
-        val response = api._deleteUserGoogle()
-        storage.accessToken.update(response.token)
-    }
-
-    override suspend fun postLoginKakao(kakaoAccessToken: String) {
-        val response = api._postLoginKakao(PostSocialLoginParams(kakaoAccessToken))
-        storage.prefKeyUserId.update(response.userId.toOptional())
-        storage.accessToken.update(response.token)
-    }
-
-    override suspend fun postUserKakao(
-        kakaoAccessToken: String,
-    ) {
-        val response = api._postUserKakao(PostSocialLoginParams(kakaoAccessToken))
-        storage.accessToken.update(response.token)
-    }
-
-    override suspend fun deleteUserKakao() {
-        val response = api._deleteUserKakao()
-        storage.accessToken.update(response.token)
-    }
-
-    // region New methods (Result-returning)
-
-    override suspend fun postSignInNew(id: String, password: String): Result<Unit> {
+    override suspend fun getSocialProviders(): Result<GetSocialProvidersResults> {
         return try {
-            postSignIn(id, password)
+            Result.Success(api._getSocialProviders())
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun postLoginFacebook(facebookToken: String): Result<Unit> {
+        return try {
+            val response = api._postLoginFacebook(PostSocialLoginParams(facebookToken))
+            storage.prefKeyUserId.update(response.userId.toOptional())
+            storage.accessToken.update(response.token)
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Fail(e.toDomainError())
         }
     }
 
-    override suspend fun postSignUpNew(id: String, password: String, email: String): Result<Unit> {
+    override suspend fun postLoginGoogle(googleAccessToken: String): Result<Unit> {
         return try {
-            postSignUp(id, password, email)
+            val response = api._postLoginGoogle(PostSocialLoginParams(googleAccessToken))
+            storage.prefKeyUserId.update(response.userId.toOptional())
+            storage.accessToken.update(response.token)
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Fail(e.toDomainError())
         }
     }
 
-    override suspend fun patchUserInfoNew(nickname: String): Result<Unit> {
+    override suspend fun postLoginKakao(kakaoAccessToken: String): Result<Unit> {
         return try {
-            patchUserInfo(nickname)
+            val response = api._postLoginKakao(PostSocialLoginParams(kakaoAccessToken))
+            storage.prefKeyUserId.update(response.userId.toOptional())
+            storage.accessToken.update(response.token)
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Fail(e.toDomainError())
         }
     }
 
-    override suspend fun postFeedbackNew(email: String, detail: String): Result<Unit> {
+    override suspend fun postUserFacebook(facebookToken: String): Result<Unit> {
         return try {
-            postFeedback(email, detail)
+            val response = api._postUserFacebook(PostSocialLoginParams(facebookToken))
+            storage.accessToken.update(response.token)
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Fail(e.toDomainError())
         }
     }
 
-    override suspend fun findIdByEmailNew(email: String): Result<Unit> {
+    override suspend fun postUserGoogle(googleAccessToken: String): Result<Unit> {
         return try {
-            findIdByEmail(email)
+            val response = api._postUserGoogle(PostSocialLoginParams(googleAccessToken))
+            storage.accessToken.update(response.token)
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Fail(e.toDomainError())
         }
     }
 
-    override suspend fun checkEmailByIdNew(id: String): Result<String> {
+    override suspend fun postUserKakao(kakaoAccessToken: String): Result<Unit> {
         return try {
-            Result.Success(checkEmailById(id))
-        } catch (e: Exception) {
-            Result.Fail(e.toDomainError())
-        }
-    }
-
-    override suspend fun sendPwResetCodeToEmailNew(email: String): Result<Unit> {
-        return try {
-            sendPwResetCodeToEmail(email)
+            val response = api._postUserKakao(PostSocialLoginParams(kakaoAccessToken))
+            storage.accessToken.update(response.token)
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Fail(e.toDomainError())
         }
     }
 
-    override suspend fun verifyPwResetCodeNew(id: String, code: String): Result<Unit> {
+    override suspend fun deleteUserFacebook(): Result<Unit> {
         return try {
-            verifyPwResetCode(id, code)
+            val response = api._deleteUserFacebook()
+            storage.accessToken.update(response.token)
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Fail(e.toDomainError())
         }
     }
 
-    override suspend fun resetPasswordNew(id: String, password: String, code: String): Result<Unit> {
+    override suspend fun deleteUserGoogle(): Result<Unit> {
         return try {
-            resetPassword(id, password, code)
+            val response = api._deleteUserGoogle()
+            storage.accessToken.update(response.token)
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Fail(e.toDomainError())
         }
     }
 
-    override suspend fun sendCodeToEmailNew(email: String): Result<Unit> {
+    override suspend fun deleteUserKakao(): Result<Unit> {
         return try {
-            sendCodeToEmail(email)
+            val response = api._deleteUserKakao()
+            storage.accessToken.update(response.token)
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Fail(e.toDomainError())
         }
     }
-
-    override suspend fun verifyEmailCodeNew(code: String): Result<Unit> {
-        return try {
-            verifyEmailCode(code)
-            Result.Success(Unit)
-        } catch (e: Exception) {
-            Result.Fail(e.toDomainError())
-        }
-    }
-
-    override suspend fun getAccessTokenByAuthCodeNew(
-        authCode: String,
-        clientId: String,
-        clientSecret: String,
-    ): Result<String> {
-        return try {
-            val accessToken = getAccessTokenByAuthCode(authCode, clientId, clientSecret)
-            if (accessToken != null) {
-                Result.Success(accessToken)
-            } else {
-                Result.Fail(Unknown("", ""))
-            }
-        } catch (e: Exception) {
-            Result.Fail(e.toDomainError())
-        }
-    }
-
-    override suspend fun getSocialProvidersNew(): Result<GetSocialProvidersResults> {
-        return try {
-            Result.Success(getSocialProviders())
-        } catch (e: Exception) {
-            Result.Fail(e.toDomainError())
-        }
-    }
-
-    override suspend fun postLoginFacebookNew(facebookToken: String): Result<Unit> {
-        return try {
-            postLoginFacebook(facebookToken)
-            Result.Success(Unit)
-        } catch (e: Exception) {
-            Result.Fail(e.toDomainError())
-        }
-    }
-
-    override suspend fun postLoginGoogleNew(googleAccessToken: String): Result<Unit> {
-        return try {
-            postLoginGoogle(googleAccessToken)
-            Result.Success(Unit)
-        } catch (e: Exception) {
-            Result.Fail(e.toDomainError())
-        }
-    }
-
-    override suspend fun postLoginKakaoNew(kakaoAccessToken: String): Result<Unit> {
-        return try {
-            postLoginKakao(kakaoAccessToken)
-            Result.Success(Unit)
-        } catch (e: Exception) {
-            Result.Fail(e.toDomainError())
-        }
-    }
-
-    override suspend fun postUserFacebookNew(facebookToken: String): Result<Unit> {
-        return try {
-            postUserFacebook(facebookToken)
-            Result.Success(Unit)
-        } catch (e: Exception) {
-            Result.Fail(e.toDomainError())
-        }
-    }
-
-    override suspend fun postUserGoogleNew(googleAccessToken: String): Result<Unit> {
-        return try {
-            postUserGoogle(googleAccessToken)
-            Result.Success(Unit)
-        } catch (e: Exception) {
-            Result.Fail(e.toDomainError())
-        }
-    }
-
-    override suspend fun postUserKakaoNew(kakaoAccessToken: String): Result<Unit> {
-        return try {
-            postUserKakao(kakaoAccessToken)
-            Result.Success(Unit)
-        } catch (e: Exception) {
-            Result.Fail(e.toDomainError())
-        }
-    }
-
-    override suspend fun deleteUserFacebookNew(): Result<Unit> {
-        return try {
-            deleteUserFacebook()
-            Result.Success(Unit)
-        } catch (e: Exception) {
-            Result.Fail(e.toDomainError())
-        }
-    }
-
-    override suspend fun deleteUserGoogleNew(): Result<Unit> {
-        return try {
-            deleteUserGoogle()
-            Result.Success(Unit)
-        } catch (e: Exception) {
-            Result.Fail(e.toDomainError())
-        }
-    }
-
-    override suspend fun deleteUserKakaoNew(): Result<Unit> {
-        return try {
-            deleteUserKakao()
-            Result.Success(Unit)
-        } catch (e: Exception) {
-            Result.Fail(e.toDomainError())
-        }
-    }
-
-    // endregion
 
     private suspend fun getFirebaseToken(): String {
         return suspendCoroutine { cont ->

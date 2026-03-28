@@ -5,13 +5,15 @@ import android.webkit.WebViewClient
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
@@ -20,26 +22,29 @@ import com.wafflestudio.snutt2.ui.ThemeMode
 
 @Composable
 fun TeamInfoPage(
+    viewModel: SettingsWebPageViewModel = hiltViewModel(),
+    onNavigateBack: () -> Unit,
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    TeamInfoScreen(
+        themeMode = uiState.themeMode,
+        onNavigateBack = onNavigateBack,
+    )
+}
+
+@Composable
+private fun TeamInfoScreen(
+    themeMode: ThemeMode,
     onNavigateBack: () -> Unit,
 ) {
     val context = LocalContext.current
-    val userViewModel = hiltViewModel<UserViewModel>()
-    val webViewClient = WebViewClient()
-    val themeMode by userViewModel.themeMode.collectAsState()
-
     val url = stringResource(R.string.api_server) + stringResource(R.string.member)
-    val headers = HashMap<String, String>()
-    headers["x-access-apikey"] = stringResource(R.string.api_key)
-    headers["dark"] = when (themeMode) {
-        ThemeMode.DARK -> "dark"
-        ThemeMode.LIGHT -> "light"
-        ThemeMode.AUTO -> {
-            if (isSystemInDarkTheme()) {
-                "dark"
-            } else {
-                "light"
-            }
-        }
+    val apiKey = stringResource(R.string.api_key)
+    val isDark = when (themeMode) {
+        ThemeMode.DARK -> true
+        ThemeMode.LIGHT -> false
+        ThemeMode.AUTO -> isSystemInDarkTheme()
     }
 
     Column(
@@ -54,8 +59,14 @@ fun TeamInfoPage(
         AndroidView(
             factory = {
                 WebView(context).apply {
-                    this.webViewClient = webViewClient
-                    loadUrl(url, headers)
+                    webViewClient = WebViewClient()
+                    loadUrl(
+                        url,
+                        hashMapOf(
+                            "x-access-apikey" to apiKey,
+                            "dark" to if (isDark) "dark" else "light",
+                        ),
+                    )
                 }
             },
         )
@@ -64,6 +75,9 @@ fun TeamInfoPage(
 
 @Preview
 @Composable
-fun TeamInfoPagePreview() {
-    TeamInfoPage(onNavigateBack = {})
+private fun TeamInfoScreenPreview() {
+    TeamInfoScreen(
+        themeMode = ThemeMode.AUTO,
+        onNavigateBack = {},
+    )
 }

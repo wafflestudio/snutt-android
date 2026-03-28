@@ -34,7 +34,7 @@ class SignInViewModel @Inject constructor(
     fun signIn(id: String, password: String) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            userRepository.postSignInNew(id, password)
+            userRepository.postSignIn(id, password)
                 .onSuccess {
                     refreshInitialDataUseCase()
                     _uiEvent.emit(SignInUiEvent.NavigateHome)

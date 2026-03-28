@@ -2,7 +2,6 @@ package com.wafflestudio.snutt2.data.lecture_search
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.wafflestudio.snutt2.data.lecture_cache.LectureCache
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.PostSearchQueryParams
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
@@ -13,7 +12,6 @@ import com.wafflestudio.snutt2.model.TagType
 
 class LectureSearchPagingSource(
     private val api: SNUTTRestApi,
-    private val lectureCache: LectureCache,
     year: Long,
     semester: Long,
     title: String,
@@ -55,7 +53,6 @@ class LectureSearchPagingSource(
                     limit = params.loadSize.toLong(),
                 ),
             )
-            lectureCache.putAll(response)
             LoadResult.Page(
                 data = response,
                 prevKey = if (offset == LECTURE_SEARCH_STARTING_PAGE_INDEX) null else offset - params.loadSize,

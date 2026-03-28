@@ -7,6 +7,8 @@ import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.lib.logging.AnalyticsLogger
+import com.wafflestudio.snutt2.lib.network.onFailure
+import com.wafflestudio.snutt2.lib.network.onSuccess
 import com.wafflestudio.snutt2.ui.ThemeMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -45,16 +47,15 @@ class SettingsViewModel @Inject constructor(
 
     fun performLogout() {
         viewModelScope.launch {
-            runCatching {
-                analyticsLogger.logEvent(AnalyticsEvent.Logout)
-                userRepository.postForceLogout()
-                userRepository.performLogout()
-            }.onFailure {
-                showLogoutDialog.emit(false)
-            }.onSuccess {
-                showLogoutDialog.emit(false)
-                _logoutFinishedUiEvent.emit(Unit)
-            }
+            analyticsLogger.logEvent(AnalyticsEvent.Logout)
+            userRepository.postForceLogout()
+            userRepository.performLogout()
+                .onFailure {
+                    showLogoutDialog.emit(false)
+                }.onSuccess {
+                    showLogoutDialog.emit(false)
+                    _logoutFinishedUiEvent.emit(Unit)
+                }
         }
     }
 
@@ -69,7 +70,7 @@ class SettingsViewModel @Inject constructor(
         }
 
         SettingsUiState(
-            user.nickname.toString(),
+            user.nickname?.getDisplayName() ?: "",
             themeMode,
             showLogoutDialog,
             settingPageNewBadgeTitles,

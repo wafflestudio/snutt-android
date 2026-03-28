@@ -73,7 +73,7 @@ class FindPasswordViewModel @Inject constructor(
     fun checkEmailById(userId: String) {
         viewModelScope.launch {
             savedStateHandle["userId"] = userId
-            userRepository.checkEmailByIdNew(userId)
+            userRepository.checkEmailById(userId)
                 .onSuccess { maskedEmail ->
                     savedStateHandle["maskedEmail"] = maskedEmail
                     val savedFullEmail = savedStateHandle["fullEmail"] ?: ""
@@ -86,7 +86,7 @@ class FindPasswordViewModel @Inject constructor(
     fun sendFullEmailAndRequestCode(fullEmail: String) {
         viewModelScope.launch {
             savedStateHandle["fullEmail"] = fullEmail
-            userRepository.sendPwResetCodeToEmailNew(fullEmail)
+            userRepository.sendPwResetCodeToEmail(fullEmail)
                 .onSuccess {
                     _uiState.update { UIState.VerifyCode(fullEmail) }
                 }
@@ -97,7 +97,7 @@ class FindPasswordViewModel @Inject constructor(
     fun verifyCode(code: String) {
         viewModelScope.launch {
             val savedUserId = savedStateHandle["userId"] ?: ""
-            userRepository.verifyPwResetCodeNew(savedUserId, code)
+            userRepository.verifyPwResetCode(savedUserId, code)
                 .onSuccess {
                     savedStateHandle["code"] = code
                     _uiState.update { UIState.EnterNewPassword() }
@@ -110,7 +110,7 @@ class FindPasswordViewModel @Inject constructor(
         viewModelScope.launch {
             val savedUserId = savedStateHandle["userId"] ?: ""
             val savedCode = savedStateHandle["code"] ?: ""
-            userRepository.resetPasswordNew(savedUserId, password, savedCode)
+            userRepository.resetPassword(savedUserId, password, savedCode)
                 .onSuccess {
                     _uiState.update { UIState.EnterNewPassword(showCompleteDialog = true) }
                 }

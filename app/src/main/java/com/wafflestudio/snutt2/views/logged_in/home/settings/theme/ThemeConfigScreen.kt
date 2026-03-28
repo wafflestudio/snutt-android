@@ -39,7 +39,7 @@ fun ThemeConfigRoute(
     onNavigateBack: () -> Unit,
     onNavigateToDetail: (TableTheme) -> Unit,
     onClickAddTheme: () -> Unit,
-    viewModel: ThemeConfigViewModelNew = hiltViewModel(),
+    viewModel: ThemeConfigViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()

@@ -7,38 +7,35 @@ import com.wafflestudio.snutt2.domainmodel.Table
 import com.wafflestudio.snutt2.domainmodel.TableSummary
 import com.wafflestudio.snutt2.domainmodel.TimetableLectureReminders
 import com.wafflestudio.snutt2.lib.network.Result
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
-import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
-import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import kotlinx.coroutines.flow.StateFlow
 
 interface TableRepository {
 
-    val tableMap: StateFlow<Map<String, SimpleTableDto>>
+    val tableSummaryList: StateFlow<List<TableSummary>>
 
-    suspend fun fetchTableById(id: String)
+    suspend fun fetchDefaultTable(): Result<Unit>
 
-    suspend fun searchTableById(id: String): TableDto
+    suspend fun fetchTableList(): Result<Unit>
 
-    suspend fun fetchDefaultTable()
+    suspend fun fetchTableById(id: String): Result<Unit>
 
-    suspend fun getTableList(): Result<List<SimpleTableDto>>
+    suspend fun getTableById(id: String): Result<Table>
 
-    suspend fun createTable(year: Long, semester: Long, title: String?)
+    suspend fun createTable(courseBook: CourseBook, title: String): Result<Unit>
 
-    suspend fun deleteTable(id: String)
+    suspend fun updateTableName(newTitle: String, tableId: String): Result<Unit>
 
-    suspend fun updateTableName(id: String, title: String)
+    suspend fun setPrimaryTable(id: String): Result<Unit>
 
-    suspend fun updateTableTheme(tableId: String, code: Int)
+    suspend fun unsetPrimaryTable(id: String): Result<Unit>
 
-    suspend fun updateTableTheme(tableId: String, themeId: String)
+    suspend fun deleteTable(tableId: String): Result<Unit>
 
-    suspend fun copyTable(id: String)
+    suspend fun copyTable(id: String): Result<Unit>
 
-    suspend fun setTablePrimary(id: String)
+    suspend fun updateTableTheme(tableId: String, code: Int): Result<Unit>
 
-    suspend fun setTableNotPrimary(id: String)
+    suspend fun updateTableTheme(tableId: String, themeId: String): Result<Unit>
 
     suspend fun getTimetableReminders(timetableId: String): Result<TimetableLectureReminders>
 
@@ -52,19 +49,4 @@ interface TableRepository {
         lectureId: String,
         offset: LectureReminderOffset,
     ): Result<LectureWithReminderOption>
-
-    // 여기부터 리팩토링 코드
-    val tableSummaryList: StateFlow<List<TableSummary>>
-    suspend fun createTableNew(courseBook: CourseBook, title: String): Result<Unit>
-    suspend fun updateTableNameNew(newTitle: String, tableId: String): Result<Unit>
-    suspend fun setPrimaryTableNew(id: String): Result<Unit>
-
-    suspend fun unsetPrimaryTableNew(id: String): Result<Unit>
-    suspend fun deleteTableNew(tableId: String): Result<Unit>
-    suspend fun copyTableNew(id: String): Result<Unit>
-
-    suspend fun getTableById(id: String): Result<Table>
-    suspend fun fetchTableByIdNew(id: String): Result<Unit>
-    suspend fun updateTableThemeNew(tableId: String, code: Int): Result<Unit>
-    suspend fun updateTableThemeNew(tableId: String, themeId: String): Result<Unit>
 }

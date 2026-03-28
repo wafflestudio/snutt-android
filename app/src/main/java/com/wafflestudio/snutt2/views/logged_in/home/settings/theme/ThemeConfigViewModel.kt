@@ -5,67 +5,204 @@ import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.current_table.CurrentTableRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
+import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.CustomTheme
 import com.wafflestudio.snutt2.domainmodel.TableTheme
-import com.wafflestudio.snutt2.lib.map
+import com.wafflestudio.snutt2.domainmodel.ThemeReference
+import com.wafflestudio.snutt2.lib.network.AuthError
+import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
+import com.wafflestudio.snutt2.lib.network.DomainError
+import com.wafflestudio.snutt2.lib.network.onFailure
+import com.wafflestudio.snutt2.lib.network.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ThemeConfigViewModel @Inject constructor(
     private val themeRepository: ThemeRepository,
     private val tableRepository: TableRepository,
-    currentTableRepository: CurrentTableRepository,
+    private val currentTableRepository: CurrentTableRepository,
+    private val userRepository: UserRepository,
+    private val displayMessageResolver: DisplayMessageResolver,
 ) : ViewModel() {
 
-    val customThemes = themeRepository.customThemes
-    val myCustomThemes = themeRepository.customThemes.map(viewModelScope) { customThemes ->
-        customThemes.filter { it.isFromMarket.not() }
-    }
-    val marketCustomThemes = themeRepository.customThemes.map(viewModelScope) { customThemes ->
-        customThemes.filter { it.isFromMarket }
-    }
-    val builtInThemes: StateFlow<List<BuiltInTheme>> = themeRepository.builtInThemes
+    private val _uiEvent = MutableSharedFlow<ThemeConfigUiEvent>(replay = 0)
+    val uiEvent: SharedFlow<ThemeConfigUiEvent> = _uiEvent.asSharedFlow()
 
-    val currentTable = currentTableRepository.currentTable
+    private val _uiState: MutableStateFlow<ThemeConfigUiState> = MutableStateFlow(ThemeConfigUiState())
+    val uiState: StateFlow<ThemeConfigUiState> = _uiState.asStateFlow()
 
-    suspend fun fetchThemes() {
-        themeRepository.fetchThemes()
-    }
+    init {
+        viewModelScope.launch {
+            themeRepository.fetchThemes()
+        }
 
-    suspend fun deleteThemeAndRefreshTableIfNeeded(theme: TableTheme) { // 현재 선택된 시간표의 테마라면 서버에서 변경된 색 배치를 불러옴
-        if (theme !is CustomTheme) return
-        themeRepository.deleteTheme(theme.id)
-
-        val currentTable = currentTable.value ?: return
-        if (theme.isAppliedToTable(currentTable)) {
-            tableRepository.fetchTableById(currentTable.id)
+        viewModelScope.launch {
+            combine(
+                themeRepository.customThemes,
+                themeRepository.builtInThemes,
+            ) { customThemes, builtInThemes ->
+                _uiState.update { current ->
+                    current.copy(
+                        myCustomThemes = customThemes.filter { !it.isFromMarket },
+                        marketCustomThemes = customThemes.filter { it.isFromMarket },
+                        builtInThemes = builtInThemes,
+                    )
+                }
+            }.collect()
         }
     }
 
-    suspend fun copyTheme(theme: TableTheme) {
-        if (theme !is CustomTheme) return
-        themeRepository.copyTheme(theme.id)
+    fun onOpenBottomSheet(theme: TableTheme) {
+        viewModelScope.launch {
+            _uiState.update { current ->
+                current.copy(
+                    bottomSheetType = when (theme) {
+                        is CustomTheme -> if (theme.isFromMarket) {
+                            ThemeConfigUiState.BottomSheetType.MarketCustomThemeActions(theme)
+                        } else {
+                            ThemeConfigUiState.BottomSheetType.MyCustomThemeActions(theme)
+                        }
+
+                        is BuiltInTheme -> ThemeConfigUiState.BottomSheetType.BuiltInThemeActions(theme)
+                    },
+                )
+            }
+            _uiEvent.emit(ThemeConfigUiEvent.OpenBottomSheet)
+        }
     }
 
-    suspend fun applyThemeToCurrentTable(theme: TableTheme) {
-        val currentTable = currentTable.value ?: return
-        when (theme) {
-            is CustomTheme -> {
-                tableRepository.updateTableTheme(
-                    currentTable.id,
-                    theme.id,
+    fun onCloseBottomSheet() {
+        viewModelScope.launch {
+            _uiState.update { current ->
+                current.copy(bottomSheetType = ThemeConfigUiState.BottomSheetType.None)
+            }
+            _uiEvent.emit(ThemeConfigUiEvent.CloseBottomSheet)
+        }
+    }
+
+    fun onClickDetail(theme: TableTheme) {
+        viewModelScope.launch {
+            _uiState.update { current ->
+                current.copy(bottomSheetType = ThemeConfigUiState.BottomSheetType.None)
+            }
+            _uiEvent.emit(ThemeConfigUiEvent.CloseBottomSheet)
+            _uiEvent.emit(ThemeConfigUiEvent.NavigateToDetail(theme))
+        }
+    }
+
+    fun onClickApply(theme: TableTheme) {
+        viewModelScope.launch {
+            _uiState.update { current ->
+                current.copy(bottomSheetType = ThemeConfigUiState.BottomSheetType.None)
+            }
+            _uiEvent.emit(ThemeConfigUiEvent.CloseBottomSheet)
+
+            val currentTableId = currentTableRepository.currentTable.value?.summary?.id ?: return@launch
+            when (theme) {
+                is CustomTheme -> tableRepository.updateTableTheme(currentTableId, theme.id)
+                is BuiltInTheme -> tableRepository.updateTableTheme(currentTableId, theme.code)
+            }.onFailure { handleError(it) }
+        }
+    }
+
+    fun onClickDuplicate(theme: CustomTheme) {
+        viewModelScope.launch {
+            _uiState.update { current ->
+                current.copy(bottomSheetType = ThemeConfigUiState.BottomSheetType.None)
+            }
+            _uiEvent.emit(ThemeConfigUiEvent.CloseBottomSheet)
+            themeRepository.copyTheme(theme.id)
+                .onFailure { handleError(it) }
+        }
+    }
+
+    fun onClickDelete(theme: CustomTheme) {
+        _uiState.update { current ->
+            current.copy(dialogState = ThemeConfigUiState.DialogState.DeleteTheme(theme))
+        }
+    }
+
+    fun onConfirmDeleteTheme() {
+        val theme = (_uiState.value.dialogState as? ThemeConfigUiState.DialogState.DeleteTheme)?.theme ?: return
+
+        viewModelScope.launch {
+            _uiState.update { current ->
+                current.copy(
+                    dialogState = ThemeConfigUiState.DialogState.None,
+                    bottomSheetType = ThemeConfigUiState.BottomSheetType.None,
                 )
+            }
+            _uiEvent.emit(ThemeConfigUiEvent.CloseBottomSheet)
+
+            themeRepository.deleteTheme(theme.id)
+                .onSuccess {
+                    val currentTable = currentTableRepository.currentTable.value ?: return@onSuccess
+                    val isApplied = (currentTable.themeRef as? ThemeReference.Custom)?.themeId == theme.id
+                    if (isApplied) {
+                        tableRepository.fetchTableById(currentTable.summary.id)
+                            .onFailure { error -> handleError(error) }
+                    }
+                }
+                .onFailure { handleError(it) }
+        }
+    }
+
+    fun onDismissDialog() {
+        _uiState.update { current ->
+            current.copy(dialogState = ThemeConfigUiState.DialogState.None)
+        }
+    }
+
+    private suspend fun handleError(error: DomainError) {
+        val displayMessage = displayMessageResolver.getDisplayMessage(error)
+        when (error) {
+            is AuthError -> {
+                _uiEvent.emit(ThemeConfigUiEvent.ShowToast(displayMessage))
+                userRepository.postForceLogout()
             }
 
-            is BuiltInTheme -> {
-                tableRepository.updateTableTheme(
-                    currentTable.id,
-                    theme.code,
-                )
+            else -> {
+                _uiEvent.emit(ThemeConfigUiEvent.ShowToast(displayMessage))
             }
         }
+    }
+}
+
+sealed interface ThemeConfigUiEvent {
+    data class ShowToast(val message: String) : ThemeConfigUiEvent
+    data object OpenBottomSheet : ThemeConfigUiEvent
+    data object CloseBottomSheet : ThemeConfigUiEvent
+    data class NavigateToDetail(val theme: TableTheme) : ThemeConfigUiEvent
+}
+
+data class ThemeConfigUiState(
+    val myCustomThemes: List<CustomTheme> = emptyList(),
+    val marketCustomThemes: List<CustomTheme> = emptyList(),
+    val builtInThemes: List<BuiltInTheme> = emptyList(),
+    val bottomSheetType: BottomSheetType = BottomSheetType.None,
+    val dialogState: DialogState = DialogState.None,
+) {
+    sealed interface BottomSheetType {
+        data object None : BottomSheetType
+        data class MyCustomThemeActions(val theme: CustomTheme) : BottomSheetType
+        data class MarketCustomThemeActions(val theme: CustomTheme) : BottomSheetType
+        data class BuiltInThemeActions(val theme: BuiltInTheme) : BottomSheetType
+    }
+
+    sealed interface DialogState {
+        data object None : DialogState
+        data class DeleteTheme(val theme: CustomTheme) : DialogState
     }
 }

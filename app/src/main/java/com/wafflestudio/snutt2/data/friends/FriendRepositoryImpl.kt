@@ -3,11 +3,11 @@ package com.wafflestudio.snutt2.data.friends
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.Friend
 import com.wafflestudio.snutt2.domainmodel.FriendState
+import com.wafflestudio.snutt2.domainmodel.Nickname
 import com.wafflestudio.snutt2.domainmodel.Table
 import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.PatchFriendDisplayNameParams
-import com.wafflestudio.snutt2.lib.network.dto.PostAcceptFriendByLinkResults
 import com.wafflestudio.snutt2.lib.network.dto.PostRequestFriendParams
 import com.wafflestudio.snutt2.lib.network.dto.core.toDomainModel
 import com.wafflestudio.snutt2.lib.network.toDomainError
@@ -46,10 +46,10 @@ class FriendRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun acceptFriendByLink(requestToken: String): Result<PostAcceptFriendByLinkResults> {
+    override suspend fun acceptFriendByLink(requestToken: String): Result<Nickname> {
         try {
             val result = api._acceptFriendByLink(requestToken)
-            return Result.Success(result)
+            return Result.Success(result.nickname.toDomainModel())
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
         }

@@ -26,7 +26,7 @@ class EmailVerificationViewModel @Inject constructor(
 
     fun sendCodeToEmail(email: String) {
         viewModelScope.launch {
-            userRepository.sendCodeToEmailNew(email)
+            userRepository.sendCodeToEmail(email)
                 .onSuccess {
                     _uiEvent.emit(EmailVerificationUiEvent.CodeSent)
                 }
@@ -36,7 +36,7 @@ class EmailVerificationViewModel @Inject constructor(
 
     fun verifyEmailCode(code: String) {
         viewModelScope.launch {
-            userRepository.verifyEmailCodeNew(code)
+            userRepository.verifyEmailCode(code)
                 .onSuccess {
                     _uiEvent.emit(EmailVerificationUiEvent.VerificationSuccess)
                 }

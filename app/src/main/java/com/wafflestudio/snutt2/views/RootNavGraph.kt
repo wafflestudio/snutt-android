@@ -27,11 +27,10 @@ import com.wafflestudio.snutt2.lib.featureflag.FeatureFlag
 import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
 import com.wafflestudio.snutt2.navigation.getDeepLinkPath
 import com.wafflestudio.snutt2.test.TestRoute
-import com.wafflestudio.snutt2.views.logged_in.home.HomePageNewRoute
+import com.wafflestudio.snutt2.views.logged_in.home.HomePageRoute
 import com.wafflestudio.snutt2.views.logged_in.home.bookmark.BookmarkRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.AppReportPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.ChangeNicknamePage
-import com.wafflestudio.snutt2.views.logged_in.home.settings.ColorModeSelectPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.LectureReminderRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.LicenseDetailPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.NetworkLogPage
@@ -41,6 +40,7 @@ import com.wafflestudio.snutt2.views.logged_in.home.settings.PushPreferencesRout
 import com.wafflestudio.snutt2.views.logged_in.home.settings.ServiceInfoPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SocialLinkPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.TeamInfoPage
+import com.wafflestudio.snutt2.views.logged_in.home.settings.ThemeModeSelectPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.TimetableConfigRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.UserConfigRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.diary_history.DiaryHistoryRoute
@@ -54,7 +54,7 @@ import com.wafflestudio.snutt2.views.logged_in.lecture_detail.current_table.Lect
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.deeplink.DeeplinkBookmarkLectureDetailRoute
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.deeplink.DeeplinkTimetableLectureDetailRoute
 import com.wafflestudio.snutt2.views.logged_in.notifications.NotificationRoute
-import com.wafflestudio.snutt2.views.logged_in.table_lectures.refactor.TableLecturesRoute
+import com.wafflestudio.snutt2.views.logged_in.table_lectures.TableLecturesRoute
 import com.wafflestudio.snutt2.views.logged_in.thememarket.ThemeMarketRoute
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyRoute
 import com.wafflestudio.snutt2.views.logged_out.EmailVerificationPage
@@ -72,10 +72,10 @@ internal fun NavGraphBuilder.buildRootNavGraph(
     onboardGraph(navController, scheme)
 
     composableRoot<NavigationDestination.Home> {
-        HomePageNewRoute(
+        HomePageRoute(
             onNavigateLectureDetailNew = { lectureId, tableId, isFromTimetable ->
                 navController.navigate(
-                    NavigationDestination.LectureDetailNew(lectureId = lectureId, tableId = tableId, isFromTimetable = isFromTimetable),
+                    NavigationDestination.LectureDetail(lectureId = lectureId, tableId = tableId, isFromTimetable = isFromTimetable),
                 ) {
                     launchSingleTop = true
                 }
@@ -84,7 +84,7 @@ internal fun NavGraphBuilder.buildRootNavGraph(
             onNavigateLecturesOfTable = { navController.navigate(NavigationDestination.LecturesOfTable) },
             onNavigateVacancyNotification = { navController.navigate(NavigationDestination.VacancyNotification) },
             onNavigateBookmark = { navController.navigate(NavigationDestination.Bookmark) },
-            onNavigateAddLecture = { navController.navigate(NavigationDestination.AddCustomLectureNew) },
+            onNavigateAddLecture = { navController.navigate(NavigationDestination.AddCustomLecture) },
             onNavigateOnboardAsOrigin = { navController.navigateAsOrigin(NavigationDestination.Onboard) },
             onNavigateUserConfig = { navController.navigate(NavigationDestination.UserConfig) },
             onNavigateNotification = { navController.navigate(NavigationDestination.Notification) },
@@ -138,13 +138,13 @@ internal fun NavGraphBuilder.buildRootNavGraph(
         TableLecturesRoute(
             onNavigateBack = { navController.popBackStack() },
             onNavigateLectureDetail = { lectureId, tableId ->
-                navController.navigate(NavigationDestination.LectureDetailNew(lectureId, tableId))
+                navController.navigate(NavigationDestination.LectureDetail(lectureId, tableId))
             },
         )
     }
 
-    composableAnimated<NavigationDestination.LectureDetailNew>(scheme) { backStackEntry ->
-        val route = backStackEntry.toRoute<NavigationDestination.LectureDetailNew>()
+    composableAnimated<NavigationDestination.LectureDetail>(scheme) { backStackEntry ->
+        val route = backStackEntry.toRoute<NavigationDestination.LectureDetail>()
         val referrer = when {
             navController.previousBackStackEntry?.destination?.hasRoute(
                 NavigationDestination.LecturesOfTable::class,
@@ -164,7 +164,7 @@ internal fun NavGraphBuilder.buildRootNavGraph(
                     is LectureColor.BuiltIn -> Triple(currentColor.colorIndex, 0, 0)
                     is LectureColor.Custom -> Triple(-1, currentColor.foreground, currentColor.background)
                 }
-                navController.navigate(NavigationDestination.LectureColorSelectorNew(idx, fg, bg))
+                navController.navigate(NavigationDestination.LectureColorSelector(idx, fg, bg))
             },
             onNavigateLectureReminder = { navController.navigate(NavigationDestination.LectureReminder) },
             onNavigateOnboard = { navController.navigateAsOrigin(NavigationDestination.Onboard) },
@@ -178,7 +178,7 @@ internal fun NavGraphBuilder.buildRootNavGraph(
         )
     }
 
-    composableAnimated<NavigationDestination.LectureColorSelectorNew>(scheme) {
+    composableAnimated<NavigationDestination.LectureColorSelector>(scheme) {
         LectureColorSelectorRoute(
             onNavigateBackWithResult = { selectedColor ->
                 val (idx, fg, bg) = when (selectedColor) {
@@ -195,7 +195,7 @@ internal fun NavGraphBuilder.buildRootNavGraph(
         )
     }
 
-    composableAnimated<NavigationDestination.AddCustomLectureNew>(scheme) { backStackEntry ->
+    composableAnimated<NavigationDestination.AddCustomLecture>(scheme) { backStackEntry ->
         AddCustomLectureRoute(
             colorSelectorSavedStateHandle = backStackEntry.savedStateHandle,
             onNavigateBack = { navController.popBackStack() },
@@ -204,7 +204,7 @@ internal fun NavGraphBuilder.buildRootNavGraph(
                     is LectureColor.BuiltIn -> Triple(currentColor.colorIndex, 0, 0)
                     is LectureColor.Custom -> Triple(-1, currentColor.foreground, currentColor.background)
                 }
-                navController.navigate(NavigationDestination.LectureColorSelectorNew(idx, fg, bg))
+                navController.navigate(NavigationDestination.LectureColorSelector(idx, fg, bg))
             },
             onNavigateOnboard = { navController.navigateAsOrigin(NavigationDestination.Onboard) },
         )
@@ -366,7 +366,7 @@ private fun NavGraphBuilder.settingComposables(
         )
     }
     composableAnimated<NavigationDestination.ThemeModeSelect>(scheme) {
-        ColorModeSelectPage(
+        ThemeModeSelectPage(
             onNavigateBack = { navController.popBackStack() },
         )
     }

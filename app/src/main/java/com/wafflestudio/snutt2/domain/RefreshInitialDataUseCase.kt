@@ -5,7 +5,7 @@ import com.wafflestudio.snutt2.data.semester_status.SemesterStatusRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
-import com.wafflestudio.snutt2.lib.network.error.ErrorParsedHttpException
+import com.wafflestudio.snutt2.lib.network.onFailure
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -19,25 +19,18 @@ class RefreshInitialDataUseCase @Inject constructor(
     private val semesterStatusRepository: SemesterStatusRepository,
 ) {
     suspend operator fun invoke() {
-        try {
-            coroutineScope {
-                awaitAll(
-                    async {
-                        currentTableRepository.currentTable.value?.let {
-                            try {
-                                tableRepository.fetchTableById(it.id)
-                            } catch (e: ErrorParsedHttpException) {
-                                tableRepository.fetchDefaultTable()
-                            }
-                        } ?: tableRepository.fetchDefaultTable()
-                    },
-                    async { userRepository.fetchUserInfo() },
-                    async { themeRepository.fetchThemes() },
-                    async { semesterStatusRepository.fetchSemesterStatus() },
-                )
-            }
-        } catch (_: Exception) {
-            // 초기 데이터 갱신 실패는 무시 (sync 목적)
+        coroutineScope {
+            awaitAll(
+                async {
+                    currentTableRepository.currentTable.value?.let {
+                        tableRepository.fetchTableById(it.summary.id)
+                            .onFailure { tableRepository.fetchDefaultTable() }
+                    } ?: tableRepository.fetchDefaultTable()
+                },
+                async { userRepository.fetchUserInfo() },
+                async { themeRepository.fetchThemes() },
+                async { semesterStatusRepository.fetchSemesterStatus() },
+            )
         }
     }
 }

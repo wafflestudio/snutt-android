@@ -44,11 +44,7 @@ sealed interface NavigationDestination {
 
     @Serializable
     @DeepLinkPath("lecture_detail")
-    data object LectureDetail : NavigationDestination
-
-    @Serializable
-    @DeepLinkPath("lecture_detail")
-    data class LectureDetailNew(
+    data class LectureDetail(
         val lectureId: String? = null,
         val tableId: String? = null,
         val isFromTimetable: Boolean = false,
@@ -60,15 +56,11 @@ sealed interface NavigationDestination {
 
     @Serializable
     @DeepLinkPath("add_custom_lecture")
-    data object AddCustomLectureNew : NavigationDestination
+    data object AddCustomLecture : NavigationDestination
 
     @Serializable
     @DeepLinkPath("lecture_color_selector")
-    data object LectureColorSelector : NavigationDestination
-
-    @Serializable
-    @DeepLinkPath("lecture_color_selector")
-    data class LectureColorSelectorNew(
+    data class LectureColorSelector(
         val colorIndex: Int = -1,
         val fgColor: Int = 0,
         val bgColor: Int = 0,

@@ -450,11 +450,9 @@ class FriendsViewModel @Inject constructor(
     fun acceptFriendByKakaoLink(requestToken: String) {
         viewModelScope.launch {
             friendRepository.acceptFriendByLink(requestToken)
-                .onSuccess { result ->
+                .onSuccess { nickName ->
                     _uiEvent.emit(
-                        FriendUiEvent.ShowAcceptFriendSuccess(
-                            "${result.nickname.nickname}#${result.nickname.tag}",
-                        ),
+                        FriendUiEvent.ShowAcceptFriendSuccess(nickName.getDisplayName()),
                     )
                     loadFriends() // Refresh friend list
                 }

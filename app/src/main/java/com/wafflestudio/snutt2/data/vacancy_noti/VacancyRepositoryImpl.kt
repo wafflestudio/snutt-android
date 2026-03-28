@@ -6,7 +6,6 @@ import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.domainmodel.SyllabusLecture
 import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.toDomainError
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,37 +24,16 @@ class VacancyRepositoryImpl @Inject constructor(
 
     override val firstVacancyAdd = storage.firstVacancyAdd.asStateFlow()
 
-    override suspend fun getVacancyLectures(): List<LectureDto> {
-        return api._getVacancyLectures().lectures
+    private val _vacancyLectures = MutableStateFlow<List<SearchedLecture>>(emptyList())
+    override val vacancyLectures: StateFlow<List<SearchedLecture>> = _vacancyLectures.asStateFlow()
+
+    private suspend fun refetch(): List<SearchedLecture> {
+        val lectures = api._getVacancyLectures().lectures.map { it.toSearchedLecture() }
+        _vacancyLectures.update { lectures }
+        return lectures
     }
 
-    override suspend fun addVacancyLecture(lectureId: String) {
-        api._postVacancyLecture(lectureId)
-    }
-
-    override suspend fun addVacancyLectureNew(lectureId: String): Result<Unit> {
-        try {
-            val response = api._postVacancyLecture(lectureId)
-            return Result.Success(response)
-        } catch (e: Exception) {
-            return Result.Fail(e.toDomainError())
-        }
-    }
-
-    override suspend fun removeVacancyLecture(lectureId: String) {
-        api._deleteVacancyLecture(lectureId)
-    }
-
-    override suspend fun setVacancyVisited() {
-        storage.firstVacancyVisit.update(false)
-    }
-
-    override suspend fun setVacancyAdded() {
-        storage.firstVacancyAdd.update(false)
-    }
-
-    // 여기부터 리팩토링된 코드
-    override suspend fun getVacancyLecturesNew(): Result<List<SearchedLecture>> {
+    override suspend fun getVacancyLectures(): Result<List<SearchedLecture>> {
         try {
             val result = api._getVacancyLectures()
             return Result.Success(result.lectures.map { it.toSearchedLecture() })
@@ -64,12 +42,32 @@ class VacancyRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun removeVacancyLectureNew(lectureId: String): Result<Unit> {
-        try {
-            api._deleteVacancyLecture(lectureId)
-            return Result.Success(Unit)
+    override suspend fun fetchVacancyLectures(): Result<Unit> {
+        return try {
+            refetch()
+            Result.Success(Unit)
         } catch (e: Exception) {
-            return Result.Fail(e.toDomainError())
+            Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun addVacancyLecture(lecture: Lecture): Result<Unit> {
+        return try {
+            api._postVacancyLecture(lecture.resolveApiId())
+            refetch()
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun removeVacancyLecture(lecture: Lecture): Result<Unit> {
+        return try {
+            api._deleteVacancyLecture(lecture.resolveApiId())
+            refetch()
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Fail(e.toDomainError())
         }
     }
 
@@ -83,62 +81,6 @@ class VacancyRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun addVacancyLectureNewNew(lecture: Lecture): Result<Unit> {
-        return try {
-            api._postVacancyLecture(lecture.resolveApiId())
-            refetch()
-            Result.Success(Unit)
-        } catch (e: Exception) {
-            Result.Fail(e.toDomainError())
-        }
-    }
-
-    override suspend fun removeVacancyLectureNewNew(lecture: Lecture): Result<Unit> {
-        return try {
-            api._deleteVacancyLecture(lecture.resolveApiId())
-            refetch()
-            Result.Success(Unit)
-        } catch (e: Exception) {
-            Result.Fail(e.toDomainError())
-        }
-    }
-
-    // NOTE: 서버 API에 보낼 강의 ID 필드를 결정한다.
-    // 이 ID 선택 로직은 서버 스펙에 종속된 관심사이므로 data layer(repository)에서 처리한다.
-    // 다른 repository에서도 같은 로직이 필요해지면 data layer 내 공유 유틸로 추출할 것.
-    private fun Lecture.resolveApiId(): String = when (this) {
-        is SyllabusLecture -> originalLectureId
-        else -> id
-    }
-
-    override suspend fun setVacancyVisitedNew(): Result<Unit> {
-        try {
-            storage.firstVacancyVisit.update(false)
-            return Result.Success(Unit)
-        } catch (e: Exception) {
-            return Result.Fail(e.toDomainError())
-        }
-    }
-
-    // 신규 방식 Repository
-    private val _vacancyLectures = MutableStateFlow<List<SearchedLecture>>(emptyList())
-    override val vacancyLectures: StateFlow<List<SearchedLecture>> = _vacancyLectures.asStateFlow()
-
-    private suspend fun refetch(): List<SearchedLecture> {
-        val lectures = api._getVacancyLectures().lectures.map { it.toSearchedLecture() }
-        _vacancyLectures.update { lectures }
-        return lectures
-    }
-
-    override suspend fun fetchVacancyLectures(): Result<Unit> {
-        return try {
-            refetch()
-            Result.Success(Unit)
-        } catch (e: Exception) {
-            Result.Fail(e.toDomainError())
-        }
-    }
-
     override suspend fun isLectureVacancyRegistered(lecture: Lecture): Result<Boolean> {
         return try {
             val list = refetch()
@@ -147,5 +89,26 @@ class VacancyRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             Result.Fail(e.toDomainError())
         }
+    }
+
+    override suspend fun setVacancyVisited(): Result<Unit> {
+        try {
+            storage.firstVacancyVisit.update(false)
+            return Result.Success(Unit)
+        } catch (e: Exception) {
+            return Result.Fail(e.toDomainError())
+        }
+    }
+
+    override suspend fun setVacancyAdded() {
+        storage.firstVacancyAdd.update(false)
+    }
+
+    // NOTE: 서버 API에 보낼 강의 ID 필드를 결정한다.
+    // 이 ID 선택 로직은 서버 스펙에 종속된 관심사이므로 data layer(repository)에서 처리한다.
+    // 다른 repository에서도 같은 로직이 필요해지면 data layer 내 공유 유틸로 추출할 것.
+    private fun Lecture.resolveApiId(): String = when (this) {
+        is SyllabusLecture -> originalLectureId
+        else -> id
     }
 }

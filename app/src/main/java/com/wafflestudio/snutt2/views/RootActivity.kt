@@ -37,18 +37,20 @@ import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTheme
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
-import com.wafflestudio.snutt2.views.logged_in.home.HomeViewModel
-import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
+import com.wafflestudio.snutt2.domain.RefreshInitialDataUseCase
+import com.wafflestudio.snutt2.views.logged_in.home.settings.RootViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @ExperimentalAnimationApi
 @AndroidEntryPoint
 class RootActivity : AppCompatActivity() {
-    private val userViewModel: UserViewModel by viewModels()
+    private val rootViewModel: RootViewModel by viewModels()
 
-    private val homeViewModel: HomeViewModel by viewModels()
+    @Inject
+    lateinit var refreshInitialDataUseCase: RefreshInitialDataUseCase
 
     @Inject
     lateinit var remoteConfig: RemoteConfig
@@ -67,11 +69,11 @@ class RootActivity : AppCompatActivity() {
         FirebaseApp.initializeApp(this)
         parseDeeplinkExtra()
 
-        val token = userViewModel.accessToken.value
+        val token = rootViewModel.accessToken.value
 
         lifecycleScope.launch {
             if (token.isNotEmpty()) {
-                homeViewModel.refreshData()
+                refreshInitialDataUseCase()
             }
             isLoading = false
         }
@@ -90,7 +92,7 @@ class RootActivity : AppCompatActivity() {
 
     private fun setUpContents(startDestination: NavigationDestination) {
         setContent {
-            val themeMode by userViewModel.themeMode.collectAsState()
+            val themeMode by rootViewModel.themeMode.collectAsState()
             CompositionLocalProvider(LocalThemeState provides themeMode) {
                 SNUTTTheme {
                     // safeDrawingPadding(): targerSDK 35 대응
@@ -137,7 +139,7 @@ class RootActivity : AppCompatActivity() {
                 // 다만 앱 켰을 때 Onboard로 두 번 연속 내비게이션하지 않기 위해 hasRoute를 검사한다.
                 // FIXME: 궁극적으로는 ApiOnError를 제거해야 한다.
                 lifecycleScope.launch {
-                    userViewModel.accessToken.collect { token ->
+                    rootViewModel.accessToken.collect { token ->
                         if (token.isEmpty() && navController.currentDestination?.hasRoute(
                                 NavigationDestination.Tutorial::class,
                             ) == false
@@ -180,12 +182,8 @@ class RootActivity : AppCompatActivity() {
 
     private fun startUpdatingPushToken() {
         lifecycleScope.launch {
-            userViewModel.accessToken.collect {
-                if (it.isNotEmpty()) {
-                    kotlin.runCatching {
-                        userViewModel.registerPushToken()
-                    } // do nothing on error.
-                }
+            rootViewModel.accessToken.filterNot { it.isEmpty() }.collect {
+                rootViewModel.registerPushToken()
             }
         }
     }
@@ -219,7 +217,7 @@ class RootActivity : AppCompatActivity() {
 
     private fun setWindowAppearance() {
         lifecycleScope.launch {
-            userViewModel.themeMode.collect { themeMode ->
+            rootViewModel.themeMode.collect { themeMode ->
                 /* <다크모드에서 내비게이션 시 흰색 깜빡이는 이슈 해결>
                  * 내비게이션 시 액티비티 배경색인 흰색(styles.xml에서 android:windowBackground 로 지정된 색)이 잠깐 노출된다.
                  * 원래는 values-night/styles.xml를 통해 다크모드의 색을 지정하지만, 우리는 시스템의 테마와 앱의 테마를

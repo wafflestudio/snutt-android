@@ -46,7 +46,7 @@ class SocialLinkViewModel @Inject constructor(
 
     fun onFacebookTokenReceived(token: String) {
         viewModelScope.launch {
-            userRepository.postUserFacebookNew(token)
+            userRepository.postUserFacebook(token)
                 .onSuccess { refreshAfterConnect() }
                 .onFailure { handleError(it) }
         }
@@ -60,9 +60,9 @@ class SocialLinkViewModel @Inject constructor(
 
     fun onGoogleAuthCodeReceived(authCode: String, clientId: String, clientSecret: String) {
         viewModelScope.launch {
-            userRepository.getAccessTokenByAuthCodeNew(authCode, clientId, clientSecret)
+            userRepository.getAccessTokenByAuthCode(authCode, clientId, clientSecret)
                 .onSuccess { googleAccessToken ->
-                    userRepository.postUserGoogleNew(googleAccessToken)
+                    userRepository.postUserGoogle(googleAccessToken)
                         .onSuccess { refreshAfterConnect() }
                         .onFailure { handleError(it) }
                 }
@@ -78,7 +78,7 @@ class SocialLinkViewModel @Inject constructor(
 
     fun onKakaoTokenReceived(token: String) {
         viewModelScope.launch {
-            userRepository.postUserKakaoNew(token)
+            userRepository.postUserKakao(token)
                 .onSuccess { refreshAfterConnect() }
                 .onFailure { handleError(it) }
         }
@@ -101,9 +101,9 @@ class SocialLinkViewModel @Inject constructor(
         viewModelScope.launch {
             LoginManager.getInstance().logOut()
             val result = when (type) {
-                SocialLoginType.FACEBOOK -> userRepository.deleteUserFacebookNew()
-                SocialLoginType.KAKAO -> userRepository.deleteUserKakaoNew()
-                SocialLoginType.GOOGLE -> userRepository.deleteUserGoogleNew()
+                SocialLoginType.FACEBOOK -> userRepository.deleteUserFacebook()
+                SocialLoginType.KAKAO -> userRepository.deleteUserKakao()
+                SocialLoginType.GOOGLE -> userRepository.deleteUserGoogle()
                 else -> return@launch
             }
             result
@@ -119,7 +119,7 @@ class SocialLinkViewModel @Inject constructor(
 
     private fun fetchSocialProviders() {
         viewModelScope.launch {
-            userRepository.getSocialProvidersNew()
+            userRepository.getSocialProviders()
                 .onSuccess { providers ->
                     _uiState.update { it.copy(socialProviders = providers) }
                 }

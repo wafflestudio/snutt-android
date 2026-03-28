@@ -5,7 +5,6 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.wafflestudio.snutt2.data.SNUTTStorage
-import com.wafflestudio.snutt2.data.lecture_cache.LectureCache
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.LectureReviewInfo
 import com.wafflestudio.snutt2.domainmodel.SearchTag
@@ -14,7 +13,6 @@ import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.network.toDomainError
 import com.wafflestudio.snutt2.model.SearchTimeDto
 import com.wafflestudio.snutt2.model.TagDto
@@ -28,11 +26,12 @@ import javax.inject.Singleton
 class LectureSearchRepositoryImpl @Inject constructor(
     private val api: SNUTTRestApi,
     private val storage: SNUTTStorage,
-    private val lectureCache: LectureCache,
 ) : LectureSearchRepository {
 
-    // region Legacy (TagDto-based)
-    override val recentSearchedDepartments = storage.recentSearchedDepartments.asStateFlow()
+    override val recentSearchedDepartmentTags: Flow<List<SearchTag>> =
+        storage.recentSearchedDepartments.asStateFlow().map { dtos ->
+            dtos.map { SearchTag.Regular(it.type, it.name) }
+        }
 
     override val firstBookmarkAlert = storage.firstBookmarkAlert.asStateFlow()
 
@@ -40,10 +39,10 @@ class LectureSearchRepositoryImpl @Inject constructor(
         year: Long,
         semester: Long,
         title: String,
-        tags: List<TagDto>,
-        times: List<SearchTimeDto>?,
-        timesToExclude: List<SearchTimeDto>?,
-    ): Flow<PagingData<LectureDto>> {
+        tags: List<SearchTag>,
+        times: List<SearchTime>?,
+        timesToExclude: List<SearchTime>?,
+    ): Flow<PagingData<SearchedLecture>> {
         return Pager(
             config = PagingConfig(
                 pageSize = LECTURES_LOAD_PAGE_SIZE,
@@ -52,76 +51,18 @@ class LectureSearchRepositoryImpl @Inject constructor(
             pagingSourceFactory = {
                 LectureSearchPagingSource(
                     api,
-                    lectureCache,
                     year = year,
                     semester = semester,
                     title = title,
-                    tags = tags,
-                    times = times,
-                    timesToExclude = timesToExclude,
+                    tags = tags.map { it.toTagDto() },
+                    times = times?.map { it.toSearchTimeDto() },
+                    timesToExclude = timesToExclude?.map { it.toSearchTimeDto() },
                 )
             },
-        ).flow
+        ).flow.map { pagingData -> pagingData.map { it.toSearchedLecture() } }
     }
 
-    override suspend fun getSearchTags(year: Long, semester: Long): List<TagDto> {
-        val response = api._getTagList(year.toInt(), semester.toInt())
-        val list = mutableListOf<TagDto>()
-        list.apply {
-            addAll(response.department.map { TagDto(TagType.DEPARTMENT, it) })
-            addAll(response.classification.map { TagDto(TagType.CLASSIFICATION, it) })
-            addAll(response.academicYear.map { TagDto(TagType.ACADEMIC_YEAR, it) })
-            addAll(response.credit.map { TagDto(TagType.CREDIT, it) })
-            addAll(response.category.map { TagDto(TagType.CATEGORY, it) })
-            addAll(response.categoryPre2025.map { TagDto(TagType.CATEGORY_PRE2025, it) })
-            addAll(response.sortCriteria.map { TagDto(TagType.SORT_CRITERIA, it) })
-        }
-        return list
-    }
-
-    override suspend fun getBuildings(places: String): List<LectureBuildingDto> {
-        val response = api._getBuildings(places)
-        return response.content
-    }
-
-    override fun storeRecentSearchedDepartment(tag: TagDto) {
-        val previousStoredTags = storage.recentSearchedDepartments.get()
-        storage.recentSearchedDepartments.update(
-            (previousStoredTags.filter { it != tag } + tag).takeLast(5),
-        )
-    }
-
-    override fun removeRecentSearchedDepartment(tag: TagDto) {
-        val previousStoredTags = storage.recentSearchedDepartments.get()
-        storage.recentSearchedDepartments.update(previousStoredTags - tag)
-    }
-    // endregion
-
-    // region Domain model (SearchTag-based)
-    override val recentSearchedDepartmentTags: Flow<List<SearchTag>> =
-        storage.recentSearchedDepartments.asStateFlow().map { dtos ->
-            dtos.map { SearchTag.Regular(it.type, it.name) }
-        }
-
-    override fun getLectureSearchResultStreamNew(
-        year: Long,
-        semester: Long,
-        title: String,
-        tags: List<SearchTag>,
-        times: List<SearchTime>?,
-        timesToExclude: List<SearchTime>?,
-    ): Flow<PagingData<SearchedLecture>> {
-        return getLectureSearchResultStream(
-            year = year,
-            semester = semester,
-            title = title,
-            tags = tags.map { it.toTagDto() },
-            times = times?.map { it.toSearchTimeDto() },
-            timesToExclude = timesToExclude?.map { it.toSearchTimeDto() },
-        ).map { pagingData -> pagingData.map { it.toSearchedLecture() } }
-    }
-
-    override suspend fun getSearchTagsDomain(year: Long, semester: Long): List<SearchTag> {
+    override suspend fun getSearchTags(year: Long, semester: Long): List<SearchTag> {
         val response = api._getTagList(year.toInt(), semester.toInt())
         val list = mutableListOf<SearchTag>()
         list.apply {
@@ -138,20 +79,25 @@ class LectureSearchRepositoryImpl @Inject constructor(
 
     override fun storeRecentSearchedDepartment(tag: SearchTag) {
         check(tag is SearchTag.Regular)
-        storeRecentSearchedDepartment(TagDto(tag.type, tag.name))
+        val tagDto = TagDto(tag.type, tag.name)
+        val previousStoredTags = storage.recentSearchedDepartments.get()
+        storage.recentSearchedDepartments.update(
+            (previousStoredTags.filter { it != tagDto } + tagDto).takeLast(5),
+        )
     }
 
     override fun removeRecentSearchedDepartment(tag: SearchTag) {
         check(tag is SearchTag.Regular)
-        removeRecentSearchedDepartment(TagDto(tag.type, tag.name))
+        val tagDto = TagDto(tag.type, tag.name)
+        val previousStoredTags = storage.recentSearchedDepartments.get()
+        storage.recentSearchedDepartments.update(previousStoredTags - tagDto)
     }
-    // endregion
 
     override fun setFirstBookmarkAlertShown() {
         storage.firstBookmarkAlert.update(false)
     }
 
-    override suspend fun getBuildingsNew(places: List<String>): Result<List<LectureBuildingDto>> {
+    override suspend fun getBuildings(places: List<String>): Result<List<LectureBuildingDto>> {
         val joined = places.joinToString(",")
         if (joined.isBlank()) return Result.Success(emptyList())
         try {

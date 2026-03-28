@@ -152,12 +152,15 @@ class UserConfigViewModel @Inject constructor(
                 userRepository.performLogout()
                 _userConfigUiEvent.emit(UserConfigUiEvent.NavigateToOnboard)
             }
+
             is AddLocalIdError -> {
                 _userConfigUiEvent.emit(UserConfigUiEvent.ShowToast(displayMessage))
             }
+
             is ChangePasswordError -> {
                 _userConfigUiEvent.emit(UserConfigUiEvent.ShowToast(displayMessage))
             }
+
             else -> {
                 _userConfigUiEvent.emit(UserConfigUiEvent.ShowToast(displayMessage))
             }
@@ -174,7 +177,7 @@ class UserConfigViewModel @Inject constructor(
             UserConfigUiState.Default
         } else {
             UserConfigUiState(
-                user.nickname.toString(),
+                user.nickname?.getDisplayName() ?: "",
                 user.localId,
                 user.email,
                 showChangePasswordDialog,

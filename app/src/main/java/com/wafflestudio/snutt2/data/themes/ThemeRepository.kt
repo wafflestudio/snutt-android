@@ -12,22 +12,15 @@ interface ThemeRepository {
 
     val builtInThemes: StateFlow<List<BuiltInTheme>>
 
-    suspend fun fetchThemes()
-
     fun getTheme(themeId: String): CustomTheme
 
-    suspend fun createTheme(name: String, colors: List<ThemeColor>): CustomTheme
+    suspend fun fetchThemes(): Result<Unit>
 
-    suspend fun updateTheme(themeId: String, name: String, colors: List<ThemeColor>): CustomTheme
+    suspend fun createTheme(name: String, colors: List<ThemeColor>): Result<CustomTheme>
 
-    suspend fun copyTheme(themeId: String)
+    suspend fun updateTheme(themeId: String, name: String, colors: List<ThemeColor>): Result<CustomTheme>
 
-    suspend fun deleteTheme(themeId: String)
+    suspend fun copyTheme(themeId: String): Result<Unit>
 
-    // 리팩토링 코드
-    suspend fun fetchThemesNew(): Result<Unit>
-    suspend fun createThemeNew(name: String, colors: List<ThemeColor>): Result<CustomTheme>
-    suspend fun updateThemeNew(themeId: String, name: String, colors: List<ThemeColor>): Result<CustomTheme>
-    suspend fun copyThemeNew(themeId: String): Result<Unit>
-    suspend fun deleteThemeNew(themeId: String): Result<Unit>
+    suspend fun deleteTheme(themeId: String): Result<Unit>
 }

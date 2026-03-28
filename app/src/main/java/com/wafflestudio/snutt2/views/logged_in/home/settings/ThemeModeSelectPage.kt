@@ -9,14 +9,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.CheckedIcon
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
@@ -24,16 +24,27 @@ import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.ThemeMode
-import kotlinx.coroutines.launch
 
 @Composable
-fun ColorModeSelectPage(
+fun ThemeModeSelectPage(
+    viewModel: ColorModeSelectViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit,
 ) {
-    val scope = rememberCoroutineScope()
-    val userViewModel = hiltViewModel<UserViewModel>()
-    val themeMode by userViewModel.themeMode.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    ColorModeSelectScreen(
+        themeMode = uiState.themeMode,
+        onSelectMode = { viewModel.setThemeMode(it) },
+        onNavigateBack = onNavigateBack,
+    )
+}
+
+@Composable
+private fun ColorModeSelectScreen(
+    themeMode: ThemeMode,
+    onSelectMode: (ThemeMode) -> Unit,
+    onNavigateBack: () -> Unit,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -46,19 +57,14 @@ fun ColorModeSelectPage(
             onNavigateBack()
         }
         Column(
-            modifier = Modifier
-                .verticalScroll(rememberScrollState()),
+            modifier = Modifier.verticalScroll(rememberScrollState()),
         ) {
             Spacer(Modifier.height(10.dp))
             SettingColumn {
                 SettingItem(
                     title = stringResource(R.string.settings_select_color_mode_auto),
                     hasNextPage = false,
-                    onClick = {
-                        scope.launch {
-                            userViewModel.setThemeMode(ThemeMode.AUTO)
-                        }
-                    },
+                    onClick = { onSelectMode(ThemeMode.AUTO) },
                 ) {
                     if (themeMode == ThemeMode.AUTO) {
                         CheckedIcon(
@@ -70,11 +76,7 @@ fun ColorModeSelectPage(
                 SettingItem(
                     title = stringResource(R.string.settings_select_color_mode_dark),
                     hasNextPage = false,
-                    onClick = {
-                        scope.launch {
-                            userViewModel.setThemeMode(ThemeMode.DARK)
-                        }
-                    },
+                    onClick = { onSelectMode(ThemeMode.DARK) },
                 ) {
                     if (themeMode == ThemeMode.DARK) {
                         CheckedIcon(
@@ -86,11 +88,7 @@ fun ColorModeSelectPage(
                 SettingItem(
                     title = stringResource(R.string.settings_select_color_mode_light),
                     hasNextPage = false,
-                    onClick = {
-                        scope.launch {
-                            userViewModel.setThemeMode(ThemeMode.LIGHT)
-                        }
-                    },
+                    onClick = { onSelectMode(ThemeMode.LIGHT) },
                 ) {
                     if (themeMode == ThemeMode.LIGHT) {
                         CheckedIcon(
@@ -102,4 +100,14 @@ fun ColorModeSelectPage(
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ColorModeSelectScreenPreview() {
+    ColorModeSelectScreen(
+        themeMode = ThemeMode.AUTO,
+        onSelectMode = {},
+        onNavigateBack = {},
+    )
 }

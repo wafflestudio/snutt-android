@@ -15,8 +15,8 @@ import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.domainmodel.TableTheme
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebViewNew
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.refactor.LectureDetail
+import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebView
+import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetail
 
 @Composable
 fun BookmarkBottomSheetLayout(
@@ -61,7 +61,7 @@ fun BookmarkBottomSheetLayout(
                 }
 
                 is BookmarkUiState.BottomSheetType.Review -> {
-                    ReviewWebViewNew(modifier = Modifier.fillMaxHeight(0.95f), reviewWebViewContainer = reviewWebViewContainer)
+                    ReviewWebView(modifier = Modifier.fillMaxHeight(0.95f), reviewWebViewContainer = reviewWebViewContainer)
                 }
 
                 else -> {
@@ -104,7 +104,7 @@ private fun BookmarkLectureDetailSheetContent(
 
     ModalBottomSheetLayout(
         sheetContent = {
-            ReviewWebViewNew(modifier = Modifier.fillMaxHeight(0.95f), reviewWebViewContainer = detailReviewWebViewContainer)
+            ReviewWebView(modifier = Modifier.fillMaxHeight(0.95f), reviewWebViewContainer = detailReviewWebViewContainer)
         },
         sheetState = detailReviewSheetState,
         sheetShape = RoundedCornerShape(topStartPercent = 5, topEndPercent = 5),

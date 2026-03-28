@@ -14,13 +14,12 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.lib.android.webview.ThemeMarketWebViewContainer
 import com.wafflestudio.snutt2.ui.isDarkMode
-import com.wafflestudio.snutt2.views.logged_in.home.settings.UserViewModel
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun ThemeMarketRoute(
     onBackClick: () -> Unit,
-    userViewModel: UserViewModel = hiltViewModel(),
+    userViewModel: ThemeMarketViewModel = hiltViewModel(),
 ) {
     ThemeMarketScreen(
         accessToken = userViewModel.accessToken,
