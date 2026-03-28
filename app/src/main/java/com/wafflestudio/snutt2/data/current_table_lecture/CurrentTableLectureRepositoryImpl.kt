@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.data.current_table
+package com.wafflestudio.snutt2.data.current_table_lecture
 
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.domainmodel.CustomLecture

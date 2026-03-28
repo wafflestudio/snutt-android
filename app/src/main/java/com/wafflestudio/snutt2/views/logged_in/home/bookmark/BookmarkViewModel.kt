@@ -4,11 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.data.bookmark.BookmarkRepository
-import com.wafflestudio.snutt2.data.current_table.CurrentTableLectureRepository
+import com.wafflestudio.snutt2.data.current_table_lecture.CurrentTableLectureRepository
 import com.wafflestudio.snutt2.data.lecture_info.LectureInfoRepository
-import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.notifications.NotificationRepository
 import com.wafflestudio.snutt2.data.table_display.TableDisplayRepository
+import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.data.vacancy_noti.VacancyRepository
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase

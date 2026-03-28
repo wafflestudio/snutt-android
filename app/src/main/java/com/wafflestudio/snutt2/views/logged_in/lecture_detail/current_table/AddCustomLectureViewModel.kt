@@ -3,7 +3,7 @@ package com.wafflestudio.snutt2.views.logged_in.lecture_detail.current_table
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.RemoteConfig
-import com.wafflestudio.snutt2.data.current_table.CurrentTableLectureRepository
+import com.wafflestudio.snutt2.data.current_table_lecture.CurrentTableLectureRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme

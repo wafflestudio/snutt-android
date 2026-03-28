@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.data.bookmark.BookmarkRepository
-import com.wafflestudio.snutt2.data.current_table.CurrentTableLectureRepository
+import com.wafflestudio.snutt2.data.current_table_lecture.CurrentTableLectureRepository
 import com.wafflestudio.snutt2.data.lecture_info.LectureInfoRepository
 import com.wafflestudio.snutt2.data.semester_status.SemesterStatusRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
