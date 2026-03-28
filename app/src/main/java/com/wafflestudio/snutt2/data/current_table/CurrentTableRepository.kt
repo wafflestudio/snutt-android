@@ -19,12 +19,6 @@ interface CurrentTableRepository {
 
     suspend fun visitSessionlessLectureList()
 
-    suspend fun getBookmarks(): Result<List<SearchedLecture>>
-
-    suspend fun addBookmark(lecture: Lecture): Result<Unit>
-
-    suspend fun deleteBookmark(lecture: Lecture): Result<Unit>
-
     suspend fun addLecture(lectureId: String, isForced: Boolean): Result<Unit>
 
     suspend fun removeLecture(lectureId: String): Result<Unit>

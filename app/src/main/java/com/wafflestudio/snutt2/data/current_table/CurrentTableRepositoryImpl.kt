@@ -11,7 +11,6 @@ import com.wafflestudio.snutt2.domainmodel.Table
 import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.Unknown
-import com.wafflestudio.snutt2.lib.network.dto.PostBookmarkParams
 import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.PostLectureParams
 import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
@@ -62,40 +61,6 @@ class CurrentTableRepositoryImpl @Inject constructor(
 
     override suspend fun visitSessionlessLectureList() {
         storage.isVisitedSessionlessLectureList.update(true)
-    }
-
-    override suspend fun getBookmarks(): Result<List<SearchedLecture>> {
-        try {
-            val table = currentTableDto.value
-                ?: return Result.Success(listOf())
-            return Result.Success(
-                table.let {
-                    api._getBookmarkList(it.year, it.semester).lectures
-                }.map { lecture ->
-                    lecture.toSearchedLecture()
-                },
-            )
-        } catch (e: Exception) {
-            return Result.Fail(e.toDomainError())
-        }
-    }
-
-    override suspend fun addBookmark(lecture: Lecture): Result<Unit> {
-        try {
-            val response = api._addBookmark(PostBookmarkParams(lecture.id))
-            return Result.Success(response)
-        } catch (e: Exception) {
-            return Result.Fail(e.toDomainError())
-        }
-    }
-
-    override suspend fun deleteBookmark(lecture: Lecture): Result<Unit> {
-        try {
-            val response = api._deleteBookmark(PostBookmarkParams(lecture.id))
-            return Result.Success(response)
-        } catch (e: Exception) {
-            return Result.Fail(e.toDomainError())
-        }
     }
 
     override suspend fun addLecture(lectureId: String, isForced: Boolean): Result<Unit> {
