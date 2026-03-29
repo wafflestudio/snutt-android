@@ -68,7 +68,7 @@ fun SearchLectureDetailSheetContent(
                         AnalyticsScreen.ReviewDetail(
                             ReviewDetailParameter(
                                 lectureId = lecture.id,
-                                referrer = bottomSheetType.referrer,
+                                referrer = DetailScreenReferrer.LectureDetail,
                             ),
                         ),
                     )
