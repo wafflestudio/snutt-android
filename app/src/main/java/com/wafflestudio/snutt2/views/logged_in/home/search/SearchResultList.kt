@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.items
 import com.wafflestudio.snutt2.components.compose.AnimatedLazyRow
@@ -54,37 +55,45 @@ fun SearchResultList(
                 )
             }
 
-            SearchResultListState.EMPTY -> {
-                SearchEmptyPlaceholder(
-                    modifier = Modifier.logImpression(AnalyticsScreen.SearchEmpty),
-                )
-            }
+            SearchResultListState.SEARCHED -> {
+                val isLoaded = searchResultPagingItems.loadState.refresh is LoadState.NotLoading
+                val isEmpty = isLoaded && searchResultPagingItems.itemCount == 0
 
-            SearchResultListState.HAS_RESULTS -> {
-                LazyColumn(
-                    state = lazyListState,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .logImpression(AnalyticsScreen.SearchList),
-                ) {
-                    items(searchResultPagingItems) { lectureDataWithState ->
-                        lectureDataWithState?.let { (lecture, lectureState) ->
-                            SearchLectureListItem(
-                                modifier = Modifier.animateItem(
-                                    placementSpec = spring(
-                                        stiffness = Spring.StiffnessHigh,
-                                        visibilityThreshold = IntOffset.VisibilityThreshold,
+                if (isEmpty) {
+                    SearchEmptyPlaceholder(
+                        modifier = Modifier.logImpression(AnalyticsScreen.SearchEmpty),
+                    )
+                } else {
+                    val listModifier = if (isLoaded) {
+                        Modifier
+                            .fillMaxSize()
+                            .logImpression(AnalyticsScreen.SearchList)
+                    } else {
+                        Modifier.fillMaxSize()
+                    }
+                    LazyColumn(
+                        state = lazyListState,
+                        modifier = listModifier,
+                    ) {
+                        items(searchResultPagingItems) { lectureDataWithState ->
+                            lectureDataWithState?.let { (lecture, lectureState) ->
+                                SearchLectureListItem(
+                                    modifier = Modifier.animateItem(
+                                        placementSpec = spring(
+                                            stiffness = Spring.StiffnessHigh,
+                                            visibilityThreshold = IntOffset.VisibilityThreshold,
+                                        ),
                                     ),
-                                ),
-                                lecture = lecture,
-                                lectureState = lectureState,
-                                onClick = { onToggleLectureSelection(lecture) },
-                                onClickDetail = { onClickLectureDetail(lecture) },
-                                onClickReview = { onClickReview(lecture) },
-                                onClickBookmark = { onClickBookmark(lecture) },
-                                onClickVacancy = { onClickVacancy(lecture) },
-                                onClickAddOrRemove = { onClickAddOrRemove(lecture) },
-                            )
+                                    lecture = lecture,
+                                    lectureState = lectureState,
+                                    onClick = { onToggleLectureSelection(lecture) },
+                                    onClickDetail = { onClickLectureDetail(lecture) },
+                                    onClickReview = { onClickReview(lecture) },
+                                    onClickBookmark = { onClickBookmark(lecture) },
+                                    onClickVacancy = { onClickVacancy(lecture) },
+                                    onClickAddOrRemove = { onClickAddOrRemove(lecture) },
+                                )
+                            }
                         }
                     }
                 }

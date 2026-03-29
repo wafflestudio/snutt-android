@@ -274,7 +274,7 @@ class SearchViewModel @Inject constructor(
 
     fun onSearch() {
         viewModelScope.launch {
-            _uiState.update { it.copy(searchResultListState = SearchResultListState.HAS_RESULTS) }
+            _uiState.update { it.copy(searchResultListState = SearchResultListState.SEARCHED) }
             query()
         }
     }
