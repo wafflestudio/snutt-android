@@ -44,9 +44,9 @@ class TutorialViewModel @Inject constructor(
     fun onFacebookTokenReceived(token: String) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            analyticsLogger.logEvent(AnalyticsEvent.Login(LoginParameter(LoginParameter.Provider.FACEBOOK)))
             userRepository.postLoginFacebook(token)
                 .onSuccess {
+                    analyticsLogger.logEvent(AnalyticsEvent.Login(LoginParameter(LoginParameter.Provider.FACEBOOK)))
                     refreshInitialDataUseCase()
                     _uiEvent.emit(TutorialUiEvent.NavigateHome)
                 }
@@ -65,9 +65,9 @@ class TutorialViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true) }
             userRepository.getAccessTokenByAuthCode(authCode, clientId, clientSecret)
                 .onSuccess { googleAccessToken ->
-                    analyticsLogger.logEvent(AnalyticsEvent.Login(LoginParameter(LoginParameter.Provider.GOOGLE)))
                     userRepository.postLoginGoogle(googleAccessToken)
                         .onSuccess {
+                            analyticsLogger.logEvent(AnalyticsEvent.Login(LoginParameter(LoginParameter.Provider.GOOGLE)))
                             refreshInitialDataUseCase()
                             _uiEvent.emit(TutorialUiEvent.NavigateHome)
                         }
@@ -86,9 +86,9 @@ class TutorialViewModel @Inject constructor(
     fun onKakaoTokenReceived(token: String) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            analyticsLogger.logEvent(AnalyticsEvent.Login(LoginParameter(LoginParameter.Provider.KAKAO)))
             userRepository.postLoginKakao(token)
                 .onSuccess {
+                    analyticsLogger.logEvent(AnalyticsEvent.Login(LoginParameter(LoginParameter.Provider.KAKAO)))
                     refreshInitialDataUseCase()
                     _uiEvent.emit(TutorialUiEvent.NavigateHome)
                 }
