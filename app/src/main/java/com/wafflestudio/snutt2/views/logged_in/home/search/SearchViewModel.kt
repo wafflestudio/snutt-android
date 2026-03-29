@@ -369,7 +369,7 @@ class SearchViewModel @Inject constructor(
                     AnalyticsEvent.AddToBookmark(
                         AddToBookmarkParameter(
                             lectureId = lecture.id,
-                            referrer = LectureActionReferrer.Search(_uiState.value.searchTitle),
+                            referrer = resolveActionReferrer(),
                         ),
                     ),
                 )
@@ -402,7 +402,7 @@ class SearchViewModel @Inject constructor(
                     AnalyticsEvent.AddToVacancy(
                         AddToVacancyParameter(
                             lectureId = lecture.id,
-                            referrer = LectureActionReferrer.Search(_uiState.value.searchTitle),
+                            referrer = resolveActionReferrer(),
                         ),
                     ),
                 )
@@ -551,6 +551,14 @@ class SearchViewModel @Inject constructor(
     // endregion
 
     // region Private methods
+
+    private fun resolveActionReferrer(): LectureActionReferrer {
+        return if (_uiState.value.bottomSheetType is SearchUiState.BottomSheetType.LectureDetail) {
+            LectureActionReferrer.LectureDetail
+        } else {
+            LectureActionReferrer.Search(_uiState.value.searchTitle)
+        }
+    }
 
     private suspend fun query() {
         _querySignal.emit(Unit)
