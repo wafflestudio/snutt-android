@@ -14,7 +14,10 @@ import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.domainmodel.TableTheme
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
+import com.wafflestudio.snutt2.lib.logging.LectureDetailParameter
 import com.wafflestudio.snutt2.lib.logging.ReviewDetailParameter
+import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebView
@@ -50,6 +53,14 @@ fun SearchLectureDetailSheetContent(
     }
 
     ModalBottomSheetLayout(
+        modifier = Modifier.logImpression(
+            AnalyticsScreen.LectureDetail(
+                LectureDetailParameter(
+                    lectureId = lecture.id,
+                    referrer = bottomSheetType.referrer,
+                ),
+            ),
+        ),
         sheetContent = {
             LaunchedEffect(detailReviewSheetState.isVisible) {
                 if (detailReviewSheetState.isVisible) {
