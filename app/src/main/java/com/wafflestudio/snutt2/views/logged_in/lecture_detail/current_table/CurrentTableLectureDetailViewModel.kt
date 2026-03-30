@@ -548,7 +548,6 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
         viewModelScope.launch {
             _uiEvent.emit(CurrentTableLectureDetailUiEvent.CloseBottomSheet)
         }
-        _uiState.update { it.copy(sheetType = CurrentTableLectureDetailUiState.SheetType.None) }
     }
 
     private suspend fun fetchBuildings(lecture: Lecture): List<LectureBuildingDto> {

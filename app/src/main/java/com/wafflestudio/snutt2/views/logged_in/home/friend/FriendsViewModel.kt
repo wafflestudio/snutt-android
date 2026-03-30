@@ -270,12 +270,6 @@ class FriendsViewModel @Inject constructor(
 
     fun closeBottomSheet() {
         viewModelScope.launch {
-            _uiState.update { state ->
-                when (state) {
-                    is FriendsUiState.Loaded -> state.copy(bottomSheetContent = FriendBottomSheetContent.Hidden)
-                    else -> state
-                }
-            }
             _uiEvent.emit(FriendUiEvent.CloseBottomSheet)
         }
     }

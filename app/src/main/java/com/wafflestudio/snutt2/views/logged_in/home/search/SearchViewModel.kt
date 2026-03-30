@@ -536,14 +536,12 @@ class SearchViewModel @Inject constructor(
 
     fun closeBottomSheet() {
         viewModelScope.launch {
-            _uiState.update { it.copy(bottomSheetType = SearchUiState.BottomSheetType.None) }
             _uiEvent.emit(SearchUiEvent.CloseBottomSheet)
         }
     }
 
     fun applyFilterAndClose() {
         storeRecentSearchedDepartments()
-        _uiState.update { it.copy(bottomSheetType = SearchUiState.BottomSheetType.None) }
         viewModelScope.launch { _uiEvent.emit(SearchUiEvent.CloseBottomSheet) }
         onSearch()
     }

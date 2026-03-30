@@ -218,15 +218,6 @@ class HomeDrawerViewModel @Inject constructor(
                 handleError(it)
             }.onSuccess {
                 _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
-                _uiState.update { state ->
-                    when (state) {
-                        is HomeDrawerUiState.Loaded -> state.copy(
-                            homeDrawerBottomSheetType = HomeDrawerBottomSheetType.Empty,
-                        )
-
-                        else -> state
-                    }
-                }
                 _uiEvent.emit(HomeDrawerUiEvent.CloseDrawer)
             }
         }

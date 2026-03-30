@@ -314,10 +314,6 @@ class BookmarkViewModel @Inject constructor(
 
     fun closeBottomSheet() {
         viewModelScope.launch {
-            _uiState.update { current ->
-                if (current !is BookmarkUiState.Success) return@update current
-                current.copy(bottomSheetType = BookmarkUiState.BottomSheetType.None)
-            }
             _uiEvent.emit(BookmarkUiEvent.CloseBottomSheet)
         }
     }
