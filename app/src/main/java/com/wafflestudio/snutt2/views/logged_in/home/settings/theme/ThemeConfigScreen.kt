@@ -74,7 +74,6 @@ fun ThemeConfigRoute(
         onClickApply = viewModel::onClickApply,
         onClickDuplicate = viewModel::onClickDuplicate,
         onClickDelete = viewModel::onClickDelete,
-        onDismiss = viewModel::onCloseBottomSheet,
     ) {
         ThemeConfigScreen(
             uiState = uiState,

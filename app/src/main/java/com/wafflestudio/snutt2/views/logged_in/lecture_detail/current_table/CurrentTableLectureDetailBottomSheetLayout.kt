@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -31,12 +30,6 @@ fun CurrentTableLectureDetailBottomSheetLayout(
     content: @Composable () -> Unit,
 ) {
     val analyticsLogger = LocalAnalyticsLogger.current
-
-    LaunchedEffect(sheetState.currentValue) {
-        if (sheetState.currentValue == ModalBottomSheetValue.Hidden) {
-            onCloseSheet()
-        }
-    }
 
     ModalBottomSheetLayout(
         sheetContent = {

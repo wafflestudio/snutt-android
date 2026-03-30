@@ -4,7 +4,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DrawerState
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.ModalDrawer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -15,8 +14,8 @@ import com.wafflestudio.snutt2.domainmodel.TableSummary
 import com.wafflestudio.snutt2.domainmodel.TableTheme
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.compose.HomeDrawerLoggingEffect
-import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
 import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
 import com.wafflestudio.snutt2.views.logged_in.home.drawer.bottom_sheet.CreateTableBottomSheet
 import com.wafflestudio.snutt2.views.logged_in.home.drawer.bottom_sheet.MoreActionSheet
 import com.wafflestudio.snutt2.views.logged_in.home.drawer.bottom_sheet.SelectThemeSheetContent
@@ -59,12 +58,6 @@ fun HomeDrawerBottomSheetLayout(
     content: @Composable () -> Unit,
 ) {
     val analyticsLogger = LocalAnalyticsLogger.current
-
-    LaunchedEffect(sheetState.currentValue) {
-        if (sheetState.currentValue == ModalBottomSheetValue.Hidden) {
-            onDismiss()
-        }
-    }
     HomeDrawerLoggingEffect(drawerState)
     ModalBottomSheetLayout(
         sheetContent = {

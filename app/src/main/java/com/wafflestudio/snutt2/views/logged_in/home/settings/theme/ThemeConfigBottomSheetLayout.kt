@@ -3,9 +3,7 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings.theme
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,15 +25,8 @@ internal fun ThemeConfigBottomSheetLayout(
     onClickApply: (TableTheme) -> Unit,
     onClickDuplicate: (CustomTheme) -> Unit,
     onClickDelete: (CustomTheme) -> Unit,
-    onDismiss: () -> Unit,
     content: @Composable () -> Unit,
 ) {
-    LaunchedEffect(sheetState.currentValue) {
-        if (sheetState.currentValue == ModalBottomSheetValue.Hidden) {
-            onDismiss()
-        }
-    }
-
     ModalBottomSheetLayout(
         sheetState = sheetState,
         sheetContent = {
