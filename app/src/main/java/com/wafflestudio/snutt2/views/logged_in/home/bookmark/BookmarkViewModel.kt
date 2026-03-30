@@ -20,6 +20,12 @@ import com.wafflestudio.snutt2.domainmodel.TableTheme
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.getFittingTrimParam
+import com.wafflestudio.snutt2.lib.logging.AddToBookmarkParameter
+import com.wafflestudio.snutt2.lib.logging.AddToTimetableParameter
+import com.wafflestudio.snutt2.lib.logging.AddToVacancyParameter
+import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
+import com.wafflestudio.snutt2.lib.logging.AnalyticsLogger
+import com.wafflestudio.snutt2.lib.logging.LectureActionReferrer
 import com.wafflestudio.snutt2.lib.network.AuthError
 import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
 import com.wafflestudio.snutt2.lib.network.DomainError
@@ -62,6 +68,7 @@ class BookmarkViewModel @Inject constructor(
     private val getCurrentTableThemeUseCase: GetCurrentTableThemeUseCase,
     private val remoteConfig: RemoteConfig,
     private val displayMessageResolver: DisplayMessageResolver,
+    private val analyticsLogger: AnalyticsLogger,
 ) : ViewModel() {
 
     private val _uiEvent = MutableSharedFlow<BookmarkUiEvent>(replay = 0)
@@ -176,6 +183,14 @@ class BookmarkViewModel @Inject constructor(
             }
         } else {
             viewModelScope.launch {
+                analyticsLogger.logEvent(
+                    AnalyticsEvent.AddToBookmark(
+                        AddToBookmarkParameter(
+                            lectureId = lecture.id,
+                            referrer = LectureActionReferrer.Bookmark,
+                        ),
+                    ),
+                )
                 val courseBook = tableRepository.currentTable.value?.summary?.courseBook ?: return@launch
                 bookmarkRepository.addBookmark(courseBook, lecture)
                     .onFailure { handleError(it) }
@@ -210,6 +225,14 @@ class BookmarkViewModel @Inject constructor(
                     state.copy(dialogState = BookmarkUiState.DialogState.DeleteVacancyNotification(lecture))
                 }
             } else {
+                analyticsLogger.logEvent(
+                    AnalyticsEvent.AddToVacancy(
+                        AddToVacancyParameter(
+                            lectureId = lecture.id,
+                            referrer = LectureActionReferrer.Bookmark,
+                        ),
+                    ),
+                )
                 vacancyRepository.addVacancyLecture(lecture)
                     .onFailure { handleError(it) }
             }
@@ -335,6 +358,15 @@ class BookmarkViewModel @Inject constructor(
     // region Private methods
 
     private suspend fun addLecture(lecture: SearchedLecture, isForced: Boolean) {
+        analyticsLogger.logEvent(
+            AnalyticsEvent.AddToTimetable(
+                AddToTimetableParameter(
+                    lectureId = lecture.id,
+                    timetableId = tableRepository.currentTable.value?.summary?.id,
+                    referrer = LectureActionReferrer.Bookmark,
+                ),
+            ),
+        )
         currentTableLectureRepository.addLecture(lecture.id, isForced)
             .onSuccess {
                 onToggleLectureSelection(lecture)

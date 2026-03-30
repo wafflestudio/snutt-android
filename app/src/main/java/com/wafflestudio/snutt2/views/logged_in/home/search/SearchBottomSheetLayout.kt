@@ -9,6 +9,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import com.wafflestudio.snutt2.components.compose.ModalBottomSheetPlaceholder
+import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.lib.logging.ReviewDetailParameter
+import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
 import com.wafflestudio.snutt2.domainmodel.SearchTag
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
@@ -41,6 +44,8 @@ fun SearchBottomSheetLayout(
     reviewWebViewContainer: ReviewWebViewContainer,
     content: @Composable () -> Unit,
 ) {
+    val analyticsLogger = LocalAnalyticsLogger.current
+
     LaunchedEffect(sheetState.currentValue) {
         if (sheetState.currentValue == ModalBottomSheetValue.Hidden) {
             onDismiss()
@@ -56,7 +61,9 @@ fun SearchBottomSheetLayout(
 
                 SearchUiState.BottomSheetType.Filter -> {
                     if (uiState.pageMode == PageMode.Search) {
-                        // TODO: caller 에서 BottomSheetLoggingEffect(analyticsScreen = AnalyticsScreen.SearchFilter) 호출 필요
+                        LaunchedEffect(Unit) {
+                            analyticsLogger.logScreen(AnalyticsScreen.SearchFilter)
+                        }
                         SearchOptionSheet(
                             searchTags = uiState.searchTags,
                             tagTypes = uiState.tagTypes,
@@ -96,6 +103,16 @@ fun SearchBottomSheetLayout(
                 }
 
                 is SearchUiState.BottomSheetType.Review -> {
+                    LaunchedEffect(Unit) {
+                        analyticsLogger.logScreen(
+                            AnalyticsScreen.ReviewDetail(
+                                ReviewDetailParameter(
+                                    lectureId = bottomSheetType.lecture.id,
+                                    referrer = bottomSheetType.referrer,
+                                ),
+                            ),
+                        )
+                    }
                     ReviewWebView(modifier = Modifier.fillMaxHeight(0.95f), reviewWebViewContainer = reviewWebViewContainer)
                 }
             }

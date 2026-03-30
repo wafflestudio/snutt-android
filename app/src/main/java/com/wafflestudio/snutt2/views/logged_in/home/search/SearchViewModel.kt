@@ -32,6 +32,7 @@ import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.concatenate
 import com.wafflestudio.snutt2.lib.getFittingTrimParam
 import com.wafflestudio.snutt2.lib.logging.AddToBookmarkParameter
+import com.wafflestudio.snutt2.lib.logging.AddToTimetableParameter
 import com.wafflestudio.snutt2.lib.logging.AddToVacancyParameter
 import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.lib.logging.AnalyticsLogger
@@ -273,7 +274,7 @@ class SearchViewModel @Inject constructor(
 
     fun onSearch() {
         viewModelScope.launch {
-            _uiState.update { it.copy(searchResultListState = SearchResultListState.HAS_RESULTS) }
+            _uiState.update { it.copy(searchResultListState = SearchResultListState.SEARCHED) }
             query()
         }
     }
@@ -368,7 +369,7 @@ class SearchViewModel @Inject constructor(
                     AnalyticsEvent.AddToBookmark(
                         AddToBookmarkParameter(
                             lectureId = lecture.id,
-                            referrer = LectureActionReferrer.Search(_uiState.value.searchTitle),
+                            referrer = resolveActionReferrer(),
                         ),
                     ),
                 )
@@ -401,7 +402,7 @@ class SearchViewModel @Inject constructor(
                     AnalyticsEvent.AddToVacancy(
                         AddToVacancyParameter(
                             lectureId = lecture.id,
-                            referrer = LectureActionReferrer.Search(_uiState.value.searchTitle),
+                            referrer = resolveActionReferrer(),
                         ),
                     ),
                 )
@@ -551,6 +552,14 @@ class SearchViewModel @Inject constructor(
 
     // region Private methods
 
+    private fun resolveActionReferrer(): LectureActionReferrer {
+        return if (_uiState.value.bottomSheetType is SearchUiState.BottomSheetType.LectureDetail) {
+            LectureActionReferrer.LectureDetail
+        } else {
+            LectureActionReferrer.Search(_uiState.value.searchTitle)
+        }
+    }
+
     private suspend fun query() {
         _querySignal.emit(Unit)
         _uiEvent.emit(SearchUiEvent.ResetScroll)
@@ -566,6 +575,18 @@ class SearchViewModel @Inject constructor(
     }
 
     private suspend fun addLecture(lecture: SearchedLecture, isForced: Boolean) {
+        analyticsLogger.logEvent(
+            AnalyticsEvent.AddToTimetable(
+                AddToTimetableParameter(
+                    lectureId = lecture.id,
+                    timetableId = tableRepository.currentTable.value?.summary?.id,
+                    referrer = when (_uiState.value.pageMode) {
+                        PageMode.Bookmark -> LectureActionReferrer.Bookmark
+                        PageMode.Search -> LectureActionReferrer.Search(_uiState.value.searchTitle)
+                    },
+                ),
+            ),
+        )
         currentTableLectureRepository.addLecture(lecture.id, isForced).onFailure { error ->
             if (error is LectureOverlap) {
                 _uiState.update {

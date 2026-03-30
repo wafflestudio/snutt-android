@@ -14,6 +14,12 @@ import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.domainmodel.TableTheme
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
+import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
+import com.wafflestudio.snutt2.lib.logging.LectureDetailParameter
+import com.wafflestudio.snutt2.lib.logging.ReviewDetailParameter
+import com.wafflestudio.snutt2.lib.logging.logImpression
+import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebView
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetail
@@ -33,6 +39,8 @@ fun BookmarkBottomSheetLayout(
     onCloseDetailReview: () -> Unit,
     content: @Composable () -> Unit,
 ) {
+    val analyticsLogger = LocalAnalyticsLogger.current
+
     LaunchedEffect(sheetState.currentValue) {
         if (sheetState.currentValue == ModalBottomSheetValue.Hidden) {
             onDismiss()
@@ -61,6 +69,16 @@ fun BookmarkBottomSheetLayout(
                 }
 
                 is BookmarkUiState.BottomSheetType.Review -> {
+                    LaunchedEffect(Unit) {
+                        analyticsLogger.logScreen(
+                            AnalyticsScreen.ReviewDetail(
+                                ReviewDetailParameter(
+                                    lectureId = bottomSheetType.lecture.id,
+                                    referrer = DetailScreenReferrer.Bookmark,
+                                ),
+                            ),
+                        )
+                    }
                     ReviewWebView(modifier = Modifier.fillMaxHeight(0.95f), reviewWebViewContainer = reviewWebViewContainer)
                 }
 
@@ -93,6 +111,7 @@ private fun BookmarkLectureDetailSheetContent(
     onReviewFromDetail: () -> Unit,
     onCloseDetailReview: () -> Unit,
 ) {
+    val analyticsLogger = LocalAnalyticsLogger.current
     val lecture = bottomSheetType.lecture
     val showCategoryPre2025 = (courseBook.year * 10 + courseBook.semester) > 20250L
 
@@ -103,7 +122,27 @@ private fun BookmarkLectureDetailSheetContent(
     }
 
     ModalBottomSheetLayout(
+        modifier = Modifier.logImpression(
+            AnalyticsScreen.LectureDetail(
+                LectureDetailParameter(
+                    lectureId = lecture.id,
+                    referrer = DetailScreenReferrer.Bookmark,
+                ),
+            ),
+        ),
         sheetContent = {
+            LaunchedEffect(detailReviewSheetState.isVisible) {
+                if (detailReviewSheetState.isVisible) {
+                    analyticsLogger.logScreen(
+                        AnalyticsScreen.ReviewDetail(
+                            ReviewDetailParameter(
+                                lectureId = lecture.id,
+                                referrer = DetailScreenReferrer.Bookmark,
+                            ),
+                        ),
+                    )
+                }
+            }
             ReviewWebView(modifier = Modifier.fillMaxHeight(0.95f), reviewWebViewContainer = detailReviewWebViewContainer)
         },
         sheetState = detailReviewSheetState,

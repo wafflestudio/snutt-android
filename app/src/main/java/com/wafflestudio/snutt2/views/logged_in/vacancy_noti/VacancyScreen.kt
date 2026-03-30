@@ -202,28 +202,24 @@ fun VacancyLoading(
     modifier: Modifier = Modifier,
     onClickBack: () -> Unit,
 ) {
-    Box(
-        modifier = Modifier.logImpression(AnalyticsScreen.Vacancy),
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(SNUTTColors.SettingBackground),
     ) {
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .background(SNUTTColors.SettingBackground),
-        ) {
-            SimpleTopBar(
-                title = stringResource(R.string.vacancy_app_bar_title),
-                onClickNavigateBack = onClickBack,
-            )
+        SimpleTopBar(
+            title = stringResource(R.string.vacancy_app_bar_title),
+            onClickNavigateBack = onClickBack,
+        )
 
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colors.background),
-                contentAlignment = Alignment.Center,
-            ) {
-                CircularProgressIndicator()
-            }
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth()
+                .background(MaterialTheme.colors.background),
+            contentAlignment = Alignment.Center,
+        ) {
+            CircularProgressIndicator()
         }
     }
 }
@@ -233,31 +229,27 @@ fun VacancyError(
     modifier: Modifier = Modifier,
     onClickBack: () -> Unit,
 ) {
-    Box(
-        modifier = Modifier.logImpression(AnalyticsScreen.Vacancy),
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(SNUTTColors.SettingBackground),
     ) {
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .background(SNUTTColors.SettingBackground),
-        ) {
-            SimpleTopBar(
-                title = stringResource(R.string.vacancy_app_bar_title),
-                onClickNavigateBack = onClickBack,
-            )
+        SimpleTopBar(
+            title = stringResource(R.string.vacancy_app_bar_title),
+            onClickNavigateBack = onClickBack,
+        )
 
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colors.background),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(
-                    text = stringResource(R.string.error_unknown),
-                    color = MaterialTheme.colors.onBackground,
-                )
-            }
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth()
+                .background(MaterialTheme.colors.background),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = stringResource(R.string.error_unknown),
+                color = MaterialTheme.colors.onBackground,
+            )
         }
     }
 }

@@ -24,10 +24,17 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
+import com.wafflestudio.snutt2.domainmodel.SyllabusLecture
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.lib.getReviewUrl
+import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
+import com.wafflestudio.snutt2.lib.logging.LectureDetailParameter
+import com.wafflestudio.snutt2.lib.logging.ReviewDetailParameter
+import com.wafflestudio.snutt2.lib.logging.logImpression
+import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebView
@@ -42,6 +49,7 @@ fun DeeplinkTimetableLectureDetailRoute(
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    val analyticsLogger = LocalAnalyticsLogger.current
     val uiState by vm.uiState.collectAsStateWithLifecycle()
 
     val isDarkMode = isDarkMode()
@@ -102,8 +110,29 @@ fun DeeplinkTimetableLectureDetailRoute(
         }
 
         is DeeplinkTimetableLectureDetailUiState.Success -> {
+            val loggingLectureId = (state.lecture as? SyllabusLecture)?.originalLectureId ?: state.lecture.id
             ModalBottomSheetLayout(
+                modifier = Modifier.logImpression(
+                    AnalyticsScreen.LectureDetail(
+                        LectureDetailParameter(
+                            lectureId = loggingLectureId,
+                            referrer = DetailScreenReferrer.Notification,
+                        ),
+                    ),
+                ),
                 sheetContent = {
+                    LaunchedEffect(sheetState.isVisible) {
+                        if (sheetState.isVisible) {
+                            analyticsLogger.logScreen(
+                                AnalyticsScreen.ReviewDetail(
+                                    ReviewDetailParameter(
+                                        lectureId = loggingLectureId,
+                                        referrer = DetailScreenReferrer.Notification,
+                                    ),
+                                ),
+                            )
+                        }
+                    }
                     ReviewWebView(modifier = Modifier.fillMaxHeight(0.95f), reviewWebViewContainer = reviewWebViewContainer)
                 },
                 sheetState = sheetState,
