@@ -550,6 +550,10 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
         }
     }
 
+    fun onSheetDismissed() {
+        _uiState.update { it.copy(sheetType = CurrentTableLectureDetailUiState.SheetType.None) }
+    }
+
     private suspend fun fetchBuildings(lecture: Lecture): List<LectureBuildingDto> {
         val places = lecture.lectureSessions.map { it.place }.distinct()
         var buildings: List<LectureBuildingDto> = emptyList()

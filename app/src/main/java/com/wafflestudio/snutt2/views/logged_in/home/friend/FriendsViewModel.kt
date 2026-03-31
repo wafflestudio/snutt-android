@@ -274,6 +274,15 @@ class FriendsViewModel @Inject constructor(
         }
     }
 
+    fun onSheetDismissed() {
+        _uiState.update { state ->
+            when (state) {
+                is FriendsUiState.Loaded -> state.copy(bottomSheetContent = FriendBottomSheetContent.Hidden)
+                else -> state
+            }
+        }
+    }
+
     fun showRequestWithNickname() {
         viewModelScope.launch {
             _uiState.update { state ->

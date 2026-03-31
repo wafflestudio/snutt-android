@@ -318,6 +318,25 @@ class BookmarkViewModel @Inject constructor(
         }
     }
 
+    fun onSheetDismissed() {
+        _uiState.update { current ->
+            if (current !is BookmarkUiState.Success) return@update current
+            current.copy(bottomSheetType = BookmarkUiState.BottomSheetType.None)
+        }
+    }
+
+    fun onDetailReviewSheetDismissed() {
+        _uiState.update { state ->
+            if (state !is BookmarkUiState.Success) return@update state
+            val bt = state.bottomSheetType
+            if (bt is BookmarkUiState.BottomSheetType.LectureDetail) {
+                state.copy(bottomSheetType = bt.copy(reviewVisible = false))
+            } else {
+                state
+            }
+        }
+    }
+
     fun openDetailReview() {
         _uiState.update { state ->
             if (state !is BookmarkUiState.Success) return@update state

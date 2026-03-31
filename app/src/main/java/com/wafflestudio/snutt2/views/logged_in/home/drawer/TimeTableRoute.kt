@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.withFrameNanos
+import com.wafflestudio.snutt2.components.compose.BottomSheetDismissEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -103,6 +104,8 @@ fun TimeTableRoute(
             }
         }
     }
+
+    BottomSheetDismissEffect(sheetState, drawerViewModel::onSheetDismissed)
 
     LaunchedEffect(Unit) {
         timeTableViewModel.uiEvent.collect { uiEvent ->

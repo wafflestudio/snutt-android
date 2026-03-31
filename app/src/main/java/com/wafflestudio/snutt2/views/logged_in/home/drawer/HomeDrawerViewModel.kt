@@ -468,6 +468,18 @@ class HomeDrawerViewModel @Inject constructor(
         }
     }
 
+    fun onSheetDismissed() {
+        _uiState.update { state ->
+            when (state) {
+                is HomeDrawerUiState.Loaded -> state.copy(
+                    homeDrawerBottomSheetType = HomeDrawerBottomSheetType.Empty,
+                )
+
+                else -> state
+            }
+        }
+    }
+
     private fun handleError(error: DomainError) { // TODO: 네트워크 오류일 때 재시도하기(지금은 앱 껐다 켜야 됨)
         val displayMessage = displayMessageResolver.getDisplayMessage(error)
         viewModelScope.launch {

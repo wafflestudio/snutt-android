@@ -17,6 +17,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import com.wafflestudio.snutt2.components.compose.BottomSheetDismissEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
@@ -89,6 +90,9 @@ fun SearchRoute(
     ) {
         viewModel.onClickBack()
     }
+
+    BottomSheetDismissEffect(sheetState, viewModel::onSheetDismissed)
+    BottomSheetDismissEffect(detailReviewSheetState, viewModel::onDetailReviewSheetDismissed)
 
     // UiEvent 처리
     LaunchedEffect(Unit) {

@@ -540,6 +540,21 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    fun onSheetDismissed() {
+        _uiState.update { it.copy(bottomSheetType = SearchUiState.BottomSheetType.None) }
+    }
+
+    fun onDetailReviewSheetDismissed() {
+        _uiState.update { current ->
+            val bt = current.bottomSheetType
+            if (bt is SearchUiState.BottomSheetType.LectureDetail) {
+                current.copy(bottomSheetType = bt.copy(reviewVisible = false))
+            } else {
+                current
+            }
+        }
+    }
+
     fun applyFilterAndClose() {
         storeRecentSearchedDepartments()
         viewModelScope.launch { _uiEvent.emit(SearchUiEvent.CloseBottomSheet) }

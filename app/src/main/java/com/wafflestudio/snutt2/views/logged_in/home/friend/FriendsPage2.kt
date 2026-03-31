@@ -29,6 +29,7 @@ import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import com.wafflestudio.snutt2.components.compose.BottomSheetDismissEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -87,6 +88,8 @@ fun FriendsRoute(
             activity?.intent?.data = null
         }
     }
+
+    BottomSheetDismissEffect(bottomSheetState, viewModel::onSheetDismissed)
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->

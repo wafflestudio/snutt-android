@@ -165,6 +165,10 @@ class AddCustomLectureViewModel @Inject constructor(
         viewModelScope.launch { _uiEvent.emit(AddCustomLectureUiEvent.CloseBottomSheet) }
     }
 
+    fun onSheetDismissed() {
+        _uiState.update { it.copy(sheetType = AddCustomLectureUiState.SheetType.None) }
+    }
+
     // endregion
 
     // region 에러 처리

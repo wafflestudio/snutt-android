@@ -87,6 +87,12 @@ class ThemeConfigViewModel @Inject constructor(
         }
     }
 
+    fun onSheetDismissed() {
+        _uiState.update { current ->
+            current.copy(bottomSheetType = ThemeConfigUiState.BottomSheetType.None)
+        }
+    }
+
     fun onClickDetail(theme: TableTheme) {
         viewModelScope.launch {
             _uiEvent.emit(ThemeConfigUiEvent.CloseBottomSheet)

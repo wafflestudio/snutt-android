@@ -8,6 +8,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import com.wafflestudio.snutt2.components.compose.BottomSheetDismissEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -57,6 +58,8 @@ fun AddCustomLectureRoute(
         initialValue = ModalBottomSheetValue.Hidden,
         skipHalfExpanded = true,
     )
+
+    BottomSheetDismissEffect(sheetState, vm::onSheetDismissed)
 
     LaunchedEffect(Unit) {
         vm.uiEvent.collect { event ->
