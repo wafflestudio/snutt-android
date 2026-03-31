@@ -84,13 +84,10 @@ fun SearchRoute(
         }
     }
 
-    BackHandler(
-        enabled = uiState.bottomSheetType != SearchUiState.BottomSheetType.None ||
-            uiState.pageMode == PageMode.Bookmark,
-    ) {
-        val bt = uiState.bottomSheetType
-        if (bt != SearchUiState.BottomSheetType.None) {
-            if (bt is SearchUiState.BottomSheetType.LectureDetail && bt.reviewVisible) {
+    val activeSheet = uiState.activeBottomSheet
+    BackHandler(enabled = activeSheet != null || uiState.pageMode == PageMode.Bookmark) {
+        if (activeSheet != null) {
+            if (activeSheet is SearchUiState.BottomSheetType.LectureDetail && activeSheet.reviewVisible) {
                 viewModel.closeDetailReview()
             } else {
                 viewModel.closeBottomSheet()

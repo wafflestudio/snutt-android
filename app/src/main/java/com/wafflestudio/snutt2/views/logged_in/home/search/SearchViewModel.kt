@@ -685,6 +685,10 @@ data class SearchUiState(
     val recentSearchedDepartments: List<Selectable<SearchTag>>,
     val draggedTimeBlock: List<List<Boolean>>,
 ) {
+    /** 현재 열려 있는 바텀시트 타입. 열린 시트가 없으면 null. */
+    val activeBottomSheet: BottomSheetType?
+        get() = bottomSheetType.takeIf { it != BottomSheetType.None }
+
     sealed interface BottomSheetType {
         data object None : BottomSheetType
         data object Filter : BottomSheetType
