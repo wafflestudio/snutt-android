@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.home.drawer.bottom_sheet
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -47,10 +46,6 @@ fun CreateTableBottomSheet(
     val context = LocalContext.current
     var title by remember(sheetType) { mutableStateOf("") }
     var pickedCourseBook by remember { mutableStateOf((sheetType as? HomeDrawerBottomSheetType.CreateNewTable.SelectCourseBook)?.initialCourseBook) }
-
-    BackHandler {
-        onDismiss()
-    }
 
     var clearFocusFlag by remember { mutableStateOf(false) }
     LaunchedEffect(sheetState.isVisible) {
