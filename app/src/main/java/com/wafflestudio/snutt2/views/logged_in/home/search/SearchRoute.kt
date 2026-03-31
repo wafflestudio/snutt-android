@@ -88,7 +88,16 @@ fun SearchRoute(
         enabled = uiState.bottomSheetType != SearchUiState.BottomSheetType.None ||
             uiState.pageMode == PageMode.Bookmark,
     ) {
-        viewModel.onClickBack()
+        val bt = uiState.bottomSheetType
+        if (bt != SearchUiState.BottomSheetType.None) {
+            if (bt is SearchUiState.BottomSheetType.LectureDetail && bt.reviewVisible) {
+                viewModel.closeDetailReview()
+            } else {
+                viewModel.closeBottomSheet()
+            }
+        } else {
+            viewModel.onClickBack()
+        }
     }
 
     BottomSheetDismissEffect(sheetState, viewModel::onSheetDismissed)

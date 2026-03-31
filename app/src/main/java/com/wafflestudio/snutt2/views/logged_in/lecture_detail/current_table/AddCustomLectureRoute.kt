@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.lecture_detail.current_table
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.rememberModalBottomSheetState
@@ -59,6 +60,10 @@ fun AddCustomLectureRoute(
         skipHalfExpanded = true,
     )
 
+    BackHandler(enabled = uiState.sheetType != AddCustomLectureUiState.SheetType.None) {
+        vm.closeSheet()
+    }
+
     BottomSheetDismissEffect(sheetState, vm::onSheetDismissed)
 
     LaunchedEffect(Unit) {
@@ -107,7 +112,7 @@ fun AddCustomLectureRoute(
                 onConfirmDeleteSession = vm::confirmDeleteSession,
                 onConfirmForceCreate = vm::confirmForceCreateLecture,
                 onBackPressed = {
-                    if (uiState.sheetType !is AddCustomLectureUiState.SheetType.None) {
+                    if (uiState.sheetType != AddCustomLectureUiState.SheetType.None) {
                         vm.closeSheet()
                     } else {
                         onNavigateBack()

@@ -468,6 +468,12 @@ class HomeDrawerViewModel @Inject constructor(
         }
     }
 
+    fun closeSheet() {
+        viewModelScope.launch {
+            _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
+        }
+    }
+
     fun onSheetDismissed() {
         _uiState.update { state ->
             when (state) {

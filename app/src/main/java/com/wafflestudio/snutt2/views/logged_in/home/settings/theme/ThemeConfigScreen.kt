@@ -51,9 +51,7 @@ fun ThemeConfigRoute(
         skipHalfExpanded = true,
     )
 
-    BackHandler(
-        enabled = uiState.bottomSheetType != ThemeConfigUiState.BottomSheetType.None,
-    ) {
+    BackHandler(enabled = uiState.bottomSheetType != ThemeConfigUiState.BottomSheetType.None) {
         viewModel.onCloseBottomSheet()
     }
 

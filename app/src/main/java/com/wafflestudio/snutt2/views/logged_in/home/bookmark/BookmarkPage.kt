@@ -72,11 +72,13 @@ fun BookmarkRoute(
         }
     }
 
-    BackHandler(
-        enabled = (uiState as? BookmarkUiState.Success)?.bottomSheetType
-            .let { it != null && it != BookmarkUiState.BottomSheetType.None },
-    ) {
-        viewModel.closeBottomSheet()
+    val bottomSheetType = (uiState as? BookmarkUiState.Success)?.bottomSheetType
+    BackHandler(enabled = bottomSheetType != null && bottomSheetType != BookmarkUiState.BottomSheetType.None) {
+        if (bottomSheetType is BookmarkUiState.BottomSheetType.LectureDetail && bottomSheetType.reviewVisible) {
+            viewModel.closeDetailReview()
+        } else {
+            viewModel.closeBottomSheet()
+        }
     }
 
     BottomSheetDismissEffect(sheetState, viewModel::onSheetDismissed)
