@@ -162,6 +162,14 @@ sealed interface NavigationDestination {
     data class ThemeDetail(val themeId: String = "", val theme: Int = -1) : NavigationDestination
 
     @Serializable
+    @DeepLinkPath("review")
+    data class Review(
+        val reviewId: String,
+        val lectureId: String = "",
+        val referrer: String = "",
+    ) : NavigationDestination
+
+    @Serializable
     @DeepLinkPath("social_link")
     data object SocialLink : NavigationDestination
 
