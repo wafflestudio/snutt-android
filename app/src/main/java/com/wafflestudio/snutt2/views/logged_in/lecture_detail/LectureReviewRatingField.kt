@@ -55,7 +55,7 @@ internal fun LectureReviewRatingField(
                 Text(
                     text = buildAnnotatedString {
                         withStyle(SpanStyle(color = SNUTTColors.Black900)) {
-                            append(reviewInfo?.let { "%.1f".format(it.rating) } ?: "--")
+                            append(reviewInfo?.rating?.let { "%.1f".format(it) } ?: "--")
                             append(" ")
                         }
                         withStyle(SpanStyle(color = SNUTTColors.Gray2)) {
@@ -87,5 +87,17 @@ private fun WithReviewInfoPreview() {
 private fun WithoutReviewInfoPreview() {
     LectureReviewRatingField(
         reviewInfo = null,
+    )
+}
+
+@Preview(showBackground = true, widthDp = 360, name = "강의퍙 없음")
+@Composable
+private fun WithZeroReviewInfoPreview() {
+    LectureReviewRatingField(
+        reviewInfo = LectureReviewInfo(
+            id = "",
+            rating = null,
+            reviewCount = 0,
+        ),
     )
 }
