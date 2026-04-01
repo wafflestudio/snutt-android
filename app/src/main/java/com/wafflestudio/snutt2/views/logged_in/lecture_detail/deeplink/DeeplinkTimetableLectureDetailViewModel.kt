@@ -7,7 +7,6 @@ import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.data.bookmark.BookmarkRepository
 import com.wafflestudio.snutt2.data.lecture_info.LectureInfoRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
-import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.data.vacancy_noti.VacancyRepository
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.Lecture
@@ -38,7 +37,6 @@ class DeeplinkTimetableLectureDetailViewModel @Inject constructor(
     private val vacancyRepository: VacancyRepository,
     private val lectureInfoRepository: LectureInfoRepository,
     private val tableRepository: TableRepository,
-    private val userRepository: UserRepository,
     private val displayMessageResolver: DisplayMessageResolver,
     private val remoteConfig: RemoteConfig,
 ) : ViewModel() {
@@ -55,8 +53,6 @@ class DeeplinkTimetableLectureDetailViewModel @Inject constructor(
 
     private val _uiEvent = MutableSharedFlow<DeeplinkTimetableLectureDetailUiEvent>()
     val uiEvent = _uiEvent.asSharedFlow()
-
-    val accessToken: StateFlow<String?> = userRepository.accessToken
 
     init {
         loadLecture()
@@ -214,18 +210,6 @@ class DeeplinkTimetableLectureDetailViewModel @Inject constructor(
         }
     }
 
-    fun openReview() {
-        viewModelScope.launch {
-            _uiEvent.emit(DeeplinkTimetableLectureDetailUiEvent.OpenReviewSheet)
-        }
-    }
-
-    fun closeReview() {
-        viewModelScope.launch {
-            _uiEvent.emit(DeeplinkTimetableLectureDetailUiEvent.CloseReviewSheet)
-        }
-    }
-
     fun onFloatingButtonClick() {
         viewModelScope.launch {
             runCatching {
@@ -265,6 +249,4 @@ sealed interface DeeplinkTimetableLectureDetailUiEvent {
     data class ShowToastAndNavigateBack(val message: String) : DeeplinkTimetableLectureDetailUiEvent
     data class ShowToast(val message: String) : DeeplinkTimetableLectureDetailUiEvent
     data class OpenUrl(val url: String) : DeeplinkTimetableLectureDetailUiEvent
-    data object OpenReviewSheet : DeeplinkTimetableLectureDetailUiEvent
-    data object CloseReviewSheet : DeeplinkTimetableLectureDetailUiEvent
 }

@@ -20,6 +20,7 @@ import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.domainmodel.LocalLecture
+import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.isDarkMode
@@ -57,6 +58,7 @@ fun HomePageRoute(
     onNavigatePersonalInformationPolicy: () -> Unit,
     onNavigateNetworkLog: () -> Unit,
     onNavigateTest: () -> Unit,
+    onNavigateToReview: (SearchedLecture) -> Unit,
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -119,6 +121,7 @@ fun HomePageRoute(
         onNavigatePersonalInformationPolicy = onNavigatePersonalInformationPolicy,
         onNavigateNetworkLog = onNavigateNetworkLog,
         onNavigateTest = onNavigateTest,
+        onNavigateToReview = onNavigateToReview,
         onPopupClickFewDays = viewModel::closePopupWithHiddenDays,
         onPopupClickClose = viewModel::closePopup,
         onPopupClickImage = viewModel::onPopupImageClick,
@@ -154,6 +157,7 @@ private fun HomePageNewScreen(
     onNavigatePersonalInformationPolicy: () -> Unit,
     onNavigateNetworkLog: () -> Unit,
     onNavigateTest: () -> Unit,
+    onNavigateToReview: (SearchedLecture) -> Unit,
     onPopupClickFewDays: () -> Unit,
     onPopupClickClose: () -> Unit,
     onPopupClickImage: () -> Unit,
@@ -199,6 +203,7 @@ private fun HomePageNewScreen(
             bottomBar = bottomBar,
             onNavigateVacancy = onNavigateVacancyNotification,
             onNavigateOnboardAsOrigin = onNavigateOnboardAsOrigin,
+            onNavigateToReview = onNavigateToReview,
         )
 
         is HomeItem.Review -> {

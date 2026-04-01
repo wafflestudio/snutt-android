@@ -77,8 +77,6 @@ class BookmarkViewModel @Inject constructor(
     private val _uiState: MutableStateFlow<BookmarkUiState> = MutableStateFlow(BookmarkUiState.Loading)
     val uiState: StateFlow<BookmarkUiState> = _uiState.asStateFlow()
 
-    val accessToken: StateFlow<String> get() = userRepository.accessToken
-
     init {
         viewModelScope.launch {
             combine(
@@ -302,16 +300,6 @@ class BookmarkViewModel @Inject constructor(
         }
     }
 
-    fun openReviewSheet(lecture: SearchedLecture) {
-        viewModelScope.launch {
-            _uiState.update { current ->
-                if (current !is BookmarkUiState.Success) return@update current
-                current.copy(bottomSheetType = BookmarkUiState.BottomSheetType.Review(lecture))
-            }
-            _uiEvent.emit(BookmarkUiEvent.OpenBottomSheet)
-        }
-    }
-
     fun closeBottomSheet() {
         viewModelScope.launch {
             _uiEvent.emit(BookmarkUiEvent.CloseBottomSheet)
@@ -323,40 +311,6 @@ class BookmarkViewModel @Inject constructor(
             if (current !is BookmarkUiState.Success) return@update current
             current.copy(bottomSheetType = BookmarkUiState.BottomSheetType.None)
         }
-    }
-
-    fun onDetailReviewSheetDismissed() {
-        _uiState.update { state ->
-            if (state !is BookmarkUiState.Success) return@update state
-            val bt = state.bottomSheetType
-            if (bt is BookmarkUiState.BottomSheetType.LectureDetail) {
-                state.copy(bottomSheetType = bt.copy(reviewVisible = false))
-            } else {
-                state
-            }
-        }
-    }
-
-    fun openDetailReview() {
-        _uiState.update { state ->
-            if (state !is BookmarkUiState.Success) return@update state
-            val bt = state.bottomSheetType
-            if (bt is BookmarkUiState.BottomSheetType.LectureDetail) {
-                state.copy(bottomSheetType = bt.copy(reviewVisible = true))
-            } else state
-        }
-        viewModelScope.launch { _uiEvent.emit(BookmarkUiEvent.OpenDetailReviewSheet) }
-    }
-
-    fun closeDetailReview() {
-        _uiState.update { state ->
-            if (state !is BookmarkUiState.Success) return@update state
-            val bt = state.bottomSheetType
-            if (bt is BookmarkUiState.BottomSheetType.LectureDetail) {
-                state.copy(bottomSheetType = bt.copy(reviewVisible = false))
-            } else state
-        }
-        viewModelScope.launch { _uiEvent.emit(BookmarkUiEvent.CloseDetailReviewSheet) }
     }
 
     fun openSyllabus(lecture: SearchedLecture) {
@@ -439,8 +393,6 @@ sealed interface BookmarkUiEvent {
     data object NavigateToOnboard : BookmarkUiEvent
     data object OpenBottomSheet : BookmarkUiEvent
     data object CloseBottomSheet : BookmarkUiEvent
-    data object OpenDetailReviewSheet : BookmarkUiEvent
-    data object CloseDetailReviewSheet : BookmarkUiEvent
     data class OpenUrl(val url: String) : BookmarkUiEvent
 }
 
@@ -479,11 +431,9 @@ sealed interface BookmarkUiState {
         data class LectureDetail(
             val lecture: SearchedLecture,
             val buildings: List<LectureBuildingDto> = emptyList(),
-            val reviewVisible: Boolean = false,
             val isBookmarked: Boolean = false,
             val isVacancyRegistered: Boolean = false,
         ) : BottomSheetType
 
-        data class Review(val lecture: SearchedLecture) : BottomSheetType
     }
 }

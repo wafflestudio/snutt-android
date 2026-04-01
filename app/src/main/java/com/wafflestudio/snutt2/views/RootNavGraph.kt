@@ -29,6 +29,7 @@ import com.wafflestudio.snutt2.navigation.getDeepLinkPath
 import com.wafflestudio.snutt2.test.TestRoute
 import com.wafflestudio.snutt2.views.logged_in.home.HomePageRoute
 import com.wafflestudio.snutt2.views.logged_in.home.bookmark.BookmarkRoute
+import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewBottomSheetRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.AppReportPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.ChangeNicknamePage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.LectureReminderRoute
@@ -110,6 +111,14 @@ internal fun NavGraphBuilder.buildRootNavGraph(
             onNavigatePersonalInformationPolicy = { navController.navigate(NavigationDestination.PersonalInformationPolicy) },
             onNavigateNetworkLog = { navController.navigate(NavigationDestination.NetworkLog) },
             onNavigateTest = { navController.navigate(NavigationDestination.Test) },
+            onNavigateToReview = { lecture ->
+                navController.navigate(
+                    NavigationDestination.Review(
+                        reviewId = lecture.reviewInfo.id,
+                        lectureId = lecture.id,
+                    ),
+                )
+            },
         )
     }
 
@@ -168,6 +177,15 @@ internal fun NavGraphBuilder.buildRootNavGraph(
             },
             onNavigateLectureReminder = { navController.navigate(NavigationDestination.LectureReminder) },
             onNavigateOnboard = { navController.navigateAsOrigin(NavigationDestination.Onboard) },
+            onNavigateToReview = { reviewId, lectureId ->
+                navController.navigate(
+                    NavigationDestination.Review(
+                        reviewId = reviewId,
+                        lectureId = lectureId,
+                        referrer = (referrer ?: DetailScreenReferrer.LectureDetail).encode(),
+                    ),
+                )
+            },
         )
     }
 
@@ -175,6 +193,15 @@ internal fun NavGraphBuilder.buildRootNavGraph(
         BookmarkRoute(
             onNavigateBack = { navController.popBackStack() },
             onNavigateToOnboard = { navController.navigateAsOrigin(NavigationDestination.Onboard) },
+            onNavigateToReview = { lecture ->
+                navController.navigate(
+                    NavigationDestination.Review(
+                        reviewId = lecture.reviewInfo.id,
+                        lectureId = lecture.id,
+                        referrer = DetailScreenReferrer.Bookmark.encode(),
+                    ),
+                )
+            },
         )
     }
 
@@ -216,16 +243,40 @@ internal fun NavGraphBuilder.buildRootNavGraph(
         )
     }
 
+    bottomSheet<NavigationDestination.Review> {
+        ReviewBottomSheetRoute(
+            onNavigateBack = { navController.popBackStack() },
+        )
+    }
+
     composableAnimated<NavigationDestination.DeeplinkTimetableLectureDetail>(scheme) {
         DeeplinkTimetableLectureDetailRoute(
             onNavigateBack = { navController.popBackStack() },
             onNavigateHome = { navController.navigateAsOrigin(NavigationDestination.Home()) },
+            onNavigateToReview = { reviewId, lectureId ->
+                navController.navigate(
+                    NavigationDestination.Review(
+                        reviewId = reviewId,
+                        lectureId = lectureId,
+                        referrer = DetailScreenReferrer.Notification.encode(),
+                    ),
+                )
+            },
         )
     }
 
     composableAnimated<NavigationDestination.DeeplinkBookmarkLectureDetail>(scheme) {
         DeeplinkBookmarkLectureDetailRoute(
             onNavigateBack = { navController.popBackStack() },
+            onNavigateToReview = { reviewId, lectureId ->
+                navController.navigate(
+                    NavigationDestination.Review(
+                        reviewId = reviewId,
+                        lectureId = lectureId,
+                        referrer = DetailScreenReferrer.Bookmark.encode(),
+                    ),
+                )
+            },
         )
     }
 

@@ -27,9 +27,6 @@ import com.wafflestudio.snutt2.components.compose.snackbar.dismiss
 import com.wafflestudio.snutt2.domainmodel.LectureColor
 import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
 import com.wafflestudio.snutt2.lib.android.toast
-import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
-import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
-import com.wafflestudio.snutt2.lib.getReviewUrl
 import com.wafflestudio.snutt2.lib.logging.AddToBookmarkParameter
 import com.wafflestudio.snutt2.lib.logging.AddToVacancyParameter
 import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
@@ -39,7 +36,6 @@ import com.wafflestudio.snutt2.lib.logging.LectureActionReferrer
 import com.wafflestudio.snutt2.lib.logging.LectureDetailParameter
 import com.wafflestudio.snutt2.lib.logging.LectureSyllabusParameter
 import com.wafflestudio.snutt2.lib.logging.logImpression
-import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
@@ -54,6 +50,7 @@ fun CurrentTableLectureDetailRoute(
     onNavigateColorSelector: (LectureColor) -> Unit,
     onNavigateLectureReminder: () -> Unit,
     onNavigateOnboard: () -> Unit,
+    onNavigateToReview: (reviewId: String, lectureId: String) -> Unit,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -166,17 +163,6 @@ fun CurrentTableLectureDetailRoute(
         }
     }
 
-    // TODO: 강의평 웹뷰 컨테이너 (나중에 고민)
-    val isDarkMode = isDarkMode()
-    val reviewWebViewContainer = remember {
-        ReviewWebViewContainer(context, vm.accessToken, isDarkMode).apply {
-            webView.addJavascriptInterface(
-                CloseBridge(onClose = { vm.closeSheet() }),
-                "Snutt",
-            )
-        }
-    }
-
     SnackBarScaffold(
         snackBarHostState = snackBarHostState,
         hazeState = hazeState,
@@ -186,7 +172,6 @@ fun CurrentTableLectureDetailRoute(
             sheetState = sheetState,
             onCloseSheet = vm::closeSheet,
             onEditSessionTime = vm::editSessionTime,
-            reviewWebViewContainer = reviewWebViewContainer,
             modifier = Modifier
                 .padding(contentPadding)
                 .hazeSource(hazeState)
@@ -269,9 +254,9 @@ fun CurrentTableLectureDetailRoute(
                     vm.openSyllabus()
                 },
                 onReview = {
-                    val url = uiState.reviewInfo?.getReviewUrl(context)
-                    scope.launch { reviewWebViewContainer.openPage("$url&on_back=close") }
-                    vm.openReview()
+                    uiState.reviewInfo?.id?.let { reviewId ->
+                        onNavigateToReview(reviewId, vm.getLoggingLectureId())
+                    }
                 },
                 onDelete = { vm.requestDeleteLecture() },
                 onReset = { vm.requestResetLecture() },

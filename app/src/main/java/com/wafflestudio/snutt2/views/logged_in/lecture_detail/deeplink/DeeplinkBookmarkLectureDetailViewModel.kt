@@ -6,11 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.data.bookmark.BookmarkRepository
 import com.wafflestudio.snutt2.data.lecture_info.LectureInfoRepository
-import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.data.vacancy_noti.VacancyRepository
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.Lecture
-import com.wafflestudio.snutt2.domainmodel.LectureReviewInfo
 import com.wafflestudio.snutt2.domainmodel.LectureSyllabusInfo
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.lib.network.BookmarkLectureNotFound
@@ -23,7 +21,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -36,7 +33,6 @@ class DeeplinkBookmarkLectureDetailViewModel @Inject constructor(
     private val bookmarkRepository: BookmarkRepository,
     private val vacancyRepository: VacancyRepository,
     private val lectureInfoRepository: LectureInfoRepository,
-    private val userRepository: UserRepository,
     private val displayMessageResolver: DisplayMessageResolver,
     private val remoteConfig: RemoteConfig,
 ) : ViewModel() {
@@ -55,8 +51,6 @@ class DeeplinkBookmarkLectureDetailViewModel @Inject constructor(
     private val _uiEvent = MutableSharedFlow<DeeplinkBookmarkLectureDetailUiEvent>()
     val uiEvent = _uiEvent.asSharedFlow()
 
-    val accessToken: StateFlow<String?> = userRepository.accessToken
-
     init {
         loadLecture()
         observeConfig()
@@ -71,7 +65,6 @@ class DeeplinkBookmarkLectureDetailViewModel @Inject constructor(
                         _uiState.update {
                             DeeplinkBookmarkLectureDetailUiState.Success(
                                 lecture = lecture,
-                                reviewInfo = lecture.reviewInfo,
                                 showCategoryPre2025 = (year * 10 + semester) > 20250L,
                             )
                         }
@@ -199,18 +192,6 @@ class DeeplinkBookmarkLectureDetailViewModel @Inject constructor(
         }
     }
 
-    fun openReview() {
-        viewModelScope.launch {
-            _uiEvent.emit(DeeplinkBookmarkLectureDetailUiEvent.OpenReviewSheet)
-        }
-    }
-
-    fun closeReview() {
-        viewModelScope.launch {
-            _uiEvent.emit(DeeplinkBookmarkLectureDetailUiEvent.CloseReviewSheet)
-        }
-    }
-
     private fun handleError(error: com.wafflestudio.snutt2.lib.network.DomainError) {
         viewModelScope.launch {
             _uiEvent.emit(
@@ -230,7 +211,6 @@ sealed interface DeeplinkBookmarkLectureDetailUiState {
         val buildings: List<LectureBuildingDto> = emptyList(),
         val isBookmarked: Boolean = false,
         val vacancyRegistered: Boolean = false,
-        val reviewInfo: LectureReviewInfo? = null,
         val showCategoryPre2025: Boolean = true,
         val disableMapFeature: Boolean = false,
     ) : DeeplinkBookmarkLectureDetailUiState
@@ -240,6 +220,4 @@ sealed interface DeeplinkBookmarkLectureDetailUiEvent {
     data class ShowToastAndNavigateBack(val message: String) : DeeplinkBookmarkLectureDetailUiEvent
     data class ShowToast(val message: String) : DeeplinkBookmarkLectureDetailUiEvent
     data class OpenUrl(val url: String) : DeeplinkBookmarkLectureDetailUiEvent
-    data object OpenReviewSheet : DeeplinkBookmarkLectureDetailUiEvent
-    data object CloseReviewSheet : DeeplinkBookmarkLectureDetailUiEvent
 }

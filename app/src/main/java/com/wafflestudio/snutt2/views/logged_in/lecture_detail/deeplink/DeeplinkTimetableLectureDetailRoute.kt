@@ -3,20 +3,13 @@ package com.wafflestudio.snutt2.views.logged_in.lecture_detail.deeplink
 import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -27,49 +20,22 @@ import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
 import com.wafflestudio.snutt2.domainmodel.SyllabusLecture
 import com.wafflestudio.snutt2.lib.android.toast
-import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
-import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
-import com.wafflestudio.snutt2.lib.getReviewUrl
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
 import com.wafflestudio.snutt2.lib.logging.LectureDetailParameter
-import com.wafflestudio.snutt2.lib.logging.ReviewDetailParameter
 import com.wafflestudio.snutt2.lib.logging.logImpression
-import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
 import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.ui.isDarkMode
-import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebView
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetail
-import kotlinx.coroutines.launch
 
 @Composable
 fun DeeplinkTimetableLectureDetailRoute(
     vm: DeeplinkTimetableLectureDetailViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit,
     onNavigateHome: () -> Unit,
+    onNavigateToReview: (reviewId: String, lectureId: String) -> Unit,
 ) {
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-    val analyticsLogger = LocalAnalyticsLogger.current
     val uiState by vm.uiState.collectAsStateWithLifecycle()
-
-    val isDarkMode = isDarkMode()
-    val sheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden,
-        skipHalfExpanded = true,
-    )
-    val reviewWebViewContainer = remember {
-        ReviewWebViewContainer(context, vm.accessToken, isDarkMode).apply {
-            webView.addJavascriptInterface(
-                CloseBridge(onClose = { vm.closeReview() }),
-                "Snutt",
-            )
-        }
-    }
-
-    BackHandler(enabled = sheetState.isVisible) {
-        vm.closeReview()
-    }
 
     LaunchedEffect(Unit) {
         vm.uiEvent.collect { event ->
@@ -87,14 +53,6 @@ fun DeeplinkTimetableLectureDetailRoute(
                 is DeeplinkTimetableLectureDetailUiEvent.OpenUrl -> {
                     val intent = Intent(Intent.ACTION_VIEW, event.url.toUri())
                     context.startActivity(intent)
-                }
-
-                is DeeplinkTimetableLectureDetailUiEvent.OpenReviewSheet -> {
-                    scope.launch { sheetState.show() }
-                }
-
-                is DeeplinkTimetableLectureDetailUiEvent.CloseReviewSheet -> {
-                    scope.launch { sheetState.hide() }
                 }
             }
         }
@@ -116,7 +74,7 @@ fun DeeplinkTimetableLectureDetailRoute(
 
         is DeeplinkTimetableLectureDetailUiState.Success -> {
             val loggingLectureId = (state.lecture as? SyllabusLecture)?.originalLectureId ?: state.lecture.id
-            ModalBottomSheetLayout(
+            Box(
                 modifier = Modifier.logImpression(
                     AnalyticsScreen.LectureDetail(
                         LectureDetailParameter(
@@ -125,25 +83,6 @@ fun DeeplinkTimetableLectureDetailRoute(
                         ),
                     ),
                 ),
-                sheetContent = {
-                    LaunchedEffect(sheetState.isVisible) {
-                        if (sheetState.isVisible) {
-                            analyticsLogger.logScreen(
-                                AnalyticsScreen.ReviewDetail(
-                                    ReviewDetailParameter(
-                                        lectureId = loggingLectureId,
-                                        referrer = DetailScreenReferrer.Notification,
-                                    ),
-                                ),
-                            )
-                        }
-                    }
-                    ReviewWebView(modifier = Modifier.fillMaxHeight(0.95f), reviewWebViewContainer = reviewWebViewContainer)
-                },
-                sheetState = sheetState,
-                sheetShape = RoundedCornerShape(topStartPercent = 5, topEndPercent = 5),
-                scrimColor = SNUTTColors.Black.copy(alpha = 0.32f),
-                sheetGesturesEnabled = false,
             ) {
                 LectureDetail(
                     lecture = state.lecture,
@@ -182,9 +121,9 @@ fun DeeplinkTimetableLectureDetailRoute(
                     onAddSession = {},
                     onSyllabus = vm::openSyllabus,
                     onReview = {
-                        val url = state.reviewInfo?.getReviewUrl(context)
-                        scope.launch { reviewWebViewContainer.openPage("$url&on_back=close") }
-                        vm.openReview()
+                        state.reviewInfo?.id?.let { reviewId ->
+                            onNavigateToReview(reviewId, loggingLectureId)
+                        }
                     },
                     onDelete = {},
                     onReset = {},

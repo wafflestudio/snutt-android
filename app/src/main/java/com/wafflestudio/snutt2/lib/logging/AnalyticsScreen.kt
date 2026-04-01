@@ -105,4 +105,19 @@ sealed class DetailScreenReferrer {
             is LectureDetail -> "lectureDetail"
         }
     }
+
+    companion object {
+        /** [encode]의 역연산. Search만 query 파라미터를 포함하므로 prefix 매칭으로 처리한다. */
+        fun decode(value: String): DetailScreenReferrer? {
+            return when {
+                value.startsWith("search=") -> Search(value.removePrefix("search="))
+                value == "notification" -> Notification
+                value == "bookmark" -> Bookmark
+                value == "timetable" -> Timetable
+                value == "lectureList" -> LectureList
+                value == "lectureDetail" -> LectureDetail
+                else -> null
+            }
+        }
+    }
 }
