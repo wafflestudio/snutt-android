@@ -37,6 +37,8 @@ import com.wafflestudio.snutt2.lib.logging.LectureDetailParameter
 import com.wafflestudio.snutt2.lib.logging.LectureSyllabusParameter
 import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
+import com.wafflestudio.snutt2.views.NavigationDestination
+import com.wafflestudio.snutt2.views.observeResult
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.launch
@@ -60,13 +62,9 @@ fun CurrentTableLectureDetailRoute(
     val uiState by vm.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        val savedStateHandle = colorSelectorSavedStateHandle ?: return@LaunchedEffect
-        savedStateHandle.getStateFlow<LectureColor?>(LectureColorSelectorViewModel.RESULT_COLOR, null)
-            .collect { color ->
-                if (color == null) return@collect
-                vm.editColor(color)
-                savedStateHandle.remove<LectureColor>(LectureColorSelectorViewModel.RESULT_COLOR)
-            }
+        colorSelectorSavedStateHandle
+            ?.observeResult<LectureColor>(NavigationDestination.LectureColorSelector.RESULT_KEY)
+            ?.collect { vm.editColor(it) }
     }
 
     val snackBarHostState = remember { CustomSnackBarHostState() }

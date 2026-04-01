@@ -19,6 +19,8 @@ import com.wafflestudio.snutt2.components.compose.snackbar.CustomSnackBarHostSta
 import com.wafflestudio.snutt2.components.compose.snackbar.SnackBarScaffold
 import com.wafflestudio.snutt2.domainmodel.LectureColor
 import com.wafflestudio.snutt2.lib.android.toast
+import com.wafflestudio.snutt2.views.NavigationDestination
+import com.wafflestudio.snutt2.views.observeResult
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.logImpression
 import dev.chrisbanes.haze.hazeSource
@@ -40,13 +42,9 @@ fun AddCustomLectureRoute(
     val uiState by vm.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        val savedStateHandle = colorSelectorSavedStateHandle ?: return@LaunchedEffect
-        savedStateHandle.getStateFlow<LectureColor?>(LectureColorSelectorViewModel.RESULT_COLOR, null)
-            .collect { color ->
-                if (color == null) return@collect
-                vm.editColor(color)
-                savedStateHandle.remove<LectureColor>(LectureColorSelectorViewModel.RESULT_COLOR)
-            }
+        colorSelectorSavedStateHandle
+            ?.observeResult<LectureColor>(NavigationDestination.LectureColorSelector.RESULT_KEY)
+            ?.collect { vm.editColor(it) }
     }
 
     val snackBarHostState = remember { CustomSnackBarHostState() }

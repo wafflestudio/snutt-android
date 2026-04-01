@@ -127,9 +127,6 @@ class LectureColorSelectorViewModel @Inject constructor(
         }
     }
 
-    companion object {
-        const val RESULT_COLOR = "color_result"
-    }
 }
 
 sealed interface LectureColorSelectorUiState {

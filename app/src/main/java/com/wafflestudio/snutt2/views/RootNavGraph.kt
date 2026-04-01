@@ -51,7 +51,6 @@ import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailRo
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.current_table.AddCustomLectureRoute
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.current_table.CurrentTableLectureDetailRoute
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.current_table.LectureColorSelectorRoute
-import com.wafflestudio.snutt2.views.logged_in.lecture_detail.current_table.LectureColorSelectorViewModel
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.deeplink.DeeplinkBookmarkLectureDetailRoute
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.deeplink.DeeplinkTimetableLectureDetailRoute
 import com.wafflestudio.snutt2.views.logged_in.notifications.NotificationRoute
@@ -209,7 +208,7 @@ internal fun NavGraphBuilder.buildRootNavGraph(
         LectureColorSelectorRoute(
             onNavigateBackWithResult = { selectedColor ->
                 navController.previousBackStackEntry?.savedStateHandle
-                    ?.set(LectureColorSelectorViewModel.RESULT_COLOR, selectedColor)
+                    ?.set(NavigationDestination.LectureColorSelector.RESULT_KEY, selectedColor)
                 navController.popBackStack()
             },
         )

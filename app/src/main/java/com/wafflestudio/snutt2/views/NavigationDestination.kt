@@ -64,7 +64,11 @@ sealed interface NavigationDestination {
         val colorIndex: Int = -1,
         val fgColor: Int = 0,
         val bgColor: Int = 0,
-    ) : NavigationDestination
+    ) : NavigationDestination {
+        companion object {
+            const val RESULT_KEY = "selected_color"
+        }
+    }
 
     @Serializable
     @DeepLinkPath("notifications")
