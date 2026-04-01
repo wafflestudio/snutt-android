@@ -11,7 +11,6 @@ import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import com.wafflestudio.snutt2.components.compose.BottomSheetDismissEffect
 import androidx.compose.ui.Modifier
@@ -24,8 +23,6 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.lib.android.toast
-import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
-import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.logged_in.home.search.BookmarkList
@@ -37,52 +34,24 @@ fun BookmarkRoute(
     viewModel: BookmarkViewModel = hiltViewModel(),
     onNavigateToOnboard: () -> Unit,
     onNavigateBack: () -> Unit,
+    onNavigateToReview: (reviewId: String, lectureId: String) -> Unit,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val isDarkMode = isDarkMode()
 
     val sheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
         skipHalfExpanded = true,
     )
-    // FIXME: (SearchRoute와 동일) 이 상태의 관리 주체는 SearchRoute 인가, 아니면 강의상세 바텀시트인가...
-    val detailReviewSheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden,
-        skipHalfExpanded = true,
-    )
-
-    val reviewWebViewContainer = remember {
-        ReviewWebViewContainer(context, viewModel.accessToken, isDarkMode).apply {
-            this.webView.addJavascriptInterface(
-                CloseBridge(onClose = { scope.launch { viewModel.closeBottomSheet() } }),
-                "Snutt",
-            )
-        }
-    }
-
-    val detailReviewWebViewContainer = remember {
-        ReviewWebViewContainer(context, viewModel.accessToken, isDarkMode).apply {
-            this.webView.addJavascriptInterface(
-                CloseBridge(onClose = { scope.launch { viewModel.closeDetailReview() } }),
-                "Snutt",
-            )
-        }
-    }
 
     val activeSheet = uiState.activeBottomSheet
     BackHandler(enabled = activeSheet != null) {
-        if (activeSheet is BookmarkUiState.BottomSheetType.LectureDetail && activeSheet.reviewVisible) {
-            viewModel.closeDetailReview()
-        } else {
-            viewModel.closeBottomSheet()
-        }
+        viewModel.closeBottomSheet()
     }
 
     BottomSheetDismissEffect(sheetState, viewModel::onSheetDismissed)
-    BottomSheetDismissEffect(detailReviewSheetState, viewModel::onDetailReviewSheetDismissed)
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
@@ -92,31 +61,11 @@ fun BookmarkRoute(
                 BookmarkUiEvent.NavigateToOnboard -> onNavigateToOnboard()
 
                 BookmarkUiEvent.OpenBottomSheet -> {
-                    val successState = uiState as? BookmarkUiState.Success ?: return@collect
-                    val bottomSheetType = successState.bottomSheetType
-                    if (bottomSheetType is BookmarkUiState.BottomSheetType.Review) {
-                        val reviewId = bottomSheetType.lecture.reviewInfo.id
-                        val url = context.getString(R.string.review_base_url) + "/detail?id=$reviewId&on_back=close"
-                        reviewWebViewContainer.openPage(url)
-                    }
                     scope.launch { sheetState.show() }
                 }
 
                 BookmarkUiEvent.CloseBottomSheet -> {
                     scope.launch { sheetState.hide() }
-                }
-
-                BookmarkUiEvent.OpenDetailReviewSheet -> {
-                    val successState = uiState as? BookmarkUiState.Success ?: return@collect
-                    val bt = successState.bottomSheetType as? BookmarkUiState.BottomSheetType.LectureDetail ?: return@collect
-                    val reviewId = bt.lecture.reviewInfo.id
-                    val url = context.getString(R.string.review_base_url) + "/detail?id=$reviewId&on_back=close"
-                    detailReviewWebViewContainer.openPage(url)
-                    scope.launch { detailReviewSheetState.show() }
-                }
-
-                BookmarkUiEvent.CloseDetailReviewSheet -> {
-                    scope.launch { detailReviewSheetState.hide() }
                 }
 
                 is BookmarkUiEvent.OpenUrl -> {
@@ -133,17 +82,17 @@ fun BookmarkRoute(
         onBookmarkToggle = viewModel::onClickBookmark,
         onVacancyToggle = viewModel::onClickVacancy,
         onSyllabus = viewModel::openSyllabus,
-        onReviewFromDetail = viewModel::openDetailReview,
-        onCloseDetailReview = viewModel::closeDetailReview,
-        detailReviewSheetState = detailReviewSheetState,
-        detailReviewWebViewContainer = detailReviewWebViewContainer,
-        reviewWebViewContainer = reviewWebViewContainer,
+        onReview = { lecture ->
+            onNavigateToReview(lecture.reviewInfo.id, lecture.id)
+        },
     ) {
         BookmarkScreen(
             uiState = uiState,
             onNavigateBack = onNavigateBack,
             onClickLectureDetail = viewModel::openLectureDetailSheet,
-            onClickReview = viewModel::openReviewSheet,
+            onClickReview = { lecture ->
+                onNavigateToReview(lecture.reviewInfo.id, lecture.id)
+            },
             onClickBookmark = viewModel::onClickBookmark,
             onClickVacancy = viewModel::onClickVacancy,
             onToggleLectureContained = viewModel::onToggleLectureContained,

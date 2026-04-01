@@ -80,8 +80,6 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
     private val _uiEvent = MutableSharedFlow<CurrentTableLectureDetailUiEvent>()
     val uiEvent = _uiEvent.asSharedFlow()
 
-    val accessToken: StateFlow<String> = userRepository.accessToken
-
     init {
         loadSecondaryData()
         observeThemeAndConfig()
@@ -536,15 +534,7 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
         viewModelScope.launch { _uiEvent.emit(CurrentTableLectureDetailUiEvent.OpenBottomSheet) }
     }
 
-    fun openReview() {
-        _uiState.update { it.copy(sheetType = CurrentTableLectureDetailUiState.SheetType.Review) }
-        viewModelScope.launch { _uiEvent.emit(CurrentTableLectureDetailUiEvent.OpenBottomSheet) }
-    }
-
     fun closeSheet() {
-        if (_uiState.value.sheetType is CurrentTableLectureDetailUiState.SheetType.Review) {
-            refreshReviewInfo()
-        }
         viewModelScope.launch {
             _uiEvent.emit(CurrentTableLectureDetailUiEvent.CloseBottomSheet)
         }
@@ -633,7 +623,6 @@ data class CurrentTableLectureDetailUiState(
     sealed interface SheetType {
         data object None : SheetType
         data class TimePicker(val index: Int, val session: LectureSession) : SheetType
-        data object Review : SheetType
     }
 }
 

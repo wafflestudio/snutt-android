@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.data.bookmark.BookmarkRepository
 import com.wafflestudio.snutt2.data.lecture_info.LectureInfoRepository
-import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.data.vacancy_noti.VacancyRepository
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.Lecture
@@ -36,7 +35,6 @@ class DeeplinkBookmarkLectureDetailViewModel @Inject constructor(
     private val bookmarkRepository: BookmarkRepository,
     private val vacancyRepository: VacancyRepository,
     private val lectureInfoRepository: LectureInfoRepository,
-    private val userRepository: UserRepository,
     private val displayMessageResolver: DisplayMessageResolver,
     private val remoteConfig: RemoteConfig,
 ) : ViewModel() {
@@ -54,8 +52,6 @@ class DeeplinkBookmarkLectureDetailViewModel @Inject constructor(
 
     private val _uiEvent = MutableSharedFlow<DeeplinkBookmarkLectureDetailUiEvent>()
     val uiEvent = _uiEvent.asSharedFlow()
-
-    val accessToken: StateFlow<String?> = userRepository.accessToken
 
     init {
         loadLecture()
@@ -199,18 +195,6 @@ class DeeplinkBookmarkLectureDetailViewModel @Inject constructor(
         }
     }
 
-    fun openReview() {
-        viewModelScope.launch {
-            _uiEvent.emit(DeeplinkBookmarkLectureDetailUiEvent.OpenReviewSheet)
-        }
-    }
-
-    fun closeReview() {
-        viewModelScope.launch {
-            _uiEvent.emit(DeeplinkBookmarkLectureDetailUiEvent.CloseReviewSheet)
-        }
-    }
-
     private fun handleError(error: com.wafflestudio.snutt2.lib.network.DomainError) {
         viewModelScope.launch {
             _uiEvent.emit(
@@ -240,6 +224,4 @@ sealed interface DeeplinkBookmarkLectureDetailUiEvent {
     data class ShowToastAndNavigateBack(val message: String) : DeeplinkBookmarkLectureDetailUiEvent
     data class ShowToast(val message: String) : DeeplinkBookmarkLectureDetailUiEvent
     data class OpenUrl(val url: String) : DeeplinkBookmarkLectureDetailUiEvent
-    data object OpenReviewSheet : DeeplinkBookmarkLectureDetailUiEvent
-    data object CloseReviewSheet : DeeplinkBookmarkLectureDetailUiEvent
 }

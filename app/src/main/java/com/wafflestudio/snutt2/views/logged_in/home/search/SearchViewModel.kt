@@ -91,8 +91,6 @@ class SearchViewModel @Inject constructor(
 
     private val _querySignal = MutableSharedFlow<Unit>(replay = 0)
 
-    val accessToken get() = userRepository.accessToken
-
     private val _uiEvent = MutableSharedFlow<SearchUiEvent>(replay = 0)
     val uiEvent = _uiEvent.asSharedFlow()
 
@@ -488,45 +486,12 @@ class SearchViewModel @Inject constructor(
             }
     }
 
-    fun openDetailReview() {
-        _uiState.update { current ->
-            val bt = current.bottomSheetType
-            if (bt is SearchUiState.BottomSheetType.LectureDetail) {
-                current.copy(bottomSheetType = bt.copy(reviewVisible = true))
-            } else current
-        }
-        viewModelScope.launch { _uiEvent.emit(SearchUiEvent.OpenDetailReviewSheet) }
-    }
-
-    fun closeDetailReview() {
-        _uiState.update { current ->
-            val bt = current.bottomSheetType
-            if (bt is SearchUiState.BottomSheetType.LectureDetail) {
-                current.copy(bottomSheetType = bt.copy(reviewVisible = false))
-            } else current
-        }
-        viewModelScope.launch { _uiEvent.emit(SearchUiEvent.CloseDetailReviewSheet) }
-    }
-
     fun openSyllabus(lecture: SearchedLecture) {
         viewModelScope.launch {
             val courseBook = tableRepository.currentTable.value?.summary?.courseBook ?: return@launch
             lectureInfoRepository.getSyllabusUrl(courseBook, lecture.courseNumber, lecture.lectureNumber)
                 .onSuccess { url -> _uiEvent.emit(SearchUiEvent.OpenUrl(url)) }
                 .onFailure { handleSearchError(it) }
-        }
-    }
-
-    fun openReviewSheet(lecture: SearchedLecture) {
-        viewModelScope.launch {
-            val state = _uiState.value
-            val referrer = if (state.pageMode == PageMode.Bookmark) {
-                DetailScreenReferrer.Bookmark
-            } else {
-                DetailScreenReferrer.Search(state.searchTitle)
-            }
-            _uiState.update { it.copy(bottomSheetType = SearchUiState.BottomSheetType.Review(lecture, referrer)) }
-            _uiEvent.emit(SearchUiEvent.OpenBottomSheet)
         }
     }
 
@@ -538,17 +503,6 @@ class SearchViewModel @Inject constructor(
 
     fun onSheetDismissed() {
         _uiState.update { it.copy(bottomSheetType = SearchUiState.BottomSheetType.None) }
-    }
-
-    fun onDetailReviewSheetDismissed() {
-        _uiState.update { current ->
-            val bt = current.bottomSheetType
-            if (bt is SearchUiState.BottomSheetType.LectureDetail) {
-                current.copy(bottomSheetType = bt.copy(reviewVisible = false))
-            } else {
-                current
-            }
-        }
     }
 
     fun applyFilterAndClose() {
@@ -696,13 +650,8 @@ data class SearchUiState(
             val lecture: SearchedLecture,
             val referrer: DetailScreenReferrer,
             val buildings: List<LectureBuildingDto> = emptyList(),
-            val reviewVisible: Boolean = false,
         ) : BottomSheetType
 
-        data class Review(
-            val lecture: SearchedLecture,
-            val referrer: DetailScreenReferrer,
-        ) : BottomSheetType
     }
 
     sealed interface DialogState {
@@ -732,8 +681,6 @@ sealed interface SearchUiEvent {
     }
 
     data object ResetScroll : SearchUiEvent
-    data object OpenDetailReviewSheet : SearchUiEvent
-    data object CloseDetailReviewSheet : SearchUiEvent
     data class OpenUrl(val url: String) : SearchUiEvent
 }
 

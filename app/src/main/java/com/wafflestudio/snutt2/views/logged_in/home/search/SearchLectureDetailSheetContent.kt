@@ -1,25 +1,15 @@
 package com.wafflestudio.snutt2.views.logged_in.home.search
 
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetState
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.domainmodel.TableTheme
-import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
-import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
 import com.wafflestudio.snutt2.lib.logging.LectureDetailParameter
-import com.wafflestudio.snutt2.lib.logging.ReviewDetailParameter
 import com.wafflestudio.snutt2.lib.logging.logImpression
-import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
-import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebView
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetail
 
 @Composable
@@ -30,22 +20,18 @@ fun SearchLectureDetailSheetContent(
     tableTheme: TableTheme,
     courseBook: CourseBook,
     disableMapFeature: Boolean,
-    detailReviewSheetState: ModalBottomSheetState,
-    detailReviewWebViewContainer: ReviewWebViewContainer,
     onDismiss: () -> Unit,
     onBookmarkToggle: (lecture: SearchedLecture, isBookmarked: Boolean) -> Unit,
     onVacancyToggle: (lecture: SearchedLecture, isVacancyRegistered: Boolean) -> Unit,
     onSyllabus: (SearchedLecture) -> Unit,
-    onReviewFromDetail: () -> Unit,
-    onCloseDetailReview: () -> Unit,
+    onReview: (SearchedLecture) -> Unit,
 ) {
-    val analyticsLogger = LocalAnalyticsLogger.current
     val lecture = bottomSheetType.lecture
     val isBookmarked = bookmarks.any { it.id == lecture.id }
     val isVacancyRegistered = vacancyList.any { it.id == lecture.id }
     val showCategoryPre2025 = (courseBook.year * 10 + courseBook.semester) > 20250L
 
-    ModalBottomSheetLayout(
+    Box(
         modifier = Modifier.logImpression(
             AnalyticsScreen.LectureDetail(
                 LectureDetailParameter(
@@ -54,25 +40,6 @@ fun SearchLectureDetailSheetContent(
                 ),
             ),
         ),
-        sheetContent = {
-            LaunchedEffect(detailReviewSheetState.isVisible) {
-                if (detailReviewSheetState.isVisible) {
-                    analyticsLogger.logScreen(
-                        AnalyticsScreen.ReviewDetail(
-                            ReviewDetailParameter(
-                                lectureId = lecture.id,
-                                referrer = DetailScreenReferrer.LectureDetail,
-                            ),
-                        ),
-                    )
-                }
-            }
-            ReviewWebView(modifier = Modifier.fillMaxHeight(0.95f), reviewWebViewContainer = detailReviewWebViewContainer)
-        },
-        sheetState = detailReviewSheetState,
-        sheetShape = RoundedCornerShape(topStartPercent = 5, topEndPercent = 5),
-        scrimColor = SNUTTColors.Black.copy(alpha = 0.32f),
-        sheetGesturesEnabled = false,
     ) {
         LectureDetail(
             lecture = lecture,
@@ -88,9 +55,7 @@ fun SearchLectureDetailSheetContent(
             lectureWithReminderOption = LectureWithReminderOption.Default,
             enableLectureReminderPicker = false,
             showFloatingButton = false,
-            onBackPressed = {
-                if (bottomSheetType.reviewVisible) onCloseDetailReview() else onDismiss()
-            },
+            onBackPressed = onDismiss,
             onEditModeToggle = {},
             onBookmarkToggle = { onBookmarkToggle(lecture, isBookmarked) },
             onVacancyToggle = { onVacancyToggle(lecture, isVacancyRegistered) },
@@ -110,7 +75,7 @@ fun SearchLectureDetailSheetContent(
             onDeleteSession = {},
             onAddSession = {},
             onSyllabus = { onSyllabus(lecture) },
-            onReview = onReviewFromDetail,
+            onReview = { onReview(lecture) },
             onDelete = {},
             onReset = {},
             onFloatingButtonClick = {},

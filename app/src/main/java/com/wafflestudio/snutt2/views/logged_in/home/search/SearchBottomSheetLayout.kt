@@ -1,22 +1,17 @@
 package com.wafflestudio.snutt2.views.logged_in.home.search
 
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Modifier
 import com.wafflestudio.snutt2.components.compose.ModalBottomSheetPlaceholder
 import com.wafflestudio.snutt2.domainmodel.SearchTag
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
-import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
-import com.wafflestudio.snutt2.lib.logging.ReviewDetailParameter
 import com.wafflestudio.snutt2.model.TagType
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
-import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebView
 import com.wafflestudio.snutt2.views.logged_in.home.search.search_option.SearchOptionSheet
 
 @Composable
@@ -35,12 +30,8 @@ fun SearchBottomSheetLayout(
     onBookmarkToggle: (lecture: SearchedLecture, isBookmarked: Boolean) -> Unit,
     onVacancyToggle: (lecture: SearchedLecture, isVacancyRegistered: Boolean) -> Unit,
     onSyllabus: (SearchedLecture) -> Unit,
-    onReviewFromDetail: () -> Unit,
-    onCloseDetailReview: () -> Unit,
-    detailReviewSheetState: ModalBottomSheetState,
-    detailReviewWebViewContainer: ReviewWebViewContainer,
+    onReview: (SearchedLecture) -> Unit,
 
-    reviewWebViewContainer: ReviewWebViewContainer,
     content: @Composable () -> Unit,
 ) {
     val analyticsLogger = LocalAnalyticsLogger.current
@@ -84,29 +75,12 @@ fun SearchBottomSheetLayout(
                         tableTheme = uiState.tableTheme,
                         courseBook = uiState.courseBook,
                         disableMapFeature = uiState.disableMapFeature,
-                        detailReviewSheetState = detailReviewSheetState,
-                        detailReviewWebViewContainer = detailReviewWebViewContainer,
                         onDismiss = onDismiss,
                         onBookmarkToggle = onBookmarkToggle,
                         onVacancyToggle = onVacancyToggle,
                         onSyllabus = onSyllabus,
-                        onReviewFromDetail = onReviewFromDetail,
-                        onCloseDetailReview = onCloseDetailReview,
+                        onReview = onReview,
                     )
-                }
-
-                is SearchUiState.BottomSheetType.Review -> {
-                    LaunchedEffect(Unit) {
-                        analyticsLogger.logScreen(
-                            AnalyticsScreen.ReviewDetail(
-                                ReviewDetailParameter(
-                                    lectureId = bottomSheetType.lecture.id,
-                                    referrer = bottomSheetType.referrer,
-                                ),
-                            ),
-                        )
-                    }
-                    ReviewWebView(modifier = Modifier.fillMaxHeight(0.95f), reviewWebViewContainer = reviewWebViewContainer)
                 }
             }
         },

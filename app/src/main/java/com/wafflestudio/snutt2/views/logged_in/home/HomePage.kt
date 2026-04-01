@@ -57,6 +57,7 @@ fun HomePageRoute(
     onNavigatePersonalInformationPolicy: () -> Unit,
     onNavigateNetworkLog: () -> Unit,
     onNavigateTest: () -> Unit,
+    onNavigateToReview: (reviewId: String, lectureId: String) -> Unit,
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -119,6 +120,7 @@ fun HomePageRoute(
         onNavigatePersonalInformationPolicy = onNavigatePersonalInformationPolicy,
         onNavigateNetworkLog = onNavigateNetworkLog,
         onNavigateTest = onNavigateTest,
+        onNavigateToReview = onNavigateToReview,
         onPopupClickFewDays = viewModel::closePopupWithHiddenDays,
         onPopupClickClose = viewModel::closePopup,
         onPopupClickImage = viewModel::onPopupImageClick,
@@ -154,6 +156,7 @@ private fun HomePageNewScreen(
     onNavigatePersonalInformationPolicy: () -> Unit,
     onNavigateNetworkLog: () -> Unit,
     onNavigateTest: () -> Unit,
+    onNavigateToReview: (reviewId: String, lectureId: String) -> Unit,
     onPopupClickFewDays: () -> Unit,
     onPopupClickClose: () -> Unit,
     onPopupClickImage: () -> Unit,
@@ -199,6 +202,7 @@ private fun HomePageNewScreen(
             bottomBar = bottomBar,
             onNavigateVacancy = onNavigateVacancyNotification,
             onNavigateOnboardAsOrigin = onNavigateOnboardAsOrigin,
+            onNavigateToReview = onNavigateToReview,
         )
 
         is HomeItem.Review -> {
