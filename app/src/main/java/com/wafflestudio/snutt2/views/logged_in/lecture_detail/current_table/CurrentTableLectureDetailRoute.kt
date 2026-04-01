@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.views.logged_in.lecture_detail.current_table
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.SnackbarResult
@@ -11,6 +12,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import com.wafflestudio.snutt2.components.compose.BottomSheetDismissEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -80,6 +82,22 @@ fun CurrentTableLectureDetailRoute(
         initialValue = ModalBottomSheetValue.Hidden,
         skipHalfExpanded = true,
     )
+
+    val handleBack = {
+        if (uiState.sheetType != CurrentTableLectureDetailUiState.SheetType.None) {
+            vm.closeSheet()
+        } else if (uiState.editMode) {
+            vm.requestExitEditMode()
+        } else {
+            onNavigateBack()
+        }
+    }
+
+    BackHandler {
+        handleBack()
+    }
+
+    BottomSheetDismissEffect(sheetState, vm::onSheetDismissed)
 
     @SuppressLint("LocalContextGetResourceValueCall")
     LaunchedEffect(Unit) {
@@ -189,15 +207,7 @@ fun CurrentTableLectureDetailRoute(
                 onConfirmDeleteLecture = vm::confirmDeleteLecture,
                 onConfirmResetLecture = vm::confirmResetLecture,
                 onConfirmForceUpdate = vm::confirmForceUpdateLecture,
-                onBackPressed = {
-                    if (uiState.sheetType !is CurrentTableLectureDetailUiState.SheetType.None) {
-                        vm.closeSheet()
-                    } else if (uiState.editMode) {
-                        vm.requestExitEditMode()
-                    } else {
-                        onNavigateBack()
-                    }
-                },
+                onBackPressed = handleBack,
                 onEditModeToggle = {
                     focusManager.clearFocus()
                     vm.toggleEditMode()

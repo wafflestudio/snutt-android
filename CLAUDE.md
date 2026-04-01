@@ -113,6 +113,65 @@ UiState를 구성하는 외부 데이터는 종류에 따라 아래와 같이 �
 - UiState는 영속적인 상태, UiEvent는 소비 후 사라지는 이벤트로 역할을 명확히 구분한다.
 - 컴포즈 UI 라이브러리의 상태(예: `ModalBottomSheetState`)는 Route가 소유한다. ViewModel은 직접 제어하지 않고 UiEvent를 통해 제어를 요청한다.
 
+**ModalBottomSheet**
+
+`ModalBottomSheetLayout` 사용 시 ViewModel의 UiState와 Compose의 `ModalBottomSheetState`라는 이중 상태가 발생한다. 상태 괴리를 최소화하기 위해 아래 원칙을 따른다. 의사결정 배경은 `docs/bottom-sheet-policy.md` 참조.
+
+원칙
+
+- `rememberModalBottomSheetState`로 생성하는 `sheetState`는 Route가 소유하되, 속성 직접 접근(`isVisible` 등)은 금지한다. `ModalBottomSheetLayout`에 전달하고 UiEvent 핸들러에서 `show()`/`hide()`를 호출하기 위한 배관(plumbing)으로만 취급한다.
+- `sheetState`의 상태 변경(`show()`/`hide()`)은 UiEvent 구독 핸들러 내에서만 수행한다.
+- 바텀시트를 사용하는 Route는 `BottomSheetDismissEffect`를 반드시 사용하여, 바텀시트가 닫힌 뒤(애니메이션 완료 후) ViewModel의 정리 함수(`onSheetDismissed`)를 호출한다.
+- UiState에서 바텀시트 상태(SheetType 등)를 None/Empty로 바꾸는 것은 `BottomSheetDismissEffect`의 side-effect로만 수행한다. 바텀시트를 닫는 시점에 즉시 변경하지 않는다.
+- BackHandler에서 바텀시트 열림 여부를 판단할 때는 UiState의 SheetType 필드를 사용한다.
+- BackHandler는 Route에서만 사용한다.
+    - 예외: 하위 컴포저블이 자체 로컬 상태 기반의 서브 네비게이션을 가지는 경우 (예: `TimeSelectSheet`의 시간 선택 모드)
+
+예시
+
+```kotlin
+// Route
+@Composable
+fun ExampleRoute(vm: ExampleViewModel = hiltViewModel()) {
+    val uiState by vm.uiState.collectAsStateWithLifecycle()
+    val sheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        skipHalfExpanded = true,
+    )
+
+    BackHandler(enabled = uiState.sheetType != SheetType.None) {
+        vm.closeSheet()
+    }
+
+    BottomSheetDismissEffect(sheetState, vm::onSheetDismissed)
+
+    LaunchedEffect(Unit) {
+        vm.uiEvent.collect { event ->
+            when (event) {
+                is UiEvent.OpenSheet -> sheetState.show()
+                is UiEvent.CloseSheet -> sheetState.hide()
+            }
+        }
+    }
+
+    ExampleBottomSheetLayout(sheetState = sheetState, ...) { ... }
+}
+
+// ViewModel
+fun openSheet(data: Data) {
+    _uiState.update { it.copy(sheetType = SheetType.Detail(data)) }
+    viewModelScope.launch { _uiEvent.emit(UiEvent.OpenSheet) }
+}
+
+fun closeSheet() {
+    viewModelScope.launch { _uiEvent.emit(UiEvent.CloseSheet) }
+}
+
+fun onSheetDismissed() {
+    _uiState.update { it.copy(sheetType = SheetType.None) }
+}
+```
+
 ---
 
 ### **Data 레이어**

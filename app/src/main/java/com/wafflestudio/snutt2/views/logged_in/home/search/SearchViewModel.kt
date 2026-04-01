@@ -432,10 +432,6 @@ class SearchViewModel @Inject constructor(
     }
 
     fun onClickBack() {
-        if (_uiState.value.bottomSheetType != SearchUiState.BottomSheetType.None) {
-            closeBottomSheet()
-            return
-        }
         _uiState.update { current ->
             if (current.pageMode == PageMode.Bookmark) current.copy(pageMode = PageMode.Search) else current
         }
@@ -536,14 +532,27 @@ class SearchViewModel @Inject constructor(
 
     fun closeBottomSheet() {
         viewModelScope.launch {
-            _uiState.update { it.copy(bottomSheetType = SearchUiState.BottomSheetType.None) }
             _uiEvent.emit(SearchUiEvent.CloseBottomSheet)
+        }
+    }
+
+    fun onSheetDismissed() {
+        _uiState.update { it.copy(bottomSheetType = SearchUiState.BottomSheetType.None) }
+    }
+
+    fun onDetailReviewSheetDismissed() {
+        _uiState.update { current ->
+            val bt = current.bottomSheetType
+            if (bt is SearchUiState.BottomSheetType.LectureDetail) {
+                current.copy(bottomSheetType = bt.copy(reviewVisible = false))
+            } else {
+                current
+            }
         }
     }
 
     fun applyFilterAndClose() {
         storeRecentSearchedDepartments()
-        _uiState.update { it.copy(bottomSheetType = SearchUiState.BottomSheetType.None) }
         viewModelScope.launch { _uiEvent.emit(SearchUiEvent.CloseBottomSheet) }
         onSearch()
     }
@@ -676,6 +685,10 @@ data class SearchUiState(
     val recentSearchedDepartments: List<Selectable<SearchTag>>,
     val draggedTimeBlock: List<List<Boolean>>,
 ) {
+    /** 현재 열려 있는 바텀시트 타입. 열린 시트가 없으면 null. */
+    val activeBottomSheet: BottomSheetType?
+        get() = bottomSheetType.takeIf { it != BottomSheetType.None }
+
     sealed interface BottomSheetType {
         data object None : BottomSheetType
         data object Filter : BottomSheetType

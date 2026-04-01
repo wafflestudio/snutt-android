@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.lecture_detail.current_table
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.rememberModalBottomSheetState
@@ -8,6 +9,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import com.wafflestudio.snutt2.components.compose.BottomSheetDismissEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -58,6 +60,12 @@ fun AddCustomLectureRoute(
         skipHalfExpanded = true,
     )
 
+    BackHandler(enabled = uiState.sheetType != AddCustomLectureUiState.SheetType.None) {
+        vm.closeSheet()
+    }
+
+    BottomSheetDismissEffect(sheetState, vm::onSheetDismissed)
+
     LaunchedEffect(Unit) {
         vm.uiEvent.collect { event ->
             when (event) {
@@ -104,7 +112,7 @@ fun AddCustomLectureRoute(
                 onConfirmDeleteSession = vm::confirmDeleteSession,
                 onConfirmForceCreate = vm::confirmForceCreateLecture,
                 onBackPressed = {
-                    if (uiState.sheetType !is AddCustomLectureUiState.SheetType.None) {
+                    if (uiState.sheetType != AddCustomLectureUiState.SheetType.None) {
                         vm.closeSheet()
                     } else {
                         onNavigateBack()

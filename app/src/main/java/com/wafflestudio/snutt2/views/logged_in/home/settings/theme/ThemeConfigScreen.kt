@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import com.wafflestudio.snutt2.components.compose.BottomSheetDismissEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -50,11 +51,11 @@ fun ThemeConfigRoute(
         skipHalfExpanded = true,
     )
 
-    BackHandler(
-        enabled = uiState.bottomSheetType != ThemeConfigUiState.BottomSheetType.None,
-    ) {
+    BackHandler(enabled = uiState.bottomSheetType != ThemeConfigUiState.BottomSheetType.None) {
         viewModel.onCloseBottomSheet()
     }
+
+    BottomSheetDismissEffect(sheetState, viewModel::onSheetDismissed)
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
@@ -74,7 +75,6 @@ fun ThemeConfigRoute(
         onClickApply = viewModel::onClickApply,
         onClickDuplicate = viewModel::onClickDuplicate,
         onClickDelete = viewModel::onClickDelete,
-        onDismiss = viewModel::onCloseBottomSheet,
     ) {
         ThemeConfigScreen(
             uiState = uiState,

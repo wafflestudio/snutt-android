@@ -4,19 +4,18 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import com.wafflestudio.snutt2.components.compose.ModalBottomSheetPlaceholder
-import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
-import com.wafflestudio.snutt2.lib.logging.ReviewDetailParameter
-import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
 import com.wafflestudio.snutt2.domainmodel.SearchTag
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
+import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.lib.logging.ReviewDetailParameter
 import com.wafflestudio.snutt2.model.TagType
 import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
 import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewWebView
 import com.wafflestudio.snutt2.views.logged_in.home.search.search_option.SearchOptionSheet
 
@@ -45,12 +44,6 @@ fun SearchBottomSheetLayout(
     content: @Composable () -> Unit,
 ) {
     val analyticsLogger = LocalAnalyticsLogger.current
-
-    LaunchedEffect(sheetState.currentValue) {
-        if (sheetState.currentValue == ModalBottomSheetValue.Hidden) {
-            onDismiss()
-        }
-    }
 
     ModalBottomSheetLayout(
         sheetContent = {

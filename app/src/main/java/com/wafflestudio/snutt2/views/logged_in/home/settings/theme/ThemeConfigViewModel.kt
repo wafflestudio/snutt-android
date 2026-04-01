@@ -83,18 +83,18 @@ class ThemeConfigViewModel @Inject constructor(
 
     fun onCloseBottomSheet() {
         viewModelScope.launch {
-            _uiState.update { current ->
-                current.copy(bottomSheetType = ThemeConfigUiState.BottomSheetType.None)
-            }
             _uiEvent.emit(ThemeConfigUiEvent.CloseBottomSheet)
+        }
+    }
+
+    fun onSheetDismissed() {
+        _uiState.update { current ->
+            current.copy(bottomSheetType = ThemeConfigUiState.BottomSheetType.None)
         }
     }
 
     fun onClickDetail(theme: TableTheme) {
         viewModelScope.launch {
-            _uiState.update { current ->
-                current.copy(bottomSheetType = ThemeConfigUiState.BottomSheetType.None)
-            }
             _uiEvent.emit(ThemeConfigUiEvent.CloseBottomSheet)
             _uiEvent.emit(ThemeConfigUiEvent.NavigateToDetail(theme))
         }
@@ -102,9 +102,6 @@ class ThemeConfigViewModel @Inject constructor(
 
     fun onClickApply(theme: TableTheme) {
         viewModelScope.launch {
-            _uiState.update { current ->
-                current.copy(bottomSheetType = ThemeConfigUiState.BottomSheetType.None)
-            }
             _uiEvent.emit(ThemeConfigUiEvent.CloseBottomSheet)
 
             val currentTableId = tableRepository.currentTable.value?.summary?.id ?: return@launch
@@ -117,9 +114,6 @@ class ThemeConfigViewModel @Inject constructor(
 
     fun onClickDuplicate(theme: CustomTheme) {
         viewModelScope.launch {
-            _uiState.update { current ->
-                current.copy(bottomSheetType = ThemeConfigUiState.BottomSheetType.None)
-            }
             _uiEvent.emit(ThemeConfigUiEvent.CloseBottomSheet)
             themeRepository.copyTheme(theme.id)
                 .onFailure { handleError(it) }
@@ -137,10 +131,7 @@ class ThemeConfigViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.update { current ->
-                current.copy(
-                    dialogState = ThemeConfigUiState.DialogState.None,
-                    bottomSheetType = ThemeConfigUiState.BottomSheetType.None,
-                )
+                current.copy(dialogState = ThemeConfigUiState.DialogState.None)
             }
             _uiEvent.emit(ThemeConfigUiEvent.CloseBottomSheet)
 

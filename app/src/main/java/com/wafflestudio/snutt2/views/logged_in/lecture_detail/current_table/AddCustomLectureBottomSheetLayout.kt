@@ -3,9 +3,7 @@ package com.wafflestudio.snutt2.views.logged_in.lecture_detail.current_table
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import com.wafflestudio.snutt2.components.compose.ModalBottomSheetPlaceholder
 import com.wafflestudio.snutt2.domainmodel.LectureSession
@@ -21,12 +19,6 @@ fun AddCustomLectureBottomSheetLayout(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
-    LaunchedEffect(sheetState.currentValue) {
-        if (sheetState.currentValue == ModalBottomSheetValue.Hidden) {
-            onCloseSheet()
-        }
-    }
-
     ModalBottomSheetLayout(
         sheetContent = {
             when (val sheetType = uiState.sheetType) {

@@ -163,6 +163,9 @@ class AddCustomLectureViewModel @Inject constructor(
 
     fun closeSheet() {
         viewModelScope.launch { _uiEvent.emit(AddCustomLectureUiEvent.CloseBottomSheet) }
+    }
+
+    fun onSheetDismissed() {
         _uiState.update { it.copy(sheetType = AddCustomLectureUiState.SheetType.None) }
     }
 

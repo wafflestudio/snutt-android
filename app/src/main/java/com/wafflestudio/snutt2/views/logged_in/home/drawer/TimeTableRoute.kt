@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.drawer
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.wafflestudio.snutt2.components.compose.BottomSheetDismissEffect
 import com.wafflestudio.snutt2.domainmodel.LocalLecture
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
@@ -104,6 +106,18 @@ fun TimeTableRoute(
         }
     }
 
+    val isSheetOpen = (drawerUiState as? HomeDrawerUiState.Loaded)?.homeDrawerBottomSheetType != HomeDrawerBottomSheetType.Empty
+    BackHandler(enabled = isSheetOpen) {
+        drawerViewModel.closeSheet()
+    }
+
+    // FIXME: SelectTheme 시트의 상태가 drawerViewModel(시트 타입)과 timeTableViewModel(프리뷰 테마)에 걸쳐있어서,
+    //  dismiss 정리가 두 VM에 분산됨. 크로스-VM 의존 구조 개선 필요.
+    BottomSheetDismissEffect(sheetState) {
+        drawerViewModel.onSheetDismissed()
+        timeTableViewModel.resetPreviewTheme()
+    }
+
     LaunchedEffect(Unit) {
         timeTableViewModel.uiEvent.collect { uiEvent ->
             when (uiEvent) {
@@ -117,12 +131,7 @@ fun TimeTableRoute(
     HomeDrawerBottomSheetLayout(
         uiState = drawerUiState,
         sheetState = sheetState,
-        onDismiss = {
-            scope.launch {
-                timeTableViewModel.resetPreviewTheme()
-                sheetState.hide()
-            }
-        },
+        onDismiss = drawerViewModel::closeSheet,
         onCreateNewTable = drawerViewModel::createNewTable,
         onClickChangeTableName = drawerViewModel::openChangeTableNameDialog,
         onClickSetPrimary = drawerViewModel::setPrimaryTable,
@@ -150,10 +159,8 @@ fun TimeTableRoute(
         },
         onClickApplyTheme = drawerViewModel::applyTheme,
         onClickDisposeTheme = {
-            scope.launch {
-                timeTableViewModel.resetPreviewTheme()
-                sheetState.hide()
-            }
+            timeTableViewModel.resetPreviewTheme()
+            drawerViewModel.closeSheet()
         },
         onClickAddTheme = drawerViewModel::navigateToThemeDetail,
     ) {

@@ -218,15 +218,6 @@ class HomeDrawerViewModel @Inject constructor(
                 handleError(it)
             }.onSuccess {
                 _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
-                _uiState.update { state ->
-                    when (state) {
-                        is HomeDrawerUiState.Loaded -> state.copy(
-                            homeDrawerBottomSheetType = HomeDrawerBottomSheetType.Empty,
-                        )
-
-                        else -> state
-                    }
-                }
                 _uiEvent.emit(HomeDrawerUiEvent.CloseDrawer)
             }
         }
@@ -470,6 +461,24 @@ class HomeDrawerViewModel @Inject constructor(
             when (state) {
                 is HomeDrawerUiState.Loaded -> state.copy(
                     dialogState = HomeDrawerUiState.DialogState.None,
+                )
+
+                else -> state
+            }
+        }
+    }
+
+    fun closeSheet() {
+        viewModelScope.launch {
+            _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
+        }
+    }
+
+    fun onSheetDismissed() {
+        _uiState.update { state ->
+            when (state) {
+                is HomeDrawerUiState.Loaded -> state.copy(
+                    homeDrawerBottomSheetType = HomeDrawerBottomSheetType.Empty,
                 )
 
                 else -> state

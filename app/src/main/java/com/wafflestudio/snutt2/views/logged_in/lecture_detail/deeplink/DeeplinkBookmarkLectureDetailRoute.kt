@@ -12,6 +12,7 @@ import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -62,6 +63,10 @@ fun DeeplinkBookmarkLectureDetailRoute(
                 "Snutt",
             )
         }
+    }
+
+    BackHandler(enabled = sheetState.isVisible) {
+        vm.closeReview()
     }
 
     LaunchedEffect(Unit) {

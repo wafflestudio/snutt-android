@@ -27,8 +27,10 @@ import androidx.compose.material.Text
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import com.wafflestudio.snutt2.components.compose.BottomSheetDismissEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -87,6 +89,13 @@ fun FriendsRoute(
             activity?.intent?.data = null
         }
     }
+
+    val isSheetOpen = (uiState as? FriendsUiState.Loaded)?.bottomSheetContent != FriendBottomSheetContent.Hidden
+    BackHandler(enabled = isSheetOpen) {
+        viewModel.closeBottomSheet()
+    }
+
+    BottomSheetDismissEffect(bottomSheetState, viewModel::onSheetDismissed)
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->

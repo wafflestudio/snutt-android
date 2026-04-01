@@ -314,11 +314,26 @@ class BookmarkViewModel @Inject constructor(
 
     fun closeBottomSheet() {
         viewModelScope.launch {
-            _uiState.update { current ->
-                if (current !is BookmarkUiState.Success) return@update current
-                current.copy(bottomSheetType = BookmarkUiState.BottomSheetType.None)
-            }
             _uiEvent.emit(BookmarkUiEvent.CloseBottomSheet)
+        }
+    }
+
+    fun onSheetDismissed() {
+        _uiState.update { current ->
+            if (current !is BookmarkUiState.Success) return@update current
+            current.copy(bottomSheetType = BookmarkUiState.BottomSheetType.None)
+        }
+    }
+
+    fun onDetailReviewSheetDismissed() {
+        _uiState.update { state ->
+            if (state !is BookmarkUiState.Success) return@update state
+            val bt = state.bottomSheetType
+            if (bt is BookmarkUiState.BottomSheetType.LectureDetail) {
+                state.copy(bottomSheetType = bt.copy(reviewVisible = false))
+            } else {
+                state
+            }
         }
     }
 
@@ -430,6 +445,11 @@ sealed interface BookmarkUiEvent {
 }
 
 sealed interface BookmarkUiState {
+    /** 현재 열려 있는 바텀시트 타입. 열린 시트가 없으면 null. */
+    val activeBottomSheet: BottomSheetType?
+        get() = (this as? Success)?.bottomSheetType
+            ?.takeIf { it != BottomSheetType.None }
+
     data object Loading : BookmarkUiState
 
     data class Success(

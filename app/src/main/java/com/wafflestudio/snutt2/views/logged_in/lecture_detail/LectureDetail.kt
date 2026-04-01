@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.lecture_detail
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -73,8 +72,6 @@ fun LectureDetail(
     onFloatingButtonClick: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
-
-    BackHandler { onBackPressed() }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(

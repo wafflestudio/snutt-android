@@ -548,6 +548,9 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
         viewModelScope.launch {
             _uiEvent.emit(CurrentTableLectureDetailUiEvent.CloseBottomSheet)
         }
+    }
+
+    fun onSheetDismissed() {
         _uiState.update { it.copy(sheetType = CurrentTableLectureDetailUiState.SheetType.None) }
     }
 
