@@ -17,7 +17,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import com.wafflestudio.snutt2.components.compose.BottomSheetDismissEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
@@ -25,10 +24,12 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.components.compose.BottomSheetDismissEffect
 import com.wafflestudio.snutt2.components.compose.snackbar.CustomSnackBarDuration
 import com.wafflestudio.snutt2.components.compose.snackbar.CustomSnackBarHostState
 import com.wafflestudio.snutt2.components.compose.snackbar.SnackBarScaffold
 import com.wafflestudio.snutt2.components.compose.snackbar.dismiss
+import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.lib.android.toast
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
@@ -40,7 +41,7 @@ fun SearchRoute(
     bottomBar: @Composable () -> Unit,
     onNavigateVacancy: () -> Unit,
     onNavigateOnboardAsOrigin: () -> Unit,
-    onNavigateToReview: (reviewId: String, lectureId: String) -> Unit,
+    onNavigateToReview: (SearchedLecture) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -147,9 +148,7 @@ fun SearchRoute(
                 onBookmarkToggle = viewModel::onClickBookmark,
                 onVacancyToggle = viewModel::onClickVacancy,
                 onSyllabus = viewModel::openSyllabus,
-                onReview = { lecture ->
-                    onNavigateToReview(lecture.reviewInfo.id, lecture.id)
-                },
+                onReview = onNavigateToReview,
             ) {
                 Column(modifier = Modifier.fillMaxSize()) {
                     Box(modifier = Modifier.weight(1f)) {
@@ -165,9 +164,7 @@ fun SearchRoute(
                             onToggleTagAndQuery = viewModel::onToggleTagAndQuery,
                             onToggleLectureSelection = viewModel::onToggleLectureSelection,
                             onClickLectureDetail = viewModel::openLectureDetailSheet,
-                            onClickReview = { lecture ->
-                                onNavigateToReview(lecture.reviewInfo.id, lecture.id)
-                            },
+                            onClickReview = onNavigateToReview,
                             onClickBookmark = viewModel::onClickBookmark,
                             onClickVacancy = viewModel::onClickVacancy,
                             onToggleLectureContained = viewModel::onToggleLectureContained,

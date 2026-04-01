@@ -20,6 +20,7 @@ import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.domainmodel.LocalLecture
+import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.isDarkMode
@@ -57,7 +58,7 @@ fun HomePageRoute(
     onNavigatePersonalInformationPolicy: () -> Unit,
     onNavigateNetworkLog: () -> Unit,
     onNavigateTest: () -> Unit,
-    onNavigateToReview: (reviewId: String, lectureId: String) -> Unit,
+    onNavigateToReview: (SearchedLecture) -> Unit,
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -156,7 +157,7 @@ private fun HomePageNewScreen(
     onNavigatePersonalInformationPolicy: () -> Unit,
     onNavigateNetworkLog: () -> Unit,
     onNavigateTest: () -> Unit,
-    onNavigateToReview: (reviewId: String, lectureId: String) -> Unit,
+    onNavigateToReview: (SearchedLecture) -> Unit,
     onPopupClickFewDays: () -> Unit,
     onPopupClickClose: () -> Unit,
     onPopupClickImage: () -> Unit,

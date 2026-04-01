@@ -12,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import com.wafflestudio.snutt2.components.compose.BottomSheetDismissEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -20,6 +19,7 @@ import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.components.compose.BottomSheetDismissEffect
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.lib.android.toast
@@ -34,7 +34,7 @@ fun BookmarkRoute(
     viewModel: BookmarkViewModel = hiltViewModel(),
     onNavigateToOnboard: () -> Unit,
     onNavigateBack: () -> Unit,
-    onNavigateToReview: (reviewId: String, lectureId: String) -> Unit,
+    onNavigateToReview: (SearchedLecture) -> Unit,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -82,17 +82,13 @@ fun BookmarkRoute(
         onBookmarkToggle = viewModel::onClickBookmark,
         onVacancyToggle = viewModel::onClickVacancy,
         onSyllabus = viewModel::openSyllabus,
-        onReview = { lecture ->
-            onNavigateToReview(lecture.reviewInfo.id, lecture.id)
-        },
+        onReview = onNavigateToReview,
     ) {
         BookmarkScreen(
             uiState = uiState,
             onNavigateBack = onNavigateBack,
             onClickLectureDetail = viewModel::openLectureDetailSheet,
-            onClickReview = { lecture ->
-                onNavigateToReview(lecture.reviewInfo.id, lecture.id)
-            },
+            onClickReview = onNavigateToReview,
             onClickBookmark = viewModel::onClickBookmark,
             onClickVacancy = viewModel::onClickVacancy,
             onToggleLectureContained = viewModel::onToggleLectureContained,

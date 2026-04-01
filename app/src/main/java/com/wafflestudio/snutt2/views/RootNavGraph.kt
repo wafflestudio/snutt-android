@@ -29,6 +29,7 @@ import com.wafflestudio.snutt2.navigation.getDeepLinkPath
 import com.wafflestudio.snutt2.test.TestRoute
 import com.wafflestudio.snutt2.views.logged_in.home.HomePageRoute
 import com.wafflestudio.snutt2.views.logged_in.home.bookmark.BookmarkRoute
+import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewBottomSheetRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.AppReportPage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.ChangeNicknamePage
 import com.wafflestudio.snutt2.views.logged_in.home.settings.LectureReminderRoute
@@ -47,7 +48,6 @@ import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.diary_history
 import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.diary_write.DiaryWriteRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeConfigRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.ThemeDetailRoute
-import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewBottomSheetRoute
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.current_table.AddCustomLectureRoute
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.current_table.CurrentTableLectureDetailRoute
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.current_table.LectureColorSelectorRoute
@@ -111,11 +111,11 @@ internal fun NavGraphBuilder.buildRootNavGraph(
             onNavigatePersonalInformationPolicy = { navController.navigate(NavigationDestination.PersonalInformationPolicy) },
             onNavigateNetworkLog = { navController.navigate(NavigationDestination.NetworkLog) },
             onNavigateTest = { navController.navigate(NavigationDestination.Test) },
-            onNavigateToReview = { reviewId, lectureId ->
+            onNavigateToReview = { lecture ->
                 navController.navigate(
                     NavigationDestination.Review(
-                        reviewId = reviewId,
-                        lectureId = lectureId,
+                        reviewId = lecture.reviewInfo.id,
+                        lectureId = lecture.id,
                     ),
                 )
             },
@@ -193,11 +193,11 @@ internal fun NavGraphBuilder.buildRootNavGraph(
         BookmarkRoute(
             onNavigateBack = { navController.popBackStack() },
             onNavigateToOnboard = { navController.navigateAsOrigin(NavigationDestination.Onboard) },
-            onNavigateToReview = { reviewId, lectureId ->
+            onNavigateToReview = { lecture ->
                 navController.navigate(
                     NavigationDestination.Review(
-                        reviewId = reviewId,
-                        lectureId = lectureId,
+                        reviewId = lecture.reviewInfo.id,
+                        lectureId = lecture.id,
                         referrer = DetailScreenReferrer.Bookmark.encode(),
                     ),
                 )

@@ -84,7 +84,7 @@ fun DeeplinkBookmarkLectureDetailRoute(
                     lecture = state.lecture,
                     editMode = false,
                     tableTheme = BuiltInTheme.SNUTT,
-                    reviewInfo = state.reviewInfo,
+                    reviewInfo = state.lecture.reviewInfo,
                     buildings = state.buildings,
                     isBookmarked = state.isBookmarked,
                     vacancyRegistered = state.vacancyRegistered,
@@ -115,9 +115,7 @@ fun DeeplinkBookmarkLectureDetailRoute(
                     onAddSession = {},
                     onSyllabus = vm::openSyllabus,
                     onReview = {
-                        state.reviewInfo?.id?.let { reviewId ->
-                            onNavigateToReview(reviewId, state.lecture.id)
-                        }
+                        onNavigateToReview(state.lecture.reviewInfo.id, state.lecture.id)
                     },
                     onDelete = {},
                     onReset = {},

@@ -9,7 +9,6 @@ import com.wafflestudio.snutt2.data.lecture_info.LectureInfoRepository
 import com.wafflestudio.snutt2.data.vacancy_noti.VacancyRepository
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.Lecture
-import com.wafflestudio.snutt2.domainmodel.LectureReviewInfo
 import com.wafflestudio.snutt2.domainmodel.LectureSyllabusInfo
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.lib.network.BookmarkLectureNotFound
@@ -22,7 +21,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -67,7 +65,6 @@ class DeeplinkBookmarkLectureDetailViewModel @Inject constructor(
                         _uiState.update {
                             DeeplinkBookmarkLectureDetailUiState.Success(
                                 lecture = lecture,
-                                reviewInfo = lecture.reviewInfo,
                                 showCategoryPre2025 = (year * 10 + semester) > 20250L,
                             )
                         }
@@ -214,7 +211,6 @@ sealed interface DeeplinkBookmarkLectureDetailUiState {
         val buildings: List<LectureBuildingDto> = emptyList(),
         val isBookmarked: Boolean = false,
         val vacancyRegistered: Boolean = false,
-        val reviewInfo: LectureReviewInfo? = null,
         val showCategoryPre2025: Boolean = true,
         val disableMapFeature: Boolean = false,
     ) : DeeplinkBookmarkLectureDetailUiState
