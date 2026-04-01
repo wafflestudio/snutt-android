@@ -34,10 +34,17 @@ class LectureColorSelectorViewModel @Inject constructor(
                     when (state) {
                         is LectureColorSelectorUiState.Loading -> {
                             val isBuiltIn = tableTheme !is CustomTheme
+                            val selectedIndex = if (tableTheme is CustomTheme) {
+                                tableTheme.getColors(false).indexOfFirst {
+                                    it.foreground == initialFgColor && it.background == initialBgColor
+                                }
+                            } else {
+                                initialColorIndex
+                            }
                             LectureColorSelectorUiState.Loaded(
                                 tableTheme = tableTheme,
                                 isBuiltInTheme = isBuiltIn,
-                                selectedIndex = initialColorIndex,
+                                selectedIndex = selectedIndex,
                                 customFgColor = initialFgColor,
                                 customBgColor = initialBgColor,
                             )
