@@ -1,9 +1,12 @@
 package com.wafflestudio.snutt2.domainmodel
 
+import android.os.Parcelable
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
+import kotlinx.parcelize.Parcelize
 
-sealed interface LectureColor {
+sealed interface LectureColor : Parcelable {
 
+    @Parcelize
     data class Custom(
         val foreground: Int,
         val background: Int,
@@ -23,6 +26,7 @@ sealed interface LectureColor {
         }
     }
 
+    @Parcelize
     data class BuiltIn(
         val colorIndex: Int,
     ) : LectureColor
