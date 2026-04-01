@@ -128,9 +128,7 @@ class LectureColorSelectorViewModel @Inject constructor(
     }
 
     companion object {
-        const val RESULT_COLOR_INDEX = "color_result_index"
-        const val RESULT_FG = "color_result_fg"
-        const val RESULT_BG = "color_result_bg"
+        const val RESULT_COLOR = "color_result"
     }
 }
 

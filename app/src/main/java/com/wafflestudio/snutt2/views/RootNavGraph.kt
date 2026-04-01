@@ -208,15 +208,8 @@ internal fun NavGraphBuilder.buildRootNavGraph(
     composableAnimated<NavigationDestination.LectureColorSelector>(scheme) {
         LectureColorSelectorRoute(
             onNavigateBackWithResult = { selectedColor ->
-                val (idx, fg, bg) = when (selectedColor) {
-                    is LectureColor.BuiltIn -> Triple(selectedColor.colorIndex, 0, 0)
-                    is LectureColor.Custom -> Triple(-1, selectedColor.foreground, selectedColor.background)
-                }
-                navController.previousBackStackEntry?.savedStateHandle?.apply {
-                    set(LectureColorSelectorViewModel.RESULT_COLOR_INDEX, idx)
-                    set(LectureColorSelectorViewModel.RESULT_FG, fg)
-                    set(LectureColorSelectorViewModel.RESULT_BG, bg)
-                }
+                navController.previousBackStackEntry?.savedStateHandle
+                    ?.set(LectureColorSelectorViewModel.RESULT_COLOR, selectedColor)
                 navController.popBackStack()
             },
         )
