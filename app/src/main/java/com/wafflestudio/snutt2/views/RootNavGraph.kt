@@ -15,6 +15,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
@@ -24,6 +25,8 @@ import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.CustomTheme
 import com.wafflestudio.snutt2.domainmodel.LectureColor
 import com.wafflestudio.snutt2.lib.featureflag.FeatureFlag
+import com.wafflestudio.snutt2.navigation.LectureColorNavType
+import kotlin.reflect.typeOf
 import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
 import com.wafflestudio.snutt2.navigation.getDeepLinkPath
 import com.wafflestudio.snutt2.test.TestRoute
@@ -168,11 +171,7 @@ internal fun NavGraphBuilder.buildRootNavGraph(
             colorSelectorSavedStateHandle = backStackEntry.savedStateHandle,
             onNavigateBack = { navController.popBackStack() },
             onNavigateColorSelector = { currentColor ->
-                val (idx, fg, bg) = when (currentColor) {
-                    is LectureColor.BuiltIn -> Triple(currentColor.colorIndex, 0, 0)
-                    is LectureColor.Custom -> Triple(-1, currentColor.foreground, currentColor.background)
-                }
-                navController.navigate(NavigationDestination.LectureColorSelector(idx, fg, bg))
+                navController.navigate(NavigationDestination.LectureColorSelector(currentColor))
             },
             onNavigateLectureReminder = { navController.navigate(NavigationDestination.LectureReminder) },
             onNavigateOnboard = { navController.navigateAsOrigin(NavigationDestination.Onboard) },
@@ -204,7 +203,10 @@ internal fun NavGraphBuilder.buildRootNavGraph(
         )
     }
 
-    composableAnimated<NavigationDestination.LectureColorSelector>(scheme) {
+    composableAnimated<NavigationDestination.LectureColorSelector>(
+        scheme = scheme,
+        typeMap = mapOf(typeOf<LectureColor>() to LectureColorNavType),
+    ) {
         LectureColorSelectorRoute(
             onNavigateBackWithResult = { selectedColor ->
                 navController.previousBackStackEntry?.savedStateHandle
@@ -219,11 +221,7 @@ internal fun NavGraphBuilder.buildRootNavGraph(
             colorSelectorSavedStateHandle = backStackEntry.savedStateHandle,
             onNavigateBack = { navController.popBackStack() },
             onNavigateColorSelector = { currentColor ->
-                val (idx, fg, bg) = when (currentColor) {
-                    is LectureColor.BuiltIn -> Triple(currentColor.colorIndex, 0, 0)
-                    is LectureColor.Custom -> Triple(-1, currentColor.foreground, currentColor.background)
-                }
-                navController.navigate(NavigationDestination.LectureColorSelector(idx, fg, bg))
+                navController.navigate(NavigationDestination.LectureColorSelector(currentColor))
             },
             onNavigateOnboard = { navController.navigateAsOrigin(NavigationDestination.Onboard) },
         )
@@ -525,15 +523,17 @@ private fun NavGraphBuilder.settingComposables(
 
 internal inline fun <reified T : NavigationDestination> NavGraphBuilder.composableAnimated(
     scheme: String,
+    typeMap: Map<kotlin.reflect.KType, NavType<*>> = emptyMap(),
     noinline content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit,
 ) {
     composable<T>(
+        typeMap = typeMap,
         deepLinks = listOfNotNull(
             getDeepLinkPath<T>()?.let { deepLinkPath ->
                 // uri pattern 생성 규칙: https://developer.android.com/reference/kotlin/androidx/navigation/NavDeepLink.Builder?_gl=1*uaoct7*_up*MQ..*_ga*MjExMzE2MzgxOS4xNzQzMjQ2NzMw*_ga_6HH9YJMN9M*MTc0MzI0NjczMC4xLjAuMTc0MzI0NjczMC4wLjAuMzkxMTIxMTgx#setUriPattern(kotlin.String,kotlin.collections.Map)
                 // NavigationDestination에 선언된 argument들을 조합해서 위 규칙에 따라 uri pattern 을 생성함.
                 // 푸시 알림의 url_scheme을 uri pattern에 맞게 쏘면 해당 화면으로 잘 랜딩됨.
-                navDeepLink<T>(basePath = "$scheme$deepLinkPath")
+                navDeepLink<T>(basePath = "$scheme$deepLinkPath", typeMap = typeMap)
             },
         ),
         enterTransition = {

@@ -5,9 +5,12 @@ import androidx.compose.ui.graphics.toArgb
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
 
+@Serializable
 sealed interface LectureColor : Parcelable {
 
+    @Serializable
     @Parcelize
     data class Custom(
         val foreground: Int,
@@ -28,6 +31,7 @@ sealed interface LectureColor : Parcelable {
         }
     }
 
+    @Serializable
     @Parcelize
     data class BuiltIn(
         val colorIndex: Int,
