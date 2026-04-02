@@ -49,7 +49,6 @@ class HomeDrawerViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            // TODO: 진짜 필요한건지 레거시코드 지우고 확인하기
             tableRepository.fetchTableList()
         }
 
@@ -59,7 +58,6 @@ class HomeDrawerViewModel @Inject constructor(
                     handleError(it)
                     return@launch
                 }
-                // 콜백지옥인데..
                 .onSuccess { coursebookList ->
                     combine(
                         tableRepository.tableSummaryList.filter { it.isNotEmpty() },
@@ -118,6 +116,28 @@ class HomeDrawerViewModel @Inject constructor(
                         }
                     }.collect()
                 }
+        }
+
+        // SelectTheme 시트가 열려있는 동안 테마 목록 변경을 자동 반영
+        viewModelScope.launch {
+            combine(
+                themeRepository.customThemes,
+                themeRepository.builtInThemes,
+            ) { customThemes, builtInThemes ->
+                Pair(customThemes, builtInThemes)
+            }.collect { (customThemes, builtInThemes) ->
+                _uiState.update { state ->
+                    if (state !is HomeDrawerUiState.Loaded) return@update state
+                    val sheet = state.homeDrawerBottomSheetType
+                    if (sheet !is HomeDrawerBottomSheetType.SelectTheme) return@update state
+                    state.copy(
+                        homeDrawerBottomSheetType = sheet.copy(
+                            customThemes = customThemes,
+                            builtInThemes = builtInThemes,
+                        ),
+                    )
+                }
+            }
         }
     }
 
@@ -504,6 +524,7 @@ class HomeDrawerViewModel @Inject constructor(
             _uiEvent.emit(HomeDrawerUiEvent.ShowToast(displayMessage))
         }
     }
+
 }
 
 sealed interface HomeDrawerUiEvent {

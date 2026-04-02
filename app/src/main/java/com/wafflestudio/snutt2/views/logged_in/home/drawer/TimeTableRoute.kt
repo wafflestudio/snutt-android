@@ -157,7 +157,10 @@ fun TimeTableRoute(
             drawerViewModel.setPreviewTheme(theme)
             timeTableViewModel.setPreviewTheme(theme)
         },
-        onClickApplyTheme = drawerViewModel::applyTheme,
+        onClickApplyTheme = {
+            timeTableViewModel.resetPreviewTheme()
+            drawerViewModel.applyTheme()
+        },
         onClickDisposeTheme = {
             timeTableViewModel.resetPreviewTheme()
             drawerViewModel.closeSheet()
