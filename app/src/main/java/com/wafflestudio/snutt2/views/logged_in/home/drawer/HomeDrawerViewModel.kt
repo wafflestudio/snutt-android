@@ -270,35 +270,28 @@ class HomeDrawerViewModel @Inject constructor(
             val currentTable = tableRepository.currentTable.value
             if (currentTable?.summary?.id == tableSummary.id) {
                 _uiEvent.emit(HomeDrawerUiEvent.CloseDrawer)
-                openSelectThemeSheet()
+                changeToSelectThemeSheet()
             } else {
                 handleError(NotSelectedTimetable)
             }
         }
     }
 
-    fun openSelectThemeSheet() {
-        viewModelScope.launch {
-            val customThemes = themeRepository.customThemes.value
-            val builtInThemes = themeRepository.builtInThemes.value
-            // FIXME: 에러 처리하기. silent 하게 해도 될까?
-            val selectedTheme = getCurrentTableThemeUseCase().first()
+    private suspend fun buildSelectThemeSheetType(): HomeDrawerBottomSheetType.SelectTheme {
+        val customThemes = themeRepository.customThemes.value
+        val builtInThemes = themeRepository.builtInThemes.value
+        // FIXME: 에러 처리하기. silent 하게 해도 될까?
+        val selectedTheme = getCurrentTableThemeUseCase().first()
+        return HomeDrawerBottomSheetType.SelectTheme(
+            customThemes = customThemes,
+            builtInThemes = builtInThemes,
+            selectedPreviewTheme = selectedTheme,
+        )
+    }
 
-            _uiState.update { state ->
-                when (state) {
-                    is HomeDrawerUiState.Loaded -> state.copy(
-                        homeDrawerBottomSheetType = HomeDrawerBottomSheetType.SelectTheme(
-                            customThemes = customThemes,
-                            builtInThemes = builtInThemes,
-                            selectedPreviewTheme = selectedTheme,
-                        ),
-                    )
-
-                    else -> state
-                }
-            }
-            _uiEvent.emit(HomeDrawerUiEvent.OpenBottomSheet)
-        }
+    private suspend fun changeToSelectThemeSheet() {
+        pendingSheetType = buildSelectThemeSheetType()
+        _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
     }
 
     fun setPreviewTheme(theme: TableTheme) {
@@ -474,7 +467,26 @@ class HomeDrawerViewModel @Inject constructor(
         }
     }
 
+    private var pendingSheetType: HomeDrawerBottomSheetType? = null
+
     fun onSheetDismissed() {
+        val pending = pendingSheetType
+        pendingSheetType = null
+
+        if (pending != null) {
+            _uiState.update { state ->
+                when (state) {
+                    is HomeDrawerUiState.Loaded -> state.copy(
+                        homeDrawerBottomSheetType = pending,
+                    )
+
+                    else -> state
+                }
+            }
+            viewModelScope.launch { _uiEvent.emit(HomeDrawerUiEvent.OpenBottomSheet) }
+            return
+        }
+
         _uiState.update { state ->
             when (state) {
                 is HomeDrawerUiState.Loaded -> state.copy(
