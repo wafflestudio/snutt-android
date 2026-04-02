@@ -23,7 +23,7 @@ fun SearchDialogs(
             CustomDialog(
                 onDismiss = onDismiss,
                 onConfirm = { onConfirmDeleteBookmark(dialogState.lecture) },
-                title = stringResource(R.string.bookmark_remove_check_message),
+                title = stringResource(R.string.common_notification),
             ) {
                 Text(
                     text = stringResource(R.string.bookmark_remove_check_message),
@@ -36,7 +36,7 @@ fun SearchDialogs(
             CustomDialog(
                 onDismiss = onDismiss,
                 onConfirm = { onConfirmDeleteVacancy(dialogState.lecture) },
-                title = stringResource(R.string.vacancy_delete_dialog_message),
+                title = stringResource(R.string.common_notification),
             ) {
                 Text(
                     text = stringResource(R.string.vacancy_delete_dialog_message),
