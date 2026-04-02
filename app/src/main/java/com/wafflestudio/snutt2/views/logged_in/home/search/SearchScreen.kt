@@ -1,12 +1,5 @@
 package com.wafflestudio.snutt2.views.logged_in.home.search
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.SizeTransform
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,12 +9,10 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,11 +26,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.BookmarkIcon
 import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.components.compose.ExitIcon
 import com.wafflestudio.snutt2.components.compose.FilterIcon
-import com.wafflestudio.snutt2.components.compose.IconWithAlertDot
 import com.wafflestudio.snutt2.components.compose.SearchIcon
 import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.clearFocusOnKeyboardDismiss
@@ -47,9 +36,7 @@ import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.domainmodel.SearchTag
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.lib.DataWithState
-import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.ui.isDarkMode
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 
@@ -62,7 +49,6 @@ fun SearchScreen(
     onSearchTitleChange: (String) -> Unit,
     onClearEditText: () -> Unit,
     onFilter: () -> Unit,
-    onToggleMode: () -> Unit,
     onToggleTagAndQuery: (SearchTag) -> Unit,
     onToggleLectureSelection: (SearchedLecture) -> Unit,
     onClickLectureDetail: (SearchedLecture) -> Unit,
@@ -83,46 +69,16 @@ fun SearchScreen(
         onConfirmAddWithOverlap = onConfirmAddWithOverlap,
     )
 
-    val isSearchMode = uiState.pageMode == PageMode.Search
-
     Column {
         TopBar(
             title = {
-                AnimatedContent(
-                    targetState = isSearchMode,
-                    transitionSpec = {
-                        if (targetState) {
-                            slideInHorizontally { -it } + fadeIn() togetherWith
-                                slideOutHorizontally { it } + fadeOut() using SizeTransform(clip = false)
-                        } else {
-                            slideInHorizontally { it } + fadeIn() togetherWith
-                                slideOutHorizontally { -it } + fadeOut() using SizeTransform(clip = false)
-                        }
-                    },
-                    label = "top bar animation",
-                ) { isSearch ->
-                    if (isSearch) {
-                        SearchTopBarContent(
-                            searchTitle = uiState.searchTitle,
-                            onSearchTitleChange = onSearchTitleChange,
-                            onSearch = onSearch,
-                            onClearEditText = onClearEditText,
-                            onFilter = onFilter,
-                        )
-                    } else {
-                        BookmarkTopBarContent()
-                    }
-                }
-            },
-            actions = {
-                IconWithAlertDot(uiState.firstBookmarkAlert) { centerAlignedModifier ->
-                    BookmarkIcon(
-                        modifier = centerAlignedModifier
-                            .size(30.dp)
-                            .clicks { onToggleMode() },
-                        marked = !isSearchMode,
-                    )
-                }
+                SearchTopBarContent(
+                    searchTitle = uiState.searchTitle,
+                    onSearchTitleChange = onSearchTitleChange,
+                    onSearch = onSearch,
+                    onClearEditText = onClearEditText,
+                    onFilter = onFilter,
+                )
             },
         )
 
@@ -143,73 +99,32 @@ fun SearchScreen(
                 touchEnabled = false,
             )
 
-            AnimatedContent(
-                targetState = isSearchMode,
-                modifier = Modifier.background(SNUTTColors.Dim2),
-                transitionSpec = {
-                    if (targetState) {
-                        slideInHorizontally { -it } + fadeIn() togetherWith
-                            slideOutHorizontally { it } + fadeOut() using SizeTransform(clip = false)
-                    } else {
-                        slideInHorizontally { it } + fadeIn() togetherWith
-                            slideOutHorizontally { -it } + fadeOut() using SizeTransform(clip = false)
-                    }
-                },
-                label = "body animation",
-            ) { isSearch ->
-                if (isSearch) {
-                    SearchResultList(
-                        searchResultPagingItems = searchResultPagingItems,
-                        searchResultListState = uiState.searchResultListState,
-                        selectedTags = uiState.selectedTags,
-                        lazyListState = lazyListState,
-                        onToggleTag = onToggleTagAndQuery,
-                        onToggleLectureSelection = onToggleLectureSelection,
-                        onClickLectureDetail = onClickLectureDetail,
-                        onClickReview = onClickReview,
-                        onClickBookmark = { lecture ->
-                            val state = searchResultPagingItems.itemSnapshotList.items
-                                .find { it.item.id == lecture.id }?.state
-                            onClickBookmark(lecture, state?.isBookmarked ?: false)
-                        },
-                        onClickVacancy = { lecture ->
-                            val state = searchResultPagingItems.itemSnapshotList.items
-                                .find { it.item.id == lecture.id }?.state
-                            onClickVacancy(lecture, state?.isVacancyRegistered ?: false)
-                        },
-                        onClickAddOrRemove = { lecture ->
-                            val state = searchResultPagingItems.itemSnapshotList.items
-                                .find { it.item.id == lecture.id }?.state
-                            onToggleLectureContained(lecture, state?.contained ?: false)
-                        },
-                    )
-                } else if (uiState.pageMode == PageMode.Bookmark) {
-                    val bookmarksWithState = uiState.bookmarks.map { lecture ->
-                        lecture.toDataWithState(
-                            LectureState(
-                                selected = uiState.selectedLecture?.id == lecture.id,
-                                contained = uiState.currentTableLectures.any { it.id == lecture.id },
-                                isBookmarked = true,
-                                isVacancyRegistered = uiState.vacancyList.any { it.id == lecture.id },
-                            ),
-                        )
-                    }
-                    BookmarkList(
-                        bookmarks = bookmarksWithState,
-                        onToggleLectureSelection = onToggleLectureSelection,
-                        onClickLectureDetail = onClickLectureDetail,
-                        onClickReview = onClickReview,
-                        onClickBookmark = { lecture -> onClickBookmark(lecture, true) },
-                        onClickVacancy = { lecture ->
-                            val isVacancyRegistered = uiState.vacancyList.any { it.id == lecture.id }
-                            onClickVacancy(lecture, isVacancyRegistered)
-                        },
-                        onClickAddOrRemove = { lecture ->
-                            val contained = uiState.currentTableLectures.any { it.id == lecture.id }
-                            onToggleLectureContained(lecture, contained)
-                        },
-                    )
-                }
+            Box(modifier = Modifier.background(SNUTTColors.Dim2)) {
+                SearchResultList(
+                    searchResultPagingItems = searchResultPagingItems,
+                    searchResultListState = uiState.searchResultListState,
+                    selectedTags = uiState.selectedTags,
+                    lazyListState = lazyListState,
+                    onToggleTag = onToggleTagAndQuery,
+                    onToggleLectureSelection = onToggleLectureSelection,
+                    onClickLectureDetail = onClickLectureDetail,
+                    onClickReview = onClickReview,
+                    onClickBookmark = { lecture ->
+                        val state = searchResultPagingItems.itemSnapshotList.items
+                            .find { it.item.id == lecture.id }?.state
+                        onClickBookmark(lecture, state?.isBookmarked ?: false)
+                    },
+                    onClickVacancy = { lecture ->
+                        val state = searchResultPagingItems.itemSnapshotList.items
+                            .find { it.item.id == lecture.id }?.state
+                        onClickVacancy(lecture, state?.isVacancyRegistered ?: false)
+                    },
+                    onClickAddOrRemove = { lecture ->
+                        val state = searchResultPagingItems.itemSnapshotList.items
+                            .find { it.item.id == lecture.id }?.state
+                        onToggleLectureContained(lecture, state?.contained ?: false)
+                    },
+                )
             }
         }
     }
@@ -262,20 +177,5 @@ private fun RowScope.SearchTopBarContent(
         } else {
             FilterIcon(modifier = Modifier.clicks { onFilter() })
         }
-    }
-}
-
-@Composable
-private fun BookmarkTopBarContent() {
-    Row(
-        modifier = Modifier
-            .fillMaxHeight()
-            .padding(start = 10.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            text = stringResource(R.string.bookmark_page_title),
-            style = SNUTTTypography.h2,
-        )
     }
 }
