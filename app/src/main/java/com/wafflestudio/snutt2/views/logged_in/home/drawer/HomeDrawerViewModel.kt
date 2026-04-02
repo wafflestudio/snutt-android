@@ -9,6 +9,7 @@ import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.CustomTheme
+import com.wafflestudio.snutt2.domainmodel.Table
 import com.wafflestudio.snutt2.domainmodel.TableSummary
 import com.wafflestudio.snutt2.domainmodel.TableTheme
 import com.wafflestudio.snutt2.lib.Selectable
@@ -380,10 +381,20 @@ class HomeDrawerViewModel @Inject constructor(
         _uiState.update { state ->
             when (state) {
                 is HomeDrawerUiState.Loaded -> state.copy(
-                    dialogState = HomeDrawerUiState.DialogState.DeleteTable(tableSummary),
+                    dialogState = HomeDrawerUiState.DialogState.None,
                 )
 
                 else -> state
+            }
+        }
+    }
+
+    fun shareTable(tableSummary: TableSummary) {
+        viewModelScope.launch {
+            tableRepository.getTableById(tableSummary.id).onSuccess { table ->
+                _uiEvent.emit(HomeDrawerUiEvent.ShareTable(table))
+            }.onFailure {
+                handleError(it)
             }
         }
     }
@@ -539,6 +550,8 @@ sealed interface HomeDrawerUiEvent {
     data object CloseDrawer : HomeDrawerUiEvent
 
     data object NavigateToThemeDetail : HomeDrawerUiEvent
+
+    data class ShareTable(val table: Table) : HomeDrawerUiEvent
 
     data class ShowToast(val displayMessage: String) : HomeDrawerUiEvent
 }

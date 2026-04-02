@@ -21,9 +21,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.components.compose.BottomSheetDismissEffect
 import com.wafflestudio.snutt2.domainmodel.LocalLecture
 import com.wafflestudio.snutt2.lib.android.toast
+import com.wafflestudio.snutt2.lib.shareScreenshot
 import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTableScreen
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTableUiEvent
+import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTableUiState
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTableViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -102,6 +104,12 @@ fun TimeTableRoute(
                 is HomeDrawerUiEvent.NavigateToThemeDetail -> {
                     onNavigateBottomSheetThemeDetail()
                 }
+
+                is HomeDrawerUiEvent.ShareTable -> {
+                    (timeTableUiState as? TimeTableUiState.Loaded)?.let {
+                        shareScreenshot(uiEvent.table, it.theme, it.tableTrimParam, context)
+                    }
+                }
             }
         }
     }
@@ -136,6 +144,7 @@ fun TimeTableRoute(
         onClickChangeTableName = drawerViewModel::openChangeTableNameDialog,
         onClickSetPrimary = drawerViewModel::setPrimaryTable,
         onClickUnsetPrimary = drawerViewModel::unsetPrimaryTable,
+        onClickShare = drawerViewModel::shareTable,
         onClickSetTheme = drawerViewModel::onClickSetThemeSheet,
         onClickDeleteTable = drawerViewModel::openDeleteTableDialog,
         drawerState = drawerState,

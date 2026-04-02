@@ -189,8 +189,9 @@
     <string name="user_settings_app_bar_title">My Account</string>
     <string name="timetable_settings_app_bar_title">Timetable Settings</string>
     <string name="timetable_credit">(%d credits)</string>
-    <string name="home_drawer_table_title_change">Rename</string>
-    <string name="home_drawer_table_theme_change">Timetable Theme</string>
+    <string name="home_drawer_table_title_change">Change Name</string>
+    <string name="home_drawer_table_share">Share Timetable</string>
+    <string name="home_drawer_table_theme_change">Set Timetable Theme</string>
     <string name="home_drawer_table_set_primary">Set as Primary Timetable</string>
     <string name="home_drawer_table_set_not_primary">Unset Primary Timetable</string>
     <string name="home_dropdown_menu_title_add_lecture">Add Lecture</string>

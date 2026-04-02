@@ -11,19 +11,21 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.SNUTTUtils.displayHeight
 import com.wafflestudio.snutt2.SNUTTUtils.displayWidth
 import com.wafflestudio.snutt2.components.view.TimetableView
+import com.wafflestudio.snutt2.domainmodel.Table
+import com.wafflestudio.snutt2.domainmodel.TableTheme
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
-import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import java.io.File
 import java.io.FileOutputStream
 
 fun shareScreenshot(
-    table: TableDto,
+    table: Table,
+    theme: TableTheme,
     tableTrimParam: TableTrimParam,
     context: Context,
 ) {
     val view = TimetableView(context)
-    view.theme = table.theme
-    view.lectures = table.lectureList
+    view.theme = theme
+    view.lectures = table.lectures
     view.trimParam = tableTrimParam
 
     val width = context.displayWidth.toInt()
