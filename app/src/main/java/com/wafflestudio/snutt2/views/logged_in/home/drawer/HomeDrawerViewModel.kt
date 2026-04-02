@@ -350,6 +350,8 @@ class HomeDrawerViewModel @Inject constructor(
                         currentTable.summary.id,
                         previewTheme.id,
                     )
+                }.onSuccess {
+                    tableRepository.updateCurrentTable()
                 }
             }
             _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
