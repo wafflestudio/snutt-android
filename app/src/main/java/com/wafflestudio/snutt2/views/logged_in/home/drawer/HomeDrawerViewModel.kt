@@ -298,10 +298,6 @@ class HomeDrawerViewModel @Inject constructor(
         }
     }
 
-    fun onChangeSheetType(sheetType: HomeDrawerBottomSheetType) {
-        _uiState.update { it.copy(homeDrawerBottomSheetType = sheetType) }
-    }
-
     fun openDeleteTableDialog(tableSummary: TableSummary) {
         _uiState.update {
             it.copy(dialogState = HomeDrawerUiState.DialogState.None)
