@@ -308,7 +308,7 @@ class HomeDrawerViewModel @Inject constructor(
         val selectThemeSheet = buildSelectThemeSheetType()
         _uiState.update { state ->
             when (state) {
-                is HomeDrawerUiState.Loaded -> state.copy(pendingSheetType = selectThemeSheet)
+                is HomeDrawerUiState.Loaded -> state.copy(sheetTransitionTarget = selectThemeSheet)
                 else -> state
             }
         }
@@ -499,16 +499,16 @@ class HomeDrawerViewModel @Inject constructor(
     }
 
     fun onSheetDismissed() {
-        val hadPending = (_uiState.value as? HomeDrawerUiState.Loaded)?.pendingSheetType != null
+        val hadPending = (_uiState.value as? HomeDrawerUiState.Loaded)?.sheetTransitionTarget != null
 
         _uiState.update { state ->
             when (state) {
                 is HomeDrawerUiState.Loaded -> {
-                    val pending = state.pendingSheetType
+                    val pending = state.sheetTransitionTarget
                     if (pending != null) {
                         state.copy(
                             homeDrawerBottomSheetType = pending,
-                            pendingSheetType = null,
+                            sheetTransitionTarget = null,
                         )
                     } else {
                         state.copy(
@@ -553,7 +553,7 @@ sealed interface HomeDrawerUiState {
         val courseBookDrawerItemList: List<Selectable<CoursebookDrawerItem>>,
         val selectedTable: TableSummary,
         val homeDrawerBottomSheetType: HomeDrawerBottomSheetType,
-        val pendingSheetType: HomeDrawerBottomSheetType? = null,
+        val sheetTransitionTarget: HomeDrawerBottomSheetType? = null,
         val dialogState: DialogState,
     ) : HomeDrawerUiState
 
