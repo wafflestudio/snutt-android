@@ -305,7 +305,13 @@ class HomeDrawerViewModel @Inject constructor(
     }
 
     private suspend fun changeToSelectThemeSheet() {
-        pendingSheetType = buildSelectThemeSheetType()
+        val selectThemeSheet = buildSelectThemeSheetType()
+        _uiState.update { state ->
+            when (state) {
+                is HomeDrawerUiState.Loaded -> state.copy(pendingSheetType = selectThemeSheet)
+                else -> state
+            }
+        }
         _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
     }
 
@@ -492,34 +498,31 @@ class HomeDrawerViewModel @Inject constructor(
         }
     }
 
-    private var pendingSheetType: HomeDrawerBottomSheetType? = null
-
     fun onSheetDismissed() {
-        val pending = pendingSheetType
-        pendingSheetType = null
-
-        if (pending != null) {
-            _uiState.update { state ->
-                when (state) {
-                    is HomeDrawerUiState.Loaded -> state.copy(
-                        homeDrawerBottomSheetType = pending,
-                    )
-
-                    else -> state
-                }
-            }
-            viewModelScope.launch { _uiEvent.emit(HomeDrawerUiEvent.OpenBottomSheet) }
-            return
-        }
+        val hadPending = (_uiState.value as? HomeDrawerUiState.Loaded)?.pendingSheetType != null
 
         _uiState.update { state ->
             when (state) {
-                is HomeDrawerUiState.Loaded -> state.copy(
-                    homeDrawerBottomSheetType = HomeDrawerBottomSheetType.Empty,
-                )
+                is HomeDrawerUiState.Loaded -> {
+                    val pending = state.pendingSheetType
+                    if (pending != null) {
+                        state.copy(
+                            homeDrawerBottomSheetType = pending,
+                            pendingSheetType = null,
+                        )
+                    } else {
+                        state.copy(
+                            homeDrawerBottomSheetType = HomeDrawerBottomSheetType.Empty,
+                        )
+                    }
+                }
 
                 else -> state
             }
+        }
+
+        if (hadPending) {
+            viewModelScope.launch { _uiEvent.emit(HomeDrawerUiEvent.OpenBottomSheet) }
         }
     }
 
@@ -553,6 +556,7 @@ sealed interface HomeDrawerUiState {
         val courseBookDrawerItemList: List<Selectable<CoursebookDrawerItem>>,
         val selectedTable: TableSummary,
         val homeDrawerBottomSheetType: HomeDrawerBottomSheetType,
+        val pendingSheetType: HomeDrawerBottomSheetType? = null,
         val dialogState: DialogState,
     ) : HomeDrawerUiState
 
