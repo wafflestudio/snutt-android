@@ -163,16 +163,14 @@ class HomeDrawerViewModel @Inject constructor(
 
     fun selectTable(tableId: String) {
         viewModelScope.launch {
-            // 이걸 불러야 하는 게 참 암묵적이다
-            // TODO: data layer 리팩토링 + 에러 처리
             tableRepository.fetchAndSelectTable(tableId)
-            _uiEvent.emit(HomeDrawerUiEvent.CloseDrawer)
+                .onSuccess { _uiEvent.emit(HomeDrawerUiEvent.CloseDrawer) }
+                .onFailure { handleError(it) }
         }
     }
 
     fun copyTable(tableId: String) {
         viewModelScope.launch {
-            // TODO: 에러 처리
             tableRepository.copyTable(tableId).onFailure {
                 handleError(it)
             }
@@ -346,10 +344,7 @@ class HomeDrawerViewModel @Inject constructor(
 
             tableRepository.deleteTable(tableSummary.id)
                 .onFailure {
-                    // TODO: 에러 처리
                     handleError(it)
-                    // "하나 남은 시간표는 삭제할 수 없습니다" 는 클라로직 대신 서버로직으로 대체함
-                    // 에러나면 dialog 숨기고 바텀시트도 닫고..
                 }
                 .onSuccess {
                     // 현재 시간표를 삭제한 경우, 다른 시간표로 전환
