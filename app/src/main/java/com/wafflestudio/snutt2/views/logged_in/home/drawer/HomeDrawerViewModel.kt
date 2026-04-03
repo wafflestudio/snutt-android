@@ -43,7 +43,7 @@ class HomeDrawerViewModel @Inject constructor(
     private val displayMessageResolver: DisplayMessageResolver,
 ) : ViewModel() {
     private val _uiEvent = MutableSharedFlow<HomeDrawerUiEvent>()
-    private val _uiState = MutableStateFlow<HomeDrawerUiState>(HomeDrawerUiState.Loading)
+    private val _uiState = MutableStateFlow(HomeDrawerUiState())
 
     val uiEvent = _uiEvent.asSharedFlow()
     val uiState = _uiState.asStateFlow()
@@ -548,17 +548,13 @@ sealed interface HomeDrawerUiEvent {
     data class ShowToast(val displayMessage: String) : HomeDrawerUiEvent
 }
 
-sealed interface HomeDrawerUiState {
-    data class Loaded(
-        val courseBookDrawerItemList: List<Selectable<CoursebookDrawerItem>>,
-        val selectedTable: TableSummary,
-        val homeDrawerBottomSheetType: HomeDrawerBottomSheetType,
-        val sheetTransitionTarget: HomeDrawerBottomSheetType? = null,
-        val dialogState: DialogState,
-    ) : HomeDrawerUiState
-
-    data object Loading : HomeDrawerUiState
-
+data class HomeDrawerUiState(
+    val courseBookDrawerItemList: List<Selectable<CoursebookDrawerItem>> = emptyList(),
+    val selectedTable: TableSummary? = null,
+    val homeDrawerBottomSheetType: HomeDrawerBottomSheetType = HomeDrawerBottomSheetType.Empty,
+    val sheetTransitionTarget: HomeDrawerBottomSheetType? = null,
+    val dialogState: DialogState = DialogState.None,
+) {
     sealed interface DialogState {
         data object None : DialogState
         data class ChangeTableName(
