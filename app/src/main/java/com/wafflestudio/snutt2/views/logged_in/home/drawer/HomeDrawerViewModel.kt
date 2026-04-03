@@ -132,22 +132,17 @@ class HomeDrawerViewModel @Inject constructor(
     }
 
     fun openCreateNewTableSheet() {
+        val allCourseBooks = courseBookRepository.courseBooks.value
+        _uiState.update {
+            it.copy(
+                homeDrawerBottomSheetType = HomeDrawerBottomSheetType.CreateNewTable.SelectCourseBook(
+                    initialCourseBook = it.selectedTable?.courseBook ?: allCourseBooks.first(),
+                    allCourseBook = allCourseBooks,
+                ),
+            )
+        }
         viewModelScope.launch {
-            // FIXME: 이거 매번 이렇게 가져와?
-            // TODO: 에러 처리
-            courseBookRepository.getCourseBooks().onSuccess { allCourseBook ->
-                _uiState.update {
-                    it.copy(
-                        homeDrawerBottomSheetType = HomeDrawerBottomSheetType.CreateNewTable.SelectCourseBook(
-                            initialCourseBook = it.selectedTable?.courseBook ?: allCourseBook.first(),
-                            allCourseBook = allCourseBook,
-                        ),
-                    )
-                }
-                _uiEvent.emit(HomeDrawerUiEvent.OpenBottomSheet)
-            }.onFailure {
-                handleError(it)
-            }
+            _uiEvent.emit(HomeDrawerUiEvent.OpenBottomSheet)
         }
     }
 

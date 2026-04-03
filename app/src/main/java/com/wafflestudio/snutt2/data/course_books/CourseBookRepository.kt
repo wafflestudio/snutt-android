@@ -7,7 +7,5 @@ import kotlinx.coroutines.flow.StateFlow
 interface CourseBookRepository {
     val courseBooks: StateFlow<List<CourseBook>>
 
-    suspend fun getCourseBooks(): Result<List<CourseBook>>
-
     suspend fun fetchCourseBooks(): Result<Unit>
 }
