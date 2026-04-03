@@ -74,8 +74,7 @@ class HomeDrawerViewModel @Inject constructor(
                         tableSummariesOfEachCourseBook[mostRecentCourseBook] = emptyList()
                     }
 
-                    // 기존 각 학기의 펼침 상태 map
-                    val courseBookDrawerItemListMap =
+                    val previousExpandedState =
                         state.courseBookDrawerItemList.associate { (item, expanded) ->
                             item.courseBook to expanded
                         }
@@ -84,15 +83,14 @@ class HomeDrawerViewModel @Inject constructor(
                         .toList()
                         .sortedBy { (coursebook, _) -> coursebook }
                         .map { (courseBook, tableSummaries) ->
+                            val isCurrentSemester = currentTable?.summary?.courseBook == courseBook
+                            val wasExpanded = previousExpandedState[courseBook] ?: false
+
                             CoursebookDrawerItem(
                                 courseBook = courseBook,
                                 showNewCoursebookDot = (courseBook == mostRecentCourseBook) && tableSummaries.isEmpty(),
                                 tableList = tableSummaries,
-                            ).toDataWithState(
-                                // FIXME: 로직 정리
-                                currentTable?.summary?.courseBook == courseBook ||
-                                    courseBookDrawerItemListMap[courseBook] ?: false,
-                            )
+                            ).toDataWithState(isCurrentSemester || wasExpanded)
                         }
 
                     state.copy(
