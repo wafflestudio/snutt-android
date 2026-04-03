@@ -9,6 +9,7 @@ import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.CustomTheme
+import com.wafflestudio.snutt2.domainmodel.Table
 import com.wafflestudio.snutt2.domainmodel.TableSummary
 import com.wafflestudio.snutt2.domainmodel.TableTheme
 import com.wafflestudio.snutt2.lib.Selectable
@@ -49,7 +50,6 @@ class HomeDrawerViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            // TODO: 진짜 필요한건지 레거시코드 지우고 확인하기
             tableRepository.fetchTableList()
         }
 
@@ -59,7 +59,6 @@ class HomeDrawerViewModel @Inject constructor(
                     handleError(it)
                     return@launch
                 }
-                // 콜백지옥인데..
                 .onSuccess { coursebookList ->
                     combine(
                         tableRepository.tableSummaryList.filter { it.isNotEmpty() },
@@ -118,6 +117,28 @@ class HomeDrawerViewModel @Inject constructor(
                         }
                     }.collect()
                 }
+        }
+
+        // SelectTheme 시트가 열려있는 동안 테마 목록 변경을 자동 반영
+        viewModelScope.launch {
+            combine(
+                themeRepository.customThemes,
+                themeRepository.builtInThemes,
+            ) { customThemes, builtInThemes ->
+                Pair(customThemes, builtInThemes)
+            }.collect { (customThemes, builtInThemes) ->
+                _uiState.update { state ->
+                    if (state !is HomeDrawerUiState.Loaded) return@update state
+                    val sheet = state.homeDrawerBottomSheetType
+                    if (sheet !is HomeDrawerBottomSheetType.SelectTheme) return@update state
+                    state.copy(
+                        homeDrawerBottomSheetType = sheet.copy(
+                            customThemes = customThemes,
+                            builtInThemes = builtInThemes,
+                        ),
+                    )
+                }
+            }
         }
     }
 
@@ -242,9 +263,6 @@ class HomeDrawerViewModel @Inject constructor(
                     handleError(it)
                 }
                 .onSuccess {
-                    // FIXME: 구 동작 일단 옮겨오기. 이걸 해야, 상태가 변한다.
-                    tableRepository.fetchTableList()
-                    tableRepository.updateCurrentTable()
                     _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
                 }
         }
@@ -257,9 +275,6 @@ class HomeDrawerViewModel @Inject constructor(
                     handleError(it)
                 }
                 .onSuccess {
-                    // FIXME: 구 동작 일단 옮겨오기. 이걸 해야, 상태가 변한다.
-                    tableRepository.fetchTableList()
-                    tableRepository.updateCurrentTable()
                     _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
                 }
         }
@@ -270,35 +285,34 @@ class HomeDrawerViewModel @Inject constructor(
             val currentTable = tableRepository.currentTable.value
             if (currentTable?.summary?.id == tableSummary.id) {
                 _uiEvent.emit(HomeDrawerUiEvent.CloseDrawer)
-                openSelectThemeSheet()
+                changeToSelectThemeSheet()
             } else {
                 handleError(NotSelectedTimetable)
             }
         }
     }
 
-    fun openSelectThemeSheet() {
-        viewModelScope.launch {
-            val customThemes = themeRepository.customThemes.value
-            val builtInThemes = themeRepository.builtInThemes.value
-            // FIXME: 에러 처리하기. silent 하게 해도 될까?
-            val selectedTheme = getCurrentTableThemeUseCase().first()
+    private suspend fun buildSelectThemeSheetType(): HomeDrawerBottomSheetType.SelectTheme {
+        val customThemes = themeRepository.customThemes.value
+        val builtInThemes = themeRepository.builtInThemes.value
+        // FIXME: 에러 처리하기. silent 하게 해도 될까?
+        val selectedTheme = getCurrentTableThemeUseCase().first()
+        return HomeDrawerBottomSheetType.SelectTheme(
+            customThemes = customThemes,
+            builtInThemes = builtInThemes,
+            selectedPreviewTheme = selectedTheme,
+        )
+    }
 
-            _uiState.update { state ->
-                when (state) {
-                    is HomeDrawerUiState.Loaded -> state.copy(
-                        homeDrawerBottomSheetType = HomeDrawerBottomSheetType.SelectTheme(
-                            customThemes = customThemes,
-                            builtInThemes = builtInThemes,
-                            selectedPreviewTheme = selectedTheme,
-                        ),
-                    )
-
-                    else -> state
-                }
+    private suspend fun changeToSelectThemeSheet() {
+        val selectThemeSheet = buildSelectThemeSheetType()
+        _uiState.update { state ->
+            when (state) {
+                is HomeDrawerUiState.Loaded -> state.copy(sheetTransitionTarget = selectThemeSheet)
+                else -> state
             }
-            _uiEvent.emit(HomeDrawerUiEvent.OpenBottomSheet)
         }
+        _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
     }
 
     fun setPreviewTheme(theme: TableTheme) {
@@ -365,10 +379,20 @@ class HomeDrawerViewModel @Inject constructor(
         _uiState.update { state ->
             when (state) {
                 is HomeDrawerUiState.Loaded -> state.copy(
-                    dialogState = HomeDrawerUiState.DialogState.DeleteTable(tableSummary),
+                    dialogState = HomeDrawerUiState.DialogState.None,
                 )
 
                 else -> state
+            }
+        }
+    }
+
+    fun shareTable(tableSummary: TableSummary) {
+        viewModelScope.launch {
+            tableRepository.getTableById(tableSummary.id).onSuccess { table ->
+                _uiEvent.emit(HomeDrawerUiEvent.ShareTable(table))
+            }.onFailure {
+                handleError(it)
             }
         }
     }
@@ -475,14 +499,30 @@ class HomeDrawerViewModel @Inject constructor(
     }
 
     fun onSheetDismissed() {
+        val hadPending = (_uiState.value as? HomeDrawerUiState.Loaded)?.sheetTransitionTarget != null
+
         _uiState.update { state ->
             when (state) {
-                is HomeDrawerUiState.Loaded -> state.copy(
-                    homeDrawerBottomSheetType = HomeDrawerBottomSheetType.Empty,
-                )
+                is HomeDrawerUiState.Loaded -> {
+                    val pending = state.sheetTransitionTarget
+                    if (pending != null) {
+                        state.copy(
+                            homeDrawerBottomSheetType = pending,
+                            sheetTransitionTarget = null,
+                        )
+                    } else {
+                        state.copy(
+                            homeDrawerBottomSheetType = HomeDrawerBottomSheetType.Empty,
+                        )
+                    }
+                }
 
                 else -> state
             }
+        }
+
+        if (hadPending) {
+            viewModelScope.launch { _uiEvent.emit(HomeDrawerUiEvent.OpenBottomSheet) }
         }
     }
 
@@ -492,18 +532,18 @@ class HomeDrawerViewModel @Inject constructor(
             _uiEvent.emit(HomeDrawerUiEvent.ShowToast(displayMessage))
         }
     }
+
 }
 
 sealed interface HomeDrawerUiEvent {
     data object OpenBottomSheet : HomeDrawerUiEvent
     data object CloseBottomSheet : HomeDrawerUiEvent
-    data class ChangeBottomSheet(
-        val bottomSheetType: HomeDrawerBottomSheetType,
-    ) : HomeDrawerUiEvent
 
     data object CloseDrawer : HomeDrawerUiEvent
 
     data object NavigateToThemeDetail : HomeDrawerUiEvent
+
+    data class ShareTable(val table: Table) : HomeDrawerUiEvent
 
     data class ShowToast(val displayMessage: String) : HomeDrawerUiEvent
 }
@@ -513,6 +553,7 @@ sealed interface HomeDrawerUiState {
         val courseBookDrawerItemList: List<Selectable<CoursebookDrawerItem>>,
         val selectedTable: TableSummary,
         val homeDrawerBottomSheetType: HomeDrawerBottomSheetType,
+        val sheetTransitionTarget: HomeDrawerBottomSheetType? = null,
         val dialogState: DialogState,
     ) : HomeDrawerUiState
 

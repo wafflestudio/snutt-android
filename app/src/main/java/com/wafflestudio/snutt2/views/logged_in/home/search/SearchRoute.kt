@@ -59,12 +59,8 @@ fun SearchRoute(
     val hazeState = rememberHazeState()
 
     val activeSheet = uiState.activeBottomSheet
-    BackHandler(enabled = activeSheet != null || uiState.pageMode == PageMode.Bookmark) {
-        if (activeSheet != null) {
-            viewModel.closeBottomSheet()
-        } else {
-            viewModel.onClickBack()
-        }
+    BackHandler(enabled = activeSheet != null) {
+        viewModel.closeBottomSheet()
     }
 
     BottomSheetDismissEffect(sheetState, viewModel::onSheetDismissed)
@@ -100,7 +96,7 @@ fun SearchRoute(
                     }
                     val onActionPerformed = when (uiEvent.event) {
                         SearchSnackBarEvent.FIRST_VACANCY_ADD -> onNavigateVacancy
-                        SearchSnackBarEvent.FIRST_BOOKMARK_ADD -> viewModel::onTogglePageMode
+                        SearchSnackBarEvent.FIRST_BOOKMARK_ADD -> { {} }
                     }
                     scope.launch {
                         snackBarHostState.currentSnackBarData.dismiss()
@@ -160,7 +156,6 @@ fun SearchRoute(
                             onSearchTitleChange = viewModel::setTitle,
                             onClearEditText = viewModel::onClearEditText,
                             onFilter = viewModel::openFilterSheet,
-                            onToggleMode = viewModel::onTogglePageMode,
                             onToggleTagAndQuery = viewModel::onToggleTagAndQuery,
                             onToggleLectureSelection = viewModel::onToggleLectureSelection,
                             onClickLectureDetail = viewModel::openLectureDetailSheet,

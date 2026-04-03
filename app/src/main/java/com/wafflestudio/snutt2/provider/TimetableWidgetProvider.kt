@@ -20,8 +20,9 @@ import com.wafflestudio.snutt2.SNUTTUtils.displayWidth
 import com.wafflestudio.snutt2.components.view.TimetableView
 import com.wafflestudio.snutt2.data.table_display.TableDisplayRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
-import com.wafflestudio.snutt2.data.themes.ThemeRepository
+import com.wafflestudio.snutt2.domain.ThemeService
 import com.wafflestudio.snutt2.views.RootActivity
+import kotlinx.coroutines.runBlocking
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -37,7 +38,7 @@ TimetableWidgetProvider : AppWidgetProvider() {
     lateinit var tableDisplayRepository: TableDisplayRepository
 
     @Inject
-    lateinit var themeRepository: ThemeRepository
+    lateinit var themeService: ThemeService
 
     override fun onUpdate(
         context: Context,
@@ -118,11 +119,10 @@ TimetableWidgetProvider : AppWidgetProvider() {
         views.setViewVisibility(R.id.placeholder, View.VISIBLE)
         views.setViewVisibility(R.id.table, View.GONE)
         tableRepository.currentTable.value?.let { table ->
-            val tableDto = table.toTableDto()
             val tableView = TimetableView(context, compactMode)
 
-            tableView.theme = tableDto.theme
-            tableView.lectures = tableDto.lectureList
+            tableView.theme = runBlocking { themeService.resolveTheme(table) }
+            tableView.lectures = table.lectures
             tableView.trimParam = tableDisplayRepository.tableTrimParam.value
 
             val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)

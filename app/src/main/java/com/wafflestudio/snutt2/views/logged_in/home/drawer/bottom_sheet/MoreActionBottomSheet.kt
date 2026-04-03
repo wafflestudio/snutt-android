@@ -20,6 +20,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.PaletteIcon
 import com.wafflestudio.snutt2.components.compose.PeopleIcon
 import com.wafflestudio.snutt2.components.compose.PeopleOffIcon
+import com.wafflestudio.snutt2.components.compose.ShareIcon
 import com.wafflestudio.snutt2.components.compose.TrashIcon
 import com.wafflestudio.snutt2.components.compose.WriteIcon
 import com.wafflestudio.snutt2.components.compose.clicks
@@ -34,6 +35,7 @@ fun MoreActionSheet(
     onClickChangeTableName: (tableSummary: TableSummary) -> Unit,
     onClickSetPrimary: (tableSummary: TableSummary) -> Unit,
     onClickUnsetPrimary: (tableSummary: TableSummary) -> Unit,
+    onClickShare: (tableSummary: TableSummary) -> Unit,
     onClickSetTheme: (tableSummary: TableSummary) -> Unit,
     onClickDeleteTable: (tableSummary: TableSummary) -> Unit,
 ) {
@@ -75,6 +77,12 @@ fun MoreActionSheet(
             } else {
                 onClickSetPrimary(tableSummary)
             }
+        }
+        MoreActionItem(
+            icon = { ShareIcon(modifier = Modifier.size(30.dp)) },
+            text = stringResource(R.string.home_drawer_table_share),
+        ) {
+            onClickShare(tableSummary)
         }
         MoreActionItem(
             icon = { PaletteIcon(modifier = Modifier.size(30.dp)) },

@@ -13,13 +13,15 @@ import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.SNUTTStorage
-import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
+import com.wafflestudio.snutt2.domainmodel.CustomLecture
+import com.wafflestudio.snutt2.domainmodel.LectureColor
+import com.wafflestudio.snutt2.domainmodel.LectureSession
+import com.wafflestudio.snutt2.domainmodel.LocalLecture
+import com.wafflestudio.snutt2.domainmodel.TableTheme
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.lib.contains
 import com.wafflestudio.snutt2.lib.dp
 import com.wafflestudio.snutt2.lib.getFittingTrimParam
-import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
 import com.wafflestudio.snutt2.lib.roundToCompact
 import com.wafflestudio.snutt2.lib.sp
 import com.wafflestudio.snutt2.lib.toDayString
@@ -86,21 +88,21 @@ class TimetableView : View {
 
     private var fittedTrimParam: TableTrimParam = TableTrimParam.Default
 
-    var lectures: List<LectureDto> = listOf()
+    var lectures: List<LocalLecture> = listOf()
         set(value) {
             field = value
             invalidateTrimParam()
             invalidate()
         }
 
-    var selectedLecture: LectureDto? = null
+    var selectedLecture: LocalLecture? = null
         set(value) {
             field = value
             invalidateTrimParam()
             invalidate()
         }
 
-    var theme: Int = BuiltInTheme.SNUTT.code
+    var theme: TableTheme? = null
         set(value) {
             field = value
             invalidate()
@@ -112,6 +114,7 @@ class TimetableView : View {
     private val unitHeight: Float
         get() = (height - dayLabelHeight) / (fittedTrimParam.hourTo - fittedTrimParam.hourFrom + 1)
 
+    private var isDarkMode: Boolean = false
     private var compactMode: Boolean = false
 
     constructor(context: Context) : super(context) {
@@ -141,7 +144,7 @@ class TimetableView : View {
             Context.MODE_PRIVATE,
         )
         val themeMode = sharedPreferences.getString("theme_mode", null) ?: ""
-        val isDarkMode = when (themeMode) {
+        isDarkMode = when (themeMode) {
             "\"DARK\"" -> true
             "\"LIGHT\"" -> false
             else -> isSystemDarkMode(context)
@@ -176,9 +179,9 @@ class TimetableView : View {
         }
     }
 
-    private fun setOnLectureClickListener(listener: (lecture: LectureDto) -> Unit) {
+    private fun setOnLectureClickListener(listener: (lecture: LocalLecture) -> Unit) {
         this.onLectureClickListener = object : OnLectureClickListener {
-            override fun onClick(lecture: LectureDto) {
+            override fun onClick(lecture: LocalLecture) {
                 listener(lecture)
             }
         }
@@ -240,43 +243,40 @@ class TimetableView : View {
 
     private fun drawLecture(
         canvas: Canvas,
-        lecture: LectureDto,
+        lecture: LocalLecture,
     ) {
-        for (classTime in lecture.class_time_json) {
+        val (fgColor, bgColor) = when (val color = lecture.color) {
+            is LectureColor.Custom -> color.foreground to color.background
+            is LectureColor.BuiltIn -> {
+                val palette = theme?.getColors(isDarkMode) ?: return
+                val entry = palette[color.colorIndex.coerceIn(palette.indices)]
+                entry.foreground to entry.background
+            }
+        }
+
+        for (session in lecture.lectureSessions) {
             drawClassTime(
                 canvas,
-                classTime,
-                classTime.place,
-                lecture.course_title,
-                if (lecture.colorIndex == 0L && lecture.color.bgColor != null) {
-                    lecture.color.bgColor!!
-                } else {
-                    // FIXME: 다크모드 및 유저 설정 반영하기
-                    BuiltInTheme.fromCode(theme).getColors(false)[lecture.colorIndex.toInt() - 1].background
-                },
-                if (lecture.colorIndex == 0L && lecture.color.fgColor != null) {
-                    lecture.color.fgColor!!
-                } else {
-                    context.getColor(
-                        R.color.white,
-                    )
-                },
-                isCustom = lecture.isCustom,
+                session,
+                session.place,
+                lecture.courseTitle,
+                bgColor,
+                fgColor,
+                isCustom = lecture is CustomLecture,
             )
         }
     }
 
     private fun drawSelectedLecture(
         canvas: Canvas,
-        selectedLecture: LectureDto,
+        selectedLecture: LocalLecture,
     ) {
-        for (classTime in selectedLecture.class_time_json) {
-            selectedLecture.color.bgRaw
+        for (session in selectedLecture.lectureSessions) {
             drawClassTime(
                 canvas,
-                classTime,
-                classTime.place,
-                selectedLecture.course_title,
+                session,
+                session.place,
+                selectedLecture.courseTitle,
                 -0x1f1f20,
                 -0xcccccd,
             )
@@ -285,18 +285,22 @@ class TimetableView : View {
 
     private fun drawClassTime(
         canvas: Canvas,
-        classTime: ClassTimeDto,
+        session: LectureSession,
         location: String,
         courseTitle: String,
         bgColor: Int,
         fgColor: Int,
         isCustom: Boolean = false,
     ) {
-        val dayOffset = classTime.day - fittedTrimParam.dayOfWeekFrom
+        val dayValue = session.day.value - 1
+        val startTime = session.startTime.hour + session.startTime.minute / 60f
+        val endTime = session.endTime.hour + session.endTime.minute / 60f
+
+        val dayOffset = dayValue - fittedTrimParam.dayOfWeekFrom
         val hourRangeOffset = Pair(
-            max(classTime.startTimeInFloat - fittedTrimParam.hourFrom, 0f),
+            max(startTime - fittedTrimParam.hourFrom, 0f),
             min(
-                classTime.endTimeInFloat.let { if (isCustom.not() && compactMode) roundToCompact(it) else it } - fittedTrimParam.hourFrom,
+                endTime.let { if (isCustom.not() && compactMode) roundToCompact(it) else it } - fittedTrimParam.hourFrom,
                 fittedTrimParam.hourTo - fittedTrimParam.hourFrom.toFloat() + 1,
             ),
         )
@@ -371,5 +375,5 @@ class TimetableView : View {
 }
 
 interface OnLectureClickListener {
-    fun onClick(lecture: LectureDto)
+    fun onClick(lecture: LocalLecture)
 }
