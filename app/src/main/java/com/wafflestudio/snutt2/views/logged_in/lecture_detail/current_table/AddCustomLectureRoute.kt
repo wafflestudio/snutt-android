@@ -19,6 +19,8 @@ import com.wafflestudio.snutt2.components.compose.snackbar.CustomSnackBarHostSta
 import com.wafflestudio.snutt2.components.compose.snackbar.SnackBarScaffold
 import com.wafflestudio.snutt2.domainmodel.LectureColor
 import com.wafflestudio.snutt2.lib.android.toast
+import com.wafflestudio.snutt2.views.NavigationDestination
+import com.wafflestudio.snutt2.views.observeResult
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.logImpression
 import dev.chrisbanes.haze.hazeSource
@@ -40,17 +42,9 @@ fun AddCustomLectureRoute(
     val uiState by vm.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        // FIXME: ColorSelector 동작 전반적으로 다시 고민하기
-        val savedStateHandle = colorSelectorSavedStateHandle ?: return@LaunchedEffect
-        savedStateHandle.getStateFlow(LectureColorSelectorViewModel.RESULT_COLOR_INDEX, Int.MIN_VALUE)
-            .collect { colorIndex ->
-                if (colorIndex == Int.MIN_VALUE) return@collect
-                val fg = savedStateHandle.get<Int>(LectureColorSelectorViewModel.RESULT_FG) ?: return@collect
-                val bg = savedStateHandle.get<Int>(LectureColorSelectorViewModel.RESULT_BG) ?: return@collect
-                val color = if (colorIndex == -1) LectureColor.Custom(fg, bg) else LectureColor.BuiltIn(colorIndex)
-                vm.editColor(color)
-                savedStateHandle.remove<Int>(LectureColorSelectorViewModel.RESULT_COLOR_INDEX)
-            }
+        colorSelectorSavedStateHandle
+            ?.observeResult<LectureColor>(NavigationDestination.LectureColorSelector.RESULT_KEY)
+            ?.collect { vm.editColor(it) }
     }
 
     val snackBarHostState = remember { CustomSnackBarHostState() }

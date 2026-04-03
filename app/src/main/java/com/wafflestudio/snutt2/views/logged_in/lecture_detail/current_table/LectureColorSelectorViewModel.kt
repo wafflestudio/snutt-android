@@ -7,6 +7,7 @@ import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
 import com.wafflestudio.snutt2.domainmodel.CustomTheme
 import com.wafflestudio.snutt2.domainmodel.LectureColor
 import com.wafflestudio.snutt2.domainmodel.TableTheme
+import com.wafflestudio.snutt2.views.NavigationDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,9 +21,8 @@ class LectureColorSelectorViewModel @Inject constructor(
     getCurrentTableThemeUseCase: GetCurrentTableThemeUseCase,
 ) : ViewModel() {
 
-    private val initialColorIndex: Int = savedStateHandle["colorIndex"] ?: -1
-    private val initialFgColor: Int = savedStateHandle["fgColor"] ?: 0
-    private val initialBgColor: Int = savedStateHandle["bgColor"] ?: 0
+    private val initialColor: LectureColor =
+        checkNotNull(savedStateHandle[NavigationDestination.LectureColorSelector.ARG_COLOR])
 
     private val _uiState = MutableStateFlow<LectureColorSelectorUiState>(LectureColorSelectorUiState.Loading)
     val uiState = _uiState.asStateFlow()
@@ -34,12 +34,22 @@ class LectureColorSelectorViewModel @Inject constructor(
                     when (state) {
                         is LectureColorSelectorUiState.Loading -> {
                             val isBuiltIn = tableTheme !is CustomTheme
+                            val selectedIndex = when (initialColor) {
+                                is LectureColor.BuiltIn -> initialColor.colorIndex
+                                is LectureColor.Custom -> tableTheme.getColors(false).indexOfFirst {
+                                    it.foreground == initialColor.foreground && it.background == initialColor.background
+                                }
+                            }
+                            val customColors = when (initialColor) {
+                                is LectureColor.Custom -> initialColor
+                                is LectureColor.BuiltIn -> LectureColor.Custom.Default
+                            }
                             LectureColorSelectorUiState.Loaded(
                                 tableTheme = tableTheme,
                                 isBuiltInTheme = isBuiltIn,
-                                selectedIndex = initialColorIndex,
-                                customFgColor = initialFgColor,
-                                customBgColor = initialBgColor,
+                                selectedIndex = selectedIndex,
+                                customFgColor = customColors.foreground,
+                                customBgColor = customColors.background,
                             )
                         }
 
@@ -127,11 +137,6 @@ class LectureColorSelectorViewModel @Inject constructor(
         }
     }
 
-    companion object {
-        const val RESULT_COLOR_INDEX = "color_result_index"
-        const val RESULT_FG = "color_result_fg"
-        const val RESULT_BG = "color_result_bg"
-    }
 }
 
 sealed interface LectureColorSelectorUiState {
