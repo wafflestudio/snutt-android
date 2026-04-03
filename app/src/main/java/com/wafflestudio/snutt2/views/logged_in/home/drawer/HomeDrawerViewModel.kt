@@ -263,9 +263,6 @@ class HomeDrawerViewModel @Inject constructor(
                     handleError(it)
                 }
                 .onSuccess {
-                    // FIXME: 구 동작 일단 옮겨오기. 이걸 해야, 상태가 변한다.
-                    tableRepository.fetchTableList()
-                    tableRepository.updateCurrentTable()
                     _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
                 }
         }
@@ -278,9 +275,6 @@ class HomeDrawerViewModel @Inject constructor(
                     handleError(it)
                 }
                 .onSuccess {
-                    // FIXME: 구 동작 일단 옮겨오기. 이걸 해야, 상태가 변한다.
-                    tableRepository.fetchTableList()
-                    tableRepository.updateCurrentTable()
                     _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
                 }
         }
@@ -351,8 +345,6 @@ class HomeDrawerViewModel @Inject constructor(
                         currentTable.summary.id,
                         previewTheme.id,
                     )
-                }.onSuccess {
-                    tableRepository.updateCurrentTable()
                 }
             }
             _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
