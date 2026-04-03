@@ -22,7 +22,7 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
  */
 @Composable
 fun HomeDrawerDialogs(
-    uiState: HomeDrawerUiState.Loaded,
+    uiState: HomeDrawerUiState,
     onDismiss: () -> Unit,
     onConfirmChangeTableTitle: (newName: String, tableId: String) -> Unit,
     onConfirmDeleteTable: (tableSummary: TableSummary) -> Unit,

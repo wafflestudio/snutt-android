@@ -98,7 +98,7 @@ fun TimeTableRoute(
         }
     }
 
-    val isSheetOpen = (drawerUiState as? HomeDrawerUiState.Loaded)?.homeDrawerBottomSheetType != HomeDrawerBottomSheetType.Empty
+    val isSheetOpen = drawerUiState.homeDrawerBottomSheetType != HomeDrawerBottomSheetType.Empty
     BackHandler(enabled = isSheetOpen) {
         drawerViewModel.closeSheet()
     }
