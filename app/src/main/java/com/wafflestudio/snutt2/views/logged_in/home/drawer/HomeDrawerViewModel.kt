@@ -538,9 +538,6 @@ class HomeDrawerViewModel @Inject constructor(
 sealed interface HomeDrawerUiEvent {
     data object OpenBottomSheet : HomeDrawerUiEvent
     data object CloseBottomSheet : HomeDrawerUiEvent
-    data class ChangeBottomSheet(
-        val bottomSheetType: HomeDrawerBottomSheetType,
-    ) : HomeDrawerUiEvent
 
     data object CloseDrawer : HomeDrawerUiEvent
 

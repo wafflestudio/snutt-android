@@ -12,8 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.snapshotFlow
-import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -27,7 +25,6 @@ import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTableScreen
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTableUiEvent
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTableUiState
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTableViewModel
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @Composable
@@ -75,19 +72,6 @@ fun TimeTableRoute(
                 is HomeDrawerUiEvent.CloseBottomSheet -> {
                     scope.launch {
                         sheetState.hide()
-                    }
-                }
-
-                is HomeDrawerUiEvent.ChangeBottomSheet -> {
-                    scope.launch {
-                        sheetState.hide()
-                        snapshotFlow { sheetState.currentValue }.first { it == ModalBottomSheetValue.Hidden }
-                        drawerViewModel.onChangeSheetType(uiEvent.bottomSheetType)
-                        drawerViewModel.uiState.first { it is HomeDrawerUiState.Loaded && it.homeDrawerBottomSheetType == uiEvent.bottomSheetType }
-                        withFrameNanos {}
-                        withFrameNanos {}
-                        withFrameNanos {} // FIXME: 안전한가??
-                        sheetState.show()
                     }
                 }
 
