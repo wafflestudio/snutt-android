@@ -300,7 +300,7 @@ class HomeDrawerViewModel @Inject constructor(
 
     fun openDeleteTableDialog(tableSummary: TableSummary) {
         _uiState.update {
-            it.copy(dialogState = HomeDrawerUiState.DialogState.None)
+            it.copy(dialogState = HomeDrawerUiState.DialogState.DeleteTable(tableSummary))
         }
     }
 
