@@ -146,7 +146,6 @@ dependencies {
 
     // UI & Misc
     implementation(libs.androidx.core.ktx)
-    implementation(libs.bundles.accompanist)
     implementation(libs.facebook.login)
     implementation(libs.timber)
     implementation(libs.androidx.core.splashscreen)
