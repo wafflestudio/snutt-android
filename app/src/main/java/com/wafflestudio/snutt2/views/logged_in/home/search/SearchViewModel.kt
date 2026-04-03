@@ -61,7 +61,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
@@ -97,7 +96,6 @@ class SearchViewModel @Inject constructor(
     private val _uiState: MutableStateFlow<SearchUiState> = MutableStateFlow(
         checkNotNull(tableRepository.currentTable.value).let { table ->
             SearchUiState(
-                pageMode = PageMode.Search,
                 courseBook = table.summary.courseBook,
                 selectedLecture = null,
                 currentTableLectures = table.lectures,
@@ -105,8 +103,7 @@ class SearchViewModel @Inject constructor(
                 tableLectureCustomOptions = tableDisplayRepository.tableLectureCustomOption.value,
                 tableTheme = BuiltInTheme.SNUTT,
                 isCompactMode = tableDisplayRepository.compactMode.value,
-                firstBookmarkAlert = bookmarkRepository.firstBookmarkAlert.value,
-                bookmarks = bookmarkRepository.bookmarks.value[table.summary.courseBook] ?: emptyList(),
+                bookmarks = emptyList(),
                 vacancyList = vacancyRepository.vacancyLectures.value,
                 disableMapFeature = true,
                 bottomSheetType = SearchUiState.BottomSheetType.None,
@@ -130,7 +127,7 @@ class SearchViewModel @Inject constructor(
         _querySignal.flatMapLatest {
             combine(
                 tableRepository.currentTable.filterNotNull(),
-                uiState.filter { it.pageMode == PageMode.Search },
+                uiState,
                 ::Pair,
             ).take(1).flatMapLatest { (table, state) ->
                 lectureSearchRepository.getLectureSearchResultStream(
@@ -148,7 +145,7 @@ class SearchViewModel @Inject constructor(
             }
         },
         tableRepository.currentTable.filterNotNull(),
-        uiState.filter { it.pageMode == PageMode.Search },
+        uiState,
     ) { pagingDataResult, table, state ->
         pagingDataResult.map { searchedLecture ->
             searchedLecture.toDataWithState(
@@ -177,10 +174,9 @@ class SearchViewModel @Inject constructor(
                     ::Triple,
                 ),
                 combine(
-                    bookmarkRepository.firstBookmarkAlert,
                     lectureSearchRepository.recentSearchedDepartmentTags,
                     getCurrentTableThemeUseCase(),
-                    ::Triple,
+                    ::Pair,
                 ),
                 combine(
                     vacancyRepository.vacancyLectures,
@@ -211,7 +207,7 @@ class SearchViewModel @Inject constructor(
                             }
                         }
                     },
-            ) { table, (trimParam, lectureCustom, compact), (firstAlert, recentDepts, theme), (vacancy, bookmarks, disableMap), searchTags ->
+            ) { table, (trimParam, lectureCustom, compact), (recentDepts, theme), (vacancy, bookmarks, disableMap), searchTags ->
                 val prevState = _uiState.value
                 val courseBook = table.summary.courseBook
                 val courseBookChanged = prevState.courseBook != courseBook
@@ -229,7 +225,6 @@ class SearchViewModel @Inject constructor(
                         tableLectureCustomOptions = lectureCustom,
                         tableTheme = theme,
                         isCompactMode = compact,
-                        firstBookmarkAlert = firstAlert,
                         bookmarks = bookmarks,
                         vacancyList = vacancy,
                         disableMapFeature = disableMap,
@@ -241,7 +236,6 @@ class SearchViewModel @Inject constructor(
                     )
                     if (courseBookChanged) {
                         next = next.copy(
-                            pageMode = PageMode.Search,
                             selectedLecture = null,
                             tableTrimParam = table.lectures.getFittingTrimParam(trimParam),
                             bottomSheetType = SearchUiState.BottomSheetType.None,
@@ -409,7 +403,6 @@ class SearchViewModel @Inject constructor(
                     vacancyRepository.setVacancyAdded()
                     _uiEvent.emit(SearchUiEvent.ShowSnackBar(SearchUiEvent.ShowSnackBar.SearchSnackBarEvent.FIRST_VACANCY_ADD))
                 }
-                // vacancyRepository.vacancyLectures 갱신 → combine → _uiState 자동 반영
             }
         }
     }
@@ -423,16 +416,6 @@ class SearchViewModel @Inject constructor(
 
     fun dismissDialog() {
         _uiState.update { it.copy(dialogState = SearchUiState.DialogState.None) }
-    }
-
-    fun onTogglePageMode() {
-        _uiState.update { it.copy(pageMode = it.pageMode.toggled()) }
-    }
-
-    fun onClickBack() {
-        _uiState.update { current ->
-            if (current.pageMode == PageMode.Bookmark) current.copy(pageMode = PageMode.Search) else current
-        }
     }
 
     fun onToggleLectureContained(lecture: SearchedLecture, contained: Boolean) {
@@ -463,11 +446,7 @@ class SearchViewModel @Inject constructor(
     fun openLectureDetailSheet(lecture: SearchedLecture) {
         viewModelScope.launch {
             val state = _uiState.value
-            val referrer = if (state.pageMode == PageMode.Bookmark) {
-                DetailScreenReferrer.Bookmark
-            } else {
-                DetailScreenReferrer.Search(state.searchTitle)
-            }
+            val referrer = DetailScreenReferrer.Search(state.searchTitle)
             _uiState.update { it.copy(bottomSheetType = SearchUiState.BottomSheetType.LectureDetail(lecture, referrer)) }
             _uiEvent.emit(SearchUiEvent.OpenBottomSheet)
             fetchBuildings(lecture)
@@ -543,10 +522,7 @@ class SearchViewModel @Inject constructor(
                 AddToTimetableParameter(
                     lectureId = lecture.id,
                     timetableId = tableRepository.currentTable.value?.summary?.id,
-                    referrer = when (_uiState.value.pageMode) {
-                        PageMode.Bookmark -> LectureActionReferrer.Bookmark
-                        PageMode.Search -> LectureActionReferrer.Search(_uiState.value.searchTitle)
-                    },
+                    referrer = LectureActionReferrer.Search(_uiState.value.searchTitle),
                 ),
             ),
         )
@@ -609,7 +585,6 @@ class SearchViewModel @Inject constructor(
 }
 
 data class SearchUiState(
-    val pageMode: PageMode,
     val courseBook: CourseBook,
 
     // 시간표 표시용
@@ -621,14 +596,13 @@ data class SearchUiState(
     val isCompactMode: Boolean,
 
     // 공통
-    val firstBookmarkAlert: Boolean,
     val bookmarks: List<SearchedLecture>,
     val vacancyList: List<SearchedLecture>,
     val disableMapFeature: Boolean,
     val bottomSheetType: BottomSheetType,
     val dialogState: DialogState,
 
-    // Search 전용 (Bookmark 모드에서는 UI에서 무시)
+    // Search 관련
     val searchTitle: String,
     val selectedTags: List<SearchTag>,
     val searchResultListState: SearchResultListState,
@@ -660,12 +634,6 @@ data class SearchUiState(
         data class ConfirmDeleteVacancy(val lecture: SearchedLecture) : DialogState
         data class ConfirmAddWithOverlap(val lecture: SearchedLecture, val message: String) : DialogState
     }
-}
-
-enum class PageMode {
-    Search, Bookmark;
-
-    fun toggled() = if (this == Search) Bookmark else Search
 }
 
 sealed interface SearchUiEvent {

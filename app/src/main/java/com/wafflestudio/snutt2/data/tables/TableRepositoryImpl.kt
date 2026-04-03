@@ -163,6 +163,7 @@ class TableRepositoryImpl @Inject constructor(
     override suspend fun setPrimaryTable(id: String): Result<Unit> {
         try {
             api._postPrimaryTable(id)
+            refreshTableListAndCurrentTable()
             return Result.Success(Unit)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
@@ -172,10 +173,20 @@ class TableRepositoryImpl @Inject constructor(
     override suspend fun unsetPrimaryTable(id: String): Result<Unit> {
         try {
             api._deletePrimaryTable(id)
+            refreshTableListAndCurrentTable()
             return Result.Success(Unit)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
         }
+    }
+
+    private suspend fun refreshTableListAndCurrentTable() {
+        val tableListResponse = api._getTableList()
+        snuttStorage.tableMap.update(tableListResponse.associateBy { it.id })
+
+        val prevTable = snuttStorage.lastViewedTable.get().value ?: return
+        val currentTableResponse = api._getTableById(prevTable.id)
+        snuttStorage.lastViewedTable.update(currentTableResponse.toOptional())
     }
 
     override suspend fun deleteTable(tableId: String): Result<Unit> {

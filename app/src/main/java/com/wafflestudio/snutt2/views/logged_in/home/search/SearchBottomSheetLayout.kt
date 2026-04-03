@@ -44,27 +44,25 @@ fun SearchBottomSheetLayout(
                 }
 
                 SearchUiState.BottomSheetType.Filter -> {
-                    if (uiState.pageMode == PageMode.Search) {
-                        LaunchedEffect(Unit) {
-                            analyticsLogger.logScreen(AnalyticsScreen.SearchFilter)
-                        }
-                        SearchOptionSheet(
-                            searchTags = uiState.searchTags,
-                            tagTypes = uiState.tagTypes,
-                            selectedTagType = uiState.selectedTagType,
-                            recentSearchedDepartments = uiState.recentSearchedDepartments,
-                            draggedTimeBlock = uiState.draggedTimeBlock,
-                            currentTableLectures = uiState.currentTableLectures,
-                            tableLectureCustomOptions = uiState.tableLectureCustomOptions,
-                            onSelectTagType = onSelectTagType,
-                            onToggleTag = onToggleTag,
-                            onRemoveRecentSearchedDepartments = onRemoveRecent,
-                            onTimeSelectCancel = onTimeSelectCancel,
-                            onTimeSelectConfirm = onTimeSelectConfirm,
-                            applyOption = applyFilter,
-                            hideBottomSheet = onDismiss,
-                        )
+                    LaunchedEffect(Unit) {
+                        analyticsLogger.logScreen(AnalyticsScreen.SearchFilter)
                     }
+                    SearchOptionSheet(
+                        searchTags = uiState.searchTags,
+                        tagTypes = uiState.tagTypes,
+                        selectedTagType = uiState.selectedTagType,
+                        recentSearchedDepartments = uiState.recentSearchedDepartments,
+                        draggedTimeBlock = uiState.draggedTimeBlock,
+                        currentTableLectures = uiState.currentTableLectures,
+                        tableLectureCustomOptions = uiState.tableLectureCustomOptions,
+                        onSelectTagType = onSelectTagType,
+                        onToggleTag = onToggleTag,
+                        onRemoveRecentSearchedDepartments = onRemoveRecent,
+                        onTimeSelectCancel = onTimeSelectCancel,
+                        onTimeSelectConfirm = onTimeSelectConfirm,
+                        applyOption = applyFilter,
+                        hideBottomSheet = onDismiss,
+                    )
                 }
 
                 is SearchUiState.BottomSheetType.LectureDetail -> {
