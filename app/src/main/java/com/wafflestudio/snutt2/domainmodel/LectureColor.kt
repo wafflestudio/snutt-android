@@ -1,9 +1,17 @@
 package com.wafflestudio.snutt2.domainmodel
 
+import android.os.Parcelable
+import androidx.compose.ui.graphics.toArgb
 import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
+import com.wafflestudio.snutt2.ui.SNUTTColors
+import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
 
-sealed interface LectureColor {
+@Serializable
+sealed interface LectureColor : Parcelable {
 
+    @Serializable
+    @Parcelize
     data class Custom(
         val foreground: Int,
         val background: Int,
@@ -17,12 +25,14 @@ sealed interface LectureColor {
 
         companion object {
             val Default = Custom(
-                foreground = 0xFFFFFFFF.toInt(),
-                background = 0xFF1BD0C8.toInt(),
+                foreground = SNUTTColors.White.toArgb(),
+                background = SNUTTColors.MainBlue.toArgb(),
             )
         }
     }
 
+    @Serializable
+    @Parcelize
     data class BuiltIn(
         val colorIndex: Int,
     ) : LectureColor

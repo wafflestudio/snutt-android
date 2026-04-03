@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views
 
+import com.wafflestudio.snutt2.domainmodel.LectureColor
 import com.wafflestudio.snutt2.navigation.DeepLinkPath
 import kotlinx.serialization.Serializable
 
@@ -61,10 +62,13 @@ sealed interface NavigationDestination {
     @Serializable
     @DeepLinkPath("lecture_color_selector")
     data class LectureColorSelector(
-        val colorIndex: Int = -1,
-        val fgColor: Int = 0,
-        val bgColor: Int = 0,
-    ) : NavigationDestination
+        val color: LectureColor = LectureColor.BuiltIn(0),
+    ) : NavigationDestination {
+        companion object {
+            val ARG_COLOR = LectureColorSelector::color.name
+            const val RESULT_KEY = "selected_color"
+        }
+    }
 
     @Serializable
     @DeepLinkPath("notifications")
