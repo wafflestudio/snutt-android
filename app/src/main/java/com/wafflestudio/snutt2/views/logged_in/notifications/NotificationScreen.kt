@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.items
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.AlarmOnIcon
 import com.wafflestudio.snutt2.components.compose.CalendarIcon
@@ -110,10 +109,12 @@ fun NotificationScreen(
             NotificationUiState.Error -> NotificationError()
             NotificationUiState.Loading -> {}
             is NotificationUiState.Success -> LazyColumn {
-                items(uiState.notificationList) { notification ->
-                    notification?.let {
+                items(
+                    count = uiState.notificationList.itemCount,
+                ) { index ->
+                    uiState.notificationList[index]?.let { notification ->
                         NotificationItem(notification) {
-                            onNotificationClick(it)
+                            onNotificationClick(notification)
                         }
                     }
                 }

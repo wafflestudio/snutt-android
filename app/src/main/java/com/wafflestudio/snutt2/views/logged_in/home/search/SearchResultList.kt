@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.items
 import com.wafflestudio.snutt2.components.compose.AnimatedLazyRow
 import com.wafflestudio.snutt2.domainmodel.SearchTag
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
@@ -96,8 +95,10 @@ fun SearchResultList(
                         state = lazyListState,
                         modifier = listModifier,
                     ) {
-                        items(searchResultPagingItems) { lectureDataWithState ->
-                            lectureDataWithState?.let { (lecture, lectureState) ->
+                        items(
+                            count = searchResultPagingItems.itemCount,
+                        ) { index ->
+                            searchResultPagingItems[index]?.let { (lecture, lectureState) ->
                                 SearchLectureListItem(
                                     modifier = Modifier.animateItem(
                                         placementSpec = spring(
