@@ -62,53 +62,47 @@ fun HomeDrawerBottomSheetLayout(
     HomeDrawerLoggingEffect(drawerState)
     ModalBottomSheetLayout(
         sheetContent = {
-            when (uiState) {
-                is HomeDrawerUiState.Loading -> {
+            when (uiState.homeDrawerBottomSheetType) {
+                HomeDrawerBottomSheetType.Empty -> {
                     ModalBottomSheetPlaceholder()
                 }
 
-                is HomeDrawerUiState.Loaded -> when (uiState.homeDrawerBottomSheetType) {
-                    HomeDrawerBottomSheetType.Empty -> {
-                        ModalBottomSheetPlaceholder()
+                is HomeDrawerBottomSheetType.SelectTheme -> {
+                    LaunchedEffect(Unit) {
+                        analyticsLogger.logScreen(AnalyticsScreen.ThemePreview)
                     }
+                    SelectThemeSheetContent(
+                        sheetType = uiState.homeDrawerBottomSheetType,
+                        onClickPreviewTheme = onClickPreviewTheme,
+                        onApply = onClickApplyTheme,
+                        onDismiss = onClickDisposeTheme,
+                        onClickAddTheme = onClickAddTheme,
+                    )
+                }
 
-                    is HomeDrawerBottomSheetType.SelectTheme -> {
-                        LaunchedEffect(Unit) {
-                            analyticsLogger.logScreen(AnalyticsScreen.ThemePreview)
-                        }
-                        SelectThemeSheetContent(
-                            sheetType = uiState.homeDrawerBottomSheetType,
-                            onClickPreviewTheme = onClickPreviewTheme,
-                            onApply = onClickApplyTheme,
-                            onDismiss = onClickDisposeTheme,
-                            onClickAddTheme = onClickAddTheme,
-                        )
-                    }
+                HomeDrawerBottomSheetType.CreateNewTheme -> {
+                    ModalBottomSheetPlaceholder()
+                }
 
-                    HomeDrawerBottomSheetType.CreateNewTheme -> {
-                        ModalBottomSheetPlaceholder()
-                    }
+                is HomeDrawerBottomSheetType.CreateNewTable -> {
+                    CreateTableBottomSheet(
+                        sheetState = sheetState,
+                        sheetType = uiState.homeDrawerBottomSheetType,
+                        onDismiss = onDismiss,
+                        onSubmit = onCreateNewTable,
+                    )
+                }
 
-                    is HomeDrawerBottomSheetType.CreateNewTable -> {
-                        CreateTableBottomSheet(
-                            sheetState = sheetState,
-                            sheetType = uiState.homeDrawerBottomSheetType,
-                            onDismiss = onDismiss,
-                            onSubmit = onCreateNewTable,
-                        )
-                    }
-
-                    is HomeDrawerBottomSheetType.MoreAction -> {
-                        MoreActionSheet(
-                            tableSummary = uiState.homeDrawerBottomSheetType.tableSummary,
-                            onClickChangeTableName = onClickChangeTableName,
-                            onClickSetPrimary = onClickSetPrimary,
-                            onClickUnsetPrimary = onClickUnsetPrimary,
-                            onClickShare = onClickShare,
-                            onClickSetTheme = onClickSetTheme,
-                            onClickDeleteTable = onClickDeleteTable,
-                        )
-                    }
+                is HomeDrawerBottomSheetType.MoreAction -> {
+                    MoreActionSheet(
+                        tableSummary = uiState.homeDrawerBottomSheetType.tableSummary,
+                        onClickChangeTableName = onClickChangeTableName,
+                        onClickSetPrimary = onClickSetPrimary,
+                        onClickUnsetPrimary = onClickUnsetPrimary,
+                        onClickShare = onClickShare,
+                        onClickSetTheme = onClickSetTheme,
+                        onClickDeleteTable = onClickDeleteTable,
+                    )
                 }
             }
         },

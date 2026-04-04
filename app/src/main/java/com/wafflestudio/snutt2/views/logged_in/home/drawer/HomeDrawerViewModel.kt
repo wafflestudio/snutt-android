@@ -27,8 +27,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -43,80 +41,57 @@ class HomeDrawerViewModel @Inject constructor(
     private val displayMessageResolver: DisplayMessageResolver,
 ) : ViewModel() {
     private val _uiEvent = MutableSharedFlow<HomeDrawerUiEvent>()
-    private val _uiState = MutableStateFlow<HomeDrawerUiState>(HomeDrawerUiState.Loading)
+    private val _uiState = MutableStateFlow(HomeDrawerUiState())
 
     val uiEvent = _uiEvent.asSharedFlow()
     val uiState = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
-            tableRepository.fetchTableList()
-        }
+            combine(
+                courseBookRepository.courseBooks,
+                tableRepository.tableSummaryList,
+                tableRepository.currentTable,
+            ) { courseBooks, tableSummaryList, currentTable ->
+                _uiState.update { state ->
+                    if (courseBooks.isEmpty() || tableSummaryList.isEmpty()) return@combine
 
-        viewModelScope.launch {
-            courseBookRepository.getCourseBooks()
-                .onFailure {
-                    handleError(it)
-                    return@launch
-                }
-                .onSuccess { coursebookList ->
-                    combine(
-                        tableRepository.tableSummaryList.filter { it.isNotEmpty() },
-                        tableRepository.currentTable.filterNotNull(),
-                    ) { tableSummaryList, currentTable ->
-                        // 유저의 전체 시간표 목록을 학기 별로 그룹핑 한 뒤 학기 순으로 정렬
-                        val tableSummariesOfEachCourseBook = tableSummaryList.groupBy {
-                            it.courseBook
-                        }.toMutableMap()
+                    // 유저의 전체 시간표 목록을 학기 별로 그룹핑 한 뒤 학기 순으로 정렬
+                    val tableSummariesOfEachCourseBook = tableSummaryList.groupBy {
+                        it.courseBook
+                    }.toMutableMap()
 
-                        // 가장 최신 학기는 생성된 시간표가 없어도 서랍에서 보여주기
-                        val mostRecentCourseBook = coursebookList.first()
-                        if (tableSummariesOfEachCourseBook.containsKey(mostRecentCourseBook)
-                                .not()
-                        ) {
-                            tableSummariesOfEachCourseBook[mostRecentCourseBook] = emptyList()
+                    // 가장 최신 학기는 생성된 시간표가 없어도 서랍에서 보여주기
+                    val mostRecentCourseBook = courseBooks.first()
+                    if (!tableSummariesOfEachCourseBook.containsKey(mostRecentCourseBook)) {
+                        tableSummariesOfEachCourseBook[mostRecentCourseBook] = emptyList()
+                    }
+
+                    val previousExpandedState =
+                        state.courseBookDrawerItemList.associate { (item, expanded) ->
+                            item.courseBook to expanded
                         }
 
-                        _uiState.update { state ->
-                            // 기존 각 학기의 펼침 상태 map
-                            val courseBookDrawerItemListMap =
-                                when (state) {
-                                    is HomeDrawerUiState.Loading -> emptyMap()
-                                    is HomeDrawerUiState.Loaded -> state.courseBookDrawerItemList.associate { (item, expanded) ->
-                                        item.courseBook to expanded
-                                    }
-                                }
+                    val courseBookDrawerItemList = tableSummariesOfEachCourseBook
+                        .toList()
+                        .sortedBy { (coursebook, _) -> coursebook }
+                        .map { (courseBook, tableSummaries) ->
+                            val isCurrentSemester = currentTable?.summary?.courseBook == courseBook
+                            val wasExpanded = previousExpandedState[courseBook] ?: false
 
-                            val courseBookDrawerItemList = tableSummariesOfEachCourseBook
-                                .toList()
-                                .sortedBy { (coursebook, _) -> coursebook }
-                                .map { (courseBook, tableSummaries) ->
-                                    CoursebookDrawerItem(
-                                        courseBook = courseBook,
-                                        showNewCoursebookDot = (courseBook == mostRecentCourseBook) && tableSummaries.isEmpty(),
-                                        tableList = tableSummaries,
-                                    ).toDataWithState(
-                                        // FIXME: 로직 정리
-                                        currentTable.summary.courseBook == courseBook ||
-                                            courseBookDrawerItemListMap[courseBook] ?: false,
-                                    )
-                                }
-                            when (state) {
-                                is HomeDrawerUiState.Loaded -> state.copy(
-                                    courseBookDrawerItemList = courseBookDrawerItemList,
-                                    selectedTable = currentTable.summary,
-                                )
-
-                                is HomeDrawerUiState.Loading -> HomeDrawerUiState.Loaded(
-                                    courseBookDrawerItemList = courseBookDrawerItemList,
-                                    selectedTable = currentTable.summary,
-                                    homeDrawerBottomSheetType = HomeDrawerBottomSheetType.Empty,
-                                    dialogState = HomeDrawerUiState.DialogState.None,
-                                )
-                            }
+                            CoursebookDrawerItem(
+                                courseBook = courseBook,
+                                showNewCoursebookDot = (courseBook == mostRecentCourseBook) && tableSummaries.isEmpty(),
+                                tableList = tableSummaries,
+                            ).toDataWithState(isCurrentSemester || wasExpanded)
                         }
-                    }.collect()
+
+                    state.copy(
+                        courseBookDrawerItemList = courseBookDrawerItemList,
+                        selectedTable = currentTable?.summary,
+                    )
                 }
+            }.collect()
         }
 
         // SelectTheme 시트가 열려있는 동안 테마 목록 변경을 자동 반영
@@ -128,7 +103,6 @@ class HomeDrawerViewModel @Inject constructor(
                 Pair(customThemes, builtInThemes)
             }.collect { (customThemes, builtInThemes) ->
                 _uiState.update { state ->
-                    if (state !is HomeDrawerUiState.Loaded) return@update state
                     val sheet = state.homeDrawerBottomSheetType
                     if (sheet !is HomeDrawerBottomSheetType.SelectTheme) return@update state
                     state.copy(
@@ -142,55 +116,45 @@ class HomeDrawerViewModel @Inject constructor(
         }
     }
 
-    fun toggleCourseBookDrawerItem(index: Int) {
-        _uiState.update { state ->
-            when (state) {
-                is HomeDrawerUiState.Loaded -> state.copy(
-                    courseBookDrawerItemList = state.courseBookDrawerItemList.toggleIndex(index),
-                )
+    fun onClickDrawerIcon() {
+        viewModelScope.launch { _uiEvent.emit(HomeDrawerUiEvent.OpenDrawer) }
+    }
 
-                else -> state
-            }
+    fun onDrawerOpened() {
+        viewModelScope.launch { tableRepository.fetchTableList() }
+        viewModelScope.launch { courseBookRepository.fetchCourseBooks() }
+    }
+
+    fun toggleCourseBookDrawerItem(index: Int) {
+        _uiState.update {
+            it.copy(courseBookDrawerItemList = it.courseBookDrawerItemList.toggleIndex(index))
         }
     }
 
     fun openCreateNewTableSheet() {
+        val allCourseBooks = courseBookRepository.courseBooks.value
+        _uiState.update {
+            it.copy(
+                homeDrawerBottomSheetType = HomeDrawerBottomSheetType.CreateNewTable.SelectCourseBook(
+                    initialCourseBook = it.selectedTable?.courseBook ?: allCourseBooks.first(),
+                    allCourseBook = allCourseBooks,
+                ),
+            )
+        }
         viewModelScope.launch {
-            // FIXME: 이거 매번 이렇게 가져와?
-            // TODO: 에러 처리
-            courseBookRepository.getCourseBooks().onSuccess { allCourseBook ->
-                _uiState.update { state ->
-                    when (state) {
-                        is HomeDrawerUiState.Loaded -> state.copy(
-                            homeDrawerBottomSheetType = HomeDrawerBottomSheetType.CreateNewTable.SelectCourseBook(
-                                initialCourseBook = state.selectedTable.courseBook,
-                                allCourseBook = allCourseBook,
-                            ),
-                        )
-
-                        else -> state
-                    }
-                }
-                _uiEvent.emit(HomeDrawerUiEvent.OpenBottomSheet)
-            }.onFailure {
-                handleError(it)
-            }
+            _uiEvent.emit(HomeDrawerUiEvent.OpenBottomSheet)
         }
     }
 
     fun openCreateNewTableOfSpecificCourseBookSheet(
         courseBook: CourseBook,
     ) {
-        _uiState.update { state ->
-            when (state) {
-                is HomeDrawerUiState.Loaded -> state.copy(
-                    homeDrawerBottomSheetType = HomeDrawerBottomSheetType.CreateNewTable.SpecificCourseBook(
-                        courseBook = courseBook,
-                    ),
-                )
-
-                else -> state
-            }
+        _uiState.update {
+            it.copy(
+                homeDrawerBottomSheetType = HomeDrawerBottomSheetType.CreateNewTable.SpecificCourseBook(
+                    courseBook = courseBook,
+                ),
+            )
         }
         viewModelScope.launch {
             _uiEvent.emit(HomeDrawerUiEvent.OpenBottomSheet)
@@ -199,16 +163,14 @@ class HomeDrawerViewModel @Inject constructor(
 
     fun selectTable(tableId: String) {
         viewModelScope.launch {
-            // 이걸 불러야 하는 게 참 암묵적이다
-            // TODO: data layer 리팩토링 + 에러 처리
             tableRepository.fetchAndSelectTable(tableId)
-            _uiEvent.emit(HomeDrawerUiEvent.CloseDrawer)
+                .onSuccess { _uiEvent.emit(HomeDrawerUiEvent.CloseDrawer) }
+                .onFailure { handleError(it) }
         }
     }
 
     fun copyTable(tableId: String) {
         viewModelScope.launch {
-            // TODO: 에러 처리
             tableRepository.copyTable(tableId).onFailure {
                 handleError(it)
             }
@@ -216,14 +178,8 @@ class HomeDrawerViewModel @Inject constructor(
     }
 
     fun openMoreActionBottomSheet(tableSummary: TableSummary) {
-        _uiState.update { state ->
-            when (state) {
-                is HomeDrawerUiState.Loaded -> state.copy(
-                    homeDrawerBottomSheetType = HomeDrawerBottomSheetType.MoreAction(tableSummary),
-                )
-
-                else -> state
-            }
+        _uiState.update {
+            it.copy(homeDrawerBottomSheetType = HomeDrawerBottomSheetType.MoreAction(tableSummary))
         }
         viewModelScope.launch {
             _uiEvent.emit(HomeDrawerUiEvent.OpenBottomSheet)
@@ -245,14 +201,8 @@ class HomeDrawerViewModel @Inject constructor(
     }
 
     fun openChangeTableNameDialog(tableSummary: TableSummary) {
-        _uiState.update { state ->
-            when (state) {
-                is HomeDrawerUiState.Loaded -> state.copy(
-                    dialogState = HomeDrawerUiState.DialogState.ChangeTableName(tableSummary),
-                )
-
-                else -> state
-            }
+        _uiState.update {
+            it.copy(dialogState = HomeDrawerUiState.DialogState.ChangeTableName(tableSummary))
         }
     }
 
@@ -306,39 +256,24 @@ class HomeDrawerViewModel @Inject constructor(
 
     private suspend fun changeToSelectThemeSheet() {
         val selectThemeSheet = buildSelectThemeSheetType()
-        _uiState.update { state ->
-            when (state) {
-                is HomeDrawerUiState.Loaded -> state.copy(sheetTransitionTarget = selectThemeSheet)
-                else -> state
-            }
-        }
+        _uiState.update { it.copy(sheetTransitionTarget = selectThemeSheet) }
         _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
     }
 
     fun setPreviewTheme(theme: TableTheme) {
         _uiState.update { state ->
-            when (state) {
-                is HomeDrawerUiState.Loaded -> when (state.homeDrawerBottomSheetType) {
-                    is HomeDrawerBottomSheetType.SelectTheme -> state.copy(
-                        homeDrawerBottomSheetType = state.homeDrawerBottomSheetType.copy(
-                            selectedPreviewTheme = theme,
-                        ),
-                    )
-
-                    else -> state
-                }
-
-                else -> state
-            }
+            val sheet = state.homeDrawerBottomSheetType
+            if (sheet !is HomeDrawerBottomSheetType.SelectTheme) return@update state
+            state.copy(
+                homeDrawerBottomSheetType = sheet.copy(selectedPreviewTheme = theme),
+            )
         }
     }
 
     fun applyTheme() {
         viewModelScope.launch {
             val currentTable = tableRepository.currentTable.value
-            val previewTheme = (_uiState.value as? HomeDrawerUiState.Loaded)
-                ?.homeDrawerBottomSheetType
-                ?.let { it as? HomeDrawerBottomSheetType.SelectTheme }
+            val previewTheme = (_uiState.value.homeDrawerBottomSheetType as? HomeDrawerBottomSheetType.SelectTheme)
                 ?.selectedPreviewTheme
             if (currentTable != null && previewTheme != null) {
                 when (previewTheme) {
@@ -363,27 +298,9 @@ class HomeDrawerViewModel @Inject constructor(
         }
     }
 
-    fun onChangeSheetType(sheetType: HomeDrawerBottomSheetType) {
-        _uiState.update { state ->
-            when (state) {
-                is HomeDrawerUiState.Loaded -> state.copy(
-                    homeDrawerBottomSheetType = sheetType,
-                )
-
-                else -> state
-            }
-        }
-    }
-
     fun openDeleteTableDialog(tableSummary: TableSummary) {
-        _uiState.update { state ->
-            when (state) {
-                is HomeDrawerUiState.Loaded -> state.copy(
-                    dialogState = HomeDrawerUiState.DialogState.None,
-                )
-
-                else -> state
-            }
+        _uiState.update {
+            it.copy(dialogState = HomeDrawerUiState.DialogState.DeleteTable(tableSummary))
         }
     }
 
@@ -403,14 +320,8 @@ class HomeDrawerViewModel @Inject constructor(
                 .onFailure {
                     handleError(it)
                 }.onSuccess {
-                    _uiState.update { state ->
-                        when (state) {
-                            is HomeDrawerUiState.Loaded -> state.copy(
-                                dialogState = HomeDrawerUiState.DialogState.None,
-                            )
-
-                            else -> state
-                        }
+                    _uiState.update {
+                        it.copy(dialogState = HomeDrawerUiState.DialogState.None)
                     }
                     _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
                 }
@@ -419,77 +330,55 @@ class HomeDrawerViewModel @Inject constructor(
 
     fun deleteTable(tableSummary: TableSummary) {
         viewModelScope.launch {
-            when (val state = _uiState.value) {
-                is HomeDrawerUiState.Loaded -> {
-                    val allTables = state.courseBookDrawerItemList.flatMap { it.item.tableList }
-                    val sameCourseBookTables =
-                        allTables.filter { it.courseBook == tableSummary.courseBook }
-                    val indexInSameCourseBook =
-                        sameCourseBookTables.indexOfFirst { it.id == tableSummary.id }
-                    val indexInAll = allTables.indexOfFirst { it.id == tableSummary.id }
+            val state = _uiState.value
+            val allTables = state.courseBookDrawerItemList.flatMap { it.item.tableList }
+            val sameCourseBookTables =
+                allTables.filter { it.courseBook == tableSummary.courseBook }
+            val indexInSameCourseBook =
+                sameCourseBookTables.indexOfFirst { it.id == tableSummary.id }
+            val indexInAll = allTables.indexOfFirst { it.id == tableSummary.id }
 
-                    tableRepository.deleteTable(tableSummary.id)
-                        .onFailure {
-                            // TODO: 에러 처리
-                            handleError(it)
-                            // "하나 남은 시간표는 삭제할 수 없습니다" 는 클라로직 대신 서버로직으로 대체함
-                            // 에러나면 dialog 숨기고 바텀시트도 닫고..
-                        }
-                        .onSuccess {
-                            // 현재 시간표를 삭제한 경우, 다른 시간표로 전환
-                            if (state.selectedTable.id == tableSummary.id) {
-                                // 삭제 후 남은 같은 학기 시간표들
-                                val remainingSameCourseBookTables =
-                                    sameCourseBookTables.filter { it.id != tableSummary.id }
-
-                                val nextTableId = if (remainingSameCourseBookTables.isEmpty()) {
-                                    // 같은 학기에 남은 시간표가 없으면 전체에서 선택
-                                    val remainingAllTables =
-                                        allTables.filter { it.id != tableSummary.id }
-                                    if (indexInAll == allTables.size) {
-                                        remainingAllTables.last().id
-                                    } else {
-                                        remainingAllTables[indexInAll].id
-                                    }
-                                } else {
-                                    // 같은 학기에 남은 시간표가 있으면 그 중에서 선택
-                                    if (indexInSameCourseBook == sameCourseBookTables.size) {
-                                        remainingSameCourseBookTables.last().id
-                                    } else {
-                                        remainingSameCourseBookTables[indexInSameCourseBook].id
-                                    }
-                                }
-                                tableRepository.fetchAndSelectTable(nextTableId)
-                            }
-
-                            _uiState.update { s ->
-                                when (s) {
-                                    is HomeDrawerUiState.Loaded -> s.copy(
-                                        dialogState = HomeDrawerUiState.DialogState.None,
-                                    )
-
-                                    else -> s
-                                }
-                            }
-                            _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
-                        }
+            tableRepository.deleteTable(tableSummary.id)
+                .onFailure {
+                    handleError(it)
                 }
+                .onSuccess {
+                    // 현재 시간표를 삭제한 경우, 다른 시간표로 전환
+                    if (state.selectedTable?.id == tableSummary.id) {
+                        // 삭제 후 남은 같은 학기 시간표들
+                        val remainingSameCourseBookTables =
+                            sameCourseBookTables.filter { it.id != tableSummary.id }
 
-                else -> {}
-            }
+                        val nextTableId = if (remainingSameCourseBookTables.isEmpty()) {
+                            // 같은 학기에 남은 시간표가 없으면 전체에서 선택
+                            val remainingAllTables =
+                                allTables.filter { it.id != tableSummary.id }
+                            if (indexInAll == allTables.size) {
+                                remainingAllTables.last().id
+                            } else {
+                                remainingAllTables[indexInAll].id
+                            }
+                        } else {
+                            // 같은 학기에 남은 시간표가 있으면 그 중에서 선택
+                            if (indexInSameCourseBook == sameCourseBookTables.size) {
+                                remainingSameCourseBookTables.last().id
+                            } else {
+                                remainingSameCourseBookTables[indexInSameCourseBook].id
+                            }
+                        }
+                        tableRepository.fetchAndSelectTable(nextTableId)
+                    }
+
+                    _uiState.update {
+                        it.copy(dialogState = HomeDrawerUiState.DialogState.None)
+                    }
+                    _uiEvent.emit(HomeDrawerUiEvent.CloseBottomSheet)
+                }
         }
     }
 
     fun dismissDialog() {
-        _uiState.update { state ->
-            when (state) {
-                is HomeDrawerUiState.Loaded -> state.copy(
-                    dialogState = HomeDrawerUiState.DialogState.None,
-                )
-
-                else -> state
-            }
-        }
+        _uiState.update { it.copy(dialogState = HomeDrawerUiState.DialogState.None) }
     }
 
     fun closeSheet() {
@@ -499,25 +388,19 @@ class HomeDrawerViewModel @Inject constructor(
     }
 
     fun onSheetDismissed() {
-        val hadPending = (_uiState.value as? HomeDrawerUiState.Loaded)?.sheetTransitionTarget != null
+        val hadPending = _uiState.value.sheetTransitionTarget != null
 
         _uiState.update { state ->
-            when (state) {
-                is HomeDrawerUiState.Loaded -> {
-                    val pending = state.sheetTransitionTarget
-                    if (pending != null) {
-                        state.copy(
-                            homeDrawerBottomSheetType = pending,
-                            sheetTransitionTarget = null,
-                        )
-                    } else {
-                        state.copy(
-                            homeDrawerBottomSheetType = HomeDrawerBottomSheetType.Empty,
-                        )
-                    }
-                }
-
-                else -> state
+            val pending = state.sheetTransitionTarget
+            if (pending != null) {
+                state.copy(
+                    homeDrawerBottomSheetType = pending,
+                    sheetTransitionTarget = null,
+                )
+            } else {
+                state.copy(
+                    homeDrawerBottomSheetType = HomeDrawerBottomSheetType.Empty,
+                )
             }
         }
 
@@ -536,10 +419,11 @@ class HomeDrawerViewModel @Inject constructor(
 }
 
 sealed interface HomeDrawerUiEvent {
+    data object OpenDrawer : HomeDrawerUiEvent
+    data object CloseDrawer : HomeDrawerUiEvent
+
     data object OpenBottomSheet : HomeDrawerUiEvent
     data object CloseBottomSheet : HomeDrawerUiEvent
-
-    data object CloseDrawer : HomeDrawerUiEvent
 
     data object NavigateToThemeDetail : HomeDrawerUiEvent
 
@@ -548,17 +432,13 @@ sealed interface HomeDrawerUiEvent {
     data class ShowToast(val displayMessage: String) : HomeDrawerUiEvent
 }
 
-sealed interface HomeDrawerUiState {
-    data class Loaded(
-        val courseBookDrawerItemList: List<Selectable<CoursebookDrawerItem>>,
-        val selectedTable: TableSummary,
-        val homeDrawerBottomSheetType: HomeDrawerBottomSheetType,
-        val sheetTransitionTarget: HomeDrawerBottomSheetType? = null,
-        val dialogState: DialogState,
-    ) : HomeDrawerUiState
-
-    data object Loading : HomeDrawerUiState
-
+data class HomeDrawerUiState(
+    val courseBookDrawerItemList: List<Selectable<CoursebookDrawerItem>> = emptyList(),
+    val selectedTable: TableSummary? = null,
+    val homeDrawerBottomSheetType: HomeDrawerBottomSheetType = HomeDrawerBottomSheetType.Empty,
+    val sheetTransitionTarget: HomeDrawerBottomSheetType? = null,
+    val dialogState: DialogState = DialogState.None,
+) {
     sealed interface DialogState {
         data object None : DialogState
         data class ChangeTableName(

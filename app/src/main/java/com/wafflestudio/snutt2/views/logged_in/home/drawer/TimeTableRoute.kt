@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.DrawerValue
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.material.rememberModalBottomSheetState
@@ -12,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -20,11 +22,12 @@ import com.wafflestudio.snutt2.components.compose.BottomSheetDismissEffect
 import com.wafflestudio.snutt2.domainmodel.LocalLecture
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.shareScreenshot
-import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTableScreen
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTableUiEvent
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTableUiState
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTableViewModel
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 @Composable
@@ -42,7 +45,6 @@ fun TimeTableRoute(
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    val analyticsLogger = LocalAnalyticsLogger.current
 
     // FIXME: 뷰모델 refresh 함수 주석 참조
     LaunchedEffect(Unit) {
@@ -63,22 +65,20 @@ fun TimeTableRoute(
     LaunchedEffect(Unit) {
         drawerViewModel.uiEvent.collect { uiEvent ->
             when (uiEvent) {
-                is HomeDrawerUiEvent.OpenBottomSheet -> {
-                    scope.launch {
-                        sheetState.show()
-                    }
-                }
-
-                is HomeDrawerUiEvent.CloseBottomSheet -> {
-                    scope.launch {
-                        sheetState.hide()
-                    }
+                is HomeDrawerUiEvent.OpenDrawer -> {
+                    scope.launch { drawerState.open() }
                 }
 
                 is HomeDrawerUiEvent.CloseDrawer -> {
-                    scope.launch {
-                        drawerState.close()
-                    }
+                    scope.launch { drawerState.close() }
+                }
+
+                is HomeDrawerUiEvent.OpenBottomSheet -> {
+                    scope.launch { sheetState.show() }
+                }
+
+                is HomeDrawerUiEvent.CloseBottomSheet -> {
+                    scope.launch { sheetState.hide() }
                 }
 
                 is HomeDrawerUiEvent.ShowToast -> {
@@ -98,7 +98,15 @@ fun TimeTableRoute(
         }
     }
 
-    val isSheetOpen = (drawerUiState as? HomeDrawerUiState.Loaded)?.homeDrawerBottomSheetType != HomeDrawerBottomSheetType.Empty
+    @OptIn(ExperimentalMaterialApi::class)
+    LaunchedEffect(Unit) {
+        snapshotFlow { drawerState.targetValue }
+            .distinctUntilChanged()
+            .filter { it == DrawerValue.Open }
+            .collect { drawerViewModel.onDrawerOpened() }
+    }
+
+    val isSheetOpen = drawerUiState.homeDrawerBottomSheetType != HomeDrawerBottomSheetType.Empty
     BackHandler(enabled = isSheetOpen) {
         drawerViewModel.closeSheet()
     }
@@ -161,7 +169,7 @@ fun TimeTableRoute(
             Box(modifier = Modifier.weight(1f)) {
                 TimeTableScreen(
                     uiState = timeTableUiState,
-                    onClickDrawerIcon = { scope.launch { drawerState.open() } },
+                    onClickDrawerIcon = drawerViewModel::onClickDrawerIcon,
                     onClickTableTitle = timeTableViewModel::showTableTitleChangeDialog,
                     onClickTableLecturesListIcon = onNavigateLecturesOfTable,
                     onClickVacancyBanner = onNavigateVacancyNotification,
