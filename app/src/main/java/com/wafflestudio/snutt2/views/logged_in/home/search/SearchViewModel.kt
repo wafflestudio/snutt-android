@@ -15,6 +15,7 @@ import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.data.vacancy_noti.VacancyRepository
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
+import com.wafflestudio.snutt2.domainmodel.Building
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.LocalLecture
@@ -43,7 +44,6 @@ import com.wafflestudio.snutt2.lib.network.AuthError
 import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
 import com.wafflestudio.snutt2.lib.network.DomainError
 import com.wafflestudio.snutt2.lib.network.LectureOverlap
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
 import com.wafflestudio.snutt2.lib.network.onFailure
 import com.wafflestudio.snutt2.lib.network.onSuccess
 import com.wafflestudio.snutt2.lib.toDataWithState
@@ -454,7 +454,7 @@ class SearchViewModel @Inject constructor(
     }
 
     private suspend fun fetchBuildings(lecture: SearchedLecture) {
-        lectureInfoRepository.getBuildings(lecture.lectureSessions.map { it.place }.distinct())
+        lectureInfoRepository.getBuildings(lecture)
             .onSuccess { buildings ->
                 _uiState.update { current ->
                     val bt = current.bottomSheetType
@@ -623,7 +623,7 @@ data class SearchUiState(
         data class LectureDetail(
             val lecture: SearchedLecture,
             val referrer: DetailScreenReferrer,
-            val buildings: List<LectureBuildingDto> = emptyList(),
+            val buildings: List<Building> = emptyList(),
         ) : BottomSheetType
 
     }

@@ -25,7 +25,7 @@ import com.wafflestudio.snutt2.domainmodel.LectureSyllabusInfo
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
 import com.wafflestudio.snutt2.domainmodel.TableTheme
 import com.wafflestudio.snutt2.domainmodel.preview.PreviewData
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
+import com.wafflestudio.snutt2.domainmodel.Building
 import com.wafflestudio.snutt2.ui.SNUTTColors
 
 @Composable
@@ -35,7 +35,7 @@ fun LectureDetail(
     hideEditButton: Boolean = false,
     tableTheme: TableTheme,
     reviewInfo: LectureReviewInfo?,
-    buildings: List<LectureBuildingDto>,
+    buildings: List<Building>,
     isBookmarked: Boolean,
     vacancyRegistered: Boolean,
     showCategoryPre2025: Boolean,

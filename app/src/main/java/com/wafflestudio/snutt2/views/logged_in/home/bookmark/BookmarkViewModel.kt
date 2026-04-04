@@ -12,6 +12,7 @@ import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.data.vacancy_noti.VacancyRepository
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
+import com.wafflestudio.snutt2.domainmodel.Building
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.domainmodel.SyllabusLecture
 import com.wafflestudio.snutt2.domainmodel.Table
@@ -30,7 +31,6 @@ import com.wafflestudio.snutt2.lib.network.AuthError
 import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
 import com.wafflestudio.snutt2.lib.network.DomainError
 import com.wafflestudio.snutt2.lib.network.LectureOverlap
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
 import com.wafflestudio.snutt2.lib.network.onFailure
 import com.wafflestudio.snutt2.lib.network.onSuccess
 import com.wafflestudio.snutt2.lib.toDataWithState
@@ -358,7 +358,7 @@ class BookmarkViewModel @Inject constructor(
     }
 
     private suspend fun fetchBuildings(lecture: SearchedLecture) {
-        lectureInfoRepository.getBuildings(lecture.lectureSessions.map { it.place }.distinct())
+        lectureInfoRepository.getBuildings(lecture)
             .onSuccess { buildings ->
                 _uiState.update { current ->
                     if (current !is BookmarkUiState.Success) return@update current
@@ -430,7 +430,7 @@ sealed interface BookmarkUiState {
         data object None : BottomSheetType
         data class LectureDetail(
             val lecture: SearchedLecture,
-            val buildings: List<LectureBuildingDto> = emptyList(),
+            val buildings: List<Building> = emptyList(),
             val isBookmarked: Boolean = false,
             val isVacancyRegistered: Boolean = false,
         ) : BottomSheetType

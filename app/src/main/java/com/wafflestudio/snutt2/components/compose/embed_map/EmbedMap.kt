@@ -26,14 +26,14 @@ import com.naver.maps.map.compose.rememberMarkerState
 import com.naver.maps.map.overlay.OverlayImage
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.MapPinBinding
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
+import com.wafflestudio.snutt2.domainmodel.Building
 import com.wafflestudio.snutt2.ui.SNUTTColors
 
 @OptIn(ExperimentalNaverMapApi::class)
 @Composable
 fun EmbedMap(
     modifier: Modifier,
-    buildings: List<LectureBuildingDto>,
+    buildings: List<Building>,
 ) {
     val context = LocalContext.current
 
@@ -49,7 +49,7 @@ fun EmbedMap(
     LaunchedEffect(buildings) {
         cameraPositionState.move(
             EmbedMapUtils.getCameraUpdateFromLatLngList(
-                buildings.map { it.locationInDMS.toLatLng() },
+                buildings.map { LatLng(it.coordinate.latitude, it.coordinate.longitude) },
             ),
         )
     }
@@ -85,7 +85,7 @@ fun EmbedMap(
                 captionOffset = (-26).dp,
                 state = rememberMarkerState(
                     position = CameraPosition(
-                        building.locationInDMS.let { LatLng(it.latitude, it.longitude) },
+                        LatLng(building.coordinate.latitude, building.coordinate.longitude),
                         6.0,
                     ).target,
                 ),

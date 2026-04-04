@@ -23,7 +23,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.ArrowDownIcon
 import com.wafflestudio.snutt2.components.compose.MapIcon
 import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
+import com.wafflestudio.snutt2.domainmodel.Building
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 
@@ -33,7 +33,7 @@ private var isEmbedMapFoldedSaved = true
 @Composable
 fun FoldableEmbedMap(
     modifier: Modifier,
-    buildings: List<LectureBuildingDto>,
+    buildings: List<Building>,
 ) {
     var embedMapFolded by remember {
         mutableStateOf(isEmbedMapFoldedSaved)
