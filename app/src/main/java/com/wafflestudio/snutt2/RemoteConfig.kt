@@ -16,11 +16,19 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
+interface RemoteConfig {
+    val vacancyNotificationBannerEnabled: Flow<Boolean>
+    val sugangSNUUrl: Flow<String>
+    val settingPageNewBadgeTitles: Flow<List<String>>
+    val disableMapFeature: Flow<Boolean>
+    val noticeConfig: Flow<RemoteConfigDto.NoticeConfig>
+}
+
 @Singleton
-class RemoteConfig @Inject constructor(
+class RemoteConfigImpl @Inject constructor(
     api: SNUTTRestApi,
     networkConnectivityManager: NetworkConnectivityManager,
-) {
+) : RemoteConfig {
     private val config = MutableStateFlow(RemoteConfigDto())
 
     init {
@@ -44,16 +52,16 @@ class RemoteConfig @Inject constructor(
         }
     }
 
-    val vacancyNotificationBannerEnabled: Flow<Boolean>
+    override val vacancyNotificationBannerEnabled: Flow<Boolean>
         get() = config.map { it.vacancyBannerConfig.visible }
-    val sugangSNUUrl: Flow<String>
+    override val sugangSNUUrl: Flow<String>
         get() = config.map { it.vacancyUrlConfig.url }.filterNotNull()
-    val settingPageNewBadgeTitles: Flow<List<String>>
+    override val settingPageNewBadgeTitles: Flow<List<String>>
         get() = config.map { it.settingsBadgeConfig.new }
-    val disableMapFeature: Flow<Boolean>
+    override val disableMapFeature: Flow<Boolean>
         // NOTE: 평상시에는 필드가 null로 내려오고, 이는 로직상 false 취급이다. 지도를 급히 비활성화해야 할 경우 true가 내려온다.
         // https://wafflestudio.slack.com/archives/C0PAVPS5T/p1706542084934709?thread_ts=1706451688.745159&cid=C0PAVPS5T
         get() = config.map { it.disableMapFeature ?: false }
-    val noticeConfig: Flow<RemoteConfigDto.NoticeConfig>
+    override val noticeConfig: Flow<RemoteConfigDto.NoticeConfig>
         get() = config.map { it.noticeConfig ?: RemoteConfigDto.NoticeConfig(false, null, null) }
 }
