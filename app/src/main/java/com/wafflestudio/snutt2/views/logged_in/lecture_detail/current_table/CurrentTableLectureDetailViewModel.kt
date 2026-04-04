@@ -308,7 +308,7 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
 
     fun confirmDeleteLecture() {
         viewModelScope.launch {
-            currentTableLectureRepository.removeLecture(originalLecture.id)
+            currentTableLectureRepository.removeLecture(originalLecture)
                 .onSuccess {
                     _uiState.update { it.copy(dialogState = CurrentTableLectureDetailUiState.DialogState.None) }
                     _uiEvent.emit(CurrentTableLectureDetailUiEvent.LectureDeleted)
@@ -326,7 +326,7 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
 
     fun confirmResetLecture() {
         viewModelScope.launch {
-            currentTableLectureRepository.resetLecture(originalLecture.id)
+            currentTableLectureRepository.resetLecture(originalLecture)
                 .onSuccess { resetLecture ->
                     originalLecture = resetLecture
                     val buildings = fetchBuildings(resetLecture)

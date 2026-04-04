@@ -336,7 +336,7 @@ class BookmarkViewModel @Inject constructor(
                 ),
             ),
         )
-        currentTableLectureRepository.addLecture(lecture.id, isForced)
+        currentTableLectureRepository.addLecture(lecture, isForced)
             .onSuccess {
                 onToggleLectureSelection(lecture)
             }

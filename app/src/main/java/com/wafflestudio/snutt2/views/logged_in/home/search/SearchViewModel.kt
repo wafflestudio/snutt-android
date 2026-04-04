@@ -526,7 +526,7 @@ class SearchViewModel @Inject constructor(
                 ),
             ),
         )
-        currentTableLectureRepository.addLecture(lecture.id, isForced).onFailure { error ->
+        currentTableLectureRepository.addLecture(lecture, isForced).onFailure { error ->
             if (error is LectureOverlap) {
                 _uiState.update {
                     it.copy(
