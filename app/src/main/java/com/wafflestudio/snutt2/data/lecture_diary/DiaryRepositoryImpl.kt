@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.data.lecture_diary
 
 import com.wafflestudio.snutt2.domainmodel.diary.DiaryAnsweredQuestion
 import com.wafflestudio.snutt2.domainmodel.diary.DiaryDailyClassType
+import com.wafflestudio.snutt2.domainmodel.diary.DiarySummary
 import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.DiaryQuestionnaireRequestDto
@@ -27,13 +28,13 @@ class DiaryRepositoryImpl @Inject constructor(
 
     override suspend fun getQuestionnaire(
         lectureId: String,
-        dailyClassTypes: List<String>,
+        dailyClassTypes: List<DiaryDailyClassType>,
     ): Result<DiaryQuestionnaireData> {
         return try {
             val result = api._getQuestionnaireFromActivities(
                 DiaryQuestionnaireRequestDto(
                     lectureId = lectureId,
-                    dailyClassTypes = dailyClassTypes,
+                    dailyClassTypes = dailyClassTypes.map { it.name },
                 ),
             )
             Result.Success(
@@ -51,7 +52,7 @@ class DiaryRepositoryImpl @Inject constructor(
 
     override suspend fun submitDiary(
         lectureId: String,
-        dailyClassTypes: List<String>,
+        dailyClassTypes: List<DiaryDailyClassType>,
         questionAnswers: List<DiaryAnsweredQuestion>,
         comment: String,
     ): Result<Unit> {
@@ -59,7 +60,7 @@ class DiaryRepositoryImpl @Inject constructor(
             api._submitDiary(
                 DiarySubmissionRequestDto(
                     lectureId = lectureId,
-                    dailyClassTypes = dailyClassTypes,
+                    dailyClassTypes = dailyClassTypes.map { it.name },
                     questionAnswers = questionAnswers.map {
                         DiaryQuestionAnswerDto(
                             questionId = it.questionId,
@@ -88,9 +89,9 @@ class DiaryRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun removeDiarySubmission(id: String): Result<Unit> {
+    override suspend fun removeDiarySubmission(diary: DiarySummary): Result<Unit> {
         return try {
-            api._removeDiarySubmission(id)
+            api._removeDiarySubmission(diary.id)
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Fail(e.toDomainError())

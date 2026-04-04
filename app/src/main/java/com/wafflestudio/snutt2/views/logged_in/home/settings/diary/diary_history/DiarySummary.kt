@@ -43,7 +43,7 @@ fun DiarySummariesOfDay(
     listOfDiarySummary: List<DiarySummary>,
     expanded: Boolean,
     toggleExpended: () -> Unit,
-    onDeleteDiary: (diaryId: String, courseName: String) -> Unit,
+    onDeleteDiary: (DiarySummary) -> Unit,
 ) {
     Column(modifier = Modifier.padding(vertical = 16.dp, horizontal = 20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Column {
@@ -92,7 +92,7 @@ fun DiarySummariesOfDay(
                     DiarySummary(
                         diaryListLectureItem,
                         onClickDeleteButton = {
-                            onDeleteDiary(diaryListLectureItem.id, diaryListLectureItem.courseName)
+                            onDeleteDiary(diaryListLectureItem)
                         },
                     )
                 }
@@ -210,7 +210,7 @@ private val previewSummary2 = DiarySummary(
 @Preview(showBackground = true)
 fun DiarySummariesOfDayFoldedPreview() {
     DiaryTheme {
-        DiarySummariesOfDay(LocalDate.of(2025, 3, 20), listOf(previewSummary1), false, {}, { _, _ -> })
+        DiarySummariesOfDay(LocalDate.of(2025, 3, 20), listOf(previewSummary1), false, {}, { _ -> })
     }
 }
 
@@ -218,7 +218,7 @@ fun DiarySummariesOfDayFoldedPreview() {
 @Preview(uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES, showBackground = true, backgroundColor = 0xFF1a1a1a)
 fun DiarySummariesOfDayFoldedDarkPreview() {
     DiaryTheme(darkTheme = true) {
-        DiarySummariesOfDay(LocalDate.of(2025, 3, 20), listOf(previewSummary1), false, {}, { _, _ -> })
+        DiarySummariesOfDay(LocalDate.of(2025, 3, 20), listOf(previewSummary1), false, {}, { _ -> })
     }
 }
 
@@ -226,7 +226,7 @@ fun DiarySummariesOfDayFoldedDarkPreview() {
 @Preview(showBackground = true)
 fun DiarySummariesOfDayExpandedPreview() {
     DiaryTheme {
-        DiarySummariesOfDay(LocalDate.of(2025, 3, 20), listOf(previewSummary1, previewSummary2), true, {}, { _, _ -> })
+        DiarySummariesOfDay(LocalDate.of(2025, 3, 20), listOf(previewSummary1, previewSummary2), true, {}, { _ -> })
     }
 }
 
@@ -234,7 +234,7 @@ fun DiarySummariesOfDayExpandedPreview() {
 @Preview(uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES, showBackground = true, backgroundColor = 0xFF1a1a1a)
 fun DiarySummariesOfDayExpandedDarkPreview() {
     DiaryTheme(darkTheme = true) {
-        DiarySummariesOfDay(LocalDate.of(2025, 3, 20), listOf(previewSummary1, previewSummary2), true, {}, { _, _ -> })
+        DiarySummariesOfDay(LocalDate.of(2025, 3, 20), listOf(previewSummary1, previewSummary2), true, {}, { _ -> })
     }
 }
 

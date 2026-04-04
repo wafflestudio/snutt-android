@@ -27,15 +27,15 @@ interface TableRepository {
 
     suspend fun createAndSelectTable(courseBook: CourseBook, title: String): Result<Unit>
 
-    suspend fun updateTableName(newTitle: String, tableId: String): Result<Unit>
+    suspend fun updateTableName(table: TableSummary, newTitle: String): Result<Unit>
 
-    suspend fun setPrimaryTable(id: String): Result<Unit>
+    suspend fun setPrimaryTable(table: TableSummary): Result<Unit>
 
-    suspend fun unsetPrimaryTable(id: String): Result<Unit>
+    suspend fun unsetPrimaryTable(table: TableSummary): Result<Unit>
 
-    suspend fun deleteTable(tableId: String): Result<Unit>
+    suspend fun deleteTable(table: TableSummary): Result<Unit>
 
-    suspend fun copyTable(id: String): Result<Unit>
+    suspend fun copyTable(table: TableSummary): Result<Unit>
 
     suspend fun updateTableTheme(tableId: String, code: Int): Result<Unit>
 

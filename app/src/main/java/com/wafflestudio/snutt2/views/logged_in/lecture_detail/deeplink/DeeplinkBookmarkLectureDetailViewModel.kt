@@ -183,8 +183,7 @@ class DeeplinkBookmarkLectureDetailViewModel @Inject constructor(
             val lecture = (_uiState.value as? DeeplinkBookmarkLectureDetailUiState.Success)?.lecture as? LectureSyllabusInfo ?: return@launch
             lectureInfoRepository.getSyllabusUrl(
                 CourseBook(year = year, semester = semester),
-                lecture.courseNumber,
-                lecture.lectureNumber,
+                lecture,
             ).onSuccess { url ->
                 _uiEvent.emit(DeeplinkBookmarkLectureDetailUiEvent.OpenUrl(url))
             }.onFailure { handleError(it) }

@@ -4,13 +4,15 @@ import com.wafflestudio.snutt2.domainmodel.Building
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.Lecture
 import com.wafflestudio.snutt2.domainmodel.LectureReviewInfo
+import com.wafflestudio.snutt2.domainmodel.LectureSyllabusInfo
+import com.wafflestudio.snutt2.domainmodel.SyllabusLecture
 import com.wafflestudio.snutt2.lib.network.Result
 
 interface LectureInfoRepository {
 
-    suspend fun getSyllabusUrl(courseBook: CourseBook, courseNumber: String, lectureNumber: String): Result<String>
+    suspend fun getSyllabusUrl(courseBook: CourseBook, lecture: LectureSyllabusInfo): Result<String>
 
-    suspend fun getReviewInfo(lectureId: String): Result<LectureReviewInfo?>
+    suspend fun getReviewInfo(lecture: SyllabusLecture): Result<LectureReviewInfo?>
 
     suspend fun getBuildings(lecture: Lecture): Result<List<Building>>
 }

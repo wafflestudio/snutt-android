@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.data.lecture_search
 
 import androidx.paging.PagingData
+import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.SearchTag
 import com.wafflestudio.snutt2.domainmodel.SearchTime
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
@@ -11,15 +12,14 @@ interface LectureSearchRepository {
     val recentSearchedDepartmentTags: Flow<List<SearchTag>>
 
     fun getLectureSearchResultStream(
-        year: Long,
-        semester: Long,
+        courseBook: CourseBook,
         title: String,
         tags: List<SearchTag>,
         times: List<SearchTime>?,
         timesToExclude: List<SearchTime>?,
     ): Flow<PagingData<SearchedLecture>>
 
-    suspend fun getSearchTags(year: Long, semester: Long): List<SearchTag>
+    suspend fun getSearchTags(courseBook: CourseBook): List<SearchTag>
 
     fun storeRecentSearchedDepartment(tag: SearchTag)
 

@@ -24,7 +24,7 @@ import com.wafflestudio.snutt2.ui.SNUTTTypography
 fun HomeDrawerDialogs(
     uiState: HomeDrawerUiState,
     onDismiss: () -> Unit,
-    onConfirmChangeTableTitle: (newName: String, tableId: String) -> Unit,
+    onConfirmChangeTableTitle: (TableSummary, String) -> Unit,
     onConfirmDeleteTable: (tableSummary: TableSummary) -> Unit,
 ) {
     val context = LocalContext.current
@@ -37,7 +37,7 @@ fun HomeDrawerDialogs(
             CustomDialog(
                 onDismiss = onDismiss,
                 onConfirm = {
-                    onConfirmChangeTableTitle(newTitle, uiState.dialogState.tableSummary.id)
+                    onConfirmChangeTableTitle(uiState.dialogState.tableSummary, newTitle)
                 },
                 title = context.getString(R.string.home_drawer_change_name_dialog_title),
                 positiveButtonText = context.getString(R.string.common_ok),

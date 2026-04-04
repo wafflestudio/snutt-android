@@ -437,8 +437,7 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
             val syllabusLecture = _uiState.value.lecture as? SyllabusLecture ?: return@launch
             lectureInfoRepository.getSyllabusUrl(
                 courseBook,
-                syllabusLecture.courseNumber,
-                syllabusLecture.lectureNumber,
+                syllabusLecture,
             ).onSuccess { url ->
                 _uiEvent.emit(CurrentTableLectureDetailUiEvent.OpenUrl(url))
             }.onFailure { error ->
@@ -516,7 +515,7 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
     private suspend fun fetchReviewInfo(lecture: Lecture): LectureReviewInfo? {
         if (lecture !is SyllabusLecture) return null
         var reviewInfo: LectureReviewInfo? = null
-        lectureInfoRepository.getReviewInfo(lecture.originalLectureId)
+        lectureInfoRepository.getReviewInfo(lecture)
             .onSuccess { reviewInfo = it }
         return reviewInfo
     }

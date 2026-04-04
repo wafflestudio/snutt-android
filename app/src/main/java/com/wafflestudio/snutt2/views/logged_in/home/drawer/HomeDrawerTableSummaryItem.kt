@@ -35,7 +35,7 @@ fun CourseBookDrawerItem(
     tableSummary: TableSummary,
     isSelectedTable: Boolean,
     onSelectTable: (tableId: String) -> Unit,
-    onClickCopyIcon: (tableId: String) -> Unit,
+    onClickCopyIcon: (TableSummary) -> Unit,
     onClickMoreIcon: (tableSummary: TableSummary) -> Unit,
 ) {
     Row(
@@ -82,7 +82,7 @@ fun CourseBookDrawerItem(
             modifier = Modifier
                 .size(30.dp)
                 .clicks {
-                    onClickCopyIcon(tableSummary.id)
+                    onClickCopyIcon(tableSummary)
                 },
             colorFilter = ColorFilter.tint(SNUTTColors.Black500),
         )

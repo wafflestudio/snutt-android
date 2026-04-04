@@ -316,7 +316,7 @@ class BookmarkViewModel @Inject constructor(
     fun openSyllabus(lecture: SearchedLecture) {
         viewModelScope.launch {
             val courseBook = tableRepository.currentTable.value?.summary?.courseBook ?: return@launch
-            lectureInfoRepository.getSyllabusUrl(courseBook, lecture.courseNumber, lecture.lectureNumber)
+            lectureInfoRepository.getSyllabusUrl(courseBook, lecture)
                 .onSuccess { url -> _uiEvent.emit(BookmarkUiEvent.OpenUrl(url)) }
                 .onFailure { handleError(it) }
         }

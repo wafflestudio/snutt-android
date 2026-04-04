@@ -131,8 +131,7 @@ class SearchViewModel @Inject constructor(
                 ::Pair,
             ).take(1).flatMapLatest { (table, state) ->
                 lectureSearchRepository.getLectureSearchResultStream(
-                    year = table.summary.courseBook.year,
-                    semester = table.summary.courseBook.semester,
+                    courseBook = table.summary.courseBook,
                     title = state.searchTitle,
                     tags = state.selectedTags,
                     times = state.draggedTimeBlock.clusterToTimeBlocks().ifEmpty { null },
@@ -201,7 +200,7 @@ class SearchViewModel @Inject constructor(
                     .flatMapLatest { table ->
                         flow {
                             try {
-                                emit(lectureSearchRepository.getSearchTags(table.summary.courseBook.year, table.summary.courseBook.semester))
+                                emit(lectureSearchRepository.getSearchTags(table.summary.courseBook))
                             } catch (_: Exception) {
                                 emit(emptyList())
                             }
@@ -468,7 +467,7 @@ class SearchViewModel @Inject constructor(
     fun openSyllabus(lecture: SearchedLecture) {
         viewModelScope.launch {
             val courseBook = tableRepository.currentTable.value?.summary?.courseBook ?: return@launch
-            lectureInfoRepository.getSyllabusUrl(courseBook, lecture.courseNumber, lecture.lectureNumber)
+            lectureInfoRepository.getSyllabusUrl(courseBook, lecture)
                 .onSuccess { url -> _uiEvent.emit(SearchUiEvent.OpenUrl(url)) }
                 .onFailure { handleSearchError(it) }
         }

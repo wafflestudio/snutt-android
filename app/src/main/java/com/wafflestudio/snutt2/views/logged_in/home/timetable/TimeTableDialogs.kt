@@ -9,12 +9,13 @@ import androidx.compose.ui.res.stringResource
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.CustomDialog
 import com.wafflestudio.snutt2.components.compose.EditText
+import com.wafflestudio.snutt2.domainmodel.TableSummary
 
 @Composable
 fun TimeTableDialogs(
     uiState: TimeTableUiState.Loaded,
     onDismiss: () -> Unit,
-    onConfirmChangeTableTitle: (newName: String, tableId: String) -> Unit,
+    onConfirmChangeTableTitle: (TableSummary, String) -> Unit,
 ) {
     when (uiState.dialogState) {
         TimeTableUiState.DialogState.None -> {}
@@ -26,7 +27,7 @@ fun TimeTableDialogs(
             CustomDialog(
                 onDismiss = onDismiss,
                 onConfirm = {
-                    onConfirmChangeTableTitle(newTitle, uiState.dialogState.tableSummary.id)
+                    onConfirmChangeTableTitle(uiState.dialogState.tableSummary, newTitle)
                 },
                 title = stringResource(R.string.home_drawer_change_name_dialog_title),
                 positiveButtonText = stringResource(R.string.common_ok),

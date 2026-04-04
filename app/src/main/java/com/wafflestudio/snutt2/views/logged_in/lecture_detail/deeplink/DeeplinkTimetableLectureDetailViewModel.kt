@@ -161,7 +161,7 @@ class DeeplinkTimetableLectureDetailViewModel @Inject constructor(
     private suspend fun fetchReviewInfo(lecture: Lecture): LectureReviewInfo? {
         if (lecture !is SyllabusLecture) return null
         var reviewInfo: LectureReviewInfo? = null
-        lectureInfoRepository.getReviewInfo(lecture.originalLectureId)
+        lectureInfoRepository.getReviewInfo(lecture)
             .onSuccess { reviewInfo = it }
         return reviewInfo
     }
@@ -201,8 +201,7 @@ class DeeplinkTimetableLectureDetailViewModel @Inject constructor(
             val lecture = (_uiState.value as? DeeplinkTimetableLectureDetailUiState.Success)?.lecture as? LectureSyllabusInfo ?: return@launch
             lectureInfoRepository.getSyllabusUrl(
                 courseBook,
-                lecture.courseNumber,
-                lecture.lectureNumber,
+                lecture,
             ).onSuccess { url ->
                 _uiEvent.emit(DeeplinkTimetableLectureDetailUiEvent.OpenUrl(url))
             }.onFailure { handleError(it) }
