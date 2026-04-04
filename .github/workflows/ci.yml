@@ -44,6 +44,8 @@ jobs:
           EOF
       - name: Run ktlint and build debug APK
         run: ./gradlew ktlintCheck assembleStagingDebug --stacktrace
+      - name: Run unit tests
+        run: ./gradlew testStagingDebugUnitTest --stacktrace
       - name: Upload ktlint report
         uses: actions/upload-artifact@v4
         if: failure()

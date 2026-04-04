@@ -51,6 +51,9 @@ gson = "2.13.2"
 kotlinxSerialization = "1.10.0"
 desugarJdkLibs = "2.1.5"
 junit = "4.13.2"
+coroutinesTest = "1.9.0"
+turbine = "1.2.0"
+kotlinTest = "2.3.10"
 
 # Haze
 haze = "1.7.2"
@@ -130,6 +133,9 @@ desugar-jdk-libs = { module = "com.android.tools:desugar_jdk_libs", version.ref 
 
 # Testing
 junit = { module = "junit:junit", version.ref = "junit" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutinesTest" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlinTest" }
 
 # Haze
 haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
