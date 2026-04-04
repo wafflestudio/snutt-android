@@ -22,7 +22,7 @@ import com.naver.maps.map.compose.MarkerDefaults
 import com.naver.maps.map.compose.NaverMap
 import com.naver.maps.map.compose.PolygonOverlay
 import com.naver.maps.map.compose.rememberCameraPositionState
-import com.naver.maps.map.compose.rememberMarkerState
+import com.naver.maps.map.compose.rememberUpdatedMarkerState
 import com.naver.maps.map.overlay.OverlayImage
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.MapPinBinding
@@ -83,7 +83,7 @@ fun EmbedMap(
                     building.buildingNumber,
                 ),
                 captionOffset = (-26).dp,
-                state = rememberMarkerState(
+                state = rememberUpdatedMarkerState(
                     position = CameraPosition(
                         LatLng(building.coordinate.latitude, building.coordinate.longitude),
                         6.0,

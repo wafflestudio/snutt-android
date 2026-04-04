@@ -9,10 +9,8 @@ import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.android.toast
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 
-@OptIn(ExperimentalCoroutinesApi::class)
 suspend fun facebookLogin(
     context: Context,
 ): LoginResult {
@@ -21,10 +19,9 @@ suspend fun facebookLogin(
     return suspendCancellableCoroutine { continuation ->
         val callback = object : FacebookCallback<LoginResult> {
             override fun onSuccess(result: LoginResult) {
-                continuation.resume(
-                    result,
-                    onCancellation = { loginManager.unregisterCallback(callbackManager) },
-                )
+                continuation.resume(result) { _, _, _ ->
+                    loginManager.unregisterCallback(callbackManager)
+                }
             }
 
             override fun onCancel() {

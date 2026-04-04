@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings
 import android.annotation.SuppressLint
 import android.app.Activity
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -23,9 +24,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.auth.api.identity.AuthorizationRequest
+import com.google.android.gms.auth.api.identity.Identity
+import com.google.android.gms.common.api.Scope
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.AuthError
 import com.kakao.sdk.common.model.AuthErrorCause
@@ -57,26 +58,24 @@ fun SocialLinkPage(
     val clientId = context.getString(R.string.web_client_id)
     val clientSecret = context.getString(R.string.web_client_secret)
 
-    val googleLoginActivityResultLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult(),
+    val googleAuthLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartIntentSenderForResult(),
     ) { result ->
-        when (result.resultCode) {
-            Activity.RESULT_OK -> {
-                try {
-                    val authCode = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-                        .getResult(ApiException::class.java)?.serverAuthCode
-                    if (authCode != null) {
-                        viewModel.onGoogleAuthCodeReceived(authCode, clientId, clientSecret)
-                    } else {
-                        context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
-                    }
-                } catch (_: ApiException) {
+        if (result.resultCode == Activity.RESULT_OK && result.data != null) {
+            try {
+                val authorizationResult = Identity.getAuthorizationClient(activityContext)
+                    .getAuthorizationResultFromIntent(result.data!!)
+                val authCode = authorizationResult.serverAuthCode
+                if (authCode != null) {
+                    viewModel.onGoogleAuthCodeReceived(authCode, clientId, clientSecret)
+                } else {
                     context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
                 }
+            } catch (e: Exception) {
+                context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
             }
-
-            Activity.RESULT_CANCELED -> context.toast(context.getString(R.string.sign_in_sign_in_google_cancelled))
-            else -> context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
+        } else {
+            context.toast(context.getString(R.string.sign_in_sign_in_google_cancelled))
         }
     }
 
@@ -88,13 +87,29 @@ fun SocialLinkPage(
                 is SocialLinkUiEvent.ShowToast -> context.toast(event.message)
 
                 is SocialLinkUiEvent.LaunchGoogleSignIn -> {
-                    val client = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestEmail()
-                        .requestServerAuthCode(clientId)
-                        .build().let { GoogleSignIn.getClient(activityContext, it) }
-                    client.signOut().addOnCompleteListener {
-                        googleLoginActivityResultLauncher.launch(client.signInIntent)
-                    }
+                    val authorizationRequest = AuthorizationRequest.builder()
+                        .setRequestedScopes(listOf(Scope("email")))
+                        .requestOfflineAccess(clientId)
+                        .build()
+                    Identity.getAuthorizationClient(activityContext)
+                        .authorize(authorizationRequest)
+                        .addOnSuccessListener { authorizationResult ->
+                            if (authorizationResult.hasResolution()) {
+                                googleAuthLauncher.launch(
+                                    IntentSenderRequest.Builder(authorizationResult.pendingIntent!!.intentSender).build(),
+                                )
+                            } else {
+                                val authCode = authorizationResult.serverAuthCode
+                                if (authCode != null) {
+                                    viewModel.onGoogleAuthCodeReceived(authCode, clientId, clientSecret)
+                                } else {
+                                    context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
+                                }
+                            }
+                        }
+                        .addOnFailureListener {
+                            context.toast(context.getString(R.string.sign_in_sign_in_google_failed_unknown))
+                        }
                 }
 
                 is SocialLinkUiEvent.LaunchFacebookLogin -> {
