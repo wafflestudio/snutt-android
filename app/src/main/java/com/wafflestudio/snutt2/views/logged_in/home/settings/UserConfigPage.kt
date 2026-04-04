@@ -182,7 +182,7 @@ fun UserConfigScreen(
                         hasNextPage = false,
                     ) {
                         Text(
-                            text = uiState.localId.toString(),
+                            text = uiState.localId,
                             style = SNUTTTypography.body1.copy(
                                 color = SNUTTColors.Black500,
                             ),

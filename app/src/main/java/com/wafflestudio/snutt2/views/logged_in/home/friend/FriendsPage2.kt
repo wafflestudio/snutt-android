@@ -86,7 +86,7 @@ fun FriendsRoute(
             viewModel.acceptFriendByKakaoLink(requestToken)
             viewModel.openDrawer()
             // intent data를 null로 설정해서 다시 처리되지 않도록 함
-            activity?.intent?.data = null
+            activity.intent?.data = null
         }
     }
 
