@@ -51,7 +51,7 @@ fun FriendsDrawerContent(
     onSelectFriend: (Friend) -> Unit,
     onOpenAddFriendBottomSheet: () -> Unit,
     onOpenFriendDetail: (Friend) -> Unit,
-    onAcceptFriend: (String) -> Unit,
+    onAcceptFriend: (Friend) -> Unit,
     onDeclineFriend: (Friend) -> Unit,
 ) {
     Column(
@@ -255,7 +255,7 @@ private fun FriendsActiveList(
 @Composable
 private fun FriendsRequestedList(
     friends: List<Friend>,
-    onAcceptFriend: (String) -> Unit,
+    onAcceptFriend: (Friend) -> Unit,
     onDeclineFriend: (Friend) -> Unit,
 ) {
     if (friends.isEmpty()) {
@@ -296,7 +296,7 @@ private fun FriendsRequestedList(
             items(friends, key = { it.id }) { friend ->
                 FriendRequestItem(
                     friend = friend,
-                    onAccept = { onAcceptFriend(friend.id) },
+                    onAccept = { onAcceptFriend(friend) },
                     onDecline = { onDeclineFriend(friend) },
                 )
             }

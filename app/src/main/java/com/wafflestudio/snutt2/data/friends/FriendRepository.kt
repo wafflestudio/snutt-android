@@ -12,19 +12,19 @@ interface FriendRepository {
 
     suspend fun requestFriend(nickname: String): Result<Unit>
 
-    suspend fun acceptFriend(friendId: String): Result<Unit>
+    suspend fun acceptFriend(friend: Friend): Result<Unit>
 
     suspend fun acceptFriendByLink(requestToken: String): Result<Nickname>
 
-    suspend fun declineFriend(friendId: String): Result<Unit>
+    suspend fun declineFriend(friend: Friend): Result<Unit>
 
-    suspend fun deleteFriend(friendId: String): Result<Unit>
+    suspend fun deleteFriend(friend: Friend): Result<Unit>
 
-    suspend fun patchFriendDisplayName(friendId: String, displayName: String): Result<Unit>
+    suspend fun patchFriendDisplayName(friend: Friend, displayName: String): Result<Unit>
 
     suspend fun generateFriendLink(): Result<String>
 
-    suspend fun getFriendCourseBooks(friendId: String): Result<List<CourseBook>>
+    suspend fun getFriendCourseBooks(friend: Friend): Result<List<CourseBook>>
 
-    suspend fun getFriendPrimaryTable(friendId: String, year: Int, semester: Int): Result<Table>
+    suspend fun getFriendPrimaryTable(friend: Friend, courseBook: CourseBook): Result<Table>
 }

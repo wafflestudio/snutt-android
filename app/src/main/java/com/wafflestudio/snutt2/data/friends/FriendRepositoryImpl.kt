@@ -37,9 +37,9 @@ class FriendRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun acceptFriend(friendId: String): Result<Unit> {
+    override suspend fun acceptFriend(friend: Friend): Result<Unit> {
         try {
-            api._acceptFriend(friendId)
+            api._acceptFriend(friend.id)
             return Result.Success(Unit)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
@@ -55,27 +55,27 @@ class FriendRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun declineFriend(friendId: String): Result<Unit> {
+    override suspend fun declineFriend(friend: Friend): Result<Unit> {
         try {
-            api._declineFriend(friendId)
+            api._declineFriend(friend.id)
             return Result.Success(Unit)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
         }
     }
 
-    override suspend fun deleteFriend(friendId: String): Result<Unit> {
+    override suspend fun deleteFriend(friend: Friend): Result<Unit> {
         try {
-            api._deleteFriend(friendId)
+            api._deleteFriend(friend.id)
             return Result.Success(Unit)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
         }
     }
 
-    override suspend fun patchFriendDisplayName(friendId: String, displayName: String): Result<Unit> {
+    override suspend fun patchFriendDisplayName(friend: Friend, displayName: String): Result<Unit> {
         try {
-            api._patchFriendDisplayName(friendId, PatchFriendDisplayNameParams(displayName))
+            api._patchFriendDisplayName(friend.id, PatchFriendDisplayNameParams(displayName))
             return Result.Success(Unit)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
@@ -91,18 +91,18 @@ class FriendRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getFriendCourseBooks(friendId: String): Result<List<CourseBook>> {
+    override suspend fun getFriendCourseBooks(friend: Friend): Result<List<CourseBook>> {
         try {
-            val response = api._getFriendCourseBooks(friendId)
+            val response = api._getFriendCourseBooks(friend.id)
             return Result.Success(response.map { it.toDomainModel() })
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
         }
     }
 
-    override suspend fun getFriendPrimaryTable(friendId: String, year: Int, semester: Int): Result<Table> {
+    override suspend fun getFriendPrimaryTable(friend: Friend, courseBook: CourseBook): Result<Table> {
         try {
-            val timetableDto = api._getFriendPrimaryTable(friendId, semester.toString(), year)
+            val timetableDto = api._getFriendPrimaryTable(friend.id, courseBook.semester.toInt().toString(), courseBook.year.toInt())
             return Result.Success(Table.fromTimetableDto(timetableDto))
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
