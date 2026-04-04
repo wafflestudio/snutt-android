@@ -8,6 +8,7 @@ import com.wafflestudio.snutt2.data.bookmark.BookmarkRepository
 import com.wafflestudio.snutt2.data.lecture_info.LectureInfoRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.vacancy_noti.VacancyRepository
+import com.wafflestudio.snutt2.domainmodel.Building
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.Lecture
 import com.wafflestudio.snutt2.domainmodel.LectureReviewInfo
@@ -16,7 +17,6 @@ import com.wafflestudio.snutt2.domainmodel.SyllabusLecture
 import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
 import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.TimetableLectureNotFound
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
 import com.wafflestudio.snutt2.lib.network.onFailure
 import com.wafflestudio.snutt2.lib.network.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -137,10 +137,9 @@ class DeeplinkTimetableLectureDetailViewModel @Inject constructor(
         }
     }
 
-    private suspend fun fetchBuildings(lecture: Lecture): List<LectureBuildingDto> {
-        val places = lecture.lectureSessions.map { it.place }.distinct()
-        var buildings: List<LectureBuildingDto> = emptyList()
-        lectureInfoRepository.getBuildings(places)
+    private suspend fun fetchBuildings(lecture: Lecture): List<Building> {
+        var buildings: List<Building> = emptyList()
+        lectureInfoRepository.getBuildings(lecture)
             .onSuccess { buildings = it }
         return buildings
     }
@@ -162,7 +161,7 @@ class DeeplinkTimetableLectureDetailViewModel @Inject constructor(
     private suspend fun fetchReviewInfo(lecture: Lecture): LectureReviewInfo? {
         if (lecture !is SyllabusLecture) return null
         var reviewInfo: LectureReviewInfo? = null
-        lectureInfoRepository.getReviewInfo(lecture.originalLectureId)
+        lectureInfoRepository.getReviewInfo(lecture)
             .onSuccess { reviewInfo = it }
         return reviewInfo
     }
@@ -202,8 +201,7 @@ class DeeplinkTimetableLectureDetailViewModel @Inject constructor(
             val lecture = (_uiState.value as? DeeplinkTimetableLectureDetailUiState.Success)?.lecture as? LectureSyllabusInfo ?: return@launch
             lectureInfoRepository.getSyllabusUrl(
                 courseBook,
-                lecture.courseNumber,
-                lecture.lectureNumber,
+                lecture,
             ).onSuccess { url ->
                 _uiEvent.emit(DeeplinkTimetableLectureDetailUiEvent.OpenUrl(url))
             }.onFailure { handleError(it) }
@@ -235,7 +233,7 @@ sealed interface DeeplinkTimetableLectureDetailUiState {
 
     data class Success(
         val lecture: Lecture,
-        val buildings: List<LectureBuildingDto> = emptyList(),
+        val buildings: List<Building> = emptyList(),
         val isBookmarked: Boolean = false,
         val vacancyRegistered: Boolean = false,
         val reviewInfo: LectureReviewInfo? = null,

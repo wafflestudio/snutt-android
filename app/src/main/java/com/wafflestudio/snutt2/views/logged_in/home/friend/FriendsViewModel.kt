@@ -60,7 +60,7 @@ class FriendsViewModel @Inject constructor(
 
                             val selectedFriend = activeFriends.firstOrNull()
                             if (selectedFriend != null) {
-                                friendRepository.getFriendCourseBooks(selectedFriend.id)
+                                friendRepository.getFriendCourseBooks(selectedFriend)
                                     .onSuccess { courseBooks ->
                                         Timber.tag("aaaa").d("courseBooks")
                                         Timber.tag("aaaa").d(courseBooks.toString())
@@ -68,9 +68,8 @@ class FriendsViewModel @Inject constructor(
                                         val selectedCourseBook = courseBooks.firstOrNull()
                                         if (selectedCourseBook != null) {
                                             friendRepository.getFriendPrimaryTable(
-                                                selectedFriend.id,
-                                                selectedCourseBook.year.toInt(),
-                                                selectedCourseBook.semester.toInt(),
+                                                selectedFriend,
+                                                selectedCourseBook,
                                             )
                                                 .onSuccess { table ->
                                                     _uiState.update {
@@ -148,14 +147,13 @@ class FriendsViewModel @Inject constructor(
 
     fun selectFriend(friend: Friend) {
         viewModelScope.launch {
-            friendRepository.getFriendCourseBooks(friend.id)
+            friendRepository.getFriendCourseBooks(friend)
                 .onSuccess { courseBooks ->
                     val selectedCourseBook = courseBooks.firstOrNull()
                     if (selectedCourseBook != null) {
                         friendRepository.getFriendPrimaryTable(
-                            friend.id,
-                            selectedCourseBook.year.toInt(),
-                            selectedCourseBook.semester.toInt(),
+                            friend,
+                            selectedCourseBook,
                         )
                             .onSuccess { table ->
                                 _uiState.update { state ->
@@ -208,9 +206,8 @@ class FriendsViewModel @Inject constructor(
             if (currentState !is FriendsUiState.Loaded || currentState.selectedFriend == null) return@launch
 
             friendRepository.getFriendPrimaryTable(
-                currentState.selectedFriend.id,
-                courseBook.year.toInt(),
-                courseBook.semester.toInt(),
+                currentState.selectedFriend,
+                courseBook,
             )
                 .onSuccess { table ->
                     _uiState.update { state ->
@@ -308,9 +305,9 @@ class FriendsViewModel @Inject constructor(
         }
     }
 
-    fun acceptFriend(friendId: String) {
+    fun acceptFriend(friend: Friend) {
         viewModelScope.launch {
-            friendRepository.acceptFriend(friendId)
+            friendRepository.acceptFriend(friend)
                 .onSuccess {
                     loadFriends() // Refresh
                 }
@@ -322,7 +319,7 @@ class FriendsViewModel @Inject constructor(
 
     fun declineFriend(friend: Friend) {
         viewModelScope.launch {
-            friendRepository.declineFriend(friend.id)
+            friendRepository.declineFriend(friend)
                 .onSuccess {
                     loadFriends() // Refresh
                 }
@@ -332,9 +329,9 @@ class FriendsViewModel @Inject constructor(
         }
     }
 
-    fun deleteFriend(friendId: String) {
+    fun deleteFriend(friend: Friend) {
         viewModelScope.launch {
-            friendRepository.deleteFriend(friendId)
+            friendRepository.deleteFriend(friend)
                 .onSuccess {
                     loadFriends() // Refresh
                 }
@@ -374,9 +371,9 @@ class FriendsViewModel @Inject constructor(
         }
     }
 
-    fun saveDisplayName(friendId: String, displayName: String) {
+    fun saveDisplayName(friend: Friend, displayName: String) {
         viewModelScope.launch {
-            friendRepository.patchFriendDisplayName(friendId, displayName)
+            friendRepository.patchFriendDisplayName(friend, displayName)
                 .onSuccess {
                     closeBottomSheet()
                     loadFriends() // Refresh
@@ -431,7 +428,7 @@ class FriendsViewModel @Inject constructor(
     }
 
     fun confirmDeleteFriend(friend: Friend) {
-        deleteFriend(friend.id)
+        deleteFriend(friend)
         dismissDialog()
     }
 

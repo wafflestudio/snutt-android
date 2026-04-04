@@ -7,8 +7,8 @@ import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.CameraUpdate
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.domainmodel.Building
 import com.wafflestudio.snutt2.lib.android.toast
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
@@ -39,7 +39,7 @@ object EmbedMapUtils {
         }
     }
 
-    fun moveToMapApplication(context: Context, building: LectureBuildingDto) {
+    fun moveToMapApplication(context: Context, building: Building) {
         try {
             openNaverMap(context, building)
         } catch (e: Exception) {
@@ -51,12 +51,12 @@ object EmbedMapUtils {
         }
     }
 
-    private fun openNaverMap(context: Context, building: LectureBuildingDto) {
+    private fun openNaverMap(context: Context, building: Building) {
         context.startActivity(
             Intent(
                 Intent.ACTION_VIEW,
                 Uri.parse(
-                    "nmap://place?lat=${building.locationInDMS.latitude}&lng=${building.locationInDMS.longitude}&name=${
+                    "nmap://place?lat=${building.coordinate.latitude}&lng=${building.coordinate.longitude}&name=${
                     URLEncoder.encode(
                         building.buildingNameKor,
                         StandardCharsets.UTF_8.toString(),
@@ -67,11 +67,11 @@ object EmbedMapUtils {
         )
     }
 
-    private fun openKakaoMap(context: Context, building: LectureBuildingDto) {
+    private fun openKakaoMap(context: Context, building: Building) {
         context.startActivity(
             Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse("kakaomap://look?p=${building.locationInDMS.latitude},${building.locationInDMS.longitude}"),
+                Uri.parse("kakaomap://look?p=${building.coordinate.latitude},${building.coordinate.longitude}"),
             ),
         )
     }

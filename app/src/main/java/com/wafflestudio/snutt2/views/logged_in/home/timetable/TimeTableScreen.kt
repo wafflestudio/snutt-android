@@ -39,7 +39,7 @@ fun TimeTableScreen(
     onClickAddManually: () -> Unit,
     onVisitSessionlessLectureList: () -> Unit,
     onDismissDialog: () -> Unit,
-    onConfirmChangeTableTitle: (newTitle: String, tableId: String) -> Unit,
+    onConfirmChangeTableTitle: (TableSummary, String) -> Unit,
 ) {
     when (uiState) {
         is TimeTableUiState.Loading -> {}

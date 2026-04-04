@@ -12,6 +12,7 @@ import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.data.vacancy_noti.VacancyRepository
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
+import com.wafflestudio.snutt2.domainmodel.Building
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.CustomLecture
@@ -31,7 +32,6 @@ import com.wafflestudio.snutt2.lib.network.DomainError
 import com.wafflestudio.snutt2.lib.network.EOF
 import com.wafflestudio.snutt2.lib.network.LectureOverlap
 import com.wafflestudio.snutt2.lib.network.Result
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
 import com.wafflestudio.snutt2.lib.network.onFailure
 import com.wafflestudio.snutt2.lib.network.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -308,7 +308,7 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
 
     fun confirmDeleteLecture() {
         viewModelScope.launch {
-            currentTableLectureRepository.removeLecture(originalLecture.id)
+            currentTableLectureRepository.removeLecture(originalLecture)
                 .onSuccess {
                     _uiState.update { it.copy(dialogState = CurrentTableLectureDetailUiState.DialogState.None) }
                     _uiEvent.emit(CurrentTableLectureDetailUiEvent.LectureDeleted)
@@ -326,7 +326,7 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
 
     fun confirmResetLecture() {
         viewModelScope.launch {
-            currentTableLectureRepository.resetLecture(originalLecture.id)
+            currentTableLectureRepository.resetLecture(originalLecture)
                 .onSuccess { resetLecture ->
                     originalLecture = resetLecture
                     val buildings = fetchBuildings(resetLecture)
@@ -437,8 +437,7 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
             val syllabusLecture = _uiState.value.lecture as? SyllabusLecture ?: return@launch
             lectureInfoRepository.getSyllabusUrl(
                 courseBook,
-                syllabusLecture.courseNumber,
-                syllabusLecture.lectureNumber,
+                syllabusLecture,
             ).onSuccess { url ->
                 _uiEvent.emit(CurrentTableLectureDetailUiEvent.OpenUrl(url))
             }.onFailure { error ->
@@ -516,7 +515,7 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
     private suspend fun fetchReviewInfo(lecture: Lecture): LectureReviewInfo? {
         if (lecture !is SyllabusLecture) return null
         var reviewInfo: LectureReviewInfo? = null
-        lectureInfoRepository.getReviewInfo(lecture.originalLectureId)
+        lectureInfoRepository.getReviewInfo(lecture)
             .onSuccess { reviewInfo = it }
         return reviewInfo
     }
@@ -544,10 +543,9 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
         _uiState.update { it.copy(sheetType = CurrentTableLectureDetailUiState.SheetType.None) }
     }
 
-    private suspend fun fetchBuildings(lecture: Lecture): List<LectureBuildingDto> {
-        val places = lecture.lectureSessions.map { it.place }.distinct()
-        var buildings: List<LectureBuildingDto> = emptyList()
-        lectureInfoRepository.getBuildings(places)
+    private suspend fun fetchBuildings(lecture: Lecture): List<Building> {
+        var buildings: List<Building> = emptyList()
+        lectureInfoRepository.getBuildings(lecture)
             .onSuccess { buildings = it }
         return buildings
     }
@@ -600,7 +598,7 @@ data class CurrentTableLectureDetailUiState(
     val editMode: Boolean = false,
     val tableTheme: TableTheme = BuiltInTheme.SNUTT,
     val reviewInfo: LectureReviewInfo? = null,
-    val buildings: List<LectureBuildingDto> = emptyList(),
+    val buildings: List<Building> = emptyList(),
     val isBookmarked: Boolean = false,
     val vacancyRegistered: Boolean = false,
     val showCategoryPre2025: Boolean = false,

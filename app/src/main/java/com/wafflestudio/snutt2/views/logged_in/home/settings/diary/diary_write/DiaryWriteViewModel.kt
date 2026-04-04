@@ -127,9 +127,9 @@ class DiaryWriteViewModel @Inject constructor(
             }
 
             is DiaryWriteUiState.Write -> {
-                val selectedDailyClassTypeNames = state.dailyClassTypes
+                val selectedDailyClassTypes = state.dailyClassTypes
                     .filter { it.isSelected() }
-                    .map { it.item.name }
+                    .map { it.item }
 
                 val questionAnswers = state.questions.map { question ->
                     val answerIndex = question.selectableAnswers.indexOfFirst { it.isSelected() }
@@ -142,7 +142,7 @@ class DiaryWriteViewModel @Inject constructor(
                 viewModelScope.launch {
                     diaryRepository.submitDiary(
                         lectureId = lectureId,
-                        dailyClassTypes = selectedDailyClassTypeNames,
+                        dailyClassTypes = selectedDailyClassTypes,
                         questionAnswers = questionAnswers,
                         comment = comment,
                     )
@@ -169,9 +169,9 @@ class DiaryWriteViewModel @Inject constructor(
             }
 
             is DiaryWriteUiState.Write -> {
-                val selectedDailyClassTypeNames = state.dailyClassTypes
+                val selectedDailyClassTypes = state.dailyClassTypes
                     .filter { it.isSelected() }
-                    .map { it.item.name }
+                    .map { it.item }
 
                 // FIXME: 이런 Early return 이, 나중에 읽었을 때 도움이 될까?
                 if (state.activitySelectingState.isSelecting().not()) {
@@ -181,7 +181,7 @@ class DiaryWriteViewModel @Inject constructor(
                 viewModelScope.launch {
                     diaryRepository.getQuestionnaire(
                         lectureId = lectureId,
-                        dailyClassTypes = selectedDailyClassTypeNames,
+                        dailyClassTypes = selectedDailyClassTypes,
                     )
                         .onSuccess { questionnaireData ->
                             nextLectureId = questionnaireData.nextLectureId

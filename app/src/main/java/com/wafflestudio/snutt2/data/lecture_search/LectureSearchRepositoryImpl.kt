@@ -5,6 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.wafflestudio.snutt2.data.SNUTTStorage
+import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.SearchTag
 import com.wafflestudio.snutt2.domainmodel.SearchTime
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
@@ -29,8 +30,7 @@ class LectureSearchRepositoryImpl @Inject constructor(
         }
 
     override fun getLectureSearchResultStream(
-        year: Long,
-        semester: Long,
+        courseBook: CourseBook,
         title: String,
         tags: List<SearchTag>,
         times: List<SearchTime>?,
@@ -44,8 +44,8 @@ class LectureSearchRepositoryImpl @Inject constructor(
             pagingSourceFactory = {
                 LectureSearchPagingSource(
                     api,
-                    year = year,
-                    semester = semester,
+                    year = courseBook.year,
+                    semester = courseBook.semester,
                     title = title,
                     tags = tags.map { it.toTagDto() },
                     times = times?.map { it.toSearchTimeDto() },
@@ -55,8 +55,8 @@ class LectureSearchRepositoryImpl @Inject constructor(
         ).flow.map { pagingData -> pagingData.map { it.toSearchedLecture() } }
     }
 
-    override suspend fun getSearchTags(year: Long, semester: Long): List<SearchTag> {
-        val response = api._getTagList(year.toInt(), semester.toInt())
+    override suspend fun getSearchTags(courseBook: CourseBook): List<SearchTag> {
+        val response = api._getTagList(courseBook.year.toInt(), courseBook.semester.toInt())
         val list = mutableListOf<SearchTag>()
         list.apply {
             addAll(response.department.map { SearchTag.Regular(TagType.DEPARTMENT, it) })

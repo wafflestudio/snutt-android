@@ -16,8 +16,7 @@ sealed interface DiaryHistoryUiState {
     sealed interface DialogState {
         data object None : DialogState
         data class DeleteDiary(
-            val diaryId: String,
-            val courseName: String,
+            val diary: DiarySummary,
         ) : DialogState
     }
 

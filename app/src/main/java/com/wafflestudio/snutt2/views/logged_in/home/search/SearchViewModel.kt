@@ -15,6 +15,7 @@ import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.data.vacancy_noti.VacancyRepository
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
+import com.wafflestudio.snutt2.domainmodel.Building
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.LocalLecture
@@ -43,7 +44,6 @@ import com.wafflestudio.snutt2.lib.network.AuthError
 import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
 import com.wafflestudio.snutt2.lib.network.DomainError
 import com.wafflestudio.snutt2.lib.network.LectureOverlap
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
 import com.wafflestudio.snutt2.lib.network.onFailure
 import com.wafflestudio.snutt2.lib.network.onSuccess
 import com.wafflestudio.snutt2.lib.toDataWithState
@@ -131,8 +131,7 @@ class SearchViewModel @Inject constructor(
                 ::Pair,
             ).take(1).flatMapLatest { (table, state) ->
                 lectureSearchRepository.getLectureSearchResultStream(
-                    year = table.summary.courseBook.year,
-                    semester = table.summary.courseBook.semester,
+                    courseBook = table.summary.courseBook,
                     title = state.searchTitle,
                     tags = state.selectedTags,
                     times = if (state.selectedTags.contains(SearchTag.TimeSelect)) {
@@ -205,7 +204,7 @@ class SearchViewModel @Inject constructor(
                     .flatMapLatest { table ->
                         flow {
                             try {
-                                emit(lectureSearchRepository.getSearchTags(table.summary.courseBook.year, table.summary.courseBook.semester))
+                                emit(lectureSearchRepository.getSearchTags(table.summary.courseBook))
                             } catch (_: Exception) {
                                 emit(emptyList())
                             }
@@ -458,7 +457,7 @@ class SearchViewModel @Inject constructor(
     }
 
     private suspend fun fetchBuildings(lecture: SearchedLecture) {
-        lectureInfoRepository.getBuildings(lecture.lectureSessions.map { it.place }.distinct())
+        lectureInfoRepository.getBuildings(lecture)
             .onSuccess { buildings ->
                 _uiState.update { current ->
                     val bt = current.bottomSheetType
@@ -472,7 +471,7 @@ class SearchViewModel @Inject constructor(
     fun openSyllabus(lecture: SearchedLecture) {
         viewModelScope.launch {
             val courseBook = tableRepository.currentTable.value?.summary?.courseBook ?: return@launch
-            lectureInfoRepository.getSyllabusUrl(courseBook, lecture.courseNumber, lecture.lectureNumber)
+            lectureInfoRepository.getSyllabusUrl(courseBook, lecture)
                 .onSuccess { url -> _uiEvent.emit(SearchUiEvent.OpenUrl(url)) }
                 .onFailure { handleSearchError(it) }
         }
@@ -530,7 +529,7 @@ class SearchViewModel @Inject constructor(
                 ),
             ),
         )
-        currentTableLectureRepository.addLecture(lecture.id, isForced).onFailure { error ->
+        currentTableLectureRepository.addLecture(lecture, isForced).onFailure { error ->
             if (error is LectureOverlap) {
                 _uiState.update {
                     it.copy(
@@ -627,7 +626,7 @@ data class SearchUiState(
         data class LectureDetail(
             val lecture: SearchedLecture,
             val referrer: DetailScreenReferrer,
-            val buildings: List<LectureBuildingDto> = emptyList(),
+            val buildings: List<Building> = emptyList(),
         ) : BottomSheetType
 
     }

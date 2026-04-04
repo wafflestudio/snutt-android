@@ -137,17 +137,17 @@ class TableRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateTableName(newTitle: String, tableId: String): Result<Unit> {
+    override suspend fun updateTableName(table: TableSummary, newTitle: String): Result<Unit> {
         try {
             val response = api._putTable(
-                id = tableId,
+                id = table.id,
                 PutTableParams(title = newTitle),
             )
             // FIXME: 데이터 레이어 갈아엎을 때 이 암묵적인 동작도 어떻게 좀 하기
             snuttStorage.tableMap.update(response.associateBy { it.id })
             val prev = snuttStorage.lastViewedTable.get().value
             snuttStorage.lastViewedTable.update(
-                if (prev?.id == tableId) {
+                if (prev?.id == table.id) {
                     prev.copy(title = newTitle).toOptional()
                 } else {
                     prev.toOptional()
@@ -160,9 +160,9 @@ class TableRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun setPrimaryTable(id: String): Result<Unit> {
+    override suspend fun setPrimaryTable(table: TableSummary): Result<Unit> {
         try {
-            api._postPrimaryTable(id)
+            api._postPrimaryTable(table.id)
             refreshTableListAndCurrentTable()
             return Result.Success(Unit)
         } catch (e: Exception) {
@@ -170,9 +170,9 @@ class TableRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun unsetPrimaryTable(id: String): Result<Unit> {
+    override suspend fun unsetPrimaryTable(table: TableSummary): Result<Unit> {
         try {
-            api._deletePrimaryTable(id)
+            api._deletePrimaryTable(table.id)
             refreshTableListAndCurrentTable()
             return Result.Success(Unit)
         } catch (e: Exception) {
@@ -189,9 +189,9 @@ class TableRepositoryImpl @Inject constructor(
         snuttStorage.lastViewedTable.update(currentTableResponse.toOptional())
     }
 
-    override suspend fun deleteTable(tableId: String): Result<Unit> {
+    override suspend fun deleteTable(table: TableSummary): Result<Unit> {
         try {
-            val response = api._deleteTable(tableId)
+            val response = api._deleteTable(table.id)
             // FIXME: 데이터 레이어 수정
             snuttStorage.tableMap.update(response.associateBy { it.id })
 
@@ -201,9 +201,9 @@ class TableRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun copyTable(id: String): Result<Unit> {
+    override suspend fun copyTable(table: TableSummary): Result<Unit> {
         try {
-            val response = api._copyTable(id)
+            val response = api._copyTable(table.id)
             snuttStorage.tableMap.update(response.associateBy { it.id })
             return Result.Success(Unit)
         } catch (e: Exception) {

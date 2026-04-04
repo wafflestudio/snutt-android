@@ -7,6 +7,7 @@ import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.data.bookmark.BookmarkRepository
 import com.wafflestudio.snutt2.data.lecture_info.LectureInfoRepository
 import com.wafflestudio.snutt2.data.vacancy_noti.VacancyRepository
+import com.wafflestudio.snutt2.domainmodel.Building
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.Lecture
 import com.wafflestudio.snutt2.domainmodel.LectureSyllabusInfo
@@ -14,7 +15,6 @@ import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.lib.network.BookmarkLectureNotFound
 import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
 import com.wafflestudio.snutt2.lib.network.Result
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureBuildingDto
 import com.wafflestudio.snutt2.lib.network.onFailure
 import com.wafflestudio.snutt2.lib.network.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -127,10 +127,9 @@ class DeeplinkBookmarkLectureDetailViewModel @Inject constructor(
         }
     }
 
-    private suspend fun fetchBuildings(lecture: Lecture): List<LectureBuildingDto> {
-        val places = lecture.lectureSessions.map { it.place }.distinct()
-        var buildings: List<LectureBuildingDto> = emptyList()
-        lectureInfoRepository.getBuildings(places)
+    private suspend fun fetchBuildings(lecture: Lecture): List<Building> {
+        var buildings: List<Building> = emptyList()
+        lectureInfoRepository.getBuildings(lecture)
             .onSuccess { buildings = it }
         return buildings
     }
@@ -184,8 +183,7 @@ class DeeplinkBookmarkLectureDetailViewModel @Inject constructor(
             val lecture = (_uiState.value as? DeeplinkBookmarkLectureDetailUiState.Success)?.lecture as? LectureSyllabusInfo ?: return@launch
             lectureInfoRepository.getSyllabusUrl(
                 CourseBook(year = year, semester = semester),
-                lecture.courseNumber,
-                lecture.lectureNumber,
+                lecture,
             ).onSuccess { url ->
                 _uiEvent.emit(DeeplinkBookmarkLectureDetailUiEvent.OpenUrl(url))
             }.onFailure { handleError(it) }
@@ -208,7 +206,7 @@ sealed interface DeeplinkBookmarkLectureDetailUiState {
 
     data class Success(
         val lecture: SearchedLecture,
-        val buildings: List<LectureBuildingDto> = emptyList(),
+        val buildings: List<Building> = emptyList(),
         val isBookmarked: Boolean = false,
         val vacancyRegistered: Boolean = false,
         val showCategoryPre2025: Boolean = true,

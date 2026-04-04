@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.views.logged_in.home.friend
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -27,10 +28,8 @@ import androidx.compose.material.Text
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import com.wafflestudio.snutt2.components.compose.BottomSheetDismissEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -49,6 +48,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.AddFriendIcon
 import com.wafflestudio.snutt2.components.compose.ArrowDownIcon
+import com.wafflestudio.snutt2.components.compose.BottomSheetDismissEffect
 import com.wafflestudio.snutt2.components.compose.DrawerIcon
 import com.wafflestudio.snutt2.components.compose.IconWithAlertDot
 import com.wafflestudio.snutt2.components.compose.PersonIcon
@@ -180,7 +180,7 @@ fun FriendsRoute(
         onEditDisplayName = viewModel::openEditDisplayNameBottomSheet,
         onSubmitDisplayName = { friend, displayName ->
             viewModel.saveDisplayName(
-                friend.id,
+                friend,
                 displayName,
             )
         },
@@ -204,7 +204,7 @@ fun FriendsScreen(
     onSetDrawerTab: (FriendDrawerTab) -> Unit,
     onOpenRequestFriendBottomSheet: () -> Unit,
     onCloseBottomSheet: () -> Unit,
-    onAcceptFriend: (String) -> Unit,
+    onAcceptFriend: (Friend) -> Unit,
     onDeclineFriend: (Friend) -> Unit,
     onOpenFriendDetail: (com.wafflestudio.snutt2.domainmodel.Friend) -> Unit,
     onRequestWithNickname: () -> Unit,
@@ -222,7 +222,9 @@ fun FriendsScreen(
         is FriendsUiState.Loading -> {
             Column(modifier = Modifier.fillMaxSize()) {
                 Box(
-                    modifier = Modifier.weight(1f).fillMaxWidth(),
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
                     contentAlignment = Alignment.Center,
                 ) {
                     CircularProgressIndicator()
@@ -263,7 +265,9 @@ fun FriendsScreen(
         is FriendsUiState.Error -> {
             Column(modifier = Modifier.fillMaxSize()) {
                 Box(
-                    modifier = Modifier.weight(1f).fillMaxWidth(),
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
@@ -290,7 +294,7 @@ private fun FriendsLoadedScreen(
     onSetDrawerTab: (FriendDrawerTab) -> Unit,
     onOpenRequestFriendBottomSheet: () -> Unit,
     onCloseBottomSheet: () -> Unit,
-    onAcceptFriend: (String) -> Unit,
+    onAcceptFriend: (Friend) -> Unit,
     onDeclineFriend: (Friend) -> Unit,
     onOpenFriendDetail: (com.wafflestudio.snutt2.domainmodel.Friend) -> Unit,
     onRequestWithNickname: () -> Unit,

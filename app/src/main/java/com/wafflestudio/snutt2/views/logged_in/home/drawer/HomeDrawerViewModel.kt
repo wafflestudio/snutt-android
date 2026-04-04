@@ -169,9 +169,9 @@ class HomeDrawerViewModel @Inject constructor(
         }
     }
 
-    fun copyTable(tableId: String) {
+    fun copyTable(table: TableSummary) {
         viewModelScope.launch {
-            tableRepository.copyTable(tableId).onFailure {
+            tableRepository.copyTable(table).onFailure {
                 handleError(it)
             }
         }
@@ -208,7 +208,7 @@ class HomeDrawerViewModel @Inject constructor(
 
     fun setPrimaryTable(tableSummary: TableSummary) {
         viewModelScope.launch {
-            tableRepository.setPrimaryTable(tableSummary.id)
+            tableRepository.setPrimaryTable(tableSummary)
                 .onFailure {
                     handleError(it)
                 }
@@ -220,7 +220,7 @@ class HomeDrawerViewModel @Inject constructor(
 
     fun unsetPrimaryTable(tableSummary: TableSummary) {
         viewModelScope.launch {
-            tableRepository.unsetPrimaryTable(tableSummary.id)
+            tableRepository.unsetPrimaryTable(tableSummary)
                 .onFailure {
                     handleError(it)
                 }
@@ -314,9 +314,9 @@ class HomeDrawerViewModel @Inject constructor(
         }
     }
 
-    fun changeTableTitle(newTitle: String, tableId: String) {
+    fun changeTableTitle(table: TableSummary, newTitle: String) {
         viewModelScope.launch {
-            tableRepository.updateTableName(newTitle, tableId)
+            tableRepository.updateTableName(table, newTitle)
                 .onFailure {
                     handleError(it)
                 }.onSuccess {
@@ -338,7 +338,7 @@ class HomeDrawerViewModel @Inject constructor(
                 sameCourseBookTables.indexOfFirst { it.id == tableSummary.id }
             val indexInAll = allTables.indexOfFirst { it.id == tableSummary.id }
 
-            tableRepository.deleteTable(tableSummary.id)
+            tableRepository.deleteTable(tableSummary)
                 .onFailure {
                     handleError(it)
                 }

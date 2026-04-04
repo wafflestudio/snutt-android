@@ -151,9 +151,9 @@ class TimeTableViewModel @Inject constructor(
         }
     }
 
-    fun changeTableTitle(newTitle: String, tableId: String) {
+    fun changeTableTitle(table: TableSummary, newTitle: String) {
         viewModelScope.launch {
-            tableRepository.updateTableName(newTitle, tableId)
+            tableRepository.updateTableName(table, newTitle)
                 .onFailure {
                     handleError(it)
                 }.onSuccess {

@@ -35,6 +35,7 @@ import com.wafflestudio.snutt2.components.compose.ArrowBackIcon
 import com.wafflestudio.snutt2.components.compose.ConfirmDialog
 import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.domainmodel.diary.DiarySummary
 import com.wafflestudio.snutt2.domainmodel.preview.DiaryPreviewData
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.network.dto.core.toDomainModel
@@ -84,9 +85,9 @@ fun DiaryHistoryScreen(
     onNavigateBack: () -> Unit,
     onClickCourseBook: (coursebookIndex: Int) -> Unit,
     onToggleExpandOfDate: (date: LocalDate) -> Unit,
-    onDeleteDiary: (diaryId: String, courseName: String) -> Unit,
+    onDeleteDiary: (DiarySummary) -> Unit,
     onDismissDialog: () -> Unit,
-    onConfirmDeleteDiary: (diaryId: String) -> Unit,
+    onConfirmDeleteDiary: (DiarySummary) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     if (uiState is DiaryHistoryUiState.Success) {
@@ -183,7 +184,7 @@ fun DiaryListPagePreview() {
             onNavigateBack = {},
             onClickCourseBook = {},
             onToggleExpandOfDate = {},
-            onDeleteDiary = { _, _ -> },
+            onDeleteDiary = { _ -> },
             onDismissDialog = {},
             onConfirmDeleteDiary = {},
             uiState = DiaryHistoryUiState.Success(
@@ -206,7 +207,7 @@ fun DiaryListPageDarkPreview() {
                 onNavigateBack = {},
                 onClickCourseBook = {},
                 onToggleExpandOfDate = {},
-                onDeleteDiary = { _, _ -> },
+                onDeleteDiary = { _ -> },
                 onDismissDialog = {},
                 onConfirmDeleteDiary = {},
                 uiState = DiaryHistoryUiState.Success(
@@ -223,15 +224,15 @@ fun DiaryListPageDarkPreview() {
 private fun DiaryHistoryDialogs(
     dialogState: DiaryHistoryUiState.DialogState,
     onDismiss: () -> Unit,
-    onConfirmDeleteDiary: (diaryId: String) -> Unit,
+    onConfirmDeleteDiary: (DiarySummary) -> Unit,
 ) {
     when (dialogState) {
         DiaryHistoryUiState.DialogState.None -> {}
         is DiaryHistoryUiState.DialogState.DeleteDiary -> {
             ConfirmDialog(
                 onDismiss = onDismiss,
-                onConfirm = { onConfirmDeleteDiary(dialogState.diaryId) },
-                title = stringResource(R.string.diary_delete_confirm_message, dialogState.courseName),
+                onConfirm = { onConfirmDeleteDiary(dialogState.diary) },
+                title = stringResource(R.string.diary_delete_confirm_message, dialogState.diary.courseName),
             )
         }
     }

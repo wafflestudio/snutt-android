@@ -22,11 +22,11 @@ class CurrentTableLectureRepositoryImpl @Inject constructor(
     private val storage: SNUTTStorage,
 ) : CurrentTableLectureRepository {
 
-    override suspend fun addLecture(lectureId: String, isForced: Boolean): Result<Unit> {
+    override suspend fun addLecture(lecture: SearchedLecture, isForced: Boolean): Result<Unit> {
         val prevTable = storage.lastViewedTable.get().value
             ?: return Result.Success(Unit)
         try {
-            val response = api._postAddLecture(prevTable.id, lectureId, PostLectureParams(isForced))
+            val response = api._postAddLecture(prevTable.id, lecture.id, PostLectureParams(isForced))
             storage.lastViewedTable.update(response.toOptional())
             return Result.Success(Unit)
         } catch (e: Exception) {
@@ -34,11 +34,11 @@ class CurrentTableLectureRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun removeLecture(lectureId: String): Result<Unit> {
+    override suspend fun removeLecture(lecture: LocalLecture): Result<Unit> {
         val prevTable = storage.lastViewedTable.get().value
             ?: return Result.Success(Unit)
         try {
-            val response = api._deleteLecture(prevTable.id, lectureId)
+            val response = api._deleteLecture(prevTable.id, lecture.id)
             storage.lastViewedTable.update(response.toOptional())
             return Result.Success(Unit)
         } catch (e: Exception) {
@@ -76,14 +76,14 @@ class CurrentTableLectureRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun resetLecture(lectureId: String): Result<LocalLecture> {
+    override suspend fun resetLecture(lecture: LocalLecture): Result<LocalLecture> {
         val prevTable = storage.lastViewedTable.get().value
             ?: return Result.Fail(Unknown("", ""))
         try {
-            val response = api._resetLecture(prevTable.id, lectureId)
+            val response = api._resetLecture(prevTable.id, lecture.id)
             storage.lastViewedTable.update(response.toOptional())
-            val lecture = response.lectureList.find { it.id == lectureId }!!.toLocalLecture()
-            return Result.Success(lecture)
+            val resetLecture = response.lectureList.find { it.id == lecture.id }!!.toLocalLecture()
+            return Result.Success(resetLecture)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
         }

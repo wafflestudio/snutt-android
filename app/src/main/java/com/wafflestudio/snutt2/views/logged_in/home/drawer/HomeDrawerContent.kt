@@ -50,10 +50,10 @@ fun HomeDrawerContent(
     onClickCreateNewTable: () -> Unit,
     onClickCreateNewTableOfCourseBook: (courseBook: CourseBook) -> Unit,
     onSelectTable: (tableId: String) -> Unit,
-    onClickCopyIcon: (tableId: String) -> Unit,
+    onClickCopyIcon: (TableSummary) -> Unit,
     onClickMoreIcon: (tableSummary: TableSummary) -> Unit,
     onDismissDialog: () -> Unit,
-    onConfirmChangeTableTitle: (newTitle: String, tableId: String) -> Unit,
+    onConfirmChangeTableTitle: (TableSummary, String) -> Unit,
     onConfirmDeleteTable: (tableSummary: TableSummary) -> Unit,
 ) {
     val context = LocalContext.current
