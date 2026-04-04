@@ -48,13 +48,6 @@ class HomeDrawerViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            tableRepository.fetchTableList()
-        }
-        viewModelScope.launch {
-            courseBookRepository.fetchCourseBooks().onFailure { handleError(it) }
-        }
-
-        viewModelScope.launch {
             combine(
                 courseBookRepository.courseBooks,
                 tableRepository.tableSummaryList,
@@ -121,6 +114,15 @@ class HomeDrawerViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun onClickDrawerIcon() {
+        viewModelScope.launch { _uiEvent.emit(HomeDrawerUiEvent.OpenDrawer) }
+    }
+
+    fun onDrawerOpened() {
+        viewModelScope.launch { tableRepository.fetchTableList() }
+        viewModelScope.launch { courseBookRepository.fetchCourseBooks() }
     }
 
     fun toggleCourseBookDrawerItem(index: Int) {
@@ -417,10 +419,11 @@ class HomeDrawerViewModel @Inject constructor(
 }
 
 sealed interface HomeDrawerUiEvent {
+    data object OpenDrawer : HomeDrawerUiEvent
+    data object CloseDrawer : HomeDrawerUiEvent
+
     data object OpenBottomSheet : HomeDrawerUiEvent
     data object CloseBottomSheet : HomeDrawerUiEvent
-
-    data object CloseDrawer : HomeDrawerUiEvent
 
     data object NavigateToThemeDetail : HomeDrawerUiEvent
 
