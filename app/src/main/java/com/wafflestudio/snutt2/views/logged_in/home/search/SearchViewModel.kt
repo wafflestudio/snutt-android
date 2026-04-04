@@ -134,7 +134,11 @@ class SearchViewModel @Inject constructor(
                     courseBook = table.summary.courseBook,
                     title = state.searchTitle,
                     tags = state.selectedTags,
-                    times = state.draggedTimeBlock.clusterToTimeBlocks().ifEmpty { null },
+                    times = if (state.selectedTags.contains(SearchTag.TimeSelect)) {
+                        state.draggedTimeBlock.clusterToTimeBlocks().ifEmpty { null }
+                    } else {
+                        null
+                    },
                     timesToExclude = if (state.selectedTags.contains(SearchTag.TimeEmpty)) {
                         table.lectures.flatMapToSearchTime()
                     } else {
