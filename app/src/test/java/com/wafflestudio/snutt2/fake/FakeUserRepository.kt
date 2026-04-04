@@ -7,24 +7,25 @@ import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.dto.GetSocialProvidersResults
 import com.wafflestudio.snutt2.ui.ThemeMode
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 
 class FakeUserRepository : UserRepository {
 
-    private val _user = MutableStateFlow<User?>(null)
-    override val user: StateFlow<User?> = _user.asStateFlow()
-
-    private val _accessToken = MutableStateFlow("")
-    override val accessToken: StateFlow<String> = _accessToken.asStateFlow()
-
-    private val _themeMode = MutableStateFlow(ThemeMode.AUTO)
-    override val themeMode: StateFlow<ThemeMode> = _themeMode.asStateFlow()
+    override val user = MutableStateFlow<User?>(null)
+    override val accessToken = MutableStateFlow("")
+    override val themeMode = MutableStateFlow(ThemeMode.AUTO)
 
     // region 테스트 제어용 필드
 
     var findIdByEmailResult: Result<Unit> = Result.Success(Unit)
     var findIdByEmailCalledWith: String? = null
+        private set
+
+    var setThemeModeResult: Result<Unit> = Result.Success(Unit)
+    var setThemeModeCalledWith: ThemeMode? = null
+        private set
+
+    var postFeedbackResult: Result<Unit> = Result.Success(Unit)
+    var postFeedbackCalledWith: Pair<String, String>? = null
         private set
 
     // endregion
@@ -43,12 +44,18 @@ class FakeUserRepository : UserRepository {
     override suspend fun deleteUserAccount(): Result<Unit> = TODO()
     override suspend fun putUserPassword(oldPassword: String, newPassword: String): Result<Unit> = TODO()
     override suspend fun postUserPassword(id: String, password: String): Result<Unit> = TODO()
-    override suspend fun postFeedback(email: String, detail: String): Result<Unit> = TODO()
+    override suspend fun postFeedback(email: String, detail: String): Result<Unit> {
+        postFeedbackCalledWith = email to detail
+        return postFeedbackResult
+    }
     override suspend fun postForceLogout(): Result<Unit> = TODO()
     override suspend fun getAccessToken(): Result<String> = TODO()
     override suspend fun performLogout(): Result<Unit> = TODO()
     override suspend fun registerToken(): Result<Unit> = TODO()
-    override suspend fun setThemeMode(mode: ThemeMode): Result<Unit> = TODO()
+    override suspend fun setThemeMode(mode: ThemeMode): Result<Unit> {
+        setThemeModeCalledWith = mode
+        return setThemeModeResult
+    }
     override suspend fun checkEmailById(id: String): Result<String> = TODO()
     override suspend fun sendPwResetCodeToEmail(email: String): Result<Unit> = TODO()
     override suspend fun verifyPwResetCode(id: String, code: String): Result<Unit> = TODO()
