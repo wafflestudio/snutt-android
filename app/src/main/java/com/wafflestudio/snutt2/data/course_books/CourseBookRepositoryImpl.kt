@@ -16,15 +16,6 @@ class CourseBookRepositoryImpl @Inject constructor(
 
     override val courseBooks: MutableStateFlow<List<CourseBook>> = MutableStateFlow(emptyList())
 
-    override suspend fun getCourseBooks(): Result<List<CourseBook>> {
-        try {
-            val result = api._getCoursebook()
-            return Result.Success(result.map { it.toDomainModel() })
-        } catch (e: Exception) {
-            return Result.Fail(e.toDomainError())
-        }
-    }
-
     override suspend fun fetchCourseBooks(): Result<Unit> {
         try {
             courseBooks.value = api._getCoursebook().map { it.toDomainModel() }
