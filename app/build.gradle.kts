@@ -116,6 +116,9 @@ android {
 dependencies {
     // Testing
     testImplementation(libs.junit)
+    testImplementation(libs.kotlin.test)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.turbine)
 
     // Android Core
     implementation(libs.material)
