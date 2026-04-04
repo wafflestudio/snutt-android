@@ -22,7 +22,6 @@ import com.wafflestudio.snutt2.components.compose.BottomSheetDismissEffect
 import com.wafflestudio.snutt2.domainmodel.LocalLecture
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.shareScreenshot
-import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTableScreen
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTableUiEvent
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTableUiState
@@ -46,7 +45,6 @@ fun TimeTableRoute(
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    val analyticsLogger = LocalAnalyticsLogger.current
 
     // FIXME: 뷰모델 refresh 함수 주석 참조
     LaunchedEffect(Unit) {
