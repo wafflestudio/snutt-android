@@ -64,6 +64,14 @@ class FakeUserRepository : UserRepository {
     var performLogoutCalled = false
         private set
 
+    var getPushPreferencesResult: Result<PushPreferences> = Result.Success(
+        PushPreferences(lectureUpdate = false, vacancyNotification = false, lectureDiary = false),
+    )
+
+    var postPushPreferencesResult: Result<Unit> = Result.Success(Unit)
+    var postPushPreferencesCalledWith: PushPreferences? = null
+        private set
+
     // endregion
 
     override suspend fun findIdByEmail(email: String): Result<Unit> {
@@ -126,8 +134,13 @@ class FakeUserRepository : UserRepository {
     override suspend fun sendCodeToEmail(email: String): Result<Unit> = TODO()
     override suspend fun verifyEmailCode(code: String): Result<Unit> = TODO()
     override suspend fun getAccessTokenByAuthCode(authCode: String, clientId: String, clientSecret: String): Result<String> = TODO()
-    override suspend fun getPushPreferences(): Result<PushPreferences> = TODO()
-    override suspend fun postPushPreferences(pushPreferences: PushPreferences): Result<Unit> = TODO()
+    override suspend fun getPushPreferences(): Result<PushPreferences> {
+        return getPushPreferencesResult
+    }
+    override suspend fun postPushPreferences(pushPreferences: PushPreferences): Result<Unit> {
+        postPushPreferencesCalledWith = pushPreferences
+        return postPushPreferencesResult
+    }
     override suspend fun getSocialProviders(): Result<GetSocialProvidersResults> = TODO()
     override suspend fun postLoginFacebook(facebookToken: String): Result<Unit> = TODO()
     override suspend fun postLoginGoogle(googleAccessToken: String): Result<Unit> = TODO()
