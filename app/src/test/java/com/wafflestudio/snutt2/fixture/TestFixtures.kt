@@ -1,10 +1,12 @@
 package com.wafflestudio.snutt2.fixture
 
 import com.wafflestudio.snutt2.domainmodel.CourseBook
+import com.wafflestudio.snutt2.domainmodel.CustomTheme
 import com.wafflestudio.snutt2.domainmodel.LectureReviewInfo
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.domainmodel.Table
 import com.wafflestudio.snutt2.domainmodel.TableSummary
+import com.wafflestudio.snutt2.domainmodel.ThemeColor
 import com.wafflestudio.snutt2.domainmodel.ThemeReference
 
 object TestFixtures {
@@ -71,4 +73,17 @@ object TestFixtures {
 
     val lecture1 = searchedLecture(id = "lec-1", courseTitle = "컴퓨터개론")
     val lecture2 = searchedLecture(id = "lec-2", courseTitle = "자료구조")
+
+    // --- CustomTheme ---
+
+    fun customTheme(
+        id: String = "theme-1",
+        name: String = "내 테마",
+        isFromMarket: Boolean = false,
+    ) = CustomTheme(
+        id = id,
+        name = name,
+        isFromMarket = isFromMarket,
+        colors = listOf(ThemeColor(0xFFFFFFFF.toInt(), 0xFF000000.toInt())),
+    )
 }

@@ -16,15 +16,39 @@ class FakeThemeRepository : ThemeRepository {
     // --- 테스트 제어용 필드 ---
     var getThemeResult: CustomTheme? = null
 
+    var fetchThemesResult: Result<Unit> = Result.Success(Unit)
+    var fetchThemesCalled = false
+        private set
+
+    var copyThemeResult: Result<Unit> = Result.Success(Unit)
+    var copyThemeCalledWith: String? = null
+        private set
+
+    var deleteThemeResult: Result<Unit> = Result.Success(Unit)
+    var deleteThemeCalledWith: String? = null
+        private set
+
     // --- 인터페이스 구현 ---
     override fun getTheme(themeId: String): CustomTheme {
         return getThemeResult ?: error("getThemeResult not set for themeId=$themeId")
     }
 
+    override suspend fun fetchThemes(): Result<Unit> {
+        fetchThemesCalled = true
+        return fetchThemesResult
+    }
+
+    override suspend fun copyTheme(themeId: String): Result<Unit> {
+        copyThemeCalledWith = themeId
+        return copyThemeResult
+    }
+
+    override suspend fun deleteTheme(themeId: String): Result<Unit> {
+        deleteThemeCalledWith = themeId
+        return deleteThemeResult
+    }
+
     // --- 미사용 메서드 ---
-    override suspend fun fetchThemes(): Result<Unit> = TODO("Not used in this test")
     override suspend fun createTheme(name: String, colors: List<ThemeColor>): Result<CustomTheme> = TODO("Not used in this test")
     override suspend fun updateTheme(themeId: String, name: String, colors: List<ThemeColor>): Result<CustomTheme> = TODO("Not used in this test")
-    override suspend fun copyTheme(themeId: String): Result<Unit> = TODO("Not used in this test")
-    override suspend fun deleteTheme(themeId: String): Result<Unit> = TODO("Not used in this test")
 }

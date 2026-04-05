@@ -56,7 +56,12 @@ class FakeTableRepository : TableRepository {
         private set
 
     var updateTableThemeBuiltInResult: Result<Unit> = Result.Success(Unit)
+    var updateTableThemeBuiltInCalledWith: Pair<String, Int>? = null
+        private set
+
     var updateTableThemeCustomResult: Result<Unit> = Result.Success(Unit)
+    var updateTableThemeCustomCalledWith: Pair<String, String>? = null
+        private set
 
     // --- 인터페이스 구현 ---
     override suspend fun fetchAndSelectTable(id: String): Result<Unit> {
@@ -105,10 +110,12 @@ class FakeTableRepository : TableRepository {
     }
 
     override suspend fun updateTableTheme(tableId: String, code: Int): Result<Unit> {
+        updateTableThemeBuiltInCalledWith = tableId to code
         return updateTableThemeBuiltInResult
     }
 
     override suspend fun updateTableTheme(tableId: String, themeId: String): Result<Unit> {
+        updateTableThemeCustomCalledWith = tableId to themeId
         return updateTableThemeCustomResult
     }
 

@@ -56,10 +56,10 @@ fun UserConfigRoute(
     viewModel: UserConfigViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
-    val uiState by viewModel.userConfigUiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        viewModel.userConfigUiEvent.collect { uiEvent ->
+        viewModel.uiEvent.collect { uiEvent ->
             when (uiEvent) {
                 is UserConfigUiEvent.ShowToast -> {
                     val message = uiEvent.message
@@ -222,111 +222,15 @@ fun UserConfigScreen(
         }
     }
 
-    if (uiState.showChangePasswordDialog) {
-        var currentPassword by remember { mutableStateOf("") }
-        var newPassword by remember { mutableStateOf("") }
-        var newPasswordConfirm by remember { mutableStateOf("") }
-
-        CustomDialog(
-            onDismiss = onDismissChangePassword,
-            onConfirm = { onConfirmChangePassword(currentPassword, newPassword, newPasswordConfirm) },
-            title = stringResource(R.string.settings_user_config_change_password),
-            positiveButtonText = stringResource(
-                R.string.notifications_noti_change,
-            ),
-        ) {
-            val focusManager = LocalFocusManager.current
-            Column {
-                EditText(
-                    value = currentPassword,
-                    onValueChange = { currentPassword = it },
-                    textStyle = SNUTTTypography.body1.copy(fontSize = 16.sp),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
-                    keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
-                    visualTransformation = PasswordVisualTransformation(),
-                    hint = stringResource(R.string.settings_user_config_current_password_hint),
-                )
-                Spacer(modifier = Modifier.height(25.dp))
-                EditText(
-                    value = newPassword,
-                    onValueChange = { newPassword = it },
-                    textStyle = SNUTTTypography.body1.copy(fontSize = 16.sp),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
-                    keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
-                    visualTransformation = PasswordVisualTransformation(),
-                    hint = stringResource(R.string.settings_user_config_new_password_hint),
-                )
-                Spacer(modifier = Modifier.height(25.dp))
-                EditText(
-                    value = newPasswordConfirm,
-                    onValueChange = { newPasswordConfirm = it },
-                    textStyle = SNUTTTypography.body1.copy(fontSize = 16.sp),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(onDone = { onConfirmChangePassword(currentPassword, newPassword, newPasswordConfirm) }),
-                    visualTransformation = PasswordVisualTransformation(),
-                    hint = stringResource(R.string.settings_user_config_new_password_confirm_hint),
-                )
-            }
-        }
-    }
-
-    if (uiState.showAddIdPasswordDialog) {
-        var id by remember { mutableStateOf("") }
-        var password by remember { mutableStateOf("") }
-        var passwordConfirm by remember { mutableStateOf("") }
-
-        CustomDialog(
-            onDismiss = onDismissAddIdPassword,
-            onConfirm = { onConfirmAddIdPassword(id, password, passwordConfirm) },
-            title = stringResource(R.string.settings_user_config_add_local_id),
-            positiveButtonText = stringResource(
-                R.string.notifications_noti_add,
-            ),
-        ) {
-            val focusManager = LocalFocusManager.current
-            Column {
-                EditText(
-                    value = id,
-                    onValueChange = { id = it },
-                    textStyle = SNUTTTypography.body1.copy(fontSize = 16.sp),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
-                    keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
-                    hint = stringResource(R.string.sign_in_id_hint),
-                )
-                Spacer(modifier = Modifier.height(25.dp))
-                EditText(
-                    value = password,
-                    onValueChange = { password = it },
-                    textStyle = SNUTTTypography.body1.copy(fontSize = 16.sp),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
-                    keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
-                    visualTransformation = PasswordVisualTransformation(),
-                    hint = stringResource(R.string.sign_in_password_hint),
-                )
-                Spacer(modifier = Modifier.height(25.dp))
-                EditText(
-                    value = passwordConfirm,
-                    onValueChange = { passwordConfirm = it },
-                    textStyle = SNUTTTypography.body1.copy(fontSize = 16.sp),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(onNext = { onConfirmAddIdPassword(id, password, passwordConfirm) }),
-                    visualTransformation = PasswordVisualTransformation(),
-                    hint = stringResource(R.string.sign_up_password_confirm_hint),
-                )
-            }
-        }
-    }
-
-    if (uiState.showLeaveDialog) {
-        CustomDialog(
-            onDismiss = onDismissLeave,
-            onConfirm = onConfirmLeave,
-            title = stringResource(R.string.settings_user_config_leave),
-            positiveButtonText = stringResource(R.string.settings_user_config_leave),
-        ) {
-            Text(text = stringResource(R.string.settings_leave_message), style = SNUTTTypography.body2)
-        }
-    }
+    UserConfigDialogs(
+        dialogState = uiState.dialogState,
+        onConfirmChangePassword = onConfirmChangePassword,
+        onDismissChangePassword = onDismissChangePassword,
+        onConfirmAddIdPassword = onConfirmAddIdPassword,
+        onDismissAddIdPassword = onDismissAddIdPassword,
+        onConfirmLeave = onConfirmLeave,
+        onDismissLeave = onDismissLeave,
+    )
 }
 
 @Preview
@@ -334,7 +238,9 @@ fun UserConfigScreen(
 fun UserConfigPagePreview() {
     UserConfigScreen(
         uiState = UserConfigUiState(
-            "이현도", "lhd", "lhd@email.com", false, false, false,
+            userName = "이현도",
+            localId = "lhd",
+            email = "lhd@email.com",
         ),
         onNavigateBack = {},
         onNavigateChangeNickname = {},
