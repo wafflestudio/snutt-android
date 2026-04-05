@@ -18,10 +18,12 @@ import com.wafflestudio.snutt2.lib.network.dto.core.toDomainModel
 import com.wafflestudio.snutt2.lib.network.toDomainError
 import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.domainmodel.toOffsetString
+import kotlinx.coroutines.ExperimentalForInheritanceCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 
+@OptIn(ExperimentalForInheritanceCoroutinesApi::class)
 @Singleton
 class TableRepositoryImpl @Inject constructor(
     private val api: SNUTTRestApi,

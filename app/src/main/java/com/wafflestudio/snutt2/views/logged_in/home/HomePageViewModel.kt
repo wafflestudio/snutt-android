@@ -31,7 +31,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomePageViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val notificationRepository: NotificationRepository,
     private val tableRepository: TableRepository,
     private val tableDisplayRepository: TableDisplayRepository,

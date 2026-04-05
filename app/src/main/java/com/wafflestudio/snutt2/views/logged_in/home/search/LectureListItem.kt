@@ -134,7 +134,7 @@ fun ExpandableLectureListItem(
                     )
                     Spacer(modifier = Modifier.width(2.dp))
                     Text(
-                        text = lectureDataWithState.item.reviewInfo.displayText ?: "-- (0)",
+                        text = lectureDataWithState.item.reviewInfo.displayText,
                         color = SNUTTColors.White,
                         fontWeight = FontWeight.Light,
                         fontSize = 12.sp,

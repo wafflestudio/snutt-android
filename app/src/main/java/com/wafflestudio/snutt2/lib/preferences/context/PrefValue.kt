@@ -13,6 +13,7 @@ class PrefValue<T : Any> constructor(
 
     init {
         val listener: (Any?) -> Unit = { value ->
+            @Suppress("UNCHECKED_CAST")
             asdf.value = ((value as? T) ?: metaData.defaultValue)
         }
         prefContext.addValueChangeListener(metaData.domain, metaData.key, listener)

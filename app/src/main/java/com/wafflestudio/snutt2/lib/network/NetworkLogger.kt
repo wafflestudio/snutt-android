@@ -48,7 +48,7 @@ fun Interceptor.Chain.createNewNetworkLog(
                 )
             } ?: ""
 
-            responseBody = response.body?.run {
+            responseBody = response.body.run {
                 GsonBuilder().setPrettyPrinting().create().toJson(
                     JsonParser.parseString(
                         source().buffer.clone().readString(
