@@ -225,6 +225,31 @@ source 테스트에서는 Fake의 `MutableStateFlow`에 `.value = ...`로 변화
 
 하나의 테스트에서 여러 범주를 동시에 검증하지 않는다.
 
+#### 테스트 작성 절차
+
+**나가는 방향**: 각 public 함수에 대해, 아래 범주를 **빠짐없이 열거**하고 해당되는 것마다 테스트를 작성한다:
+
+1. **Repository 호출**: 올바른 인자로 호출되었는가?
+2. **UiEvent (성공)**: 성공 시 올바른 이벤트가 발행되는가?
+3. **UiEvent (실패)**: 실패 시 올바른 에러 이벤트가 발행되는가?
+4. **UiState 전이**: 상태가 올바르게 변경되는가?
+
+해당되지 않는 범주는 건너뛴다 (예: Repository를 호출하지 않는 함수는 1번 생략). 하지만 **해당되는데 빠뜨리지 않도록** 매 함수마다 위 목록을 체크한다.
+
+**들어오는 방향**: 테스트 작성 전에 init의 combine/collect 로직을 읽고, **각 source가 UiState의 어떤 필드에 어떤 변환으로 기여하는지** 파악한다. 그 이해를 바탕으로 시나리오를 도출한다.
+
+1. init 블록의 combine/collect 대상 source를 열거한다.
+2. 각 source가 combine 내에서 **어떤 로직에 사용되는지** 파악한다 (그룹핑, 정렬, 조건부 플래그, 상태 보존 등).
+3. 그 로직에서 의미 있는 시나리오를 도출하여 테스트를 작성한다.
+
+예: `combine(courseBooks, tableSummaryList, currentTable)`에서
+- `courseBooks.first()`가 최신 학기를 결정 → 최신 학기에 시간표가 없으면 빈 항목 + dot 표시
+- `tableSummaryList`가 courseBook별로 그룹핑 → 시간표 추가 시 해당 학기 tableList에 반영
+- `currentTable`의 courseBook이 expanded 결정 → 학기 전환 시 expanded 이동
+- `previousExpandedState`가 이전 expanded를 보존 → source 변화 후에도 수동 펼침 유지
+
+"source가 변하면 UiState가 갱신된다" 같은 피상적 검증이 아니라, **combine 로직의 구체적인 동작**을 검증해야 한다.
+
 나가는 방향 테스트는 **public 함수 단위로**, 들어오는 방향 테스트는 **source 단위로** region을 묶어 구조화한다:
 
 ```kotlin
@@ -335,6 +360,39 @@ fun `init 시 fetch 성공하고 강의가 있으면 Loaded 상태가 된다`() 
 ```
 
 **어떤 경우든 개별 필드를 하나씩 assertEquals 하지 않는다.** 반드시 전체 객체 단위로 비교한다.
+
+#### 주의: init combine 결과도 예외 없이 전체 객체 비교
+
+init의 combine이 복잡한 파생 로직(그룹핑, 정렬, 조건부 플래그 등)으로 상태를 구성하더라도 기대 객체를 직접 만들어 비교한다. "기대 객체가 복잡해질 것 같다"는 이유로 개별 필드 검증으로 후퇴하지 않는다.
+
+실제로 기대 객체를 구성해 보면 대부분 가능하고, 이를 통해 combine 로직의 모든 출력 필드가 한눈에 검증된다:
+
+```kotlin
+@Test
+fun `init 시 courseBooks와 tableSummaryList로 서랍 목록이 구성된다`() = runTest {
+    // ... Fake 세팅 ...
+    val viewModel = createViewModel()
+
+    assertEquals(
+        HomeDrawerUiState(
+            courseBookDrawerItemList = listOf(
+                CoursebookDrawerItem(
+                    courseBook = courseBook2025_1,
+                    showNewCoursebookDot = false,
+                    tableList = listOf(summary1),
+                ).toDataWithState(true),
+                CoursebookDrawerItem(
+                    courseBook = courseBook2024_2,
+                    showNewCoursebookDot = false,
+                    tableList = listOf(summary2),
+                ).toDataWithState(false),
+            ),
+            selectedTable = summary1,
+        ),
+        viewModel.uiState.value,
+    )
+}
+```
 
 ---
 
