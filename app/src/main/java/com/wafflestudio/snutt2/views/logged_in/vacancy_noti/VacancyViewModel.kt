@@ -208,27 +208,27 @@ class VacancyViewModel @Inject constructor(
     }
 }
 
-sealed interface VacancyUiState {
+data class VacancyUiState(
+    val contentState: ContentState = ContentState.Loading,
+    val dialogState: DialogState = DialogState.None,
+    val isEditMode: Boolean = false,
+    val isRefreshing: Boolean = false,
+) {
+    sealed interface ContentState {
+        data object Loading : ContentState
+        data object Error : ContentState
+        data object Empty : ContentState
+        data class Loaded(
+            val vacancyLecturesWithSelection: List<Selectable<SearchedLecture>>,
+            val deleteButtonEnabled: Boolean = false,
+        ) : ContentState
+    }
+
     sealed interface DialogState {
         data object None : DialogState
         data object Intro : DialogState
         data object ConfirmDeleteSelected : DialogState
     }
-
-    data class Success(
-        val vacancyLecturesWithSelection: List<Selectable<SearchedLecture>>,
-        val dialogState: DialogState,
-        val isEditMode: Boolean,
-        val isRefreshing: Boolean,
-        val deleteButtonEnabled: Boolean,
-    ) : VacancyUiState
-
-    data object Error : VacancyUiState
-    data object Loading : VacancyUiState
-    data class Empty(
-        val dialogState: DialogState,
-        val isRefreshing: Boolean,
-    ) : VacancyUiState
 }
 
 sealed interface VacancyUiEvent {
@@ -237,10 +237,3 @@ sealed interface VacancyUiEvent {
     data class OpenWebPage(val url: String) : VacancyUiEvent
 }
 
-// FIXME: 그냥 그때그때 분기하기 vs 이렇게 유틸 만들기 뭐가 나을까?
-private fun VacancyUiState.copyWithRefreshing(isRefreshing: Boolean): VacancyUiState = when (this) {
-    is VacancyUiState.Success -> copy(isRefreshing = isRefreshing)
-    is VacancyUiState.Empty -> copy(isRefreshing = isRefreshing)
-    is VacancyUiState.Error -> this
-    is VacancyUiState.Loading -> this
-}
