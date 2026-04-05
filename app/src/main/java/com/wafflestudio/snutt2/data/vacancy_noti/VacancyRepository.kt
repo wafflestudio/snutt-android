@@ -12,9 +12,6 @@ interface VacancyRepository {
 
     val vacancyLectures: StateFlow<List<SearchedLecture>>
 
-    // FIXME: fetchVacancyLectures 쓰도록 바꾸기
-    suspend fun getVacancyLectures(): Result<List<SearchedLecture>>
-
     suspend fun fetchVacancyLectures(): Result<Unit>
 
     suspend fun addVacancyLecture(lecture: Lecture): Result<Unit>

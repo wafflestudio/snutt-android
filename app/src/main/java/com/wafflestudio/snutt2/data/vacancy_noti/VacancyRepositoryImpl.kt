@@ -33,15 +33,6 @@ class VacancyRepositoryImpl @Inject constructor(
         return lectures
     }
 
-    override suspend fun getVacancyLectures(): Result<List<SearchedLecture>> {
-        try {
-            val result = api._getVacancyLectures()
-            return Result.Success(result.lectures.map { it.toSearchedLecture() })
-        } catch (e: Exception) {
-            return Result.Fail(e.toDomainError())
-        }
-    }
-
     override suspend fun fetchVacancyLectures(): Result<Unit> {
         return try {
             refetch()
