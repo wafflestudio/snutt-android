@@ -11,6 +11,7 @@ sealed interface DiaryWriteUiState {
         val dailyClassTypes: List<Selectable<DiaryDailyClassType>>,
         val activitySelectingState: ActivitySelectionState,
         val questions: List<DiaryQuestion>,
+        val nextLecture: NextLecture? = null,
     ) : DiaryWriteUiState {
 
         fun allQuestionAnswered(): Boolean =
@@ -31,6 +32,10 @@ enum class ActivitySelectionState {
         this == InitialSelecting || this == ReSelecting
 }
 
-enum class DiaryNextAction {
-    Nothing, WriteNext, WriteReview
+data class NextLecture(val lectureId: String, val courseTitle: String)
+
+sealed interface DiaryNextAction {
+    data object Nothing : DiaryNextAction
+    data class WriteNext(val lectureId: String, val courseTitle: String) : DiaryNextAction
+    data object WriteReview : DiaryNextAction
 }

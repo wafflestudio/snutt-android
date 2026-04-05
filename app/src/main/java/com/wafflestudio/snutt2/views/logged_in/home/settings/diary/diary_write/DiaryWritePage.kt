@@ -368,8 +368,9 @@ private fun DiaryComplete(
                         .background(color = Color.Transparent, shape = RoundedCornerShape(30.dp))
                         .clicks {
                             when (uiState.nextAction) {
-                                DiaryNextAction.WriteNext -> onClickWriteNextButton()
-                                DiaryNextAction.WriteReview -> onClickWriteReviewButton()
+                                is DiaryNextAction.WriteNext -> onClickWriteNextButton()
+                                is DiaryNextAction.WriteReview -> onClickWriteReviewButton()
+                                DiaryNextAction.Nothing -> {}
                             }
                         }
                         .padding(start = 29.dp, end = 21.dp, top = 13.dp, bottom = 13.dp),
@@ -380,8 +381,9 @@ private fun DiaryComplete(
                     ) {
                         Text(
                             text = when (uiState.nextAction) {
-                                DiaryNextAction.WriteNext -> stringResource(R.string.diary_write_more_button)
-                                DiaryNextAction.WriteReview -> stringResource(R.string.diary_write_review_button)
+                                is DiaryNextAction.WriteNext -> stringResource(R.string.diary_write_more_button)
+                                is DiaryNextAction.WriteReview -> stringResource(R.string.diary_write_review_button)
+                                DiaryNextAction.Nothing -> ""
                             },
                             style = SNUTTTypography.button.copy(fontSize = 15.sp, color = DiaryTheme.colors.textPrimary),
                         )
