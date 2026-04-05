@@ -5,9 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.isIdInvalid
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.isPasswordInvalid
-import com.wafflestudio.snutt2.lib.network.AddLocalIdError
 import com.wafflestudio.snutt2.lib.network.AuthError
-import com.wafflestudio.snutt2.lib.network.ChangePasswordError
 import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
 import com.wafflestudio.snutt2.lib.network.DomainError
 import com.wafflestudio.snutt2.lib.network.onFailure
@@ -15,10 +13,9 @@ import com.wafflestudio.snutt2.lib.network.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,28 +24,42 @@ class UserConfigViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val displayMessageResolver: DisplayMessageResolver,
 ) : ViewModel() {
-    private val _showChangePasswordDialog = MutableStateFlow(false)
-    private val _showAddIdPasswordDialog = MutableStateFlow(false)
-    private val _showLeaveDialog = MutableStateFlow(false)
 
-    private val _userConfigUiEvent: MutableSharedFlow<UserConfigUiEvent> = MutableSharedFlow(replay = 1)
-    val userConfigUiEvent = _userConfigUiEvent.asSharedFlow()
+    private val _uiState = MutableStateFlow(UserConfigUiState())
+    val uiState = _uiState.asStateFlow()
+
+    private val _uiEvent: MutableSharedFlow<UserConfigUiEvent> = MutableSharedFlow(replay = 1)
+    val uiEvent = _uiEvent.asSharedFlow()
+
+    init {
+        viewModelScope.launch {
+            userRepository.user.collect { user ->
+                _uiState.update {
+                    it.copy(
+                        userName = user?.nickname?.getDisplayName() ?: "",
+                        localId = user?.localId,
+                        email = user?.email,
+                    )
+                }
+            }
+        }
+    }
 
     fun addNewLocalId(id: String, password: String, passwordConfirm: String) {
         viewModelScope.launch {
             if (id.isIdInvalid()) {
-                _userConfigUiEvent.emit(UserConfigUiEvent.ShowToastByEvent(UserConfigEvent.InvalidIdError))
+                _uiEvent.emit(UserConfigUiEvent.ShowToastByEvent(UserConfigEvent.InvalidIdError))
                 return@launch
             } else if (password.isPasswordInvalid()) {
-                _userConfigUiEvent.emit(UserConfigUiEvent.ShowToastByEvent(UserConfigEvent.InvalidPasswordError))
+                _uiEvent.emit(UserConfigUiEvent.ShowToastByEvent(UserConfigEvent.InvalidPasswordError))
                 return@launch
             } else if (password != passwordConfirm) {
-                _userConfigUiEvent.emit(UserConfigUiEvent.ShowToastByEvent(UserConfigEvent.PasswordMismatchError))
+                _uiEvent.emit(UserConfigUiEvent.ShowToastByEvent(UserConfigEvent.PasswordMismatchError))
                 return@launch
             } else {
                 userRepository.postUserPassword(id, password)
                     .onSuccess {
-                        _userConfigUiEvent.emit(UserConfigUiEvent.ShowToastByEvent(UserConfigEvent.AddIdPasswordSuccess))
+                        _uiEvent.emit(UserConfigUiEvent.ShowToastByEvent(UserConfigEvent.AddIdPasswordSuccess))
                         fetchUserInfo()
                         hideAddIdPasswordDialog()
                     }
@@ -62,15 +73,15 @@ class UserConfigViewModel @Inject constructor(
     fun changePassword(oldPassword: String, newPassword: String, newPasswordConfirm: String) {
         viewModelScope.launch {
             if (newPassword.isPasswordInvalid()) {
-                _userConfigUiEvent.emit(UserConfigUiEvent.ShowToastByEvent(UserConfigEvent.InvalidPasswordError))
+                _uiEvent.emit(UserConfigUiEvent.ShowToastByEvent(UserConfigEvent.InvalidPasswordError))
                 return@launch
             } else if (newPassword != newPasswordConfirm) {
-                _userConfigUiEvent.emit(UserConfigUiEvent.ShowToastByEvent(UserConfigEvent.PasswordMismatchError))
+                _uiEvent.emit(UserConfigUiEvent.ShowToastByEvent(UserConfigEvent.PasswordMismatchError))
                 return@launch
             } else {
                 userRepository.putUserPassword(oldPassword, newPassword)
                     .onSuccess {
-                        _userConfigUiEvent.emit(UserConfigUiEvent.ShowToastByEvent(UserConfigEvent.ChangePasswordSuccess))
+                        _uiEvent.emit(UserConfigUiEvent.ShowToastByEvent(UserConfigEvent.ChangePasswordSuccess))
                         hideChangePasswordDialog()
                     }
                     .onFailure { error ->
@@ -84,8 +95,8 @@ class UserConfigViewModel @Inject constructor(
         viewModelScope.launch {
             userRepository.deleteUserAccount()
                 .onSuccess {
-                    _showLeaveDialog.emit(false)
-                    _userConfigUiEvent.emit(UserConfigUiEvent.NavigateToOnboard)
+                    hideLeaveDialog()
+                    _uiEvent.emit(UserConfigUiEvent.NavigateToOnboard)
                 }
                 .onFailure { error ->
                     handleUserConfigError(error)
@@ -94,44 +105,32 @@ class UserConfigViewModel @Inject constructor(
     }
 
     fun showChangePasswordDialog() {
-        viewModelScope.launch {
-            _showChangePasswordDialog.emit(true)
-        }
+        _uiState.update { it.copy(dialogState = UserConfigUiState.DialogState.ChangePassword) }
     }
 
     fun hideChangePasswordDialog() {
-        viewModelScope.launch {
-            _showChangePasswordDialog.emit(false)
-        }
+        _uiState.update { it.copy(dialogState = UserConfigUiState.DialogState.None) }
     }
 
     fun showAddIdPasswordDialog() {
-        viewModelScope.launch {
-            _showAddIdPasswordDialog.emit(true)
-        }
+        _uiState.update { it.copy(dialogState = UserConfigUiState.DialogState.AddIdPassword) }
     }
 
     fun hideAddIdPasswordDialog() {
-        viewModelScope.launch {
-            _showAddIdPasswordDialog.emit(false)
-        }
+        _uiState.update { it.copy(dialogState = UserConfigUiState.DialogState.None) }
     }
 
     fun showLeaveDialog() {
-        viewModelScope.launch {
-            _showLeaveDialog.emit(true)
-        }
+        _uiState.update { it.copy(dialogState = UserConfigUiState.DialogState.Leave) }
     }
 
     fun hideLeaveDialog() {
-        viewModelScope.launch {
-            _showLeaveDialog.emit(false)
-        }
+        _uiState.update { it.copy(dialogState = UserConfigUiState.DialogState.None) }
     }
 
     fun resetToastMessage() {
         viewModelScope.launch {
-            _userConfigUiEvent.emit(UserConfigUiEvent.ShowToast(""))
+            _uiEvent.emit(UserConfigUiEvent.ShowToast(""))
         }
     }
 
@@ -148,57 +147,29 @@ class UserConfigViewModel @Inject constructor(
         val displayMessage = displayMessageResolver.getDisplayMessage(error)
         when (error) {
             is AuthError -> {
-                _userConfigUiEvent.emit(UserConfigUiEvent.ShowToast(displayMessage))
+                _uiEvent.emit(UserConfigUiEvent.ShowToast(displayMessage))
                 userRepository.performLogout()
-                _userConfigUiEvent.emit(UserConfigUiEvent.NavigateToOnboard)
-            }
-
-            is AddLocalIdError -> {
-                _userConfigUiEvent.emit(UserConfigUiEvent.ShowToast(displayMessage))
-            }
-
-            is ChangePasswordError -> {
-                _userConfigUiEvent.emit(UserConfigUiEvent.ShowToast(displayMessage))
+                _uiEvent.emit(UserConfigUiEvent.NavigateToOnboard)
             }
 
             else -> {
-                _userConfigUiEvent.emit(UserConfigUiEvent.ShowToast(displayMessage))
+                _uiEvent.emit(UserConfigUiEvent.ShowToast(displayMessage))
             }
         }
     }
-
-    val userConfigUiState = combine(
-        userRepository.user,
-        _showChangePasswordDialog,
-        _showAddIdPasswordDialog,
-        _showLeaveDialog,
-    ) { user, showChangePasswordDialog, showAddIdPasswordDialog, showLeaveDialog ->
-        if (user == null) {
-            UserConfigUiState.Default
-        } else {
-            UserConfigUiState(
-                user.nickname?.getDisplayName() ?: "",
-                user.localId,
-                user.email,
-                showChangePasswordDialog,
-                showAddIdPasswordDialog,
-                showLeaveDialog,
-            )
-        }
-    }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, UserConfigUiState.Default)
 }
 
 data class UserConfigUiState(
-    val userName: String,
-    val localId: String?,
-    val email: String?,
-    val showChangePasswordDialog: Boolean,
-    val showAddIdPasswordDialog: Boolean,
-    val showLeaveDialog: Boolean,
+    val userName: String = "",
+    val localId: String? = "",
+    val email: String? = "",
+    val dialogState: DialogState = DialogState.None,
 ) {
-    companion object {
-        val Default = UserConfigUiState("", "", "", false, false, false)
+    sealed interface DialogState {
+        data object None : DialogState
+        data object ChangePassword : DialogState
+        data object AddIdPassword : DialogState
+        data object Leave : DialogState
     }
 }
 
