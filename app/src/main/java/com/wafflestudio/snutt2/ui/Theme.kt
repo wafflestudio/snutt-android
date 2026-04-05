@@ -42,7 +42,7 @@ private val DarkThemeColors @Composable get() = darkColors(
 val Colors.onSurfaceVariant: Color
     get() = if (isLight) SNUTTColors.DarkerGray else SNUTTColors.Gray30
 
-enum class ThemeMode(@StringRes val labelResId: Int) {
+enum class ThemeMode(@param:StringRes val labelResId: Int) {
     DARK(R.string.theme_mode_dark),
     LIGHT(R.string.theme_mode_light),
     AUTO(R.string.theme_mode_auto),

@@ -55,7 +55,7 @@ class DiaryWriteViewModel @Inject constructor(
                 .onSuccess { dailyClassTypes ->
                     _uiState.update {
                         DiaryWriteUiState.Write(
-                            lectureName = courseTitle ?: "",
+                            lectureName = courseTitle,
                             dailyClassTypes = dailyClassTypes.map { Selectable(it, false) },
                             activitySelectingState = ActivitySelectionState.InitialSelecting,
                             questions = emptyList(),
