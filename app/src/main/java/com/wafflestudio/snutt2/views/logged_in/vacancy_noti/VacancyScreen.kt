@@ -113,24 +113,14 @@ fun VacancyRoute(
         }
     }
 
+    BackHandler(enabled = uiState.isEditMode) {
+        viewModel.toggleEditMode()
+    }
+
     VacancyScreen(
         modifier = modifier,
         uiState = uiState,
-        onClickBack = {
-            when (val state = uiState) {
-                is VacancyUiState.Success -> {
-                    if (state.isEditMode) {
-                        viewModel.toggleEditMode()
-                    } else {
-                        onNavigateBack()
-                    }
-                }
-
-                else -> {
-                    onNavigateBack()
-                }
-            }
-        },
+        onClickBack = onNavigateBack,
         onShowIntroDialog = viewModel::showIntroDialog,
         onDismissDialog = viewModel::dismissDialog,
         onToggleEditMode = viewModel::toggleEditMode,
@@ -156,22 +146,18 @@ fun VacancyScreen(
     onDeleteSelectedLectures: () -> Unit,
     onOpenSugangSnu: () -> Unit,
 ) {
-    BackHandler {
-        onClickBack()
-    }
-
-    when (uiState) {
-        VacancyUiState.Loading -> VacancyLoading(
+    when (uiState.contentState) {
+        VacancyUiState.ContentState.Loading -> VacancyLoading(
             modifier = modifier,
             onClickBack = onClickBack,
         )
 
-        VacancyUiState.Error -> VacancyError(
+        VacancyUiState.ContentState.Error -> VacancyError(
             modifier = modifier,
             onClickBack = onClickBack,
         )
 
-        is VacancyUiState.Empty -> VacancyEmpty(
+        VacancyUiState.ContentState.Empty -> VacancyEmpty(
             modifier = modifier,
             uiState = uiState,
             onClickBack = onClickBack,
@@ -181,7 +167,7 @@ fun VacancyScreen(
             onOpenSugangSnu = onOpenSugangSnu,
         )
 
-        is VacancyUiState.Success -> VacancySuccess(
+        is VacancyUiState.ContentState.Loaded -> VacancySuccess(
             modifier = modifier,
             uiState = uiState,
             onClickBack = onClickBack,
@@ -258,7 +244,7 @@ fun VacancyError(
 @OptIn(ExperimentalMaterialApi::class)
 fun VacancyEmpty(
     modifier: Modifier = Modifier,
-    uiState: VacancyUiState.Empty,
+    uiState: VacancyUiState,
     onClickBack: () -> Unit,
     onShowIntroDialog: () -> Unit,
     onDismissDialog: () -> Unit,
@@ -305,6 +291,7 @@ fun VacancyEmpty(
                     .fillMaxSize()
                     .pullRefresh(pullRefreshState),
             ) {
+                LazyColumn(modifier = Modifier.matchParentSize()) {}
                 PullRefreshIndicator(
                     refreshing = uiState.isRefreshing,
                     state = pullRefreshState,
@@ -376,7 +363,7 @@ fun VacancyPlaceholder(
 @OptIn(ExperimentalMaterialApi::class)
 fun VacancySuccess(
     modifier: Modifier = Modifier,
-    uiState: VacancyUiState.Success,
+    uiState: VacancyUiState,
     onClickBack: () -> Unit,
     onShowIntroDialog: () -> Unit,
     onDismissDialog: () -> Unit,
@@ -387,6 +374,7 @@ fun VacancySuccess(
     onDeleteSelectedLectures: () -> Unit,
     onOpenSugangSnu: () -> Unit,
 ) {
+    val content = uiState.contentState as VacancyUiState.ContentState.Loaded
     val density = LocalDensity.current
     val pullRefreshState = rememberPullRefreshState(uiState.isRefreshing, onReloadVacancyLectures)
     Box(
@@ -451,7 +439,7 @@ fun VacancySuccess(
                         .matchParentSize(),
                 ) {
                     items(
-                        items = uiState.vacancyLecturesWithSelection,
+                        items = content.vacancyLecturesWithSelection,
                         key = { it.item.id },
                     ) {
                         val lectureId = it.item.id
@@ -482,7 +470,7 @@ fun VacancySuccess(
                         modifier = Modifier
                             .fillMaxWidth(),
                         onClick = onShowDeleteDialog,
-                        enabled = uiState.deleteButtonEnabled,
+                        enabled = content.deleteButtonEnabled,
                         disabledColor = SNUTTColors.VacancyGray,
                     ) {
                         Text(
@@ -700,9 +688,9 @@ fun SugangSnuFloatingActionButton(
 
 @Composable
 @Preview(showBackground = true)
-fun VacancyScreenLoadingPreview() {
+fun VacancyScreenErrorPreview() {
     VacancyScreen(
-        uiState = VacancyUiState.Loading,
+        uiState = VacancyUiState(contentState = VacancyUiState.ContentState.Error),
         onClickBack = {},
         onShowIntroDialog = {},
         onDismissDialog = {},
@@ -717,9 +705,9 @@ fun VacancyScreenLoadingPreview() {
 
 @Composable
 @Preview(showBackground = true)
-fun VacancyScreenErrorPreview() {
+fun VacancyScreenLoadingPreview() {
     VacancyScreen(
-        uiState = VacancyUiState.Error,
+        uiState = VacancyUiState(),
         onClickBack = {},
         onShowIntroDialog = {},
         onDismissDialog = {},
@@ -736,12 +724,11 @@ fun VacancyScreenErrorPreview() {
 @Preview(showBackground = true)
 fun VacancyScreenIntroPreview() {
     VacancyScreen(
-        uiState = VacancyUiState.Success(
-            vacancyLecturesWithSelection = PreviewData.sampleLectures.map { it.toDataWithState(false) },
-            isEditMode = false,
+        uiState = VacancyUiState(
+            contentState = VacancyUiState.ContentState.Loaded(
+                vacancyLecturesWithSelection = PreviewData.sampleLectures.map { it.toDataWithState(false) },
+            ),
             dialogState = VacancyUiState.DialogState.Intro,
-            isRefreshing = false,
-            deleteButtonEnabled = false,
         ),
         onClickBack = {},
         onShowIntroDialog = {},
@@ -759,12 +746,10 @@ fun VacancyScreenIntroPreview() {
 @Preview(showBackground = true)
 fun VacancyScreenNormalModePreview() {
     VacancyScreen(
-        uiState = VacancyUiState.Success(
-            vacancyLecturesWithSelection = PreviewData.sampleLectures.map { it.toDataWithState(false) },
-            isEditMode = false,
-            dialogState = VacancyUiState.DialogState.None,
-            isRefreshing = false,
-            deleteButtonEnabled = false,
+        uiState = VacancyUiState(
+            contentState = VacancyUiState.ContentState.Loaded(
+                vacancyLecturesWithSelection = PreviewData.sampleLectures.map { it.toDataWithState(false) },
+            ),
         ),
         onClickBack = {},
         onShowIntroDialog = {},
@@ -782,10 +767,7 @@ fun VacancyScreenNormalModePreview() {
 @Preview(showBackground = true)
 fun VacancyScreenEmptyPreview() {
     VacancyScreen(
-        uiState = VacancyUiState.Empty(
-            dialogState = VacancyUiState.DialogState.None,
-            isRefreshing = false,
-        ),
+        uiState = VacancyUiState(contentState = VacancyUiState.ContentState.Empty),
         onClickBack = {},
         onShowIntroDialog = {},
         onDismissDialog = {},
@@ -802,12 +784,11 @@ fun VacancyScreenEmptyPreview() {
 @Preview(showBackground = true)
 fun VacancyScreenEditModePreview() {
     VacancyScreen(
-        uiState = VacancyUiState.Success(
-            vacancyLecturesWithSelection = PreviewData.sampleLectures.map { it.toDataWithState(false) },
+        uiState = VacancyUiState(
+            contentState = VacancyUiState.ContentState.Loaded(
+                vacancyLecturesWithSelection = PreviewData.sampleLectures.map { it.toDataWithState(false) },
+            ),
             isEditMode = true,
-            dialogState = VacancyUiState.DialogState.None,
-            isRefreshing = false,
-            deleteButtonEnabled = false,
         ),
         onClickBack = {},
         onShowIntroDialog = {},
@@ -825,16 +806,14 @@ fun VacancyScreenEditModePreview() {
 @Preview(showBackground = true)
 fun VacancyScreenDeleteEnabledPreview() {
     VacancyScreen(
-        uiState = VacancyUiState.Success(
-            vacancyLecturesWithSelection = PreviewData.sampleLectures.mapIndexed { index, it ->
-                it.toDataWithState(
-                    index < 3,
-                )
-            },
+        uiState = VacancyUiState(
+            contentState = VacancyUiState.ContentState.Loaded(
+                vacancyLecturesWithSelection = PreviewData.sampleLectures.mapIndexed { index, it ->
+                    it.toDataWithState(index < 3)
+                },
+                deleteButtonEnabled = true,
+            ),
             isEditMode = true,
-            dialogState = VacancyUiState.DialogState.None,
-            isRefreshing = false,
-            deleteButtonEnabled = true,
         ),
         onClickBack = {},
         onShowIntroDialog = {},
