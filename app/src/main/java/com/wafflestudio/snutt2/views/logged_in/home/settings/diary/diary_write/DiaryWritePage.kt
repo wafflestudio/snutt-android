@@ -57,6 +57,9 @@ import com.wafflestudio.snutt2.components.compose.ExitIcon
 import androidx.compose.ui.res.stringResource
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.android.toast
+import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.lib.logging.DiaryAfterSubmitParameter
+import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryTheme
 import kotlinx.coroutines.flow.first
@@ -105,7 +108,7 @@ fun DiaryWriteRoute(
 
     DiaryTheme {
         DiaryWriteScreen(
-            modifier = modifier,
+            modifier = modifier.logImpression(AnalyticsScreen.DiaryCreateStarted),
             uiState = uiState,
             onToggleActivitySelection = viewModel::toggleActivitySelection,
             onCompleteSelectActivities = viewModel::completeActivitySelection,
@@ -117,9 +120,18 @@ fun DiaryWriteRoute(
             onToggleAnswer = viewModel::toggleAnswer,
             onSubmitDiary = viewModel::saveDiaryWrite,
             onClickBackButton = onNavigateBack,
-            onClickWriteNextButton = viewModel::writeNextDiary,
-            onClickWriteReviewButton = onNavigateReview,
-            onClickGoHomeButton = onNavigateHome,
+            onClickWriteNextButton = {
+                viewModel.logAfterSubmitAction(DiaryAfterSubmitParameter.Action.NEXT)
+                viewModel.writeNextDiary()
+            },
+            onClickWriteReviewButton = {
+                viewModel.logAfterSubmitAction(DiaryAfterSubmitParameter.Action.REVIEW)
+                onNavigateReview()
+            },
+            onClickGoHomeButton = {
+                viewModel.logAfterSubmitAction(DiaryAfterSubmitParameter.Action.HOME)
+                onNavigateHome()
+            },
         )
     }
 }

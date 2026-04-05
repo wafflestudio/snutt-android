@@ -5,6 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.lecture_diary.DiaryRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
+import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
+import com.wafflestudio.snutt2.lib.logging.AnalyticsLogger
+import com.wafflestudio.snutt2.lib.logging.DiaryAfterSubmitParameter
 import com.wafflestudio.snutt2.domainmodel.diary.DiaryAnsweredQuestion
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.isSelected
@@ -32,6 +35,7 @@ class DiaryWriteViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val savedStateHandle: SavedStateHandle,
     private val displayMessageResolver: DisplayMessageResolver,
+    private val analyticsLogger: AnalyticsLogger,
 ) : ViewModel() {
     private val lectureId: String
         get() = savedStateHandle.get<String>("lectureId") ?: ""
@@ -117,6 +121,7 @@ class DiaryWriteViewModel @Inject constructor(
     }
 
     fun saveDiaryWrite(comment: String) {
+        analyticsLogger.logEvent(AnalyticsEvent.DiarySubmitted)
         val state = _uiState.value as? DiaryWriteUiState.Write ?: return
         val selectedDailyClassTypes = state.dailyClassTypes
             .filter { it.isSelected() }
@@ -153,6 +158,7 @@ class DiaryWriteViewModel @Inject constructor(
     fun completeActivitySelection() {
         val state = _uiState.value as? DiaryWriteUiState.Write ?: return
         if (!state.activitySelectingState.isSelecting()) return
+        analyticsLogger.logEvent(AnalyticsEvent.DiaryFirstSectionDone)
         val selectedDailyClassTypes = state.dailyClassTypes
             .filter { it.isSelected() }
             .map { it.item }
@@ -180,6 +186,10 @@ class DiaryWriteViewModel @Inject constructor(
                     handleDiaryWriteError(error)
                 }
         }
+    }
+
+    fun logAfterSubmitAction(action: DiaryAfterSubmitParameter.Action) {
+        analyticsLogger.logEvent(AnalyticsEvent.DiaryAfterSubmit(DiaryAfterSubmitParameter(action)))
     }
 
     fun writeNextDiary() {
