@@ -68,6 +68,29 @@ class FakeDisplayMessageResolver : DisplayMessageResolver {
 }
 ```
 
+### UseCase
+
+UseCase는 concrete 클래스이므로 인터페이스 기반 Fake를 만들지 않는다. UseCase의 의존성(Repository)을 Fake로 넣어 실객체를 생성한다:
+
+```kotlin
+val useCase = GetCurrentTableThemeUseCase(
+    themeRepository = fakeThemeRepository,
+    tableRepository = fakeTableRepository,
+)
+```
+
+### RemoteConfig 등 interface 의존성
+
+RemoteConfig처럼 Repository가 아닌 interface 의존성도 Fake를 만든다. Flow 프로퍼티는 `MutableStateFlow`로 override한다:
+
+```kotlin
+class FakeRemoteConfig : RemoteConfig {
+    override val sugangSNUUrl = MutableStateFlow("https://sugang.snu.ac.kr")
+    override val disableMapFeature = MutableStateFlow(false)
+    // ...
+}
+```
+
 ### Fake 파일 위치
 
 ```
@@ -77,6 +100,8 @@ app/src/test/java/com/wafflestudio/snutt2/
 │   ├── FakeBookmarkRepository.kt
 │   ├── FakeDisplayMessageResolver.kt
 │   └── ...
+├── fixture/                       # 공유 테스트 데이터
+│   └── TestFixtures.kt
 └── views/                         # 실제 ViewModel 경로를 미러링
     └── logged_out/
         └── FindIdViewModelTest.kt
@@ -84,6 +109,30 @@ app/src/test/java/com/wafflestudio/snutt2/
 
 - Fake는 `fake/` 패키지에 모아 둔다. 여러 ViewModel 테스트에서 공유된다.
 - 테스트 파일은 대상 ViewModel과 동일한 패키지 경로에 둔다.
+
+### 테스트 픽스처 (TestFixtures)
+
+테스트에서 사용하는 도메인 모델 인스턴스는 `fixture/TestFixtures.kt`에 모아 둔다. 각 테스트 파일의 companion object에 개별 정의하지 않는다.
+
+```kotlin
+object TestFixtures {
+    // 팩토리 함수: 테스트에서 필요한 필드만 지정, 나머지는 기본값
+    fun searchedLecture(
+        id: String = "lec-1",
+        courseTitle: String = "컴퓨터개론",
+        ...
+    ) = SearchedLecture(id = id, courseTitle = courseTitle, ...)
+
+    // 자주 쓰이는 인스턴스는 val로 미리 정의
+    val lecture1 = searchedLecture(id = "lec-1", courseTitle = "컴퓨터개론")
+    val lecture2 = searchedLecture(id = "lec-2", courseTitle = "자료구조")
+}
+```
+
+- 도메인 모델마다 **팩토리 함수**를 둔다. 필수 필드만 파라미터로 노출하고 나머지는 기본값을 채운다.
+- 여러 테스트에서 반복 사용되는 인스턴스는 `val`로 미리 정의한다.
+- 테스트에서는 `TestFixtures.lecture1` 또는 `import ... TestFixtures.lecture1`로 사용한다.
+- 특정 테스트에서만 필요한 특수 데이터는 팩토리 함수에 인자를 넘겨 생성한다.
 
 ---
 
@@ -117,6 +166,42 @@ class FindIdViewModelTest {
 ```
 
 Fake를 포함한 모든 의존성은 `@Before`에서 매번 새로 생성한다. `val`로 필드 선언 시점에 초기화하지 않는다. JUnit 4는 테스트마다 클래스를 재생성하므로 동작은 동일하지만, `lateinit` + `@Before` 패턴이 "매 테스트마다 초기화됨"을 명시적으로 드러낸다.
+
+### ViewModel 생성: `@Before` vs `createViewModel()`
+
+init에서 비동기 작업을 수행하는 ViewModel은 Fake 상태를 **ViewModel 생성 전에** 세팅해야 한다. 이 경우 `@Before`에서 ViewModel을 생성하면 Fake 세팅 시점을 제어할 수 없으므로, `private fun createViewModel()` 팩토리 메서드를 사용한다:
+
+```kotlin
+class VacancyViewModelTest {
+
+    private lateinit var fakeVacancyRepository: FakeVacancyRepository
+
+    @Before
+    fun setup() {
+        Dispatchers.setMain(UnconfinedTestDispatcher())
+        fakeVacancyRepository = FakeVacancyRepository()
+        // ViewModel은 여기서 생성하지 않는다
+    }
+
+    private fun createViewModel() = VacancyViewModel(
+        vacancyRepository = fakeVacancyRepository,
+        // ...
+    )
+
+    @Test
+    fun `init 시 fetch 성공하면 Loaded 상태가 된다`() = runTest {
+        // Fake 세팅을 먼저 한 뒤
+        fakeVacancyRepository.fetchVacancyLecturesResult = Result.Success(Unit)
+        fakeVacancyRepository.vacancyLectures.value = listOf(lecture1)
+        // ViewModel 생성 (init 실행)
+        val viewModel = createViewModel()
+        assertEquals(...)
+    }
+}
+```
+
+- init에 비동기 작업이 **없는** ViewModel → `@Before`에서 직접 생성
+- init에 비동기 작업이 **있는** ViewModel → `createViewModel()` 팩토리 사용
 
 ### 검증 범주
 
@@ -178,20 +263,21 @@ fun `findIdByEmail 실패 시 ShowToast 이벤트가 발생한다`() = runTest {
 
 ### UiState 검증
 
-UiState는 **전체 객체를 비교**한다. 특정 필드만 검증하면 의도치 않은 다른 필드의 변경을 놓칠 수 있다.
+UiState는 **전체 객체를 비교**한다. 개별 필드를 하나씩 `assertEquals` 하지 않는다. 특정 필드만 검증하면 의도치 않은 다른 필드의 변경을 놓칠 수 있다.
+
+검증 패턴은 두 가지 상황에 따라 나뉜다.
+
+#### 패턴 1: 동일 subtype 내 필드 변경 — `before.copy()`
 
 동작 직전의 상태를 캡처해두고, `copy`로 기대값을 만든다:
 
 ```kotlin
 @Test
 fun `setThemeMode 호출 시 themeMode가 변경된다`() = runTest {
-    // Given
     val before = viewModel.uiState.value
 
-    // When
     viewModel.setThemeMode(ThemeMode.LIGHT)
 
-    // Then
     assertEquals(before.copy(themeMode = ThemeMode.LIGHT), viewModel.uiState.value)
 }
 ```
@@ -201,40 +287,54 @@ fun `setThemeMode 호출 시 themeMode가 변경된다`() = runTest {
 - 테스트가 "이 동작이 정확히 무엇을 바꾸는가"를 명확히 드러낸다.
 - Fake 세팅이나 init 로직이 변경되어도, 실제 상태를 기준으로 하므로 테스트가 불필요하게 깨지지 않는다.
 
-상태 전이가 여러 단계인 경우에도 동일하게 적용한다:
+ContentState + data class 구조에서도 동일하다. `contentState` 내부를 변경할 때는 캐스팅 후 nested `copy`한다:
 
 ```kotlin
 @Test
-fun `북마크된 강의를 onClickBookmark하면 DeleteBookmark 다이얼로그가 열린다`() = runTest {
-    // Given
-    val before = viewModel.uiState.value as BookmarkUiState.Success
+fun `toggleLectureSelected 호출 시 해당 강의가 선택된다`() = runTest {
+    val before = viewModel.vacancyUiState.value
+    val beforeContent = before.contentState as VacancyUiState.ContentState.Loaded
 
-    // When
-    viewModel.onClickBookmark(lecture1)
+    viewModel.toggleLectureSelected(lecture1.id)
 
-    // Then
     assertEquals(
-        before.copy(dialogState = BookmarkUiState.DialogState.DeleteBookmark(lecture1)),
-        viewModel.uiState.value,
-    )
-}
-
-@Test
-fun `onDismissDialog 호출 시 다이얼로그만 닫힌다`() = runTest {
-    // Given: 다이얼로그가 열린 상태
-    viewModel.onClickBookmark(lecture1)
-    val before = viewModel.uiState.value as BookmarkUiState.Success
-
-    // When
-    viewModel.onDismissDialog()
-
-    // Then
-    assertEquals(
-        before.copy(dialogState = BookmarkUiState.DialogState.None),
-        viewModel.uiState.value,
+        before.copy(
+            contentState = beforeContent.copy(
+                vacancyLecturesWithSelection = beforeContent.vacancyLecturesWithSelection.map {
+                    if (it.item.id == lecture1.id) it.copy(state = true) else it
+                },
+                deleteButtonEnabled = true,
+            ),
+        ),
+        viewModel.vacancyUiState.value,
     )
 }
 ```
+
+#### 패턴 2: contentState 전이 — 기대 객체 직접 구성
+
+Loading → Loaded 등 **contentState 자체가 바뀌는 경우**에는 `copy`할 "before"가 없다. 이때는 기대하는 전체 객체를 직접 구성하여 비교한다:
+
+```kotlin
+@Test
+fun `init 시 fetch 성공하고 강의가 있으면 Loaded 상태가 된다`() = runTest {
+    fakeVacancyRepository.fetchVacancyLecturesResult = Result.Success(Unit)
+    fakeVacancyRepository.vacancyLectures.value = listOf(lecture1)
+
+    val viewModel = createViewModel()
+
+    assertEquals(
+        VacancyUiState(
+            contentState = VacancyUiState.ContentState.Loaded(
+                vacancyLecturesWithSelection = listOf(lecture1.toDataWithState(false)),
+            ),
+        ),
+        viewModel.vacancyUiState.value,
+    )
+}
+```
+
+**어떤 경우든 개별 필드를 하나씩 assertEquals 하지 않는다.** 반드시 전체 객체 단위로 비교한다.
 
 ---
 
@@ -272,7 +372,7 @@ Mock 라이브러리(MockK, Mockito 등)는 사용하지 않는다.
 | 1 | FindIdViewModel | UiEvent, 성공/실패 분기 | 완료 |
 | 2 | ColorModeSelectViewModel | UiState, init Flow collect | 완료 |
 | 3 | AppReportViewModel | 초기값 + UiEvent (복합) | 완료 |
-| 4 | 중간 복잡도 ViewModel | 다이얼로그 상태 전이, combine | |
+| 4 | VacancyViewModel | sealed ContentState, B-1 init 비동기, 다이얼로그 상태 전이 | 완료 |
 | 5 | BookmarkViewModel 등 | 복합 상태, 바텀시트, 다중 Repository | |
 
 ---
