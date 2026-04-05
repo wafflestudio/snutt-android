@@ -108,7 +108,7 @@ fun DiaryWriteRoute(
 
     DiaryTheme {
         DiaryWriteScreen(
-            modifier = modifier.logImpression(AnalyticsScreen.DiaryCreateStarted),
+            modifier = modifier.logImpression(AnalyticsScreen.DiaryWrite),
             uiState = uiState,
             onToggleActivitySelection = viewModel::toggleActivitySelection,
             onCompleteSelectActivities = viewModel::completeActivitySelection,
