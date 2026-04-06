@@ -99,8 +99,8 @@ class ThemeDetailViewModel @Inject constructor(
     }
 
     private fun computeInitialEditingTheme(): EditingTheme? {
-        val themeId = savedStateHandle.toRoute<NavigationDestination.ThemeDetail>().themeId
-        val themeCode = savedStateHandle.toRoute<NavigationDestination.ThemeDetail>().theme
+        val themeId: String = savedStateHandle["themeId"] ?: ""
+        val themeCode: Int = savedStateHandle["theme"] ?: -1
 
         return if (themeCode != -1) {
             try {
