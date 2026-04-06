@@ -1,15 +1,19 @@
 ---
 name: viewmodel-test
 description: >
-  ViewModel 테스트를 작성하는 스킬. 대상 ViewModel을 분석하고, Fake/Fixture를 준비하고,
-  커버리지를 빠짐없이 열거한 뒤, 프로젝트의 테스트 전략에 따라 테스트를 작성한다.
-  "뷰모델 테스트 작성", "ViewModel 테스트", "테스트 추가", "Fake 작성" 등의 요청 시 사용한다.
-  ViewModel이 변경되었을 때 테스트 업데이트가 필요한 경우에도 사용한다.
+  ViewModel 테스트를 작성하거나 기존 테스트를 점검하는 스킬. 두 가지 모드가 있다:
+  (1) 작성 모드 — 대상 ViewModel을 분석하고 테스트를 새로 작성한다.
+  (2) 검증 모드 — 기존 테스트가 규칙에 맞는지 ViewModel 소스와 교차 검증하고 위반을 수정한다.
+  "뷰모델 테스트 작성", "ViewModel 테스트", "테스트 추가", "Fake 작성",
+  "테스트 점검", "테스트 검증", "규칙 확인", "테스트 리뷰" 등의 요청 시 사용한다.
 ---
 
-# ViewModel 테스트 작성
+# ViewModel 테스트
 
-5단계 워크플로우를 따른다: **분석 → 의존성 준비 → 커버리지 열거 → 테스트 작성 → 실행 검증**
+| 사용자 요청 | 모드 |
+|---|---|
+| "테스트 작성해줘", "테스트 추가", "Fake 만들어줘" | **작성 모드** |
+| "테스트 점검해줘", "규칙에 맞는지 확인", "테스트 리뷰" | **검증 모드** |
 
 테스트의 목적은 ViewModel의 비즈니스 로직을 검증하는 것이다:
 - public 함수 호출 시 UiState 전이, UiEvent 발행, Repository 호출이 올바른지
@@ -17,9 +21,13 @@ description: >
 
 테스트 대상이 아닌 것: Repository 내부 로직, Compose UI, Navigation, Hilt DI
 
+**두 모드 모두 "공통: 분석" 섹션부터 시작한다.**
+
 ---
 
-## 1단계: ViewModel 분석
+# 공통: ViewModel 분석 + 기대 테스트 목록
+
+## 1. ViewModel 소스 읽기
 
 대상 ViewModel 소스를 읽고 다음을 파악한다:
 
@@ -29,13 +37,94 @@ description: >
 | **UiEvent** | sealed interface 멤버 전체 |
 | **init 블록** | combine/collect 대상 source 목록, 비동기 작업(fetch 등) 유무 |
 | **public 함수** | 각 함수의 역할 — Repository 호출, 상태 변경, 이벤트 발행 |
-| **생성자 의존성** | Repository, UseCase, 기타 interface |
+| **생성자 의존성** | Repository, UseCase, SavedStateHandle, 기타 interface |
 
-init 블록에 비동기 작업이 있는지 여부가 4단계에서 ViewModel 생성 패턴을 결정한다.
+## 2. Source map 구축
+
+ViewModel의 init 블록과 모든 public 함수가 참조하는 Fake 상태를 나열한다.
+
+예:
+```
+init combine:
+  - tableDisplayRepository.tableTrimParam       (StateFlow)
+  - tableDisplayRepository.compactMode          (StateFlow)
+  - tableDisplayRepository.tableLectureCustomOption (StateFlow)
+  - tableRepository.currentTable                (StateFlow, filterNotNull)
+  - getCurrentTableThemeUseCase()               (Flow)
+  로직: fittedTrimParam = if (forceFitLectures) getFittingTrimParam(Default) else tableTrimParam
+
+toggleAutoTrim():
+  - tableDisplayRepository.toggleForceFit() → toggleForceFitResult
+  - 실패 시 handleError → ShowToast (일반 에러) / ShowToast + logout + NavigateToOnboard (AuthError)
+```
+
+## 3. 기대 테스트 목록 도출
+
+source map으로부터 존재해야 할 테스트를 **빠짐없이** 열거한다.
+
+### 나가는 방향: public 함수 → side-effect × 분기
+
+각 public 함수에 대해:
+1. 함수가 발생시키는 모든 side-effect를 나열한다.
+
+| side-effect 종류 | 코드상의 표현 |
+|---|---|
+| **UiState 변경** | `_uiState.update { ... }` |
+| **UiEvent 발행** | `_uiEvent.emit(...)` |
+| **외부 의존성 호출** | Repository/UseCase의 suspend 함수 호출 |
+
+2. 각 side-effect에 로직 분기(성공/실패, 조건 분기, 상태 분기 등)가 있으면 모든 분기를 전개한다.
+3. **(side-effect × 분기) 조합 하나당 테스트 1개**가 있어야 한다.
+
+### 들어오는 방향: source × 분기
+
+들어오는 방향의 테스트는 두 종류로 나뉜다:
+
+**(a) init 결과 테스트**: 모든 source의 초기값에 의한 최초 UiState 세팅을 검증한다. combine은 모든 source가 emit해야 첫 값을 내보내므로, 모든 source를 세팅하는 복합 테스트가 불가피하다. combine 로직에 분기가 있으면 분기별로 1개씩 작성한다. 기대 객체를 직접 구성한다 (패턴 2).
+
+**(b) source 반응 테스트**: init 이후 개별 source의 값 변경에 의한 UiState 변경분만 검증한다. source별로 독립 테스트를 작성하고, before.copy로 변경된 필드만 검증한다 (패턴 1).
+
+절차:
+1. 생성자 의존성에서 ViewModel이 참조하는 source를 모두 나열한다 (Repository StateFlow, SavedStateHandle key, RemoteConfig Flow, UseCase Flow).
+2. init combine/collect 내에서 각 source가 관여하는 로직을 파악한다.
+3. 로직에 분기가 있으면 모든 분기를 전개한다.
+4. init 결과 테스트: **(로직 분기) 하나당 테스트 1개**.
+5. source 반응 테스트: **(source × 분기) 조합 하나당 테스트 1개**.
+
+"source가 변하면 UiState가 갱신된다" 같은 피상적 검증이 아니라, **combine 로직의 구체적인 동작**을 검증해야 한다.
+
+### 날카로운 테스트 값
+
+각 테스트의 초기 Fake 상태와 함수 호출 인자는 **해당 테스트가 검증하고자 하는 동작을 날카롭게 드러내는 값**이어야 한다. 기본값이나 빈 값을 무심하게 넣지 않는다. 검증 대상 로직의 분기를 정확히 통과시키는, 의미 있는 값을 선택한다.
 
 ---
 
-## 2단계: 의존성 준비
+# 검증 모드 (공통 분석 이후)
+
+## 1. 기존 테스트와 대조
+
+기대 테스트 목록과 실제 테스트를 대조하여 **누락된 테스트**를 식별한다.
+
+## 2. 기존 테스트 품질 체크
+
+존재하는 각 테스트를 아래 규칙으로 체크한다. **테스트 코드만 읽으면 의미적 위반을 놓친다** — 반드시 source map과 대조한다.
+
+| # | 규칙 | 검증 방법 |
+|---|------|----------|
+| 1 | **Fake 기본값 미의존** | 이 테스트가 건드리는 ViewModel 로직이 참조하는 **모든** Fake 상태가 테스트 본문에 명시적으로 세팅되어 있는가? source map의 해당 항목을 하나씩 대조한다. |
+| 2 | **전체 객체 비교** | `assertIs` + 필드 접근, `assertEquals(expected, state.someField)` 패턴이 없는가? |
+| 3 | **side-effect 독립** | 하나의 테스트에서 UiState 변경 + UiEvent 발행 + 외부 호출을 동시에 검증하지 않는가? |
+| 4 | **날카로운 값** | 초기값과 인자가 검증 대상 로직의 분기를 정확히 드러내는 의미 있는 값인가? |
+
+## 3. 누락 보충 + 위반 수정
+
+누락된 테스트를 테스트 작성 규칙에 따라 추가하고, 기존 테스트의 위반을 수정한다. 테스트를 실행하여 통과를 확인한다.
+
+---
+
+# 작성 모드 (공통 분석 이후)
+
+## 1. 의존성 준비
 
 ### Fake 확인 및 작성
 
@@ -82,83 +171,34 @@ class FakeXxxRepository : XxxRepository {
 
 ```kotlin
 object TestFixtures {
-    // 팩토리 함수: 필요한 필드만 파라미터로, 나머지는 기본값
     fun searchedLecture(
         id: String = "lec-1",
         courseTitle: String = "컴퓨터개론",
     ) = SearchedLecture(id = id, courseTitle = courseTitle, ...)
 
-    // 반복 사용 인스턴스는 val로
     val lecture1 = searchedLecture(id = "lec-1")
 }
 ```
 
 개별 테스트 파일에 fixture를 정의하지 않는다.
 
----
+## 2. 기대 테스트 목록대로 테스트 작성
 
-## 3단계: 커버리지 분석
+기대 테스트 목록의 각 항목을 테스트 작성 규칙에 따라 작성한다.
 
-테스트를 쓰기 전에 **무엇을 테스트할지** 빠짐없이 열거한다. 이 분석이 테스트의 품질을 결정한다.
+## 3. 실행 검증
 
-### 나가는 방향: public 함수 → side-effect
-
-모든 public 함수에 대해 다음 절차를 밟는다.
-
-**1. side-effect 열거**: 함수 구현을 읽고, 발생하는 모든 side-effect를 나열한다.
-
-| side-effect 종류 | 코드상의 표현 |
-|---|---|
-| **UiState 변경** | `_uiState.update { ... }` |
-| **UiEvent 발행** | `_uiEvent.emit(...)` |
-| **외부 의존성 호출** | Repository/UseCase의 suspend 함수 호출 |
-
-**2. side-effect별 독립 테스트**: 각 side-effect마다 독립된 테스트를 작성한다. 하나의 테스트에서 여러 side-effect를 동시에 검증하지 않는다.
-
-**3. 분기 전개**: 하나의 side-effect에 로직 분기(성공/실패, 조건 분기, 현재 상태에 따른 분기 등)가 있으면, **모든 분기마다 개별 테스트**를 작성한다.
-
-예: `deleteSelectedLectures()`가 UiEvent를 발행하는데, 성공 시 `ShowToast("삭제 완료")`, 실패 시 `ShowToast(errorMessage)` → 2개의 테스트.
-예: `toggleEditMode()`가 UiState를 변경하는데, contentState가 Loaded일 때만 동작 → Loaded일 때 / Loaded가 아닐 때 각각 테스트.
-
-### 들어오는 방향: source 변화 → UiState
-
-**1. 생성자 의존성 리스트업**: ViewModel의 생성자에 주입되는 모든 의존성을 나열한다 (Repository, UseCase, SavedStateHandle, RemoteConfig 등).
-
-**2. source 파악**: 각 의존성에서 ViewModel이 실제로 참조하는 것(source)을 나열한다:
-- Repository의 StateFlow 프로퍼티
-- SavedStateHandle의 특정 key로 조회한 value
-- RemoteConfig의 Flow 프로퍼티
-- UseCase가 반환하는 Flow
-
-**3. 로직 분석**: init 블록에서 각 source가 combine/collect 내에서 어떤 변환에 사용되는지 파악한다 (그룹핑, 정렬, 조건부 플래그, 필터링, 상태 보존 등).
-
-**4. source별 독립 테스트**: 각 source마다 독립된 테스트를 작성한다.
-
-**5. 분기 전개**: source의 값에 따라 combine 로직에 분기가 있으면, **모든 분기마다 개별 테스트**를 작성한다.
-
-"source가 변하면 UiState가 갱신된다" 같은 피상적 검증이 아니라, **combine 로직의 구체적인 동작**을 검증해야 한다.
-
-예 — `combine(courseBooks, tableSummaryList, currentTable)`에서:
-- `courseBooks.first()`가 최신 학기를 결정 → 최신 학기에 시간표가 없는 경우 / 있는 경우 → 2개의 테스트
-- `tableSummaryList`가 courseBook별로 그룹핑 → 시간표 추가 시 해당 학기 tableList에 반영
-- `currentTable`의 courseBook이 expanded 결정 → 학기 전환 시 expanded 이동
-
-### 공통 원칙: 날카로운 테스트 값
-
-나가는 방향이든 들어오는 방향이든, 각 테스트의 초기 Fake 상태와 함수 호출 인자는 **해당 테스트가 검증하고자 하는 동작을 날카롭게 드러내는 값**이어야 한다. 기본값이나 빈 값을 무심하게 넣지 않는다. 검증 대상 로직의 분기를 정확히 통과시키는, 의미 있는 값을 선택한다.
+```bash
+./gradlew :app:testStagingDebugUnitTest --tests "*.XxxViewModelTest"
+```
 
 ---
 
-## 4단계: 테스트 작성
+# 테스트 작성 규칙
 
-### 파일 위치
+작성 모드에서 새 테스트를 쓸 때, 검증 모드에서 누락 테스트를 보충하거나 위반을 수정할 때 모두 이 규칙을 따른다.
 
-테스트 파일은 대상 ViewModel과 동일한 패키지 경로에 둔다:
-```
-app/src/test/java/com/wafflestudio/snutt2/views/{ViewModel 경로}/XxxViewModelTest.kt
-```
-
-### 테스트 클래스 골격
+## 테스트 클래스 골격
 
 ```kotlin
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -181,25 +221,14 @@ class XxxViewModelTest {
 }
 ```
 
-모든 의존성은 `@Before`에서 매번 새로 생성한다. `val`로 선언 시점에 초기화하지 않는다. `lateinit var` + `@Before`가 "매 테스트마다 초기화"를 명시적으로 드러낸다.
+모든 의존성은 `@Before`에서 매번 새로 생성한다. `val`로 선언 시점에 초기화하지 않는다.
 
-### ViewModel 생성 시점
+## ViewModel 생성 시점
 
 | init에 비동기 작업이 | 생성 위치 | 이유 |
 |---|---|---|
 | **없다** | `@Before`에서 직접 생성 | Fake 세팅 순서 무관 |
 | **있다** | `private fun createViewModel()`을 각 테스트에서 호출 | Fake를 먼저 세팅해야 init 결과를 제어 가능 |
-
-```kotlin
-private fun createViewModel() = XxxViewModel(xxxRepository = fakeXxxRepository)
-
-@Test
-fun `init 시 fetch 성공하면 Loaded 상태가 된다`() = runTest {
-    fakeXxxRepository.fetchResult = Result.Success(Unit)
-    val viewModel = createViewModel()
-    assertEquals(...)
-}
-```
 
 ### SavedStateHandle
 
@@ -214,12 +243,7 @@ private fun createViewModel(
 )
 ```
 
-테스트에서 nav arg에 따른 분기가 필요하면 인자를 달리 넘긴다:
-```kotlin
-val viewModel = createViewModel(themeId = "custom-theme-1")
-```
-
-### region 구조
+## region 구조
 
 나가는 방향은 **public 함수 단위**, 들어오는 방향은 **source 단위**로 region을 묶는다:
 
@@ -235,7 +259,7 @@ val viewModel = createViewModel(themeId = "custom-theme-1")
 // endregion
 ```
 
-### 검증 원칙: 전체 객체 비교
+## 검증 원칙: 전체 객체 비교
 
 **UiState, UiEvent 등 data class / sealed class는 전체 객체 단위로만 비교한다.**
 
@@ -287,7 +311,7 @@ viewModel.uiEvent.test {
 
 **외부 의존성 호출 검증**:
 
-Fake의 `calledWith` 필드에 기록된 값을 전체 객체 비교로 검증한다. 개별 필드를 꺼내서 비교하지 않는다.
+Fake의 `calledWith` 필드에 기록된 값을 전체 객체 비교로 검증한다.
 
 ```kotlin
 viewModel.findIdByEmail("test@snu.ac.kr")
@@ -300,22 +324,11 @@ viewModel.changePassword("oldPw", "newPw")
 assertEquals("oldPw" to "newPw", fakeUserRepository.putUserPasswordCalledWith)
 ```
 
----
-
-## 5단계: 실행 검증
-
-테스트를 실행하여 통과를 확인한다:
-```bash
-./gradlew :app:testDebugUnitTest --tests "*.XxxViewModelTest"
-```
-
----
-
 ## 작성 기준
 
 - **테스트 이름**: 백틱으로 감싸서 한국어로 시나리오 서술. 예: `` `findIdByEmail 성공 시 Success 이벤트가 발생한다` ``
 - **하나의 테스트 = 하나의 side-effect × 하나의 분기**: 여러 side-effect를 한 테스트에서 검증하지 않는다.
 - **Fake 상태는 테스트 본문에서 세팅**: `@Before`에는 Fake 인스턴스 생성만. 시나리오별 상태는 각 테스트에서.
 - **Fake 기본값에 의존하지 않는다**: Fake의 기본값과 같더라도 테스트에 필요한 상태는 명시적으로 세팅한다. 테스트 의도가 Fake 구현을 읽지 않아도 드러나야 한다.
-- **헬퍼 함수**: 테스트의 기대값에 영향을 주는 설정을 헬퍼 안에 숨기지 않는다. 기대값에 영향을 주는 설정은 반드시 테스트 본문에 명시한다.
+- **헬퍼 함수**: 테스트의 기대값에 영향을 주는 설정을 헬퍼 안에 숨기지 않는다.
 - **Given-When-Then**: 복잡한 테스트는 주석으로 구분. 단순한 테스트는 생략 가능.
