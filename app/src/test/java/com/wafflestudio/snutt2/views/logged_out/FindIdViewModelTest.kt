@@ -15,7 +15,6 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.assertIs
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class FindIdViewModelTest {
@@ -44,7 +43,10 @@ class FindIdViewModelTest {
 
     @Test
     fun `findIdByEmail 호출 시 입력된 이메일로 repository를 호출한다`() = runTest {
+        fakeUserRepository.findIdByEmailResult = Result.Success(Unit)
+
         viewModel.findIdByEmail("test@snu.ac.kr")
+
         assertEquals("test@snu.ac.kr", fakeUserRepository.findIdByEmailCalledWith)
     }
 
@@ -65,8 +67,7 @@ class FindIdViewModelTest {
 
         viewModel.uiEvent.test {
             viewModel.findIdByEmail("wrong@snu.ac.kr")
-            val event = assertIs<FindIdUiEvent.ShowToast>(awaitItem())
-            assertEquals("존재하지 않는 이메일입니다", event.message)
+            assertEquals(FindIdUiEvent.ShowToast("존재하지 않는 이메일입니다"), awaitItem())
         }
     }
 

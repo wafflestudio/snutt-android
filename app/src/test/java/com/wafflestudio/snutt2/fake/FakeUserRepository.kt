@@ -60,8 +60,20 @@ class FakeUserRepository : UserRepository {
     var fetchUserInfoCalled = false
         private set
 
+    var postForceLogoutResult: Result<Unit> = Result.Success(Unit)
+    var postForceLogoutCalled = false
+        private set
+
     var performLogoutResult: Result<Unit> = Result.Success(Unit)
     var performLogoutCalled = false
+        private set
+
+    var getPushPreferencesResult: Result<PushPreferences> = Result.Success(
+        PushPreferences(lectureUpdate = false, vacancyNotification = false, lectureDiary = false),
+    )
+
+    var postPushPreferencesResult: Result<Unit> = Result.Success(Unit)
+    var postPushPreferencesCalledWith: PushPreferences? = null
         private set
 
     // endregion
@@ -96,7 +108,10 @@ class FakeUserRepository : UserRepository {
         postFeedbackCalledWith = email to detail
         return postFeedbackResult
     }
-    override suspend fun postForceLogout(): Result<Unit> = TODO()
+    override suspend fun postForceLogout(): Result<Unit> {
+        postForceLogoutCalled = true
+        return postForceLogoutResult
+    }
     override suspend fun getAccessToken(): Result<String> = TODO()
     override suspend fun performLogout(): Result<Unit> {
         performLogoutCalled = true
@@ -126,8 +141,13 @@ class FakeUserRepository : UserRepository {
     override suspend fun sendCodeToEmail(email: String): Result<Unit> = TODO()
     override suspend fun verifyEmailCode(code: String): Result<Unit> = TODO()
     override suspend fun getAccessTokenByAuthCode(authCode: String, clientId: String, clientSecret: String): Result<String> = TODO()
-    override suspend fun getPushPreferences(): Result<PushPreferences> = TODO()
-    override suspend fun postPushPreferences(pushPreferences: PushPreferences): Result<Unit> = TODO()
+    override suspend fun getPushPreferences(): Result<PushPreferences> {
+        return getPushPreferencesResult
+    }
+    override suspend fun postPushPreferences(pushPreferences: PushPreferences): Result<Unit> {
+        postPushPreferencesCalledWith = pushPreferences
+        return postPushPreferencesResult
+    }
     override suspend fun getSocialProviders(): Result<GetSocialProvidersResults> = TODO()
     override suspend fun postLoginFacebook(facebookToken: String): Result<Unit> = TODO()
     override suspend fun postLoginGoogle(googleAccessToken: String): Result<Unit> = TODO()

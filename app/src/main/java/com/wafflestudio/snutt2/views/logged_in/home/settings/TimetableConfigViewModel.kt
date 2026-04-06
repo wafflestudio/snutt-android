@@ -18,11 +18,13 @@ import com.wafflestudio.snutt2.lib.network.DomainError
 import com.wafflestudio.snutt2.lib.network.onFailure
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,12 +32,42 @@ import javax.inject.Inject
 class TimetableConfigViewModel @Inject constructor(
     private val tableDisplayRepository: TableDisplayRepository,
     private val userRepository: UserRepository,
-    tableRepository: TableRepository,
-    getCurrentTableThemeUseCase: GetCurrentTableThemeUseCase,
+    private val tableRepository: TableRepository,
+    private val getCurrentTableThemeUseCase: GetCurrentTableThemeUseCase,
     private val displayMessageResolver: DisplayMessageResolver,
 ) : ViewModel() {
-    private val _timetableConfigUiEvent: MutableSharedFlow<TimetableConfigUiEvent> = MutableSharedFlow(replay = 1)
-    val timetableConfigUiEvent = _timetableConfigUiEvent.asSharedFlow()
+    private val _uiState = MutableStateFlow(TimeTableConfigUiState.Default)
+    val uiState = _uiState.asStateFlow()
+
+    private val _uiEvent: MutableSharedFlow<TimetableConfigUiEvent> = MutableSharedFlow(replay = 0)
+    val uiEvent = _uiEvent.asSharedFlow()
+
+    init {
+        viewModelScope.launch {
+            combine(
+                tableDisplayRepository.tableTrimParam,
+                tableDisplayRepository.compactMode,
+                tableDisplayRepository.tableLectureCustomOption,
+                tableRepository.currentTable.filterNotNull(),
+                getCurrentTableThemeUseCase(),
+            ) { tableTrimParam, compactMode, tableLectureCustom, currentTable, theme ->
+                _uiState.update {
+                    it.copy(
+                        tableTrimParam = tableTrimParam,
+                        compactMode = compactMode,
+                        tableLectureCustom = tableLectureCustom,
+                        lectures = currentTable.lectures,
+                        theme = theme,
+                        fittedTrimParam = if (tableTrimParam.forceFitLectures) {
+                            currentTable.lectures.getFittingTrimParam(TableTrimParam.Default)
+                        } else {
+                            tableTrimParam
+                        },
+                    )
+                }
+            }.collect()
+        }
+    }
 
     fun toggleAutoTrim() {
         viewModelScope.launch {
@@ -109,39 +141,17 @@ class TimetableConfigViewModel @Inject constructor(
         }
     }
 
-    val timeTableConfigUiState = combine(
-        tableDisplayRepository.tableTrimParam,
-        tableDisplayRepository.compactMode,
-        tableDisplayRepository.tableLectureCustomOption,
-        tableRepository.currentTable.filterNotNull(),
-        getCurrentTableThemeUseCase(),
-    ) { tableTrimParam, compactMode, tableLectureCustom, currentTable, theme ->
-        TimeTableConfigUiState(
-            tableTrimParam = tableTrimParam,
-            compactMode = compactMode,
-            tableLectureCustom = tableLectureCustom,
-            lectures = currentTable.lectures,
-            theme = theme,
-            fittedTrimParam = if (tableTrimParam.forceFitLectures) {
-                currentTable.lectures.getFittingTrimParam(TableTrimParam.Default)
-            } else {
-                tableTrimParam
-            },
-        )
-    }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, TimeTableConfigUiState.Default)
-
     private suspend fun handleTimetableConfigError(error: DomainError) {
         val displayMessage = displayMessageResolver.getDisplayMessage(error)
         when (error) {
             is AuthError -> {
-                _timetableConfigUiEvent.emit(TimetableConfigUiEvent.ShowToast(displayMessage))
+                _uiEvent.emit(TimetableConfigUiEvent.ShowToast(displayMessage))
                 userRepository.performLogout()
-                _timetableConfigUiEvent.emit(TimetableConfigUiEvent.NavigateToOnboard)
+                _uiEvent.emit(TimetableConfigUiEvent.NavigateToOnboard)
             }
 
             else -> {
-                _timetableConfigUiEvent.emit(TimetableConfigUiEvent.ShowToast(displayMessage))
+                _uiEvent.emit(TimetableConfigUiEvent.ShowToast(displayMessage))
             }
         }
     }

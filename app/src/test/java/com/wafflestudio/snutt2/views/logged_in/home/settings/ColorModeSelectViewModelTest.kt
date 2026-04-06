@@ -49,6 +49,7 @@ class ColorModeSelectViewModelTest {
 
     @Test
     fun `repository의 themeMode가 변경되면 UiState에 반영된다`() = runTest {
+        fakeUserRepository.themeMode.value = ThemeMode.AUTO
         viewModel = createViewModel()
         val before = viewModel.uiState.value
 
@@ -63,8 +64,11 @@ class ColorModeSelectViewModelTest {
 
     @Test
     fun `setThemeMode 호출 시 repository의 setThemeMode를 호출한다`() = runTest {
+        fakeUserRepository.themeMode.value = ThemeMode.AUTO
         viewModel = createViewModel()
+
         viewModel.setThemeMode(ThemeMode.DARK)
+
         assertEquals(ThemeMode.DARK, fakeUserRepository.setThemeModeCalledWith)
     }
 

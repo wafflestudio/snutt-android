@@ -48,7 +48,25 @@ class FakeThemeRepository : ThemeRepository {
         return deleteThemeResult
     }
 
-    // --- 미사용 메서드 ---
-    override suspend fun createTheme(name: String, colors: List<ThemeColor>): Result<CustomTheme> = TODO("Not used in this test")
-    override suspend fun updateTheme(themeId: String, name: String, colors: List<ThemeColor>): Result<CustomTheme> = TODO("Not used in this test")
+    var createThemeResult: Result<CustomTheme> = Result.Fail(
+        com.wafflestudio.snutt2.lib.network.Unknown(displayTitle = "", displayMessage = ""),
+    )
+    var createThemeCalledWith: Pair<String, List<ThemeColor>>? = null
+        private set
+
+    var updateThemeResult: Result<CustomTheme> = Result.Fail(
+        com.wafflestudio.snutt2.lib.network.Unknown(displayTitle = "", displayMessage = ""),
+    )
+    var updateThemeCalledWith: Triple<String, String, List<ThemeColor>>? = null
+        private set
+
+    override suspend fun createTheme(name: String, colors: List<ThemeColor>): Result<CustomTheme> {
+        createThemeCalledWith = name to colors
+        return createThemeResult
+    }
+
+    override suspend fun updateTheme(themeId: String, name: String, colors: List<ThemeColor>): Result<CustomTheme> {
+        updateThemeCalledWith = Triple(themeId, name, colors)
+        return updateThemeResult
+    }
 }

@@ -16,7 +16,6 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.assertIs
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AppReportViewModelTest {
@@ -63,8 +62,11 @@ class AppReportViewModelTest {
 
     @Test
     fun `sendFeedback 호출 시 repository의 postFeedback을 호출한다`() = runTest {
+        fakeUserRepository.postFeedbackResult = Result.Success(Unit)
         val viewModel = createViewModel()
+
         viewModel.sendFeedback("test@snu.ac.kr", "버그 발견")
+
         assertEquals("test@snu.ac.kr" to "버그 발견", fakeUserRepository.postFeedbackCalledWith)
     }
 
@@ -87,8 +89,7 @@ class AppReportViewModelTest {
 
         viewModel.uiEvent.test {
             viewModel.sendFeedback("test@snu.ac.kr", "버그 발견")
-            val event = assertIs<AppReportUiEvent.ShowToast>(awaitItem())
-            assertEquals("전송 실패", event.message)
+            assertEquals(AppReportUiEvent.ShowToast("전송 실패"), awaitItem())
         }
     }
 

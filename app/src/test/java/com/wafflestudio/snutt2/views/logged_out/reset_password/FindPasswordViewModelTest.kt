@@ -16,7 +16,6 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.assertIs
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class FindPasswordViewModelTest {
@@ -88,8 +87,7 @@ class FindPasswordViewModelTest {
 
         viewModel.uiEvent.test {
             viewModel.checkEmailById("wronguser")
-            val event = assertIs<FindPasswordUiEvent.ShowToast>(awaitItem())
-            assertEquals("존재하지 않는 ID", event.message)
+            assertEquals(FindPasswordUiEvent.ShowToast("존재하지 않는 ID"), awaitItem())
         }
     }
 
@@ -136,8 +134,7 @@ class FindPasswordViewModelTest {
 
         viewModel.uiEvent.test {
             viewModel.sendFullEmailAndRequestCode("wrong@snu.ac.kr")
-            val event = assertIs<FindPasswordUiEvent.ShowToast>(awaitItem())
-            assertEquals("이메일 불일치", event.message)
+            assertEquals(FindPasswordUiEvent.ShowToast("이메일 불일치"), awaitItem())
         }
     }
 
@@ -181,8 +178,7 @@ class FindPasswordViewModelTest {
 
         viewModel.uiEvent.test {
             viewModel.verifyCode("000000")
-            val event = assertIs<FindPasswordUiEvent.ShowToast>(awaitItem())
-            assertEquals("잘못된 코드", event.message)
+            assertEquals(FindPasswordUiEvent.ShowToast("잘못된 코드"), awaitItem())
         }
     }
 
@@ -234,8 +230,7 @@ class FindPasswordViewModelTest {
 
         viewModel.uiEvent.test {
             viewModel.resetPassword("weak")
-            val event = assertIs<FindPasswordUiEvent.ShowToast>(awaitItem())
-            assertEquals("비밀번호 조건 불충족", event.message)
+            assertEquals(FindPasswordUiEvent.ShowToast("비밀번호 조건 불충족"), awaitItem())
         }
     }
 

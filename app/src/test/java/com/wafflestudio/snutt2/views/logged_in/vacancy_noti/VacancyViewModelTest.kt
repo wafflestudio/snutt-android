@@ -7,8 +7,10 @@ import com.wafflestudio.snutt2.fake.FakeUserRepository
 import com.wafflestudio.snutt2.fake.FakeVacancyRepository
 import com.wafflestudio.snutt2.fixture.TestFixtures.lecture1
 import com.wafflestudio.snutt2.fixture.TestFixtures.lecture2
+import com.wafflestudio.snutt2.fixture.TestFixtures.searchedLecture
 import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.Unknown
+import com.wafflestudio.snutt2.lib.network.WrongUserToken
 import com.wafflestudio.snutt2.lib.toDataWithState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -20,7 +22,6 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.assertIs
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class VacancyViewModelTest {
@@ -55,6 +56,7 @@ class VacancyViewModelTest {
 
     @Test
     fun `init 시 fetch 성공하고 강의가 있으면 Loaded 상태가 된다`() = runTest {
+        fakeVacancyRepository.firstVacancyVisit.value = false
         fakeVacancyRepository.fetchVacancyLecturesResult = Result.Success(Unit)
         fakeVacancyRepository.vacancyLectures.value = listOf(lecture1)
 
@@ -72,6 +74,7 @@ class VacancyViewModelTest {
 
     @Test
     fun `init 시 fetch 성공하고 강의가 비어 있으면 Empty 상태가 된다`() = runTest {
+        fakeVacancyRepository.firstVacancyVisit.value = false
         fakeVacancyRepository.fetchVacancyLecturesResult = Result.Success(Unit)
         fakeVacancyRepository.vacancyLectures.value = emptyList()
 
@@ -85,25 +88,78 @@ class VacancyViewModelTest {
 
     @Test
     fun `init 시 fetch 실패하면 Error 상태가 된다`() = runTest {
+        fakeVacancyRepository.firstVacancyVisit.value = false
         fakeVacancyRepository.fetchVacancyLecturesResult =
             Result.Fail(Unknown(displayTitle = "", displayMessage = "서버 에러"))
 
         val viewModel = createViewModel()
 
-        assertIs<VacancyUiState.ContentState.Error>(viewModel.vacancyUiState.value.contentState)
+        assertEquals(
+            VacancyUiState(contentState = VacancyUiState.ContentState.Error),
+            viewModel.vacancyUiState.value,
+        )
     }
 
     @Test
     fun `init 시 fetch 실패하면 ShowToast 이벤트가 발생한다`() = runTest {
+        fakeVacancyRepository.firstVacancyVisit.value = false
         fakeVacancyRepository.fetchVacancyLecturesResult =
             Result.Fail(Unknown(displayTitle = "", displayMessage = "서버 에러"))
 
         val viewModel = createViewModel()
 
         viewModel.vacancyUiEvent.test {
-            val event = assertIs<VacancyUiEvent.ShowToast>(awaitItem())
-            assertEquals("서버 에러", event.message)
+            assertEquals(VacancyUiEvent.ShowToast("서버 에러"), awaitItem())
         }
+    }
+
+    @Test
+    fun `init 시 fetch 실패 시 AuthError이면 LoggedOut 이벤트가 발생한다`() = runTest {
+        fakeVacancyRepository.firstVacancyVisit.value = false
+        fakeVacancyRepository.fetchVacancyLecturesResult =
+            Result.Fail(WrongUserToken(displayTitle = "", displayMessage = "인증 만료"))
+
+        val viewModel = createViewModel()
+
+        // replay=1이므로 init에서 마지막으로 emit된 LoggedOut만 수신 가능
+        viewModel.vacancyUiEvent.test {
+            assertEquals(VacancyUiEvent.LoggedOut, awaitItem())
+        }
+    }
+
+    @Test
+    fun `init 시 fetch 실패 시 AuthError이면 postForceLogout이 호출된다`() = runTest {
+        fakeVacancyRepository.firstVacancyVisit.value = false
+        fakeVacancyRepository.fetchVacancyLecturesResult =
+            Result.Fail(WrongUserToken(displayTitle = "", displayMessage = "인증 만료"))
+        fakeUserRepository.postForceLogoutResult = Result.Success(Unit)
+
+        createViewModel()
+
+        assertEquals(true, fakeUserRepository.postForceLogoutCalled)
+    }
+
+    @Test
+    fun `init 시 fetch 성공하면 빈자리 알림 가능한 강의가 상위에 정렬된다`() = runTest {
+        val vacantLecture = searchedLecture(id = "lec-vacant", courseTitle = "빈자리 강의", wasFull = true, registrationCount = 10)
+        val fullLecture = searchedLecture(id = "lec-full", courseTitle = "꽉 찬 강의", wasFull = false, registrationCount = 30)
+        fakeVacancyRepository.firstVacancyVisit.value = false
+        fakeVacancyRepository.fetchVacancyLecturesResult = Result.Success(Unit)
+        fakeVacancyRepository.vacancyLectures.value = listOf(fullLecture, vacantLecture)
+
+        val viewModel = createViewModel()
+
+        assertEquals(
+            VacancyUiState(
+                contentState = VacancyUiState.ContentState.Loaded(
+                    vacancyLecturesWithSelection = listOf(
+                        vacantLecture.toDataWithState(false),
+                        fullLecture.toDataWithState(false),
+                    ),
+                ),
+            ),
+            viewModel.vacancyUiState.value,
+        )
     }
 
     @Test
@@ -131,6 +187,7 @@ class VacancyViewModelTest {
 
     @Test
     fun `vacancyLectures가 변화하면 contentState가 갱신된다`() = runTest {
+        fakeVacancyRepository.firstVacancyVisit.value = false
         fakeVacancyRepository.fetchVacancyLecturesResult = Result.Success(Unit)
         fakeVacancyRepository.vacancyLectures.value = listOf(lecture1)
         val viewModel = createViewModel()
@@ -153,6 +210,7 @@ class VacancyViewModelTest {
 
     @Test
     fun `vacancyLectures가 빈 리스트로 변화하면 Empty 상태가 된다`() = runTest {
+        fakeVacancyRepository.firstVacancyVisit.value = false
         fakeVacancyRepository.fetchVacancyLecturesResult = Result.Success(Unit)
         fakeVacancyRepository.vacancyLectures.value = listOf(lecture1)
         val viewModel = createViewModel()
@@ -172,6 +230,7 @@ class VacancyViewModelTest {
 
     @Test
     fun `showIntroDialog 호출 시 Intro 다이얼로그가 열린다`() = runTest {
+        fakeVacancyRepository.firstVacancyVisit.value = false
         fakeVacancyRepository.fetchVacancyLecturesResult = Result.Success(Unit)
         fakeVacancyRepository.vacancyLectures.value = listOf(lecture1)
         val viewModel = createViewModel()
@@ -187,6 +246,7 @@ class VacancyViewModelTest {
 
     @Test
     fun `Empty 상태에서 showIntroDialog 호출 시 Intro 다이얼로그가 열린다`() = runTest {
+        fakeVacancyRepository.firstVacancyVisit.value = false
         fakeVacancyRepository.fetchVacancyLecturesResult = Result.Success(Unit)
         fakeVacancyRepository.vacancyLectures.value = emptyList()
         val viewModel = createViewModel()
@@ -202,6 +262,7 @@ class VacancyViewModelTest {
 
     @Test
     fun `Intro 다이얼로그가 열린 상태에서 dismissDialog 호출 시 다이얼로그가 닫힌다`() = runTest {
+        fakeVacancyRepository.firstVacancyVisit.value = false
         fakeVacancyRepository.fetchVacancyLecturesResult = Result.Success(Unit)
         fakeVacancyRepository.vacancyLectures.value = listOf(lecture1)
         val viewModel = createViewModel()
@@ -233,6 +294,7 @@ class VacancyViewModelTest {
 
     @Test
     fun `showDeleteDialog 호출 시 ConfirmDeleteSelected 다이얼로그가 열린다`() = runTest {
+        fakeVacancyRepository.firstVacancyVisit.value = false
         fakeVacancyRepository.fetchVacancyLecturesResult = Result.Success(Unit)
         fakeVacancyRepository.vacancyLectures.value = listOf(lecture1)
         val viewModel = createViewModel()
@@ -252,6 +314,7 @@ class VacancyViewModelTest {
 
     @Test
     fun `toggleEditMode 호출 시 isEditMode가 토글된다`() = runTest {
+        fakeVacancyRepository.firstVacancyVisit.value = false
         fakeVacancyRepository.fetchVacancyLecturesResult = Result.Success(Unit)
         fakeVacancyRepository.vacancyLectures.value = listOf(lecture1)
         val viewModel = createViewModel()
@@ -267,6 +330,7 @@ class VacancyViewModelTest {
 
     @Test
     fun `toggleEditMode 시 선택 상태가 초기화된다`() = runTest {
+        fakeVacancyRepository.firstVacancyVisit.value = false
         fakeVacancyRepository.fetchVacancyLecturesResult = Result.Success(Unit)
         fakeVacancyRepository.vacancyLectures.value = listOf(lecture1, lecture2)
         val viewModel = createViewModel()
@@ -291,12 +355,26 @@ class VacancyViewModelTest {
         )
     }
 
+    @Test
+    fun `toggleEditMode 시 Loaded가 아니면 상태가 변하지 않는다`() = runTest {
+        fakeVacancyRepository.firstVacancyVisit.value = false
+        fakeVacancyRepository.fetchVacancyLecturesResult = Result.Success(Unit)
+        fakeVacancyRepository.vacancyLectures.value = emptyList()
+        val viewModel = createViewModel()
+        val before = viewModel.vacancyUiState.value
+
+        viewModel.toggleEditMode()
+
+        assertEquals(before, viewModel.vacancyUiState.value)
+    }
+
     // endregion
 
     // region toggleLectureSelected
 
     @Test
     fun `toggleLectureSelected 호출 시 해당 강의가 선택된다`() = runTest {
+        fakeVacancyRepository.firstVacancyVisit.value = false
         fakeVacancyRepository.fetchVacancyLecturesResult = Result.Success(Unit)
         fakeVacancyRepository.vacancyLectures.value = listOf(lecture1, lecture2)
         val viewModel = createViewModel()
@@ -320,6 +398,7 @@ class VacancyViewModelTest {
 
     @Test
     fun `이미 선택된 강의를 toggleLectureSelected 하면 선택이 해제된다`() = runTest {
+        fakeVacancyRepository.firstVacancyVisit.value = false
         fakeVacancyRepository.fetchVacancyLecturesResult = Result.Success(Unit)
         fakeVacancyRepository.vacancyLectures.value = listOf(lecture1)
         val viewModel = createViewModel()
@@ -342,14 +421,48 @@ class VacancyViewModelTest {
         )
     }
 
+    @Test
+    fun `toggleLectureSelected 시 Loaded가 아니면 상태가 변하지 않는다`() = runTest {
+        fakeVacancyRepository.firstVacancyVisit.value = false
+        fakeVacancyRepository.fetchVacancyLecturesResult = Result.Success(Unit)
+        fakeVacancyRepository.vacancyLectures.value = emptyList()
+        val viewModel = createViewModel()
+        val before = viewModel.vacancyUiState.value
+
+        viewModel.toggleLectureSelected("lec-1")
+
+        assertEquals(before, viewModel.vacancyUiState.value)
+    }
+
     // endregion
 
     // region deleteSelectedLectures
 
     @Test
-    fun `deleteSelectedLectures 호출 시 선택된 강의들에 대해 removeVacancyLecture가 호출된다`() = runTest {
+    fun `deleteSelectedLectures 호출 시 다이얼로그가 닫힌다`() = runTest {
+        fakeVacancyRepository.firstVacancyVisit.value = false
         fakeVacancyRepository.fetchVacancyLecturesResult = Result.Success(Unit)
         fakeVacancyRepository.vacancyLectures.value = listOf(lecture1, lecture2)
+        fakeVacancyRepository.removeVacancyLectureResult = Result.Success(Unit)
+        val viewModel = createViewModel()
+        viewModel.toggleLectureSelected(lecture1.id)
+        viewModel.showDeleteDialog()
+        val before = viewModel.vacancyUiState.value
+
+        viewModel.deleteSelectedLectures()
+
+        assertEquals(
+            before.copy(dialogState = VacancyUiState.DialogState.None),
+            viewModel.vacancyUiState.value,
+        )
+    }
+
+    @Test
+    fun `deleteSelectedLectures 호출 시 선택된 강의들에 대해 removeVacancyLecture가 호출된다`() = runTest {
+        fakeVacancyRepository.firstVacancyVisit.value = false
+        fakeVacancyRepository.fetchVacancyLecturesResult = Result.Success(Unit)
+        fakeVacancyRepository.vacancyLectures.value = listOf(lecture1, lecture2)
+        fakeVacancyRepository.removeVacancyLectureResult = Result.Success(Unit)
         val viewModel = createViewModel()
         viewModel.toggleLectureSelected(lecture1.id)
 
@@ -358,19 +471,35 @@ class VacancyViewModelTest {
         assertEquals(listOf(lecture1), fakeVacancyRepository.removeVacancyLectureCalledWith)
     }
 
+    @Test
+    fun `deleteSelectedLectures 호출 시 Loaded가 아니면 아무 동작도 하지 않는다`() = runTest {
+        fakeVacancyRepository.firstVacancyVisit.value = false
+        fakeVacancyRepository.fetchVacancyLecturesResult = Result.Success(Unit)
+        fakeVacancyRepository.vacancyLectures.value = emptyList()
+        val viewModel = createViewModel()
+        val before = viewModel.vacancyUiState.value
+
+        viewModel.deleteSelectedLectures()
+
+        assertEquals(before, viewModel.vacancyUiState.value)
+        assertEquals(emptyList<Any>(), fakeVacancyRepository.removeVacancyLectureCalledWith)
+    }
+
     // endregion
 
     // region openSugangSnu
 
     @Test
     fun `openSugangSnu 호출 시 OpenWebPage 이벤트가 발생한다`() = runTest {
+        fakeVacancyRepository.firstVacancyVisit.value = false
+        fakeVacancyRepository.fetchVacancyLecturesResult = Result.Success(Unit)
+        fakeVacancyRepository.vacancyLectures.value = listOf(lecture1)
         fakeRemoteConfig.sugangSNUUrl.value = "https://sugang.snu.ac.kr"
         val viewModel = createViewModel()
 
         viewModel.vacancyUiEvent.test {
             viewModel.openSugangSnu()
-            val event = assertIs<VacancyUiEvent.OpenWebPage>(awaitItem())
-            assertEquals("https://sugang.snu.ac.kr", event.url)
+            assertEquals(VacancyUiEvent.OpenWebPage("https://sugang.snu.ac.kr"), awaitItem())
         }
     }
 
@@ -379,7 +508,30 @@ class VacancyViewModelTest {
     // region reloadVacancyLectures
 
     @Test
+    fun `reloadVacancyLectures 성공 시 isRefreshing이 false로 복귀한다`() = runTest {
+        fakeVacancyRepository.firstVacancyVisit.value = false
+        fakeVacancyRepository.fetchVacancyLecturesResult = Result.Success(Unit)
+        fakeVacancyRepository.vacancyLectures.value = listOf(lecture1)
+        val viewModel = createViewModel()
+
+        fakeVacancyRepository.fetchVacancyLecturesResult = Result.Success(Unit)
+
+        viewModel.reloadVacancyLectures()
+
+        assertEquals(
+            VacancyUiState(
+                contentState = VacancyUiState.ContentState.Loaded(
+                    vacancyLecturesWithSelection = listOf(lecture1.toDataWithState(false)),
+                ),
+                isRefreshing = false,
+            ),
+            viewModel.vacancyUiState.value,
+        )
+    }
+
+    @Test
     fun `reloadVacancyLectures 실패 시 Error 상태가 된다`() = runTest {
+        fakeVacancyRepository.firstVacancyVisit.value = false
         fakeVacancyRepository.fetchVacancyLecturesResult = Result.Success(Unit)
         fakeVacancyRepository.vacancyLectures.value = listOf(lecture1)
         val viewModel = createViewModel()
@@ -389,7 +541,59 @@ class VacancyViewModelTest {
 
         viewModel.reloadVacancyLectures()
 
-        assertIs<VacancyUiState.ContentState.Error>(viewModel.vacancyUiState.value.contentState)
+        assertEquals(
+            VacancyUiState(contentState = VacancyUiState.ContentState.Error),
+            viewModel.vacancyUiState.value,
+        )
+    }
+
+    @Test
+    fun `reloadVacancyLectures 실패 시 ShowToast 이벤트가 발생한다`() = runTest {
+        fakeVacancyRepository.firstVacancyVisit.value = false
+        fakeVacancyRepository.fetchVacancyLecturesResult = Result.Success(Unit)
+        fakeVacancyRepository.vacancyLectures.value = listOf(lecture1)
+        val viewModel = createViewModel()
+
+        fakeVacancyRepository.fetchVacancyLecturesResult =
+            Result.Fail(Unknown(displayTitle = "", displayMessage = "재로드 실패"))
+
+        viewModel.vacancyUiEvent.test {
+            viewModel.reloadVacancyLectures()
+            assertEquals(VacancyUiEvent.ShowToast("재로드 실패"), awaitItem())
+        }
+    }
+
+    @Test
+    fun `reloadVacancyLectures 실패 시 AuthError이면 ShowToast와 LoggedOut 이벤트가 발생한다`() = runTest {
+        fakeVacancyRepository.firstVacancyVisit.value = false
+        fakeVacancyRepository.fetchVacancyLecturesResult = Result.Success(Unit)
+        fakeVacancyRepository.vacancyLectures.value = listOf(lecture1)
+        val viewModel = createViewModel()
+
+        fakeVacancyRepository.fetchVacancyLecturesResult =
+            Result.Fail(WrongUserToken(displayTitle = "", displayMessage = "인증 만료"))
+
+        viewModel.vacancyUiEvent.test {
+            viewModel.reloadVacancyLectures()
+            assertEquals(VacancyUiEvent.ShowToast("인증 만료"), awaitItem())
+            assertEquals(VacancyUiEvent.LoggedOut, awaitItem())
+        }
+    }
+
+    @Test
+    fun `reloadVacancyLectures 실패 시 AuthError이면 postForceLogout이 호출된다`() = runTest {
+        fakeVacancyRepository.firstVacancyVisit.value = false
+        fakeVacancyRepository.fetchVacancyLecturesResult = Result.Success(Unit)
+        fakeVacancyRepository.vacancyLectures.value = listOf(lecture1)
+        fakeUserRepository.postForceLogoutResult = Result.Success(Unit)
+        val viewModel = createViewModel()
+
+        fakeVacancyRepository.fetchVacancyLecturesResult =
+            Result.Fail(WrongUserToken(displayTitle = "", displayMessage = "인증 만료"))
+
+        viewModel.reloadVacancyLectures()
+
+        assertEquals(true, fakeUserRepository.postForceLogoutCalled)
     }
 
     // endregion

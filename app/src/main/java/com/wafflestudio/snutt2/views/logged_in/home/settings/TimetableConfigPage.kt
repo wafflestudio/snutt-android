@@ -70,10 +70,10 @@ fun TimetableConfigRoute(
     viewModel: TimetableConfigViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
-    val uiState by viewModel.timeTableConfigUiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        viewModel.timetableConfigUiEvent.collect { uiEvent ->
+        viewModel.uiEvent.collect { uiEvent ->
             when (uiEvent) {
                 is TimetableConfigUiEvent.ShowToast -> {
                     val message = uiEvent.message
