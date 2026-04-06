@@ -11,6 +11,7 @@ import com.wafflestudio.snutt2.fixture.TestFixtures.table
 import com.wafflestudio.snutt2.fixture.TestFixtures.tableSummary
 import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.Unknown
+import com.wafflestudio.snutt2.lib.network.WrongUserToken
 import com.wafflestudio.snutt2.domainmodel.ThemeReference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -22,7 +23,6 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.assertIs
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ThemeConfigViewModelTest {
@@ -91,11 +91,11 @@ class ThemeConfigViewModelTest {
         fakeThemeRepository.customThemes.value = listOf(myTheme)
         fakeThemeRepository.builtInThemes.value = listOf(BuiltInTheme.SNUTT)
         val viewModel = createViewModel()
+        val before = viewModel.uiState.value
 
         val newMarketTheme = customTheme(id = "mkt-1", isFromMarket = true)
         fakeThemeRepository.customThemes.value = listOf(myTheme, newMarketTheme)
 
-        val before = viewModel.uiState.value
         assertEquals(
             before.copy(
                 myCustomThemes = listOf(myTheme),
@@ -114,9 +114,28 @@ class ThemeConfigViewModelTest {
         viewModel.onClickDelete(myTheme)
         val before = viewModel.uiState.value
 
-        fakeThemeRepository.customThemes.value = listOf(myTheme, customTheme(id = "my-2"))
+        val myTheme2 = customTheme(id = "my-2")
+        fakeThemeRepository.customThemes.value = listOf(myTheme, myTheme2)
 
-        assertEquals(before.dialogState, viewModel.uiState.value.dialogState)
+        assertEquals(
+            before.copy(myCustomThemes = listOf(myTheme, myTheme2)),
+            viewModel.uiState.value,
+        )
+    }
+
+    @Test
+    fun `builtInThemes가 변화하면 UiState에 반영된다`() = runTest {
+        fakeThemeRepository.customThemes.value = emptyList()
+        fakeThemeRepository.builtInThemes.value = listOf(BuiltInTheme.SNUTT)
+        val viewModel = createViewModel()
+        val before = viewModel.uiState.value
+
+        fakeThemeRepository.builtInThemes.value = listOf(BuiltInTheme.SNUTT, BuiltInTheme.MODERN)
+
+        assertEquals(
+            before.copy(builtInThemes = listOf(BuiltInTheme.SNUTT, BuiltInTheme.MODERN)),
+            viewModel.uiState.value,
+        )
     }
 
     // endregion
@@ -273,9 +292,34 @@ class ThemeConfigViewModelTest {
         viewModel.uiEvent.test {
             viewModel.onClickApply(customTheme(id = "my-1"))
             assertEquals(ThemeConfigUiEvent.CloseBottomSheet, awaitItem())
-            val event = assertIs<ThemeConfigUiEvent.ShowToast>(awaitItem())
-            assertEquals("에러", event.message)
+            assertEquals(ThemeConfigUiEvent.ShowToast("에러"), awaitItem())
         }
+    }
+
+    @Test
+    fun `onClickApply AuthError 실패 시 ShowToast 이벤트가 발생한다`() = runTest {
+        fakeTableRepository.currentTable.value = table(summary = tableSummary(id = "table-1"))
+        fakeTableRepository.updateTableThemeCustomResult =
+            Result.Fail(WrongUserToken(displayTitle = "", displayMessage = "인증 만료"))
+        val viewModel = createViewModel()
+
+        viewModel.uiEvent.test {
+            viewModel.onClickApply(customTheme(id = "my-1"))
+            assertEquals(ThemeConfigUiEvent.CloseBottomSheet, awaitItem())
+            assertEquals(ThemeConfigUiEvent.ShowToast("인증 만료"), awaitItem())
+        }
+    }
+
+    @Test
+    fun `onClickApply AuthError 실패 시 postForceLogout이 호출된다`() = runTest {
+        fakeTableRepository.currentTable.value = table(summary = tableSummary(id = "table-1"))
+        fakeTableRepository.updateTableThemeCustomResult =
+            Result.Fail(WrongUserToken(displayTitle = "", displayMessage = "인증 만료"))
+        val viewModel = createViewModel()
+
+        viewModel.onClickApply(customTheme(id = "my-1"))
+
+        assertEquals(true, fakeUserRepository.postForceLogoutCalled)
     }
 
     // endregion
@@ -310,9 +354,32 @@ class ThemeConfigViewModelTest {
         viewModel.uiEvent.test {
             viewModel.onClickDuplicate(customTheme(id = "my-1"))
             assertEquals(ThemeConfigUiEvent.CloseBottomSheet, awaitItem())
-            val event = assertIs<ThemeConfigUiEvent.ShowToast>(awaitItem())
-            assertEquals("에러", event.message)
+            assertEquals(ThemeConfigUiEvent.ShowToast("에러"), awaitItem())
         }
+    }
+
+    @Test
+    fun `onClickDuplicate AuthError 실패 시 ShowToast 이벤트가 발생한다`() = runTest {
+        fakeThemeRepository.copyThemeResult =
+            Result.Fail(WrongUserToken(displayTitle = "", displayMessage = "인증 만료"))
+        val viewModel = createViewModel()
+
+        viewModel.uiEvent.test {
+            viewModel.onClickDuplicate(customTheme(id = "my-1"))
+            assertEquals(ThemeConfigUiEvent.CloseBottomSheet, awaitItem())
+            assertEquals(ThemeConfigUiEvent.ShowToast("인증 만료"), awaitItem())
+        }
+    }
+
+    @Test
+    fun `onClickDuplicate AuthError 실패 시 postForceLogout이 호출된다`() = runTest {
+        fakeThemeRepository.copyThemeResult =
+            Result.Fail(WrongUserToken(displayTitle = "", displayMessage = "인증 만료"))
+        val viewModel = createViewModel()
+
+        viewModel.onClickDuplicate(customTheme(id = "my-1"))
+
+        assertEquals(true, fakeUserRepository.postForceLogoutCalled)
     }
 
     // endregion
@@ -336,6 +403,11 @@ class ThemeConfigViewModelTest {
     @Test
     fun `onConfirmDeleteTheme 호출 시 repository의 deleteTheme을 호출한다`() = runTest {
         val theme = customTheme(id = "my-1")
+        fakeThemeRepository.deleteThemeResult = Result.Success(Unit)
+        fakeTableRepository.currentTable.value = table(
+            summary = tableSummary(id = "table-1"),
+            themeRef = ThemeReference.BuiltIn(0),
+        )
         val viewModel = createViewModel()
         viewModel.onClickDelete(theme)
 
@@ -345,8 +417,13 @@ class ThemeConfigViewModelTest {
     }
 
     @Test
-    fun `onConfirmDeleteTheme 호출 시 다이얼로그가 닫히고 CloseBottomSheet 이벤트가 발생한다`() = runTest {
+    fun `onConfirmDeleteTheme 호출 시 CloseBottomSheet 이벤트가 발생한다`() = runTest {
         val theme = customTheme(id = "my-1")
+        fakeThemeRepository.deleteThemeResult = Result.Success(Unit)
+        fakeTableRepository.currentTable.value = table(
+            summary = tableSummary(id = "table-1"),
+            themeRef = ThemeReference.BuiltIn(0),
+        )
         val viewModel = createViewModel()
         viewModel.onClickDelete(theme)
 
@@ -354,7 +431,26 @@ class ThemeConfigViewModelTest {
             viewModel.onConfirmDeleteTheme()
             assertEquals(ThemeConfigUiEvent.CloseBottomSheet, awaitItem())
         }
-        assertEquals(ThemeConfigUiState.DialogState.None, viewModel.uiState.value.dialogState)
+    }
+
+    @Test
+    fun `onConfirmDeleteTheme 호출 시 다이얼로그가 닫힌다`() = runTest {
+        val theme = customTheme(id = "my-1")
+        fakeThemeRepository.deleteThemeResult = Result.Success(Unit)
+        fakeTableRepository.currentTable.value = table(
+            summary = tableSummary(id = "table-1"),
+            themeRef = ThemeReference.BuiltIn(0),
+        )
+        val viewModel = createViewModel()
+        viewModel.onClickDelete(theme)
+        val before = viewModel.uiState.value
+
+        viewModel.onConfirmDeleteTheme()
+
+        assertEquals(
+            before.copy(dialogState = ThemeConfigUiState.DialogState.None),
+            viewModel.uiState.value,
+        )
     }
 
     @Test
@@ -398,9 +494,36 @@ class ThemeConfigViewModelTest {
         viewModel.uiEvent.test {
             viewModel.onConfirmDeleteTheme()
             assertEquals(ThemeConfigUiEvent.CloseBottomSheet, awaitItem())
-            val event = assertIs<ThemeConfigUiEvent.ShowToast>(awaitItem())
-            assertEquals("에러", event.message)
+            assertEquals(ThemeConfigUiEvent.ShowToast("에러"), awaitItem())
         }
+    }
+
+    @Test
+    fun `onConfirmDeleteTheme AuthError 실패 시 ShowToast 이벤트가 발생한다`() = runTest {
+        val theme = customTheme(id = "my-1")
+        fakeThemeRepository.deleteThemeResult =
+            Result.Fail(WrongUserToken(displayTitle = "", displayMessage = "인증 만료"))
+        val viewModel = createViewModel()
+        viewModel.onClickDelete(theme)
+
+        viewModel.uiEvent.test {
+            viewModel.onConfirmDeleteTheme()
+            assertEquals(ThemeConfigUiEvent.CloseBottomSheet, awaitItem())
+            assertEquals(ThemeConfigUiEvent.ShowToast("인증 만료"), awaitItem())
+        }
+    }
+
+    @Test
+    fun `onConfirmDeleteTheme AuthError 실패 시 postForceLogout이 호출된다`() = runTest {
+        val theme = customTheme(id = "my-1")
+        fakeThemeRepository.deleteThemeResult =
+            Result.Fail(WrongUserToken(displayTitle = "", displayMessage = "인증 만료"))
+        val viewModel = createViewModel()
+        viewModel.onClickDelete(theme)
+
+        viewModel.onConfirmDeleteTheme()
+
+        assertEquals(true, fakeUserRepository.postForceLogoutCalled)
     }
 
     // endregion

@@ -60,6 +60,10 @@ class FakeUserRepository : UserRepository {
     var fetchUserInfoCalled = false
         private set
 
+    var postForceLogoutResult: Result<Unit> = Result.Success(Unit)
+    var postForceLogoutCalled = false
+        private set
+
     var performLogoutResult: Result<Unit> = Result.Success(Unit)
     var performLogoutCalled = false
         private set
@@ -104,7 +108,10 @@ class FakeUserRepository : UserRepository {
         postFeedbackCalledWith = email to detail
         return postFeedbackResult
     }
-    override suspend fun postForceLogout(): Result<Unit> = TODO()
+    override suspend fun postForceLogout(): Result<Unit> {
+        postForceLogoutCalled = true
+        return postForceLogoutResult
+    }
     override suspend fun getAccessToken(): Result<String> = TODO()
     override suspend fun performLogout(): Result<Unit> {
         performLogoutCalled = true
