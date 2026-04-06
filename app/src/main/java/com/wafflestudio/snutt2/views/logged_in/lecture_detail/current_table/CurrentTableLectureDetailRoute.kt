@@ -27,16 +27,10 @@ import com.wafflestudio.snutt2.components.compose.snackbar.dismiss
 import com.wafflestudio.snutt2.domainmodel.LectureColor
 import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
 import com.wafflestudio.snutt2.lib.android.toast
-import com.wafflestudio.snutt2.lib.logging.AddToBookmarkParameter
-import com.wafflestudio.snutt2.lib.logging.AddToVacancyParameter
-import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
-import com.wafflestudio.snutt2.lib.logging.LectureActionReferrer
 import com.wafflestudio.snutt2.lib.logging.LectureDetailParameter
-import com.wafflestudio.snutt2.lib.logging.LectureSyllabusParameter
 import com.wafflestudio.snutt2.lib.logging.logImpression
-import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
 import com.wafflestudio.snutt2.views.NavigationDestination
 import com.wafflestudio.snutt2.views.observeResult
 import dev.chrisbanes.haze.hazeSource
@@ -57,8 +51,6 @@ fun CurrentTableLectureDetailRoute(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
-    val analyticsLogger = LocalAnalyticsLogger.current
-
     val uiState by vm.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
@@ -191,32 +183,8 @@ fun CurrentTableLectureDetailRoute(
                     focusManager.clearFocus()
                     vm.toggleEditMode()
                 },
-                onBookmarkToggle = {
-                    if (!uiState.isBookmarked) {
-                        analyticsLogger.logEvent(
-                            AnalyticsEvent.AddToBookmark(
-                                AddToBookmarkParameter(
-                                    lectureId = vm.getLoggingLectureId(),
-                                    referrer = LectureActionReferrer.LectureDetail,
-                                ),
-                            ),
-                        )
-                    }
-                    vm.toggleBookmark()
-                },
-                onVacancyToggle = {
-                    if (!uiState.vacancyRegistered) {
-                        analyticsLogger.logEvent(
-                            AnalyticsEvent.AddToVacancy(
-                                AddToVacancyParameter(
-                                    lectureId = vm.getLoggingLectureId(),
-                                    referrer = LectureActionReferrer.LectureDetail,
-                                ),
-                            ),
-                        )
-                    }
-                    vm.toggleVacancy()
-                },
+                onBookmarkToggle = vm::toggleBookmark,
+                onVacancyToggle = vm::toggleVacancy,
                 onCourseTitleChange = vm::editCourseTitle,
                 onInstructorChange = vm::editInstructor,
                 onColorClick = {
@@ -237,16 +205,7 @@ fun CurrentTableLectureDetailRoute(
                 onLocationChange = vm::editSessionLocation,
                 onDeleteSession = vm::requestDeleteSessionDialog,
                 onAddSession = vm::addSession,
-                onSyllabus = {
-                    analyticsLogger.logScreen(
-                        AnalyticsScreen.LectureSyllabus(
-                            LectureSyllabusParameter(
-                                lectureId = vm.getLoggingLectureId(),
-                            ),
-                        ),
-                    )
-                    vm.openSyllabus()
-                },
+                onSyllabus = vm::openSyllabus,
                 onReview = {
                     uiState.reviewInfo?.id?.let { reviewId ->
                         onNavigateToReview(reviewId, vm.getLoggingLectureId())

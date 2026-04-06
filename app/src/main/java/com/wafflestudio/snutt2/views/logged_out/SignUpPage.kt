@@ -33,10 +33,8 @@ import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.isIdInvalid
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.isPasswordInvalid
-import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
@@ -46,7 +44,6 @@ fun SignUpPage(
     onNavigateBack: () -> Unit,
 ) {
     val context = LocalContext.current
-    val analyticsLogger = LocalAnalyticsLogger.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
@@ -60,10 +57,7 @@ fun SignUpPage(
 
     SignUpScreen(
         isLoading = uiState.isLoading,
-        onSignUp = { id, email, password ->
-            analyticsLogger.logEvent(AnalyticsEvent.SignUp)
-            viewModel.signUp(id, email, password)
-        },
+        onSignUp = viewModel::signUp,
         onNavigateBack = onNavigateBack,
     )
 }

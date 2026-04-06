@@ -42,13 +42,10 @@ import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.WebViewStyleButton
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.android.toast
-import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
-import com.wafflestudio.snutt2.lib.logging.LoginParameter
 import com.wafflestudio.snutt2.lib.logging.logImpression
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
 
 @Composable
 fun SignInPage(
@@ -59,7 +56,6 @@ fun SignInPage(
     onNavigateFindPassword: () -> Unit,
 ) {
     val context = LocalContext.current
-    val analyticsLogger = LocalAnalyticsLogger.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
@@ -73,10 +69,7 @@ fun SignInPage(
 
     SignInScreen(
         isLoading = uiState.isLoading,
-        onSignIn = { id, password ->
-            analyticsLogger.logEvent(AnalyticsEvent.Login(LoginParameter(LoginParameter.Provider.LOCAL)))
-            viewModel.signIn(id, password)
-        },
+        onSignIn = viewModel::signIn,
         onNavigateBack = onNavigateBack,
         onNavigateFindId = onNavigateFindId,
         onNavigateFindPassword = onNavigateFindPassword,
