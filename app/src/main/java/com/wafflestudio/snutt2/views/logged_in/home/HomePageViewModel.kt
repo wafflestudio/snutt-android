@@ -12,7 +12,6 @@ import com.wafflestudio.snutt2.data.table_display.TableDisplayRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.domainmodel.LocalLecture
 import com.wafflestudio.snutt2.provider.TimetableWidgetProvider
-import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -22,7 +21,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -37,7 +38,6 @@ class HomePageViewModel @Inject constructor(
     private val tableDisplayRepository: TableDisplayRepository,
     private val userRepository: UserRepository,
     private val popupRepository: PopupRepository,
-    private val popupState: PopupState,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
@@ -67,12 +67,21 @@ class HomePageViewModel @Inject constructor(
         }.launchIn(viewModelScope)
 
         viewModelScope.launch {
-            if (popupState.fetched.not()) {
-                runCatching { popupRepository.fetchAndSetPopup() }
-                popupState.fetched = true
-                updatePopupUiState()
-            }
+            runCatching { popupRepository.ensurePopupsFetched() }
         }
+
+        popupRepository.popups
+            .filterNotNull()
+            .onEach { popups ->
+                val popup = popups.firstOrNull()
+                _uiState.update {
+                    it.copy(
+                        shouldShowPopup = popup != null,
+                        popupImageUri = popup?.imageUri ?: "",
+                    )
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
     fun onNavigateLectureDetail(lecture: LocalLecture) {
@@ -94,31 +103,19 @@ class HomePageViewModel @Inject constructor(
     fun closePopupWithHiddenDays() {
         viewModelScope.launch {
             runCatching { popupRepository.closePopupWithHiddenDays() }
-            updatePopupUiState()
         }
     }
 
     fun closePopup() {
         viewModelScope.launch {
             runCatching { popupRepository.closePopup() }
-            updatePopupUiState()
         }
     }
 
     fun onPopupImageClick() {
-        val linkUrl = popupState.popup.firstOrNull()?.linkUrl ?: return
+        val linkUrl = popupRepository.popups.value?.firstOrNull()?.linkUrl ?: return
         viewModelScope.launch {
             _uiEvent.emit(HomePageUiEvent.OpenUrl(linkUrl))
-        }
-    }
-
-    private fun updatePopupUiState() {
-        val popup = popupState.popup.firstOrNull()
-        _uiState.update {
-            it.copy(
-                shouldShowPopup = popupState.popup.isNotEmpty(),
-                popupImageUri = popup?.imageUri ?: "",
-            )
         }
     }
 }
