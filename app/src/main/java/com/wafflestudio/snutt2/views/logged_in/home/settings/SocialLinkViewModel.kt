@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.facebook.login.LoginManager
 import com.wafflestudio.snutt2.data.user.UserRepository
+import com.wafflestudio.snutt2.domainmodel.SocialProviders
 import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
 import com.wafflestudio.snutt2.lib.network.DomainError
-import com.wafflestudio.snutt2.lib.network.dto.GetSocialProvidersResults
 import com.wafflestudio.snutt2.lib.network.onFailure
 import com.wafflestudio.snutt2.lib.network.onSuccess
 import com.wafflestudio.snutt2.model.SocialLoginType
@@ -138,7 +138,7 @@ class SocialLinkViewModel @Inject constructor(
 }
 
 data class SocialLinkUiState(
-    val socialProviders: GetSocialProvidersResults = GetSocialProvidersResults(
+    val socialProviders: SocialProviders = SocialProviders(
         local = false, facebook = false, google = false, kakao = false, apple = false,
     ),
     val disconnectDialogType: SocialLoginType = SocialLoginType.NONE,
