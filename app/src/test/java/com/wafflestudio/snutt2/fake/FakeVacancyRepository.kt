@@ -39,8 +39,16 @@ class FakeVacancyRepository : VacancyRepository {
         return setVacancyVisitedResult
     }
 
+    var addVacancyLectureResult: Result<Unit> = Result.Success(Unit)
+    var addVacancyLectureCalledWith: Lecture? = null
+        private set
+
+    override suspend fun addVacancyLecture(lecture: Lecture): Result<Unit> {
+        addVacancyLectureCalledWith = lecture
+        return addVacancyLectureResult
+    }
+
     // --- 미사용 메서드 ---
-    override suspend fun addVacancyLecture(lecture: Lecture): Result<Unit> = TODO("Not used in this test")
     override suspend fun isVacancyRegistered(lecture: Lecture): Result<Boolean> = TODO("Not used in this test")
     override suspend fun isLectureVacancyRegistered(lecture: Lecture): Result<Boolean> = TODO("Not used in this test")
     override suspend fun setVacancyAdded() = TODO("Not used in this test")
