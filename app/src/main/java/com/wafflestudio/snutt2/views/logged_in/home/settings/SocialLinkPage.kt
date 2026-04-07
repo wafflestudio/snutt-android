@@ -37,8 +37,8 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.CustomDialog
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.lib.android.toast
+import com.wafflestudio.snutt2.domainmodel.SocialProviders
 import com.wafflestudio.snutt2.lib.facebookLogin
-import com.wafflestudio.snutt2.lib.network.dto.GetSocialProvidersResults
 import com.wafflestudio.snutt2.model.SocialLoginType
 import com.wafflestudio.snutt2.model.getString
 import com.wafflestudio.snutt2.ui.SNUTTColors
@@ -268,7 +268,7 @@ private fun SocialLinkScreen(
 private fun SocialLinkScreenPreview() {
     SocialLinkScreen(
         uiState = SocialLinkUiState(
-            socialProviders = GetSocialProvidersResults(
+            socialProviders = SocialProviders(
                 local = true, facebook = false, google = true, kakao = false, apple = false,
             ),
         ),

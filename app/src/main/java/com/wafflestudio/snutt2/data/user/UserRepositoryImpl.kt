@@ -5,6 +5,7 @@ import com.facebook.login.LoginManager
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.wafflestudio.snutt2.data.SNUTTStorage
+import com.wafflestudio.snutt2.domainmodel.SocialProviders
 import com.wafflestudio.snutt2.domainmodel.PushPreferences
 import com.wafflestudio.snutt2.domainmodel.User
 import com.wafflestudio.snutt2.domainmodel.toNetworkModel
@@ -297,9 +298,18 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getSocialProviders(): Result<GetSocialProvidersResults> {
+    override suspend fun getSocialProviders(): Result<SocialProviders> {
         return try {
-            Result.Success(api._getSocialProviders())
+            val response = api._getSocialProviders()
+            Result.Success(
+                SocialProviders(
+                    local = response.local,
+                    facebook = response.facebook,
+                    google = response.google,
+                    kakao = response.kakao,
+                    apple = response.apple,
+                ),
+            )
         } catch (e: Exception) {
             Result.Fail(e.toDomainError())
         }

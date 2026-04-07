@@ -1,9 +1,9 @@
 package com.wafflestudio.snutt2.data.user
 
+import com.wafflestudio.snutt2.domainmodel.SocialProviders
 import com.wafflestudio.snutt2.domainmodel.PushPreferences
 import com.wafflestudio.snutt2.domainmodel.User
 import com.wafflestudio.snutt2.lib.network.Result
-import com.wafflestudio.snutt2.lib.network.dto.GetSocialProvidersResults
 import com.wafflestudio.snutt2.ui.ThemeMode
 import kotlinx.coroutines.flow.StateFlow
 
@@ -64,7 +64,7 @@ interface UserRepository {
 
     suspend fun postPushPreferences(pushPreferences: PushPreferences): Result<Unit>
 
-    suspend fun getSocialProviders(): Result<GetSocialProvidersResults>
+    suspend fun getSocialProviders(): Result<SocialProviders>
 
     suspend fun postLoginFacebook(facebookToken: String): Result<Unit>
 

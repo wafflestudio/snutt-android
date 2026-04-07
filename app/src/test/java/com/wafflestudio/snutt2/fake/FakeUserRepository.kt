@@ -1,10 +1,10 @@
 package com.wafflestudio.snutt2.fake
 
 import com.wafflestudio.snutt2.data.user.UserRepository
+import com.wafflestudio.snutt2.domainmodel.SocialProviders
 import com.wafflestudio.snutt2.domainmodel.PushPreferences
 import com.wafflestudio.snutt2.domainmodel.User
 import com.wafflestudio.snutt2.lib.network.Result
-import com.wafflestudio.snutt2.lib.network.dto.GetSocialProvidersResults
 import com.wafflestudio.snutt2.ui.ThemeMode
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -148,7 +148,7 @@ class FakeUserRepository : UserRepository {
         postPushPreferencesCalledWith = pushPreferences
         return postPushPreferencesResult
     }
-    override suspend fun getSocialProviders(): Result<GetSocialProvidersResults> = TODO()
+    override suspend fun getSocialProviders(): Result<SocialProviders> = TODO()
     override suspend fun postLoginFacebook(facebookToken: String): Result<Unit> = TODO()
     override suspend fun postLoginGoogle(googleAccessToken: String): Result<Unit> = TODO()
     override suspend fun postLoginKakao(kakaoAccessToken: String): Result<Unit> = TODO()
