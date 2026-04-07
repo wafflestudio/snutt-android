@@ -12,7 +12,17 @@ class FakeNotificationRepository : NotificationRepository {
     // --- StateFlow ---
     override val notificationCount = MutableStateFlow(0L)
 
+    // --- 테스트 제어용 필드 ---
+    var fetchNotificationCountResult: Result<Unit> = Result.Success(Unit)
+    var fetchNotificationCountCalled = false
+        private set
+
+    // --- 인터페이스 구현 ---
+    override suspend fun fetchNotificationCount(): Result<Unit> {
+        fetchNotificationCountCalled = true
+        return fetchNotificationCountResult
+    }
+
     // --- 미사용 메서드 ---
     override fun getNotificationListStream(): Flow<PagingData<Notification>> = TODO("Not used in this test")
-    override suspend fun fetchNotificationCount(): Result<Unit> = TODO("Not used in this test")
 }
