@@ -46,7 +46,14 @@ class FakeTableDisplayRepository : TableDisplayRepository {
     var toggleInstructorVisibleCalled = false
         private set
 
+    var visitSessionlessLectureListCalled = false
+        private set
+
     // --- 인터페이스 구현 ---
+    override suspend fun visitSessionlessLectureList() {
+        visitSessionlessLectureListCalled = true
+    }
+
     override suspend fun toggleForceFit(): Result<Unit> {
         toggleForceFitCalled = true
         return toggleForceFitResult
@@ -86,7 +93,4 @@ class FakeTableDisplayRepository : TableDisplayRepository {
         toggleInstructorVisibleCalled = true
         return toggleInstructorVisibleResult
     }
-
-    // --- 미사용 메서드 ---
-    override suspend fun visitSessionlessLectureList() = TODO("Not used in this test")
 }
