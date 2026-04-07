@@ -26,6 +26,13 @@ import com.wafflestudio.snutt2.domainmodel.LocalLecture
 import com.wafflestudio.snutt2.domainmodel.SyllabusLecture
 import com.wafflestudio.snutt2.domainmodel.TableSummary
 import com.wafflestudio.snutt2.domainmodel.TableTheme
+import com.wafflestudio.snutt2.lib.logging.AddToBookmarkParameter
+import com.wafflestudio.snutt2.lib.logging.AddToVacancyParameter
+import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
+import com.wafflestudio.snutt2.lib.logging.AnalyticsLogger
+import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.lib.logging.LectureActionReferrer
+import com.wafflestudio.snutt2.lib.logging.LectureSyllabusParameter
 import com.wafflestudio.snutt2.lib.network.AuthError
 import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
 import com.wafflestudio.snutt2.lib.network.DomainError
@@ -60,6 +67,7 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
     private val remoteConfig: RemoteConfig,
     private val displayMessageResolver: DisplayMessageResolver,
     private val getCurrentTableThemeUseCase: GetCurrentTableThemeUseCase,
+    private val analyticsLogger: AnalyticsLogger,
 ) : ViewModel() {
 
     private val table = checkNotNull(tableRepository.currentTable.value)
@@ -383,6 +391,14 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
                     .onSuccess { _uiState.update { it.copy(isBookmarked = false) } }
                     .onFailure { handleError(it) }
             } else {
+                analyticsLogger.logEvent(
+                    AnalyticsEvent.AddToBookmark(
+                        AddToBookmarkParameter(
+                            lectureId = getLoggingLectureId(),
+                            referrer = LectureActionReferrer.LectureDetail,
+                        ),
+                    ),
+                )
                 bookmarkRepository.addBookmark(courseBook, originalLecture)
                     .onSuccess { _uiState.update { it.copy(isBookmarked = true) } }
                     .onFailure { handleError(it) }
@@ -398,6 +414,14 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
                     .onSuccess { _uiState.update { it.copy(vacancyRegistered = false) } }
                     .onFailure { handleError(it) }
             } else {
+                analyticsLogger.logEvent(
+                    AnalyticsEvent.AddToVacancy(
+                        AddToVacancyParameter(
+                            lectureId = getLoggingLectureId(),
+                            referrer = LectureActionReferrer.LectureDetail,
+                        ),
+                    ),
+                )
                 vacancyRepository.addVacancyLecture(originalLecture)
                     .onSuccess { _uiState.update { it.copy(vacancyRegistered = true) } }
                     .onFailure { handleError(it) }
@@ -435,6 +459,11 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
     fun openSyllabus() {
         viewModelScope.launch {
             val syllabusLecture = _uiState.value.lecture as? SyllabusLecture ?: return@launch
+            analyticsLogger.logScreen(
+                AnalyticsScreen.LectureSyllabus(
+                    LectureSyllabusParameter(lectureId = getLoggingLectureId()),
+                ),
+            )
             lectureInfoRepository.getSyllabusUrl(
                 courseBook,
                 syllabusLecture,

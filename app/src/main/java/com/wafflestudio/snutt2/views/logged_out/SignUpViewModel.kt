@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.domain.RefreshInitialDataUseCase
+import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
+import com.wafflestudio.snutt2.lib.logging.AnalyticsLogger
 import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
 import com.wafflestudio.snutt2.lib.network.DomainError
 import com.wafflestudio.snutt2.lib.network.onFailure
@@ -23,6 +25,7 @@ class SignUpViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val refreshInitialDataUseCase: RefreshInitialDataUseCase,
     private val displayMessageResolver: DisplayMessageResolver,
+    private val analyticsLogger: AnalyticsLogger,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SignUpUiState())
@@ -33,6 +36,7 @@ class SignUpViewModel @Inject constructor(
 
     fun signUp(id: String, email: String, password: String) {
         viewModelScope.launch {
+            analyticsLogger.logEvent(AnalyticsEvent.SignUp)
             _uiState.update { it.copy(isLoading = true) }
             userRepository.postSignUp(id, password, email)
                 .onSuccess {
