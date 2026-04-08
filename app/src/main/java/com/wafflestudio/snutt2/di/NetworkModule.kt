@@ -8,8 +8,8 @@ import android.provider.Settings.Secure
 import com.squareup.moshi.Moshi
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.data.SNUTTStorage
-import com.wafflestudio.snutt2.data.addNetworkLog
+import com.wafflestudio.snutt2.storage.SNUTTStorage
+import com.wafflestudio.snutt2.storage.addNetworkLog
 import com.wafflestudio.snutt2.lib.data.serializer.Serializer
 import com.wafflestudio.snutt2.domain.DisplayMessageResolver
 import com.wafflestudio.snutt2.lib.android.DisplayMessageResolverImpl

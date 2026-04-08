@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.data
+package com.wafflestudio.snutt2.storage
 
 import com.wafflestudio.snutt2.lib.android.NetworkLog
 

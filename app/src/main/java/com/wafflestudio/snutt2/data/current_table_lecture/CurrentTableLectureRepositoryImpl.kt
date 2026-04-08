@@ -1,6 +1,6 @@
 package com.wafflestudio.snutt2.data.current_table_lecture
 
-import com.wafflestudio.snutt2.data.SNUTTStorage
+import com.wafflestudio.snutt2.storage.SNUTTStorage
 import com.wafflestudio.snutt2.data.mapper.toLectureDto
 import com.wafflestudio.snutt2.data.mapper.toLocalLecture
 import com.wafflestudio.snutt2.domainmodel.CustomLecture
@@ -14,7 +14,7 @@ import com.wafflestudio.snutt2.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.network.dto.PostLectureParams
 import com.wafflestudio.snutt2.network.dto.LectureDto
 import com.wafflestudio.snutt2.network.error.toDomainError
-import com.wafflestudio.snutt2.lib.toOptional
+import com.wafflestudio.snutt2.storage.toOptional
 import javax.inject.Inject
 import javax.inject.Singleton
 

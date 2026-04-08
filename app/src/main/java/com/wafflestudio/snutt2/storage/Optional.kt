@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.lib
+package com.wafflestudio.snutt2.storage
 
 import com.squareup.moshi.JsonClass
 

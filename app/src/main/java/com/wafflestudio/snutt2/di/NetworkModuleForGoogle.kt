@@ -5,8 +5,8 @@ import android.content.Context
 import com.squareup.moshi.Moshi
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.data.SNUTTStorage
-import com.wafflestudio.snutt2.data.addNetworkLog
+import com.wafflestudio.snutt2.storage.SNUTTStorage
+import com.wafflestudio.snutt2.storage.addNetworkLog
 import com.wafflestudio.snutt2.network.api.google.SNUTTRestApiForGoogle
 import com.wafflestudio.snutt2.lib.android.createNewNetworkLog
 import dagger.Module

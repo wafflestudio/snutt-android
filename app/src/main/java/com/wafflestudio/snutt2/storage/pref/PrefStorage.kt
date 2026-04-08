@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.lib.preferences.storage
+package com.wafflestudio.snutt2.storage.pref
 
 import java.lang.reflect.Type
 

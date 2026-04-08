@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.lib.preferences.model
+package com.wafflestudio.snutt2.storage.model
 
 import com.wafflestudio.snutt2.domainmodel.TableLectureCustom
 

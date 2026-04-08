@@ -1,8 +1,5 @@
-package com.wafflestudio.snutt2.lib.preferences.context
+package com.wafflestudio.snutt2.storage.pref
 
-import com.wafflestudio.snutt2.lib.mutableMultiMapOf
-import com.wafflestudio.snutt2.lib.preferences.cache.PrefCache
-import com.wafflestudio.snutt2.lib.preferences.storage.PrefStorage
 import java.lang.reflect.Type
 
 class PrefContext(

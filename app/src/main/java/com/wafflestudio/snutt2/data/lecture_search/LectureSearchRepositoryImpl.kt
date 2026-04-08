@@ -4,7 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.wafflestudio.snutt2.data.SNUTTStorage
+import com.wafflestudio.snutt2.storage.SNUTTStorage
 import com.wafflestudio.snutt2.data.mapper.toDto
 import com.wafflestudio.snutt2.data.mapper.toSearchedLecture
 import com.wafflestudio.snutt2.domainmodel.CourseBook

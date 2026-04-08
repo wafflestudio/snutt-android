@@ -1,6 +1,6 @@
 package com.wafflestudio.snutt2.data.tables
 
-import com.wafflestudio.snutt2.data.SNUTTStorage
+import com.wafflestudio.snutt2.storage.SNUTTStorage
 import com.wafflestudio.snutt2.data.mapper.toDomain
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
@@ -16,7 +16,7 @@ import com.wafflestudio.snutt2.network.dto.PutTableParams
 import com.wafflestudio.snutt2.network.dto.PutTableThemeParams
 import com.wafflestudio.snutt2.network.dto.PutTimetableLectureReminderParams
 import com.wafflestudio.snutt2.network.error.toDomainError
-import com.wafflestudio.snutt2.lib.toOptional
+import com.wafflestudio.snutt2.storage.toOptional
 import kotlinx.coroutines.ExperimentalForInheritanceCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject

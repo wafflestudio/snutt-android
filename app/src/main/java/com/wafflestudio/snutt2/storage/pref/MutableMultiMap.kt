@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.lib
+package com.wafflestudio.snutt2.storage.pref
 
 class MutableMultiMap<K, V> {
     private val map: MutableMap<K, MutableSet<V>> = mutableMapOf()

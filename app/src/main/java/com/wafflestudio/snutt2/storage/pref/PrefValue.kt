@@ -1,6 +1,5 @@
-package com.wafflestudio.snutt2.lib.preferences.context
+package com.wafflestudio.snutt2.storage.pref
 
-import com.wafflestudio.snutt2.lib.data.DataValue
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 

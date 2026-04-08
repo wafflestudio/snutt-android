@@ -1,6 +1,6 @@
 package com.wafflestudio.snutt2.test
 
-import com.wafflestudio.snutt2.data.SNUTTStorage
+import com.wafflestudio.snutt2.storage.SNUTTStorage
 import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.network.api.SNUTTRestApi
 import com.wafflestudio.snutt2.network.dto.PostSignUpParams

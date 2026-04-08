@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.lib
 
+import com.wafflestudio.snutt2.storage.Optional
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted

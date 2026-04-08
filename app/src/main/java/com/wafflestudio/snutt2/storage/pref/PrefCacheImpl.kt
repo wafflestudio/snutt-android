@@ -1,7 +1,7 @@
-package com.wafflestudio.snutt2.lib.preferences.cache
+package com.wafflestudio.snutt2.storage.pref
 
 import androidx.collection.LruCache
-import com.wafflestudio.snutt2.lib.Optional
+import com.wafflestudio.snutt2.storage.Optional
 
 class PrefCacheImpl(private val cacheSizePerDomain: Int) : PrefCache {
 

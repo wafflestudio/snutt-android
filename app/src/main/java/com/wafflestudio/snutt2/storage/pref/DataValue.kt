@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.lib.data
+package com.wafflestudio.snutt2.storage.pref
 
 import kotlinx.coroutines.flow.StateFlow
 

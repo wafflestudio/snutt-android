@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.lib.preferences.cache
+package com.wafflestudio.snutt2.storage.pref
 
 interface PrefCache {
     fun clear(domainName: String)

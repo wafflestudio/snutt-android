@@ -1,7 +1,7 @@
-package com.wafflestudio.snutt2.lib.preferences.context
+package com.wafflestudio.snutt2.storage.pref
 
 import com.squareup.moshi.Types
-import com.wafflestudio.snutt2.lib.Optional
+import com.wafflestudio.snutt2.storage.Optional
 import java.lang.reflect.Type
 
 open class PrefValueMetaData<T : Any> constructor(

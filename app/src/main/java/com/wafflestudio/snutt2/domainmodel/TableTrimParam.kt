@@ -1,7 +1,7 @@
 package com.wafflestudio.snutt2.domainmodel
 
 import com.squareup.moshi.JsonClass
-import com.wafflestudio.snutt2.lib.preferences.model.TableTrimParamData
+import com.wafflestudio.snutt2.storage.model.TableTrimParamData
 
 @JsonClass(generateAdapter = true)
 data class TableTrimParam(

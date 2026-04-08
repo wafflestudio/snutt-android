@@ -12,7 +12,7 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.data.SNUTTStorage
+import com.wafflestudio.snutt2.storage.SNUTTStorage
 import com.wafflestudio.snutt2.domainmodel.CustomLecture
 import com.wafflestudio.snutt2.domainmodel.LectureColor
 import com.wafflestudio.snutt2.domainmodel.LectureSession

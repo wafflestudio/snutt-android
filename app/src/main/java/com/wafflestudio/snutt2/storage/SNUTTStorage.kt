@@ -1,12 +1,11 @@
-package com.wafflestudio.snutt2.data
+package com.wafflestudio.snutt2.storage
 
 import com.wafflestudio.snutt2.network.dto.SemesterStatusDto
-import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.android.NetworkLog
 import com.wafflestudio.snutt2.network.dto.*
-import com.wafflestudio.snutt2.lib.preferences.context.*
-import com.wafflestudio.snutt2.lib.preferences.model.TableLectureCustomData
-import com.wafflestudio.snutt2.lib.preferences.model.TableTrimParamData
+import com.wafflestudio.snutt2.storage.pref.*
+import com.wafflestudio.snutt2.storage.model.TableLectureCustomData
+import com.wafflestudio.snutt2.storage.model.TableTrimParamData
 import com.wafflestudio.snutt2.network.dto.TagDto
 import com.wafflestudio.snutt2.ui.ThemeMode
 import javax.inject.Inject
