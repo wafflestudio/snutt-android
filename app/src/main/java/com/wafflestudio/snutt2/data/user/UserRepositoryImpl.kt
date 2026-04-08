@@ -5,12 +5,12 @@ import com.facebook.login.LoginManager
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.wafflestudio.snutt2.data.SNUTTStorage
-import com.wafflestudio.snutt2.domainmodel.SocialProviders
+import com.wafflestudio.snutt2.data.mapper.toDomain
+import com.wafflestudio.snutt2.data.mapper.toDto
 import com.wafflestudio.snutt2.domainmodel.PushPreferences
+import com.wafflestudio.snutt2.domainmodel.SocialProviders
 import com.wafflestudio.snutt2.domainmodel.User
-import com.wafflestudio.snutt2.domainmodel.toNetworkModel
 import com.wafflestudio.snutt2.lib.map
-import com.wafflestudio.snutt2.lib.network.dto.core.toDomainModel
 import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApiForGoogle
@@ -38,7 +38,7 @@ class UserRepositoryImpl @Inject constructor(
 
     override val user: StateFlow<User?> = storage.user.asStateFlow()
         .unwrap(externalScope)
-        .map(externalScope) { it?.toDomainModel() }
+        .map(externalScope) { it?.toDomain() }
 
     override val accessToken = storage.accessToken.asStateFlow()
 
@@ -282,7 +282,7 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun getPushPreferences(): Result<PushPreferences> {
         try {
-            val result = api._getPushPreferences().toDomainModel()
+            val result = api._getPushPreferences().toDomain()
             return Result.Success(result)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
@@ -291,7 +291,7 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun postPushPreferences(pushPreferences: PushPreferences): Result<Unit> {
         try {
-            api._postPushPreferences(pushPreferences.toNetworkModel())
+            api._postPushPreferences(pushPreferences.toDto())
             return Result.Success(Unit)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())

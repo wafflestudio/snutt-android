@@ -13,23 +13,20 @@ import com.wafflestudio.snutt2.domainmodel.LectureReviewInfo
 import com.wafflestudio.snutt2.domainmodel.LectureSession
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
 import com.wafflestudio.snutt2.domainmodel.Nickname
+import com.wafflestudio.snutt2.domainmodel.Notification
+import com.wafflestudio.snutt2.domainmodel.NotificationType
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.domainmodel.SyllabusLecture
 import com.wafflestudio.snutt2.domainmodel.Table
 import com.wafflestudio.snutt2.domainmodel.TableSummary
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.domainmodel.ThemeReference
-import com.wafflestudio.snutt2.domainmodel.domainModel
-import com.wafflestudio.snutt2.lib.network.dto.core.ClassTimeDto
-import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureReviewDto
-import com.wafflestudio.snutt2.lib.network.dto.core.NotificationDto
 import com.wafflestudio.snutt2.views.logged_in.home.friend.FriendBottomSheetContent
 import com.wafflestudio.snutt2.views.logged_in.home.friend.FriendDialogState
 import com.wafflestudio.snutt2.views.logged_in.home.friend.FriendDrawerTab
 import com.wafflestudio.snutt2.views.logged_in.home.friend.FriendsUiState
 import java.time.DayOfWeek
+import java.time.LocalDateTime
 import java.time.LocalTime
 
 object PreviewData {
@@ -82,42 +79,26 @@ object PreviewData {
         originalLectureId = "61e4c9437d86910064ed373a",
     )
 
-    private val sampleNotificationDtos = listOf(
-        NotificationDto(
-            id = "67d008df6fb110276f3ed659",
-            title = "벌써 개강 2주차! 망한 시간표 공유하고 기프티콘 받아가세요",
-            message = "와플스튜디오 인스타그램(@wafflestudio_official)에서 망한 시간표 대회 이벤트를 확인해보세요. (참고: [친구 > 닉네임으로 친구 추가])",
-            type = 0,
-            deeplink = "https://www.instagram.com/p/DG-192cTNfF",
-            createdAt = "2025-03-11T09:56:47.729Z",
-        ),
-        NotificationDto(
-            id = "67d008df6fb110276f3ed659",
-            title = "벌써 개강 2주차! 망한 시간표 공유하고 기프티콘 받아가세요",
-            message = "와플스튜디오 인스타그램(@wafflestudio_official)에서 망한 시간표 대회 이벤트를 확인해보세요. (참고: [친구 > 닉네임으로 친구 추가])",
-            type = 1,
-            deeplink = "https://www.instagram.com/p/DG-192cTNfF",
-            createdAt = "2025-03-11T09:56:47.72Z",
-        ),
-        NotificationDto(
-            id = "67d008df6fb110276f3ed659",
-            title = "벌써 개강 2주차! 망한 시간표 공유하고 기프티콘 받아가세요",
-            message = "와플스튜디오 인스타그램(@wafflestudio_official)에서 망한 시간표 대회 이벤트를 확인해보세요. (참고: [친구 > 닉네임으로 친구 추가])",
-            type = 2,
-            deeplink = "https://www.instagram.com/p/DG-192cTNfF",
-            createdAt = "2025-03-11T09:56:47.7Z",
-        ),
-        NotificationDto(
-            id = "67d008df6fb110276f3ed659",
-            title = "벌써 개강 2주차! 망한 시간표 공유하고 기프티콘 받아가세요",
-            message = "와플스튜디오 인스타그램(@wafflestudio_official)에서 망한 시간표 대회 이벤트를 확인해보세요. (참고: [친구 > 닉네임으로 친구 추가])",
-            type = 3,
-            deeplink = "https://www.instagram.com/p/DG-192cTNfF",
-            createdAt = "2025-03-11T09:56:47Z",
-        ),
-    )
+    private val sampleNotificationTitle = "벌써 개강 2주차! 망한 시간표 공유하고 기프티콘 받아가세요"
+    private val sampleNotificationMessage =
+        "와플스튜디오 인스타그램(@wafflestudio_official)에서 망한 시간표 대회 이벤트를 확인해보세요. (참고: [친구 > 닉네임으로 친구 추가])"
+    private val sampleNotificationDeeplink = "https://www.instagram.com/p/DG-192cTNfF"
+    private val sampleNotificationCreatedAt = LocalDateTime.of(2025, 3, 11, 18, 56, 47)
 
-    val sampleNotifications = sampleNotificationDtos.map { it.domainModel() }
+    val sampleNotifications: List<Notification> = listOf(
+        NotificationType.Warning,
+        NotificationType.Calendar,
+        NotificationType.RefreshTime,
+        NotificationType.Trash,
+    ).map { type ->
+        Notification(
+            title = sampleNotificationTitle,
+            message = sampleNotificationMessage,
+            createdAt = sampleNotificationCreatedAt,
+            type = type,
+            deeplink = sampleNotificationDeeplink,
+        )
+    }
 
     val sampleLectureReminderOptions = mapOf(
         "1" to LectureWithReminderOption("1", "컴퓨터 프로그래밍", LectureReminderOffset.NONE),
@@ -135,250 +116,177 @@ object PreviewData {
         "9" to LectureWithReminderOption("9", "이산수학3", LectureReminderOffset.TEN_MINUTES_AFTER),
     )
 
-    private val sampleLectureDtos = listOf(
-        LectureDto(
-            id = "6896f09f72111e64aa138f8b",
-            lecture_id = "6867c3225ef235136624b752",
-            classification = "전선",
-            department = "음악학과",
-            academic_year = "1학년",
-            course_number = "M2183.003400",
-            lecture_number = "001",
-            course_title = " 스튜디오 뮤직 메이킹 (로직, 거라지밴드) 입문 ",
-            credit = 2,
-            class_time_json = listOf(
-                ClassTimeDto(
-                    day = 0,
-                    place = "220-413",
-                    startMinute = 780,
-                    endMinute = 950,
-                ),
-            ),
-            instructor = "이지수",
-            quota = 10,
-            freshmanQuota = null,
-            remark = "",
-            category = "",
-            categoryPre2025 = null,
-            colorIndex = 0,
-            color = ColorDto(
-                fgRaw = "#FFFFFF",
-                bgRaw = "#6172E9",
-            ),
-            registrationCount = 10,
-            wasFull = false,
-            review = LectureReviewDto(id = "49367"),
-        ),
-        LectureDto(
-            id = "6896f0a272111e64aa138f8c",
-            lecture_id = "6867c3225ef235136624b753",
-            classification = "전선",
-            department = "공과대학",
-            academic_year = "석박사통합",
-            course_number = "M2177.005600",
-            lecture_number = "001",
-            course_title = " 글로벌 공학기술 교류 특강 2 (국제 물류)",
-            credit = 2,
-            class_time_json = listOf(
-                ClassTimeDto(
-                    day = 0,
-                    place = "38-B105",
-                    startMinute = 630,
-                    endMinute = 740,
-                ),
-            ),
-            instructor = "박건수",
-            quota = 30,
-            freshmanQuota = null,
-            remark = "ⓔ",
-            category = "",
-            categoryPre2025 = null,
-            colorIndex = 0,
-            color = ColorDto(
-                fgRaw = "#FFFFFF",
-                bgRaw = "#351C7C",
-            ),
-            registrationCount = 0,
-            wasFull = false,
-            review = LectureReviewDto(id = "43308"),
-        ),
-        LectureDto(
-            id = "6896f0a372111e64aa138f8d",
-            lecture_id = "6867c3225ef235136624b755",
-            classification = "전선",
-            department = "혁신공유학부",
-            academic_year = "2학년",
-            course_number = "M3502.016700",
-            lecture_number = "001",
-            course_title = "(공유)NPU 기반 인공지능 추론 및 응용",
-            credit = 3,
-            class_time_json = listOf(
-                ClassTimeDto(
-                    day = 3,
-                    place = "301-B119",
-                    startMinute = 720,
-                    endMinute = 890,
-                ),
-            ),
-            instructor = "윤정남",
-            quota = 30,
-            freshmanQuota = null,
-            remark = "",
-            category = "",
-            categoryPre2025 = null,
-            colorIndex = 0,
-            color = ColorDto(
-                fgRaw = "#FFFFFF",
-                bgRaw = "#351C7C",
-            ),
-            registrationCount = 0,
-            wasFull = false,
-            review = LectureReviewDto(id = "59313"),
-        ),
-        LectureDto(
-            id = "6896f0a572111e64aa138f8e",
-            lecture_id = "6867c3225ef235136624b757",
-            classification = "전선",
-            department = "혁신공유학부",
-            academic_year = "3학년",
-            course_number = "M3502.001700",
-            lecture_number = "002",
-            course_title = "(공유)공학 지식 및 실무",
-            credit = 3,
-            class_time_json = listOf(
-                ClassTimeDto(
-                    day = 2,
-                    place = "301-B119",
-                    startMinute = 720,
-                    endMinute = 770,
-                ),
-                ClassTimeDto(
-                    day = 2,
-                    place = "301-B119",
-                    startMinute = 780,
-                    endMinute = 1010,
-                ),
-            ),
-            instructor = "이재학",
-            quota = 30,
-            freshmanQuota = null,
-            remark = "",
-            category = "",
-            categoryPre2025 = null,
-            colorIndex = 0,
-            color = ColorDto(
-                fgRaw = "#FFFFFF",
-                bgRaw = "#6172E9",
-            ),
-            registrationCount = 0,
-            wasFull = false,
-            review = LectureReviewDto(id = "47436"),
-        ),
-        LectureDto(
-            id = "6896f0a772111e64aa138f8f",
-            lecture_id = "6867c3225ef235136624b759",
-            classification = "전선",
-            department = "혁신공유학부",
-            academic_year = "4학년",
-            course_number = "M3500.010700",
-            lecture_number = "001",
-            course_title = "(공유)에너지신산업 캡스톤디자인 2",
-            credit = 3,
-            class_time_json = listOf(
-                ClassTimeDto(
-                    day = 4,
-                    place = "38-418",
-                    startMinute = 600,
-                    endMinute = 770,
-                ),
-            ),
-            instructor = "김수현",
-            quota = 30,
-            freshmanQuota = null,
-            remark = "",
-            category = "",
-            categoryPre2025 = null,
-            colorIndex = 0,
-            color = ColorDto(
-                fgRaw = "#FFFFFF",
-                bgRaw = "#351C7C",
-            ),
-            registrationCount = 0,
-            wasFull = false,
-            review = LectureReviewDto(id = "47797"),
-        ),
-        LectureDto(
-            id = "6896f0bf72111e64aa138f90",
-            lecture_id = null,
-            classification = null,
-            department = null,
-            academic_year = null,
-            course_number = null,
-            lecture_number = null,
-            course_title = "커스텀 1",
-            credit = 2,
-            class_time_json = listOf(
-                ClassTimeDto(
-                    day = 1,
-                    place = "",
-                    startMinute = 570,
-                    endMinute = 645,
-                ),
-            ),
-            instructor = "",
-            quota = 0,
-            freshmanQuota = null,
-            remark = "",
-            category = null,
-            categoryPre2025 = null,
-            colorIndex = 1,
-            color = ColorDto(),
-            registrationCount = 0,
-            wasFull = false,
-            review = null,
-        ),
-        LectureDto(
-            id = "6896f10272111e64aa138f91",
-            lecture_id = null,
-            classification = null,
-            department = null,
-            academic_year = null,
-            course_number = null,
-            lecture_number = null,
-            course_title = "커스텀 2",
-            credit = 2,
-            class_time_json = listOf(
-                ClassTimeDto(
-                    day = 1,
-                    place = "",
-                    startMinute = 690,
-                    endMinute = 765,
-                ),
-                ClassTimeDto(
-                    day = 1,
-                    place = "",
-                    startMinute = 840,
-                    endMinute = 945,
-                ),
-            ),
-            instructor = "lhd",
-            quota = 0,
-            freshmanQuota = null,
-            remark = "r",
-            category = null,
-            categoryPre2025 = null,
-            colorIndex = 0,
-            color = ColorDto(
-                fgRaw = "#FFFFFF",
-                bgRaw = "#6172E9",
-            ),
-            registrationCount = 0,
-            wasFull = false,
-            review = null,
-        ),
+    private fun previewSession(
+        day: DayOfWeek,
+        place: String,
+        startMinute: Int,
+        endMinute: Int,
+    ) = LectureSession(
+        id = null,
+        day = day,
+        startTime = LocalTime.ofSecondOfDay(startMinute * 60L),
+        endTime = LocalTime.ofSecondOfDay(endMinute * 60L),
+        place = place,
     )
 
-    val sampleLectures = sampleLectureDtos.map { it.toSearchedLecture() }
+    val sampleLectures: List<SearchedLecture> = listOf(
+        SearchedLecture(
+            id = "6896f09f72111e64aa138f8b",
+            courseTitle = " 스튜디오 뮤직 메이킹 (로직, 거라지밴드) 입문 ",
+            lectureSessions = listOf(
+                previewSession(DayOfWeek.MONDAY, "220-413", 780, 950),
+            ),
+            instructor = "이지수",
+            credit = 2,
+            remark = "",
+            classification = "전선",
+            department = "음악학과",
+            academicYear = "1학년",
+            courseNumber = "M2183.003400",
+            lectureNumber = "001",
+            category = "",
+            categoryPre2025 = "",
+            quota = 10,
+            freshmanQuota = 0,
+            registrationCount = 10,
+            wasFull = false,
+            reviewInfo = LectureReviewInfo(id = "49367", rating = null, reviewCount = 0),
+        ),
+        SearchedLecture(
+            id = "6896f0a272111e64aa138f8c",
+            courseTitle = " 글로벌 공학기술 교류 특강 2 (국제 물류)",
+            lectureSessions = listOf(
+                previewSession(DayOfWeek.MONDAY, "38-B105", 630, 740),
+            ),
+            instructor = "박건수",
+            credit = 2,
+            remark = "ⓔ",
+            classification = "전선",
+            department = "공과대학",
+            academicYear = "석박사통합",
+            courseNumber = "M2177.005600",
+            lectureNumber = "001",
+            category = "",
+            categoryPre2025 = "",
+            quota = 30,
+            freshmanQuota = 0,
+            registrationCount = 0,
+            wasFull = false,
+            reviewInfo = LectureReviewInfo(id = "43308", rating = null, reviewCount = 0),
+        ),
+        SearchedLecture(
+            id = "6896f0a372111e64aa138f8d",
+            courseTitle = "(공유)NPU 기반 인공지능 추론 및 응용",
+            lectureSessions = listOf(
+                previewSession(DayOfWeek.THURSDAY, "301-B119", 720, 890),
+            ),
+            instructor = "윤정남",
+            credit = 3,
+            remark = "",
+            classification = "전선",
+            department = "혁신공유학부",
+            academicYear = "2학년",
+            courseNumber = "M3502.016700",
+            lectureNumber = "001",
+            category = "",
+            categoryPre2025 = "",
+            quota = 30,
+            freshmanQuota = 0,
+            registrationCount = 0,
+            wasFull = false,
+            reviewInfo = LectureReviewInfo(id = "59313", rating = null, reviewCount = 0),
+        ),
+        SearchedLecture(
+            id = "6896f0a572111e64aa138f8e",
+            courseTitle = "(공유)공학 지식 및 실무",
+            lectureSessions = listOf(
+                previewSession(DayOfWeek.WEDNESDAY, "301-B119", 720, 770),
+                previewSession(DayOfWeek.WEDNESDAY, "301-B119", 780, 1010),
+            ),
+            instructor = "이재학",
+            credit = 3,
+            remark = "",
+            classification = "전선",
+            department = "혁신공유학부",
+            academicYear = "3학년",
+            courseNumber = "M3502.001700",
+            lectureNumber = "002",
+            category = "",
+            categoryPre2025 = "",
+            quota = 30,
+            freshmanQuota = 0,
+            registrationCount = 0,
+            wasFull = false,
+            reviewInfo = LectureReviewInfo(id = "47436", rating = null, reviewCount = 0),
+        ),
+        SearchedLecture(
+            id = "6896f0a772111e64aa138f8f",
+            courseTitle = "(공유)에너지신산업 캡스톤디자인 2",
+            lectureSessions = listOf(
+                previewSession(DayOfWeek.FRIDAY, "38-418", 600, 770),
+            ),
+            instructor = "김수현",
+            credit = 3,
+            remark = "",
+            classification = "전선",
+            department = "혁신공유학부",
+            academicYear = "4학년",
+            courseNumber = "M3500.010700",
+            lectureNumber = "001",
+            category = "",
+            categoryPre2025 = "",
+            quota = 30,
+            freshmanQuota = 0,
+            registrationCount = 0,
+            wasFull = false,
+            reviewInfo = LectureReviewInfo(id = "47797", rating = null, reviewCount = 0),
+        ),
+        SearchedLecture(
+            id = "6896f0bf72111e64aa138f90",
+            courseTitle = "커스텀 1",
+            lectureSessions = listOf(
+                previewSession(DayOfWeek.TUESDAY, "", 570, 645),
+            ),
+            instructor = "",
+            credit = 2,
+            remark = "",
+            classification = "",
+            department = "",
+            academicYear = "",
+            courseNumber = "",
+            lectureNumber = "",
+            category = "",
+            categoryPre2025 = "",
+            quota = 0,
+            freshmanQuota = 0,
+            registrationCount = 0,
+            wasFull = false,
+            reviewInfo = LectureReviewInfo(id = "", rating = null, reviewCount = 0),
+        ),
+        SearchedLecture(
+            id = "6896f10272111e64aa138f91",
+            courseTitle = "커스텀 2",
+            lectureSessions = listOf(
+                previewSession(DayOfWeek.TUESDAY, "", 690, 765),
+                previewSession(DayOfWeek.TUESDAY, "", 840, 945),
+            ),
+            instructor = "lhd",
+            credit = 2,
+            remark = "r",
+            classification = "",
+            department = "",
+            academicYear = "",
+            courseNumber = "",
+            lectureNumber = "",
+            category = "",
+            categoryPre2025 = "",
+            quota = 0,
+            freshmanQuota = 0,
+            registrationCount = 0,
+            wasFull = false,
+            reviewInfo = LectureReviewInfo(id = "", rating = null, reviewCount = 0),
+        ),
+    )
 
     val sampleFriends = listOf(
         Friend(

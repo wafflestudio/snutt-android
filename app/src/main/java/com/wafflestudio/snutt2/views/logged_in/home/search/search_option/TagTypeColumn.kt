@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.model.TagType
+import com.wafflestudio.snutt2.domainmodel.TagType
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import kotlinx.coroutines.launch

@@ -26,7 +26,7 @@ import com.wafflestudio.snutt2.domainmodel.TableLectureCustom
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.Selectable
-import com.wafflestudio.snutt2.model.TagType
+import com.wafflestudio.snutt2.domainmodel.TagType
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import kotlin.math.roundToInt
 

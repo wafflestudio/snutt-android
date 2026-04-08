@@ -3,7 +3,7 @@ package com.wafflestudio.snutt2.data.course_books
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
-import com.wafflestudio.snutt2.lib.network.dto.core.toDomainModel
+import com.wafflestudio.snutt2.data.mapper.toDomain
 import com.wafflestudio.snutt2.lib.network.toDomainError
 import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
@@ -18,7 +18,7 @@ class CourseBookRepositoryImpl @Inject constructor(
 
     override suspend fun fetchCourseBooks(): Result<Unit> {
         try {
-            courseBooks.value = api._getCoursebook().map { it.toDomainModel() }
+            courseBooks.value = api._getCoursebook().map { it.toDomain() }
             return Result.Success(Unit)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())

@@ -1,10 +1,11 @@
 package com.wafflestudio.snutt2.data.themes
 
+import com.wafflestudio.snutt2.data.mapper.toTableTheme
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.CustomTheme
 import com.wafflestudio.snutt2.domainmodel.ThemeColor
-import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
 import com.wafflestudio.snutt2.lib.network.Result
+import com.wafflestudio.snutt2.lib.network.dto.ColorDto
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.dto.PatchThemeParams
 import com.wafflestudio.snutt2.lib.network.dto.PostThemeParams

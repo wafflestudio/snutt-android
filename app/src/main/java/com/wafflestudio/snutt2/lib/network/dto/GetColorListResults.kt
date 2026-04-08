@@ -2,7 +2,7 @@ package com.wafflestudio.snutt2.lib.network.dto
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import com.wafflestudio.snutt2.lib.network.dto.core.ColorDto
+import com.wafflestudio.snutt2.lib.network.dto.ColorDto
 
 @JsonClass(generateAdapter = true)
 data class GetColorListResults(

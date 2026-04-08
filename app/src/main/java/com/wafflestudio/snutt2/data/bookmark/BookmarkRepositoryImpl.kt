@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.data.bookmark
 
 import com.wafflestudio.snutt2.data.SNUTTStorage
+import com.wafflestudio.snutt2.data.mapper.toSearchedLecture
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.Lecture
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture

@@ -1,7 +1,7 @@
 package com.wafflestudio.snutt2.views.logged_in.home.search.search_option
 
 import com.wafflestudio.snutt2.domainmodel.SearchTag
-import com.wafflestudio.snutt2.model.TagType
+import com.wafflestudio.snutt2.domainmodel.TagType
 
 internal val previewTagTypes = listOf(
     TagType.SORT_CRITERIA,

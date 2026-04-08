@@ -38,7 +38,6 @@ import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.domainmodel.diary.DiarySummary
 import com.wafflestudio.snutt2.domainmodel.preview.DiaryPreviewData
 import com.wafflestudio.snutt2.lib.android.toast
-import com.wafflestudio.snutt2.lib.network.dto.core.toDomainModel
 import com.wafflestudio.snutt2.lib.toAbbvString
 import com.wafflestudio.snutt2.ui.SNUTTTheme
 import com.wafflestudio.snutt2.ui.SNUTTTypography
@@ -178,8 +177,7 @@ fun DiaryHistoryScreen(
 @Preview
 fun DiaryListPagePreview() {
     DiaryTheme {
-        val courseBookList =
-            DiaryPreviewData.courseBookDtoList.map { courseBookDto -> courseBookDto.toDomainModel() }
+        val courseBookList = DiaryPreviewData.courseBookList
         DiaryHistoryScreen(
             onNavigateBack = {},
             onClickCourseBook = {},
@@ -201,8 +199,7 @@ fun DiaryListPagePreview() {
 fun DiaryListPageDarkPreview() {
     SNUTTTheme {
         DiaryTheme(darkTheme = true) {
-            val courseBookList =
-                DiaryPreviewData.courseBookDtoList.map { courseBookDto -> courseBookDto.toDomainModel() }
+            val courseBookList = DiaryPreviewData.courseBookList
             DiaryHistoryScreen(
                 onNavigateBack = {},
                 onClickCourseBook = {},

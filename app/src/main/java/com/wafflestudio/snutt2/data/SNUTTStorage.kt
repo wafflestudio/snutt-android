@@ -3,11 +3,11 @@ package com.wafflestudio.snutt2.data
 import com.wafflestudio.snutt2.model.SemesterStatusDto
 import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.network.NetworkLog
-import com.wafflestudio.snutt2.lib.network.dto.core.*
+import com.wafflestudio.snutt2.lib.network.dto.*
 import com.wafflestudio.snutt2.lib.preferences.context.*
 import com.wafflestudio.snutt2.lib.preferences.model.TableLectureCustomData
 import com.wafflestudio.snutt2.lib.preferences.model.TableTrimParamData
-import com.wafflestudio.snutt2.model.TagDto
+import com.wafflestudio.snutt2.lib.network.dto.TagDto
 import com.wafflestudio.snutt2.ui.ThemeMode
 import javax.inject.Inject
 import javax.inject.Singleton

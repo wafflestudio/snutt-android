@@ -1,6 +1,6 @@
 package com.wafflestudio.snutt2.domainmodel
 
-import com.wafflestudio.snutt2.model.TagType
+import com.wafflestudio.snutt2.domainmodel.TagType
 
 sealed interface SearchTag {
     val type: TagType
