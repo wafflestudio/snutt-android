@@ -4,12 +4,12 @@ import com.wafflestudio.snutt2.domainmodel.diary.DiaryAnsweredQuestion
 import com.wafflestudio.snutt2.domainmodel.diary.DiaryDailyClassType
 import com.wafflestudio.snutt2.domainmodel.diary.DiarySummary
 import com.wafflestudio.snutt2.lib.network.Result
-import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
-import com.wafflestudio.snutt2.lib.network.dto.DiaryQuestionnaireRequestDto
-import com.wafflestudio.snutt2.lib.network.dto.DiarySubmissionRequestDto
-import com.wafflestudio.snutt2.lib.network.dto.DiaryQuestionAnswerDto
+import com.wafflestudio.snutt2.network.api.SNUTTRestApi
+import com.wafflestudio.snutt2.network.dto.DiaryQuestionnaireRequestDto
+import com.wafflestudio.snutt2.network.dto.DiarySubmissionRequestDto
+import com.wafflestudio.snutt2.network.dto.DiaryQuestionAnswerDto
 import com.wafflestudio.snutt2.data.mapper.toDomain
-import com.wafflestudio.snutt2.lib.network.toDomainError
+import com.wafflestudio.snutt2.network.error.toDomainError
 import javax.inject.Inject
 import javax.inject.Singleton
 

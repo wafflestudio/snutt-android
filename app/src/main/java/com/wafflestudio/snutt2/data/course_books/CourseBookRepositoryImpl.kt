@@ -2,9 +2,9 @@ package com.wafflestudio.snutt2.data.course_books
 
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.lib.network.Result
-import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
+import com.wafflestudio.snutt2.network.api.SNUTTRestApi
 import com.wafflestudio.snutt2.data.mapper.toDomain
-import com.wafflestudio.snutt2.lib.network.toDomainError
+import com.wafflestudio.snutt2.network.error.toDomainError
 import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 import javax.inject.Singleton

@@ -1,6 +1,6 @@
 package com.wafflestudio.snutt2.data
 
-import com.wafflestudio.snutt2.lib.network.NetworkLog
+import com.wafflestudio.snutt2.lib.android.NetworkLog
 
 fun SNUTTStorage.addNetworkLog(newLog: NetworkLog) {
     networkLog.update(

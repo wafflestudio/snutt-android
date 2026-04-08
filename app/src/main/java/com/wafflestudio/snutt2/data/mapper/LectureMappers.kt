@@ -11,16 +11,16 @@ import com.wafflestudio.snutt2.domainmodel.LectureSession
 import com.wafflestudio.snutt2.domainmodel.LocalLecture
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.domainmodel.SyllabusLecture
-import com.wafflestudio.snutt2.lib.network.dto.ClassPlaceAndTimeDto
-import com.wafflestudio.snutt2.lib.network.dto.ClassTimeDto
-import com.wafflestudio.snutt2.lib.network.dto.ColorDto
-import com.wafflestudio.snutt2.lib.network.dto.ColorSetDto
-import com.wafflestudio.snutt2.lib.network.dto.LectureBuildingDto
-import com.wafflestudio.snutt2.lib.network.dto.LectureDto
-import com.wafflestudio.snutt2.lib.network.dto.LectureReviewDto
-import com.wafflestudio.snutt2.lib.network.dto.SnuttEvLectureIdDto
-import com.wafflestudio.snutt2.lib.network.dto.TimetableLectureDto
-import com.wafflestudio.snutt2.lib.network.dto.parseHexColor
+import com.wafflestudio.snutt2.network.dto.ClassPlaceAndTimeDto
+import com.wafflestudio.snutt2.network.dto.ClassTimeDto
+import com.wafflestudio.snutt2.network.dto.ColorDto
+import com.wafflestudio.snutt2.network.dto.ColorSetDto
+import com.wafflestudio.snutt2.network.dto.LectureBuildingDto
+import com.wafflestudio.snutt2.network.dto.LectureDto
+import com.wafflestudio.snutt2.network.dto.LectureReviewDto
+import com.wafflestudio.snutt2.network.dto.SnuttEvLectureIdDto
+import com.wafflestudio.snutt2.network.dto.TimetableLectureDto
+import com.wafflestudio.snutt2.network.dto.parseHexColor
 import java.time.DayOfWeek
 import java.time.LocalTime
 

@@ -12,11 +12,12 @@ import com.wafflestudio.snutt2.domainmodel.SocialProviders
 import com.wafflestudio.snutt2.domainmodel.User
 import com.wafflestudio.snutt2.lib.map
 import com.wafflestudio.snutt2.lib.network.Result
-import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
-import com.wafflestudio.snutt2.lib.network.SNUTTRestApiForGoogle
-import com.wafflestudio.snutt2.lib.network.dto.*
+import com.wafflestudio.snutt2.network.api.SNUTTRestApi
+import com.wafflestudio.snutt2.network.api.google.PostAccessTokenByAuthCodeParams
+import com.wafflestudio.snutt2.network.api.google.SNUTTRestApiForGoogle
+import com.wafflestudio.snutt2.network.dto.*
 import com.wafflestudio.snutt2.lib.network.Unknown
-import com.wafflestudio.snutt2.lib.network.toDomainError
+import com.wafflestudio.snutt2.network.error.toDomainError
 import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.lib.unwrap
 import com.wafflestudio.snutt2.ui.ThemeMode

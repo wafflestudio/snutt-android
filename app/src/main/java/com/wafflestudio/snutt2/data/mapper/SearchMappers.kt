@@ -2,8 +2,8 @@ package com.wafflestudio.snutt2.data.mapper
 
 import com.wafflestudio.snutt2.domainmodel.SearchTag
 import com.wafflestudio.snutt2.domainmodel.SearchTime
-import com.wafflestudio.snutt2.lib.network.dto.SearchTimeDto
-import com.wafflestudio.snutt2.lib.network.dto.TagDto
+import com.wafflestudio.snutt2.network.dto.SearchTimeDto
+import com.wafflestudio.snutt2.network.dto.TagDto
 
 fun SearchTag.toDto(): TagDto = when (this) {
     is SearchTag.Regular -> TagDto(type, name)

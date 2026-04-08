@@ -3,7 +3,7 @@ package com.wafflestudio.snutt2.data.mapper
 import com.wafflestudio.snutt2.domainmodel.Notification
 import com.wafflestudio.snutt2.domainmodel.NotificationType
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
-import com.wafflestudio.snutt2.lib.network.dto.NotificationDto
+import com.wafflestudio.snutt2.network.dto.NotificationDto
 
 fun NotificationDto.toDomain(): Notification = Notification(
     title = title,

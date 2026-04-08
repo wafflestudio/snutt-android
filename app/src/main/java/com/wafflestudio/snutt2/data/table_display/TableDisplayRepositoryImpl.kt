@@ -6,7 +6,7 @@ import com.wafflestudio.snutt2.domainmodel.TableTrimParam
 import com.wafflestudio.snutt2.domainmodel.toDataModel
 import com.wafflestudio.snutt2.lib.map
 import com.wafflestudio.snutt2.lib.network.Result
-import com.wafflestudio.snutt2.lib.network.toDomainError
+import com.wafflestudio.snutt2.network.error.toDomainError
 import com.wafflestudio.snutt2.lib.preferences.model.toDomainModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow

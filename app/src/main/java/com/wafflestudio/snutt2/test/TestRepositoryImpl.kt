@@ -2,9 +2,9 @@ package com.wafflestudio.snutt2.test
 
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.lib.network.Result
-import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
-import com.wafflestudio.snutt2.lib.network.dto.PostSignUpParams
-import com.wafflestudio.snutt2.lib.network.toDomainError
+import com.wafflestudio.snutt2.network.api.SNUTTRestApi
+import com.wafflestudio.snutt2.network.dto.PostSignUpParams
+import com.wafflestudio.snutt2.network.error.toDomainError
 import javax.inject.Inject
 
 class TestRepositoryImpl @Inject constructor(
