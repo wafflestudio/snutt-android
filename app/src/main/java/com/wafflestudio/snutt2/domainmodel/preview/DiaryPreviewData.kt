@@ -1,21 +1,21 @@
 package com.wafflestudio.snutt2.domainmodel.preview
 
+import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.diary.DiaryQuestionAnswer
 import com.wafflestudio.snutt2.domainmodel.diary.DiarySummary
-import com.wafflestudio.snutt2.lib.network.dto.core.CourseBookDto
 import com.wafflestudio.snutt2.lib.toDataWithState
 import java.time.LocalDate
 
 object DiaryPreviewData {
-    val courseBookDtoList = listOf(
-        CourseBookDto(semester = 3, year = 2024),
-        CourseBookDto(semester = 2, year = 2024),
-        CourseBookDto(semester = 1, year = 2024),
-        CourseBookDto(semester = 4, year = 2023),
-        CourseBookDto(semester = 3, year = 2023),
-        CourseBookDto(semester = 2, year = 2023),
-        CourseBookDto(semester = 1, year = 2023),
-        CourseBookDto(semester = 4, year = 2022),
+    val courseBookList = listOf(
+        CourseBook(semester = 3, year = 2024),
+        CourseBook(semester = 2, year = 2024),
+        CourseBook(semester = 1, year = 2024),
+        CourseBook(semester = 4, year = 2023),
+        CourseBook(semester = 3, year = 2023),
+        CourseBook(semester = 2, year = 2023),
+        CourseBook(semester = 1, year = 2023),
+        CourseBook(semester = 4, year = 2022),
     )
 
     val diaryList = mapOf(

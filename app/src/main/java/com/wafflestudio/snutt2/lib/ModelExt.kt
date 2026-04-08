@@ -7,8 +7,8 @@ import com.wafflestudio.snutt2.domainmodel.Lecture
 import com.wafflestudio.snutt2.domainmodel.LectureReviewInfo
 import com.wafflestudio.snutt2.domainmodel.LectureSession
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
-import com.wafflestudio.snutt2.model.TagType
+import com.wafflestudio.snutt2.lib.network.dto.LectureDto
+import com.wafflestudio.snutt2.domainmodel.TagType
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import java.time.LocalTime
 import kotlin.math.ceil

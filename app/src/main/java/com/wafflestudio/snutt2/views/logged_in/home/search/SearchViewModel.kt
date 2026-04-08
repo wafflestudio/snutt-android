@@ -47,7 +47,7 @@ import com.wafflestudio.snutt2.lib.network.LectureOverlap
 import com.wafflestudio.snutt2.lib.network.onFailure
 import com.wafflestudio.snutt2.lib.network.onSuccess
 import com.wafflestudio.snutt2.lib.toDataWithState
-import com.wafflestudio.snutt2.model.TagType
+import com.wafflestudio.snutt2.domainmodel.TagType
 import com.wafflestudio.snutt2.views.logged_in.home.search.search_option.clusterToTimeBlocks
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi

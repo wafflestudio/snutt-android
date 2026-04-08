@@ -1,5 +1,5 @@
 package com.wafflestudio.snutt2.lib.network.dto
 
-import com.wafflestudio.snutt2.lib.network.dto.core.DiarySubmissionsOfYearSemesterDto
+import com.wafflestudio.snutt2.lib.network.dto.DiarySubmissionsOfYearSemesterDto
 
 typealias GetMyDiarySubmissionsResults = List<DiarySubmissionsOfYearSemesterDto>

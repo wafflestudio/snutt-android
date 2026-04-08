@@ -2,7 +2,6 @@ package com.wafflestudio.snutt2.domainmodel
 
 import androidx.compose.ui.graphics.toArgb
 import com.wafflestudio.snutt2.lib.Selectable
-import com.wafflestudio.snutt2.lib.network.dto.core.TableDto
 import com.wafflestudio.snutt2.ui.SNUTTColors
 
 sealed class TableTheme(
@@ -71,8 +70,6 @@ class CustomTheme(
     darkColors = colors,
 ) {
     fun getColors(): List<ThemeColor> = getColors(false)
-
-    fun isAppliedToTable(table: TableDto): Boolean = table.themeId == this.id
 
     companion object {
         // FIXME: 다국어 대응 미완료. "새 테마"가 영어 로케일에서도 그대로 노출됨.

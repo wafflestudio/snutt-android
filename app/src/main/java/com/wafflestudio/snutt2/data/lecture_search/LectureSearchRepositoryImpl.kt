@@ -5,14 +5,15 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.wafflestudio.snutt2.data.SNUTTStorage
+import com.wafflestudio.snutt2.data.mapper.toDto
+import com.wafflestudio.snutt2.data.mapper.toSearchedLecture
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.SearchTag
 import com.wafflestudio.snutt2.domainmodel.SearchTime
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
+import com.wafflestudio.snutt2.domainmodel.TagType
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
-import com.wafflestudio.snutt2.model.SearchTimeDto
-import com.wafflestudio.snutt2.model.TagDto
-import com.wafflestudio.snutt2.model.TagType
+import com.wafflestudio.snutt2.lib.network.dto.TagDto
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -47,9 +48,9 @@ class LectureSearchRepositoryImpl @Inject constructor(
                     year = courseBook.year,
                     semester = courseBook.semester,
                     title = title,
-                    tags = tags.map { it.toTagDto() },
-                    times = times?.map { it.toSearchTimeDto() },
-                    timesToExclude = timesToExclude?.map { it.toSearchTimeDto() },
+                    tags = tags.map { it.toDto() },
+                    times = times?.map { it.toDto() },
+                    timesToExclude = timesToExclude?.map { it.toDto() },
                 )
             },
         ).flow.map { pagingData -> pagingData.map { it.toSearchedLecture() } }
@@ -90,18 +91,3 @@ class LectureSearchRepositoryImpl @Inject constructor(
         const val LECTURES_LOAD_PAGE_SIZE = 30
     }
 }
-
-private fun SearchTag.toTagDto(): TagDto = when (this) {
-    is SearchTag.Regular -> TagDto(type, name)
-    SearchTag.TimeEmpty -> TagDto.TIME_EMPTY
-    SearchTag.TimeSelect -> TagDto.TIME_SELECT
-    SearchTag.EtcEng -> TagDto.ETC_ENG
-    SearchTag.EtcMilitary -> TagDto.ETC_MILITARY
-}
-
-private fun SearchTime.toSearchTimeDto() = SearchTimeDto(
-    // NOTE: DayOfWeek는 1이 월요일이고, 서버는 0이 월요일이다
-    day = day.value - 1,
-    startMinute = startTime.hour * 60 + startTime.minute,
-    endMinute = endTime.hour * 60 + endTime.minute,
-)

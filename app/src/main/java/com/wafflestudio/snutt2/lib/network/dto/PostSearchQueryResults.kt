@@ -1,5 +1,5 @@
 package com.wafflestudio.snutt2.lib.network.dto
 
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
+import com.wafflestudio.snutt2.lib.network.dto.LectureDto
 
 typealias PostSearchQueryResults = List<LectureDto>

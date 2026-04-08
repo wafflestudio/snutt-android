@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.data.vacancy_noti
 
 import com.wafflestudio.snutt2.data.SNUTTStorage
+import com.wafflestudio.snutt2.data.mapper.toSearchedLecture
 import com.wafflestudio.snutt2.domainmodel.Lecture
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.domainmodel.SyllabusLecture

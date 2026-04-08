@@ -5,7 +5,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domainmodel.Lecture
 import com.wafflestudio.snutt2.domainmodel.LectureSession
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
-import com.wafflestudio.snutt2.model.SearchTimeDto
+import com.wafflestudio.snutt2.domainmodel.SearchTime
 import java.time.DayOfWeek
 import java.time.Duration
 import java.time.Instant
@@ -93,7 +93,7 @@ object SNUTTStringUtils {
 
     // 570 -> 오전 09:30 / 9:30 AM
     fun Int.toFormattedTimeString(context: Context): String {
-        val amPm = if (this < SearchTimeDto.MIDDAY) context.getString(R.string.morning) else context.getString(R.string.afternoon)
+        val amPm = if (this < SearchTime.MIDDAY_MINUTE) context.getString(R.string.morning) else context.getString(R.string.afternoon)
         val hour = (this / 60).let {
             if (it != 12) it % 12 else it
         }

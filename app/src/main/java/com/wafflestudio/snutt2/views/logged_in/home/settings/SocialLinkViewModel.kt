@@ -9,7 +9,7 @@ import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
 import com.wafflestudio.snutt2.lib.network.DomainError
 import com.wafflestudio.snutt2.lib.network.onFailure
 import com.wafflestudio.snutt2.lib.network.onSuccess
-import com.wafflestudio.snutt2.model.SocialLoginType
+import com.wafflestudio.snutt2.domainmodel.SocialLoginType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

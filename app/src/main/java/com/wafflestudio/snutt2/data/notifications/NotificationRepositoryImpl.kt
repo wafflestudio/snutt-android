@@ -4,8 +4,8 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
+import com.wafflestudio.snutt2.data.mapper.toDomain
 import com.wafflestudio.snutt2.domainmodel.Notification
-import com.wafflestudio.snutt2.domainmodel.domainModel
 import com.wafflestudio.snutt2.lib.network.Result
 import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.network.toDomainError
@@ -27,7 +27,7 @@ class NotificationRepositoryImpl @Inject constructor(private val api: SNUTTRestA
             pagingSourceFactory = { NotificationPagingSource(api) },
         ).flow.map { pagingData ->
             pagingData.map { notification ->
-                notification.domainModel()
+                notification.toDomain()
             }
         }
     }

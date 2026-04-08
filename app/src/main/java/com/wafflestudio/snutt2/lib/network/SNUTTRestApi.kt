@@ -87,8 +87,8 @@ import com.wafflestudio.snutt2.lib.network.dto.PutUserPasswordResults
 import com.wafflestudio.snutt2.lib.network.dto.RegisterFirebaseTokenParams
 import com.wafflestudio.snutt2.lib.network.dto.RegisterFirebaseTokenResults
 import com.wafflestudio.snutt2.lib.network.dto.ResetLectureResults
-import com.wafflestudio.snutt2.lib.network.dto.core.DiaryQuestionnaireDto
-import com.wafflestudio.snutt2.lib.network.dto.core.TimetableLectureReminderDto
+import com.wafflestudio.snutt2.lib.network.dto.DiaryQuestionnaireDto
+import com.wafflestudio.snutt2.lib.network.dto.TimetableLectureReminderDto
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
