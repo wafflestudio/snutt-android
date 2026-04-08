@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.lib.logging
+package com.wafflestudio.snutt2.logging
 
 import android.os.Bundle
 

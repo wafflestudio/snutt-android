@@ -18,7 +18,7 @@ import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.lib.logging.compose.PopupLoggingEffect
+import com.wafflestudio.snutt2.logging.compose.PopupLoggingEffect
 import com.wafflestudio.snutt2.ui.SNUTTColors
 
 @Composable

@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.domain.RefreshInitialDataUseCase
-import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
-import com.wafflestudio.snutt2.lib.logging.AnalyticsLogger
-import com.wafflestudio.snutt2.lib.logging.LoginParameter
+import com.wafflestudio.snutt2.logging.AnalyticsEvent
+import com.wafflestudio.snutt2.logging.AnalyticsLogger
+import com.wafflestudio.snutt2.logging.LoginParameter
 import com.wafflestudio.snutt2.domain.DisplayMessageResolver
 import com.wafflestudio.snutt2.domain.DomainError
 import com.wafflestudio.snutt2.data.onFailure

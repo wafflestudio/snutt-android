@@ -1,11 +1,11 @@
-package com.wafflestudio.snutt2.lib.logging.compose
+package com.wafflestudio.snutt2.logging.compose
 
 import androidx.compose.material.DrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
-import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
-import com.wafflestudio.snutt2.views.LocalAnalyticsLogger
+import com.wafflestudio.snutt2.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.logging.LocalAnalyticsLogger
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 /**

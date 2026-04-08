@@ -1,8 +1,8 @@
 package com.wafflestudio.snutt2.di
 
 import android.content.Context
-import com.wafflestudio.snutt2.lib.logging.AnalyticsLogger
-import com.wafflestudio.snutt2.lib.logging.FirebaseAnalyticsLogger
+import com.wafflestudio.snutt2.logging.AnalyticsLogger
+import com.wafflestudio.snutt2.logging.FirebaseAnalyticsLogger
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
