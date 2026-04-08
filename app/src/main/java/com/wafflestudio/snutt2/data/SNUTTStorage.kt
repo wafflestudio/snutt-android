@@ -1,6 +1,6 @@
 package com.wafflestudio.snutt2.data
 
-import com.wafflestudio.snutt2.model.SemesterStatusDto
+import com.wafflestudio.snutt2.lib.network.dto.SemesterStatusDto
 import com.wafflestudio.snutt2.lib.Optional
 import com.wafflestudio.snutt2.lib.network.NetworkLog
 import com.wafflestudio.snutt2.lib.network.dto.*

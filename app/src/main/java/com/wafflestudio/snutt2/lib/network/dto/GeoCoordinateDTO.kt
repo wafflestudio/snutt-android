@@ -1,13 +1,10 @@
-package com.wafflestudio.snutt2.model
+package com.wafflestudio.snutt2.lib.network.dto
 
-import com.naver.maps.geometry.LatLng
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class GeoCoordinate(
+data class GeoCoordinateDTO(
     @param:Json(name = "latitude") val latitude: Double,
     @param:Json(name = "longitude") val longitude: Double,
-) {
-    fun toLatLng(): LatLng = LatLng(latitude, longitude)
-}
+)

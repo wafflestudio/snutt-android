@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.model
+package com.wafflestudio.snutt2.domainmodel
 
 enum class SocialLoginType {
     FACEBOOK,

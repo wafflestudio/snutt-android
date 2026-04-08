@@ -268,11 +268,7 @@ fun SearchedLecture.toTimetableLectureDto(): TimetableLectureDto = TimetableLect
 // region LectureBuildingDto → Building
 
 fun LectureBuildingDto.toDomain(): Building = Building(
-    campus = when (campus) {
-        com.wafflestudio.snutt2.model.Campus.GWANAK -> Campus.GWANAK
-        com.wafflestudio.snutt2.model.Campus.YEONGEON -> Campus.YEONGEON
-        com.wafflestudio.snutt2.model.Campus.PYEONGCHANG -> Campus.PYEONGCHANG
-    },
+    campus = campus,
     buildingNumber = buildingNumber,
     buildingNameKor = buildingNameKor ?: "",
     buildingNameEng = buildingNameEng ?: "",
