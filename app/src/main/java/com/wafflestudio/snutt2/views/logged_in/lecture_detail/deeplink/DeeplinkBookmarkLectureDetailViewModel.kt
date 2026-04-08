@@ -12,11 +12,12 @@ import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.Lecture
 import com.wafflestudio.snutt2.domainmodel.LectureSyllabusInfo
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
-import com.wafflestudio.snutt2.lib.network.BookmarkLectureNotFound
-import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
-import com.wafflestudio.snutt2.lib.network.Result
-import com.wafflestudio.snutt2.lib.network.onFailure
-import com.wafflestudio.snutt2.lib.network.onSuccess
+import com.wafflestudio.snutt2.domain.BookmarkLectureNotFound
+import com.wafflestudio.snutt2.domain.DisplayMessageResolver
+import com.wafflestudio.snutt2.domain.DomainError
+import com.wafflestudio.snutt2.data.Result
+import com.wafflestudio.snutt2.data.onFailure
+import com.wafflestudio.snutt2.data.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -190,7 +191,7 @@ class DeeplinkBookmarkLectureDetailViewModel @Inject constructor(
         }
     }
 
-    private fun handleError(error: com.wafflestudio.snutt2.lib.network.DomainError) {
+    private fun handleError(error: DomainError) {
         viewModelScope.launch {
             _uiEvent.emit(
                 DeeplinkBookmarkLectureDetailUiEvent.ShowToast(

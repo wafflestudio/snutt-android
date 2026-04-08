@@ -3,7 +3,7 @@ package com.wafflestudio.snutt2.fake
 import com.wafflestudio.snutt2.data.table_display.TableDisplayRepository
 import com.wafflestudio.snutt2.domainmodel.TableLectureCustom
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
-import com.wafflestudio.snutt2.lib.network.Result
+import com.wafflestudio.snutt2.data.Result
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class FakeTableDisplayRepository : TableDisplayRepository {

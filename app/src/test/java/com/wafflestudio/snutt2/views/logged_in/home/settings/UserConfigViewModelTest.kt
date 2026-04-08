@@ -5,9 +5,9 @@ import com.wafflestudio.snutt2.domainmodel.Nickname
 import com.wafflestudio.snutt2.domainmodel.User
 import com.wafflestudio.snutt2.fake.FakeDisplayMessageResolver
 import com.wafflestudio.snutt2.fake.FakeUserRepository
-import com.wafflestudio.snutt2.lib.network.Result
-import com.wafflestudio.snutt2.lib.network.Unknown
-import com.wafflestudio.snutt2.lib.network.WrongUserToken
+import com.wafflestudio.snutt2.data.Result
+import com.wafflestudio.snutt2.domain.Unknown
+import com.wafflestudio.snutt2.domain.WrongUserToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher

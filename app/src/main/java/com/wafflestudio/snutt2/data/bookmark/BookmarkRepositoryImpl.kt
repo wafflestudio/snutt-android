@@ -6,7 +6,7 @@ import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.Lecture
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.domainmodel.SyllabusLecture
-import com.wafflestudio.snutt2.lib.network.Result
+import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.network.api.SNUTTRestApi
 import com.wafflestudio.snutt2.network.dto.PostBookmarkParams
 import com.wafflestudio.snutt2.network.error.toDomainError

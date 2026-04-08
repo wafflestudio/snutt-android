@@ -9,9 +9,9 @@ import com.wafflestudio.snutt2.fake.FakeUserRepository
 import com.wafflestudio.snutt2.fixture.TestFixtures.customTheme
 import com.wafflestudio.snutt2.fixture.TestFixtures.table
 import com.wafflestudio.snutt2.fixture.TestFixtures.tableSummary
-import com.wafflestudio.snutt2.lib.network.Result
-import com.wafflestudio.snutt2.lib.network.Unknown
-import com.wafflestudio.snutt2.lib.network.WrongUserToken
+import com.wafflestudio.snutt2.data.Result
+import com.wafflestudio.snutt2.domain.Unknown
+import com.wafflestudio.snutt2.domain.WrongUserToken
 import com.wafflestudio.snutt2.domainmodel.ThemeReference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

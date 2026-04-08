@@ -2,7 +2,7 @@ package com.wafflestudio.snutt2.fake
 
 import com.wafflestudio.snutt2.data.course_books.CourseBookRepository
 import com.wafflestudio.snutt2.domainmodel.CourseBook
-import com.wafflestudio.snutt2.lib.network.Result
+import com.wafflestudio.snutt2.data.Result
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class FakeCourseBookRepository : CourseBookRepository {

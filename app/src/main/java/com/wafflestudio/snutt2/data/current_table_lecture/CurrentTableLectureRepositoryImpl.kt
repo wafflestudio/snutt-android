@@ -7,9 +7,9 @@ import com.wafflestudio.snutt2.domainmodel.CustomLecture
 import com.wafflestudio.snutt2.domainmodel.Lecture
 import com.wafflestudio.snutt2.domainmodel.LocalLecture
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
-import com.wafflestudio.snutt2.lib.network.Result
+import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.network.api.SNUTTRestApi
-import com.wafflestudio.snutt2.lib.network.Unknown
+import com.wafflestudio.snutt2.domain.Unknown
 import com.wafflestudio.snutt2.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.network.dto.PostLectureParams
 import com.wafflestudio.snutt2.network.dto.LectureDto

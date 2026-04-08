@@ -4,7 +4,7 @@ import com.wafflestudio.snutt2.data.mapper.toTableTheme
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.CustomTheme
 import com.wafflestudio.snutt2.domainmodel.ThemeColor
-import com.wafflestudio.snutt2.lib.network.Result
+import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.network.dto.ColorDto
 import com.wafflestudio.snutt2.network.api.SNUTTRestApi
 import com.wafflestudio.snutt2.network.dto.PatchThemeParams

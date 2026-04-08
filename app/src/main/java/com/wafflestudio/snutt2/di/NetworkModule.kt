@@ -11,8 +11,8 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.data.addNetworkLog
 import com.wafflestudio.snutt2.lib.data.serializer.Serializer
-import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
-import com.wafflestudio.snutt2.lib.network.DisplayMessageResolverImpl
+import com.wafflestudio.snutt2.domain.DisplayMessageResolver
+import com.wafflestudio.snutt2.lib.android.DisplayMessageResolverImpl
 import com.wafflestudio.snutt2.network.api.SNUTTRestApi
 import com.wafflestudio.snutt2.lib.android.createNewNetworkLog
 import com.wafflestudio.snutt2.network.error.ErrorParsingCallAdapterFactory

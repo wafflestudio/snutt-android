@@ -25,10 +25,10 @@ import com.wafflestudio.snutt2.fixture.TestFixtures.searchedLecture
 import com.wafflestudio.snutt2.fixture.TestFixtures.syllabusLecture
 import com.wafflestudio.snutt2.fixture.TestFixtures.table
 import com.wafflestudio.snutt2.fixture.TestFixtures.tableSummary
-import com.wafflestudio.snutt2.lib.network.LectureOverlap
-import com.wafflestudio.snutt2.lib.network.Result
-import com.wafflestudio.snutt2.lib.network.Unknown
-import com.wafflestudio.snutt2.lib.network.WrongUserToken
+import com.wafflestudio.snutt2.domain.LectureOverlap
+import com.wafflestudio.snutt2.data.Result
+import com.wafflestudio.snutt2.domain.Unknown
+import com.wafflestudio.snutt2.domain.WrongUserToken
 import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.views.logged_in.home.search.LectureState
 import kotlinx.coroutines.Dispatchers

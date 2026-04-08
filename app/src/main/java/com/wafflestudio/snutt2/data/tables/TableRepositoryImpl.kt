@@ -9,7 +9,7 @@ import com.wafflestudio.snutt2.domainmodel.Table
 import com.wafflestudio.snutt2.domainmodel.TableSummary
 import com.wafflestudio.snutt2.domainmodel.TimetableLectureReminders
 import com.wafflestudio.snutt2.domainmodel.toOffsetString
-import com.wafflestudio.snutt2.lib.network.Result
+import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.network.api.SNUTTRestApi
 import com.wafflestudio.snutt2.network.dto.PostTableParams
 import com.wafflestudio.snutt2.network.dto.PutTableParams

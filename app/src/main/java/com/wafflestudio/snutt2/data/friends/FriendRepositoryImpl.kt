@@ -5,7 +5,7 @@ import com.wafflestudio.snutt2.domainmodel.Friend
 import com.wafflestudio.snutt2.domainmodel.FriendState
 import com.wafflestudio.snutt2.domainmodel.Nickname
 import com.wafflestudio.snutt2.domainmodel.Table
-import com.wafflestudio.snutt2.lib.network.Result
+import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.network.api.SNUTTRestApi
 import com.wafflestudio.snutt2.network.dto.PatchFriendDisplayNameParams
 import com.wafflestudio.snutt2.network.dto.PostRequestFriendParams

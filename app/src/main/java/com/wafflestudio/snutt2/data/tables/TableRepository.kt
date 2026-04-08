@@ -6,7 +6,7 @@ import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
 import com.wafflestudio.snutt2.domainmodel.Table
 import com.wafflestudio.snutt2.domainmodel.TableSummary
 import com.wafflestudio.snutt2.domainmodel.TimetableLectureReminders
-import com.wafflestudio.snutt2.lib.network.Result
+import com.wafflestudio.snutt2.data.Result
 import kotlinx.coroutines.flow.StateFlow
 
 interface TableRepository {

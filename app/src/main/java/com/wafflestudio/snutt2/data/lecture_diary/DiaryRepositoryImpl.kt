@@ -3,7 +3,7 @@ package com.wafflestudio.snutt2.data.lecture_diary
 import com.wafflestudio.snutt2.domainmodel.diary.DiaryAnsweredQuestion
 import com.wafflestudio.snutt2.domainmodel.diary.DiaryDailyClassType
 import com.wafflestudio.snutt2.domainmodel.diary.DiarySummary
-import com.wafflestudio.snutt2.lib.network.Result
+import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.network.api.SNUTTRestApi
 import com.wafflestudio.snutt2.network.dto.DiaryQuestionnaireRequestDto
 import com.wafflestudio.snutt2.network.dto.DiarySubmissionRequestDto

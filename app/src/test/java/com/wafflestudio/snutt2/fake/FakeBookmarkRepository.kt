@@ -4,7 +4,7 @@ import com.wafflestudio.snutt2.data.bookmark.BookmarkRepository
 import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.Lecture
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
-import com.wafflestudio.snutt2.lib.network.Result
+import com.wafflestudio.snutt2.data.Result
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class FakeBookmarkRepository : BookmarkRepository {

@@ -14,11 +14,12 @@ import com.wafflestudio.snutt2.domainmodel.Lecture
 import com.wafflestudio.snutt2.domainmodel.LectureReviewInfo
 import com.wafflestudio.snutt2.domainmodel.LectureSyllabusInfo
 import com.wafflestudio.snutt2.domainmodel.SyllabusLecture
-import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
-import com.wafflestudio.snutt2.lib.network.Result
-import com.wafflestudio.snutt2.lib.network.TimetableLectureNotFound
-import com.wafflestudio.snutt2.lib.network.onFailure
-import com.wafflestudio.snutt2.lib.network.onSuccess
+import com.wafflestudio.snutt2.domain.DisplayMessageResolver
+import com.wafflestudio.snutt2.domain.DomainError
+import com.wafflestudio.snutt2.data.Result
+import com.wafflestudio.snutt2.domain.TimetableLectureNotFound
+import com.wafflestudio.snutt2.data.onFailure
+import com.wafflestudio.snutt2.data.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -217,7 +218,7 @@ class DeeplinkTimetableLectureDetailViewModel @Inject constructor(
         }
     }
 
-    private fun handleError(error: com.wafflestudio.snutt2.lib.network.DomainError) {
+    private fun handleError(error: DomainError) {
         viewModelScope.launch {
             _uiEvent.emit(
                 DeeplinkTimetableLectureDetailUiEvent.ShowToast(

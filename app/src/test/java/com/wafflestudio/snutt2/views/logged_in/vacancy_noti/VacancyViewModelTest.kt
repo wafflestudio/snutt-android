@@ -8,9 +8,9 @@ import com.wafflestudio.snutt2.fake.FakeVacancyRepository
 import com.wafflestudio.snutt2.fixture.TestFixtures.lecture1
 import com.wafflestudio.snutt2.fixture.TestFixtures.lecture2
 import com.wafflestudio.snutt2.fixture.TestFixtures.searchedLecture
-import com.wafflestudio.snutt2.lib.network.Result
-import com.wafflestudio.snutt2.lib.network.Unknown
-import com.wafflestudio.snutt2.lib.network.WrongUserToken
+import com.wafflestudio.snutt2.data.Result
+import com.wafflestudio.snutt2.domain.Unknown
+import com.wafflestudio.snutt2.domain.WrongUserToken
 import com.wafflestudio.snutt2.lib.toDataWithState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

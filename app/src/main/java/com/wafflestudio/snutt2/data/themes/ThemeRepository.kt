@@ -3,7 +3,7 @@ package com.wafflestudio.snutt2.data.themes
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.CustomTheme
 import com.wafflestudio.snutt2.domainmodel.ThemeColor
-import com.wafflestudio.snutt2.lib.network.Result
+import com.wafflestudio.snutt2.data.Result
 import kotlinx.coroutines.flow.StateFlow
 
 interface ThemeRepository {

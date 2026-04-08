@@ -4,7 +4,7 @@ import com.wafflestudio.snutt2.data.themes.ThemeRepository
 import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
 import com.wafflestudio.snutt2.domainmodel.CustomTheme
 import com.wafflestudio.snutt2.domainmodel.ThemeColor
-import com.wafflestudio.snutt2.lib.network.Result
+import com.wafflestudio.snutt2.data.Result
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class FakeThemeRepository : ThemeRepository {
@@ -49,13 +49,13 @@ class FakeThemeRepository : ThemeRepository {
     }
 
     var createThemeResult: Result<CustomTheme> = Result.Fail(
-        com.wafflestudio.snutt2.lib.network.Unknown(displayTitle = "", displayMessage = ""),
+        com.wafflestudio.snutt2.domain.Unknown(displayTitle = "", displayMessage = ""),
     )
     var createThemeCalledWith: Pair<String, List<ThemeColor>>? = null
         private set
 
     var updateThemeResult: Result<CustomTheme> = Result.Fail(
-        com.wafflestudio.snutt2.lib.network.Unknown(displayTitle = "", displayMessage = ""),
+        com.wafflestudio.snutt2.domain.Unknown(displayTitle = "", displayMessage = ""),
     )
     var updateThemeCalledWith: Triple<String, String, List<ThemeColor>>? = null
         private set

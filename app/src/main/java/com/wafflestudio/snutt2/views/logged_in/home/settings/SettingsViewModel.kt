@@ -7,8 +7,8 @@ import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.lib.logging.AnalyticsLogger
-import com.wafflestudio.snutt2.lib.network.onFailure
-import com.wafflestudio.snutt2.lib.network.onSuccess
+import com.wafflestudio.snutt2.data.onFailure
+import com.wafflestudio.snutt2.data.onSuccess
 import com.wafflestudio.snutt2.ui.ThemeMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow

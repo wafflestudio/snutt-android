@@ -4,7 +4,7 @@ import com.wafflestudio.snutt2.domainmodel.CustomLecture
 import com.wafflestudio.snutt2.domainmodel.Lecture
 import com.wafflestudio.snutt2.domainmodel.LocalLecture
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
-import com.wafflestudio.snutt2.lib.network.Result
+import com.wafflestudio.snutt2.data.Result
 
 interface CurrentTableLectureRepository {
 

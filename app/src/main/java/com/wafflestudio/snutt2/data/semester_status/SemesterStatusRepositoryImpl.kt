@@ -2,7 +2,7 @@ package com.wafflestudio.snutt2.data.semester_status
 
 import com.wafflestudio.snutt2.data.SNUTTStorage
 import com.wafflestudio.snutt2.domainmodel.SemesterStatus
-import com.wafflestudio.snutt2.lib.network.Result
+import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.network.api.SNUTTRestApi
 import com.wafflestudio.snutt2.network.error.toDomainError
 import com.wafflestudio.snutt2.data.mapper.toDomain
