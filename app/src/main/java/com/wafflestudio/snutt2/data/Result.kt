@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.lib.network
+package com.wafflestudio.snutt2.data
 
 import kotlin.Nothing
 

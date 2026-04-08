@@ -1,7 +1,14 @@
-package com.wafflestudio.snutt2.lib.network
+package com.wafflestudio.snutt2.lib.android
 
 import android.content.Context
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.domain.BookmarkLectureNotFound
+import com.wafflestudio.snutt2.domain.DisplayMessageResolver
+import com.wafflestudio.snutt2.domain.DomainError
+import com.wafflestudio.snutt2.domain.NetworkDisconnect
+import com.wafflestudio.snutt2.domain.NotSelectedTimetable
+import com.wafflestudio.snutt2.domain.TimetableLectureNotFound
+import com.wafflestudio.snutt2.domain.Unknown
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 

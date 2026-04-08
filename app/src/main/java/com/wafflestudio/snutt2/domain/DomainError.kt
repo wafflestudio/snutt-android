@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.lib.network
+package com.wafflestudio.snutt2.domain
 
 sealed interface DomainError {
     val displayTitle: String
