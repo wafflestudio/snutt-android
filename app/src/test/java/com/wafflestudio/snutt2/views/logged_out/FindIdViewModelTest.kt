@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_out
+package com.wafflestudio.snutt2.feature.login
 
 import app.cash.turbine.test
 import com.wafflestudio.snutt2.fake.FakeDisplayMessageResolver

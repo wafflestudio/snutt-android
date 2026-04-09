@@ -58,13 +58,13 @@ import com.wafflestudio.snutt2.views.logged_in.notifications.NotificationRoute
 import com.wafflestudio.snutt2.views.logged_in.table_lectures.TableLecturesRoute
 import com.wafflestudio.snutt2.views.logged_in.thememarket.ThemeMarketRoute
 import com.wafflestudio.snutt2.views.logged_in.vacancy_noti.VacancyRoute
-import com.wafflestudio.snutt2.views.logged_out.EmailVerificationPage
-import com.wafflestudio.snutt2.views.logged_out.FindIdPage
-import com.wafflestudio.snutt2.views.logged_out.ImportantNoticeRoute
-import com.wafflestudio.snutt2.views.logged_out.SignInPage
-import com.wafflestudio.snutt2.views.logged_out.SignUpPage
-import com.wafflestudio.snutt2.views.logged_out.TutorialPage
-import com.wafflestudio.snutt2.views.logged_out.reset_password.ResetPasswordPage
+import com.wafflestudio.snutt2.feature.login.EmailVerificationPage
+import com.wafflestudio.snutt2.feature.login.FindIdPage
+import com.wafflestudio.snutt2.feature.login.ImportantNoticeRoute
+import com.wafflestudio.snutt2.feature.login.SignInPage
+import com.wafflestudio.snutt2.feature.login.SignUpPage
+import com.wafflestudio.snutt2.feature.login.TutorialPage
+import com.wafflestudio.snutt2.feature.login.reset_password.ResetPasswordPage
 
 internal fun NavGraphBuilder.buildRootNavGraph(
     navController: NavController,
