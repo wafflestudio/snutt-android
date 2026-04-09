@@ -1,6 +1,6 @@
 package com.wafflestudio.snutt2.network.error
 
-import com.wafflestudio.snutt2.lib.data.serializer.Serializer
+import com.wafflestudio.snutt2.lib.serializer.Serializer
 import retrofit2.Call
 import retrofit2.CallAdapter
 import retrofit2.Callback

@@ -1,7 +1,7 @@
 package com.wafflestudio.snutt2.di
 
 import android.content.Context
-import com.wafflestudio.snutt2.lib.data.serializer.Serializer
+import com.wafflestudio.snutt2.lib.serializer.Serializer
 import com.wafflestudio.snutt2.storage.pref.PrefCache
 import com.wafflestudio.snutt2.storage.pref.PrefCacheImpl
 import com.wafflestudio.snutt2.storage.pref.PrefContext

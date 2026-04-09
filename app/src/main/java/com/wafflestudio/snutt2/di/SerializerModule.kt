@@ -1,7 +1,7 @@
 package com.wafflestudio.snutt2.di
 
-import com.wafflestudio.snutt2.lib.data.serializer.MoshiSerializer
-import com.wafflestudio.snutt2.lib.data.serializer.Serializer
+import com.wafflestudio.snutt2.lib.serializer.MoshiSerializer
+import com.wafflestudio.snutt2.lib.serializer.Serializer
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
