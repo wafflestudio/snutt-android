@@ -30,8 +30,8 @@ import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.data.user.UserRepositoryImpl
 import com.wafflestudio.snutt2.data.vacancy_noti.VacancyRepository
 import com.wafflestudio.snutt2.data.vacancy_noti.VacancyRepositoryImpl
-import com.wafflestudio.snutt2.test.TestRepository
-import com.wafflestudio.snutt2.test.TestRepositoryImpl
+import com.wafflestudio.snutt2.debug.TestRepository
+import com.wafflestudio.snutt2.debug.TestRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
