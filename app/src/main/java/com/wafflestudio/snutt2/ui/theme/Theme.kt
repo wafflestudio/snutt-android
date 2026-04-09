@@ -11,7 +11,7 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.views.LocalThemeState
+import com.wafflestudio.snutt2.LocalThemeState
 
 private val LightThemeColors @Composable get() = lightColors(
     primary = SNUTTColors.White,

@@ -21,7 +21,7 @@ import com.wafflestudio.snutt2.ui.components.view.TimetableView
 import com.wafflestudio.snutt2.data.table_display.TableDisplayRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.domain.ThemeService
-import com.wafflestudio.snutt2.views.RootActivity
+import com.wafflestudio.snutt2.RootActivity
 import kotlinx.coroutines.runBlocking
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
