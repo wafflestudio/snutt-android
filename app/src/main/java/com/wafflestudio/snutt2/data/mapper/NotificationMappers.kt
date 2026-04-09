@@ -2,7 +2,7 @@ package com.wafflestudio.snutt2.data.mapper
 
 import com.wafflestudio.snutt2.domain.model.Notification
 import com.wafflestudio.snutt2.domain.model.NotificationType
-import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
+import com.wafflestudio.snutt2.ui.util.SNUTTStringUtils
 import com.wafflestudio.snutt2.network.dto.NotificationDto
 
 fun NotificationDto.toDomain(): Notification = Notification(

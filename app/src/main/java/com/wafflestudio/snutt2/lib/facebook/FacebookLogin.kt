@@ -8,7 +8,7 @@ import com.facebook.FacebookException
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.lib.android.toast
+import com.wafflestudio.snutt2.ui.util.toast
 import kotlinx.coroutines.suspendCancellableCoroutine
 
 suspend fun facebookLogin(

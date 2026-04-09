@@ -30,7 +30,7 @@ import com.wafflestudio.snutt2.ui.components.compose.snackbar.CustomSnackBarHost
 import com.wafflestudio.snutt2.ui.components.compose.snackbar.SnackBarScaffold
 import com.wafflestudio.snutt2.ui.components.compose.snackbar.dismiss
 import com.wafflestudio.snutt2.domain.model.SearchedLecture
-import com.wafflestudio.snutt2.lib.android.toast
+import com.wafflestudio.snutt2.ui.util.toast
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.launch

@@ -32,8 +32,8 @@ import com.wafflestudio.snutt2.ui.components.compose.EditText
 import com.wafflestudio.snutt2.ui.components.compose.EditTextFieldValue
 import com.wafflestudio.snutt2.ui.components.compose.WebViewStyleButton
 import com.wafflestudio.snutt2.ui.components.compose.clicks
-import com.wafflestudio.snutt2.lib.android.toast
-import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.isEmailInvalid
+import com.wafflestudio.snutt2.ui.util.toast
+import com.wafflestudio.snutt2.ui.util.SNUTTStringUtils.isEmailInvalid
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 

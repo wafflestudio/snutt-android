@@ -32,7 +32,7 @@ import com.wafflestudio.snutt2.ui.components.compose.RoundBorderButton
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.domain.model.LectureSession
 import com.wafflestudio.snutt2.domain.model.SearchTime
-import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.toFormattedTimeString
+import com.wafflestudio.snutt2.ui.util.SNUTTStringUtils.toFormattedTimeString
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import java.time.DayOfWeek

@@ -31,7 +31,7 @@ import com.wafflestudio.snutt2.ui.components.compose.EditText
 import com.wafflestudio.snutt2.ui.components.compose.Picker
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.domain.model.CourseBook
-import com.wafflestudio.snutt2.lib.toFormattedString
+import com.wafflestudio.snutt2.ui.util.toFormattedString
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.feature.home.drawer.HomeDrawerBottomSheetType

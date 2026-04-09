@@ -1,7 +1,7 @@
 package com.wafflestudio.snutt2.navigation
 
 import androidx.core.net.toUri
-import com.wafflestudio.snutt2.lib.SNUTTUtils.semesterStringToLong
+import com.wafflestudio.snutt2.ui.util.SNUTTUtils.semesterStringToLong
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton

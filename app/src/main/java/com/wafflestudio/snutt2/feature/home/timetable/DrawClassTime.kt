@@ -24,9 +24,9 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.wafflestudio.snutt2.domain.model.LectureSession
 import com.wafflestudio.snutt2.domain.model.TableLectureCustom
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
-import com.wafflestudio.snutt2.lib.endTimeInFloat
-import com.wafflestudio.snutt2.lib.roundToCompact
-import com.wafflestudio.snutt2.lib.startTimeInFloat
+import com.wafflestudio.snutt2.ui.util.endTimeInFloat
+import com.wafflestudio.snutt2.ui.util.roundToCompact
+import com.wafflestudio.snutt2.ui.util.startTimeInFloat
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import kotlin.math.max
 import kotlin.math.min

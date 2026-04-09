@@ -20,7 +20,7 @@ import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.domain.model.LocalLecture
 import com.wafflestudio.snutt2.domain.model.TableSummary
-import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getCreditSumFromLectureList
+import com.wafflestudio.snutt2.ui.util.SNUTTStringUtils.getCreditSumFromLectureList
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.logImpression
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors

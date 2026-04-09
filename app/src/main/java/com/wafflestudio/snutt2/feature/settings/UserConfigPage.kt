@@ -39,8 +39,8 @@ import com.wafflestudio.snutt2.ui.components.compose.CustomDialog
 import com.wafflestudio.snutt2.ui.components.compose.DuplicateIcon
 import com.wafflestudio.snutt2.ui.components.compose.EditText
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
-import com.wafflestudio.snutt2.lib.android.toast
-import com.wafflestudio.snutt2.lib.copyToClipboard
+import com.wafflestudio.snutt2.ui.util.toast
+import com.wafflestudio.snutt2.ui.util.copyToClipboard
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.logImpression
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors

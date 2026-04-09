@@ -14,7 +14,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import com.wafflestudio.snutt2.domain.model.LocalLecture
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
-import com.wafflestudio.snutt2.lib.contains
+import com.wafflestudio.snutt2.ui.util.contains
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable

@@ -36,7 +36,7 @@ import com.wafflestudio.snutt2.ui.components.compose.Timer
 import com.wafflestudio.snutt2.ui.components.compose.TimerValue
 import com.wafflestudio.snutt2.ui.components.compose.WebViewStyleButton
 import com.wafflestudio.snutt2.ui.components.compose.rememberTimerState
-import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.isPasswordInvalid
+import com.wafflestudio.snutt2.ui.util.SNUTTStringUtils.isPasswordInvalid
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 

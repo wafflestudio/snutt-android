@@ -5,7 +5,7 @@ import androidx.paging.PagingState
 import com.wafflestudio.snutt2.network.api.SNUTTRestApi
 import com.wafflestudio.snutt2.network.dto.PostSearchQueryParams
 import com.wafflestudio.snutt2.network.dto.LectureDto
-import com.wafflestudio.snutt2.lib.toCreditNumber
+import com.wafflestudio.snutt2.ui.util.toCreditNumber
 import com.wafflestudio.snutt2.network.dto.SearchTimeDto
 import com.wafflestudio.snutt2.network.dto.TagDto
 import com.wafflestudio.snutt2.domain.model.TagType

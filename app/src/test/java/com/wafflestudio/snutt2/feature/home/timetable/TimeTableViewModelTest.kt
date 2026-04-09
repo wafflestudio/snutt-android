@@ -19,7 +19,7 @@ import com.wafflestudio.snutt2.fixture.TestFixtures.courseBook2025_1
 import com.wafflestudio.snutt2.fixture.TestFixtures.syllabusLecture
 import com.wafflestudio.snutt2.fixture.TestFixtures.table
 import com.wafflestudio.snutt2.fixture.TestFixtures.tableSummary
-import com.wafflestudio.snutt2.lib.getFittingTrimParam
+import com.wafflestudio.snutt2.ui.util.getFittingTrimParam
 import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.domain.Unknown
 import kotlinx.coroutines.Dispatchers

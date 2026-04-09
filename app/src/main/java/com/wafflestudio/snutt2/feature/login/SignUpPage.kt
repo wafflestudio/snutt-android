@@ -30,9 +30,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.components.compose.*
-import com.wafflestudio.snutt2.lib.android.toast
-import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.isIdInvalid
-import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.isPasswordInvalid
+import com.wafflestudio.snutt2.ui.util.toast
+import com.wafflestudio.snutt2.ui.util.SNUTTStringUtils.isIdInvalid
+import com.wafflestudio.snutt2.ui.util.SNUTTStringUtils.isPasswordInvalid
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import androidx.lifecycle.compose.collectAsStateWithLifecycle

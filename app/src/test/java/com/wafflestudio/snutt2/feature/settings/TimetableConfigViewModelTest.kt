@@ -12,7 +12,7 @@ import com.wafflestudio.snutt2.fake.FakeThemeRepository
 import com.wafflestudio.snutt2.fake.FakeUserRepository
 import com.wafflestudio.snutt2.fixture.TestFixtures.table
 import com.wafflestudio.snutt2.fixture.TestFixtures.tableSummary
-import com.wafflestudio.snutt2.lib.getFittingTrimParam
+import com.wafflestudio.snutt2.ui.util.getFittingTrimParam
 import com.wafflestudio.snutt2.domain.model.ThemeReference
 import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.domain.Unknown

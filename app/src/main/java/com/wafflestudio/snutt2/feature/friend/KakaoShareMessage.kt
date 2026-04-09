@@ -8,7 +8,7 @@ import com.kakao.sdk.share.ShareClient
 import com.kakao.sdk.share.WebSharerClient
 import com.kakao.sdk.template.model.FeedTemplate
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.lib.android.toast
+import com.wafflestudio.snutt2.ui.util.toast
 
 fun sendKakaoMessageWithTemplate(context: Context, feedTemplate: FeedTemplate) {
     if (ShareClient.instance.isKakaoTalkSharingAvailable(context)) {

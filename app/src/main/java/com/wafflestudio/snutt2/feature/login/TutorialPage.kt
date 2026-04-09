@@ -38,7 +38,7 @@ import com.wafflestudio.snutt2.ui.components.compose.BorderButton
 import com.wafflestudio.snutt2.ui.components.compose.DividerWithText
 import com.wafflestudio.snutt2.ui.components.compose.SocialLoginButton
 import com.wafflestudio.snutt2.ui.components.compose.clicks
-import com.wafflestudio.snutt2.lib.android.toast
+import com.wafflestudio.snutt2.ui.util.toast
 import com.wafflestudio.snutt2.lib.facebook.facebookLogin
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.logImpression
