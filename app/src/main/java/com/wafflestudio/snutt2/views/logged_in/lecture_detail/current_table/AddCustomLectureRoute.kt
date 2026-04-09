@@ -19,8 +19,8 @@ import com.wafflestudio.snutt2.ui.components.compose.snackbar.CustomSnackBarHost
 import com.wafflestudio.snutt2.ui.components.compose.snackbar.SnackBarScaffold
 import com.wafflestudio.snutt2.domain.model.LectureColor
 import com.wafflestudio.snutt2.lib.android.toast
-import com.wafflestudio.snutt2.views.NavigationDestination
-import com.wafflestudio.snutt2.views.observeResult
+import com.wafflestudio.snutt2.navigation.NavigationDestination
+import com.wafflestudio.snutt2.navigation.observeResult
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.logImpression
 import dev.chrisbanes.haze.hazeSource

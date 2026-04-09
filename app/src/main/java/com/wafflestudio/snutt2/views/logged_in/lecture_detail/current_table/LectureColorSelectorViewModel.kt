@@ -7,7 +7,7 @@ import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
 import com.wafflestudio.snutt2.domain.model.CustomTheme
 import com.wafflestudio.snutt2.domain.model.LectureColor
 import com.wafflestudio.snutt2.domain.model.TableTheme
-import com.wafflestudio.snutt2.views.NavigationDestination
+import com.wafflestudio.snutt2.navigation.NavigationDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

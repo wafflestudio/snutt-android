@@ -25,7 +25,7 @@ import com.wafflestudio.snutt2.domain.DomainError
 import com.wafflestudio.snutt2.data.onFailure
 import com.wafflestudio.snutt2.data.onSuccess
 import com.wafflestudio.snutt2.lib.toDataWithState
-import com.wafflestudio.snutt2.views.NavigationDestination
+import com.wafflestudio.snutt2.navigation.NavigationDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

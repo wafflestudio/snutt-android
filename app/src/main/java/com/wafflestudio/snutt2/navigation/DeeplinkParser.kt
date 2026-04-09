@@ -2,8 +2,6 @@ package com.wafflestudio.snutt2.navigation
 
 import androidx.core.net.toUri
 import com.wafflestudio.snutt2.lib.SNUTTUtils.semesterStringToLong
-import com.wafflestudio.snutt2.navigation.getDeepLinkPath
-import com.wafflestudio.snutt2.views.NavigationDestination
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton

@@ -33,7 +33,10 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.ui.components.compose.*
 import com.wafflestudio.snutt2.logging.AnalyticsLogger
+import com.wafflestudio.snutt2.navigation.NavigationDestination
+import com.wafflestudio.snutt2.navigation.buildRootNavGraph
 import com.wafflestudio.snutt2.navigation.getDeepLinkPath
+import com.wafflestudio.snutt2.navigation.navigateAsOrigin
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTheme
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
