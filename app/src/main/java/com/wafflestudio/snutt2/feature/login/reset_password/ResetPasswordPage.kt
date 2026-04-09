@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_out.reset_password
+package com.wafflestudio.snutt2.feature.login.reset_password
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent

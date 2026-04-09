@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_out
+package com.wafflestudio.snutt2.feature.login
 
 import android.annotation.SuppressLint
 import android.app.Activity

@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_out
+package com.wafflestudio.snutt2.feature.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -6,6 +6,7 @@ import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.domain.RefreshInitialDataUseCase
 import com.wafflestudio.snutt2.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.logging.AnalyticsLogger
+import com.wafflestudio.snutt2.logging.LoginParameter
 import com.wafflestudio.snutt2.domain.DisplayMessageResolver
 import com.wafflestudio.snutt2.domain.DomainError
 import com.wafflestudio.snutt2.data.onFailure
@@ -21,27 +22,27 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SignUpViewModel @Inject constructor(
+class SignInViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val refreshInitialDataUseCase: RefreshInitialDataUseCase,
     private val displayMessageResolver: DisplayMessageResolver,
     private val analyticsLogger: AnalyticsLogger,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(SignUpUiState())
-    val uiState: StateFlow<SignUpUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(SignInUiState())
+    val uiState: StateFlow<SignInUiState> = _uiState.asStateFlow()
 
-    private val _uiEvent = MutableSharedFlow<SignUpUiEvent>()
+    private val _uiEvent = MutableSharedFlow<SignInUiEvent>()
     val uiEvent = _uiEvent.asSharedFlow()
 
-    fun signUp(id: String, email: String, password: String) {
+    fun signIn(id: String, password: String) {
         viewModelScope.launch {
-            analyticsLogger.logEvent(AnalyticsEvent.SignUp)
+            analyticsLogger.logEvent(AnalyticsEvent.Login(LoginParameter(LoginParameter.Provider.LOCAL)))
             _uiState.update { it.copy(isLoading = true) }
-            userRepository.postSignUp(id, password, email)
+            userRepository.postSignIn(id, password)
                 .onSuccess {
                     refreshInitialDataUseCase()
-                    _uiEvent.emit(SignUpUiEvent.NavigateEmailVerification)
+                    _uiEvent.emit(SignInUiEvent.NavigateHome)
                 }
                 .onFailure { handleError(it) }
         }
@@ -49,15 +50,15 @@ class SignUpViewModel @Inject constructor(
 
     private suspend fun handleError(error: DomainError) {
         _uiState.update { it.copy(isLoading = false) }
-        _uiEvent.emit(SignUpUiEvent.ShowToast(displayMessageResolver.getDisplayMessage(error)))
+        _uiEvent.emit(SignInUiEvent.ShowToast(displayMessageResolver.getDisplayMessage(error)))
     }
 }
 
-data class SignUpUiState(
+data class SignInUiState(
     val isLoading: Boolean = false,
 )
 
-sealed interface SignUpUiEvent {
-    data class ShowToast(val message: String) : SignUpUiEvent
-    data object NavigateEmailVerification : SignUpUiEvent
+sealed interface SignInUiEvent {
+    data class ShowToast(val message: String) : SignInUiEvent
+    data object NavigateHome : SignInUiEvent
 }

@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_out
+package com.wafflestudio.snutt2.feature.login
 
 import android.content.Intent
 import android.net.Uri

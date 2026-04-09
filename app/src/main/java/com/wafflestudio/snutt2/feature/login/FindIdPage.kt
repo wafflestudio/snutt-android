@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_out
+package com.wafflestudio.snutt2.feature.login
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
