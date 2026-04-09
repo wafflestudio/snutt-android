@@ -34,7 +34,7 @@ import com.wafflestudio.snutt2.domain.LectureOverlap
 import com.wafflestudio.snutt2.data.onFailure
 import com.wafflestudio.snutt2.data.onSuccess
 import com.wafflestudio.snutt2.lib.toDataWithState
-import com.wafflestudio.snutt2.views.logged_in.home.search.LectureState
+import com.wafflestudio.snutt2.feature.search.LectureState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow

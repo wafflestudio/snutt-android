@@ -17,7 +17,7 @@ import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.logImpression
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
-import com.wafflestudio.snutt2.views.logged_in.home.bookmark.BookmarkPlaceHolder
+import com.wafflestudio.snutt2.feature.bookmark.BookmarkPlaceHolder
 
 @Composable
 fun BookmarkList(

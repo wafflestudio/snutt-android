@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_in.home.bookmark
+package com.wafflestudio.snutt2.feature.bookmark
 
 import app.cash.turbine.test
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
@@ -30,7 +30,7 @@ import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.domain.Unknown
 import com.wafflestudio.snutt2.domain.WrongUserToken
 import com.wafflestudio.snutt2.lib.toDataWithState
-import com.wafflestudio.snutt2.views.logged_in.home.search.LectureState
+import com.wafflestudio.snutt2.feature.search.LectureState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher

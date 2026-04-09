@@ -25,10 +25,10 @@ import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 import com.wafflestudio.snutt2.views.logged_in.home.drawer.TimeTableRoute
-import com.wafflestudio.snutt2.views.logged_in.home.friend.FriendsRoute
+import com.wafflestudio.snutt2.feature.friend.FriendsRoute
 import com.wafflestudio.snutt2.views.logged_in.home.popups.Popup
-import com.wafflestudio.snutt2.views.logged_in.home.reviews.ReviewPage
-import com.wafflestudio.snutt2.views.logged_in.home.search.SearchRoute
+import com.wafflestudio.snutt2.feature.reviews.ReviewPage
+import com.wafflestudio.snutt2.feature.search.SearchRoute
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingsRoute
 
 @Composable

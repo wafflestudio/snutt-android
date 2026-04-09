@@ -48,7 +48,7 @@ import com.wafflestudio.snutt2.data.onFailure
 import com.wafflestudio.snutt2.data.onSuccess
 import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.domain.model.TagType
-import com.wafflestudio.snutt2.views.logged_in.home.search.search_option.clusterToTimeBlocks
+import com.wafflestudio.snutt2.feature.search.search_option.clusterToTimeBlocks
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow

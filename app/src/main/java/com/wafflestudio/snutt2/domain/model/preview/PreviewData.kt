@@ -21,10 +21,10 @@ import com.wafflestudio.snutt2.domain.model.Table
 import com.wafflestudio.snutt2.domain.model.TableSummary
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import com.wafflestudio.snutt2.domain.model.ThemeReference
-import com.wafflestudio.snutt2.views.logged_in.home.friend.FriendBottomSheetContent
-import com.wafflestudio.snutt2.views.logged_in.home.friend.FriendDialogState
-import com.wafflestudio.snutt2.views.logged_in.home.friend.FriendDrawerTab
-import com.wafflestudio.snutt2.views.logged_in.home.friend.FriendsUiState
+import com.wafflestudio.snutt2.feature.friend.FriendBottomSheetContent
+import com.wafflestudio.snutt2.feature.friend.FriendDialogState
+import com.wafflestudio.snutt2.feature.friend.FriendDrawerTab
+import com.wafflestudio.snutt2.feature.friend.FriendsUiState
 import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.time.LocalTime
