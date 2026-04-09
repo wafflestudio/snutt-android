@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views
+package com.wafflestudio.snutt2.navigation
 
 import com.wafflestudio.snutt2.domain.model.LectureColor
 import com.wafflestudio.snutt2.navigation.DeepLinkPath

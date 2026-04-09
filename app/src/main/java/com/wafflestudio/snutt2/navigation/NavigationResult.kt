@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views
+package com.wafflestudio.snutt2.navigation
 
 import android.os.Parcelable
 import androidx.lifecycle.SavedStateHandle

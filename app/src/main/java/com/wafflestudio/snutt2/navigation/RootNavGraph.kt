@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views
+package com.wafflestudio.snutt2.navigation
 
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.core.Spring

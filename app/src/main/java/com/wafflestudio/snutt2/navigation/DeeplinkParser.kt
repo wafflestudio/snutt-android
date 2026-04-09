@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.deeplink
+package com.wafflestudio.snutt2.navigation
 
 import androidx.core.net.toUri
 import com.wafflestudio.snutt2.lib.SNUTTUtils.semesterStringToLong
