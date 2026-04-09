@@ -36,11 +36,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.times
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.domain.model.LectureReminderOffset
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
-import com.wafflestudio.snutt2.domain.model.LectureReminderOffset
 
 /**
  * 여러 선택지 중 하나를 선택할 수 있는 UI 컴포넌트
@@ -90,7 +89,7 @@ fun <T> SegmentedPicker(
                 .clip(RoundedCornerShape(9.dp))
                 .background(SNUTTColors.FillTertiary),
 
-        ) {
+            ) {
             val selectedIndex = options.indexOf(selectedOption)
             val transition = updateTransition(targetState = selectedIndex, label = "buttonTransition")
             val indicatorOffset by transition.animateDp(label = "indicatorOffset") { index ->

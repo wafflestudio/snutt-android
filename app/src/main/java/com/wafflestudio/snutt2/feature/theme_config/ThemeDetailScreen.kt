@@ -28,28 +28,28 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
-import androidx.compose.ui.text.style.TextOverflow
-import com.wafflestudio.snutt2.ui.components.compose.CenteredTopBar
-import com.wafflestudio.snutt2.ui.components.compose.EditText
-import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.TableLectureCustom
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
-import com.wafflestudio.snutt2.ui.util.toast
+import com.wafflestudio.snutt2.feature.home.timetable.TimeTable
+import com.wafflestudio.snutt2.feature.settings.SettingColumn
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
+import com.wafflestudio.snutt2.ui.components.compose.CenteredTopBar
+import com.wafflestudio.snutt2.ui.components.compose.EditText
+import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.theme.SNUTTTheme
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 import com.wafflestudio.snutt2.ui.theme.onSurfaceVariant
-import com.wafflestudio.snutt2.feature.settings.SettingColumn
-import com.wafflestudio.snutt2.feature.home.timetable.TimeTable
+import com.wafflestudio.snutt2.ui.util.toast
 
 @Composable
 fun ThemeDetailRoute(

@@ -3,11 +3,11 @@ package com.wafflestudio.snutt2.feature.login.reset_password
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.wafflestudio.snutt2.data.onFailure
+import com.wafflestudio.snutt2.data.onSuccess
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.domain.DisplayMessageResolver
 import com.wafflestudio.snutt2.domain.DomainError
-import com.wafflestudio.snutt2.data.onFailure
-import com.wafflestudio.snutt2.data.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -57,12 +57,14 @@ class FindPasswordViewModel @Inject constructor(
                 val savedUserId = savedStateHandle["userId"] ?: ""
                 _uiState.update { UIState.CheckId(savedUserId) }
             }
+
             is UIState.VerifyCode -> {
                 val savedUserId = savedStateHandle["userId"] ?: ""
                 val savedMaskedEmail = savedStateHandle["maskedEmail"] ?: ""
                 val savedFullEmail = savedStateHandle["fullEmail"] ?: ""
                 _uiState.update { UIState.EnterFullEmail(savedUserId, savedMaskedEmail, savedFullEmail) }
             }
+
             is UIState.EnterNewPassword -> {
                 val savedUserId = savedStateHandle["userId"] ?: ""
                 _uiState.update { UIState.CheckId(savedUserId) }

@@ -33,20 +33,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.domain.model.BuiltInTheme
+import com.wafflestudio.snutt2.domain.model.TableTheme
+import com.wafflestudio.snutt2.domain.model.preview.PreviewData
+import com.wafflestudio.snutt2.feature.settings.SettingColumn
 import com.wafflestudio.snutt2.ui.components.compose.AddIcon
 import com.wafflestudio.snutt2.ui.components.compose.QuestionCircleIcon
 import com.wafflestudio.snutt2.ui.components.compose.ThemeIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.components.compose.displayName
-import com.wafflestudio.snutt2.domain.model.BuiltInTheme
-import com.wafflestudio.snutt2.domain.model.TableTheme
-import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTheme
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 import com.wafflestudio.snutt2.ui.theme.onSurfaceVariant
-import com.wafflestudio.snutt2.feature.settings.SettingColumn
 
 @Composable
 internal fun ThemesRow(

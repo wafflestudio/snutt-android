@@ -1,7 +1,7 @@
 package com.wafflestudio.snutt2.data.popup
 
-import com.wafflestudio.snutt2.domain.model.Popup
 import com.wafflestudio.snutt2.data.Result
+import com.wafflestudio.snutt2.domain.model.Popup
 import kotlinx.coroutines.flow.StateFlow
 
 interface PopupRepository {

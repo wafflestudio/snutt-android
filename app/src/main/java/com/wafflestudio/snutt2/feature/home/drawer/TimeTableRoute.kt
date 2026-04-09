@@ -18,14 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.wafflestudio.snutt2.ui.components.compose.BottomSheetDismissEffect
 import com.wafflestudio.snutt2.domain.model.LocalLecture
-import com.wafflestudio.snutt2.ui.util.toast
-import com.wafflestudio.snutt2.feature.home.drawer.shareScreenshot
 import com.wafflestudio.snutt2.feature.home.timetable.TimeTableScreen
 import com.wafflestudio.snutt2.feature.home.timetable.TimeTableUiEvent
 import com.wafflestudio.snutt2.feature.home.timetable.TimeTableUiState
 import com.wafflestudio.snutt2.feature.home.timetable.TimeTableViewModel
+import com.wafflestudio.snutt2.ui.components.compose.BottomSheetDismissEffect
+import com.wafflestudio.snutt2.ui.util.toast
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch

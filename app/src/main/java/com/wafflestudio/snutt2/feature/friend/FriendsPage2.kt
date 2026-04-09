@@ -46,6 +46,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.domain.model.Friend
+import com.wafflestudio.snutt2.feature.home.timetable.TimeTable
+import com.wafflestudio.snutt2.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.components.compose.AddFriendIcon
 import com.wafflestudio.snutt2.ui.components.compose.ArrowDownIcon
 import com.wafflestudio.snutt2.ui.components.compose.BottomSheetDismissEffect
@@ -54,15 +58,11 @@ import com.wafflestudio.snutt2.ui.components.compose.IconWithAlertDot
 import com.wafflestudio.snutt2.ui.components.compose.PersonIcon
 import com.wafflestudio.snutt2.ui.components.compose.QuestionCircleIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
-import com.wafflestudio.snutt2.domain.model.Friend
-import com.wafflestudio.snutt2.ui.util.toast
-import com.wafflestudio.snutt2.logging.AnalyticsScreen
-import com.wafflestudio.snutt2.logging.compose.logImpression
-import com.wafflestudio.snutt2.ui.util.toFormattedString
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
-import com.wafflestudio.snutt2.feature.home.timetable.TimeTable
+import com.wafflestudio.snutt2.ui.util.toFormattedString
+import com.wafflestudio.snutt2.ui.util.toast
 import kotlinx.coroutines.launch
 
 @Composable

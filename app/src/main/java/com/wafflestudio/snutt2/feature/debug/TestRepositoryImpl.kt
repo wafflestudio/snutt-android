@@ -1,10 +1,10 @@
 package com.wafflestudio.snutt2.feature.debug
 
-import com.wafflestudio.snutt2.storage.SNUTTStorage
 import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.network.api.SNUTTRestApi
 import com.wafflestudio.snutt2.network.dto.PostSignUpParams
 import com.wafflestudio.snutt2.network.error.toDomainError
+import com.wafflestudio.snutt2.storage.SNUTTStorage
 import javax.inject.Inject
 
 class TestRepositoryImpl @Inject constructor(

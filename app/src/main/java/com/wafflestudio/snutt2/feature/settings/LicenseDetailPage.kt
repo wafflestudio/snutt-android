@@ -8,8 +8,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -33,26 +31,31 @@ fun LicenseDetailPage(
             name = stringResource(R.string.license_colorpicker_name)
             content = stringResource(R.string.license_colorpicker_content)
         }
+
         stringResource(R.string.license_guava_route) -> {
             title = stringResource(R.string.license_guava_title)
             name = stringResource(R.string.license_guava_name)
             content = stringResource(R.string.license_guava_content)
         }
+
         stringResource(R.string.license_retrofit_route) -> {
             title = stringResource(R.string.license_retrofit_title)
             name = stringResource(R.string.license_retrofit_name)
             content = stringResource(R.string.license_retrofit_content)
         }
+
         stringResource(R.string.license_okhttp_route) -> {
             title = stringResource(R.string.license_okhttp_title)
             name = stringResource(R.string.license_okhttp_name)
             content = stringResource(R.string.license_okhttp_content)
         }
+
         stringResource(R.string.license_pretendard_route) -> {
             title = stringResource(R.string.license_pretendard_title)
             name = stringResource(R.string.license_pretendard_name)
             content = stringResource(R.string.license_pretendard_content)
         }
+
         else -> {
             title = ""
             name = ""

@@ -2,12 +2,11 @@ package com.wafflestudio.snutt2.domain.model.preview
 
 import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.CourseBook
+import com.wafflestudio.snutt2.domain.model.CustomLecture
 import com.wafflestudio.snutt2.domain.model.CustomTheme
 import com.wafflestudio.snutt2.domain.model.EditingTheme
-import com.wafflestudio.snutt2.domain.model.ThemeColor
-import com.wafflestudio.snutt2.domain.model.CustomLecture
-import com.wafflestudio.snutt2.domain.model.LectureColor
 import com.wafflestudio.snutt2.domain.model.Friend
+import com.wafflestudio.snutt2.domain.model.LectureColor
 import com.wafflestudio.snutt2.domain.model.LectureReminderOffset
 import com.wafflestudio.snutt2.domain.model.LectureReviewInfo
 import com.wafflestudio.snutt2.domain.model.LectureSession
@@ -20,6 +19,7 @@ import com.wafflestudio.snutt2.domain.model.SyllabusLecture
 import com.wafflestudio.snutt2.domain.model.Table
 import com.wafflestudio.snutt2.domain.model.TableSummary
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
+import com.wafflestudio.snutt2.domain.model.ThemeColor
 import com.wafflestudio.snutt2.domain.model.ThemeReference
 import com.wafflestudio.snutt2.feature.friend.FriendBottomSheetContent
 import com.wafflestudio.snutt2.feature.friend.FriendDialogState

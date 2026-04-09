@@ -14,16 +14,14 @@ import android.util.SizeF
 import android.view.View
 import android.widget.RemoteViews
 import androidx.compose.animation.ExperimentalAnimationApi
-import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.ui.util.SNUTTUtils.displayHeight
-import com.wafflestudio.snutt2.ui.util.SNUTTUtils.displayWidth
-import com.wafflestudio.snutt2.ui.components.view.TimetableView
 import com.wafflestudio.snutt2.data.table_display.TableDisplayRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.domain.ThemeService
-import com.wafflestudio.snutt2.RootActivity
-import kotlinx.coroutines.runBlocking
+import com.wafflestudio.snutt2.ui.components.view.TimetableView
+import com.wafflestudio.snutt2.ui.util.SNUTTUtils.displayHeight
+import com.wafflestudio.snutt2.ui.util.SNUTTUtils.displayWidth
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -103,6 +101,7 @@ TimetableWidgetProvider : AppWidgetProvider() {
             }
         }
     }
+
     private fun createRemoteViews(context: Context, width: Int, height: Int, scale: Double = 1.0): RemoteViews {
         val views = RemoteViews(context.packageName, R.layout.widget_timetable)
         val intent = Intent(context, RootActivity::class.java)

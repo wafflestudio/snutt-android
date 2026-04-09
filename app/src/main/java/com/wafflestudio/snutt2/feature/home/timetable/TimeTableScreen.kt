@@ -13,18 +13,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.domain.model.LocalLecture
+import com.wafflestudio.snutt2.domain.model.TableSummary
+import com.wafflestudio.snutt2.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.components.compose.BookmarkIcon
 import com.wafflestudio.snutt2.ui.components.compose.DrawerIcon
 import com.wafflestudio.snutt2.ui.components.compose.IconWithAlertDot
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.clicks
-import com.wafflestudio.snutt2.domain.model.LocalLecture
-import com.wafflestudio.snutt2.domain.model.TableSummary
-import com.wafflestudio.snutt2.ui.util.SNUTTStringUtils.getCreditSumFromLectureList
-import com.wafflestudio.snutt2.logging.AnalyticsScreen
-import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
+import com.wafflestudio.snutt2.ui.util.SNUTTStringUtils.getCreditSumFromLectureList
 
 @Composable
 fun TimeTableScreen(

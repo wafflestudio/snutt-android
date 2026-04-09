@@ -43,9 +43,9 @@ import com.wafflestudio.snutt2.ui.components.compose.TimerValue
 import com.wafflestudio.snutt2.ui.components.compose.WebViewStyleButton
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.components.compose.rememberTimerState
-import com.wafflestudio.snutt2.ui.util.toast
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
+import com.wafflestudio.snutt2.ui.util.toast
 
 // TODO: 뷰모델로 로직 및 상태관리 이전하기
 private enum class VerifyEmailState {

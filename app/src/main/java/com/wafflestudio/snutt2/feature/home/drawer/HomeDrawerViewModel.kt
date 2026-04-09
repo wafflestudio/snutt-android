@@ -3,9 +3,14 @@ package com.wafflestudio.snutt2.feature.home.drawer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.course_books.CourseBookRepository
+import com.wafflestudio.snutt2.data.onFailure
+import com.wafflestudio.snutt2.data.onSuccess
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
+import com.wafflestudio.snutt2.domain.DisplayMessageResolver
+import com.wafflestudio.snutt2.domain.DomainError
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
+import com.wafflestudio.snutt2.domain.NotSelectedTimetable
 import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.CourseBook
 import com.wafflestudio.snutt2.domain.model.CustomTheme
@@ -13,11 +18,6 @@ import com.wafflestudio.snutt2.domain.model.Table
 import com.wafflestudio.snutt2.domain.model.TableSummary
 import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.lib.Selectable
-import com.wafflestudio.snutt2.domain.DisplayMessageResolver
-import com.wafflestudio.snutt2.domain.DomainError
-import com.wafflestudio.snutt2.domain.NotSelectedTimetable
-import com.wafflestudio.snutt2.data.onFailure
-import com.wafflestudio.snutt2.data.onSuccess
 import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.lib.toggleIndex
 import dagger.hilt.android.lifecycle.HiltViewModel

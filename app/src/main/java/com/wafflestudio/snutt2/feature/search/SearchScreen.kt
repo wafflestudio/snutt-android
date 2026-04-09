@@ -26,6 +26,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.domain.model.SearchTag
+import com.wafflestudio.snutt2.domain.model.SearchedLecture
+import com.wafflestudio.snutt2.feature.home.timetable.TimeTable
+import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.ui.components.compose.EditText
 import com.wafflestudio.snutt2.ui.components.compose.ExitIcon
 import com.wafflestudio.snutt2.ui.components.compose.FilterIcon
@@ -33,12 +37,8 @@ import com.wafflestudio.snutt2.ui.components.compose.SearchIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.clearFocusOnKeyboardDismiss
 import com.wafflestudio.snutt2.ui.components.compose.clicks
-import com.wafflestudio.snutt2.domain.model.SearchTag
-import com.wafflestudio.snutt2.domain.model.SearchedLecture
-import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
-import com.wafflestudio.snutt2.feature.home.timetable.TimeTable
 
 @Composable
 fun SearchScreen(

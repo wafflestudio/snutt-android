@@ -18,7 +18,12 @@ import androidx.compose.material.Surface
 import androidx.compose.material.navigation.BottomSheetNavigator
 import androidx.compose.material.navigation.ModalBottomSheetLayout
 import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -28,9 +33,12 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.FirebaseApp
-import com.wafflestudio.snutt2.logging.compose.LocalAnalyticsLogger
 import com.wafflestudio.snutt2.config.RemoteConfig
+import com.wafflestudio.snutt2.domain.RefreshInitialDataUseCase
+import com.wafflestudio.snutt2.feature.home.HomeItem
+import com.wafflestudio.snutt2.feature.settings.RootViewModel
 import com.wafflestudio.snutt2.logging.AnalyticsLogger
+import com.wafflestudio.snutt2.logging.compose.LocalAnalyticsLogger
 import com.wafflestudio.snutt2.navigation.NavigationDestination
 import com.wafflestudio.snutt2.navigation.buildRootNavGraph
 import com.wafflestudio.snutt2.navigation.getDeepLinkPath
@@ -39,9 +47,6 @@ import com.wafflestudio.snutt2.ui.theme.LocalThemeState
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTheme
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
-import com.wafflestudio.snutt2.feature.home.HomeItem
-import com.wafflestudio.snutt2.domain.RefreshInitialDataUseCase
-import com.wafflestudio.snutt2.feature.settings.RootViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.launch

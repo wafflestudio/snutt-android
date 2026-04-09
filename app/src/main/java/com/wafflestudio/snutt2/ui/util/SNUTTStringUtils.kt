@@ -4,8 +4,8 @@ import android.content.Context
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.Lecture
 import com.wafflestudio.snutt2.domain.model.LectureSession
-import com.wafflestudio.snutt2.domain.model.SearchedLecture
 import com.wafflestudio.snutt2.domain.model.SearchTime
+import com.wafflestudio.snutt2.domain.model.SearchedLecture
 import java.time.DayOfWeek
 import java.time.Duration
 import java.time.Instant

@@ -24,12 +24,12 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.domain.model.SearchedLecture
 import com.wafflestudio.snutt2.ui.components.compose.BottomSheetDismissEffect
 import com.wafflestudio.snutt2.ui.components.compose.snackbar.CustomSnackBarDuration
 import com.wafflestudio.snutt2.ui.components.compose.snackbar.CustomSnackBarHostState
 import com.wafflestudio.snutt2.ui.components.compose.snackbar.SnackBarScaffold
 import com.wafflestudio.snutt2.ui.components.compose.snackbar.dismiss
-import com.wafflestudio.snutt2.domain.model.SearchedLecture
 import com.wafflestudio.snutt2.ui.util.toast
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
@@ -96,7 +96,9 @@ fun SearchRoute(
                     }
                     val onActionPerformed = when (uiEvent.event) {
                         SearchSnackBarEvent.FIRST_VACANCY_ADD -> onNavigateVacancy
-                        SearchSnackBarEvent.FIRST_BOOKMARK_ADD -> { {} }
+                        SearchSnackBarEvent.FIRST_BOOKMARK_ADD -> {
+                            {}
+                        }
                     }
                     scope.launch {
                         snackBarHostState.currentSnackBarData.dismiss()

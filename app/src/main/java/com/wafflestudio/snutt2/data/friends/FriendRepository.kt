@@ -1,11 +1,11 @@
 package com.wafflestudio.snutt2.data.friends
 
+import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.domain.model.CourseBook
 import com.wafflestudio.snutt2.domain.model.Friend
 import com.wafflestudio.snutt2.domain.model.FriendState
 import com.wafflestudio.snutt2.domain.model.Nickname
 import com.wafflestudio.snutt2.domain.model.Table
-import com.wafflestudio.snutt2.data.Result
 
 interface FriendRepository {
     suspend fun getFriends(state: FriendState): Result<List<Friend>>

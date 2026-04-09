@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.domain.model.TableSummary
 import com.wafflestudio.snutt2.ui.components.compose.PaletteIcon
 import com.wafflestudio.snutt2.ui.components.compose.PeopleIcon
 import com.wafflestudio.snutt2.ui.components.compose.PeopleOffIcon
@@ -24,7 +25,6 @@ import com.wafflestudio.snutt2.ui.components.compose.ShareIcon
 import com.wafflestudio.snutt2.ui.components.compose.TrashIcon
 import com.wafflestudio.snutt2.ui.components.compose.WriteIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
-import com.wafflestudio.snutt2.domain.model.TableSummary
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.isDarkMode

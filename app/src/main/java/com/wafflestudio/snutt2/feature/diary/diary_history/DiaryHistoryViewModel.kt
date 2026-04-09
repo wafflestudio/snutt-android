@@ -3,14 +3,14 @@ package com.wafflestudio.snutt2.feature.diary.diary_history
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.lecture_diary.DiaryRepository
+import com.wafflestudio.snutt2.data.onFailure
+import com.wafflestudio.snutt2.data.onSuccess
 import com.wafflestudio.snutt2.data.user.UserRepository
+import com.wafflestudio.snutt2.domain.DisplayMessageResolver
 import com.wafflestudio.snutt2.domain.model.CourseBook
 import com.wafflestudio.snutt2.domain.model.diary.CourseBookDiarySubmissions
 import com.wafflestudio.snutt2.domain.model.diary.DiarySummary
 import com.wafflestudio.snutt2.lib.Selectable
-import com.wafflestudio.snutt2.domain.DisplayMessageResolver
-import com.wafflestudio.snutt2.data.onFailure
-import com.wafflestudio.snutt2.data.onSuccess
 import com.wafflestudio.snutt2.lib.toggle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -95,6 +95,7 @@ class DiaryHistoryViewModel @Inject constructor(
                 is DiaryHistoryUiState.Success -> state.copy(
                     selectedCourseBook = state.courseBooks[coursebookIndex],
                 )
+
                 else -> state
             }
         }
@@ -114,6 +115,7 @@ class DiaryHistoryViewModel @Inject constructor(
                         diarySummariesByCourseBook = state.diarySummariesByCourseBook + (selectedCourseBook to updatedDiarySummariesByDate),
                     )
                 }
+
                 else -> state
             }
         }
@@ -125,6 +127,7 @@ class DiaryHistoryViewModel @Inject constructor(
                 is DiaryHistoryUiState.Success -> state.copy(
                     dialogState = DiaryHistoryUiState.DialogState.DeleteDiary(diary),
                 )
+
                 else -> state
             }
         }
@@ -136,6 +139,7 @@ class DiaryHistoryViewModel @Inject constructor(
                 is DiaryHistoryUiState.Success -> state.copy(
                     dialogState = DiaryHistoryUiState.DialogState.None,
                 )
+
                 else -> state
             }
         }
@@ -163,6 +167,7 @@ class DiaryHistoryViewModel @Inject constructor(
                                     dialogState = DiaryHistoryUiState.DialogState.None,
                                 )
                             }
+
                             else -> state
                         }
                     }

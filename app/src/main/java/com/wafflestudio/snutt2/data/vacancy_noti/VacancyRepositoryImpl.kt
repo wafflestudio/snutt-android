@@ -1,13 +1,13 @@
 package com.wafflestudio.snutt2.data.vacancy_noti
 
-import com.wafflestudio.snutt2.storage.SNUTTStorage
+import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.data.mapper.toSearchedLecture
 import com.wafflestudio.snutt2.domain.model.Lecture
 import com.wafflestudio.snutt2.domain.model.SearchedLecture
 import com.wafflestudio.snutt2.domain.model.SyllabusLecture
-import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.network.api.SNUTTRestApi
 import com.wafflestudio.snutt2.network.error.toDomainError
+import com.wafflestudio.snutt2.storage.SNUTTStorage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

@@ -34,14 +34,14 @@ import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.domain.model.SocialLoginType
+import com.wafflestudio.snutt2.domain.model.SocialProviders
+import com.wafflestudio.snutt2.domain.model.getString
+import com.wafflestudio.snutt2.lib.facebook.facebookLogin
 import com.wafflestudio.snutt2.ui.components.compose.CustomDialog
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
-import com.wafflestudio.snutt2.ui.util.toast
-import com.wafflestudio.snutt2.domain.model.SocialProviders
-import com.wafflestudio.snutt2.lib.facebook.facebookLogin
-import com.wafflestudio.snutt2.domain.model.SocialLoginType
-import com.wafflestudio.snutt2.domain.model.getString
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
+import com.wafflestudio.snutt2.ui.util.toast
 import kotlinx.coroutines.launch
 
 @SuppressLint("LocalContextGetResourceValueCall")

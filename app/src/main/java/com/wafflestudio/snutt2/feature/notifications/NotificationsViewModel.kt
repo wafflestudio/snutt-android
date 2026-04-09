@@ -5,9 +5,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.wafflestudio.snutt2.data.notifications.NotificationRepository
+import com.wafflestudio.snutt2.domain.model.Notification
 import com.wafflestudio.snutt2.navigation.DeeplinkAction
 import com.wafflestudio.snutt2.navigation.DeeplinkParser
-import com.wafflestudio.snutt2.domain.model.Notification
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

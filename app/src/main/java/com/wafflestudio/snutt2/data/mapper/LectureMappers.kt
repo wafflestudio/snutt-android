@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.data.mapper
 
 import com.wafflestudio.snutt2.domain.model.Building
-import com.wafflestudio.snutt2.domain.model.Campus
 import com.wafflestudio.snutt2.domain.model.CustomLecture
 import com.wafflestudio.snutt2.domain.model.GeoCoordinate
 import com.wafflestudio.snutt2.domain.model.Lecture

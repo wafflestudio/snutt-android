@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.android.webview.LoadState
-import com.wafflestudio.snutt2.feature.thememarket.ThemeMarketWebViewContainer
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTheme
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
@@ -45,10 +44,12 @@ fun ThemeMarketWebView(
             },
             modifier = modifier,
         )
+
         is LoadState.Loading -> ThemeMarketWebViewLoading(
             progress = loadState.progress / 100f,
             modifier = modifier,
         )
+
         LoadState.Success -> ThemeMarketWebViewSuccess(
             webView = themeMarketWebViewContainer.webView,
             modifier = modifier,

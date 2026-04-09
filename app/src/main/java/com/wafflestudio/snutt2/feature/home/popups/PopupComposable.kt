@@ -1,7 +1,16 @@
 package com.wafflestudio.snutt2.feature.home.popups
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,8 +26,8 @@ import androidx.compose.ui.unit.min
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.logging.compose.PopupLoggingEffect
+import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 
 @Composable
@@ -79,13 +88,13 @@ fun Popup(
                 Text(
                     text = stringResource(id = R.string.popup_close_message),
                     modifier =
-                    Modifier
-                        .padding(
-                            horizontal = 20.dp,
-                            vertical = 10.dp,
-                        )
-                        .weight(2f)
-                        .clicks { onClickClose() },
+                        Modifier
+                            .padding(
+                                horizontal = 20.dp,
+                                vertical = 10.dp,
+                            )
+                            .weight(2f)
+                            .clicks { onClickClose() },
                     textAlign = TextAlign.Center,
                     color = SNUTTColors.AllWhite,
                 )

@@ -12,20 +12,20 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.storage.SNUTTStorage
 import com.wafflestudio.snutt2.domain.model.CustomLecture
 import com.wafflestudio.snutt2.domain.model.LectureColor
 import com.wafflestudio.snutt2.domain.model.LectureSession
 import com.wafflestudio.snutt2.domain.model.LocalLecture
 import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
+import com.wafflestudio.snutt2.storage.SNUTTStorage
+import com.wafflestudio.snutt2.ui.theme.isSystemDarkMode
 import com.wafflestudio.snutt2.ui.util.contains
 import com.wafflestudio.snutt2.ui.util.dp
 import com.wafflestudio.snutt2.ui.util.getFittingTrimParam
 import com.wafflestudio.snutt2.ui.util.roundToCompact
 import com.wafflestudio.snutt2.ui.util.sp
 import com.wafflestudio.snutt2.ui.util.toDayString
-import com.wafflestudio.snutt2.ui.theme.isSystemDarkMode
 import kotlin.math.max
 import kotlin.math.min
 

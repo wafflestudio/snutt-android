@@ -6,6 +6,7 @@ import com.wafflestudio.snutt2.network.dto.DeleteLectureResults
 import com.wafflestudio.snutt2.network.dto.DeleteSocialLinkResults
 import com.wafflestudio.snutt2.network.dto.DeleteTableResults
 import com.wafflestudio.snutt2.network.dto.DeleteUserAccountResults
+import com.wafflestudio.snutt2.network.dto.DiaryQuestionnaireDto
 import com.wafflestudio.snutt2.network.dto.DiaryQuestionnaireRequestDto
 import com.wafflestudio.snutt2.network.dto.DiarySubmissionRequestDto
 import com.wafflestudio.snutt2.network.dto.GetBookmarkListResults
@@ -87,7 +88,6 @@ import com.wafflestudio.snutt2.network.dto.PutUserPasswordResults
 import com.wafflestudio.snutt2.network.dto.RegisterFirebaseTokenParams
 import com.wafflestudio.snutt2.network.dto.RegisterFirebaseTokenResults
 import com.wafflestudio.snutt2.network.dto.ResetLectureResults
-import com.wafflestudio.snutt2.network.dto.DiaryQuestionnaireDto
 import com.wafflestudio.snutt2.network.dto.TimetableLectureReminderDto
 import retrofit2.http.Body
 import retrofit2.http.DELETE

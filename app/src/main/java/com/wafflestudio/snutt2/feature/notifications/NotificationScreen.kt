@@ -31,6 +31,9 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.domain.model.Notification
+import com.wafflestudio.snutt2.domain.model.NotificationType
+import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.ui.components.compose.AlarmOnIcon
 import com.wafflestudio.snutt2.ui.components.compose.CalendarIcon
 import com.wafflestudio.snutt2.ui.components.compose.ChevronIcon
@@ -42,13 +45,10 @@ import com.wafflestudio.snutt2.ui.components.compose.RefreshTimeIcon
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.ui.components.compose.WarningIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
-import com.wafflestudio.snutt2.domain.model.Notification
-import com.wafflestudio.snutt2.domain.model.NotificationType
-import com.wafflestudio.snutt2.domain.model.preview.PreviewData
-import com.wafflestudio.snutt2.ui.util.SNUTTStringUtils.getNotificationTime
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
+import com.wafflestudio.snutt2.ui.util.SNUTTStringUtils.getNotificationTime
 import kotlinx.coroutines.flow.flowOf
 
 @Composable

@@ -1,7 +1,5 @@
 package com.wafflestudio.snutt2.domain.model
 
-import com.wafflestudio.snutt2.domain.model.TagType
-
 sealed interface SearchTag {
     val type: TagType
     fun toItemKey(): String = toString()

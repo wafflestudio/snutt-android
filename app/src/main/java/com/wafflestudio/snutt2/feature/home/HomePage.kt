@@ -21,15 +21,15 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.domain.model.LocalLecture
 import com.wafflestudio.snutt2.domain.model.SearchedLecture
-import com.wafflestudio.snutt2.feature.reviews.ReviewWebViewContainer
-import com.wafflestudio.snutt2.ui.theme.SNUTTColors
-import com.wafflestudio.snutt2.ui.theme.isDarkMode
-import com.wafflestudio.snutt2.feature.home.drawer.TimeTableRoute
 import com.wafflestudio.snutt2.feature.friend.FriendsRoute
+import com.wafflestudio.snutt2.feature.home.drawer.TimeTableRoute
 import com.wafflestudio.snutt2.feature.home.popups.Popup
 import com.wafflestudio.snutt2.feature.reviews.ReviewPage
+import com.wafflestudio.snutt2.feature.reviews.ReviewWebViewContainer
 import com.wafflestudio.snutt2.feature.search.SearchRoute
 import com.wafflestudio.snutt2.feature.settings.SettingsRoute
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.isDarkMode
 
 @Composable
 fun HomePageRoute(

@@ -14,12 +14,12 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.domain.model.CustomTheme
-import com.wafflestudio.snutt2.ui.theme.isDarkMode
 import com.wafflestudio.snutt2.feature.lecture_detail.ColorItem
 import com.wafflestudio.snutt2.feature.lecture_detail.ColorPickerDialog
 import com.wafflestudio.snutt2.feature.lecture_detail.CustomColorSection
+import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
+import com.wafflestudio.snutt2.ui.theme.isDarkMode
 
 @Composable
 fun LectureColorSelectorScreen(

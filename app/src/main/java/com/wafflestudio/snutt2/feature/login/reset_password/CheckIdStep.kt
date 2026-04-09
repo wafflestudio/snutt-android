@@ -30,9 +30,9 @@ import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.components.compose.EditTextFieldValue
 import com.wafflestudio.snutt2.ui.components.compose.WebViewStyleButton
-import com.wafflestudio.snutt2.ui.util.toast
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
+import com.wafflestudio.snutt2.ui.util.toast
 
 @Composable
 fun CheckIdStep(

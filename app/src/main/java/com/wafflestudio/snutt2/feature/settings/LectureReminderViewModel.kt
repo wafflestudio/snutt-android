@@ -2,17 +2,17 @@ package com.wafflestudio.snutt2.feature.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.wafflestudio.snutt2.data.onFailure
+import com.wafflestudio.snutt2.data.onSuccess
 import com.wafflestudio.snutt2.data.semester_status.SemesterStatusRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
-import com.wafflestudio.snutt2.domain.model.LectureReminderOffset
-import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
-import com.wafflestudio.snutt2.lib.debouncePerKey
 import com.wafflestudio.snutt2.domain.AuthError
 import com.wafflestudio.snutt2.domain.DisplayMessageResolver
 import com.wafflestudio.snutt2.domain.DomainError
-import com.wafflestudio.snutt2.data.onFailure
-import com.wafflestudio.snutt2.data.onSuccess
+import com.wafflestudio.snutt2.domain.model.LectureReminderOffset
+import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
+import com.wafflestudio.snutt2.lib.debouncePerKey
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,6 +43,7 @@ class LectureReminderViewModel @Inject constructor(
 
     private val _currentTimetableId = MutableStateFlow("")
     private val _primaryTimetableId = MutableStateFlow("")
+
     init {
         loadInitialData()
         handleUpdateEvents()
@@ -120,6 +121,7 @@ class LectureReminderViewModel @Inject constructor(
                 userRepository.postForceLogout()
                 _lectureReminderUiEvent.emit(LectureReminderUiEvent.LoggedOut)
             }
+
             else -> {
                 _lectureReminderUiEvent.emit(LectureReminderUiEvent.ShowToast(displayMessage))
             }
@@ -135,6 +137,7 @@ class LectureReminderViewModel @Inject constructor(
                         this[lectureId] = option
                     },
                 )
+
                 else -> state
             }
         }

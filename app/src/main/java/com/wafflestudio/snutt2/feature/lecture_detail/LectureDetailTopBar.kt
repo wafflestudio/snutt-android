@@ -10,15 +10,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.domain.model.Lecture
+import com.wafflestudio.snutt2.domain.model.LectureSyllabusInfo
+import com.wafflestudio.snutt2.domain.model.LocalLecture
+import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.ui.components.compose.ArrowBackIcon
 import com.wafflestudio.snutt2.ui.components.compose.BookmarkIcon
 import com.wafflestudio.snutt2.ui.components.compose.RingingAlarmIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.clicks
-import com.wafflestudio.snutt2.domain.model.Lecture
-import com.wafflestudio.snutt2.domain.model.LectureSyllabusInfo
-import com.wafflestudio.snutt2.domain.model.LocalLecture
-import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 

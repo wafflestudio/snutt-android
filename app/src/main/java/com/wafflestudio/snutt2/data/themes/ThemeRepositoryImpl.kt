@@ -1,12 +1,12 @@
 package com.wafflestudio.snutt2.data.themes
 
+import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.data.mapper.toTableTheme
 import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.CustomTheme
 import com.wafflestudio.snutt2.domain.model.ThemeColor
-import com.wafflestudio.snutt2.data.Result
-import com.wafflestudio.snutt2.network.dto.ColorDto
 import com.wafflestudio.snutt2.network.api.SNUTTRestApi
+import com.wafflestudio.snutt2.network.dto.ColorDto
 import com.wafflestudio.snutt2.network.dto.PatchThemeParams
 import com.wafflestudio.snutt2.network.dto.PostThemeParams
 import com.wafflestudio.snutt2.network.error.toDomainError

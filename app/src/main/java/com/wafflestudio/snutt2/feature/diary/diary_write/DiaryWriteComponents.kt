@@ -27,6 +27,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -34,17 +35,16 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.domain.model.diary.DiaryDailyClassType
+import com.wafflestudio.snutt2.domain.model.diary.DiaryQuestion
+import com.wafflestudio.snutt2.feature.diary.DiaryTheme
+import com.wafflestudio.snutt2.lib.Selectable
+import com.wafflestudio.snutt2.lib.anySelected
 import com.wafflestudio.snutt2.ui.components.compose.ArrowDownIcon
 import com.wafflestudio.snutt2.ui.components.compose.EditText
 import com.wafflestudio.snutt2.ui.components.compose.clicks
-import com.wafflestudio.snutt2.domain.model.diary.DiaryDailyClassType
-import com.wafflestudio.snutt2.domain.model.diary.DiaryQuestion
-import androidx.compose.ui.res.stringResource
-import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.lib.Selectable
-import com.wafflestudio.snutt2.lib.anySelected
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
-import com.wafflestudio.snutt2.feature.diary.DiaryTheme
 
 @Composable
 fun DiaryActivitySelectSection(

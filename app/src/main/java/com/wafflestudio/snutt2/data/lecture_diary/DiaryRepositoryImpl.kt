@@ -1,14 +1,14 @@
 package com.wafflestudio.snutt2.data.lecture_diary
 
+import com.wafflestudio.snutt2.data.Result
+import com.wafflestudio.snutt2.data.mapper.toDomain
 import com.wafflestudio.snutt2.domain.model.diary.DiaryAnsweredQuestion
 import com.wafflestudio.snutt2.domain.model.diary.DiaryDailyClassType
 import com.wafflestudio.snutt2.domain.model.diary.DiarySummary
-import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.network.api.SNUTTRestApi
+import com.wafflestudio.snutt2.network.dto.DiaryQuestionAnswerDto
 import com.wafflestudio.snutt2.network.dto.DiaryQuestionnaireRequestDto
 import com.wafflestudio.snutt2.network.dto.DiarySubmissionRequestDto
-import com.wafflestudio.snutt2.network.dto.DiaryQuestionAnswerDto
-import com.wafflestudio.snutt2.data.mapper.toDomain
 import com.wafflestudio.snutt2.network.error.toDomainError
 import javax.inject.Inject
 import javax.inject.Singleton

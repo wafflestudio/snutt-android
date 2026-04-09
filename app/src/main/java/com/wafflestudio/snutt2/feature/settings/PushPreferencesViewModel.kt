@@ -2,14 +2,14 @@ package com.wafflestudio.snutt2.feature.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.wafflestudio.snutt2.data.onFailure
+import com.wafflestudio.snutt2.data.onSuccess
 import com.wafflestudio.snutt2.data.user.UserRepository
-import com.wafflestudio.snutt2.domain.model.PushPreferenceType
-import com.wafflestudio.snutt2.domain.model.PushPreferences
 import com.wafflestudio.snutt2.domain.AuthError
 import com.wafflestudio.snutt2.domain.DisplayMessageResolver
 import com.wafflestudio.snutt2.domain.DomainError
-import com.wafflestudio.snutt2.data.onFailure
-import com.wafflestudio.snutt2.data.onSuccess
+import com.wafflestudio.snutt2.domain.model.PushPreferenceType
+import com.wafflestudio.snutt2.domain.model.PushPreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -83,6 +83,7 @@ class PushPreferencesViewModel @Inject constructor(
                 userRepository.postForceLogout()
                 _pushPreferencesUiEvent.emit(PushPreferencesUiEvent.NavigateToOnboard)
             }
+
             else -> {
                 _pushPreferencesUiEvent.emit(PushPreferencesUiEvent.ShowToast(displayMessage))
             }

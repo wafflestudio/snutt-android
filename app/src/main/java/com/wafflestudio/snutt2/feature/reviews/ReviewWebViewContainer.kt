@@ -3,7 +3,13 @@ package com.wafflestudio.snutt2.feature.reviews
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Build
-import android.webkit.*
+import android.webkit.CookieManager
+import android.webkit.JavascriptInterface
+import android.webkit.WebChromeClient
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.wafflestudio.snutt2.BuildConfig
@@ -90,11 +96,11 @@ class ReviewWebViewContainer(
             setCookie(
                 reviewUrlHost,
                 "theme=${
-                if (isDarkMode) {
-                    "dark"
-                } else {
-                    "light"
-                }
+                    if (isDarkMode) {
+                        "dark"
+                    } else {
+                        "light"
+                    }
                 }",
             )
         }.flush()
@@ -120,11 +126,11 @@ class ReviewWebViewContainer(
             setCookie(
                 reviewUrlHost,
                 "theme=${
-                if (isDarkMode) {
-                    "dark"
-                } else {
-                    "light"
-                }
+                    if (isDarkMode) {
+                        "dark"
+                    } else {
+                        "light"
+                    }
                 }",
             )
         }.flush()

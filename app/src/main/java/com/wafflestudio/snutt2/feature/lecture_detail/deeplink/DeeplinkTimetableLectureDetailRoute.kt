@@ -19,13 +19,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
 import com.wafflestudio.snutt2.domain.model.SyllabusLecture
-import com.wafflestudio.snutt2.ui.util.toast
+import com.wafflestudio.snutt2.feature.lecture_detail.LectureDetail
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.DetailScreenReferrer
 import com.wafflestudio.snutt2.logging.LectureDetailParameter
 import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
-import com.wafflestudio.snutt2.feature.lecture_detail.LectureDetail
+import com.wafflestudio.snutt2.ui.util.toast
 
 @Composable
 fun DeeplinkTimetableLectureDetailRoute(

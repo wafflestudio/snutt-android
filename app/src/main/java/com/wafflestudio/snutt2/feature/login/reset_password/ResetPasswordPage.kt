@@ -19,12 +19,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.ui.components.compose.IOSStyleTopBar
-import com.wafflestudio.snutt2.ui.util.toast
 import com.wafflestudio.snutt2.feature.login.reset_password.FindPasswordViewModel.UIState.CheckId
 import com.wafflestudio.snutt2.feature.login.reset_password.FindPasswordViewModel.UIState.EnterFullEmail
 import com.wafflestudio.snutt2.feature.login.reset_password.FindPasswordViewModel.UIState.EnterNewPassword
 import com.wafflestudio.snutt2.feature.login.reset_password.FindPasswordViewModel.UIState.VerifyCode
+import com.wafflestudio.snutt2.ui.components.compose.IOSStyleTopBar
+import com.wafflestudio.snutt2.ui.util.toast
 
 @Composable
 fun ResetPasswordPage(
