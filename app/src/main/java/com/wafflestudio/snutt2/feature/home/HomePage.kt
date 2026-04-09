@@ -24,9 +24,9 @@ import com.wafflestudio.snutt2.domain.model.SearchedLecture
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
-import com.wafflestudio.snutt2.views.logged_in.home.drawer.TimeTableRoute
+import com.wafflestudio.snutt2.feature.home.drawer.TimeTableRoute
 import com.wafflestudio.snutt2.feature.friend.FriendsRoute
-import com.wafflestudio.snutt2.views.logged_in.home.popups.Popup
+import com.wafflestudio.snutt2.feature.home.popups.Popup
 import com.wafflestudio.snutt2.feature.reviews.ReviewPage
 import com.wafflestudio.snutt2.feature.search.SearchRoute
 import com.wafflestudio.snutt2.feature.settings.SettingsRoute

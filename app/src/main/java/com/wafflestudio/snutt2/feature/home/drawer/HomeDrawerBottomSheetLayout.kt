@@ -16,9 +16,9 @@ import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.HomeDrawerLoggingEffect
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.logging.LocalAnalyticsLogger
-import com.wafflestudio.snutt2.views.logged_in.home.drawer.bottom_sheet.CreateTableBottomSheet
-import com.wafflestudio.snutt2.views.logged_in.home.drawer.bottom_sheet.MoreActionSheet
-import com.wafflestudio.snutt2.views.logged_in.home.drawer.bottom_sheet.SelectThemeSheetContent
+import com.wafflestudio.snutt2.feature.home.drawer.bottom_sheet.CreateTableBottomSheet
+import com.wafflestudio.snutt2.feature.home.drawer.bottom_sheet.MoreActionSheet
+import com.wafflestudio.snutt2.feature.home.drawer.bottom_sheet.SelectThemeSheetContent
 
 /**
  * 논의

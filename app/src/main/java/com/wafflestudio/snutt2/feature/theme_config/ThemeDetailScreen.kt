@@ -49,7 +49,7 @@ import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 import com.wafflestudio.snutt2.ui.theme.onSurfaceVariant
 import com.wafflestudio.snutt2.feature.settings.SettingColumn
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
+import com.wafflestudio.snutt2.feature.home.timetable.TimeTable
 
 @Composable
 fun ThemeDetailRoute(

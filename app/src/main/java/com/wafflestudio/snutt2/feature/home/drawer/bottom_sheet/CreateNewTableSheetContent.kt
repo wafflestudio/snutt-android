@@ -34,7 +34,7 @@ import com.wafflestudio.snutt2.domain.model.CourseBook
 import com.wafflestudio.snutt2.lib.toFormattedString
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
-import com.wafflestudio.snutt2.views.logged_in.home.drawer.HomeDrawerBottomSheetType
+import com.wafflestudio.snutt2.feature.home.drawer.HomeDrawerBottomSheetType
 
 @Composable
 fun CreateTableBottomSheet(

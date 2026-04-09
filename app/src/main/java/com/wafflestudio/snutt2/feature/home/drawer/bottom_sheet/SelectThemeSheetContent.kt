@@ -34,7 +34,7 @@ import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
-import com.wafflestudio.snutt2.views.logged_in.home.drawer.HomeDrawerBottomSheetType
+import com.wafflestudio.snutt2.feature.home.drawer.HomeDrawerBottomSheetType
 import com.wafflestudio.snutt2.feature.theme_config.AddThemeItem
 
 @Composable

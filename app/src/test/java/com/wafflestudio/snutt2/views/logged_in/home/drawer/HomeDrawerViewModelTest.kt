@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_in.home.drawer
+package com.wafflestudio.snutt2.feature.home.drawer
 
 import app.cash.turbine.test
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase

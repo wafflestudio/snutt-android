@@ -62,7 +62,7 @@ import com.wafflestudio.snutt2.lib.toFormattedString
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
-import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
+import com.wafflestudio.snutt2.feature.home.timetable.TimeTable
 import kotlinx.coroutines.launch
 
 @Composable
