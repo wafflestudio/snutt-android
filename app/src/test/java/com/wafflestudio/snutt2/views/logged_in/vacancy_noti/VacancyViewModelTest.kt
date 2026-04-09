@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_in.vacancy_noti
+package com.wafflestudio.snutt2.feature.vacancy_noti
 
 import app.cash.turbine.test
 import com.wafflestudio.snutt2.fake.FakeDisplayMessageResolver
