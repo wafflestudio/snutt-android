@@ -1,10 +1,10 @@
 package com.wafflestudio.snutt2.data.mapper
 
-import com.wafflestudio.snutt2.domainmodel.Nickname
-import com.wafflestudio.snutt2.domainmodel.PushPreferences
-import com.wafflestudio.snutt2.domainmodel.PushPreferenceType
-import com.wafflestudio.snutt2.domainmodel.User
-import com.wafflestudio.snutt2.domainmodel.getString
+import com.wafflestudio.snutt2.domain.model.Nickname
+import com.wafflestudio.snutt2.domain.model.PushPreferences
+import com.wafflestudio.snutt2.domain.model.PushPreferenceType
+import com.wafflestudio.snutt2.domain.model.User
+import com.wafflestudio.snutt2.domain.model.getString
 import com.wafflestudio.snutt2.network.dto.PushPreferenceDto
 import com.wafflestudio.snutt2.network.dto.PushPreferenceItemDto
 import com.wafflestudio.snutt2.network.dto.NicknameDto

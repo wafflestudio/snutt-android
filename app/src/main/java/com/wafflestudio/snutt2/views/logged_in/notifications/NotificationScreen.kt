@@ -42,9 +42,9 @@ import com.wafflestudio.snutt2.components.compose.RefreshTimeIcon
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.components.compose.WarningIcon
 import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.domainmodel.Notification
-import com.wafflestudio.snutt2.domainmodel.NotificationType
-import com.wafflestudio.snutt2.domainmodel.preview.PreviewData
+import com.wafflestudio.snutt2.domain.model.Notification
+import com.wafflestudio.snutt2.domain.model.NotificationType
+import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getNotificationTime
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography

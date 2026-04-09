@@ -1,8 +1,8 @@
 package com.wafflestudio.snutt2.data.lecture_diary
 
-import com.wafflestudio.snutt2.domainmodel.diary.DiaryAnsweredQuestion
-import com.wafflestudio.snutt2.domainmodel.diary.DiaryDailyClassType
-import com.wafflestudio.snutt2.domainmodel.diary.DiarySummary
+import com.wafflestudio.snutt2.domain.model.diary.DiaryAnsweredQuestion
+import com.wafflestudio.snutt2.domain.model.diary.DiaryDailyClassType
+import com.wafflestudio.snutt2.domain.model.diary.DiarySummary
 import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.network.api.SNUTTRestApi
 import com.wafflestudio.snutt2.network.dto.DiaryQuestionnaireRequestDto
@@ -76,7 +76,7 @@ class DiaryRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getMyDiarySubmissions(): Result<List<com.wafflestudio.snutt2.domainmodel.diary.CourseBookDiarySubmissions>> {
+    override suspend fun getMyDiarySubmissions(): Result<List<com.wafflestudio.snutt2.domain.model.diary.CourseBookDiarySubmissions>> {
         return try {
             val result = api._getMyDiarySubmissions()
             Result.Success(

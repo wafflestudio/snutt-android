@@ -3,9 +3,9 @@ package com.wafflestudio.snutt2.components.compose
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
-import com.wafflestudio.snutt2.domainmodel.CustomTheme
-import com.wafflestudio.snutt2.domainmodel.TableTheme
+import com.wafflestudio.snutt2.domain.model.BuiltInTheme
+import com.wafflestudio.snutt2.domain.model.CustomTheme
+import com.wafflestudio.snutt2.domain.model.TableTheme
 
 @Composable
 fun TableTheme.displayName(): String = when (this) {

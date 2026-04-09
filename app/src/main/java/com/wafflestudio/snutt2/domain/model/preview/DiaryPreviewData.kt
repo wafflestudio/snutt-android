@@ -1,8 +1,8 @@
 package com.wafflestudio.snutt2.domain.model.preview
 
-import com.wafflestudio.snutt2.domainmodel.CourseBook
-import com.wafflestudio.snutt2.domainmodel.diary.DiaryQuestionAnswer
-import com.wafflestudio.snutt2.domainmodel.diary.DiarySummary
+import com.wafflestudio.snutt2.domain.model.CourseBook
+import com.wafflestudio.snutt2.domain.model.diary.DiaryQuestionAnswer
+import com.wafflestudio.snutt2.domain.model.diary.DiarySummary
 import com.wafflestudio.snutt2.lib.toDataWithState
 import java.time.LocalDate
 

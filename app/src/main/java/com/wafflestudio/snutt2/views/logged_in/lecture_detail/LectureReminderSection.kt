@@ -13,9 +13,9 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SegmentedPicker
-import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
-import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
-import com.wafflestudio.snutt2.domainmodel.preview.PreviewData
+import com.wafflestudio.snutt2.domain.model.LectureReminderOffset
+import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
+import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.ui.SNUTTColors
 
 @Composable

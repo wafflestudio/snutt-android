@@ -1,8 +1,8 @@
 package com.wafflestudio.snutt2.views.logged_in.lecture_detail.current_table
 
 import androidx.compose.runtime.Composable
-import com.wafflestudio.snutt2.domainmodel.LectureSession
-import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
+import com.wafflestudio.snutt2.domain.model.LectureSession
+import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
 import com.wafflestudio.snutt2.lib.featureflag.FeatureFlag
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetail
 

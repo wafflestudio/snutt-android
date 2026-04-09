@@ -1,7 +1,7 @@
 package com.wafflestudio.snutt2.data.vacancy_noti
 
-import com.wafflestudio.snutt2.domainmodel.Lecture
-import com.wafflestudio.snutt2.domainmodel.SearchedLecture
+import com.wafflestudio.snutt2.domain.model.Lecture
+import com.wafflestudio.snutt2.domain.model.SearchedLecture
 import com.wafflestudio.snutt2.data.Result
 import kotlinx.coroutines.flow.StateFlow
 

@@ -6,11 +6,11 @@ import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.data.current_table_lecture.CurrentTableLectureRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
-import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
-import com.wafflestudio.snutt2.domainmodel.CustomLecture
-import com.wafflestudio.snutt2.domainmodel.LectureColor
-import com.wafflestudio.snutt2.domainmodel.LectureSession
-import com.wafflestudio.snutt2.domainmodel.TableTheme
+import com.wafflestudio.snutt2.domain.model.BuiltInTheme
+import com.wafflestudio.snutt2.domain.model.CustomLecture
+import com.wafflestudio.snutt2.domain.model.LectureColor
+import com.wafflestudio.snutt2.domain.model.LectureSession
+import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.domain.AuthError
 import com.wafflestudio.snutt2.domain.DisplayMessageResolver
 import com.wafflestudio.snutt2.domain.DomainError

@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.lecture_diary.DiaryRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
-import com.wafflestudio.snutt2.domainmodel.diary.DiaryAnsweredQuestion
+import com.wafflestudio.snutt2.domain.model.diary.DiaryAnsweredQuestion
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.isSelected
 import com.wafflestudio.snutt2.domain.AuthError

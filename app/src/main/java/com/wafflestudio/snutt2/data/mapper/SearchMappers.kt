@@ -1,7 +1,7 @@
 package com.wafflestudio.snutt2.data.mapper
 
-import com.wafflestudio.snutt2.domainmodel.SearchTag
-import com.wafflestudio.snutt2.domainmodel.SearchTime
+import com.wafflestudio.snutt2.domain.model.SearchTag
+import com.wafflestudio.snutt2.domain.model.SearchTime
 import com.wafflestudio.snutt2.network.dto.SearchTimeDto
 import com.wafflestudio.snutt2.network.dto.TagDto
 

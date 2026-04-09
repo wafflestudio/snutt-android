@@ -7,7 +7,7 @@ import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.CameraUpdate
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.domainmodel.Building
+import com.wafflestudio.snutt2.domain.model.Building
 import com.wafflestudio.snutt2.lib.android.toast
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets

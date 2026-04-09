@@ -1,7 +1,7 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings.diary.diary_write
 
-import com.wafflestudio.snutt2.domainmodel.diary.DiaryDailyClassType
-import com.wafflestudio.snutt2.domainmodel.diary.DiaryQuestion
+import com.wafflestudio.snutt2.domain.model.diary.DiaryDailyClassType
+import com.wafflestudio.snutt2.domain.model.diary.DiaryQuestion
 import com.wafflestudio.snutt2.lib.Selectable
 
 object DiaryPreviewData {

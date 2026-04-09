@@ -30,8 +30,8 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.ArrowDownIcon
 import com.wafflestudio.snutt2.components.compose.TrashIcon
 import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.domainmodel.diary.DiaryQuestionAnswer
-import com.wafflestudio.snutt2.domainmodel.diary.DiarySummary
+import com.wafflestudio.snutt2.domain.model.diary.DiaryQuestionAnswer
+import com.wafflestudio.snutt2.domain.model.diary.DiarySummary
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryTheme
 import java.time.LocalDate

@@ -1,8 +1,8 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import app.cash.turbine.test
-import com.wafflestudio.snutt2.domainmodel.PushPreferenceType
-import com.wafflestudio.snutt2.domainmodel.PushPreferences
+import com.wafflestudio.snutt2.domain.model.PushPreferenceType
+import com.wafflestudio.snutt2.domain.model.PushPreferences
 import com.wafflestudio.snutt2.fake.FakeDisplayMessageResolver
 import com.wafflestudio.snutt2.fake.FakeUserRepository
 import com.wafflestudio.snutt2.data.Result

@@ -1,7 +1,7 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings.diary.diary_history
 
-import com.wafflestudio.snutt2.domainmodel.CourseBook
-import com.wafflestudio.snutt2.domainmodel.diary.DiarySummary
+import com.wafflestudio.snutt2.domain.model.CourseBook
+import com.wafflestudio.snutt2.domain.model.diary.DiarySummary
 import com.wafflestudio.snutt2.lib.Selectable
 import java.time.LocalDate
 

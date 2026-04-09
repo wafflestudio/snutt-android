@@ -17,15 +17,15 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.components.compose.embed_map.FoldableEmbedMap
-import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
-import com.wafflestudio.snutt2.domainmodel.Lecture
-import com.wafflestudio.snutt2.domainmodel.LectureReviewInfo
-import com.wafflestudio.snutt2.domainmodel.LectureSession
-import com.wafflestudio.snutt2.domainmodel.LectureSyllabusInfo
-import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
-import com.wafflestudio.snutt2.domainmodel.TableTheme
-import com.wafflestudio.snutt2.domainmodel.preview.PreviewData
-import com.wafflestudio.snutt2.domainmodel.Building
+import com.wafflestudio.snutt2.domain.model.BuiltInTheme
+import com.wafflestudio.snutt2.domain.model.Lecture
+import com.wafflestudio.snutt2.domain.model.LectureReviewInfo
+import com.wafflestudio.snutt2.domain.model.LectureSession
+import com.wafflestudio.snutt2.domain.model.LectureSyllabusInfo
+import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
+import com.wafflestudio.snutt2.domain.model.TableTheme
+import com.wafflestudio.snutt2.domain.model.preview.PreviewData
+import com.wafflestudio.snutt2.domain.model.Building
 import com.wafflestudio.snutt2.ui.SNUTTColors
 
 @Composable

@@ -2,8 +2,8 @@ package com.wafflestudio.snutt2.views.logged_in.home.search.search_option
 
 import android.content.Context
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.domainmodel.SearchTime
-import com.wafflestudio.snutt2.domainmodel.TableTrimParam
+import com.wafflestudio.snutt2.domain.model.SearchTime
+import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import java.time.DayOfWeek
 import java.time.LocalTime
 import kotlin.math.roundToInt

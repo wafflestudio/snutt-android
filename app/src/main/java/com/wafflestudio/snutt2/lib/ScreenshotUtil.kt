@@ -8,12 +8,12 @@ import android.net.Uri
 import androidx.core.content.FileProvider
 import com.facebook.FacebookSdk
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.SNUTTUtils.displayHeight
-import com.wafflestudio.snutt2.SNUTTUtils.displayWidth
+import com.wafflestudio.snutt2.lib.SNUTTUtils.displayHeight
+import com.wafflestudio.snutt2.lib.SNUTTUtils.displayWidth
 import com.wafflestudio.snutt2.components.view.TimetableView
-import com.wafflestudio.snutt2.domainmodel.Table
-import com.wafflestudio.snutt2.domainmodel.TableTheme
-import com.wafflestudio.snutt2.domainmodel.TableTrimParam
+import com.wafflestudio.snutt2.domain.model.Table
+import com.wafflestudio.snutt2.domain.model.TableTheme
+import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import java.io.File
 import java.io.FileOutputStream
 

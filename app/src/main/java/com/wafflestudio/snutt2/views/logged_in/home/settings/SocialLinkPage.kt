@@ -37,10 +37,10 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.CustomDialog
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.lib.android.toast
-import com.wafflestudio.snutt2.domainmodel.SocialProviders
+import com.wafflestudio.snutt2.domain.model.SocialProviders
 import com.wafflestudio.snutt2.lib.facebookLogin
-import com.wafflestudio.snutt2.domainmodel.SocialLoginType
-import com.wafflestudio.snutt2.domainmodel.getString
+import com.wafflestudio.snutt2.domain.model.SocialLoginType
+import com.wafflestudio.snutt2.domain.model.getString
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import kotlinx.coroutines.launch
 

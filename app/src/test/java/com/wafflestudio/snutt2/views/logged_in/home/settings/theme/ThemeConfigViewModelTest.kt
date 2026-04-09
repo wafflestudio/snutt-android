@@ -1,7 +1,7 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings.theme
 
 import app.cash.turbine.test
-import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
+import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.fake.FakeDisplayMessageResolver
 import com.wafflestudio.snutt2.fake.FakeTableRepository
 import com.wafflestudio.snutt2.fake.FakeThemeRepository
@@ -12,7 +12,7 @@ import com.wafflestudio.snutt2.fixture.TestFixtures.tableSummary
 import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.domain.Unknown
 import com.wafflestudio.snutt2.domain.WrongUserToken
-import com.wafflestudio.snutt2.domainmodel.ThemeReference
+import com.wafflestudio.snutt2.domain.model.ThemeReference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher

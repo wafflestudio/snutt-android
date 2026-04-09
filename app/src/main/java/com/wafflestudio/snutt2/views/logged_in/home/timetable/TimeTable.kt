@@ -1,11 +1,11 @@
 package com.wafflestudio.snutt2.views.logged_in.home.timetable
 
 import androidx.compose.runtime.Composable
-import com.wafflestudio.snutt2.domainmodel.LocalLecture
-import com.wafflestudio.snutt2.domainmodel.SearchedLecture
-import com.wafflestudio.snutt2.domainmodel.TableLectureCustom
-import com.wafflestudio.snutt2.domainmodel.TableTheme
-import com.wafflestudio.snutt2.domainmodel.TableTrimParam
+import com.wafflestudio.snutt2.domain.model.LocalLecture
+import com.wafflestudio.snutt2.domain.model.SearchedLecture
+import com.wafflestudio.snutt2.domain.model.TableLectureCustom
+import com.wafflestudio.snutt2.domain.model.TableTheme
+import com.wafflestudio.snutt2.domain.model.TableTrimParam
 
 @Composable
 fun TimeTable(

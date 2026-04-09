@@ -1,14 +1,14 @@
 package com.wafflestudio.snutt2.views.logged_in.home.timetable
 
-import com.wafflestudio.snutt2.domainmodel.CustomLecture
-import com.wafflestudio.snutt2.domainmodel.CustomTheme
-import com.wafflestudio.snutt2.domainmodel.LectureColor
-import com.wafflestudio.snutt2.domainmodel.LectureReviewInfo
-import com.wafflestudio.snutt2.domainmodel.LectureSession
-import com.wafflestudio.snutt2.domainmodel.LocalLecture
-import com.wafflestudio.snutt2.domainmodel.SearchedLecture
-import com.wafflestudio.snutt2.domainmodel.SyllabusLecture
-import com.wafflestudio.snutt2.domainmodel.ThemeColor
+import com.wafflestudio.snutt2.domain.model.CustomLecture
+import com.wafflestudio.snutt2.domain.model.CustomTheme
+import com.wafflestudio.snutt2.domain.model.LectureColor
+import com.wafflestudio.snutt2.domain.model.LectureReviewInfo
+import com.wafflestudio.snutt2.domain.model.LectureSession
+import com.wafflestudio.snutt2.domain.model.LocalLecture
+import com.wafflestudio.snutt2.domain.model.SearchedLecture
+import com.wafflestudio.snutt2.domain.model.SyllabusLecture
+import com.wafflestudio.snutt2.domain.model.ThemeColor
 import java.time.DayOfWeek
 import java.time.LocalTime
 

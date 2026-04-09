@@ -54,7 +54,7 @@ import com.wafflestudio.snutt2.components.compose.IconWithAlertDot
 import com.wafflestudio.snutt2.components.compose.PersonIcon
 import com.wafflestudio.snutt2.components.compose.QuestionCircleIcon
 import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.domainmodel.Friend
+import com.wafflestudio.snutt2.domain.model.Friend
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.logImpression
@@ -197,8 +197,8 @@ fun FriendsScreen(
     bottomBar: @Composable () -> Unit,
     drawerState: androidx.compose.material.DrawerState,
     bottomSheetState: androidx.compose.material.ModalBottomSheetState,
-    onSelectFriend: (com.wafflestudio.snutt2.domainmodel.Friend) -> Unit,
-    onSelectCourseBook: (com.wafflestudio.snutt2.domainmodel.CourseBook) -> Unit,
+    onSelectFriend: (com.wafflestudio.snutt2.domain.model.Friend) -> Unit,
+    onSelectCourseBook: (com.wafflestudio.snutt2.domain.model.CourseBook) -> Unit,
     onOpenDrawer: () -> Unit,
     onCloseDrawer: () -> Unit,
     onSetDrawerTab: (FriendDrawerTab) -> Unit,
@@ -206,16 +206,16 @@ fun FriendsScreen(
     onCloseBottomSheet: () -> Unit,
     onAcceptFriend: (Friend) -> Unit,
     onDeclineFriend: (Friend) -> Unit,
-    onOpenFriendDetail: (com.wafflestudio.snutt2.domainmodel.Friend) -> Unit,
+    onOpenFriendDetail: (com.wafflestudio.snutt2.domain.model.Friend) -> Unit,
     onRequestWithNickname: () -> Unit,
     onRequestWithKakaoTalk: () -> Unit,
     onSubmitNickname: (String) -> Unit,
-    onDeleteFriend: (com.wafflestudio.snutt2.domainmodel.Friend) -> Unit,
-    onEditDisplayName: (com.wafflestudio.snutt2.domainmodel.Friend) -> Unit,
-    onSubmitDisplayName: (com.wafflestudio.snutt2.domainmodel.Friend, String) -> Unit,
+    onDeleteFriend: (com.wafflestudio.snutt2.domain.model.Friend) -> Unit,
+    onEditDisplayName: (com.wafflestudio.snutt2.domain.model.Friend) -> Unit,
+    onSubmitDisplayName: (com.wafflestudio.snutt2.domain.model.Friend, String) -> Unit,
     onDismissDialog: () -> Unit,
-    onConfirmDeleteFriend: (com.wafflestudio.snutt2.domainmodel.Friend) -> Unit,
-    onConfirmDeclineFriend: (com.wafflestudio.snutt2.domainmodel.Friend) -> Unit,
+    onConfirmDeleteFriend: (com.wafflestudio.snutt2.domain.model.Friend) -> Unit,
+    onConfirmDeclineFriend: (com.wafflestudio.snutt2.domain.model.Friend) -> Unit,
     onShowGuideDialog: () -> Unit,
 ) {
     when (uiState) {
@@ -287,8 +287,8 @@ private fun FriendsLoadedScreen(
     bottomBar: @Composable () -> Unit,
     drawerState: androidx.compose.material.DrawerState,
     bottomSheetState: androidx.compose.material.ModalBottomSheetState,
-    onSelectFriend: (com.wafflestudio.snutt2.domainmodel.Friend) -> Unit,
-    onSelectCourseBook: (com.wafflestudio.snutt2.domainmodel.CourseBook) -> Unit,
+    onSelectFriend: (com.wafflestudio.snutt2.domain.model.Friend) -> Unit,
+    onSelectCourseBook: (com.wafflestudio.snutt2.domain.model.CourseBook) -> Unit,
     onOpenDrawer: () -> Unit,
     onCloseDrawer: () -> Unit,
     onSetDrawerTab: (FriendDrawerTab) -> Unit,
@@ -296,16 +296,16 @@ private fun FriendsLoadedScreen(
     onCloseBottomSheet: () -> Unit,
     onAcceptFriend: (Friend) -> Unit,
     onDeclineFriend: (Friend) -> Unit,
-    onOpenFriendDetail: (com.wafflestudio.snutt2.domainmodel.Friend) -> Unit,
+    onOpenFriendDetail: (com.wafflestudio.snutt2.domain.model.Friend) -> Unit,
     onRequestWithNickname: () -> Unit,
     onRequestWithKakaoTalk: () -> Unit,
     onSubmitNickname: (String) -> Unit,
-    onDeleteFriend: (com.wafflestudio.snutt2.domainmodel.Friend) -> Unit,
-    onEditDisplayName: (com.wafflestudio.snutt2.domainmodel.Friend) -> Unit,
-    onSubmitDisplayName: (com.wafflestudio.snutt2.domainmodel.Friend, String) -> Unit,
+    onDeleteFriend: (com.wafflestudio.snutt2.domain.model.Friend) -> Unit,
+    onEditDisplayName: (com.wafflestudio.snutt2.domain.model.Friend) -> Unit,
+    onSubmitDisplayName: (com.wafflestudio.snutt2.domain.model.Friend, String) -> Unit,
     onDismissDialog: () -> Unit,
-    onConfirmDeleteFriend: (com.wafflestudio.snutt2.domainmodel.Friend) -> Unit,
-    onConfirmDeclineFriend: (com.wafflestudio.snutt2.domainmodel.Friend) -> Unit,
+    onConfirmDeleteFriend: (com.wafflestudio.snutt2.domain.model.Friend) -> Unit,
+    onConfirmDeclineFriend: (com.wafflestudio.snutt2.domain.model.Friend) -> Unit,
     onShowGuideDialog: () -> Unit,
 ) {
     ModalBottomSheetLayout(
@@ -564,9 +564,9 @@ private fun FriendsLoadedScreen(
 
 @Composable
 private fun SemesterDropdown(
-    courseBooks: List<com.wafflestudio.snutt2.domainmodel.CourseBook>,
-    selectedCourseBook: com.wafflestudio.snutt2.domainmodel.CourseBook?,
-    onSelectCourseBook: (com.wafflestudio.snutt2.domainmodel.CourseBook) -> Unit,
+    courseBooks: List<com.wafflestudio.snutt2.domain.model.CourseBook>,
+    selectedCourseBook: com.wafflestudio.snutt2.domain.model.CourseBook?,
+    onSelectCourseBook: (com.wafflestudio.snutt2.domain.model.CourseBook) -> Unit,
 ) {
     val context = LocalContext.current
     var expanded by remember { mutableStateOf(false) }

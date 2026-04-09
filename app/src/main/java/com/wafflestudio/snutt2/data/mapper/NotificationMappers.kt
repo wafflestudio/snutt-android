@@ -1,7 +1,7 @@
 package com.wafflestudio.snutt2.data.mapper
 
-import com.wafflestudio.snutt2.domainmodel.Notification
-import com.wafflestudio.snutt2.domainmodel.NotificationType
+import com.wafflestudio.snutt2.domain.model.Notification
+import com.wafflestudio.snutt2.domain.model.NotificationType
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils
 import com.wafflestudio.snutt2.network.dto.NotificationDto
 

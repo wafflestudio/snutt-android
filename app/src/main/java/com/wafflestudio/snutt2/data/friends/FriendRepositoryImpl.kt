@@ -1,10 +1,10 @@
 package com.wafflestudio.snutt2.data.friends
 
-import com.wafflestudio.snutt2.domainmodel.CourseBook
-import com.wafflestudio.snutt2.domainmodel.Friend
-import com.wafflestudio.snutt2.domainmodel.FriendState
-import com.wafflestudio.snutt2.domainmodel.Nickname
-import com.wafflestudio.snutt2.domainmodel.Table
+import com.wafflestudio.snutt2.domain.model.CourseBook
+import com.wafflestudio.snutt2.domain.model.Friend
+import com.wafflestudio.snutt2.domain.model.FriendState
+import com.wafflestudio.snutt2.domain.model.Nickname
+import com.wafflestudio.snutt2.domain.model.Table
 import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.network.api.SNUTTRestApi
 import com.wafflestudio.snutt2.network.dto.PatchFriendDisplayNameParams

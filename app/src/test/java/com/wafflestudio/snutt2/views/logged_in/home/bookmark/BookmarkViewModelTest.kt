@@ -2,9 +2,9 @@ package com.wafflestudio.snutt2.views.logged_in.home.bookmark
 
 import app.cash.turbine.test
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
-import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
-import com.wafflestudio.snutt2.domainmodel.TableLectureCustom
-import com.wafflestudio.snutt2.domainmodel.TableTrimParam
+import com.wafflestudio.snutt2.domain.model.BuiltInTheme
+import com.wafflestudio.snutt2.domain.model.TableLectureCustom
+import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import com.wafflestudio.snutt2.fake.FakeAnalyticsLogger
 import com.wafflestudio.snutt2.fake.FakeBookmarkRepository
 import com.wafflestudio.snutt2.fake.FakeCurrentTableLectureRepository

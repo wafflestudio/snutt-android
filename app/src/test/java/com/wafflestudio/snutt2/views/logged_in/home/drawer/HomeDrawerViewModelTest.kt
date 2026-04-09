@@ -2,10 +2,10 @@ package com.wafflestudio.snutt2.views.logged_in.home.drawer
 
 import app.cash.turbine.test
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
-import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
-import com.wafflestudio.snutt2.domainmodel.CustomTheme
-import com.wafflestudio.snutt2.domainmodel.ThemeColor
-import com.wafflestudio.snutt2.domainmodel.ThemeReference
+import com.wafflestudio.snutt2.domain.model.BuiltInTheme
+import com.wafflestudio.snutt2.domain.model.CustomTheme
+import com.wafflestudio.snutt2.domain.model.ThemeColor
+import com.wafflestudio.snutt2.domain.model.ThemeReference
 import com.wafflestudio.snutt2.fake.FakeCourseBookRepository
 import com.wafflestudio.snutt2.fake.FakeDisplayMessageResolver
 import com.wafflestudio.snutt2.fake.FakeTableRepository

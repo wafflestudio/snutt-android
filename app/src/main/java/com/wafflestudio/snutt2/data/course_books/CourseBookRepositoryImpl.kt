@@ -1,6 +1,6 @@
 package com.wafflestudio.snutt2.data.course_books
 
-import com.wafflestudio.snutt2.domainmodel.CourseBook
+import com.wafflestudio.snutt2.domain.model.CourseBook
 import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.network.api.SNUTTRestApi
 import com.wafflestudio.snutt2.data.mapper.toDomain

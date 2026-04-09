@@ -1,6 +1,6 @@
 package com.wafflestudio.snutt2.domain.model.diary
 
-import com.wafflestudio.snutt2.domainmodel.CourseBook
+import com.wafflestudio.snutt2.domain.model.CourseBook
 import com.wafflestudio.snutt2.lib.Selectable
 
 // TODO: 파일 분리

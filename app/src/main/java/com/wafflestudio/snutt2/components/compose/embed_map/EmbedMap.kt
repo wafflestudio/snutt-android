@@ -26,7 +26,7 @@ import com.naver.maps.map.compose.rememberUpdatedMarkerState
 import com.naver.maps.map.overlay.OverlayImage
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.databinding.MapPinBinding
-import com.wafflestudio.snutt2.domainmodel.Building
+import com.wafflestudio.snutt2.domain.model.Building
 import com.wafflestudio.snutt2.ui.SNUTTColors
 
 @OptIn(ExperimentalNaverMapApi::class)

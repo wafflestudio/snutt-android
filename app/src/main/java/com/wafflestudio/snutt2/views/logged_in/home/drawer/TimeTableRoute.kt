@@ -19,7 +19,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.components.compose.BottomSheetDismissEffect
-import com.wafflestudio.snutt2.domainmodel.LocalLecture
+import com.wafflestudio.snutt2.domain.model.LocalLecture
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.shareScreenshot
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTableScreen

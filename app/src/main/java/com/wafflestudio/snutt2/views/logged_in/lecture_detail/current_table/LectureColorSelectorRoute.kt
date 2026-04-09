@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.wafflestudio.snutt2.domainmodel.LectureColor
+import com.wafflestudio.snutt2.domain.model.LectureColor
 
 @Composable
 fun LectureColorSelectorRoute(

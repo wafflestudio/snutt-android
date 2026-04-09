@@ -1,16 +1,16 @@
 package com.wafflestudio.snutt2.data.mapper
 
-import com.wafflestudio.snutt2.domainmodel.Building
-import com.wafflestudio.snutt2.domainmodel.Campus
-import com.wafflestudio.snutt2.domainmodel.CustomLecture
-import com.wafflestudio.snutt2.domainmodel.GeoCoordinate
-import com.wafflestudio.snutt2.domainmodel.Lecture
-import com.wafflestudio.snutt2.domainmodel.LectureColor
-import com.wafflestudio.snutt2.domainmodel.LectureReviewInfo
-import com.wafflestudio.snutt2.domainmodel.LectureSession
-import com.wafflestudio.snutt2.domainmodel.LocalLecture
-import com.wafflestudio.snutt2.domainmodel.SearchedLecture
-import com.wafflestudio.snutt2.domainmodel.SyllabusLecture
+import com.wafflestudio.snutt2.domain.model.Building
+import com.wafflestudio.snutt2.domain.model.Campus
+import com.wafflestudio.snutt2.domain.model.CustomLecture
+import com.wafflestudio.snutt2.domain.model.GeoCoordinate
+import com.wafflestudio.snutt2.domain.model.Lecture
+import com.wafflestudio.snutt2.domain.model.LectureColor
+import com.wafflestudio.snutt2.domain.model.LectureReviewInfo
+import com.wafflestudio.snutt2.domain.model.LectureSession
+import com.wafflestudio.snutt2.domain.model.LocalLecture
+import com.wafflestudio.snutt2.domain.model.SearchedLecture
+import com.wafflestudio.snutt2.domain.model.SyllabusLecture
 import com.wafflestudio.snutt2.network.dto.ClassPlaceAndTimeDto
 import com.wafflestudio.snutt2.network.dto.ClassTimeDto
 import com.wafflestudio.snutt2.network.dto.ColorDto

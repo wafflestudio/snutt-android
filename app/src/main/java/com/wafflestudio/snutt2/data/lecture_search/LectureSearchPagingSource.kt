@@ -8,7 +8,7 @@ import com.wafflestudio.snutt2.network.dto.LectureDto
 import com.wafflestudio.snutt2.lib.toCreditNumber
 import com.wafflestudio.snutt2.network.dto.SearchTimeDto
 import com.wafflestudio.snutt2.network.dto.TagDto
-import com.wafflestudio.snutt2.domainmodel.TagType
+import com.wafflestudio.snutt2.domain.model.TagType
 
 class LectureSearchPagingSource(
     private val api: SNUTTRestApi,

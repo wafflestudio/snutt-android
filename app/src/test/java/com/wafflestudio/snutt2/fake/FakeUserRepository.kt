@@ -1,9 +1,9 @@
 package com.wafflestudio.snutt2.fake
 
 import com.wafflestudio.snutt2.data.user.UserRepository
-import com.wafflestudio.snutt2.domainmodel.SocialProviders
-import com.wafflestudio.snutt2.domainmodel.PushPreferences
-import com.wafflestudio.snutt2.domainmodel.User
+import com.wafflestudio.snutt2.domain.model.SocialProviders
+import com.wafflestudio.snutt2.domain.model.PushPreferences
+import com.wafflestudio.snutt2.domain.model.User
 import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.ui.ThemeMode
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -21,7 +21,7 @@ import com.wafflestudio.snutt2.components.compose.DuplicateIcon
 import com.wafflestudio.snutt2.components.compose.MoreIcon
 import com.wafflestudio.snutt2.components.compose.VividCheckedIcon
 import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.domainmodel.TableSummary
+import com.wafflestudio.snutt2.domain.model.TableSummary
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 

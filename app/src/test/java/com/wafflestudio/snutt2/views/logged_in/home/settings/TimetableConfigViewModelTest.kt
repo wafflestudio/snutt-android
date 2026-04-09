@@ -2,9 +2,9 @@ package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import app.cash.turbine.test
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
-import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
-import com.wafflestudio.snutt2.domainmodel.TableLectureCustom
-import com.wafflestudio.snutt2.domainmodel.TableTrimParam
+import com.wafflestudio.snutt2.domain.model.BuiltInTheme
+import com.wafflestudio.snutt2.domain.model.TableLectureCustom
+import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import com.wafflestudio.snutt2.fake.FakeDisplayMessageResolver
 import com.wafflestudio.snutt2.fake.FakeTableDisplayRepository
 import com.wafflestudio.snutt2.fake.FakeTableRepository
@@ -13,7 +13,7 @@ import com.wafflestudio.snutt2.fake.FakeUserRepository
 import com.wafflestudio.snutt2.fixture.TestFixtures.table
 import com.wafflestudio.snutt2.fixture.TestFixtures.tableSummary
 import com.wafflestudio.snutt2.lib.getFittingTrimParam
-import com.wafflestudio.snutt2.domainmodel.ThemeReference
+import com.wafflestudio.snutt2.domain.model.ThemeReference
 import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.domain.Unknown
 import com.wafflestudio.snutt2.domain.WrongUserToken

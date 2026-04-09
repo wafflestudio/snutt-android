@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.times
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
+import com.wafflestudio.snutt2.domain.model.LectureReminderOffset
 
 /**
  * 여러 선택지 중 하나를 선택할 수 있는 UI 컴포넌트

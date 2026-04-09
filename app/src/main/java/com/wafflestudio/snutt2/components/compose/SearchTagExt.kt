@@ -3,7 +3,7 @@ package com.wafflestudio.snutt2.components.compose
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.domainmodel.SearchTag
+import com.wafflestudio.snutt2.domain.model.SearchTag
 
 @Composable
 fun SearchTag.displayName(): String = when (this) {

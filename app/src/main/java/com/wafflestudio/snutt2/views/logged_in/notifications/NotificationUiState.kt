@@ -2,7 +2,7 @@ package com.wafflestudio.snutt2.views.logged_in.notifications
 
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import com.wafflestudio.snutt2.domainmodel.Notification
+import com.wafflestudio.snutt2.domain.model.Notification
 
 
 // NOTE: ViewModel이 소유하는 UiState가 아니라, LazyPagingItems의 로드 상태를 UI 레이어에서 변환하는 편의 타입.

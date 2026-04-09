@@ -1,9 +1,9 @@
 package com.wafflestudio.snutt2.data.table_display
 
 import com.wafflestudio.snutt2.storage.SNUTTStorage
-import com.wafflestudio.snutt2.domainmodel.TableLectureCustom
-import com.wafflestudio.snutt2.domainmodel.TableTrimParam
-import com.wafflestudio.snutt2.domainmodel.toDataModel
+import com.wafflestudio.snutt2.domain.model.TableLectureCustom
+import com.wafflestudio.snutt2.domain.model.TableTrimParam
+import com.wafflestudio.snutt2.domain.model.toDataModel
 import com.wafflestudio.snutt2.lib.map
 import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.network.error.toDomainError

@@ -2,7 +2,7 @@ package com.wafflestudio.snutt2.fake
 
 import androidx.paging.PagingData
 import com.wafflestudio.snutt2.data.notifications.NotificationRepository
-import com.wafflestudio.snutt2.domainmodel.Notification
+import com.wafflestudio.snutt2.domain.model.Notification
 import com.wafflestudio.snutt2.data.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

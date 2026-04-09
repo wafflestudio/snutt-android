@@ -1,6 +1,6 @@
 package com.wafflestudio.snutt2.views
 
-import com.wafflestudio.snutt2.domainmodel.LectureColor
+import com.wafflestudio.snutt2.domain.model.LectureColor
 import com.wafflestudio.snutt2.navigation.DeepLinkPath
 import kotlinx.serialization.Serializable
 
