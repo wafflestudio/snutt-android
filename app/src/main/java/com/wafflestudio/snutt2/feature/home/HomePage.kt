@@ -21,7 +21,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.domain.model.LocalLecture
 import com.wafflestudio.snutt2.domain.model.SearchedLecture
-import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
+import com.wafflestudio.snutt2.feature.reviews.ReviewWebViewContainer
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 import com.wafflestudio.snutt2.feature.home.drawer.TimeTableRoute

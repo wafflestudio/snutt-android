@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.android.webview.LoadState
-import com.wafflestudio.snutt2.lib.android.webview.ThemeMarketWebViewContainer
+import com.wafflestudio.snutt2.feature.thememarket.ThemeMarketWebViewContainer
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTheme
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography

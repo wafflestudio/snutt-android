@@ -32,7 +32,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.components.compose.TimetableIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.lib.android.webview.LoadState
-import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
+import com.wafflestudio.snutt2.feature.reviews.ReviewWebViewContainer
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.logImpression
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors

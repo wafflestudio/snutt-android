@@ -125,14 +125,14 @@ fun FriendsRoute(
                 }
 
                 is FriendUiEvent.ShareKakaoTalk -> {
-                    val feedTemplate = com.wafflestudio.snutt2.lib.buildKakaoAddFriendTemplate(
+                    val feedTemplate = com.wafflestudio.snutt2.feature.friend.buildKakaoAddFriendTemplate(
                         context,
                         mapOf(
                             "requestToken" to event.requestToken,
                             "type" to "add-friend-kakao",
                         ),
                     )
-                    com.wafflestudio.snutt2.lib.sendKakaoMessageWithTemplate(
+                    com.wafflestudio.snutt2.feature.friend.sendKakaoMessageWithTemplate(
                         context,
                         feedTemplate,
                     )
