@@ -20,11 +20,11 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.wafflestudio.snutt2.components.compose.ExitIcon
-import com.wafflestudio.snutt2.components.compose.VividCheckedIcon
-import com.wafflestudio.snutt2.components.compose.VividUncheckedIcon
-import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.components.compose.displayName
+import com.wafflestudio.snutt2.ui.components.compose.ExitIcon
+import com.wafflestudio.snutt2.ui.components.compose.VividCheckedIcon
+import com.wafflestudio.snutt2.ui.components.compose.VividUncheckedIcon
+import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.components.compose.displayName
 import com.wafflestudio.snutt2.domain.model.SearchTag
 import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.Selectable

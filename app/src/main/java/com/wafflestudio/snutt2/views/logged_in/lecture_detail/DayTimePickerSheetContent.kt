@@ -25,11 +25,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.CircularPicker
-import com.wafflestudio.snutt2.components.compose.CustomDialog
-import com.wafflestudio.snutt2.components.compose.Picker
-import com.wafflestudio.snutt2.components.compose.RoundBorderButton
-import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.ui.components.compose.CircularPicker
+import com.wafflestudio.snutt2.ui.components.compose.CustomDialog
+import com.wafflestudio.snutt2.ui.components.compose.Picker
+import com.wafflestudio.snutt2.ui.components.compose.RoundBorderButton
+import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.domain.model.LectureSession
 import com.wafflestudio.snutt2.domain.model.SearchTime
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.toFormattedTimeString

@@ -49,7 +49,7 @@ import androidx.compose.ui.util.fastFirst
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastMap
 import androidx.compose.ui.util.fastMapTo
-import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.ui.components.compose.clicks
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.hazeEffect
@@ -67,10 +67,10 @@ import kotlin.math.max
  * CustomSnackBarDuration에서 inBetween이 fadeIn 및 fadeOut에 비해 충분히 크지 않은 경우,
  * 여러 SnackBar가 연속적으로 나타나는 과정에서 애니메이션이 부자연스러울 수 있음.
  *
- * @sample com.wafflestudio.snutt2.components.compose.snackbar.SampleCustomSnackBarWithoutAction
+ * @sample com.wafflestudio.snutt2.ui.components.compose.snackbar.SampleCustomSnackBarWithoutAction
  *
  * Action Label을 추가하고 싶다면, 아래와 같이 구현해야 함.
- * @sample com.wafflestudio.snutt2.components.compose.snackbar.SampleCustomSnackBarWithAction
+ * @sample com.wafflestudio.snutt2.ui.components.compose.snackbar.SampleCustomSnackBarWithAction
  */
 @Composable
 fun CustomSnackBar(

@@ -31,10 +31,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.compose.ui.res.stringResource
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.ArrowBackIcon
-import com.wafflestudio.snutt2.components.compose.ConfirmDialog
-import com.wafflestudio.snutt2.components.compose.TopBar
-import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.ui.components.compose.ArrowBackIcon
+import com.wafflestudio.snutt2.ui.components.compose.ConfirmDialog
+import com.wafflestudio.snutt2.ui.components.compose.TopBar
+import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.domain.model.diary.DiarySummary
 import com.wafflestudio.snutt2.domain.model.preview.DiaryPreviewData
 import com.wafflestudio.snutt2.lib.android.toast

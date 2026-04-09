@@ -36,11 +36,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.compose.ui.res.stringResource
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.ArrowBackIcon
-import com.wafflestudio.snutt2.components.compose.ArrowDownIcon
-import com.wafflestudio.snutt2.components.compose.DuplicateIcon
-import com.wafflestudio.snutt2.components.compose.TopBar
-import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.ui.components.compose.ArrowBackIcon
+import com.wafflestudio.snutt2.ui.components.compose.ArrowDownIcon
+import com.wafflestudio.snutt2.ui.components.compose.DuplicateIcon
+import com.wafflestudio.snutt2.ui.components.compose.TopBar
+import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.lib.copyToClipboard
 import com.wafflestudio.snutt2.lib.android.NetworkLog
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors

@@ -29,8 +29,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.TimetableIcon
-import com.wafflestudio.snutt2.components.compose.TopBar
+import com.wafflestudio.snutt2.ui.components.compose.TimetableIcon
+import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.lib.android.webview.LoadState
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
 import com.wafflestudio.snutt2.logging.AnalyticsScreen

@@ -32,11 +32,11 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.ClockIcon
-import com.wafflestudio.snutt2.components.compose.LocationIcon
-import com.wafflestudio.snutt2.components.compose.RoundCheckbox
-import com.wafflestudio.snutt2.components.compose.TagIcon
-import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.ui.components.compose.ClockIcon
+import com.wafflestudio.snutt2.ui.components.compose.LocationIcon
+import com.wafflestudio.snutt2.ui.components.compose.RoundCheckbox
+import com.wafflestudio.snutt2.ui.components.compose.TagIcon
+import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.domain.model.SearchedLecture
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils

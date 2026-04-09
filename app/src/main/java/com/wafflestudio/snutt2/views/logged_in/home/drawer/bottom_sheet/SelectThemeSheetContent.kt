@@ -27,9 +27,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.ThemeIcon
-import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.components.compose.displayName
+import com.wafflestudio.snutt2.ui.components.compose.ThemeIcon
+import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.components.compose.displayName
 import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography

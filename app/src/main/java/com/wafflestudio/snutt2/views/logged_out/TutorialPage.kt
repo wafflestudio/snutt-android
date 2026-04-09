@@ -34,10 +34,10 @@ import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.BorderButton
-import com.wafflestudio.snutt2.components.compose.DividerWithText
-import com.wafflestudio.snutt2.components.compose.SocialLoginButton
-import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.ui.components.compose.BorderButton
+import com.wafflestudio.snutt2.ui.components.compose.DividerWithText
+import com.wafflestudio.snutt2.ui.components.compose.SocialLoginButton
+import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.facebookLogin
 import com.wafflestudio.snutt2.logging.AnalyticsScreen

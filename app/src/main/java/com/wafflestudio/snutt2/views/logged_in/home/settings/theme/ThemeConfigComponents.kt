@@ -33,11 +33,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.AddIcon
-import com.wafflestudio.snutt2.components.compose.QuestionCircleIcon
-import com.wafflestudio.snutt2.components.compose.ThemeIcon
-import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.components.compose.displayName
+import com.wafflestudio.snutt2.ui.components.compose.AddIcon
+import com.wafflestudio.snutt2.ui.components.compose.QuestionCircleIcon
+import com.wafflestudio.snutt2.ui.components.compose.ThemeIcon
+import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.components.compose.displayName
 import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData

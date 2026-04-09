@@ -13,11 +13,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.DuplicateIcon
-import com.wafflestudio.snutt2.components.compose.MoreActionItem
-import com.wafflestudio.snutt2.components.compose.PaletteIcon
-import com.wafflestudio.snutt2.components.compose.TimetableIcon
-import com.wafflestudio.snutt2.components.compose.TrashIcon
+import com.wafflestudio.snutt2.ui.components.compose.DuplicateIcon
+import com.wafflestudio.snutt2.ui.components.compose.MoreActionItem
+import com.wafflestudio.snutt2.ui.components.compose.PaletteIcon
+import com.wafflestudio.snutt2.ui.components.compose.TimetableIcon
+import com.wafflestudio.snutt2.ui.components.compose.TrashIcon
 import com.wafflestudio.snutt2.ui.theme.SNUTTTheme
 
 @Composable

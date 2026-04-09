@@ -31,7 +31,7 @@ import com.google.firebase.FirebaseApp
 import com.wafflestudio.snutt2.logging.LocalAnalyticsLogger
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.RemoteConfig
-import com.wafflestudio.snutt2.components.compose.*
+import com.wafflestudio.snutt2.ui.components.compose.*
 import com.wafflestudio.snutt2.logging.AnalyticsLogger
 import com.wafflestudio.snutt2.navigation.getDeepLinkPath
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors

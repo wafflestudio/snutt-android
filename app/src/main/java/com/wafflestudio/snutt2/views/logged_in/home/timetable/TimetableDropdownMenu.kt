@@ -32,12 +32,12 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.DialogWindowProvider
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.DrawerIcon
-import com.wafflestudio.snutt2.components.compose.ExitIcon
-import com.wafflestudio.snutt2.components.compose.NotificationVacancyIcon
-import com.wafflestudio.snutt2.components.compose.SearchIcon
-import com.wafflestudio.snutt2.components.compose.WriteUnderlineIcon
-import com.wafflestudio.snutt2.components.compose.clicks
+import com.wafflestudio.snutt2.ui.components.compose.DrawerIcon
+import com.wafflestudio.snutt2.ui.components.compose.ExitIcon
+import com.wafflestudio.snutt2.ui.components.compose.NotificationVacancyIcon
+import com.wafflestudio.snutt2.ui.components.compose.SearchIcon
+import com.wafflestudio.snutt2.ui.components.compose.WriteUnderlineIcon
+import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 

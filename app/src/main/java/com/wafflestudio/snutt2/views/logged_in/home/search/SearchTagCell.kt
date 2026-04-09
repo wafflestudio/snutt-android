@@ -18,9 +18,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.CloseIcon
-import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.components.compose.displayName
+import com.wafflestudio.snutt2.ui.components.compose.CloseIcon
+import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.components.compose.displayName
 import com.wafflestudio.snutt2.domain.model.SearchTag
 import com.wafflestudio.snutt2.lib.color
 import com.wafflestudio.snutt2.domain.model.TagType

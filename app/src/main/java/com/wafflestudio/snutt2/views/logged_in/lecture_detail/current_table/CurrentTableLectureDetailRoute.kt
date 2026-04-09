@@ -12,7 +12,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import com.wafflestudio.snutt2.components.compose.BottomSheetDismissEffect
+import com.wafflestudio.snutt2.ui.components.compose.BottomSheetDismissEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -20,10 +20,10 @@ import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.components.compose.snackbar.CustomSnackBarDuration
-import com.wafflestudio.snutt2.components.compose.snackbar.CustomSnackBarHostState
-import com.wafflestudio.snutt2.components.compose.snackbar.SnackBarScaffold
-import com.wafflestudio.snutt2.components.compose.snackbar.dismiss
+import com.wafflestudio.snutt2.ui.components.compose.snackbar.CustomSnackBarDuration
+import com.wafflestudio.snutt2.ui.components.compose.snackbar.CustomSnackBarHostState
+import com.wafflestudio.snutt2.ui.components.compose.snackbar.SnackBarScaffold
+import com.wafflestudio.snutt2.ui.components.compose.snackbar.dismiss
 import com.wafflestudio.snutt2.domain.model.LectureColor
 import com.wafflestudio.snutt2.domain.model.LectureReminderOffset
 import com.wafflestudio.snutt2.lib.android.toast

@@ -10,13 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
-import com.wafflestudio.snutt2.components.compose.BigPeopleIcon
-import com.wafflestudio.snutt2.components.compose.BorderButton
-import com.wafflestudio.snutt2.components.compose.HorizontalMoreIcon
-import com.wafflestudio.snutt2.components.compose.IconWithAlertDot
-import com.wafflestudio.snutt2.components.compose.ReviewIcon
-import com.wafflestudio.snutt2.components.compose.SearchIcon
-import com.wafflestudio.snutt2.components.compose.TimetableIcon
+import com.wafflestudio.snutt2.ui.components.compose.BigPeopleIcon
+import com.wafflestudio.snutt2.ui.components.compose.BorderButton
+import com.wafflestudio.snutt2.ui.components.compose.HorizontalMoreIcon
+import com.wafflestudio.snutt2.ui.components.compose.IconWithAlertDot
+import com.wafflestudio.snutt2.ui.components.compose.ReviewIcon
+import com.wafflestudio.snutt2.ui.components.compose.SearchIcon
+import com.wafflestudio.snutt2.ui.components.compose.TimetableIcon
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 
 @Composable

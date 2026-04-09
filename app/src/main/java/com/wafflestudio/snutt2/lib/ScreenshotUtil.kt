@@ -10,7 +10,7 @@ import com.facebook.FacebookSdk
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.SNUTTUtils.displayHeight
 import com.wafflestudio.snutt2.lib.SNUTTUtils.displayWidth
-import com.wafflestudio.snutt2.components.view.TimetableView
+import com.wafflestudio.snutt2.ui.components.view.TimetableView
 import com.wafflestudio.snutt2.domain.model.Table
 import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
