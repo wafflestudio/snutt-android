@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.kakao
+package com.wafflestudio.snutt2.lib
 
 import android.content.Context
 import com.kakao.sdk.template.model.Button

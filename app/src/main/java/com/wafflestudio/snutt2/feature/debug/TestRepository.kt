@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.debug
+package com.wafflestudio.snutt2.feature.debug
 
 import com.wafflestudio.snutt2.data.Result
 

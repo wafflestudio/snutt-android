@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.provider
+package com.wafflestudio.snutt2
 
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager

@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.debug
+package com.wafflestudio.snutt2.feature.debug
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column

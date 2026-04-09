@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.service
+package com.wafflestudio.snutt2
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
