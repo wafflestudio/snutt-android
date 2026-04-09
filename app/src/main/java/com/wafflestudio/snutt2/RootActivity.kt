@@ -28,10 +28,8 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.FirebaseApp
-import com.wafflestudio.snutt2.logging.LocalAnalyticsLogger
-import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.logging.compose.LocalAnalyticsLogger
 import com.wafflestudio.snutt2.config.RemoteConfig
-import com.wafflestudio.snutt2.ui.components.compose.*
 import com.wafflestudio.snutt2.logging.AnalyticsLogger
 import com.wafflestudio.snutt2.navigation.NavigationDestination
 import com.wafflestudio.snutt2.navigation.buildRootNavGraph

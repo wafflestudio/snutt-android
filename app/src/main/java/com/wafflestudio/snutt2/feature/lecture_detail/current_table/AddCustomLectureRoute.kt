@@ -22,7 +22,7 @@ import com.wafflestudio.snutt2.ui.util.toast
 import com.wafflestudio.snutt2.navigation.NavigationDestination
 import com.wafflestudio.snutt2.navigation.observeResult
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
-import com.wafflestudio.snutt2.logging.logImpression
+import com.wafflestudio.snutt2.logging.compose.logImpression
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.launch

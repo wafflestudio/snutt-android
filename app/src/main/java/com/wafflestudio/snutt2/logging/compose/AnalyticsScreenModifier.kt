@@ -1,9 +1,9 @@
-package com.wafflestudio.snutt2.logging
+package com.wafflestudio.snutt2.logging.compose
 
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import com.wafflestudio.snutt2.logging.LocalAnalyticsLogger
+import com.wafflestudio.snutt2.logging.AnalyticsScreen
 
 fun Modifier.logImpression(
     analyticsScreen: AnalyticsScreen,

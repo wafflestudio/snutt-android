@@ -23,7 +23,7 @@ import com.wafflestudio.snutt2.domain.model.SearchTag
 import com.wafflestudio.snutt2.domain.model.SearchedLecture
 import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
-import com.wafflestudio.snutt2.logging.logImpression
+import com.wafflestudio.snutt2.logging.compose.logImpression
 
 @Composable
 fun SearchResultList(

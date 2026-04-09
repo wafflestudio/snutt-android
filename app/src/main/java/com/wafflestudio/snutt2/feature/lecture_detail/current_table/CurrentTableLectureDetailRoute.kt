@@ -30,7 +30,7 @@ import com.wafflestudio.snutt2.ui.util.toast
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.DetailScreenReferrer
 import com.wafflestudio.snutt2.logging.LectureDetailParameter
-import com.wafflestudio.snutt2.logging.logImpression
+import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.navigation.NavigationDestination
 import com.wafflestudio.snutt2.navigation.observeResult
 import dev.chrisbanes.haze.hazeSource
