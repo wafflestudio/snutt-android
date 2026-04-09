@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2
+package com.wafflestudio.snutt2.lib
 
 import android.content.Context
 import android.net.ConnectivityManager
