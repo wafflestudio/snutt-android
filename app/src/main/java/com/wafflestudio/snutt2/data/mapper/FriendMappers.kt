@@ -2,7 +2,7 @@ package com.wafflestudio.snutt2.data.mapper
 
 import com.wafflestudio.snutt2.domainmodel.Friend
 import com.wafflestudio.snutt2.domainmodel.Nickname
-import com.wafflestudio.snutt2.lib.network.dto.FriendDto
+import com.wafflestudio.snutt2.network.dto.FriendDto
 
 fun FriendDto.toDomain(): Friend = Friend(
     id = id,

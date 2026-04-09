@@ -8,12 +8,12 @@ import com.wafflestudio.snutt2.domainmodel.TableSummary
 import com.wafflestudio.snutt2.domainmodel.TableTheme
 import com.wafflestudio.snutt2.domainmodel.ThemeColor
 import com.wafflestudio.snutt2.domainmodel.ThemeReference
-import com.wafflestudio.snutt2.lib.network.dto.ColorDto
-import com.wafflestudio.snutt2.lib.network.dto.SimpleTableDto
-import com.wafflestudio.snutt2.lib.network.dto.TableDto
-import com.wafflestudio.snutt2.lib.network.dto.ThemeDto
-import com.wafflestudio.snutt2.lib.network.dto.TimetableDto
-import com.wafflestudio.snutt2.lib.network.dto.parseHexColor
+import com.wafflestudio.snutt2.network.dto.ColorDto
+import com.wafflestudio.snutt2.network.dto.SimpleTableDto
+import com.wafflestudio.snutt2.network.dto.TableDto
+import com.wafflestudio.snutt2.network.dto.ThemeDto
+import com.wafflestudio.snutt2.network.dto.TimetableDto
+import com.wafflestudio.snutt2.network.dto.parseHexColor
 
 // region TableDto / TimetableDto / SimpleTableDto → Table / TableSummary
 

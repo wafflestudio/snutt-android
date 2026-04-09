@@ -1,20 +1,20 @@
 package com.wafflestudio.snutt2.data.current_table_lecture
 
-import com.wafflestudio.snutt2.data.SNUTTStorage
+import com.wafflestudio.snutt2.storage.SNUTTStorage
 import com.wafflestudio.snutt2.data.mapper.toLectureDto
 import com.wafflestudio.snutt2.data.mapper.toLocalLecture
 import com.wafflestudio.snutt2.domainmodel.CustomLecture
 import com.wafflestudio.snutt2.domainmodel.Lecture
 import com.wafflestudio.snutt2.domainmodel.LocalLecture
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
-import com.wafflestudio.snutt2.lib.network.Result
-import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
-import com.wafflestudio.snutt2.lib.network.Unknown
-import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
-import com.wafflestudio.snutt2.lib.network.dto.PostLectureParams
-import com.wafflestudio.snutt2.lib.network.dto.LectureDto
-import com.wafflestudio.snutt2.lib.network.toDomainError
-import com.wafflestudio.snutt2.lib.toOptional
+import com.wafflestudio.snutt2.data.Result
+import com.wafflestudio.snutt2.network.api.SNUTTRestApi
+import com.wafflestudio.snutt2.domain.Unknown
+import com.wafflestudio.snutt2.network.dto.PostCustomLectureParams
+import com.wafflestudio.snutt2.network.dto.PostLectureParams
+import com.wafflestudio.snutt2.network.dto.LectureDto
+import com.wafflestudio.snutt2.network.error.toDomainError
+import com.wafflestudio.snutt2.storage.toOptional
 import javax.inject.Inject
 import javax.inject.Singleton
 

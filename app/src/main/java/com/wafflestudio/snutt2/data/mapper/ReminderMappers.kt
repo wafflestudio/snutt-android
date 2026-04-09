@@ -2,7 +2,7 @@ package com.wafflestudio.snutt2.data.mapper
 
 import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
 import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
-import com.wafflestudio.snutt2.lib.network.dto.TimetableLectureReminderDto
+import com.wafflestudio.snutt2.network.dto.TimetableLectureReminderDto
 
 fun TimetableLectureReminderDto.toDomain(): LectureWithReminderOption = LectureWithReminderOption(
     lectureId = lectureId,

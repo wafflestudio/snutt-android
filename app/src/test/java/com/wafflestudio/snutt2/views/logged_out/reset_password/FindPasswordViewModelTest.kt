@@ -4,8 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import com.wafflestudio.snutt2.fake.FakeDisplayMessageResolver
 import com.wafflestudio.snutt2.fake.FakeUserRepository
-import com.wafflestudio.snutt2.lib.network.Result
-import com.wafflestudio.snutt2.lib.network.Unknown
+import com.wafflestudio.snutt2.data.Result
+import com.wafflestudio.snutt2.domain.Unknown
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher

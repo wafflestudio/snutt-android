@@ -1,8 +1,8 @@
 package com.wafflestudio.snutt2.fake
 
-import com.wafflestudio.snutt2.lib.logging.AnalyticsEvent
-import com.wafflestudio.snutt2.lib.logging.AnalyticsLogger
-import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.logging.AnalyticsEvent
+import com.wafflestudio.snutt2.logging.AnalyticsLogger
+import com.wafflestudio.snutt2.logging.AnalyticsScreen
 
 class FakeAnalyticsLogger : AnalyticsLogger {
 

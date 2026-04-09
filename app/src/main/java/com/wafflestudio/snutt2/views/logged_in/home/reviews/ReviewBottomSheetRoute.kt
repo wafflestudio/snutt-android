@@ -11,10 +11,10 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.android.webview.CloseBridge
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
-import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
-import com.wafflestudio.snutt2.lib.logging.DetailScreenReferrer
-import com.wafflestudio.snutt2.lib.logging.ReviewDetailParameter
-import com.wafflestudio.snutt2.lib.logging.logImpression
+import com.wafflestudio.snutt2.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.logging.DetailScreenReferrer
+import com.wafflestudio.snutt2.logging.ReviewDetailParameter
+import com.wafflestudio.snutt2.logging.logImpression
 import com.wafflestudio.snutt2.ui.isDarkMode
 
 @Composable

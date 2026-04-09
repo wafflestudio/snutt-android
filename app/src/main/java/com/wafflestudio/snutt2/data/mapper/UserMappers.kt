@@ -5,10 +5,10 @@ import com.wafflestudio.snutt2.domainmodel.PushPreferences
 import com.wafflestudio.snutt2.domainmodel.PushPreferenceType
 import com.wafflestudio.snutt2.domainmodel.User
 import com.wafflestudio.snutt2.domainmodel.getString
-import com.wafflestudio.snutt2.lib.network.dto.PushPreferenceDto
-import com.wafflestudio.snutt2.lib.network.dto.PushPreferenceItemDto
-import com.wafflestudio.snutt2.lib.network.dto.NicknameDto
-import com.wafflestudio.snutt2.lib.network.dto.UserDto
+import com.wafflestudio.snutt2.network.dto.PushPreferenceDto
+import com.wafflestudio.snutt2.network.dto.PushPreferenceItemDto
+import com.wafflestudio.snutt2.network.dto.NicknameDto
+import com.wafflestudio.snutt2.network.dto.UserDto
 
 fun UserDto.toDomain(): User = User(
     email = email,

@@ -1,6 +1,6 @@
 package com.wafflestudio.snutt2.domainmodel
 
-import com.wafflestudio.snutt2.lib.preferences.model.TableLectureCustomData
+import com.wafflestudio.snutt2.storage.model.TableLectureCustomData
 
 data class TableLectureCustom(
     val title: Boolean,

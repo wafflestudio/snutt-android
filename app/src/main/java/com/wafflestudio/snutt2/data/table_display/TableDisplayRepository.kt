@@ -2,7 +2,7 @@ package com.wafflestudio.snutt2.data.table_display
 
 import com.wafflestudio.snutt2.domainmodel.TableLectureCustom
 import com.wafflestudio.snutt2.domainmodel.TableTrimParam
-import com.wafflestudio.snutt2.lib.network.Result
+import com.wafflestudio.snutt2.data.Result
 import kotlinx.coroutines.flow.StateFlow
 
 interface TableDisplayRepository {

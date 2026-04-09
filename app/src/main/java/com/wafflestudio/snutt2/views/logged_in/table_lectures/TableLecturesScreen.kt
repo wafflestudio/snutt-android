@@ -36,8 +36,8 @@ import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.domainmodel.LocalLecture
 import com.wafflestudio.snutt2.domainmodel.preview.PreviewData
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtilsNew
-import com.wafflestudio.snutt2.lib.logging.AnalyticsScreen
-import com.wafflestudio.snutt2.lib.logging.logImpression
+import com.wafflestudio.snutt2.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.logging.logImpression
 import com.wafflestudio.snutt2.ui.SNUTTColors
 import com.wafflestudio.snutt2.ui.SNUTTTypography
 

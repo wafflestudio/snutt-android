@@ -1,11 +1,11 @@
 package com.wafflestudio.snutt2.data.popup
 
-import com.wafflestudio.snutt2.data.SNUTTStorage
+import com.wafflestudio.snutt2.storage.SNUTTStorage
 import com.wafflestudio.snutt2.domainmodel.Popup
-import com.wafflestudio.snutt2.lib.network.Result
-import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
-import com.wafflestudio.snutt2.lib.network.dto.GetPopupResults
-import com.wafflestudio.snutt2.lib.network.toDomainError
+import com.wafflestudio.snutt2.data.Result
+import com.wafflestudio.snutt2.network.api.SNUTTRestApi
+import com.wafflestudio.snutt2.network.dto.GetPopupResults
+import com.wafflestudio.snutt2.network.error.toDomainError
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

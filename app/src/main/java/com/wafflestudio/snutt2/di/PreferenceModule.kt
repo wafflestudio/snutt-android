@@ -2,11 +2,11 @@ package com.wafflestudio.snutt2.di
 
 import android.content.Context
 import com.wafflestudio.snutt2.lib.data.serializer.Serializer
-import com.wafflestudio.snutt2.lib.preferences.cache.PrefCache
-import com.wafflestudio.snutt2.lib.preferences.cache.PrefCacheImpl
-import com.wafflestudio.snutt2.lib.preferences.context.PrefContext
-import com.wafflestudio.snutt2.lib.preferences.storage.PrefStorage
-import com.wafflestudio.snutt2.lib.preferences.storage.PrefStorageImpl
+import com.wafflestudio.snutt2.storage.pref.PrefCache
+import com.wafflestudio.snutt2.storage.pref.PrefCacheImpl
+import com.wafflestudio.snutt2.storage.pref.PrefContext
+import com.wafflestudio.snutt2.storage.pref.PrefStorage
+import com.wafflestudio.snutt2.storage.pref.PrefStorageImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

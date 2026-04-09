@@ -8,9 +8,9 @@ import com.wafflestudio.snutt2.domainmodel.CourseBook
 import com.wafflestudio.snutt2.domainmodel.diary.CourseBookDiarySubmissions
 import com.wafflestudio.snutt2.domainmodel.diary.DiarySummary
 import com.wafflestudio.snutt2.lib.Selectable
-import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
-import com.wafflestudio.snutt2.lib.network.onFailure
-import com.wafflestudio.snutt2.lib.network.onSuccess
+import com.wafflestudio.snutt2.domain.DisplayMessageResolver
+import com.wafflestudio.snutt2.data.onFailure
+import com.wafflestudio.snutt2.data.onSuccess
 import com.wafflestudio.snutt2.lib.toggle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow

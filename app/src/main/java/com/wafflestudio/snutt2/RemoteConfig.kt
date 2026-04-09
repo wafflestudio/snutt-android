@@ -1,8 +1,8 @@
 package com.wafflestudio.snutt2
 
-import com.wafflestudio.snutt2.lib.network.NetworkConnectivityManager
-import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
-import com.wafflestudio.snutt2.lib.network.dto.RemoteConfigDto
+import com.wafflestudio.snutt2.lib.android.NetworkConnectivityManager
+import com.wafflestudio.snutt2.network.api.SNUTTRestApi
+import com.wafflestudio.snutt2.network.dto.RemoteConfigDto
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow

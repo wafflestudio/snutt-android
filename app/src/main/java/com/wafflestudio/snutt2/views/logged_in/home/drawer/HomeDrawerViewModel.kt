@@ -13,11 +13,11 @@ import com.wafflestudio.snutt2.domainmodel.Table
 import com.wafflestudio.snutt2.domainmodel.TableSummary
 import com.wafflestudio.snutt2.domainmodel.TableTheme
 import com.wafflestudio.snutt2.lib.Selectable
-import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
-import com.wafflestudio.snutt2.lib.network.DomainError
-import com.wafflestudio.snutt2.lib.network.NotSelectedTimetable
-import com.wafflestudio.snutt2.lib.network.onFailure
-import com.wafflestudio.snutt2.lib.network.onSuccess
+import com.wafflestudio.snutt2.domain.DisplayMessageResolver
+import com.wafflestudio.snutt2.domain.DomainError
+import com.wafflestudio.snutt2.domain.NotSelectedTimetable
+import com.wafflestudio.snutt2.data.onFailure
+import com.wafflestudio.snutt2.data.onSuccess
 import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.lib.toggleIndex
 import dagger.hilt.android.lifecycle.HiltViewModel

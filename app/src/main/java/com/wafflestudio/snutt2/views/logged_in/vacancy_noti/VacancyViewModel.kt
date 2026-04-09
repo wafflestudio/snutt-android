@@ -8,11 +8,11 @@ import com.wafflestudio.snutt2.data.vacancy_noti.VacancyRepository
 import com.wafflestudio.snutt2.domainmodel.SearchedLecture
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.anySelected
-import com.wafflestudio.snutt2.lib.network.AuthError
-import com.wafflestudio.snutt2.lib.network.DisplayMessageResolver
-import com.wafflestudio.snutt2.lib.network.DomainError
-import com.wafflestudio.snutt2.lib.network.Result
-import com.wafflestudio.snutt2.lib.network.onFailure
+import com.wafflestudio.snutt2.domain.AuthError
+import com.wafflestudio.snutt2.domain.DisplayMessageResolver
+import com.wafflestudio.snutt2.domain.DomainError
+import com.wafflestudio.snutt2.data.Result
+import com.wafflestudio.snutt2.data.onFailure
 import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.lib.toggleWhen
 import com.wafflestudio.snutt2.lib.unselectAll
