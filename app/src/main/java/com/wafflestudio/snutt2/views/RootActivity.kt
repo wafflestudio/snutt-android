@@ -34,9 +34,9 @@ import com.wafflestudio.snutt2.RemoteConfig
 import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.logging.AnalyticsLogger
 import com.wafflestudio.snutt2.navigation.getDeepLinkPath
-import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.ui.SNUTTTheme
-import com.wafflestudio.snutt2.ui.isDarkMode
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTTheme
+import com.wafflestudio.snutt2.ui.theme.isDarkMode
 import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import com.wafflestudio.snutt2.domain.RefreshInitialDataUseCase
 import com.wafflestudio.snutt2.views.logged_in.home.settings.RootViewModel

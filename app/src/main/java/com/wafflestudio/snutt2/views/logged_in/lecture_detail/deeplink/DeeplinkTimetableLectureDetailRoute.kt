@@ -24,7 +24,7 @@ import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.DetailScreenReferrer
 import com.wafflestudio.snutt2.logging.LectureDetailParameter
 import com.wafflestudio.snutt2.logging.logImpression
-import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetail
 
 @Composable

@@ -50,8 +50,8 @@ import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.components.compose.SegmentedPicker
 import com.wafflestudio.snutt2.domain.model.LectureReminderOffset
 import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
-import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.launch

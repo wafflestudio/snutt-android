@@ -27,7 +27,7 @@ import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.domain.model.TagType
-import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import kotlin.math.roundToInt
 
 private enum class OptionSheetMode {

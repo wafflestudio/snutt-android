@@ -20,8 +20,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import com.wafflestudio.snutt2.lib.toDayString
-import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.ui.isDarkMode
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.isDarkMode
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable

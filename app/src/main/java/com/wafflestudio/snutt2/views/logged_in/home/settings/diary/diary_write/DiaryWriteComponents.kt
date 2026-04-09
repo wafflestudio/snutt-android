@@ -43,7 +43,7 @@ import androidx.compose.ui.res.stringResource
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.anySelected
-import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryTheme
 
 @Composable

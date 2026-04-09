@@ -22,8 +22,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.domain.model.LocalLecture
 import com.wafflestudio.snutt2.domain.model.SearchedLecture
 import com.wafflestudio.snutt2.lib.android.webview.ReviewWebViewContainer
-import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.ui.isDarkMode
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.isDarkMode
 import com.wafflestudio.snutt2.views.logged_in.home.drawer.TimeTableRoute
 import com.wafflestudio.snutt2.views.logged_in.home.friend.FriendsRoute
 import com.wafflestudio.snutt2.views.logged_in.home.popups.Popup

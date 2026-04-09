@@ -26,7 +26,7 @@ import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
 import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.domain.model.Building
-import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 
 @Composable
 fun LectureDetail(

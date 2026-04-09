@@ -13,7 +13,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.lib.android.webview.ThemeMarketWebViewContainer
-import com.wafflestudio.snutt2.ui.isDarkMode
+import com.wafflestudio.snutt2.ui.theme.isDarkMode
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable

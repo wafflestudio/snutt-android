@@ -30,9 +30,9 @@ import com.wafflestudio.snutt2.components.compose.ColorCircle
 import com.wafflestudio.snutt2.components.compose.ColorPicker
 import com.wafflestudio.snutt2.components.compose.CustomDialog
 import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.ui.onSurfaceVariant
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
+import com.wafflestudio.snutt2.ui.theme.onSurfaceVariant
 
 @Composable
 internal fun ColorItem(

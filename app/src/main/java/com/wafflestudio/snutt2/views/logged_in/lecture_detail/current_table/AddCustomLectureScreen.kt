@@ -7,7 +7,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.CustomDialog
 import com.wafflestudio.snutt2.domain.model.LectureSession
 import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
-import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.LectureDetail
 
 @Composable

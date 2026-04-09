@@ -15,7 +15,7 @@ import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.DetailScreenReferrer
 import com.wafflestudio.snutt2.logging.ReviewDetailParameter
 import com.wafflestudio.snutt2.logging.logImpression
-import com.wafflestudio.snutt2.ui.isDarkMode
+import com.wafflestudio.snutt2.ui.theme.isDarkMode
 
 @Composable
 fun ReviewBottomSheetRoute(

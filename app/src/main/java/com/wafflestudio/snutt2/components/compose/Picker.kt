@@ -14,7 +14,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 

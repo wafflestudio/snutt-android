@@ -9,7 +9,7 @@ import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.TableLectureCustom
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import com.wafflestudio.snutt2.lib.getFittingTrimParam
-import com.wafflestudio.snutt2.ui.SNUTTTheme
+import com.wafflestudio.snutt2.ui.theme.SNUTTTheme
 
 @Preview(showBackground = true, widthDp = 360, heightDp = 600, name = "SNUTT Light")
 @Composable

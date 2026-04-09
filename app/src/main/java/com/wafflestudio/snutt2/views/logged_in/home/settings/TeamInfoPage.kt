@@ -18,7 +18,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.logImpression
-import com.wafflestudio.snutt2.ui.ThemeMode
+import com.wafflestudio.snutt2.ui.theme.ThemeMode
 
 @Composable
 fun TeamInfoPage(

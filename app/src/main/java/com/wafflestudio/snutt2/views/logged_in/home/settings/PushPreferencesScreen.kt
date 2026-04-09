@@ -27,7 +27,7 @@ import com.wafflestudio.snutt2.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.domain.model.PushPreferenceType
 import com.wafflestudio.snutt2.domain.model.PushPreferences
 import com.wafflestudio.snutt2.lib.android.toast
-import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 
 @Composable
 fun PushPreferencesRoute(

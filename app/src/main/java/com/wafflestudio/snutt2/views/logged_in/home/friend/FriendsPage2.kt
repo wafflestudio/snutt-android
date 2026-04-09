@@ -59,9 +59,9 @@ import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.logImpression
 import com.wafflestudio.snutt2.lib.toFormattedString
-import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.ui.isDarkMode
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
+import com.wafflestudio.snutt2.ui.theme.isDarkMode
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 import kotlinx.coroutines.launch
 

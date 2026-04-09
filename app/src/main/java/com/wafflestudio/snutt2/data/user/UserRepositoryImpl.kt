@@ -20,7 +20,7 @@ import com.wafflestudio.snutt2.domain.Unknown
 import com.wafflestudio.snutt2.network.error.toDomainError
 import com.wafflestudio.snutt2.storage.toOptional
 import com.wafflestudio.snutt2.lib.unwrap
-import com.wafflestudio.snutt2.ui.ThemeMode
+import com.wafflestudio.snutt2.ui.theme.ThemeMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject

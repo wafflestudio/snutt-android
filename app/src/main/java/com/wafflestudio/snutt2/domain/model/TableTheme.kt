@@ -2,7 +2,7 @@ package com.wafflestudio.snutt2.domain.model
 
 import androidx.compose.ui.graphics.toArgb
 import com.wafflestudio.snutt2.lib.Selectable
-import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 
 sealed class TableTheme(
     open val name: String,

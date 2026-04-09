@@ -51,10 +51,10 @@ import com.wafflestudio.snutt2.domain.model.TableLectureCustom
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.lib.trimByTrimParam
-import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.ui.isDarkMode
-import com.wafflestudio.snutt2.ui.onSurfaceVariant
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
+import com.wafflestudio.snutt2.ui.theme.isDarkMode
+import com.wafflestudio.snutt2.ui.theme.onSurfaceVariant
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimetableCanvasObjects
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.DrawClassTime
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.DrawTableGrid

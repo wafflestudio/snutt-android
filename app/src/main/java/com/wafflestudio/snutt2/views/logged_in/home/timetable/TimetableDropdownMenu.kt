@@ -38,8 +38,8 @@ import com.wafflestudio.snutt2.components.compose.NotificationVacancyIcon
 import com.wafflestudio.snutt2.components.compose.SearchIcon
 import com.wafflestudio.snutt2.components.compose.WriteUnderlineIcon
 import com.wafflestudio.snutt2.components.compose.clicks
-import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
 @Composable
 fun TimetableMoreAction(

@@ -32,7 +32,7 @@ import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.featureflag.FeatureFlag
-import com.wafflestudio.snutt2.ui.SNUTTTheme
+import com.wafflestudio.snutt2.ui.theme.SNUTTTheme
 import kotlinx.coroutines.launch
 
 @Composable

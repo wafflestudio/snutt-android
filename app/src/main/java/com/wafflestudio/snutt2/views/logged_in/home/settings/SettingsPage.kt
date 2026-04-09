@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.views.logged_in.home.settings
 
 import androidx.compose.foundation.background
+import com.wafflestudio.snutt2.ui.theme.ThemeMode
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -45,9 +46,9 @@ import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.featureflag.FeatureFlag
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.logImpression
-import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.ui.onSurfaceVariant
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
+import com.wafflestudio.snutt2.ui.theme.onSurfaceVariant
 
 @Composable
 fun SettingsRoute(
@@ -438,7 +439,7 @@ fun NewBadge(
 @Composable
 fun SettingsPagePreview() {
     SettingsScreen(
-        uiState = SettingsUiState("양주현", com.wafflestudio.snutt2.ui.ThemeMode.DARK, false, listOf("빈자리 알림")),
+        uiState = SettingsUiState("양주현", ThemeMode.DARK, false, listOf("빈자리 알림")),
         uncheckedNotifications = 0L,
         onClickUserConfig = {},
         onClickNotification = {},

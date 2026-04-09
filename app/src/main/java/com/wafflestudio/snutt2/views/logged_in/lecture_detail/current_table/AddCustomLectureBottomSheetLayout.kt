@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.wafflestudio.snutt2.components.compose.ModalBottomSheetPlaceholder
 import com.wafflestudio.snutt2.domain.model.LectureSession
-import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.views.logged_in.lecture_detail.DayTimePickerSheetContent
 
 @Composable

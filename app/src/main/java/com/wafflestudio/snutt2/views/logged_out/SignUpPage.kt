@@ -33,8 +33,8 @@ import com.wafflestudio.snutt2.components.compose.*
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.isIdInvalid
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.isPasswordInvalid
-import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable

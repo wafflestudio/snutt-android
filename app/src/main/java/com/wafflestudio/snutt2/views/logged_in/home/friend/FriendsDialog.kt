@@ -35,9 +35,9 @@ import com.wafflestudio.snutt2.components.compose.RightArrowIcon
 import com.wafflestudio.snutt2.components.compose.TipCloseIcon
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.domain.model.Friend
-import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.ui.isDarkMode
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
+import com.wafflestudio.snutt2.ui.theme.isDarkMode
 import kotlinx.coroutines.launch
 
 @Composable

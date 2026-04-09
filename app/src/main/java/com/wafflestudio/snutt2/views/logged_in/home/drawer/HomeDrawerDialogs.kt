@@ -12,7 +12,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.components.compose.CustomDialog
 import com.wafflestudio.snutt2.components.compose.EditText
 import com.wafflestudio.snutt2.domain.model.TableSummary
-import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
 /**
  * 논의

@@ -41,7 +41,7 @@ import com.wafflestudio.snutt2.domain.model.SocialProviders
 import com.wafflestudio.snutt2.lib.facebookLogin
 import com.wafflestudio.snutt2.domain.model.SocialLoginType
 import com.wafflestudio.snutt2.domain.model.getString
-import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import kotlinx.coroutines.launch
 
 @SuppressLint("LocalContextGetResourceValueCall")

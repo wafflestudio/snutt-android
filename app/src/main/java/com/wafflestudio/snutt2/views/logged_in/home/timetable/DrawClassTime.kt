@@ -27,7 +27,7 @@ import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import com.wafflestudio.snutt2.lib.endTimeInFloat
 import com.wafflestudio.snutt2.lib.roundToCompact
 import com.wafflestudio.snutt2.lib.startTimeInFloat
-import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import kotlin.math.max
 import kotlin.math.min
 

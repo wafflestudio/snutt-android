@@ -10,7 +10,7 @@ import com.wafflestudio.snutt2.domain.model.SearchTag
 import com.wafflestudio.snutt2.domain.model.SearchedLecture
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.domain.model.TagType
-import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.logging.LocalAnalyticsLogger
 import com.wafflestudio.snutt2.views.logged_in.home.search.search_option.SearchOptionSheet
 

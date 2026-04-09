@@ -25,7 +25,7 @@ import com.wafflestudio.snutt2.lib.getFittingTrimParam
 import com.wafflestudio.snutt2.lib.roundToCompact
 import com.wafflestudio.snutt2.lib.sp
 import com.wafflestudio.snutt2.lib.toDayString
-import com.wafflestudio.snutt2.ui.isSystemDarkMode
+import com.wafflestudio.snutt2.ui.theme.isSystemDarkMode
 import kotlin.math.max
 import kotlin.math.min
 

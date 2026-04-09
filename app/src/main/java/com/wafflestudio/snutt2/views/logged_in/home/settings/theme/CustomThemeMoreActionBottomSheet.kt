@@ -18,7 +18,7 @@ import com.wafflestudio.snutt2.components.compose.MoreActionItem
 import com.wafflestudio.snutt2.components.compose.PaletteIcon
 import com.wafflestudio.snutt2.components.compose.TimetableIcon
 import com.wafflestudio.snutt2.components.compose.TrashIcon
-import com.wafflestudio.snutt2.ui.SNUTTTheme
+import com.wafflestudio.snutt2.ui.theme.SNUTTTheme
 
 @Composable
 fun MyCustomThemeMoreActionBottomSheet(

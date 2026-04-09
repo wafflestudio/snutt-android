@@ -14,7 +14,7 @@ import com.wafflestudio.snutt2.domain.model.TableSummary
 import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.HomeDrawerLoggingEffect
-import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.logging.LocalAnalyticsLogger
 import com.wafflestudio.snutt2.views.logged_in.home.drawer.bottom_sheet.CreateTableBottomSheet
 import com.wafflestudio.snutt2.views.logged_in.home.drawer.bottom_sheet.MoreActionSheet

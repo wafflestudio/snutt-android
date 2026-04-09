@@ -43,9 +43,9 @@ import com.wafflestudio.snutt2.components.compose.TopBar
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.copyToClipboard
 import com.wafflestudio.snutt2.lib.android.NetworkLog
-import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.ui.SNUTTColors.SettingBackground
-import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors.SettingBackground
+import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
 @Composable
 fun NetworkLogPage(

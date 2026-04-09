@@ -44,8 +44,8 @@ import com.wafflestudio.snutt2.components.compose.WebViewStyleButton
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.components.compose.rememberTimerState
 import com.wafflestudio.snutt2.lib.android.toast
-import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
 // TODO: 뷰모델로 로직 및 상태관리 이전하기
 private enum class VerifyEmailState {

@@ -9,7 +9,7 @@ import com.wafflestudio.snutt2.domain.model.LectureSession
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import com.wafflestudio.snutt2.network.dto.LectureDto
 import com.wafflestudio.snutt2.domain.model.TagType
-import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import java.time.LocalTime
 import kotlin.math.ceil
 import kotlin.math.floor

@@ -31,9 +31,9 @@ import com.wafflestudio.snutt2.components.compose.ThemeIcon
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.components.compose.displayName
 import com.wafflestudio.snutt2.domain.model.TableTheme
-import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.ui.isDarkMode
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
+import com.wafflestudio.snutt2.ui.theme.isDarkMode
 import com.wafflestudio.snutt2.views.logged_in.home.drawer.HomeDrawerBottomSheetType
 import com.wafflestudio.snutt2.views.logged_in.home.settings.theme.AddThemeItem
 

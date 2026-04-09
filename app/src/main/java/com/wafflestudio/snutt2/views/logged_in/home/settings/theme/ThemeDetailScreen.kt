@@ -44,10 +44,10 @@ import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.logImpression
-import com.wafflestudio.snutt2.ui.SNUTTTheme
-import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.ui.isDarkMode
-import com.wafflestudio.snutt2.ui.onSurfaceVariant
+import com.wafflestudio.snutt2.ui.theme.SNUTTTheme
+import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
+import com.wafflestudio.snutt2.ui.theme.isDarkMode
+import com.wafflestudio.snutt2.ui.theme.onSurfaceVariant
 import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingColumn
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 

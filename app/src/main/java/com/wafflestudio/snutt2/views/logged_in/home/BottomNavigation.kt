@@ -17,7 +17,7 @@ import com.wafflestudio.snutt2.components.compose.IconWithAlertDot
 import com.wafflestudio.snutt2.components.compose.ReviewIcon
 import com.wafflestudio.snutt2.components.compose.SearchIcon
 import com.wafflestudio.snutt2.components.compose.TimetableIcon
-import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 
 @Composable
 internal fun BottomNavigation(

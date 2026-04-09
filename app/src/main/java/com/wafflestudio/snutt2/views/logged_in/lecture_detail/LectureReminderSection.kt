@@ -16,7 +16,7 @@ import com.wafflestudio.snutt2.components.compose.SegmentedPicker
 import com.wafflestudio.snutt2.domain.model.LectureReminderOffset
 import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
-import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 
 @Composable
 internal fun LectureReminderSection(

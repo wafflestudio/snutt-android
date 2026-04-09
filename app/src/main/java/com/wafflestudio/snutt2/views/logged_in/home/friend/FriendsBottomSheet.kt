@@ -32,8 +32,8 @@ import com.wafflestudio.snutt2.components.compose.WarningIcon
 import com.wafflestudio.snutt2.components.compose.WriteIcon
 import com.wafflestudio.snutt2.domain.model.Friend
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
-import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
 @Composable
 fun FriendsBottomSheetContent(

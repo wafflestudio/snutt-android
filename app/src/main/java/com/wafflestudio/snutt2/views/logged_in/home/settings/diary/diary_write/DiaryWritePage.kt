@@ -57,7 +57,7 @@ import com.wafflestudio.snutt2.components.compose.ExitIcon
 import androidx.compose.ui.res.stringResource
 import com.wafflestudio.snutt2.components.compose.clicks
 import com.wafflestudio.snutt2.lib.android.toast
-import com.wafflestudio.snutt2.ui.SNUTTTypography
+import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryTheme
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch

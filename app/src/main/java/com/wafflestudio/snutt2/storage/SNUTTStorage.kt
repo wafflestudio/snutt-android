@@ -7,7 +7,7 @@ import com.wafflestudio.snutt2.storage.pref.*
 import com.wafflestudio.snutt2.storage.model.TableLectureCustomData
 import com.wafflestudio.snutt2.storage.model.TableTrimParamData
 import com.wafflestudio.snutt2.network.dto.TagDto
-import com.wafflestudio.snutt2.ui.ThemeMode
+import com.wafflestudio.snutt2.ui.theme.ThemeMode
 import javax.inject.Inject
 import javax.inject.Singleton
 

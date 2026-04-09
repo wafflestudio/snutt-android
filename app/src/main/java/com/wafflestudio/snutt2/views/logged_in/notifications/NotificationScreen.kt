@@ -46,9 +46,9 @@ import com.wafflestudio.snutt2.domain.model.Notification
 import com.wafflestudio.snutt2.domain.model.NotificationType
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.lib.data.SNUTTStringUtils.getNotificationTime
-import com.wafflestudio.snutt2.ui.SNUTTColors
-import com.wafflestudio.snutt2.ui.SNUTTTypography
-import com.wafflestudio.snutt2.ui.isDarkMode
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
+import com.wafflestudio.snutt2.ui.theme.isDarkMode
 import kotlinx.coroutines.flow.flowOf
 
 @Composable

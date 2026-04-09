@@ -2,7 +2,7 @@ package com.wafflestudio.snutt2.domain.model
 
 import android.os.Parcelable
 import androidx.compose.ui.graphics.toArgb
-import com.wafflestudio.snutt2.ui.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 
