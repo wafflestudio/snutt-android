@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.lib.android
+package com.wafflestudio.snutt2.ui.util
 
 import android.content.Context
 import android.widget.Toast

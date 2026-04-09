@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.lib
+package com.wafflestudio.snutt2.ui.util
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalDensity

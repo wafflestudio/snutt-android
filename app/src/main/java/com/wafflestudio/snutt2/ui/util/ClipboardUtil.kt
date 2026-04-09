@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.lib
+package com.wafflestudio.snutt2.ui.util
 
 import android.content.ClipData
 import android.content.ClipboardManager

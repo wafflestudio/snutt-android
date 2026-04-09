@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.lib.data
+package com.wafflestudio.snutt2.ui.util
 
 import android.content.Context
 import com.wafflestudio.snutt2.R
