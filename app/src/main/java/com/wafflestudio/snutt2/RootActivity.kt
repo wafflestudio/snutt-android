@@ -35,6 +35,7 @@ import com.wafflestudio.snutt2.navigation.NavigationDestination
 import com.wafflestudio.snutt2.navigation.buildRootNavGraph
 import com.wafflestudio.snutt2.navigation.getDeepLinkPath
 import com.wafflestudio.snutt2.navigation.navigateAsOrigin
+import com.wafflestudio.snutt2.ui.theme.LocalThemeState
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTheme
 import com.wafflestudio.snutt2.ui.theme.isDarkMode

@@ -9,9 +9,9 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.graphics.Color
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.LocalThemeState
 
 private val LightThemeColors @Composable get() = lightColors(
     primary = SNUTTColors.White,
@@ -48,6 +48,8 @@ enum class ThemeMode(@param:StringRes val labelResId: Int) {
     AUTO(R.string.theme_mode_auto),
     ;
 }
+
+val LocalThemeState = compositionLocalOf { ThemeMode.AUTO }
 
 @Composable
 fun isDarkMode(): Boolean {
