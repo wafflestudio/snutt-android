@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.lib
+package com.wafflestudio.snutt2.lib.facebook
 
 import android.content.Context
 import androidx.activity.result.ActivityResultRegistryOwner
