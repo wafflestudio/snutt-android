@@ -1,7 +1,7 @@
 package com.wafflestudio.snutt2.deeplink
 
 import androidx.core.net.toUri
-import com.wafflestudio.snutt2.SNUTTUtils.semesterStringToLong
+import com.wafflestudio.snutt2.lib.SNUTTUtils.semesterStringToLong
 import com.wafflestudio.snutt2.navigation.getDeepLinkPath
 import com.wafflestudio.snutt2.views.NavigationDestination
 import javax.inject.Inject

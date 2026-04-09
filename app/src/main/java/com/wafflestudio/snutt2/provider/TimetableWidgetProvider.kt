@@ -15,8 +15,8 @@ import android.view.View
 import android.widget.RemoteViews
 import androidx.compose.animation.ExperimentalAnimationApi
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.SNUTTUtils.displayHeight
-import com.wafflestudio.snutt2.SNUTTUtils.displayWidth
+import com.wafflestudio.snutt2.lib.SNUTTUtils.displayHeight
+import com.wafflestudio.snutt2.lib.SNUTTUtils.displayWidth
 import com.wafflestudio.snutt2.components.view.TimetableView
 import com.wafflestudio.snutt2.data.table_display.TableDisplayRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
