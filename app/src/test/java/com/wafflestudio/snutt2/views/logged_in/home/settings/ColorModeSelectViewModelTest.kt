@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_in.home.settings
+package com.wafflestudio.snutt2.feature.settings
 
 import com.wafflestudio.snutt2.fake.FakeUserRepository
 import com.wafflestudio.snutt2.ui.theme.ThemeMode

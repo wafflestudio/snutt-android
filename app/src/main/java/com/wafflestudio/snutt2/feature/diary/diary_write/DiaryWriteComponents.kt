@@ -44,7 +44,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.anySelected
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
-import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryTheme
+import com.wafflestudio.snutt2.feature.diary.DiaryTheme
 
 @Composable
 fun DiaryActivitySelectSection(

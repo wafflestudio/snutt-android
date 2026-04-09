@@ -58,7 +58,7 @@ import androidx.compose.ui.res.stringResource
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
-import com.wafflestudio.snutt2.views.logged_in.home.settings.diary.DiaryTheme
+import com.wafflestudio.snutt2.feature.diary.DiaryTheme
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 

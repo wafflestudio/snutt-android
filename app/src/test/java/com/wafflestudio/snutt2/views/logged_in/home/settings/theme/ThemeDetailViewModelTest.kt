@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views.logged_in.home.settings.theme
+package com.wafflestudio.snutt2.feature.theme_config
 
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test

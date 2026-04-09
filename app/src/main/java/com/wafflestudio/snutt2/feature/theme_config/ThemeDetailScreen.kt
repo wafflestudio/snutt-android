@@ -48,7 +48,7 @@ import com.wafflestudio.snutt2.ui.theme.SNUTTTheme
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 import com.wafflestudio.snutt2.ui.theme.onSurfaceVariant
-import com.wafflestudio.snutt2.views.logged_in.home.settings.SettingColumn
+import com.wafflestudio.snutt2.feature.settings.SettingColumn
 import com.wafflestudio.snutt2.views.logged_in.home.timetable.TimeTable
 
 @Composable

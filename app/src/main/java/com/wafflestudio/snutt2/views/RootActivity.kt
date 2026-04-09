@@ -42,7 +42,7 @@ import com.wafflestudio.snutt2.ui.theme.SNUTTTheme
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 import com.wafflestudio.snutt2.views.logged_in.home.HomeItem
 import com.wafflestudio.snutt2.domain.RefreshInitialDataUseCase
-import com.wafflestudio.snutt2.views.logged_in.home.settings.RootViewModel
+import com.wafflestudio.snutt2.feature.settings.RootViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.launch
