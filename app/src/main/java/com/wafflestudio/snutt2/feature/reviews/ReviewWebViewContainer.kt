@@ -1,24 +1,21 @@
-package com.wafflestudio.snutt2.lib.android.webview
+package com.wafflestudio.snutt2.feature.reviews
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Build
-import android.webkit.CookieManager
-import android.webkit.WebChromeClient
-import android.webkit.WebResourceError
-import android.webkit.WebResourceRequest
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.lib.android.webview.LoadState
+import com.wafflestudio.snutt2.lib.android.webview.WebViewContainer
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import java.net.URL
 
-class ThemeMarketWebViewContainer(
+class ReviewWebViewContainer(
     private val context: Context,
     private val accessToken: StateFlow<String?>,
     private val isDarkMode: Boolean,
@@ -63,41 +60,35 @@ class ThemeMarketWebViewContainer(
 
     override suspend fun openPage(url: String?) {
         val accessToken = accessToken.filterNotNull().first()
-        val themeMarketUrl = url ?: context.getString(R.string.theme_market_base_url)
-        val urlHost = URL(themeMarketUrl).host
+        val reviewUrlHost = URL(context.getString(R.string.review_base_url)).host
 
-        setCookies(urlHost, accessToken)
-        webView.loadUrl(themeMarketUrl)
-    }
-
-    private fun setCookies(host: String, accessToken: String) {
         CookieManager.getInstance().apply {
             setCookie(
-                host,
+                reviewUrlHost,
                 "x-access-apikey=${context.getString(R.string.api_key)}",
             )
             setCookie(
-                host,
+                reviewUrlHost,
                 "x-access-token=$accessToken",
             )
             setCookie(
-                host,
+                reviewUrlHost,
                 "x-os-type=android",
             )
             setCookie(
-                host,
+                reviewUrlHost,
                 "x-os-version=${Build.VERSION.SDK_INT}",
             )
             setCookie(
-                host,
+                reviewUrlHost,
                 "x-app-version=${BuildConfig.VERSION_NAME}",
             )
             setCookie(
-                host,
+                reviewUrlHost,
                 "x-app-type=${if (BuildConfig.DEBUG) "debug" else "release"}",
             )
             setCookie(
-                host,
+                reviewUrlHost,
                 "theme=${
                 if (isDarkMode) {
                     "dark"
@@ -107,5 +98,43 @@ class ThemeMarketWebViewContainer(
                 }",
             )
         }.flush()
+        webView.loadUrl(url ?: context.getString(R.string.review_base_url))
+    }
+
+    suspend fun reload() {
+        val accessToken = accessToken.filterNotNull().first()
+        val reviewUrlHost = URL(context.getString(R.string.review_base_url)).host
+        CookieManager.getInstance().apply {
+            setCookie(
+                reviewUrlHost,
+                "x-access-apikey=${context.getString(R.string.api_key)}",
+            )
+            setCookie(
+                reviewUrlHost,
+                "x-access-token=$accessToken",
+            )
+            setCookie(
+                reviewUrlHost,
+                "x-os-type=android",
+            )
+            setCookie(
+                reviewUrlHost,
+                "theme=${
+                if (isDarkMode) {
+                    "dark"
+                } else {
+                    "light"
+                }
+                }",
+            )
+        }.flush()
+        webView.reload()
+    }
+}
+
+class CloseBridge(val onClose: () -> (Unit)) {
+    @JavascriptInterface
+    fun postMessage(response: String) {
+        onClose()
     }
 }

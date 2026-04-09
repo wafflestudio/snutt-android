@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.lib
+package com.wafflestudio.snutt2.feature.home.drawer
 
 import android.content.Context
 import android.content.Intent

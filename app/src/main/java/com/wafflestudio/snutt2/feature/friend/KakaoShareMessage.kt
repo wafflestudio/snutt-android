@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.lib
+package com.wafflestudio.snutt2.feature.friend
 
 import android.content.ActivityNotFoundException
 import android.content.Context
