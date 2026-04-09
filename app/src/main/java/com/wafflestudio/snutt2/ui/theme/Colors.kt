@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.ui
+package com.wafflestudio.snutt2.ui.theme
 
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme

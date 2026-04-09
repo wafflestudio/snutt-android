@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.ui
+package com.wafflestudio.snutt2.ui.theme
 
 import android.content.Context
 import android.content.res.Configuration
