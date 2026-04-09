@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.lib.data.serializer
+package com.wafflestudio.snutt2.lib.serializer
 
 import java.lang.reflect.Type
 
