@@ -43,7 +43,7 @@ import com.wafflestudio.snutt2.ui.components.compose.RedDotWithNumber
 import com.wafflestudio.snutt2.ui.components.compose.RightArrowIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.clicks
-import com.wafflestudio.snutt2.lib.featureflag.FeatureFlag
+import com.wafflestudio.snutt2.config.FeatureFlag
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.logImpression
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors

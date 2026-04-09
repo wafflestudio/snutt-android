@@ -2,7 +2,7 @@ package com.wafflestudio.snutt2.feature.lecture_detail.current_table
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wafflestudio.snutt2.RemoteConfig
+import com.wafflestudio.snutt2.config.RemoteConfig
 import com.wafflestudio.snutt2.data.current_table_lecture.CurrentTableLectureRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase

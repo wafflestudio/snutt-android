@@ -2,7 +2,7 @@ package com.wafflestudio.snutt2.feature.home.timetable
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wafflestudio.snutt2.RemoteConfig
+import com.wafflestudio.snutt2.config.RemoteConfig
 import com.wafflestudio.snutt2.data.course_books.CourseBookRepository
 import com.wafflestudio.snutt2.data.notifications.NotificationRepository
 import com.wafflestudio.snutt2.data.table_display.TableDisplayRepository

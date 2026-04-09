@@ -24,7 +24,7 @@ import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.CustomTheme
 import com.wafflestudio.snutt2.domain.model.LectureColor
-import com.wafflestudio.snutt2.lib.featureflag.FeatureFlag
+import com.wafflestudio.snutt2.config.FeatureFlag
 import kotlin.reflect.typeOf
 import com.wafflestudio.snutt2.logging.DetailScreenReferrer
 import com.wafflestudio.snutt2.feature.debug.TestRoute

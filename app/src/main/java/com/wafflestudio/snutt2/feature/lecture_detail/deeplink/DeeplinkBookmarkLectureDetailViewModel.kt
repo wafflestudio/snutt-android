@@ -3,7 +3,7 @@ package com.wafflestudio.snutt2.feature.lecture_detail.deeplink
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wafflestudio.snutt2.RemoteConfig
+import com.wafflestudio.snutt2.config.RemoteConfig
 import com.wafflestudio.snutt2.data.bookmark.BookmarkRepository
 import com.wafflestudio.snutt2.data.lecture_info.LectureInfoRepository
 import com.wafflestudio.snutt2.data.vacancy_noti.VacancyRepository

@@ -1,6 +1,6 @@
 package com.wafflestudio.snutt2.fake
 
-import com.wafflestudio.snutt2.RemoteConfig
+import com.wafflestudio.snutt2.config.RemoteConfig
 import com.wafflestudio.snutt2.network.dto.RemoteConfigDto
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
