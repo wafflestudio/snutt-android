@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views
+package com.wafflestudio.snutt2
 
 import androidx.compose.runtime.compositionLocalOf
 import com.wafflestudio.snutt2.ui.theme.ThemeMode

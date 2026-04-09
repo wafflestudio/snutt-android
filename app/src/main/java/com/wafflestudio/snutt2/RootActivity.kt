@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.views
+package com.wafflestudio.snutt2
 
 import android.Manifest
 import android.net.Uri
