@@ -38,7 +38,7 @@ import com.wafflestudio.snutt2.ui.components.compose.CustomDialog
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.lib.android.toast
 import com.wafflestudio.snutt2.domain.model.SocialProviders
-import com.wafflestudio.snutt2.lib.facebookLogin
+import com.wafflestudio.snutt2.lib.facebook.facebookLogin
 import com.wafflestudio.snutt2.domain.model.SocialLoginType
 import com.wafflestudio.snutt2.domain.model.getString
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
