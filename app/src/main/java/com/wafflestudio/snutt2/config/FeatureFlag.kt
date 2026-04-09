@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.lib.featureflag
+package com.wafflestudio.snutt2.config
 
 import com.wafflestudio.snutt2.BuildConfig
 

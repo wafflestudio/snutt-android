@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2
+package com.wafflestudio.snutt2.config
 
 import com.wafflestudio.snutt2.lib.android.NetworkConnectivityManager
 import com.wafflestudio.snutt2.network.api.SNUTTRestApi
