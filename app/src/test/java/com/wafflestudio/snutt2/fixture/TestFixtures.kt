@@ -1,18 +1,18 @@
 package com.wafflestudio.snutt2.fixture
 
-import com.wafflestudio.snutt2.domainmodel.Building
-import com.wafflestudio.snutt2.domainmodel.Campus
-import com.wafflestudio.snutt2.domainmodel.CourseBook
-import com.wafflestudio.snutt2.domainmodel.CustomTheme
-import com.wafflestudio.snutt2.domainmodel.GeoCoordinate
-import com.wafflestudio.snutt2.domainmodel.LectureColor
-import com.wafflestudio.snutt2.domainmodel.LectureReviewInfo
-import com.wafflestudio.snutt2.domainmodel.SearchedLecture
-import com.wafflestudio.snutt2.domainmodel.SyllabusLecture
-import com.wafflestudio.snutt2.domainmodel.Table
-import com.wafflestudio.snutt2.domainmodel.TableSummary
-import com.wafflestudio.snutt2.domainmodel.ThemeColor
-import com.wafflestudio.snutt2.domainmodel.ThemeReference
+import com.wafflestudio.snutt2.domain.model.Building
+import com.wafflestudio.snutt2.domain.model.Campus
+import com.wafflestudio.snutt2.domain.model.CourseBook
+import com.wafflestudio.snutt2.domain.model.CustomTheme
+import com.wafflestudio.snutt2.domain.model.GeoCoordinate
+import com.wafflestudio.snutt2.domain.model.LectureColor
+import com.wafflestudio.snutt2.domain.model.LectureReviewInfo
+import com.wafflestudio.snutt2.domain.model.SearchedLecture
+import com.wafflestudio.snutt2.domain.model.SyllabusLecture
+import com.wafflestudio.snutt2.domain.model.Table
+import com.wafflestudio.snutt2.domain.model.TableSummary
+import com.wafflestudio.snutt2.domain.model.ThemeColor
+import com.wafflestudio.snutt2.domain.model.ThemeReference
 
 object TestFixtures {
 

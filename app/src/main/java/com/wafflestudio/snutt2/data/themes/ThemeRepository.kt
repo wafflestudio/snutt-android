@@ -1,9 +1,9 @@
 package com.wafflestudio.snutt2.data.themes
 
-import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
-import com.wafflestudio.snutt2.domainmodel.CustomTheme
-import com.wafflestudio.snutt2.domainmodel.ThemeColor
 import com.wafflestudio.snutt2.data.Result
+import com.wafflestudio.snutt2.domain.model.BuiltInTheme
+import com.wafflestudio.snutt2.domain.model.CustomTheme
+import com.wafflestudio.snutt2.domain.model.ThemeColor
 import kotlinx.coroutines.flow.StateFlow
 
 interface ThemeRepository {

@@ -1,0 +1,236 @@
+package com.wafflestudio.snutt2.ui.theme
+
+import androidx.compose.material.Colors
+import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+
+object SNUTTColors {
+    val White = Color(0xffffffff)
+    val Gray = Color(0xfff2f2f2)
+    val Gray10 = Color(0xffdadada)
+    val Gray20 = Color(0xffcacaca)
+    val Gray2 = Color(0xffb3b3b3)
+    val Gray30 = Color(0xffa6a6a6)
+    val Gray40 = Color(0xff979797)
+    val DarkGray = Color(0xff777777)
+    val DarkerGray = Color(0xff505050)
+    val ExtraDarkGray = Color(0xff2b2b2b)
+    val Gray900 = Color(0xff1e1e1e)
+    val Black = Color(0xff000000)
+    val MainBlue = Color(0xff1bd0c8)
+    val DarkMainBlue = Color(0xff00b8b0)
+
+    val Colors.Gray100 @Composable get() = if (isLight) Color(0xfff2f2f2) else Color(0xff505050)
+    val Gray100 @Composable get() = MaterialTheme.colors.Gray100
+
+    val Colors.Gray200 @Composable get() = if (isLight) Color(0xffb3b3b3) else Color(0xffb3b3b3)
+    val Gray200 @Composable get() = MaterialTheme.colors.Gray200
+
+    val Colors.Gray400 @Composable get() = if (isLight) Color(0xfff2f2f2) else Color(0xff3d3d3d)
+    val Gray400 @Composable get() = MaterialTheme.colors.Gray400
+
+    val Colors.Gray600 @Composable get() = if (isLight) Color(0xff777777) else Color(0xffffffff)
+    val Gray600 @Composable get() = MaterialTheme.colors.Gray600
+
+    val Colors.FillTertiary @Composable get() = if (isLight) Color(0x1f767680) else Color(0xff3c3c3c)
+    val FillTertiary @Composable get() = MaterialTheme.colors.FillTertiary
+
+    val Colors.SeparatorTransparency @Composable get() = if (isLight) Color(0x5c3c3c43) else Color(0xff505050)
+    val SeparatorTransparency @Composable get() = MaterialTheme.colors.SeparatorTransparency
+
+    val Colors.BackgroundPrimary @Composable get() = if (isLight) Color(0xffffffff) else Color(0xff777777)
+    val BackgroundPrimary @Composable get() = MaterialTheme.colors.BackgroundPrimary
+
+    val Colors.MoreTabBackground @Composable get() = if (isLight) Color(0xfff2f2f7) else Color(0xff505050)
+    val MoreTabBackground @Composable get() = MaterialTheme.colors.MoreTabBackground
+
+    val Colors.SettingColumnTitle @Composable get() = if (isLight) Color(0xff8e8e93) else Color(0xffc4c4c4)
+    val SettingColumnTitle @Composable get() = MaterialTheme.colors.SettingColumnTitle
+
+    val Colors.SettingBackground @Composable get() = if (isLight) Color(0xfff2f2f2) else Color(0xff1e1e1e)
+    val SettingBackground @Composable get() = MaterialTheme.colors.SettingBackground
+
+    val Colors.TextAlternative @Composable get() = if (isLight) Color(0xff8a898e) else Color(0xffb3b3b3)
+    val TextAlternative @Composable get() = MaterialTheme.colors.TextAlternative
+
+    val Colors.TextMed @Composable get() = if (isLight) Color(0xffa6a6a6) else Color(0xff8a898e)
+    val TextMed @Composable get() = MaterialTheme.colors.TextMed
+
+    val Colors.SnackbarBackground @Composable get() = if (isLight) Color(0x80000000) else Color(0xcc505050)
+    val SnackbarBackground @Composable get() = MaterialTheme.colors.SnackbarBackground
+
+    val DARKER_GRAY @Composable get() = Color(0xff777777)
+
+    val Red = Color(0xffe54459)
+    val Orange = Color(0xfff58d3d)
+    val Yellow = Color(0xffFAC42D)
+    val Grass = Color(0xffa6d930)
+    val Green = Color(0xff2BC267)
+    val Sky = Color(0xff1bd0c8)
+    val Blue = Color(0xff1d99e8)
+    val NavyBlue = Color(0xff4F48C4)
+    val Violet = Color(0xffaf56b3)
+
+    val FacebookBlue = Color(0x993c5dd4)
+
+    val VacancyRed = Color(0xffed6c58)
+
+    val LectureDiaryGray = Color(0xfff7f7f7)
+
+    val EditTextLabel = Color(0xff8a898e)
+    val EditTextHint = Color(0xffc4c4c4)
+    val EditTextUnderline = Color(0xffdcdcde)
+
+    val Colors.VacancyBlue @Composable get() = if (isLight) Color(0xff446cc2) else Color(0xff7aaaf3)
+    val VacancyBlue @Composable get() = MaterialTheme.colors.VacancyBlue
+
+    val Colors.VacancyRedBg @Composable get() = if (isLight) Color(0xfffdf8f8) else Color(0xff382828)
+    val VacancyRedBg @Composable get() = MaterialTheme.colors.VacancyRedBg
+
+    val Colors.VacancyGray @Composable get() = if (isLight) Color(0xffc4c4c4) else Color(0xff777777)
+    val VacancyGray @Composable get() = MaterialTheme.colors.VacancyGray
+
+    val Colors.SNUTTTheme @Composable get() = if (isLight) Color(0xff1BD0C8) else Color(0xff58c1b7)
+    val SNUTTTheme @Composable get() = MaterialTheme.colors.SNUTTTheme
+
+    val Colors.SNUTTDarkMintBlue @Composable get() = if (isLight) Color(0xff1bd0c8) else Color(0xff00b8b0)
+    val SNUTTDarkMintBlue @Composable get() = MaterialTheme.colors.SNUTTDarkMintBlue
+
+    val Colors.BannerBlue @Composable get() = if (isLight) Color(0xff26c1bb) else Color(0xff1ca6a0)
+    val BannerBlue @Composable get() = MaterialTheme.colors.BannerBlue
+
+    val Colors.MilkMint @Composable get() = if (isLight) Color(0xffb2f6f3) else Color(0xffb2f6f3)
+    val MilkMint @Composable get() = MaterialTheme.colors.MilkMint
+
+    val Transparent = Color(0x00000000)
+
+    val Colors.Black050 @Composable get() = if (isLight) Color(0x0d000000) else Color(0x0dffffff)
+    val Black050 @Composable get() = MaterialTheme.colors.Black050
+
+    val Colors.Black150 @Composable get() = if (isLight) Color(0x1c000000) else Color(0x1c000000)
+    val Black150 @Composable get() = MaterialTheme.colors.Black250
+
+    val Colors.Black250 @Composable get() = if (isLight) Color(0x26000000) else Color(0x26ffffff)
+    val Black250 @Composable get() = MaterialTheme.colors.Black250
+
+    val Colors.Black300 @Composable get() = if (isLight) Color(0x4d000000) else Color(0x4dffffff)
+    val Black300 @Composable get() = MaterialTheme.colors.Black300
+
+    val Colors.Black400 @Composable get() = if (isLight) Color(0x66000000) else Color(0x66ffffff)
+    val Black400 @Composable get() = MaterialTheme.colors.Black400
+
+    val Colors.Black500 @Composable get() = if (isLight) Color(0x80000000) else Color(0x80ffffff)
+    val Black500 @Composable get() = MaterialTheme.colors.Black500
+
+    val Colors.Black600 @Composable get() = if (isLight) Color(0x99000000) else Color(0x99ffffff)
+    val Black600 @Composable get() = MaterialTheme.colors.Black600
+
+    val Colors.Black800 @Composable get() = if (isLight) Color(0xcc000000) else Color(0xccffffff)
+    val Black800 @Composable get() = MaterialTheme.colors.Black800
+
+    val Colors.Black900 @Composable get() = if (isLight) Color(0xff000000) else Color(0xffffffff)
+    val Black900 @Composable get() = MaterialTheme.colors.Black900
+
+    val Colors.White400 @Composable get() = if (isLight) Color(0x4dffffff) else Color(0x4dffffff)
+    val White400 @Composable get() = MaterialTheme.colors.White400
+
+    val Colors.White500 @Composable get() = if (isLight) Color(0x80ffffff) else Color(0x80ffffff)
+    val White500 @Composable get() = MaterialTheme.colors.White500
+
+    val Colors.White700 @Composable get() = if (isLight) Color(0xb3ffffff) else Color(0xb3ffffff)
+    val White700 @Composable get() = MaterialTheme.colors.White700
+
+    val Colors.White800 @Composable get() = if (isLight) Color(0xccffffff) else Color(0xcc2b2b2b)
+    val White800 @Composable get() = MaterialTheme.colors.White800
+
+    val Colors.White900 @Composable get() = if (isLight) Color(0xffffffff) else Color(0xff2b2b2b)
+    val White900 @Composable get() = MaterialTheme.colors.White900
+
+    val Colors.Dim @Composable get() = if (isLight) Color(0x99000000) else Color(0x99000000)
+    val Dim @Composable get() = MaterialTheme.colors.Dim
+
+    val Colors.Dim2 @Composable get() = if (isLight) Color(0x80000000) else Color(0x60000000)
+    val Dim2 @Composable get() = MaterialTheme.colors.Dim2
+
+    val Colors.TableGrid @Composable get() = if (isLight) Color(0xffebebeb) else Color(0xff3c3c3c)
+    val TableGrid @Composable get() = MaterialTheme.colors.TableGrid
+
+    val Colors.TableGrid2 @Composable get() = if (isLight) Color(0xfff3f3f3) else Color(0xff3c3c3c)
+    val TableGrid2 @Composable get() = MaterialTheme.colors.TableGrid2
+
+    val Colors.Hint1 @Composable get() = if (isLight) Color(0x66a6a6a6) else Color(0xff505050)
+    val Hint1 @Composable get() = MaterialTheme.colors.Hint1
+
+    val Colors.Hint2 @Composable get() = if (isLight) Color(0xffa6a6a6) else Color(0xffa6a6a6)
+    val Hint2 @Composable get() = MaterialTheme.colors.Hint2
+
+    val Colors.DropdownMenuTitle @Composable get() = if (isLight) Color(0xffffffff) else Color(0xffb3b3b3)
+    val DropdownMenuTitle @Composable get() = MaterialTheme.colors.DropdownMenuTitle
+
+    val Colors.DropdownMenuBackground @Composable get() = if (isLight) Color(0xffffffff) else Color(0xff3c3c3c)
+    val DropdownMenuBackground @Composable get() = MaterialTheme.colors.DropdownMenuBackground
+
+    val Colors.AllWhite @Composable get() = Color(0xffffffff)
+    val AllWhite @Composable get() = MaterialTheme.colors.AllWhite
+}
+
+val theme_snutt_0 = Color(0xffE54459)
+// val theme_snutt_1 = Color(0xffF58D3D)
+// val theme_snutt_2 = Color(0xffFAC42D)
+// val theme_snutt_3 = Color(0xffA6D930)
+// val theme_snutt_4 = Color(0xff2BC267)
+// val theme_snutt_5 = Color(0xff1BD0C8)
+// val theme_snutt_6 = Color(0xff1D99E8)
+// val theme_snutt_7 = Color(0xff4F48C4)
+// val theme_snutt_8 = Color(0xffAF56B3)
+//
+// val theme_autumn_0 = Color(0xffB82E31)
+// val theme_autumn_1 = Color(0xffDB701C)
+// val theme_autumn_2 = Color(0xffEAA32A)
+// val theme_autumn_3 = Color(0xffC6C013)
+// val theme_autumn_4 = Color(0xff3A856E)
+// val theme_autumn_5 = Color(0xff19B2AC)
+// val theme_autumn_6 = Color(0xff3994CE)
+// val theme_autumn_7 = Color(0xff3F3A9C)
+// val theme_autumn_8 = Color(0xff924396)
+//
+// val theme_modern_0 = Color(0xffF0652A)
+// val theme_modern_1 = Color(0xffF5AD3E)
+// val theme_modern_2 = Color(0xff998F36)
+// val theme_modern_3 = Color(0xff89C291)
+// val theme_modern_4 = Color(0xff266F55)
+// val theme_modern_5 = Color(0xff13808F)
+// val theme_modern_6 = Color(0xff366689)
+// val theme_modern_7 = Color(0xff432920)
+// val theme_modern_8 = Color(0xffD82F3D)
+//
+// val theme_cherry_0 = Color(0xffFD79A8)
+// val theme_cherry_1 = Color(0xffFEC9DD)
+// val theme_cherry_2 = Color(0xffFEB0CC)
+// val theme_cherry_3 = Color(0xffFE93BF)
+// val theme_cherry_4 = Color(0xffE9B1D0)
+// val theme_cherry_5 = Color(0xffC67D97)
+// val theme_cherry_6 = Color(0xffBB8EA7)
+// val theme_cherry_7 = Color(0xffBDB4BF)
+// val theme_cherry_8 = Color(0xffE16597)
+//
+// val theme_ice_0 = Color(0xffAABDCF)
+// val theme_ice_1 = Color(0xffC0E9E8)
+// val theme_ice_2 = Color(0xff66B6CA)
+// val theme_ice_3 = Color(0xff015F95)
+// val theme_ice_4 = Color(0xffA8D0DB)
+// val theme_ice_5 = Color(0xff458ED0)
+// val theme_ice_6 = Color(0xff62A9D1)
+// val theme_ice_7 = Color(0xff20363D)
+// val theme_ice_8 = Color(0xff6D8A96)
+//
+// val theme_grass_0 = Color(0xff4FBEAA)
+// val theme_grass_1 = Color(0xff9FC1A4)
+// val theme_grass_2 = Color(0xff5A8173)
+// val theme_grass_3 = Color(0xff84AEB1)
+// val theme_grass_4 = Color(0xff266F55)
+// val theme_grass_5 = Color(0xffD0E0C4)
+// val theme_grass_6 = Color(0xff59886D)
+// val theme_grass_7 = Color(0xff476060)
+// val theme_grass_8 = Color(0xff3D7068)

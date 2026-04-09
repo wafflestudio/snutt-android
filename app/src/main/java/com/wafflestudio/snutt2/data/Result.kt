@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.data
 
 import com.wafflestudio.snutt2.domain.DomainError
-import kotlin.Nothing
 
 sealed class Result<out T> {
     data class Success<out T>(val data: T) : Result<T>()

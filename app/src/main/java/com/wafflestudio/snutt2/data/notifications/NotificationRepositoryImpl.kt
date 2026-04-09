@@ -4,9 +4,9 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.wafflestudio.snutt2.data.mapper.toDomain
-import com.wafflestudio.snutt2.domainmodel.Notification
 import com.wafflestudio.snutt2.data.Result
+import com.wafflestudio.snutt2.data.mapper.toDomain
+import com.wafflestudio.snutt2.domain.model.Notification
 import com.wafflestudio.snutt2.network.api.SNUTTRestApi
 import com.wafflestudio.snutt2.network.error.toDomainError
 import kotlinx.coroutines.flow.Flow

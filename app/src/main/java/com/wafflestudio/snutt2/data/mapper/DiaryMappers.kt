@@ -1,11 +1,11 @@
 package com.wafflestudio.snutt2.data.mapper
 
-import com.wafflestudio.snutt2.domainmodel.CourseBook
-import com.wafflestudio.snutt2.domainmodel.diary.CourseBookDiarySubmissions
-import com.wafflestudio.snutt2.domainmodel.diary.DiaryDailyClassType
-import com.wafflestudio.snutt2.domainmodel.diary.DiaryQuestion
-import com.wafflestudio.snutt2.domainmodel.diary.DiaryQuestionAnswer
-import com.wafflestudio.snutt2.domainmodel.diary.DiarySummary
+import com.wafflestudio.snutt2.domain.model.CourseBook
+import com.wafflestudio.snutt2.domain.model.diary.CourseBookDiarySubmissions
+import com.wafflestudio.snutt2.domain.model.diary.DiaryDailyClassType
+import com.wafflestudio.snutt2.domain.model.diary.DiaryQuestion
+import com.wafflestudio.snutt2.domain.model.diary.DiaryQuestionAnswer
+import com.wafflestudio.snutt2.domain.model.diary.DiarySummary
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.network.dto.DiaryDailyClassTypeDto
 import com.wafflestudio.snutt2.network.dto.DiaryQuestionDto

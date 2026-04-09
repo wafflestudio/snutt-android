@@ -5,7 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
-import com.wafflestudio.snutt2.logging.LocalAnalyticsLogger
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 /**

@@ -1,7 +1,7 @@
 package com.wafflestudio.snutt2.di
 
-import com.wafflestudio.snutt2.RemoteConfig
-import com.wafflestudio.snutt2.RemoteConfigImpl
+import com.wafflestudio.snutt2.config.RemoteConfig
+import com.wafflestudio.snutt2.config.RemoteConfigImpl
 import com.wafflestudio.snutt2.data.themes.ThemeServiceImpl
 import com.wafflestudio.snutt2.domain.ThemeService
 import dagger.Binds

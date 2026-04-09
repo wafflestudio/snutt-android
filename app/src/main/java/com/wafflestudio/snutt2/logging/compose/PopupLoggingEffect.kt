@@ -3,7 +3,6 @@ package com.wafflestudio.snutt2.logging.compose
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
-import com.wafflestudio.snutt2.logging.LocalAnalyticsLogger
 
 /**
  * Popup 로그는 각 팝업 이미지마다 따로 기록되어야 하므로

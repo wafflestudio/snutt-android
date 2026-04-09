@@ -3,7 +3,7 @@ package com.wafflestudio.snutt2.storage.pref
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import com.wafflestudio.snutt2.lib.data.serializer.Serializer
+import com.wafflestudio.snutt2.lib.serializer.Serializer
 import java.lang.reflect.Type
 
 class PrefStorageImpl(

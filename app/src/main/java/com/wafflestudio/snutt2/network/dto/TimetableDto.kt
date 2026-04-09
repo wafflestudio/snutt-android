@@ -2,7 +2,7 @@ package com.wafflestudio.snutt2.network.dto
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
+import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 
 // 신규
 @JsonClass(generateAdapter = true)

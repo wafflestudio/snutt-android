@@ -1,13 +1,21 @@
 package com.wafflestudio.snutt2.storage
 
-import com.wafflestudio.snutt2.network.dto.SemesterStatusDto
 import com.wafflestudio.snutt2.lib.android.NetworkLog
-import com.wafflestudio.snutt2.network.dto.*
-import com.wafflestudio.snutt2.storage.pref.*
+import com.wafflestudio.snutt2.network.dto.CourseBookDto
+import com.wafflestudio.snutt2.network.dto.SemesterStatusDto
+import com.wafflestudio.snutt2.network.dto.SimpleTableDto
+import com.wafflestudio.snutt2.network.dto.TableDto
+import com.wafflestudio.snutt2.network.dto.TagDto
+import com.wafflestudio.snutt2.network.dto.UserDto
 import com.wafflestudio.snutt2.storage.model.TableLectureCustomData
 import com.wafflestudio.snutt2.storage.model.TableTrimParamData
-import com.wafflestudio.snutt2.network.dto.TagDto
-import com.wafflestudio.snutt2.ui.ThemeMode
+import com.wafflestudio.snutt2.storage.pref.PrefContext
+import com.wafflestudio.snutt2.storage.pref.PrefListValueMetaData
+import com.wafflestudio.snutt2.storage.pref.PrefMapValueMetaData
+import com.wafflestudio.snutt2.storage.pref.PrefOptionalValueMetaData
+import com.wafflestudio.snutt2.storage.pref.PrefValue
+import com.wafflestudio.snutt2.storage.pref.PrefValueMetaData
+import com.wafflestudio.snutt2.ui.theme.ThemeMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -149,7 +157,7 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val networkLog = PrefValue<List<NetworkLog>> (
+    val networkLog = PrefValue<List<NetworkLog>>(
         prefContext,
         PrefListValueMetaData(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
