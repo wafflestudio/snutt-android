@@ -37,6 +37,7 @@ sealed class AnalyticsScreen {
     data object ThemeDownloaded : AnalyticsScreen()
     data object ThemePreview : AnalyticsScreen()
 
+    data object DiaryWrite : AnalyticsScreen()
     data object Vacancy : AnalyticsScreen()
     data object Popup : AnalyticsScreen()
 

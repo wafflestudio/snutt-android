@@ -10,6 +10,9 @@ sealed class AnalyticsEvent {
     data class AddToBookmark(val parameter: AddToBookmarkParameter) : AnalyticsEvent()
     data class AddToTimetable(val parameter: AddToTimetableParameter) : AnalyticsEvent()
     data class AddToVacancy(val parameter: AddToVacancyParameter) : AnalyticsEvent()
+    data object DiaryFirstSectionDone : AnalyticsEvent()
+    data object DiarySubmitted : AnalyticsEvent()
+    data class DiaryAfterSubmit(val parameter: DiaryAfterSubmitParameter) : AnalyticsEvent()
 
     fun getExtraParameters(): Bundle {
         return when (this) {
@@ -18,6 +21,7 @@ sealed class AnalyticsEvent {
             is AddToBookmark -> parameter.toBundle()
             is AddToTimetable -> parameter.toBundle()
             is AddToVacancy -> parameter.toBundle()
+            is DiaryAfterSubmit -> parameter.toBundle()
             else -> Bundle()
         }
     }
@@ -83,6 +87,20 @@ data class AddToVacancyParameter(
         return Bundle().apply {
             putString("lecture_id", lectureId)
             putString("referrer", referrer.encode())
+        }
+    }
+}
+
+data class DiaryAfterSubmitParameter(
+    val action: Action,
+) {
+    enum class Action {
+        NEXT, HOME, REVIEW
+    }
+
+    fun toBundle(): Bundle {
+        return Bundle().apply {
+            putString("action", action.name.lowercase())
         }
     }
 }

@@ -15,6 +15,9 @@ import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.isSelected
 import com.wafflestudio.snutt2.lib.toggleIndex
 import com.wafflestudio.snutt2.lib.unselectExcept
+import com.wafflestudio.snutt2.logging.AnalyticsEvent
+import com.wafflestudio.snutt2.logging.AnalyticsLogger
+import com.wafflestudio.snutt2.logging.DiaryAfterSubmitParameter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,6 +35,7 @@ class DiaryWriteViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val savedStateHandle: SavedStateHandle,
     private val displayMessageResolver: DisplayMessageResolver,
+    private val analyticsLogger: AnalyticsLogger,
 ) : ViewModel() {
     private val lectureId: String
         get() = savedStateHandle.get<String>("lectureId") ?: ""
@@ -117,6 +121,7 @@ class DiaryWriteViewModel @Inject constructor(
     }
 
     fun saveDiaryWrite(comment: String) {
+        analyticsLogger.logEvent(AnalyticsEvent.DiarySubmitted)
         val state = _uiState.value as? DiaryWriteUiState.Write ?: return
         val selectedDailyClassTypes = state.dailyClassTypes
             .filter { it.isSelected() }
@@ -153,6 +158,7 @@ class DiaryWriteViewModel @Inject constructor(
     fun completeActivitySelection() {
         val state = _uiState.value as? DiaryWriteUiState.Write ?: return
         if (!state.activitySelectingState.isSelecting()) return
+        analyticsLogger.logEvent(AnalyticsEvent.DiaryFirstSectionDone)
         val selectedDailyClassTypes = state.dailyClassTypes
             .filter { it.isSelected() }
             .map { it.item }
@@ -185,6 +191,7 @@ class DiaryWriteViewModel @Inject constructor(
     fun writeNextDiary() {
         val state = _uiState.value as? DiaryWriteUiState.Complete ?: return
         val writeNext = state.nextAction as? DiaryNextAction.WriteNext ?: return
+        analyticsLogger.logEvent(AnalyticsEvent.DiaryAfterSubmit(DiaryAfterSubmitParameter(DiaryAfterSubmitParameter.Action.NEXT)))
         viewModelScope.launch {
             _uiEvent.emit(
                 DiaryWriteUiEvent.NextDiary(
@@ -193,6 +200,16 @@ class DiaryWriteViewModel @Inject constructor(
                 ),
             )
         }
+    }
+
+    fun goReview() {
+        analyticsLogger.logEvent(AnalyticsEvent.DiaryAfterSubmit(DiaryAfterSubmitParameter(DiaryAfterSubmitParameter.Action.REVIEW)))
+        viewModelScope.launch { _uiEvent.emit(DiaryWriteUiEvent.NavigateReview) }
+    }
+
+    fun goHome() {
+        analyticsLogger.logEvent(AnalyticsEvent.DiaryAfterSubmit(DiaryAfterSubmitParameter(DiaryAfterSubmitParameter.Action.HOME)))
+        viewModelScope.launch { _uiEvent.emit(DiaryWriteUiEvent.NavigateHome) }
     }
 
     private suspend fun handleDiaryWriteError(error: DomainError) {
@@ -229,6 +246,8 @@ sealed interface DiaryWriteUiEvent {
         val courseTitle: String,
     ) : DiaryWriteUiEvent
 
+    data object NavigateReview : DiaryWriteUiEvent
+    data object NavigateHome : DiaryWriteUiEvent
     data object ForceLogout : DiaryWriteUiEvent
     data object Return : DiaryWriteUiEvent
 }
