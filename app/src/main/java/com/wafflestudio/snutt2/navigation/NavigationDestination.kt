@@ -1,0 +1,197 @@
+package com.wafflestudio.snutt2.navigation
+
+import com.wafflestudio.snutt2.domain.model.LectureColor
+import kotlinx.serialization.Serializable
+
+@Serializable
+sealed interface NavigationDestination {
+
+    @Serializable
+    @DeepLinkPath("onboard")
+    data object Onboard : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("tutorial")
+    data object Tutorial : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("home")
+    data class Home(val initialTab: String? = null) : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("signIn")
+    data object SignIn : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("signUp")
+    data object SignUp : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("find_id")
+    data object FindId : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("find_password")
+    data object FindPassword : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("email_verification")
+    data object EmailVerification : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("lectures_of_table")
+    data object LecturesOfTable : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("lecture_detail")
+    data class LectureDetail(
+        val lectureId: String? = null,
+        val tableId: String? = null,
+        val isFromTimetable: Boolean = false,
+    ) : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("timetable-lecture")
+    data class TimetableLecture(val tableId: String? = null) : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("add_custom_lecture")
+    data object AddCustomLecture : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("lecture_color_selector")
+    data class LectureColorSelector(
+        val color: LectureColor = LectureColor.BuiltIn(0),
+    ) : NavigationDestination {
+        companion object {
+            val ARG_COLOR = LectureColorSelector::color.name
+            const val RESULT_KEY = "selected_color"
+        }
+    }
+
+    @Serializable
+    @DeepLinkPath("notifications")
+    data object Notification : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("app_report")
+    data object AppReport : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("open_licenses")
+    data object OpenLicenses : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("license_detail")
+    data class LicenseDetail(val licenseName: String? = null) : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("service_info")
+    data object ServiceInfo : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("team_info")
+    data object TeamInfo : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("timetable_config")
+    data object TimeTableConfig : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("user_config")
+    data object UserConfig : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("change_nickname")
+    data object ChangeNickname : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("personal_information_policy")
+    data object PersonalInformationPolicy : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("theme_mode_select")
+    data object ThemeModeSelect : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("bookmarks")
+    data object Bookmark : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("network_log")
+    data object NetworkLog : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("test")
+    data object Test : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("vacancy")
+    data object VacancyNotification : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("theme_market")
+    data object ThemeMarket : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("push_preferences")
+    data object PushPreferences : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("lecture_reminder")
+    data object LectureReminder : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("lecture_diary_history")
+    data object LectureDiaryHistory : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("diary")
+    data class LectureDiaryWrite(
+        val lectureId: String = "",
+        val courseTitle: String = "",
+    ) : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("friends")
+    data object Friends : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("theme_config")
+    data object ThemeConfig : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("theme_detail")
+    data class ThemeDetail(val themeId: String = "", val theme: Int = -1) : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("review")
+    data class Review(
+        val reviewId: String,
+        val lectureId: String = "",
+        val referrer: String = "",
+    ) : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("social_link")
+    data object SocialLink : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("important_notice")
+    data object ImportantNotice : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("deeplink_timetable_lecture_detail")
+    data class DeeplinkTimetableLectureDetail(
+        val lectureId: String,
+        val timetableId: String,
+    ) : NavigationDestination
+
+    @Serializable
+    @DeepLinkPath("deeplink_bookmark_lecture_detail")
+    data class DeeplinkBookmarkLectureDetail(
+        val lectureId: String,
+        val year: Long,
+        val semester: Long,
+    ) : NavigationDestination
+}

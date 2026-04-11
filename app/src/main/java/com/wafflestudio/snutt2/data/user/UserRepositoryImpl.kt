@@ -4,21 +4,38 @@ import android.webkit.CookieManager
 import com.facebook.login.LoginManager
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
-import com.wafflestudio.snutt2.data.SNUTTStorage
-import com.wafflestudio.snutt2.domainmodel.PushPreferences
-import com.wafflestudio.snutt2.domainmodel.User
-import com.wafflestudio.snutt2.domainmodel.toNetworkModel
+import com.wafflestudio.snutt2.data.Result
+import com.wafflestudio.snutt2.data.mapper.toDomain
+import com.wafflestudio.snutt2.data.mapper.toDto
+import com.wafflestudio.snutt2.domain.Unknown
+import com.wafflestudio.snutt2.domain.model.PushPreferences
+import com.wafflestudio.snutt2.domain.model.SocialProviders
+import com.wafflestudio.snutt2.domain.model.User
 import com.wafflestudio.snutt2.lib.map
-import com.wafflestudio.snutt2.lib.network.dto.core.toDomainModel
-import com.wafflestudio.snutt2.lib.network.Result
-import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
-import com.wafflestudio.snutt2.lib.network.SNUTTRestApiForGoogle
-import com.wafflestudio.snutt2.lib.network.dto.*
-import com.wafflestudio.snutt2.lib.network.Unknown
-import com.wafflestudio.snutt2.lib.network.toDomainError
-import com.wafflestudio.snutt2.lib.toOptional
 import com.wafflestudio.snutt2.lib.unwrap
-import com.wafflestudio.snutt2.ui.ThemeMode
+import com.wafflestudio.snutt2.network.api.SNUTTRestApi
+import com.wafflestudio.snutt2.network.api.google.PostAccessTokenByAuthCodeParams
+import com.wafflestudio.snutt2.network.api.google.SNUTTRestApiForGoogle
+import com.wafflestudio.snutt2.network.dto.PatchUserInfoParams
+import com.wafflestudio.snutt2.network.dto.PostCheckEmailByIdParams
+import com.wafflestudio.snutt2.network.dto.PostFeedbackParams
+import com.wafflestudio.snutt2.network.dto.PostFindIdParams
+import com.wafflestudio.snutt2.network.dto.PostForceLogoutParams
+import com.wafflestudio.snutt2.network.dto.PostResetPasswordParams
+import com.wafflestudio.snutt2.network.dto.PostSendCodeToEmailParams
+import com.wafflestudio.snutt2.network.dto.PostSendPwResetCodeParams
+import com.wafflestudio.snutt2.network.dto.PostSignInParams
+import com.wafflestudio.snutt2.network.dto.PostSignUpParams
+import com.wafflestudio.snutt2.network.dto.PostSocialLoginParams
+import com.wafflestudio.snutt2.network.dto.PostUserPasswordParams
+import com.wafflestudio.snutt2.network.dto.PostVerifyEmailCodeParams
+import com.wafflestudio.snutt2.network.dto.PostVerifyPwResetCodeParams
+import com.wafflestudio.snutt2.network.dto.PutUserPasswordParams
+import com.wafflestudio.snutt2.network.dto.RegisterFirebaseTokenParams
+import com.wafflestudio.snutt2.network.error.toDomainError
+import com.wafflestudio.snutt2.storage.SNUTTStorage
+import com.wafflestudio.snutt2.storage.toOptional
+import com.wafflestudio.snutt2.ui.theme.ThemeMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
@@ -37,7 +54,7 @@ class UserRepositoryImpl @Inject constructor(
 
     override val user: StateFlow<User?> = storage.user.asStateFlow()
         .unwrap(externalScope)
-        .map(externalScope) { it?.toDomainModel() }
+        .map(externalScope) { it?.toDomain() }
 
     override val accessToken = storage.accessToken.asStateFlow()
 
@@ -281,7 +298,7 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun getPushPreferences(): Result<PushPreferences> {
         try {
-            val result = api._getPushPreferences().toDomainModel()
+            val result = api._getPushPreferences().toDomain()
             return Result.Success(result)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
@@ -290,16 +307,25 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun postPushPreferences(pushPreferences: PushPreferences): Result<Unit> {
         try {
-            api._postPushPreferences(pushPreferences.toNetworkModel())
+            api._postPushPreferences(pushPreferences.toDto())
             return Result.Success(Unit)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
         }
     }
 
-    override suspend fun getSocialProviders(): Result<GetSocialProvidersResults> {
+    override suspend fun getSocialProviders(): Result<SocialProviders> {
         return try {
-            Result.Success(api._getSocialProviders())
+            val response = api._getSocialProviders()
+            Result.Success(
+                SocialProviders(
+                    local = response.local,
+                    facebook = response.facebook,
+                    google = response.google,
+                    kakao = response.kakao,
+                    apple = response.apple,
+                ),
+            )
         } catch (e: Exception) {
             Result.Fail(e.toDomainError())
         }

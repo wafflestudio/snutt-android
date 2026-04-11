@@ -1,10 +1,14 @@
 package com.wafflestudio.snutt2.data.popup
 
-import com.wafflestudio.snutt2.lib.network.Result
+import com.wafflestudio.snutt2.data.Result
+import com.wafflestudio.snutt2.domain.model.Popup
+import kotlinx.coroutines.flow.StateFlow
 
 interface PopupRepository {
 
-    suspend fun fetchAndSetPopup(): Result<Unit>
+    val popups: StateFlow<List<Popup>?>
+
+    suspend fun ensurePopupsFetched(): Result<Unit>
 
     suspend fun closePopupWithHiddenDays(): Result<Unit>
 

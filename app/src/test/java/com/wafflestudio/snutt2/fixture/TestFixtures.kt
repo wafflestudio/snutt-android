@@ -1,13 +1,18 @@
 package com.wafflestudio.snutt2.fixture
 
-import com.wafflestudio.snutt2.domainmodel.CourseBook
-import com.wafflestudio.snutt2.domainmodel.CustomTheme
-import com.wafflestudio.snutt2.domainmodel.LectureReviewInfo
-import com.wafflestudio.snutt2.domainmodel.SearchedLecture
-import com.wafflestudio.snutt2.domainmodel.Table
-import com.wafflestudio.snutt2.domainmodel.TableSummary
-import com.wafflestudio.snutt2.domainmodel.ThemeColor
-import com.wafflestudio.snutt2.domainmodel.ThemeReference
+import com.wafflestudio.snutt2.domain.model.Building
+import com.wafflestudio.snutt2.domain.model.Campus
+import com.wafflestudio.snutt2.domain.model.CourseBook
+import com.wafflestudio.snutt2.domain.model.CustomTheme
+import com.wafflestudio.snutt2.domain.model.GeoCoordinate
+import com.wafflestudio.snutt2.domain.model.LectureColor
+import com.wafflestudio.snutt2.domain.model.LectureReviewInfo
+import com.wafflestudio.snutt2.domain.model.SearchedLecture
+import com.wafflestudio.snutt2.domain.model.SyllabusLecture
+import com.wafflestudio.snutt2.domain.model.Table
+import com.wafflestudio.snutt2.domain.model.TableSummary
+import com.wafflestudio.snutt2.domain.model.ThemeColor
+import com.wafflestudio.snutt2.domain.model.ThemeReference
 
 object TestFixtures {
 
@@ -73,6 +78,47 @@ object TestFixtures {
 
     val lecture1 = searchedLecture(id = "lec-1", courseTitle = "컴퓨터개론")
     val lecture2 = searchedLecture(id = "lec-2", courseTitle = "자료구조")
+
+    // --- SyllabusLecture ---
+
+    fun syllabusLecture(
+        id: String = "syllabus-1",
+        courseTitle: String = "컴퓨터개론",
+        originalLectureId: String = "lec-1",
+        color: LectureColor = LectureColor.BuiltIn(0),
+    ) = SyllabusLecture(
+        id = id,
+        courseTitle = courseTitle,
+        lectureSessions = emptyList(),
+        instructor = "",
+        credit = 3,
+        remark = "",
+        color = color,
+        classification = "",
+        department = "",
+        academicYear = "",
+        courseNumber = "",
+        lectureNumber = "",
+        category = "",
+        categoryPre2025 = "",
+        quota = 30,
+        freshmanQuota = 0,
+        originalLectureId = originalLectureId,
+    )
+
+    // --- Building ---
+
+    fun building(
+        buildingNumber: String = "301",
+        buildingNameKor: String = "제1공학관",
+        campus: Campus = Campus.GWANAK,
+    ) = Building(
+        campus = campus,
+        buildingNumber = buildingNumber,
+        buildingNameKor = buildingNameKor,
+        buildingNameEng = "Engineering Building 1",
+        coordinate = GeoCoordinate(latitude = 37.4563, longitude = 126.9520),
+    )
 
     // --- CustomTheme ---
 

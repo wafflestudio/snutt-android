@@ -1,16 +1,16 @@
 package com.wafflestudio.snutt2.data.friends
 
-import com.wafflestudio.snutt2.domainmodel.CourseBook
-import com.wafflestudio.snutt2.domainmodel.Friend
-import com.wafflestudio.snutt2.domainmodel.FriendState
-import com.wafflestudio.snutt2.domainmodel.Nickname
-import com.wafflestudio.snutt2.domainmodel.Table
-import com.wafflestudio.snutt2.lib.network.Result
-import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
-import com.wafflestudio.snutt2.lib.network.dto.PatchFriendDisplayNameParams
-import com.wafflestudio.snutt2.lib.network.dto.PostRequestFriendParams
-import com.wafflestudio.snutt2.lib.network.dto.core.toDomainModel
-import com.wafflestudio.snutt2.lib.network.toDomainError
+import com.wafflestudio.snutt2.data.Result
+import com.wafflestudio.snutt2.data.mapper.toDomain
+import com.wafflestudio.snutt2.domain.model.CourseBook
+import com.wafflestudio.snutt2.domain.model.Friend
+import com.wafflestudio.snutt2.domain.model.FriendState
+import com.wafflestudio.snutt2.domain.model.Nickname
+import com.wafflestudio.snutt2.domain.model.Table
+import com.wafflestudio.snutt2.network.api.SNUTTRestApi
+import com.wafflestudio.snutt2.network.dto.PatchFriendDisplayNameParams
+import com.wafflestudio.snutt2.network.dto.PostRequestFriendParams
+import com.wafflestudio.snutt2.network.error.toDomainError
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -22,7 +22,7 @@ class FriendRepositoryImpl @Inject constructor(
     override suspend fun getFriends(state: FriendState): Result<List<Friend>> {
         try {
             val response = api._getFriends(state.name)
-            return Result.Success(response.content.map { it.toDomainModel() })
+            return Result.Success(response.content.map { it.toDomain() })
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
         }
@@ -49,7 +49,7 @@ class FriendRepositoryImpl @Inject constructor(
     override suspend fun acceptFriendByLink(requestToken: String): Result<Nickname> {
         try {
             val result = api._acceptFriendByLink(requestToken)
-            return Result.Success(result.nickname.toDomainModel())
+            return Result.Success(result.nickname.toDomain())
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
         }
@@ -94,7 +94,7 @@ class FriendRepositoryImpl @Inject constructor(
     override suspend fun getFriendCourseBooks(friend: Friend): Result<List<CourseBook>> {
         try {
             val response = api._getFriendCourseBooks(friend.id)
-            return Result.Success(response.map { it.toDomainModel() })
+            return Result.Success(response.map { it.toDomain() })
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
         }
@@ -103,7 +103,7 @@ class FriendRepositoryImpl @Inject constructor(
     override suspend fun getFriendPrimaryTable(friend: Friend, courseBook: CourseBook): Result<Table> {
         try {
             val timetableDto = api._getFriendPrimaryTable(friend.id, courseBook.semester.toInt().toString(), courseBook.year.toInt())
-            return Result.Success(Table.fromTimetableDto(timetableDto))
+            return Result.Success(timetableDto.toDomain())
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
         }

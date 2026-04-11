@@ -1,18 +1,20 @@
 package com.wafflestudio.snutt2.data.current_table_lecture
 
-import com.wafflestudio.snutt2.data.SNUTTStorage
-import com.wafflestudio.snutt2.domainmodel.CustomLecture
-import com.wafflestudio.snutt2.domainmodel.Lecture
-import com.wafflestudio.snutt2.domainmodel.LocalLecture
-import com.wafflestudio.snutt2.domainmodel.SearchedLecture
-import com.wafflestudio.snutt2.lib.network.Result
-import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
-import com.wafflestudio.snutt2.lib.network.Unknown
-import com.wafflestudio.snutt2.lib.network.dto.PostCustomLectureParams
-import com.wafflestudio.snutt2.lib.network.dto.PostLectureParams
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
-import com.wafflestudio.snutt2.lib.network.toDomainError
-import com.wafflestudio.snutt2.lib.toOptional
+import com.wafflestudio.snutt2.data.Result
+import com.wafflestudio.snutt2.data.mapper.toLectureDto
+import com.wafflestudio.snutt2.data.mapper.toLocalLecture
+import com.wafflestudio.snutt2.domain.Unknown
+import com.wafflestudio.snutt2.domain.model.CustomLecture
+import com.wafflestudio.snutt2.domain.model.Lecture
+import com.wafflestudio.snutt2.domain.model.LocalLecture
+import com.wafflestudio.snutt2.domain.model.SearchedLecture
+import com.wafflestudio.snutt2.network.api.SNUTTRestApi
+import com.wafflestudio.snutt2.network.dto.LectureDto
+import com.wafflestudio.snutt2.network.dto.PostCustomLectureParams
+import com.wafflestudio.snutt2.network.dto.PostLectureParams
+import com.wafflestudio.snutt2.network.error.toDomainError
+import com.wafflestudio.snutt2.storage.SNUTTStorage
+import com.wafflestudio.snutt2.storage.toOptional
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -66,7 +68,7 @@ class CurrentTableLectureRepositoryImpl @Inject constructor(
         val prevTable = storage.lastViewedTable.get().value
             ?: return Result.Success(Unit)
         try {
-            val params = LectureDto.fromLecture(lecture).toParams()
+            val params = lecture.toLectureDto().toParams()
             params.isForced = isForced
             val response = api._putLecture(prevTable.id, lecture.id, params)
             storage.lastViewedTable.update(response.toOptional())
@@ -93,7 +95,7 @@ class CurrentTableLectureRepositoryImpl @Inject constructor(
         val prevTable = storage.lastViewedTable.get().value
             ?: return Result.Fail(Unknown("", ""))
         return try {
-            val params = LectureDto.fromLocalLecture(lecture).toParams().also { it.isForced = isForced }
+            val params = lecture.toLectureDto().toParams().also { it.isForced = isForced }
             val response = api._postCustomLecture(prevTable.id, params)
             storage.lastViewedTable.update(response.toOptional())
             Result.Success(Unit)

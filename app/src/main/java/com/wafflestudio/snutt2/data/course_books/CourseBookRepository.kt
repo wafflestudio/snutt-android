@@ -1,7 +1,7 @@
 package com.wafflestudio.snutt2.data.course_books
 
-import com.wafflestudio.snutt2.domainmodel.CourseBook
-import com.wafflestudio.snutt2.lib.network.Result
+import com.wafflestudio.snutt2.data.Result
+import com.wafflestudio.snutt2.domain.model.CourseBook
 import kotlinx.coroutines.flow.StateFlow
 
 interface CourseBookRepository {

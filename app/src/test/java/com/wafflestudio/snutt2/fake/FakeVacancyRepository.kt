@@ -1,9 +1,9 @@
 package com.wafflestudio.snutt2.fake
 
 import com.wafflestudio.snutt2.data.vacancy_noti.VacancyRepository
-import com.wafflestudio.snutt2.domainmodel.Lecture
-import com.wafflestudio.snutt2.domainmodel.SearchedLecture
-import com.wafflestudio.snutt2.lib.network.Result
+import com.wafflestudio.snutt2.domain.model.Lecture
+import com.wafflestudio.snutt2.domain.model.SearchedLecture
+import com.wafflestudio.snutt2.data.Result
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class FakeVacancyRepository : VacancyRepository {
@@ -39,8 +39,16 @@ class FakeVacancyRepository : VacancyRepository {
         return setVacancyVisitedResult
     }
 
+    var addVacancyLectureResult: Result<Unit> = Result.Success(Unit)
+    var addVacancyLectureCalledWith: Lecture? = null
+        private set
+
+    override suspend fun addVacancyLecture(lecture: Lecture): Result<Unit> {
+        addVacancyLectureCalledWith = lecture
+        return addVacancyLectureResult
+    }
+
     // --- 미사용 메서드 ---
-    override suspend fun addVacancyLecture(lecture: Lecture): Result<Unit> = TODO("Not used in this test")
     override suspend fun isVacancyRegistered(lecture: Lecture): Result<Boolean> = TODO("Not used in this test")
     override suspend fun isLectureVacancyRegistered(lecture: Lecture): Result<Boolean> = TODO("Not used in this test")
     override suspend fun setVacancyAdded() = TODO("Not used in this test")

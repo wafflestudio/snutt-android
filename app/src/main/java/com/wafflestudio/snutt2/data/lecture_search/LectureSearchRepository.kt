@@ -1,10 +1,10 @@
 package com.wafflestudio.snutt2.data.lecture_search
 
 import androidx.paging.PagingData
-import com.wafflestudio.snutt2.domainmodel.CourseBook
-import com.wafflestudio.snutt2.domainmodel.SearchTag
-import com.wafflestudio.snutt2.domainmodel.SearchTime
-import com.wafflestudio.snutt2.domainmodel.SearchedLecture
+import com.wafflestudio.snutt2.domain.model.CourseBook
+import com.wafflestudio.snutt2.domain.model.SearchTag
+import com.wafflestudio.snutt2.domain.model.SearchTime
+import com.wafflestudio.snutt2.domain.model.SearchedLecture
 import kotlinx.coroutines.flow.Flow
 
 interface LectureSearchRepository {

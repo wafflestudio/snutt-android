@@ -1,0 +1,142 @@
+package com.wafflestudio.snutt2.feature.login
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.ui.components.compose.EditText
+import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
+import com.wafflestudio.snutt2.ui.components.compose.WebViewStyleButton
+import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
+import com.wafflestudio.snutt2.ui.util.SNUTTStringUtils.isEmailInvalid
+import com.wafflestudio.snutt2.ui.util.toast
+
+@Composable
+fun FindIdPage(
+    viewModel: FindIdViewModel = hiltViewModel<FindIdViewModel>(),
+    onNavigateBack: () -> Unit,
+) {
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                is FindIdUiEvent.ShowToast -> context.toast(event.message)
+                is FindIdUiEvent.Success -> {
+                    context.toast(context.getString(R.string.find_id_send_email_success_message).format(event.email))
+                    onNavigateBack()
+                }
+            }
+        }
+    }
+
+    FindIdScreen(
+        onSubmit = { email -> viewModel.findIdByEmail(email) },
+        onNavigateBack = onNavigateBack,
+    )
+}
+
+@Composable
+private fun FindIdScreen(
+    onSubmit: (String) -> Unit,
+    onNavigateBack: () -> Unit,
+) {
+    val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
+
+    // TODO: 뷰모델로 상태 옮기기
+    var emailField by remember { mutableStateOf("") }
+    val buttonEnabled by remember { derivedStateOf { emailField.isNotEmpty() } }
+
+    val handleSendIdToEmail = {
+        if (emailField.isEmpty()) {
+            context.toast(context.getString(R.string.settings_user_config_enter_email))
+        } else if (emailField.isEmailInvalid()) {
+            context.toast(context.getString(R.string.find_id_wrong_email_format))
+        } else {
+            onSubmit(emailField)
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(SNUTTColors.White900)
+            .clicks { focusManager.clearFocus() },
+    ) {
+        SimpleTopBar(
+            title = stringResource(R.string.sign_in_find_id_button),
+            onClickNavigateBack = onNavigateBack,
+        )
+
+        Column(modifier = Modifier.padding(horizontal = 25.dp)) {
+            Text(
+                text = stringResource(R.string.find_id_content),
+                style = SNUTTTypography.h3,
+                modifier = Modifier.padding(vertical = 25.dp),
+            )
+            Text(
+                text = stringResource(R.string.settings_app_report_email),
+                style = SNUTTTypography.h4,
+            )
+            EditText(
+                value = emailField,
+                onValueChange = { emailField = it },
+                hint = stringResource(R.string.settings_user_config_enter_email),
+                keyboardActions = KeyboardActions(
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) },
+                ),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                singleLine = true,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 10.dp),
+            )
+            Spacer(modifier = Modifier.height(30.dp))
+            WebViewStyleButton(
+                modifier = Modifier.fillMaxWidth(),
+                enabled = buttonEnabled,
+                onClick = { handleSendIdToEmail() },
+            ) {
+                Text(
+                    text = stringResource(R.string.common_ok),
+                    style = SNUTTTypography.h3.copy(color = SNUTTColors.AllWhite),
+                )
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun FindIdScreenPreview() {
+    FindIdScreen(
+        onSubmit = {},
+        onNavigateBack = {},
+    )
+}

@@ -1,23 +1,22 @@
 package com.wafflestudio.snutt2.data.tables
 
-import com.wafflestudio.snutt2.data.SNUTTStorage
-import com.wafflestudio.snutt2.domainmodel.CourseBook
-import com.wafflestudio.snutt2.domainmodel.Table
-import com.wafflestudio.snutt2.domainmodel.LectureReminderOffset
-import com.wafflestudio.snutt2.domainmodel.LectureWithReminderOption
-import com.wafflestudio.snutt2.domainmodel.TableSummary
-import com.wafflestudio.snutt2.domainmodel.TimetableLectureReminders
-import com.wafflestudio.snutt2.lib.network.Result
-import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
-import com.wafflestudio.snutt2.lib.network.dto.PostTableParams
-import com.wafflestudio.snutt2.lib.network.dto.PutTableParams
-import com.wafflestudio.snutt2.lib.network.dto.PutTableThemeParams
-import com.wafflestudio.snutt2.lib.network.dto.PutTimetableLectureReminderParams
-import com.wafflestudio.snutt2.lib.network.dto.core.SimpleTableDto
-import com.wafflestudio.snutt2.lib.network.dto.core.toDomainModel
-import com.wafflestudio.snutt2.lib.network.toDomainError
-import com.wafflestudio.snutt2.lib.toOptional
-import com.wafflestudio.snutt2.domainmodel.toOffsetString
+import com.wafflestudio.snutt2.data.Result
+import com.wafflestudio.snutt2.data.mapper.toDomain
+import com.wafflestudio.snutt2.domain.model.CourseBook
+import com.wafflestudio.snutt2.domain.model.LectureReminderOffset
+import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
+import com.wafflestudio.snutt2.domain.model.Table
+import com.wafflestudio.snutt2.domain.model.TableSummary
+import com.wafflestudio.snutt2.domain.model.TimetableLectureReminders
+import com.wafflestudio.snutt2.domain.model.toOffsetString
+import com.wafflestudio.snutt2.network.api.SNUTTRestApi
+import com.wafflestudio.snutt2.network.dto.PostTableParams
+import com.wafflestudio.snutt2.network.dto.PutTableParams
+import com.wafflestudio.snutt2.network.dto.PutTableThemeParams
+import com.wafflestudio.snutt2.network.dto.PutTimetableLectureReminderParams
+import com.wafflestudio.snutt2.network.error.toDomainError
+import com.wafflestudio.snutt2.storage.SNUTTStorage
+import com.wafflestudio.snutt2.storage.toOptional
 import kotlinx.coroutines.ExperimentalForInheritanceCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
@@ -35,14 +34,14 @@ class TableRepositoryImpl @Inject constructor(
             private val source = snuttStorage.lastViewedTable.asStateFlow()
 
             override val value: Table?
-                get() = source.value.value?.let { Table.fromTableDto(it) }
+                get() = source.value.value?.let { it.toDomain() }
 
             override val replayCache: List<Table?>
                 get() = listOf(value)
 
             override suspend fun collect(collector: kotlinx.coroutines.flow.FlowCollector<Table?>): Nothing {
                 source.collect { optionalDto ->
-                    collector.emit(optionalDto.value?.let { Table.fromTableDto(it) })
+                    collector.emit(optionalDto.value?.let { it.toDomain() })
                 }
             }
         }
@@ -52,20 +51,14 @@ class TableRepositoryImpl @Inject constructor(
             private val source = snuttStorage.tableMap.asStateFlow()
 
             override val value: List<TableSummary>
-                get() = source.value.values.map { dto ->
-                    TableSummary.fromSimpleTableDto(dto)
-                }
+                get() = source.value.values.map { it.toDomain() }
 
             override val replayCache: List<List<TableSummary>>
                 get() = listOf(value)
 
             override suspend fun collect(collector: kotlinx.coroutines.flow.FlowCollector<List<TableSummary>>): Nothing {
                 source.collect { dtoMap ->
-                    collector.emit(
-                        dtoMap.values.map { dto ->
-                            TableSummary.fromSimpleTableDto(dto)
-                        },
-                    )
+                    collector.emit(dtoMap.values.map { it.toDomain() })
                 }
             }
         }
@@ -110,7 +103,7 @@ class TableRepositoryImpl @Inject constructor(
     override suspend fun getTableById(id: String): Result<Table> {
         try {
             val dto = api._getTableById(id)
-            return Result.Success(Table.fromTableDto(dto))
+            return Result.Success(dto.toDomain())
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
         }
@@ -251,7 +244,7 @@ class TableRepositoryImpl @Inject constructor(
         try {
             val timetableReminders = api._getTimetableReminders(timetableId)
             val reminderTable = api._getTableById(timetableId)
-            val lecturesWithReminderOption = timetableReminders.map { it.toDomainModel() }
+            val lecturesWithReminderOption = timetableReminders.map { it.toDomain() }
             val result = reminderTable.lectureList.map { lecture ->
                 val matchingOption = lecturesWithReminderOption.find { it.lectureId == lecture.id }
                 LectureWithReminderOption(
@@ -273,7 +266,7 @@ class TableRepositoryImpl @Inject constructor(
     ): Result<LectureWithReminderOption> {
         try {
             val result = api._getTimetableLectureReminder(timetableId, lectureId)
-            return Result.Success(result.toDomainModel())
+            return Result.Success(result.toDomain())
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
         }
@@ -285,7 +278,7 @@ class TableRepositoryImpl @Inject constructor(
         offset: LectureReminderOffset,
     ): Result<LectureWithReminderOption> {
         try {
-            val result = api._putTimetableLectureReminder(timetableId, lectureId, PutTimetableLectureReminderParams(offset.toOffsetString())).toDomainModel()
+            val result = api._putTimetableLectureReminder(timetableId, lectureId, PutTimetableLectureReminderParams(offset.toOffsetString())).toDomain()
             return Result.Success(result)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())

@@ -1,15 +1,15 @@
 package com.wafflestudio.snutt2.data.lecture_diary
 
-import com.wafflestudio.snutt2.domainmodel.diary.DiaryAnsweredQuestion
-import com.wafflestudio.snutt2.domainmodel.diary.DiaryDailyClassType
-import com.wafflestudio.snutt2.domainmodel.diary.DiarySummary
-import com.wafflestudio.snutt2.lib.network.Result
-import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
-import com.wafflestudio.snutt2.lib.network.dto.DiaryQuestionnaireRequestDto
-import com.wafflestudio.snutt2.lib.network.dto.DiarySubmissionRequestDto
-import com.wafflestudio.snutt2.lib.network.dto.core.DiaryQuestionAnswerDto
-import com.wafflestudio.snutt2.lib.network.dto.core.toDomainModel
-import com.wafflestudio.snutt2.lib.network.toDomainError
+import com.wafflestudio.snutt2.data.Result
+import com.wafflestudio.snutt2.data.mapper.toDomain
+import com.wafflestudio.snutt2.domain.model.diary.DiaryAnsweredQuestion
+import com.wafflestudio.snutt2.domain.model.diary.DiaryDailyClassType
+import com.wafflestudio.snutt2.domain.model.diary.DiarySummary
+import com.wafflestudio.snutt2.network.api.SNUTTRestApi
+import com.wafflestudio.snutt2.network.dto.DiaryQuestionAnswerDto
+import com.wafflestudio.snutt2.network.dto.DiaryQuestionnaireRequestDto
+import com.wafflestudio.snutt2.network.dto.DiarySubmissionRequestDto
+import com.wafflestudio.snutt2.network.error.toDomainError
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -20,7 +20,7 @@ class DiaryRepositoryImpl @Inject constructor(
     override suspend fun getDailyClassTypes(): Result<List<DiaryDailyClassType>> {
         return try {
             val result = api._getDailyClassTypes()
-            Result.Success(result.map { it.toDomainModel() })
+            Result.Success(result.map { it.toDomain() })
         } catch (e: Exception) {
             Result.Fail(e.toDomainError())
         }
@@ -40,7 +40,7 @@ class DiaryRepositoryImpl @Inject constructor(
             Result.Success(
                 DiaryQuestionnaireData(
                     courseTitle = result.courseTitle,
-                    questions = result.questions.map { it.toDomainModel() },
+                    questions = result.questions.map { it.toDomain() },
                     nextLectureId = result.nextLecture?.lectureId,
                     nextLectureTitle = result.nextLecture?.courseTitle,
                 ),
@@ -76,12 +76,12 @@ class DiaryRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getMyDiarySubmissions(): Result<List<com.wafflestudio.snutt2.domainmodel.diary.CourseBookDiarySubmissions>> {
+    override suspend fun getMyDiarySubmissions(): Result<List<com.wafflestudio.snutt2.domain.model.diary.CourseBookDiarySubmissions>> {
         return try {
             val result = api._getMyDiarySubmissions()
             Result.Success(
                 result
-                    .map { it.toDomainModel() }
+                    .map { it.toDomain() }
                     .filter { it.submissions.isNotEmpty() },
             )
         } catch (e: Exception) {

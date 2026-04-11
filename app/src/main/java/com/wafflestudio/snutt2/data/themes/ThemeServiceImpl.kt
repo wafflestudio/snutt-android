@@ -1,10 +1,10 @@
 package com.wafflestudio.snutt2.data.themes
 
 import com.wafflestudio.snutt2.domain.ThemeService
-import com.wafflestudio.snutt2.domainmodel.BuiltInTheme
-import com.wafflestudio.snutt2.domainmodel.Table
-import com.wafflestudio.snutt2.domainmodel.TableTheme
-import com.wafflestudio.snutt2.domainmodel.ThemeReference
+import com.wafflestudio.snutt2.domain.model.BuiltInTheme
+import com.wafflestudio.snutt2.domain.model.Table
+import com.wafflestudio.snutt2.domain.model.TableTheme
+import com.wafflestudio.snutt2.domain.model.ThemeReference
 import javax.inject.Inject
 
 class ThemeServiceImpl @Inject constructor(

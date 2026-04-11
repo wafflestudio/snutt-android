@@ -1,0 +1,10 @@
+package com.wafflestudio.snutt2.network.dto
+
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
+
+@JsonClass(generateAdapter = true)
+data class PutTableThemeParams(
+    @param:Json(name = "theme") val theme: Int? = null,
+    @param:Json(name = "themeId") val themeId: String? = null,
+)

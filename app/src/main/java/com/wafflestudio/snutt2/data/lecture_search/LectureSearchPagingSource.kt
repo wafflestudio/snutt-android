@@ -2,13 +2,13 @@ package com.wafflestudio.snutt2.data.lecture_search
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
-import com.wafflestudio.snutt2.lib.network.dto.PostSearchQueryParams
-import com.wafflestudio.snutt2.lib.network.dto.core.LectureDto
-import com.wafflestudio.snutt2.lib.toCreditNumber
-import com.wafflestudio.snutt2.model.SearchTimeDto
-import com.wafflestudio.snutt2.model.TagDto
-import com.wafflestudio.snutt2.model.TagType
+import com.wafflestudio.snutt2.domain.model.TagType
+import com.wafflestudio.snutt2.network.api.SNUTTRestApi
+import com.wafflestudio.snutt2.network.dto.LectureDto
+import com.wafflestudio.snutt2.network.dto.PostSearchQueryParams
+import com.wafflestudio.snutt2.network.dto.SearchTimeDto
+import com.wafflestudio.snutt2.network.dto.TagDto
+import com.wafflestudio.snutt2.ui.util.toCreditNumber
 
 class LectureSearchPagingSource(
     private val api: SNUTTRestApi,

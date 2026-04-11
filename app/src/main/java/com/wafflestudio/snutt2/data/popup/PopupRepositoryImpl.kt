@@ -1,10 +1,14 @@
 package com.wafflestudio.snutt2.data.popup
 
-import com.wafflestudio.snutt2.data.SNUTTStorage
-import com.wafflestudio.snutt2.lib.network.Result
-import com.wafflestudio.snutt2.lib.network.SNUTTRestApi
-import com.wafflestudio.snutt2.lib.network.toDomainError
-import com.wafflestudio.snutt2.views.logged_in.home.popups.PopupState
+import com.wafflestudio.snutt2.data.Result
+import com.wafflestudio.snutt2.domain.model.Popup
+import com.wafflestudio.snutt2.network.api.SNUTTRestApi
+import com.wafflestudio.snutt2.network.dto.GetPopupResults
+import com.wafflestudio.snutt2.network.error.toDomainError
+import com.wafflestudio.snutt2.storage.SNUTTStorage
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -13,18 +17,22 @@ import javax.inject.Singleton
 class PopupRepositoryImpl @Inject constructor(
     private val api: SNUTTRestApi,
     private val storage: SNUTTStorage,
-    private val popupState: PopupState,
 ) : PopupRepository {
 
-    override suspend fun fetchAndSetPopup(): Result<Unit> {
-        return try {
-            val popups = api._getPopup().popups.filter {
-                val expireMillis: Long? = storage.shownPopupIdsAndTimestamp.get()[it.key]
-                val currentMillis = System.currentTimeMillis()
+    private val _popups = MutableStateFlow<List<Popup>?>(null)
+    override val popups: StateFlow<List<Popup>?> = _popups.asStateFlow()
 
-                (expireMillis == null || currentMillis >= expireMillis)
-            }
-            popupState.popup = popups
+    override suspend fun ensurePopupsFetched(): Result<Unit> {
+        if (_popups.value != null) return Result.Success(Unit)
+        return try {
+            val visiblePopups = api._getPopup().popups
+                .filter { popup ->
+                    val expireMillis: Long? = storage.shownPopupIdsAndTimestamp.get()[popup.key]
+                    val currentMillis = System.currentTimeMillis()
+                    expireMillis == null || currentMillis >= expireMillis
+                }
+                .map { it.toDomain() }
+            _popups.value = visiblePopups
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Fail(e.toDomainError())
@@ -33,21 +41,19 @@ class PopupRepositoryImpl @Inject constructor(
 
     override suspend fun closePopupWithHiddenDays(): Result<Unit> {
         return try {
-            val popup = popupState.popup.firstOrNull()
+            val popup = _popups.value?.firstOrNull()
             if (popup != null) {
-                val expiredDay: Long = popup.popupHideDays?.let { hideDays ->
+                val expiredDay: Long = popup.hideDays?.let { hideDays ->
                     System.currentTimeMillis() + TimeUnit.DAYS.toMillis(hideDays.toLong())
                 } ?: INFINITE_LONG_MILLIS
 
                 storage.shownPopupIdsAndTimestamp.update(
                     storage.shownPopupIdsAndTimestamp.get()
                         .toMutableMap()
-                        .also {
-                            it[popup.key] = expiredDay
-                        },
+                        .also { it[popup.key] = expiredDay },
                 )
 
-                popupState.popup = popupState.popup.drop(1)
+                _popups.value = _popups.value?.drop(1)
             }
             Result.Success(Unit)
         } catch (e: Exception) {
@@ -57,7 +63,7 @@ class PopupRepositoryImpl @Inject constructor(
 
     override suspend fun closePopup(): Result<Unit> {
         return try {
-            popupState.popup = popupState.popup.drop(1)
+            _popups.value = _popups.value?.drop(1)
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Fail(e.toDomainError())
@@ -68,3 +74,10 @@ class PopupRepositoryImpl @Inject constructor(
         const val INFINITE_LONG_MILLIS = Long.MAX_VALUE
     }
 }
+
+private fun GetPopupResults.Popup.toDomain(): Popup = Popup(
+    key = key,
+    imageUri = imageUri,
+    linkUrl = linkUrl,
+    hideDays = popupHideDays,
+)

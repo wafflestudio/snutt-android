@@ -1,10 +1,10 @@
 package com.wafflestudio.snutt2.domain
 
-import com.wafflestudio.snutt2.domainmodel.Table
-import com.wafflestudio.snutt2.domainmodel.TableTheme
+import com.wafflestudio.snutt2.domain.model.Table
+import com.wafflestudio.snutt2.domain.model.TableTheme
 
 /**
- * @see com.wafflestudio.snutt2.domainmodel.ThemeReference
+ * @see com.wafflestudio.snutt2.domain.model.ThemeReference
  *
  * 여기부턴 논의
  * Table 도메인 모델에서 ThemeReference 라는 필드로 느슨하게 표현되어 있는 TableTheme 의 구체적인 값을 구해다준다.
