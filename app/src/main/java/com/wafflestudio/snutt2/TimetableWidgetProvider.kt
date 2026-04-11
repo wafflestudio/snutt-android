@@ -18,8 +18,8 @@ import com.wafflestudio.snutt2.data.table_display.TableDisplayRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.domain.ThemeService
 import com.wafflestudio.snutt2.ui.components.view.TimetableView
-import com.wafflestudio.snutt2.ui.util.SNUTTUtils.displayHeight
-import com.wafflestudio.snutt2.ui.util.SNUTTUtils.displayWidth
+import com.wafflestudio.snutt2.ui.util.displayHeight
+import com.wafflestudio.snutt2.ui.util.displayWidth
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject

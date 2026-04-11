@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.navigation
 
 import androidx.core.net.toUri
-import com.wafflestudio.snutt2.ui.util.SNUTTUtils.semesterStringToLong
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
@@ -49,5 +48,13 @@ class DeeplinkParser @Inject constructor(
 
             else -> null
         }
+    }
+
+    private fun String.semesterStringToLong(): Long = when (this) {
+        "SPRING" -> 1L
+        "SUMMER" -> 2L
+        "AUTUMN" -> 3L
+        "WINTER" -> 4L
+        else -> 0L
     }
 }
