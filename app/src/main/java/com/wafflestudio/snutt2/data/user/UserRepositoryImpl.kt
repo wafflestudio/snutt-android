@@ -12,7 +12,7 @@ import com.wafflestudio.snutt2.domain.model.PushPreferences
 import com.wafflestudio.snutt2.domain.model.SocialProviders
 import com.wafflestudio.snutt2.domain.model.User
 import com.wafflestudio.snutt2.lib.map
-import com.wafflestudio.snutt2.lib.unwrap
+import com.wafflestudio.snutt2.storage.unwrap
 import com.wafflestudio.snutt2.network.api.SNUTTRestApi
 import com.wafflestudio.snutt2.network.api.google.PostAccessTokenByAuthCodeParams
 import com.wafflestudio.snutt2.network.api.google.SNUTTRestApiForGoogle

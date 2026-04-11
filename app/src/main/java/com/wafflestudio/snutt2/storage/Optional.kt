@@ -1,9 +1,19 @@
 package com.wafflestudio.snutt2.storage
 
 import com.squareup.moshi.JsonClass
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
 fun <T : Any> T?.toOptional(): Optional<T> {
     return Optional.ofNullable(this)
+}
+
+fun <T : Any> StateFlow<Optional<T>>.unwrap(scope: CoroutineScope): StateFlow<T?> {
+    return this.map { it.value }
+        .stateIn(scope, started = SharingStarted.Eagerly, initialValue = this.value.value)
 }
 
 @JsonClass(generateAdapter = true)
