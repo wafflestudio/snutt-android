@@ -47,7 +47,6 @@ import com.wafflestudio.snutt2.logging.AnalyticsLogger
 import com.wafflestudio.snutt2.logging.DetailScreenReferrer
 import com.wafflestudio.snutt2.logging.LectureActionReferrer
 import com.wafflestudio.snutt2.logging.SearchLectureParameter
-import com.wafflestudio.snutt2.ui.util.concatenate
 import com.wafflestudio.snutt2.ui.util.getFittingTrimParam
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -293,9 +292,9 @@ class SearchViewModel @Inject constructor(
                 current.selectedTags.filter { it != tag }
             } else {
                 if (tag.type.isExclusive) {
-                    concatenate(current.selectedTags.filter { it.type != tag.type }, listOf(tag))
+                    current.selectedTags.filter { it.type != tag.type } + tag
                 } else {
-                    concatenate(current.selectedTags, listOf(tag))
+                    current.selectedTags + tag
                 }
             }
             current.copy(

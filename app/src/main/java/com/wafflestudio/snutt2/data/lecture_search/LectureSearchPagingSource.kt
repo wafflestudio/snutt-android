@@ -8,7 +8,6 @@ import com.wafflestudio.snutt2.network.dto.LectureDto
 import com.wafflestudio.snutt2.network.dto.PostSearchQueryParams
 import com.wafflestudio.snutt2.network.dto.SearchTimeDto
 import com.wafflestudio.snutt2.network.dto.TagDto
-import com.wafflestudio.snutt2.ui.util.toCreditNumber
 
 class LectureSearchPagingSource(
     private val api: SNUTTRestApi,
@@ -72,6 +71,11 @@ class LectureSearchPagingSource(
 
     private fun List<TagDto>.extractTagString(type: TagType): List<String> {
         return filter { it.type == type }.map { it.name }
+    }
+
+    // FIXME: 서버 인터페이스 수정 필요, 클라단에서 불필요한 컨버팅으로 보임
+    private fun String.toCreditNumber(): Long {
+        return substring(0, length - 2).toLong()
     }
 
     companion object {
