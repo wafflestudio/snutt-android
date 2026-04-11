@@ -42,7 +42,9 @@ import com.wafflestudio.snutt2.ui.components.compose.ThickReviewIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
-import com.wafflestudio.snutt2.ui.util.SNUTTStringUtils
+import com.wafflestudio.snutt2.ui.util.getLectureTagText
+import com.wafflestudio.snutt2.ui.util.getSimplifiedClassTimeForLecture
+import com.wafflestudio.snutt2.ui.util.getSimplifiedLocation
 
 @Composable
 fun ExpandableLectureListItem(
@@ -69,8 +71,8 @@ fun ExpandableLectureListItem(
     )
     val context = LocalContext.current
     val remarkText = lectureDataWithState.item.remark
-    val tagText = SNUTTStringUtils.getLectureTagText(context, lectureDataWithState.item)
-    val classTimeText = SNUTTStringUtils.getSimplifiedClassTimeForLecture(context, lectureDataWithState.item)
+    val tagText = getLectureTagText(context, lectureDataWithState.item)
+    val classTimeText = getSimplifiedClassTimeForLecture(context, lectureDataWithState.item)
     val backgroundColor = if (selected) SNUTTColors.Dim2 else SNUTTColors.Transparent
 
     Column(
@@ -163,7 +165,7 @@ fun ExpandableLectureListItem(
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
-                    text = SNUTTStringUtils.getSimplifiedLocation(context, lectureDataWithState.item),
+                    text = getSimplifiedLocation(context, lectureDataWithState.item),
                     style = SNUTTTypography.body2.copy(
                         color = SNUTTColors.AllWhite,
                         fontWeight = FontWeight.Light,

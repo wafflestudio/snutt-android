@@ -24,7 +24,7 @@ import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
-import com.wafflestudio.snutt2.ui.util.SNUTTStringUtils.getCreditSumFromLectureList
+import com.wafflestudio.snutt2.ui.util.getCreditSumFromLectureList
 
 @Composable
 fun TimeTableScreen(

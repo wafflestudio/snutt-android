@@ -39,7 +39,10 @@ import com.wafflestudio.snutt2.ui.components.compose.TagIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
-import com.wafflestudio.snutt2.ui.util.SNUTTStringUtilsNew
+import com.wafflestudio.snutt2.ui.util.getInstructorAndCreditText
+import com.wafflestudio.snutt2.ui.util.getLectureTagText
+import com.wafflestudio.snutt2.ui.util.getSimplifiedClassTimeForLecture
+import com.wafflestudio.snutt2.ui.util.getSimplifiedLocation
 
 @Composable
 fun TableLecturesRoute(
@@ -104,9 +107,9 @@ fun TableLectureItem(
     onClickLecture: (lecture: LocalLecture) -> Unit,
 ) {
     val context = LocalContext.current
-    val tagText = SNUTTStringUtilsNew.getLectureTagText(context, lecture)
-    val classTimeText = SNUTTStringUtilsNew.getSimplifiedClassTimeForLecture(context, lecture)
-    val locationText = SNUTTStringUtilsNew.getSimplifiedLocation(context, lecture)
+    val tagText = getLectureTagText(context, lecture)
+    val classTimeText = getSimplifiedClassTimeForLecture(context, lecture)
+    val locationText = getSimplifiedLocation(context, lecture)
 
     Column(
         modifier = modifier.clicks { onClickLecture(lecture) },
@@ -124,7 +127,7 @@ fun TableLectureItem(
                 overflow = TextOverflow.Ellipsis,
             )
             Text(
-                text = SNUTTStringUtilsNew.getInstructorAndCreditText(context, lecture),
+                text = getInstructorAndCreditText(context, lecture),
                 style = SNUTTTypography.body2,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,

@@ -42,7 +42,7 @@ import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
-import com.wafflestudio.snutt2.ui.util.SNUTTStringUtils.isEmailInvalid
+import com.wafflestudio.snutt2.ui.util.isEmailInvalid
 import com.wafflestudio.snutt2.ui.util.toast
 
 @OptIn(ExperimentalComposeUiApi::class)

@@ -38,7 +38,7 @@ import com.wafflestudio.snutt2.ui.components.compose.WebViewStyleButton
 import com.wafflestudio.snutt2.ui.components.compose.rememberTimerState
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
-import com.wafflestudio.snutt2.ui.util.SNUTTStringUtils.isPasswordInvalid
+import com.wafflestudio.snutt2.ui.util.isPasswordInvalid
 
 @Composable
 fun NewPasswordStep(
