@@ -54,10 +54,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
-import androidx.compose.ui.res.stringResource
 import com.wafflestudio.snutt2.feature.diary.DiaryTheme
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
-import com.wafflestudio.snutt2.logging.DiaryAfterSubmitParameter
 import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.components.compose.ExitIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
@@ -96,6 +94,14 @@ fun DiaryWriteRoute(
                     )
                 }
 
+                is DiaryWriteUiEvent.NavigateReview -> {
+                    onNavigateReview()
+                }
+
+                is DiaryWriteUiEvent.NavigateHome -> {
+                    onNavigateHome()
+                }
+
                 is DiaryWriteUiEvent.Return -> {
                     onNavigateBack()
                 }
@@ -121,18 +127,9 @@ fun DiaryWriteRoute(
             onToggleAnswer = viewModel::toggleAnswer,
             onSubmitDiary = viewModel::saveDiaryWrite,
             onClickBackButton = onNavigateBack,
-            onClickWriteNextButton = {
-                viewModel.logAfterSubmitAction(DiaryAfterSubmitParameter.Action.NEXT)
-                viewModel.writeNextDiary()
-            },
-            onClickWriteReviewButton = {
-                viewModel.logAfterSubmitAction(DiaryAfterSubmitParameter.Action.REVIEW)
-                onNavigateReview()
-            },
-            onClickGoHomeButton = {
-                viewModel.logAfterSubmitAction(DiaryAfterSubmitParameter.Action.HOME)
-                onNavigateHome()
-            },
+            onClickWriteNextButton = viewModel::writeNextDiary,
+            onClickWriteReviewButton = viewModel::goReview,
+            onClickGoHomeButton = viewModel::goHome,
         )
     }
 }

@@ -188,13 +188,10 @@ class DiaryWriteViewModel @Inject constructor(
         }
     }
 
-    fun logAfterSubmitAction(action: DiaryAfterSubmitParameter.Action) {
-        analyticsLogger.logEvent(AnalyticsEvent.DiaryAfterSubmit(DiaryAfterSubmitParameter(action)))
-    }
-
     fun writeNextDiary() {
         val state = _uiState.value as? DiaryWriteUiState.Complete ?: return
         val writeNext = state.nextAction as? DiaryNextAction.WriteNext ?: return
+        analyticsLogger.logEvent(AnalyticsEvent.DiaryAfterSubmit(DiaryAfterSubmitParameter(DiaryAfterSubmitParameter.Action.NEXT)))
         viewModelScope.launch {
             _uiEvent.emit(
                 DiaryWriteUiEvent.NextDiary(
@@ -203,6 +200,16 @@ class DiaryWriteViewModel @Inject constructor(
                 ),
             )
         }
+    }
+
+    fun goReview() {
+        analyticsLogger.logEvent(AnalyticsEvent.DiaryAfterSubmit(DiaryAfterSubmitParameter(DiaryAfterSubmitParameter.Action.REVIEW)))
+        viewModelScope.launch { _uiEvent.emit(DiaryWriteUiEvent.NavigateReview) }
+    }
+
+    fun goHome() {
+        analyticsLogger.logEvent(AnalyticsEvent.DiaryAfterSubmit(DiaryAfterSubmitParameter(DiaryAfterSubmitParameter.Action.HOME)))
+        viewModelScope.launch { _uiEvent.emit(DiaryWriteUiEvent.NavigateHome) }
     }
 
     private suspend fun handleDiaryWriteError(error: DomainError) {
@@ -239,6 +246,8 @@ sealed interface DiaryWriteUiEvent {
         val courseTitle: String,
     ) : DiaryWriteUiEvent
 
+    data object NavigateReview : DiaryWriteUiEvent
+    data object NavigateHome : DiaryWriteUiEvent
     data object ForceLogout : DiaryWriteUiEvent
     data object Return : DiaryWriteUiEvent
 }
