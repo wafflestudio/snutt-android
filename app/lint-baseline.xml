@@ -106,7 +106,7 @@
         errorLine1="    modifier: Modifier = Modifier.fillMaxWidth().height(40.dp),"
         errorLine2="    ~~~~~~~~">
         <location
-            file="src/main/java/com/wafflestudio/snutt2/feature/lecture_detail/LectureDetailItem.kt"
+            file="src/main/java/com/wafflestudio/snutt2/feature/lecturedetail/LectureDetailItem.kt"
             line="32"
             column="5"/>
     </issue>

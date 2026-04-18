@@ -12,6 +12,3 @@ ktlint_code_style = intellij_idea
 
 # @Composable 함수의 PascalCase 관례와 충돌.
 ktlint_standard_function-naming = disabled
-
-# snake_case 패키지 디렉토리 다수 존재. 별도 리팩토링 PR로 정리 예정.
-ktlint_standard_package-name = disabled

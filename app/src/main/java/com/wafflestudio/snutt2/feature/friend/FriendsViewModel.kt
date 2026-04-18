@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.friends.FriendRepository
 import com.wafflestudio.snutt2.data.onFailure
 import com.wafflestudio.snutt2.data.onSuccess
-import com.wafflestudio.snutt2.data.table_display.TableDisplayRepository
+import com.wafflestudio.snutt2.data.tabledisplay.TableDisplayRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.domain.AuthError
 import com.wafflestudio.snutt2.domain.DisplayMessageResolver

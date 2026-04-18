@@ -1,7 +1,7 @@
 package com.wafflestudio.snutt2.fake
 
 import com.wafflestudio.snutt2.data.Result
-import com.wafflestudio.snutt2.data.course_books.CourseBookRepository
+import com.wafflestudio.snutt2.data.coursebooks.CourseBookRepository
 import com.wafflestudio.snutt2.domain.model.CourseBook
 import kotlinx.coroutines.flow.MutableStateFlow
 

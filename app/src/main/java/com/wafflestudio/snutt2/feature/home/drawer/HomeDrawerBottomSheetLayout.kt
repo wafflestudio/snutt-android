@@ -11,9 +11,9 @@ import androidx.compose.ui.Modifier
 import com.wafflestudio.snutt2.domain.model.CourseBook
 import com.wafflestudio.snutt2.domain.model.TableSummary
 import com.wafflestudio.snutt2.domain.model.TableTheme
-import com.wafflestudio.snutt2.feature.home.drawer.bottom_sheet.CreateTableBottomSheet
-import com.wafflestudio.snutt2.feature.home.drawer.bottom_sheet.MoreActionSheet
-import com.wafflestudio.snutt2.feature.home.drawer.bottom_sheet.SelectThemeSheetContent
+import com.wafflestudio.snutt2.feature.home.drawer.bottomsheet.CreateTableBottomSheet
+import com.wafflestudio.snutt2.feature.home.drawer.bottomsheet.MoreActionSheet
+import com.wafflestudio.snutt2.feature.home.drawer.bottomsheet.SelectThemeSheetContent
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.HomeDrawerLoggingEffect
 import com.wafflestudio.snutt2.logging.compose.LocalAnalyticsLogger
