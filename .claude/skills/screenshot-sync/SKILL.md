@@ -122,22 +122,27 @@ package com.wafflestudio.snutt2.feature.<path>
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.android.tools.screenshot.PreviewTest
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 
+@PreviewTest
 @Preview(showBackground = true, widthDp = 360)
 @Composable
-private fun <ComponentName>_<분기식별자1>() {
+fun <ComponentName>_<분기식별자1>() {
     <ComponentName>(
         // 의미 분기 1에 해당하는 파라미터
     )
 }
 
+@PreviewTest
 @Preview(showBackground = true, widthDp = 360)
 @Composable
-private fun <ComponentName>_<분기식별자2>() { ... }
+fun <ComponentName>_<분기식별자2>() { ... }
 ```
 
-- 모든 preview 함수는 `private`.
+- 모든 preview 함수는 `@PreviewTest` 로 표시하고 **public** 으로 둔다. alpha14 는 이 어노테이션이 붙은
+  top-level public 함수만 preview 로 discover 한다. `private` 로 두면 "discovered no tests" 로 실행 단계에서
+  조용히 누락된다.
 - 람다 파라미터는 `{}` 로 무력화한다. 실제 동작은 screenshot test 의 관심사가 아니다.
 - `@Preview` 옵션: 기본 `showBackground = true`, `widthDp = 360`. 컴포넌트 특성에 따라 조정 가능.
 - 멀티 컨피그 (`@PreviewLightDark`, `@PreviewFontScale`, `@PreviewScreenSizes`) 는 기본 **적용하지 않는다.**
@@ -200,11 +205,13 @@ private fun <ComponentName>_<분기식별자2>() { ... }
 빌드 검증은 필요 시:
 
 ```bash
-# 최초 골든 생성
-./gradlew :app:recordStagingDebugScreenshotTest
+# 최초 골든 생성 / 의도된 diff 반영
+./gradlew :app:updateStagingDebugScreenshotTest
 # 이후 검증
 ./gradlew :app:validateStagingDebugScreenshotTest
 ```
+
+alpha14 에서는 골든 갱신 태스크 이름이 `update*` 이다 (구버전의 `record*` 아님).
 
 이 스킬은 기본적으로 빌드까지 돌리지 않는다 (변경 단위가 작을 때 과한 비용). 사용자가 명시적으로 요청하거나
 변경 범위가 클 때 실행한다.
@@ -227,7 +234,7 @@ private fun <ComponentName>_<분기식별자2>() { ... }
 - 추가/변경/삭제한 preview 항목
 - 인라인 휴리스틱 경고 (해당 시)
 - 다음 권고 액션: diff 발생이 예상되면 `./gradlew :app:validateStagingDebugScreenshotTest` 실행 후
-  `recordStagingDebugScreenshotTest` 로 골든 갱신 필요. 골든 변경이 의도된 UI 변경인지는 사람이 판단.
+  `updateStagingDebugScreenshotTest` 로 골든 갱신 필요. 골든 변경이 의도된 UI 변경인지는 사람이 판단.
 
 ---
 
