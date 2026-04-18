@@ -23,17 +23,17 @@ object EmbedMapUtils {
                 CameraUpdate.scrollAndZoomTo(
                     LatLng(
                         latLngs.first().latitude,
-                        EmbedMapConstants.BaseLongitude,
+                        EmbedMapConstants.BASE_LONGITUDE,
                     ),
-                    EmbedMapConstants.SinglePinMapZoom,
+                    EmbedMapConstants.SINGLE_PIN_MAP_ZOOM,
                 )
             } else {
                 CameraUpdate.scrollAndZoomTo(
                     LatLng(
                         latLngs.sumOf { it.latitude } / latLngs.size,
-                        EmbedMapConstants.BaseLongitude,
+                        EmbedMapConstants.BASE_LONGITUDE,
                     ),
-                    EmbedMapConstants.SinglePinMapZoom,
+                    EmbedMapConstants.SINGLE_PIN_MAP_ZOOM,
                 )
             }
         }

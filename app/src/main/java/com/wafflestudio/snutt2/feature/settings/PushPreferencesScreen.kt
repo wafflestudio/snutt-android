@@ -37,7 +37,7 @@ fun PushPreferencesRoute(
     viewModel: PushPreferencesViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
-    val uiState by viewModel.pushPreferenceUiState.collectAsState()
+    val uiState by viewModel.pushPreferencesUiState.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.loadPushPreferences()

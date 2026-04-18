@@ -87,7 +87,7 @@ class SearchViewModel @Inject constructor(
     private val remoteConfig: RemoteConfig,
 ) : ViewModel() {
 
-    private val _querySignal = MutableSharedFlow<Unit>(replay = 0)
+    private val querySignal = MutableSharedFlow<Unit>(replay = 0)
 
     private val _uiEvent = MutableSharedFlow<SearchUiEvent>(replay = 0)
     val uiEvent = _uiEvent.asSharedFlow()
@@ -123,7 +123,7 @@ class SearchViewModel @Inject constructor(
 
     // PagingData는 UiState에 통합 불가 - 별도 StateFlow로 유지
     val queryResults: StateFlow<PagingData<DataWithState<SearchedLecture, LectureState>>> = combine(
-        _querySignal.flatMapLatest {
+        querySignal.flatMapLatest {
             combine(
                 tableRepository.currentTable.filterNotNull(),
                 uiState,
@@ -520,7 +520,7 @@ class SearchViewModel @Inject constructor(
     }
 
     private suspend fun query() {
-        _querySignal.emit(Unit)
+        querySignal.emit(Unit)
         _uiEvent.emit(SearchUiEvent.ResetScroll)
         val state = _uiState.value
         analyticsLogger.logEvent(

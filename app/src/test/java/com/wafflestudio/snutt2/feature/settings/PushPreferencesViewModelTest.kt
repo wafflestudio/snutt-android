@@ -45,7 +45,7 @@ class PushPreferencesViewModelTest {
 
     @Test
     fun `초기 상태는 Loading이다`() {
-        assertEquals(PushPreferencesUiState.Loading, viewModel.pushPreferenceUiState.value)
+        assertEquals(PushPreferencesUiState.Loading, viewModel.pushPreferencesUiState.value)
     }
 
     // endregion
@@ -61,7 +61,7 @@ class PushPreferencesViewModelTest {
 
         assertEquals(
             PushPreferencesUiState.Success(prefs),
-            viewModel.pushPreferenceUiState.value,
+            viewModel.pushPreferencesUiState.value,
         )
     }
 
@@ -72,7 +72,7 @@ class PushPreferencesViewModelTest {
 
         viewModel.loadPushPreferences()
 
-        assertEquals(PushPreferencesUiState.Error, viewModel.pushPreferenceUiState.value)
+        assertEquals(PushPreferencesUiState.Error, viewModel.pushPreferencesUiState.value)
     }
 
     @Test
@@ -94,7 +94,7 @@ class PushPreferencesViewModelTest {
 
         viewModel.loadPushPreferences()
 
-        assertEquals(PushPreferencesUiState.Error, viewModel.pushPreferenceUiState.value)
+        assertEquals(PushPreferencesUiState.Error, viewModel.pushPreferencesUiState.value)
     }
 
     @Test
@@ -151,7 +151,7 @@ class PushPreferencesViewModelTest {
 
         assertEquals(
             PushPreferencesUiState.Success(prefs.copy(lectureUpdate = true)),
-            viewModel.pushPreferenceUiState.value,
+            viewModel.pushPreferencesUiState.value,
         )
     }
 
@@ -170,7 +170,7 @@ class PushPreferencesViewModelTest {
 
         assertEquals(
             PushPreferencesUiState.Success(prefs.copy(vacancyNotification = false)),
-            viewModel.pushPreferenceUiState.value,
+            viewModel.pushPreferencesUiState.value,
         )
     }
 
@@ -189,7 +189,7 @@ class PushPreferencesViewModelTest {
 
         assertEquals(
             PushPreferencesUiState.Success(prefs.copy(lectureDiary = true)),
-            viewModel.pushPreferenceUiState.value,
+            viewModel.pushPreferencesUiState.value,
         )
     }
 
@@ -207,7 +207,7 @@ class PushPreferencesViewModelTest {
 
         viewModel.togglePushPreferences(PushPreferenceType.LECTURE_UPDATE)
 
-        assertEquals(PushPreferencesUiState.Error, viewModel.pushPreferenceUiState.value)
+        assertEquals(PushPreferencesUiState.Error, viewModel.pushPreferencesUiState.value)
     }
 
     @Test
@@ -228,7 +228,7 @@ class PushPreferencesViewModelTest {
     fun `Loading 상태에서 togglePushPreferences 호출 시 아무 일도 일어나지 않는다`() = runTest {
         viewModel.togglePushPreferences(PushPreferenceType.LECTURE_UPDATE)
 
-        assertEquals(PushPreferencesUiState.Loading, viewModel.pushPreferenceUiState.value)
+        assertEquals(PushPreferencesUiState.Loading, viewModel.pushPreferencesUiState.value)
     }
 
     // endregion
@@ -246,7 +246,7 @@ class PushPreferencesViewModelTest {
 
         viewModel.togglePushPreferences(PushPreferenceType.LECTURE_UPDATE)
 
-        assertEquals(PushPreferencesUiState.Error, viewModel.pushPreferenceUiState.value)
+        assertEquals(PushPreferencesUiState.Error, viewModel.pushPreferencesUiState.value)
     }
 
     @Test

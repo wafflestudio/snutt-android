@@ -105,7 +105,7 @@ fun TimeSelectSheet(
             .height(
                 with(LocalDensity.current) {
                     LocalWindowInfo.current.containerSize.height.toDp()
-                } * SearchOptionSheetConstants.MaxHeightRatio,
+                } * SearchOptionSheetConstants.MAX_HEIGHT_RATIO,
             ),
     ) {
         Row(
