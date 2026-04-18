@@ -25,8 +25,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -106,6 +107,9 @@ fun ThemeDetailScreen(
     when (uiState) {
         is ThemeDetailUiState.Success -> {
             val editingTheme = uiState.editingTheme
+            val containerSize = LocalWindowInfo.current.containerSize
+            val containerWidthDp = with(LocalDensity.current) { containerSize.width.toDp() }
+            val containerHeightDp = with(LocalDensity.current) { containerSize.height.toDp() }
 
             BackHandler { onClickBack() }
 
@@ -222,8 +226,8 @@ fun ThemeDetailScreen(
                                 .background(MaterialTheme.colors.surface)
                                 .padding(15.dp)
                                 .size(
-                                    (LocalConfiguration.current.screenWidthDp * 0.8).dp,
-                                    (LocalConfiguration.current.screenHeightDp * 0.6).dp,
+                                    containerWidthDp * 0.8f,
+                                    containerHeightDp * 0.6f,
                                 )
                                 .align(Alignment.CenterHorizontally),
                         ) {
