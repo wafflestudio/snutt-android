@@ -180,5 +180,9 @@ sealed interface UserConfigUiEvent {
 }
 
 enum class UserConfigEvent {
-    InvalidIdError, InvalidPasswordError, PasswordMismatchError, ChangePasswordSuccess, AddIdPasswordSuccess
+    InvalidIdError,
+    InvalidPasswordError,
+    PasswordMismatchError,
+    ChangePasswordSuccess,
+    AddIdPasswordSuccess,
 }

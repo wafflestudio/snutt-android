@@ -63,24 +63,20 @@ fun getSimplifiedLocation(context: Context, lecture: Lecture): String {
     return places.joinToString(" / ")
 }
 
-fun getLectureTagText(context: Context, lecture: SearchedLecture): String {
-    return listOf(lecture.category, lecture.department, lecture.academicYear)
-        .filter { it.isNotBlank() }
-        .let {
-            if (it.isEmpty()) context.getString(R.string.lecture_detail_hint_nothing) else it.joinToString(", ")
-        }
-}
+fun getLectureTagText(context: Context, lecture: SearchedLecture): String = listOf(lecture.category, lecture.department, lecture.academicYear)
+    .filter { it.isNotBlank() }
+    .let {
+        if (it.isEmpty()) context.getString(R.string.lecture_detail_hint_nothing) else it.joinToString(", ")
+    }
 
-fun getLectureTagText(context: Context, lecture: LocalLecture): String {
-    return when (lecture) {
-        is SyllabusLecture -> {
-            listOf(lecture.category, lecture.department, lecture.academicYear)
-                .filter { it.isNotBlank() }
-                .joinToString(", ")
-        }
-        is CustomLecture -> {
-            context.getString(R.string.lecture_detail_hint_nothing)
-        }
+fun getLectureTagText(context: Context, lecture: LocalLecture): String = when (lecture) {
+    is SyllabusLecture -> {
+        listOf(lecture.category, lecture.department, lecture.academicYear)
+            .filter { it.isNotBlank() }
+            .joinToString(", ")
+    }
+    is CustomLecture -> {
+        context.getString(R.string.lecture_detail_hint_nothing)
     }
 }
 
@@ -104,8 +100,6 @@ fun getFullQuota(info: LectureSyllabusInfo): String = buildString {
     }
 }
 
-private fun LocalTime.getHourMinuteString(): String =
-    "%02d:%02d".format(this.hour, this.minute)
+private fun LocalTime.getHourMinuteString(): String = "%02d:%02d".format(this.hour, this.minute)
 
-private fun DayOfWeek.getDayOfWeekString(): String =
-    this.getDisplayName(TextStyle.SHORT, Locale.getDefault())
+private fun DayOfWeek.getDayOfWeekString(): String = this.getDisplayName(TextStyle.SHORT, Locale.getDefault())

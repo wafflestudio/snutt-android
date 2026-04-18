@@ -102,7 +102,6 @@ fun TimeTableScreen(
                     },
                 )
 
-
                 ScrollableTimetableContent(
                     modifier = Modifier.weight(1f),
                     lectures = uiState.table.lectures,

@@ -1,6 +1,9 @@
 package com.wafflestudio.snutt2.feature.vacancy_noti
 
 import app.cash.turbine.test
+import com.wafflestudio.snutt2.data.Result
+import com.wafflestudio.snutt2.domain.Unknown
+import com.wafflestudio.snutt2.domain.WrongUserToken
 import com.wafflestudio.snutt2.fake.FakeDisplayMessageResolver
 import com.wafflestudio.snutt2.fake.FakeRemoteConfig
 import com.wafflestudio.snutt2.fake.FakeUserRepository
@@ -8,9 +11,6 @@ import com.wafflestudio.snutt2.fake.FakeVacancyRepository
 import com.wafflestudio.snutt2.fixture.TestFixtures.lecture1
 import com.wafflestudio.snutt2.fixture.TestFixtures.lecture2
 import com.wafflestudio.snutt2.fixture.TestFixtures.searchedLecture
-import com.wafflestudio.snutt2.data.Result
-import com.wafflestudio.snutt2.domain.Unknown
-import com.wafflestudio.snutt2.domain.WrongUserToken
 import com.wafflestudio.snutt2.lib.toDataWithState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -597,5 +597,4 @@ class VacancyViewModelTest {
     }
 
     // endregion
-
 }

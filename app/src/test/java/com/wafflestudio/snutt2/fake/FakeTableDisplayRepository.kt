@@ -1,9 +1,9 @@
 package com.wafflestudio.snutt2.fake
 
+import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.data.table_display.TableDisplayRepository
 import com.wafflestudio.snutt2.domain.model.TableLectureCustom
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
-import com.wafflestudio.snutt2.data.Result
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class FakeTableDisplayRepository : TableDisplayRepository {

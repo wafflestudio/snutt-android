@@ -12,9 +12,7 @@ data class Nickname(
     val nickname: String,
     val tag: String,
 ) {
-    fun getDisplayName(): String {
-        return "$nickname#$tag"
-    }
+    fun getDisplayName(): String = "$nickname#$tag"
 }
 
 enum class FriendState {

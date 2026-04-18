@@ -125,8 +125,10 @@ fun SocialLinkPage(
                 is SocialLinkUiEvent.LaunchKakaoLogin -> {
                     val onKakaoToken: (OAuthToken?, Throwable?) -> Unit = { token, error ->
                         if (error != null) {
-                            if (error is ClientError && error.reason == ClientErrorCause.Cancelled ||
-                                error is AuthError && error.reason == AuthErrorCause.AccessDenied
+                            if (error is ClientError &&
+                                error.reason == ClientErrorCause.Cancelled ||
+                                error is AuthError &&
+                                error.reason == AuthErrorCause.AccessDenied
                             ) {
                                 context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
                             } else {
@@ -142,8 +144,10 @@ fun SocialLinkPage(
                     if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
                         UserApiClient.instance.loginWithKakaoTalk(context) { token, loginError ->
                             if (loginError != null) {
-                                if (loginError is ClientError && loginError.reason == ClientErrorCause.Cancelled ||
-                                    loginError is AuthError && loginError.reason == AuthErrorCause.AccessDenied
+                                if (loginError is ClientError &&
+                                    loginError.reason == ClientErrorCause.Cancelled ||
+                                    loginError is AuthError &&
+                                    loginError.reason == AuthErrorCause.AccessDenied
                                 ) {
                                     context.toast(context.getString(R.string.sign_in_kakao_failed_cancelled))
                                 } else {
@@ -269,7 +273,11 @@ private fun SocialLinkScreenPreview() {
     SocialLinkScreen(
         uiState = SocialLinkUiState(
             socialProviders = SocialProviders(
-                local = true, facebook = false, google = true, kakao = false, apple = false,
+                local = true,
+                facebook = false,
+                google = true,
+                kakao = false,
+                apple = false,
             ),
         ),
         onKakaoConnect = {},

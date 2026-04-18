@@ -90,7 +90,7 @@ fun <T> SegmentedPicker(
                 .clip(RoundedCornerShape(9.dp))
                 .background(SNUTTColors.FillTertiary),
 
-            ) {
+        ) {
             val selectedIndex = options.indexOf(selectedOption)
             val transition = updateTransition(targetState = selectedIndex, label = "buttonTransition")
             val indicatorOffset by transition.animateDp(label = "indicatorOffset") { index ->

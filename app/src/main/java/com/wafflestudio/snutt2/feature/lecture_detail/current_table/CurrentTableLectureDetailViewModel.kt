@@ -428,27 +428,23 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
         }
     }
 
-    private suspend fun fetchBookmarkState(courseBook: CourseBook): Boolean =
-        when (val result = bookmarkRepository.isLectureBookmarked(courseBook, originalLecture)) {
-            is Result.Success -> result.data
-            is Result.Fail -> false
-        }
+    private suspend fun fetchBookmarkState(courseBook: CourseBook): Boolean = when (val result = bookmarkRepository.isLectureBookmarked(courseBook, originalLecture)) {
+        is Result.Success -> result.data
+        is Result.Fail -> false
+    }
 
-    private suspend fun fetchVacancyState(): Boolean =
-        when (val result = vacancyRepository.isVacancyRegistered(originalLecture)) {
-            is Result.Success -> result.data
-            is Result.Fail -> false
-        }
+    private suspend fun fetchVacancyState(): Boolean = when (val result = vacancyRepository.isVacancyRegistered(originalLecture)) {
+        is Result.Success -> result.data
+        is Result.Fail -> false
+    }
 
     /**
      * 북마크/빈자리 알림 API에 사용할 강의 ID를 반환한다.
      * SyllabusLecture면 originalLectureId (수강편람 ID), 그 외에는 인스턴스 ID.
      */
-    fun getLoggingLectureId(): String {
-        return when (val lecture = originalLecture) {
-            is SyllabusLecture -> lecture.originalLectureId
-            else -> lecture.id
-        }
+    fun getLoggingLectureId(): String = when (val lecture = originalLecture) {
+        is SyllabusLecture -> lecture.originalLectureId
+        else -> lecture.id
     }
 
     // endregion

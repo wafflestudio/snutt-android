@@ -136,7 +136,6 @@ class LectureColorSelectorViewModel @Inject constructor(
             }
         }
     }
-
 }
 
 sealed interface LectureColorSelectorUiState {

@@ -158,7 +158,7 @@ internal fun NavGraphBuilder.buildRootNavGraph(
             navController.previousBackStackEntry?.destination?.hasRoute(
                 NavigationDestination.LecturesOfTable::class,
             ) == true
-                -> DetailScreenReferrer.LectureList
+            -> DetailScreenReferrer.LectureList
 
             route.isFromTimetable -> DetailScreenReferrer.Timetable
             else -> null
@@ -499,10 +499,12 @@ private fun NavGraphBuilder.settingComposables(
             },
         )
     }
-    if (BuildConfig.DEBUG) composableAnimated<NavigationDestination.NetworkLog>(scheme) {
-        NetworkLogPage(
-            onNavigateBack = { navController.popBackStack() },
-        )
+    if (BuildConfig.DEBUG) {
+        composableAnimated<NavigationDestination.NetworkLog>(scheme) {
+            NetworkLogPage(
+                onNavigateBack = { navController.popBackStack() },
+            )
+        }
     }
 
     if (BuildConfig.DEBUG) {

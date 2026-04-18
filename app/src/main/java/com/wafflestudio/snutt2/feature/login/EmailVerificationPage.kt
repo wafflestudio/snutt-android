@@ -49,7 +49,8 @@ import com.wafflestudio.snutt2.ui.util.toast
 
 // TODO: 뷰모델로 로직 및 상태관리 이전하기
 private enum class VerifyEmailState {
-    AskContinue, SendCode,
+    AskContinue,
+    SendCode,
 }
 
 @OptIn(ExperimentalComposeUiApi::class)

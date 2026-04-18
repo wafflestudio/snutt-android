@@ -1,10 +1,10 @@
 package com.wafflestudio.snutt2.feature.login
 
 import app.cash.turbine.test
-import com.wafflestudio.snutt2.fake.FakeDisplayMessageResolver
-import com.wafflestudio.snutt2.fake.FakeUserRepository
 import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.domain.Unknown
+import com.wafflestudio.snutt2.fake.FakeDisplayMessageResolver
+import com.wafflestudio.snutt2.fake.FakeUserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher

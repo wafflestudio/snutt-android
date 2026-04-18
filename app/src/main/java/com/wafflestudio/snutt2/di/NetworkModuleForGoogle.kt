@@ -58,19 +58,15 @@ object NetworkModuleForGoogle {
         @ApplicationContext context: Context,
         okHttpClient: OkHttpClient,
         moshi: Moshi,
-    ): Retrofit {
-        return Retrofit.Builder()
-            .client(okHttpClient)
-            .baseUrl(context.getString(R.string.api_google_server))
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .build()
-    }
+    ): Retrofit = Retrofit.Builder()
+        .client(okHttpClient)
+        .baseUrl(context.getString(R.string.api_google_server))
+        .addConverterFactory(MoshiConverterFactory.create(moshi))
+        .build()
 
     @Provides
     @Singleton
-    fun provideSNUTTRestApiForGoogle(retrofit: Retrofit): SNUTTRestApiForGoogle {
-        return retrofit.create(SNUTTRestApiForGoogle::class.java)
-    }
+    fun provideSNUTTRestApiForGoogle(retrofit: Retrofit): SNUTTRestApiForGoogle = retrofit.create(SNUTTRestApiForGoogle::class.java)
 
     private const val SIZE_OF_CACHE = (
         10 * 1024 * 1024 // 10 MB

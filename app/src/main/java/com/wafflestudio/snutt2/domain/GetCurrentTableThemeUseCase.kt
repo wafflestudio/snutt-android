@@ -13,17 +13,15 @@ class GetCurrentTableThemeUseCase @Inject constructor(
     private val themeRepository: ThemeRepository,
     private val tableRepository: TableRepository,
 ) {
-    operator fun invoke(): Flow<TableTheme> {
-        return combine(
-            tableRepository.currentTable,
-            themeRepository.customThemes,
-        ) { table, _ ->
-            table?.themeRef?.let { ref ->
-                when (ref) {
-                    is ThemeReference.Custom -> themeRepository.getTheme(ref.themeId)
-                    is ThemeReference.BuiltIn -> BuiltInTheme.fromCode(ref.code)
-                }
-            } ?: BuiltInTheme.SNUTT
-        }
+    operator fun invoke(): Flow<TableTheme> = combine(
+        tableRepository.currentTable,
+        themeRepository.customThemes,
+    ) { table, _ ->
+        table?.themeRef?.let { ref ->
+            when (ref) {
+                is ThemeReference.Custom -> themeRepository.getTheme(ref.themeId)
+                is ThemeReference.BuiltIn -> BuiltInTheme.fromCode(ref.code)
+            }
+        } ?: BuiltInTheme.SNUTT
     }
 }

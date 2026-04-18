@@ -8,7 +8,5 @@ data class NicknameDto(
     @param:Json(name = "nickname") val nickname: String = "",
     @param:Json(name = "tag") val tag: String = "",
 ) {
-    override fun toString(): String {
-        return "$nickname#$tag"
-    }
+    override fun toString(): String = "$nickname#$tag"
 }

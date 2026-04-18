@@ -92,13 +92,13 @@ fun Popup(
                 Text(
                     text = stringResource(id = R.string.popup_close_message),
                     modifier =
-                        Modifier
-                            .padding(
-                                horizontal = 20.dp,
-                                vertical = 10.dp,
-                            )
-                            .weight(2f)
-                            .clicks { onClickClose() },
+                    Modifier
+                        .padding(
+                            horizontal = 20.dp,
+                            vertical = 10.dp,
+                        )
+                        .weight(2f)
+                        .clicks { onClickClose() },
                     textAlign = TextAlign.Center,
                     color = SNUTTColors.AllWhite,
                 )

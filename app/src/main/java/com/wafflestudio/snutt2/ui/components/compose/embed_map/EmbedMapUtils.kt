@@ -23,17 +23,17 @@ object EmbedMapUtils {
                 CameraUpdate.scrollAndZoomTo(
                     LatLng(
                         latLngs.first().latitude,
-                        EmbedMapConstants.BaseLongitude,
+                        EmbedMapConstants.BASE_LONGITUDE,
                     ),
-                    EmbedMapConstants.SinglePinMapZoom,
+                    EmbedMapConstants.SINGLE_PIN_MAP_ZOOM,
                 )
             } else {
                 CameraUpdate.scrollAndZoomTo(
                     LatLng(
                         latLngs.sumOf { it.latitude } / latLngs.size,
-                        EmbedMapConstants.BaseLongitude,
+                        EmbedMapConstants.BASE_LONGITUDE,
                     ),
-                    EmbedMapConstants.SinglePinMapZoom,
+                    EmbedMapConstants.SINGLE_PIN_MAP_ZOOM,
                 )
             }
         }
@@ -56,10 +56,10 @@ object EmbedMapUtils {
             Intent(
                 Intent.ACTION_VIEW,
                 "nmap://place?lat=${building.coordinate.latitude}&lng=${building.coordinate.longitude}&name=${
-                URLEncoder.encode(
-                    building.buildingNameKor,
-                    StandardCharsets.UTF_8.toString(),
-                )
+                    URLEncoder.encode(
+                        building.buildingNameKor,
+                        StandardCharsets.UTF_8.toString(),
+                    )
                 }&appname=com.wafflestudio.snutt2".toUri(),
             ),
         )

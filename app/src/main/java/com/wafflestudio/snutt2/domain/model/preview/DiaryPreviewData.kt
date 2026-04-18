@@ -63,7 +63,7 @@ object DiaryPreviewData {
                 comment = "오티 했어용. 교수님이 과제량 많다고 하셨는데 도움이 많이 될 것 같아 기대가 돼요. 수업 들으려고 과외도 끊었지 뭐에요 😮‍💨",
             ),
 
-            ).toDataWithState(true),
+        ).toDataWithState(true),
         LocalDate.of(2024, 3, 19) to listOf(
             DiarySummary(
                 id = "diary-id-3",

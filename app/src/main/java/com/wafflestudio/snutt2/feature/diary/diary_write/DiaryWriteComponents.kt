@@ -212,7 +212,7 @@ fun DiaryQuestionItem(
                             vertical = 8.dp,
                         ),
 
-                    )
+                )
             }
         }
     }

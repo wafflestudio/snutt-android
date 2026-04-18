@@ -340,7 +340,7 @@ private fun RangeBar(
     val startTick = (barStart.value / tickPx).roundToInt()
     val barEnd = remember { Animatable(initEnd * tickPx) }
     val endTick = (barEnd.value / tickPx).roundToInt()
-    val Black = SNUTTColors.Black600
+    val black = SNUTTColors.Black600
 
     Canvas(
         modifier = Modifier.fillMaxSize(),
@@ -354,27 +354,30 @@ private fun RangeBar(
             strokeWidth = 1.dp.toPx(),
         )
         for (tick in 0..tickNum) {
-            drawCircle(Black, (1.5).dp.toPx(), Offset(x = tickPx * tick, y = lineOffset))
+            drawCircle(black, (1.5).dp.toPx(), Offset(x = tickPx * tick, y = lineOffset))
         }
         drawLine(
-            color = Black,
+            color = black,
             start = Offset(x = barStart.value, y = lineOffset),
             end = Offset(x = barEnd.value, y = lineOffset),
             strokeWidth = 3.dp.toPx(),
         )
         drawCircle(
-            color = Black,
+            color = black,
             radius = 6.dp.toPx(),
             center = Offset(x = barStart.value, y = lineOffset),
         )
         drawCircle(
-            color = Black,
+            color = black,
             radius = 6.dp.toPx(),
             center = Offset(x = barEnd.value, y = lineOffset),
         )
     }
     Label(
-        offset = barStart, widthPx = widthPx, tickPx = tickPx, labelText = labelArray[startTick],
+        offset = barStart,
+        widthPx = widthPx,
+        tickPx = tickPx,
+        labelText = labelArray[startTick],
     ) {
         onChange(min(startTick, endTick), max(startTick, endTick))
     }

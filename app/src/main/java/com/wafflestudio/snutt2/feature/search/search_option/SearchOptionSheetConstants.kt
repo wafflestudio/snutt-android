@@ -7,8 +7,8 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
 
 object SearchOptionSheetConstants {
-    const val TagColumnWidthDp = 120
-    const val MaxHeightRatio = 0.85f
+    const val TAG_COLUMN_WIDTH_DP = 120
+    const val MAX_HEIGHT_RATIO = 0.85f
     val TopMargin = 68.dp
     val AnimationSpec = spring(
         visibilityThreshold = 1f,
@@ -23,8 +23,10 @@ object SearchOptionSheetConstants {
 
     @ColorInt
     val TimeBlockFgColorDark = "#777777".toColorInt()
+
     @ColorInt
     val TimeBlockBgColorLight = "#B3DADADA".toColorInt()
+
     @ColorInt
     val TimeBlockBgColorDark = "#B3505050".toColorInt()
 }

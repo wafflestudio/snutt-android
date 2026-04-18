@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.ui.components.compose
 
-import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.ComposeShader
 import android.graphics.LinearGradient
@@ -56,12 +55,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.toColorInt
 import androidx.core.graphics.toRect
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
-import androidx.core.graphics.createBitmap
-import androidx.core.graphics.toColorInt
 import com.wafflestudio.snutt2.ui.theme.onSurfaceVariant
 import android.graphics.Color as AndroidColor
 
@@ -245,7 +244,8 @@ fun HueBackground(
         }
         Paint().let { linePaint ->
             linePaint.strokeWidth = 0f
-            hueColors.forEachIndexed { idx, col -> // 배열에 저장된 색을 x좌표 0부터 huePanel.width()까지 1픽셀씩 그림
+            hueColors.forEachIndexed { idx, col ->
+                // 배열에 저장된 색을 x좌표 0부터 huePanel.width()까지 1픽셀씩 그림
                 linePaint.color = col
                 hueCanvas.drawLine(idx.toFloat(), 0f, idx.toFloat(), huePanel.bottom, linePaint)
             }
@@ -323,12 +323,22 @@ fun SatValBackground(
         val satValPanel = RectF(0f, 0f, bitmap.width.toFloat(), bitmap.height.toFloat())
         val rgb = AndroidColor.HSVToColor(floatArrayOf(hue, 1f, 1f))
         val satShader = LinearGradient(
-            satValPanel.left, satValPanel.top, satValPanel.right, satValPanel.top,
-            -0x1, rgb, Shader.TileMode.CLAMP,
+            satValPanel.left,
+            satValPanel.top,
+            satValPanel.right,
+            satValPanel.top,
+            -0x1,
+            rgb,
+            Shader.TileMode.CLAMP,
         ) // 하얀색부터 HSV(hue, 1, 1)까지를 좌상단에서 우상단까지 gradient
         val valShader = LinearGradient(
-            satValPanel.left, satValPanel.top, satValPanel.left, satValPanel.bottom,
-            -0x1, -0x10000000, Shader.TileMode.CLAMP,
+            satValPanel.left,
+            satValPanel.top,
+            satValPanel.left,
+            satValPanel.bottom,
+            -0x1,
+            -0x10000000,
+            Shader.TileMode.CLAMP,
         ) // 하얀색부터 검정색까지를 좌상단에서 좌하단까지 gradient
         canvas.drawRoundRect(
             satValPanel,
@@ -384,9 +394,7 @@ private fun colorToHsv(color: Color): Triple<Float, Float, Float> {
     return Triple(temp[0], temp[1], temp[2])
 }
 
-private fun hsvToString(hsv: Triple<Float, Float, Float>): String {
-    return String.format(
-        "#%06X",
-        0xFFFFFF and Color.hsv(hsv.first, hsv.second, hsv.third).toArgb(),
-    )
-}
+private fun hsvToString(hsv: Triple<Float, Float, Float>): String = String.format(
+    "#%06X",
+    0xFFFFFF and Color.hsv(hsv.first, hsv.second, hsv.third).toArgb(),
+)

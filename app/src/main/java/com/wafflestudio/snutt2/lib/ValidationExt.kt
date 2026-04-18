@@ -13,7 +13,6 @@ fun String.isEmailInvalid(): Boolean {
     return this.isEmpty() || regex.matches(this).not()
 }
 
-fun String.isPasswordInvalid(): Boolean =
-    Regex("^(?=.*\\d)(?=.*[a-zA-Z])\\S{6,20}\$").matches(this).not()
+fun String.isPasswordInvalid(): Boolean = Regex("^(?=.*\\d)(?=.*[a-zA-Z])\\S{6,20}\$").matches(this).not()
 
 fun String.isIdInvalid(): Boolean = Regex("^[A-Za-z\\d]{4,32}\$").matches(this).not()

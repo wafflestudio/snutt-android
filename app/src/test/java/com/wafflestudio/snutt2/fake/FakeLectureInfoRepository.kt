@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.fake
 
+import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.data.lecture_info.LectureInfoRepository
 import com.wafflestudio.snutt2.domain.model.Building
 import com.wafflestudio.snutt2.domain.model.CourseBook
@@ -7,7 +8,6 @@ import com.wafflestudio.snutt2.domain.model.Lecture
 import com.wafflestudio.snutt2.domain.model.LectureReviewInfo
 import com.wafflestudio.snutt2.domain.model.LectureSyllabusInfo
 import com.wafflestudio.snutt2.domain.model.SyllabusLecture
-import com.wafflestudio.snutt2.data.Result
 
 class FakeLectureInfoRepository : LectureInfoRepository {
 

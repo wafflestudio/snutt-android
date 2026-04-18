@@ -144,9 +144,7 @@ class TextRect(paint: Paint) {
     }
 
     /** Returns true if text was cut to fit into the maximum height  */
-    fun wasCut(): Boolean {
-        return wasCut
-    }
+    fun wasCut(): Boolean = wasCut
 
     companion object {
         // maximum number of lines; this is a fixed number in order

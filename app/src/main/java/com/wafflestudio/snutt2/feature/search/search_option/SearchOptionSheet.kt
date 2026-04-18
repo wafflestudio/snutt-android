@@ -31,7 +31,8 @@ import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import kotlin.math.roundToInt
 
 private enum class OptionSheetMode {
-    Normal, TimeSelect,
+    Normal,
+    TimeSelect,
 }
 
 @Composable
@@ -65,7 +66,7 @@ fun SearchOptionSheet(
         label = "baseAnimatedFloat",
     )
     val alphaAnimatedFloat = 1f - baseAnimatedFloat.value
-    val offsetXAnimatedDp = (LocalWindowInfo.current.containerSize.width.dp.value - SearchOptionSheetConstants.TagColumnWidthDp).dp * baseAnimatedFloat.value
+    val offsetXAnimatedDp = (LocalWindowInfo.current.containerSize.width.dp.value - SearchOptionSheetConstants.TAG_COLUMN_WIDTH_DP).dp * baseAnimatedFloat.value
 
     var normalSheetHeightPx by remember { mutableIntStateOf(0) }
     var maxSheetHeightPx by remember { mutableIntStateOf(0) }

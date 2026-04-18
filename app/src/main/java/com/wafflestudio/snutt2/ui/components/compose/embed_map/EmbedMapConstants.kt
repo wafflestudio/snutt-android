@@ -7,8 +7,8 @@ import com.naver.maps.map.overlay.OverlayImage
 import com.wafflestudio.snutt2.R
 
 object EmbedMapConstants {
-    const val SinglePinMapZoom = 14.3
-    const val BaseLongitude = 126.9527
+    const val SINGLE_PIN_MAP_ZOOM = 14.3
+    const val BASE_LONGITUDE = 126.9527
     val MapShortHeight = 255.dp
     val MapLongHeight = 350.dp
     val DefaultMapUISettings = MapUiSettings(

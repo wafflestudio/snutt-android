@@ -1,7 +1,10 @@
 package com.wafflestudio.snutt2.domain.model
 
 enum class LectureReminderOffset {
-    NONE, TEN_MINUTES_BEFORE, AT_START_TIME, TEN_MINUTES_AFTER
+    NONE,
+    TEN_MINUTES_BEFORE,
+    AT_START_TIME,
+    TEN_MINUTES_AFTER,
 }
 
 fun LectureReminderOffset.toOffsetString(): String = when (this) {

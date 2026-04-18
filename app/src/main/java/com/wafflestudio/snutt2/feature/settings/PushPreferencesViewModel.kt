@@ -25,7 +25,7 @@ class PushPreferencesViewModel @Inject constructor(
 ) : ViewModel() {
     private val _pushPreferencesUiState =
         MutableStateFlow<PushPreferencesUiState>(PushPreferencesUiState.Loading)
-    val pushPreferenceUiState = _pushPreferencesUiState.asStateFlow()
+    val pushPreferencesUiState = _pushPreferencesUiState.asStateFlow()
 
     private val _pushPreferencesUiEvent: MutableSharedFlow<PushPreferencesUiEvent> = MutableSharedFlow(replay = 1)
     val pushPreferencesUiEvent = _pushPreferencesUiEvent.asSharedFlow()

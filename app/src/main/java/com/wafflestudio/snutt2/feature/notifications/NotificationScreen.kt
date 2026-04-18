@@ -63,7 +63,6 @@ fun NotificationRoute(
     val notificationList = viewModel.notificationList.collectAsLazyPagingItems()
     val notificationUiState = notificationList.notificationUiState()
 
-
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
@@ -232,7 +231,8 @@ fun NotificationError() {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         WarningIcon(
-            modifier = Modifier.size(40.dp), colorFilter = ColorFilter.tint(SNUTTColors.Gray200),
+            modifier = Modifier.size(40.dp),
+            colorFilter = ColorFilter.tint(SNUTTColors.Gray200),
         )
         Spacer(modifier = Modifier.height(10.dp))
         Text(

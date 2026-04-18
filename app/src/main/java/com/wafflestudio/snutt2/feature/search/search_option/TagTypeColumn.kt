@@ -42,11 +42,11 @@ fun TagTypeColumn(
 
     val alphaAnimatedFloat = 1f - baseAnimatedFloat.value
     val offsetXAnimatedDp =
-        baseAnimatedFloat.value.dp * -SearchOptionSheetConstants.TagColumnWidthDp
+        baseAnimatedFloat.value.dp * -SearchOptionSheetConstants.TAG_COLUMN_WIDTH_DP
 
     Column(
         modifier = Modifier
-            .width(SearchOptionSheetConstants.TagColumnWidthDp.dp)
+            .width(SearchOptionSheetConstants.TAG_COLUMN_WIDTH_DP.dp)
             .alpha(alphaAnimatedFloat)
             .offset(x = offsetXAnimatedDp)
             .padding(start = 20.dp, bottom = 10.dp),

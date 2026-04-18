@@ -124,20 +124,16 @@ object NetworkModule {
         @Named("Default") okHttpClient: OkHttpClient,
         moshi: Moshi,
         serializer: Serializer,
-    ): Retrofit {
-        return Retrofit.Builder()
-            .client(okHttpClient)
-            .baseUrl(context.getString(R.string.api_server))
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .addCallAdapterFactory(ErrorParsingCallAdapterFactory(serializer))
-            .build()
-    }
+    ): Retrofit = Retrofit.Builder()
+        .client(okHttpClient)
+        .baseUrl(context.getString(R.string.api_server))
+        .addConverterFactory(MoshiConverterFactory.create(moshi))
+        .addCallAdapterFactory(ErrorParsingCallAdapterFactory(serializer))
+        .build()
 
     @Provides
     @Singleton
-    fun provideSNUTTRestApi(@Named("Default") retrofit: Retrofit): SNUTTRestApi {
-        return retrofit.create(SNUTTRestApi::class.java)
-    }
+    fun provideSNUTTRestApi(@Named("Default") retrofit: Retrofit): SNUTTRestApi = retrofit.create(SNUTTRestApi::class.java)
 
     private const val SIZE_OF_CACHE = (10 * 1024 * 1024).toLong() // 10 MB
 
@@ -146,15 +142,11 @@ object NetworkModule {
     @Singleton
     fun provideConnectivityManager(
         @ApplicationContext context: Context,
-    ): ConnectivityManager {
-        return (context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
-    }
+    ): ConnectivityManager = (context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
 
     @Provides
     @Singleton
     fun provideDisplayMessageResolver(
         @ApplicationContext context: Context,
-    ): DisplayMessageResolver {
-        return DisplayMessageResolverImpl(context)
-    }
+    ): DisplayMessageResolver = DisplayMessageResolverImpl(context)
 }

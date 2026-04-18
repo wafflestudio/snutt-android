@@ -105,7 +105,7 @@ fun TimeSelectSheet(
             .height(
                 with(LocalDensity.current) {
                     LocalWindowInfo.current.containerSize.height.toDp()
-                } * SearchOptionSheetConstants.MaxHeightRatio,
+                } * SearchOptionSheetConstants.MAX_HEIGHT_RATIO,
             ),
     ) {
         Row(
@@ -123,7 +123,8 @@ fun TimeSelectSheet(
                 },
             )
             Text(
-                text = stringResource(R.string.common_complete), style = SNUTTTypography.body1,
+                text = stringResource(R.string.common_complete),
+                style = SNUTTTypography.body1,
                 modifier = Modifier.clicks {
                     onConfirm(draggedTimeBlock.map { row -> row.map { it.value } })
                 },
@@ -312,8 +313,10 @@ private fun DrawDragEventDetector(
                 val dayIndex = ((it.x - hourLabelWidth) / unitWidth).toInt()
                 val timeIndex = ((it.y - dayLabelHeight) / unitHeight).toInt()
 
-                if (dayIndex < 0 || dayIndex > fittedTrimParam.dayOfWeekTo - fittedTrimParam.dayOfWeekFrom ||
-                    timeIndex < 0 || timeIndex > (fittedTrimParam.hourTo - fittedTrimParam.hourFrom) * 2 + 1
+                if (dayIndex < 0 ||
+                    dayIndex > fittedTrimParam.dayOfWeekTo - fittedTrimParam.dayOfWeekFrom ||
+                    timeIndex < 0 ||
+                    timeIndex > (fittedTrimParam.hourTo - fittedTrimParam.hourFrom) * 2 + 1
                 ) {
                     return@pointerInteropFilter false
                 }
@@ -367,7 +370,6 @@ private fun DrawDragEventDetector(
                                 }
                             }
                         }
-
 
                         touchedTimeIndex = timeIndex
                         touchedDayIndex = dayIndex

@@ -176,4 +176,3 @@ private fun CustomColorSectionPreview() {
         onBgPickerClick = {},
     )
 }
-

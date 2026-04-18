@@ -71,7 +71,8 @@ fun CreateTableBottomSheet(
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Text(
-                text = stringResource(R.string.common_cancel), style = SNUTTTypography.body1,
+                text = stringResource(R.string.common_cancel),
+                style = SNUTTTypography.body1,
                 modifier = Modifier.clicks {
                     onDismiss()
                 },

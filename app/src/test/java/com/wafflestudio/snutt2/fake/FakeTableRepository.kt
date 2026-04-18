@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.fake
 
+import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.domain.model.CourseBook
 import com.wafflestudio.snutt2.domain.model.LectureReminderOffset
@@ -7,7 +8,6 @@ import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
 import com.wafflestudio.snutt2.domain.model.Table
 import com.wafflestudio.snutt2.domain.model.TableSummary
 import com.wafflestudio.snutt2.domain.model.TimetableLectureReminders
-import com.wafflestudio.snutt2.data.Result
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class FakeTableRepository : TableRepository {

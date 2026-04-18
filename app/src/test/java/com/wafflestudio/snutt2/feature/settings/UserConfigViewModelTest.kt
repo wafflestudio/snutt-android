@@ -1,13 +1,13 @@
 package com.wafflestudio.snutt2.feature.settings
 
 import app.cash.turbine.test
+import com.wafflestudio.snutt2.data.Result
+import com.wafflestudio.snutt2.domain.Unknown
+import com.wafflestudio.snutt2.domain.WrongUserToken
 import com.wafflestudio.snutt2.domain.model.Nickname
 import com.wafflestudio.snutt2.domain.model.User
 import com.wafflestudio.snutt2.fake.FakeDisplayMessageResolver
 import com.wafflestudio.snutt2.fake.FakeUserRepository
-import com.wafflestudio.snutt2.data.Result
-import com.wafflestudio.snutt2.domain.Unknown
-import com.wafflestudio.snutt2.domain.WrongUserToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -79,14 +79,18 @@ class UserConfigViewModelTest {
     @Test
     fun `user가 변경되면 UiState가 갱신되고 dialogState는 보존된다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "old@snu.ac.kr", localId = "old", nickname = Nickname(nickname = "이전", tag = "0001"),
+            email = "old@snu.ac.kr",
+            localId = "old",
+            nickname = Nickname(nickname = "이전", tag = "0001"),
         )
         val viewModel = createViewModel()
         viewModel.showLeaveDialog()
         val before = viewModel.uiState.value
 
         fakeUserRepository.user.value = User(
-            email = "new@snu.ac.kr", localId = "new", nickname = Nickname(nickname = "이후", tag = "0002"),
+            email = "new@snu.ac.kr",
+            localId = "new",
+            nickname = Nickname(nickname = "이후", tag = "0002"),
         )
 
         assertEquals(
@@ -102,7 +106,9 @@ class UserConfigViewModelTest {
     @Test
     fun `showChangePasswordDialog 호출 시 ChangePassword 다이얼로그가 열린다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = "userid", nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = "userid",
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         val viewModel = createViewModel()
         val before = viewModel.uiState.value
@@ -118,7 +124,9 @@ class UserConfigViewModelTest {
     @Test
     fun `hideChangePasswordDialog 호출 시 다이얼로그가 닫힌다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = "userid", nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = "userid",
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         val viewModel = createViewModel()
         viewModel.showChangePasswordDialog()
@@ -139,7 +147,9 @@ class UserConfigViewModelTest {
     @Test
     fun `showAddIdPasswordDialog 호출 시 AddIdPassword 다이얼로그가 열린다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = "userid", nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = "userid",
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         val viewModel = createViewModel()
         val before = viewModel.uiState.value
@@ -155,7 +165,9 @@ class UserConfigViewModelTest {
     @Test
     fun `hideAddIdPasswordDialog 호출 시 다이얼로그가 닫힌다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = "userid", nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = "userid",
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         val viewModel = createViewModel()
         viewModel.showAddIdPasswordDialog()
@@ -176,7 +188,9 @@ class UserConfigViewModelTest {
     @Test
     fun `showLeaveDialog 호출 시 Leave 다이얼로그가 열린다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = "userid", nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = "userid",
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         val viewModel = createViewModel()
         val before = viewModel.uiState.value
@@ -192,7 +206,9 @@ class UserConfigViewModelTest {
     @Test
     fun `hideLeaveDialog 호출 시 다이얼로그가 닫힌다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = "userid", nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = "userid",
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         val viewModel = createViewModel()
         viewModel.showLeaveDialog()
@@ -213,7 +229,9 @@ class UserConfigViewModelTest {
     @Test
     fun `changePassword 성공 시 repository의 putUserPassword를 호출한다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = "userid", nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = "userid",
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         fakeUserRepository.putUserPasswordResult = Result.Success(Unit)
 
@@ -226,7 +244,9 @@ class UserConfigViewModelTest {
     @Test
     fun `changePassword 성공 시 ChangePasswordSuccess 이벤트가 발생한다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = "userid", nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = "userid",
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         fakeUserRepository.putUserPasswordResult = Result.Success(Unit)
         val viewModel = createViewModel()
@@ -243,7 +263,9 @@ class UserConfigViewModelTest {
     @Test
     fun `changePassword 성공 시 다이얼로그가 닫힌다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = "userid", nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = "userid",
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         fakeUserRepository.putUserPasswordResult = Result.Success(Unit)
         val viewModel = createViewModel()
@@ -261,7 +283,9 @@ class UserConfigViewModelTest {
     @Test
     fun `changePassword 시 비밀번호가 유효하지 않으면 InvalidPasswordError 이벤트가 발생한다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = "userid", nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = "userid",
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         val viewModel = createViewModel()
 
@@ -277,7 +301,9 @@ class UserConfigViewModelTest {
     @Test
     fun `changePassword 시 비밀번호 확인이 불일치하면 PasswordMismatchError 이벤트가 발생한다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = "userid", nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = "userid",
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         val viewModel = createViewModel()
 
@@ -293,7 +319,9 @@ class UserConfigViewModelTest {
     @Test
     fun `changePassword 실패 시 ShowToast 이벤트가 발생한다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = "userid", nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = "userid",
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         fakeUserRepository.putUserPasswordResult =
             Result.Fail(Unknown(displayTitle = "", displayMessage = "비밀번호 오류"))
@@ -308,7 +336,9 @@ class UserConfigViewModelTest {
     @Test
     fun `changePassword 실패가 AuthError이면 ShowToast 이벤트가 발생한다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = "userid", nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = "userid",
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         fakeUserRepository.putUserPasswordResult =
             Result.Fail(WrongUserToken(displayTitle = "", displayMessage = "토큰 만료"))
@@ -324,7 +354,9 @@ class UserConfigViewModelTest {
     @Test
     fun `changePassword 실패가 AuthError이면 performLogout이 호출된다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = "userid", nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = "userid",
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         fakeUserRepository.putUserPasswordResult =
             Result.Fail(WrongUserToken(displayTitle = "", displayMessage = "토큰 만료"))
@@ -338,7 +370,9 @@ class UserConfigViewModelTest {
     @Test
     fun `changePassword 실패가 AuthError이면 NavigateToOnboard 이벤트가 발생한다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = "userid", nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = "userid",
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         fakeUserRepository.putUserPasswordResult =
             Result.Fail(WrongUserToken(displayTitle = "", displayMessage = "토큰 만료"))
@@ -358,7 +392,9 @@ class UserConfigViewModelTest {
     @Test
     fun `addNewLocalId 성공 시 repository의 postUserPassword를 호출한다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = null, nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = null,
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         fakeUserRepository.postUserPasswordResult = Result.Success(Unit)
 
@@ -371,7 +407,9 @@ class UserConfigViewModelTest {
     @Test
     fun `addNewLocalId 성공 시 AddIdPasswordSuccess 이벤트가 발생한다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = null, nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = null,
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         fakeUserRepository.postUserPasswordResult = Result.Success(Unit)
         val viewModel = createViewModel()
@@ -388,7 +426,9 @@ class UserConfigViewModelTest {
     @Test
     fun `addNewLocalId 성공 시 다이얼로그가 닫힌다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = null, nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = null,
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         fakeUserRepository.postUserPasswordResult = Result.Success(Unit)
         val viewModel = createViewModel()
@@ -406,7 +446,9 @@ class UserConfigViewModelTest {
     @Test
     fun `addNewLocalId 성공 시 fetchUserInfo가 호출된다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = null, nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = null,
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         fakeUserRepository.postUserPasswordResult = Result.Success(Unit)
         val viewModel = createViewModel()
@@ -419,7 +461,9 @@ class UserConfigViewModelTest {
     @Test
     fun `addNewLocalId 시 ID가 유효하지 않으면 InvalidIdError 이벤트가 발생한다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = null, nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = null,
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         val viewModel = createViewModel()
 
@@ -435,7 +479,9 @@ class UserConfigViewModelTest {
     @Test
     fun `addNewLocalId 시 비밀번호가 유효하지 않으면 InvalidPasswordError 이벤트가 발생한다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = null, nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = null,
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         val viewModel = createViewModel()
 
@@ -451,7 +497,9 @@ class UserConfigViewModelTest {
     @Test
     fun `addNewLocalId 시 비밀번호 확인이 불일치하면 PasswordMismatchError 이벤트가 발생한다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = null, nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = null,
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         val viewModel = createViewModel()
 
@@ -467,7 +515,9 @@ class UserConfigViewModelTest {
     @Test
     fun `addNewLocalId 실패 시 ShowToast 이벤트가 발생한다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = null, nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = null,
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         fakeUserRepository.postUserPasswordResult =
             Result.Fail(Unknown(displayTitle = "", displayMessage = "중복 ID"))
@@ -482,7 +532,9 @@ class UserConfigViewModelTest {
     @Test
     fun `addNewLocalId 실패가 AuthError이면 ShowToast 이벤트가 발생한다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = null, nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = null,
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         fakeUserRepository.postUserPasswordResult =
             Result.Fail(WrongUserToken(displayTitle = "", displayMessage = "토큰 만료"))
@@ -498,7 +550,9 @@ class UserConfigViewModelTest {
     @Test
     fun `addNewLocalId 실패가 AuthError이면 performLogout이 호출된다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = null, nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = null,
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         fakeUserRepository.postUserPasswordResult =
             Result.Fail(WrongUserToken(displayTitle = "", displayMessage = "토큰 만료"))
@@ -512,7 +566,9 @@ class UserConfigViewModelTest {
     @Test
     fun `addNewLocalId 실패가 AuthError이면 NavigateToOnboard 이벤트가 발생한다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = null, nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = null,
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         fakeUserRepository.postUserPasswordResult =
             Result.Fail(WrongUserToken(displayTitle = "", displayMessage = "토큰 만료"))
@@ -532,7 +588,9 @@ class UserConfigViewModelTest {
     @Test
     fun `leave 호출 시 repository의 deleteUserAccount를 호출한다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = "userid", nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = "userid",
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         fakeUserRepository.deleteUserAccountResult = Result.Success(Unit)
         val viewModel = createViewModel()
@@ -545,7 +603,9 @@ class UserConfigViewModelTest {
     @Test
     fun `leave 성공 시 NavigateToOnboard 이벤트가 발생한다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = "userid", nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = "userid",
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         fakeUserRepository.deleteUserAccountResult = Result.Success(Unit)
         val viewModel = createViewModel()
@@ -559,7 +619,9 @@ class UserConfigViewModelTest {
     @Test
     fun `leave 성공 시 다이얼로그가 닫힌다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = "userid", nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = "userid",
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         fakeUserRepository.deleteUserAccountResult = Result.Success(Unit)
         val viewModel = createViewModel()
@@ -577,7 +639,9 @@ class UserConfigViewModelTest {
     @Test
     fun `leave 실패 시 ShowToast 이벤트가 발생한다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = "userid", nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = "userid",
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         fakeUserRepository.deleteUserAccountResult =
             Result.Fail(Unknown(displayTitle = "", displayMessage = "탈퇴 실패"))
@@ -592,7 +656,9 @@ class UserConfigViewModelTest {
     @Test
     fun `leave 실패가 AuthError이면 ShowToast 이벤트가 발생한다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = "userid", nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = "userid",
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         fakeUserRepository.deleteUserAccountResult =
             Result.Fail(WrongUserToken(displayTitle = "", displayMessage = "토큰 만료"))
@@ -608,7 +674,9 @@ class UserConfigViewModelTest {
     @Test
     fun `leave 실패가 AuthError이면 performLogout이 호출된다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = "userid", nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = "userid",
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         fakeUserRepository.deleteUserAccountResult =
             Result.Fail(WrongUserToken(displayTitle = "", displayMessage = "토큰 만료"))
@@ -622,7 +690,9 @@ class UserConfigViewModelTest {
     @Test
     fun `leave 실패가 AuthError이면 NavigateToOnboard 이벤트가 발생한다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = "userid", nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = "userid",
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         fakeUserRepository.deleteUserAccountResult =
             Result.Fail(WrongUserToken(displayTitle = "", displayMessage = "토큰 만료"))
@@ -642,7 +712,9 @@ class UserConfigViewModelTest {
     @Test
     fun `resetToastMessage 호출 시 빈 ShowToast 이벤트가 발생한다`() = runTest {
         fakeUserRepository.user.value = User(
-            email = "user@snu.ac.kr", localId = "userid", nickname = Nickname(nickname = "유저", tag = "1111"),
+            email = "user@snu.ac.kr",
+            localId = "userid",
+            nickname = Nickname(nickname = "유저", tag = "1111"),
         )
         val viewModel = createViewModel()
 

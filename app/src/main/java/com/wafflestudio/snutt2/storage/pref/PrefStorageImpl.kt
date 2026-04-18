@@ -69,7 +69,5 @@ class PrefStorageImpl(
         }
     }
 
-    private fun getSharedPreference(domainName: String): SharedPreferences {
-        return context.getSharedPreferences(domainName, Context.MODE_PRIVATE)
-    }
+    private fun getSharedPreference(domainName: String): SharedPreferences = context.getSharedPreferences(domainName, Context.MODE_PRIVATE)
 }

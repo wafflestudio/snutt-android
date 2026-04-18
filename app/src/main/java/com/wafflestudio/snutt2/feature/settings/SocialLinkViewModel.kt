@@ -139,7 +139,11 @@ class SocialLinkViewModel @Inject constructor(
 
 data class SocialLinkUiState(
     val socialProviders: SocialProviders = SocialProviders(
-        local = false, facebook = false, google = false, kakao = false, apple = false,
+        local = false,
+        facebook = false,
+        google = false,
+        kakao = false,
+        apple = false,
     ),
     val disconnectDialogType: SocialLoginType = SocialLoginType.NONE,
 )

@@ -77,10 +77,10 @@ fun ExpandableLectureListItem(
 
     Column(
         modifier =
-            modifier
-                .background(backgroundColor)
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp),
+        modifier
+            .background(backgroundColor)
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp),
     ) {
         Column(
             modifier = Modifier

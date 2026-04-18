@@ -45,7 +45,6 @@ fun LectureDetail(
     enableLectureReminderPicker: Boolean,
     showFloatingButton: Boolean,
     hideDeleteButton: Boolean = false,
-
     onBackPressed: () -> Unit,
     onEditModeToggle: () -> Unit,
     onBookmarkToggle: () -> Unit,

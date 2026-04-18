@@ -238,8 +238,7 @@ class DiaryWriteViewModel @Inject constructor(
 }
 
 sealed interface DiaryWriteUiEvent {
-    data class ShowToast(val message: String) :
-        DiaryWriteUiEvent
+    data class ShowToast(val message: String) : DiaryWriteUiEvent
 
     data class NextDiary(
         val lectureId: String,
