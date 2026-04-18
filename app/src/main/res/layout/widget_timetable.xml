@@ -13,7 +13,7 @@
         android:fontFamily="@font/pretendard_regular"
         android:gravity="center"
         android:padding="10dp"
-        android:text="로그인을 해주세요"
+        android:text="@string/widget_timetable_login_required"
         android:textColor="@color/black"
         android:textSize="15dp"
         android:visibility="visible" />
@@ -22,6 +22,7 @@
         android:id="@+id/table"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:contentDescription="@string/widget_timetable_image_description"
         android:scaleType="fitXY" />
 
 </LinearLayout>

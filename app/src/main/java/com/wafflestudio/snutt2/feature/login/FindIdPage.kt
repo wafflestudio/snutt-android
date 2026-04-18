@@ -42,13 +42,14 @@ fun FindIdPage(
     onNavigateBack: () -> Unit,
 ) {
     val context = LocalContext.current
+    val successMessageTemplate = stringResource(R.string.find_id_send_email_success_message)
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is FindIdUiEvent.ShowToast -> context.toast(event.message)
                 is FindIdUiEvent.Success -> {
-                    context.toast(context.getString(R.string.find_id_send_email_success_message).format(event.email))
+                    context.toast(successMessageTemplate.format(event.email))
                     onNavigateBack()
                 }
             }
@@ -68,6 +69,8 @@ private fun FindIdScreen(
 ) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
+    val enterEmailMessage = stringResource(R.string.settings_user_config_enter_email)
+    val wrongEmailFormatMessage = stringResource(R.string.find_id_wrong_email_format)
 
     // TODO: 뷰모델로 상태 옮기기
     var emailField by remember { mutableStateOf("") }
@@ -75,9 +78,9 @@ private fun FindIdScreen(
 
     val handleSendIdToEmail = {
         if (emailField.isEmpty()) {
-            context.toast(context.getString(R.string.settings_user_config_enter_email))
+            context.toast(enterEmailMessage)
         } else if (emailField.isEmailInvalid()) {
-            context.toast(context.getString(R.string.find_id_wrong_email_format))
+            context.toast(wrongEmailFormatMessage)
         } else {
             onSubmit(emailField)
         }

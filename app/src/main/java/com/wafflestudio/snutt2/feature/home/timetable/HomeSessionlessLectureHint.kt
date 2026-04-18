@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.components.compose.ArrowLeftBold
@@ -128,13 +129,13 @@ fun HomeSessionlessLectureHint(
         ArrowLeftBold(
             modifier = Modifier
                 .rotate(-90F)
-                .offset(x = 5.dp + yOffsetTop),
+                .offset { IntOffset((5.dp + yOffsetTop).roundToPx(), 0) },
             colorFilter = ColorFilter.tint(SNUTTColors.Hint1),
         )
         ArrowLeftBold(
             modifier = Modifier
                 .rotate(-90F)
-                .offset(x = 40.dp + yOffsetBottom),
+                .offset { IntOffset((40.dp + yOffsetBottom).roundToPx(), 0) },
             colorFilter = ColorFilter.tint(SNUTTColors.Hint2),
         )
     }

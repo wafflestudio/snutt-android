@@ -1,7 +1,7 @@
 package com.wafflestudio.snutt2.feature.login
 
 import android.content.Intent
-import android.net.Uri
+import androidx.core.net.toUri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -86,6 +86,12 @@ private fun SignUpScreen(
 ) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
+    val invalidIdMessage = stringResource(R.string.error_invalid_id)
+    val invalidPasswordMessage = stringResource(R.string.error_invalid_password)
+    val passwordConfirmInvalidMessage = stringResource(R.string.sign_up_password_confirm_invalid_toast)
+    val emailForm = stringResource(R.string.sign_up_email_form)
+    val apiServer = stringResource(R.string.api_server)
+    val termsPath = stringResource(R.string.terms)
 
     // TODO: 상태 뷰모델로 올리기
     var idField by remember { mutableStateOf("") }
@@ -101,13 +107,13 @@ private fun SignUpScreen(
     val handleLocalSignUp = {
         val isPasswordConfirmPassed = (passwordConfirmField == passwordField)
         if (idField.isIdInvalid()) {
-            context.toast(context.getString(R.string.error_invalid_id))
+            context.toast(invalidIdMessage)
         } else if (passwordField.isPasswordInvalid()) {
-            context.toast(context.getString(R.string.error_invalid_password))
+            context.toast(invalidPasswordMessage)
         } else if (isPasswordConfirmPassed.not()) {
-            context.toast(context.getString(R.string.sign_up_password_confirm_invalid_toast))
+            context.toast(passwordConfirmInvalidMessage)
         } else {
-            onSignUp(idField, emailField.plus(context.getString(R.string.sign_up_email_form)), passwordField)
+            onSignUp(idField, emailField.plus(emailForm), passwordField)
         }
     }
 
@@ -217,8 +223,8 @@ private fun SignUpScreen(
                             style = SNUTTTypography.body2.copy(fontWeight = FontWeight.Bold),
                             textDecoration = TextDecoration.Underline,
                             modifier = Modifier.clicks {
-                                val termsPageUrl = context.getString(R.string.api_server) + context.getString(R.string.terms)
-                                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(termsPageUrl)))
+                                val termsPageUrl = apiServer + termsPath
+                                context.startActivity(Intent(Intent.ACTION_VIEW, termsPageUrl.toUri()))
                             },
                         )
                         Text(text = stringResource(id = R.string.sign_up_terms_3), style = SNUTTTypography.body2)

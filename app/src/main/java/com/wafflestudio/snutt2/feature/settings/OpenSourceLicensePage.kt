@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
@@ -19,7 +18,11 @@ fun OpenSourceLicensePage(
     onNavigateBack: () -> Unit,
     onNavigateLicenseDetail: (String) -> Unit,
 ) {
-    val context = LocalContext.current
+    val colorpickerRoute = stringResource(R.string.license_colorpicker_route)
+    val guavaRoute = stringResource(R.string.license_guava_route)
+    val retrofitRoute = stringResource(R.string.license_retrofit_route)
+    val okhttpRoute = stringResource(R.string.license_okhttp_route)
+    val pretendardRoute = stringResource(R.string.license_pretendard_route)
 
     Column(
         modifier = Modifier
@@ -36,35 +39,35 @@ fun OpenSourceLicensePage(
         SettingItem(
             title = stringResource(R.string.license_colorpicker_title),
             onClick = {
-                onNavigateLicenseDetail(context.getString(R.string.license_colorpicker_route))
+                onNavigateLicenseDetail(colorpickerRoute)
             },
         )
 
         SettingItem(
             title = stringResource(R.string.license_guava_title),
             onClick = {
-                onNavigateLicenseDetail(context.getString(R.string.license_guava_route))
+                onNavigateLicenseDetail(guavaRoute)
             },
         )
 
         SettingItem(
             title = stringResource(R.string.license_retrofit_title),
             onClick = {
-                onNavigateLicenseDetail(context.getString(R.string.license_retrofit_route))
+                onNavigateLicenseDetail(retrofitRoute)
             },
         )
 
         SettingItem(
             title = stringResource(R.string.license_okhttp_title),
             onClick = {
-                onNavigateLicenseDetail(context.getString(R.string.license_okhttp_route))
+                onNavigateLicenseDetail(okhttpRoute)
             },
         )
 
         SettingItem(
             title = stringResource(R.string.license_pretendard_title),
             onClick = {
-                onNavigateLicenseDetail(context.getString(R.string.license_pretendard_route))
+                onNavigateLicenseDetail(pretendardRoute)
             },
         )
     }

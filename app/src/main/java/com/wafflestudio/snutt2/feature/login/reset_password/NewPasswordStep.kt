@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -48,7 +47,9 @@ fun NewPasswordStep(
 ) {
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
-    val context = LocalContext.current
+    val expiredAlert = stringResource(R.string.find_password_enter_password_confirm_expired_alert)
+    val confirmFailAlert = stringResource(R.string.find_password_enter_password_confirm_fail_alert)
+    val invalidPasswordAlert = stringResource(R.string.error_invalid_password)
 
     var newPasswordField by remember { mutableStateOf("") }
     var newPasswordConfirmField by remember { mutableStateOf("") }
@@ -72,7 +73,7 @@ fun NewPasswordStep(
     }
     LaunchedEffect(timerState.currentValue) {
         if (timerState.isEnded) {
-            errorDialogTitle = context.getString(R.string.find_password_enter_password_confirm_expired_alert)
+            errorDialogTitle = expiredAlert
             showErrorDialog = true
         }
     }
@@ -85,10 +86,10 @@ fun NewPasswordStep(
     val validateNewPasswordAndSubmit = {
         if (timerState.isRunning) {
             if (newPasswordField != newPasswordConfirmField) {
-                errorDialogTitle = context.getString(R.string.find_password_enter_password_confirm_fail_alert)
+                errorDialogTitle = confirmFailAlert
                 showErrorDialog = true
             } else if (newPasswordField.isPasswordInvalid()) {
-                errorDialogTitle = context.getString(R.string.error_invalid_password)
+                errorDialogTitle = invalidPasswordAlert
                 showErrorDialog = true
             } else {
                 onSubmit(newPasswordField)

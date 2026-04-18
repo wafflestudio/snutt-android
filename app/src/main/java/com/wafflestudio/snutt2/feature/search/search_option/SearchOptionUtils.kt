@@ -6,6 +6,7 @@ import com.wafflestudio.snutt2.domain.model.SearchTime
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import java.time.DayOfWeek
 import java.time.LocalTime
+import java.util.Locale
 import kotlin.math.roundToInt
 
 fun timeSlotsToFormattedString(context: Context, booleanArray: List<List<Boolean>>): String {
@@ -106,10 +107,7 @@ private fun getTimeRangeString(startTime: Float, endTime: Float): String {
     val endHour = (endTime + 0.5f).toInt()
     val endMinute = (((endTime + 0.5f) - endHour) * 60).toInt()
 
-    return "$startHour:${String.format("%02d", startMinute)}-$endHour:${
-        String.format(
-            "%02d",
-            endMinute,
-        )
+    return "$startHour:${String.format(Locale.US, "%02d", startMinute)}-$endHour:${
+        String.format(Locale.US, "%02d", endMinute)
     }"
 }

@@ -53,6 +53,7 @@ fun AppReportPage(
 ) {
     val context = LocalContext.current
     val keyboardManager = LocalSoftwareKeyboardController.current
+    val sendSuccessMessage = stringResource(R.string.feedback_send_success_message)
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
@@ -60,7 +61,7 @@ fun AppReportPage(
                 is AppReportUiEvent.ShowToast -> context.toast(event.message)
                 is AppReportUiEvent.Success -> {
                     keyboardManager?.hide()
-                    context.toast(context.getString(R.string.feedback_send_success_message))
+                    context.toast(sendSuccessMessage)
                     onNavigateBack()
                 }
             }
@@ -82,6 +83,8 @@ private fun AppReportScreen(
 ) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
+    val emptyDetailWarning = stringResource(R.string.feedback_empty_detail_warning)
+    val invalidEmailWarning = stringResource(R.string.feedback_invalid_email_warning)
 
     var email by remember { mutableStateOf(initialEmail) }
     var detail by remember { mutableStateOf("") }
@@ -89,9 +92,9 @@ private fun AppReportScreen(
 
     val sendFeedback = {
         if (detail.isEmpty()) {
-            context.toast(context.getString(R.string.feedback_empty_detail_warning))
+            context.toast(emptyDetailWarning)
         } else if (email.isEmailInvalid()) {
-            context.toast(context.getString(R.string.feedback_invalid_email_warning))
+            context.toast(invalidEmailWarning)
         } else {
             sentEnabled = false
             onSendFeedback(email, detail)

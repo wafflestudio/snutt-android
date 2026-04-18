@@ -60,6 +60,7 @@ fun EmailVerificationPage(
 ) {
     val context = LocalContext.current
     val keyboardManager = LocalSoftwareKeyboardController.current
+    val verificationSuccessMessage = stringResource(R.string.find_password_enter_verification_code_success_alert)
 
     var flowState by remember { mutableStateOf(VerifyEmailState.AskContinue) }
     // TODO: TimerState 손보기
@@ -77,7 +78,7 @@ fun EmailVerificationPage(
 
                 is EmailVerificationUiEvent.VerificationSuccess -> {
                     keyboardManager?.hide()
-                    context.toast(context.getString(R.string.find_password_enter_verification_code_success_alert))
+                    context.toast(verificationSuccessMessage)
                     timerState.pause()
                     onNavigateHome()
                 }
@@ -112,15 +113,17 @@ private fun EmailVerificationScreen(
 ) {
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
+    val emptyAlert = stringResource(R.string.find_password_enter_verification_code_empty_alert)
+    val expireMessage = stringResource(R.string.find_password_enter_verification_code_expire_message)
 
     var codeField by remember { mutableStateOf("") }
     val buttonEnabled by remember { derivedStateOf { codeField.isNotEmpty() } }
 
     val handleEnterCode = {
         if (codeField.isEmpty()) {
-            context.toast(context.getString(R.string.find_password_enter_verification_code_empty_alert))
+            context.toast(emptyAlert)
         } else if (timerState.isEnded) {
-            context.toast(context.getString(R.string.find_password_enter_verification_code_expire_message))
+            context.toast(expireMessage)
         } else {
             onVerifyCode(codeField)
         }

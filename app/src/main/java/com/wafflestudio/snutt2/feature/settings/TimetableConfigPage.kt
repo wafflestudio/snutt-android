@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -234,8 +235,12 @@ fun TimetableConfigScreen(
                     .background(SNUTTColors.White900)
                     .padding(5.dp)
                     .size(
-                        (LocalConfiguration.current.screenWidthDp * 0.8).dp,
-                        (LocalConfiguration.current.screenHeightDp * 0.6).dp,
+                        with(LocalDensity.current) {
+                            LocalWindowInfo.current.containerSize.width.toDp()
+                        } * 0.8f,
+                        with(LocalDensity.current) {
+                            LocalWindowInfo.current.containerSize.height.toDp()
+                        } * 0.6f,
                     )
                     .align(Alignment.CenterHorizontally),
             ) {

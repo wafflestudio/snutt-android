@@ -7,6 +7,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
@@ -32,7 +33,7 @@ fun ReviewBottomSheetRoute(
         }
     }
 
-    val url = context.getString(R.string.review_base_url) + "/detail?id=${viewModel.reviewId}&on_back=close"
+    val url = stringResource(R.string.review_base_url) + "/detail?id=${viewModel.reviewId}&on_back=close"
 
     LaunchedEffect(Unit) {
         reviewWebViewContainer.openPage(url)

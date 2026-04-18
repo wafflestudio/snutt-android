@@ -17,6 +17,7 @@
         <ImageView
             android:layout_width="12dp"
             android:layout_height="12dp"
+            android:contentDescription="@null"
             android:src="@drawable/ic_walking_human" />
 
         <TextView
