@@ -93,14 +93,25 @@ description: >
 
 ## 4. 인라인 휴리스틱 체크
 
-도출된 의미 분기가 **0 또는 1개** 이고, 컴포저블이 스킵 경계(recompose 최적화) · 접근성 · 테마/스타일 합성 등
-독립 유지의 정당한 사유가 **없다면**, 해당 컴포저블은 인라인 후보이다. 결과 보고에 "인라인을 검토하라" 는
-경고를 포함한다.
+도출된 의미 분기가 **0 또는 1개** 이고, 동시에 **독립 유지의 정당한 사유가 없다면** 해당 컴포저블은 인라인
+후보이다. 두 조건이 모두 충족될 때만 경고한다.
 
-두 조건이 모두 충족될 때만 경고한다. 하나라도 충족되지 않으면 경고하지 않는다.
+"독립 유지의 정당한 사유" 는 아래 중 하나라도 해당하면 성립한다 (비망라):
 
-배경: `docs/compose-stability-policy.md` 와의 상호작용에 유의. 스킵 경계 목적으로 쪼갠 컴포저블을
-인라인하면 recompose 성능 회귀가 발생할 수 있다.
+- **스킵 경계(recompose 최적화)** — `docs/compose-stability-policy.md` 에 따른 분리. 인라인하면 재계산
+  범위가 넓어져 성능 회귀가 발생할 수 있다.
+- **접근성·테마/스타일 합성** — `CompositionLocalProvider`, 접근성 속성 주입 등 호출부가 신경 쓰지 않아야
+  하는 cross-cutting concern.
+- **외부 host 의 content slot** — `ModalBottomSheet.sheetContent`, `AlertDialog` content, `Scaffold`
+  slot 등 "호출부와 독립적으로 재사용/전달되는 한 덩어리" 로 존재하는 것이 자연스러운 영역.
+- **내부 상태(`remember`)를 소유한 자기완결 편집/입력 플로우** — 시작 상태를 외부에서 받아 확정 시점에만
+  결과를 올려 보내는 편집 다이얼로그/시트 내용물, form 섹션 등. 호출부 입장에서 한 덩어리 UX 로 인식되므로
+  인라인 대상이 아니다.
+- **호출부가 한 덩어리로 인식하는 섹션** — 네비게이션 헤더, 폼 섹션, 리스트 아이템 등 이름이 곧 의도를
+  전달하는 경계. 분기 수와 무관하게 가독성·재사용성 측면에서 유지 가치가 있다.
+
+위 사유가 하나라도 해당하면 유지 판단이다. 어디에도 해당하지 않고 분기가 0~1개일 때만 결과 보고에
+"인라인을 검토하라" 는 경고를 포함한다.
 
 ---
 
@@ -126,7 +137,7 @@ import com.android.tools.screenshot.PreviewTest
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 
 @PreviewTest
-@Preview(showBackground = true, widthDp = 360)
+@Preview(showBackground = true, widthDp = 360, locale = "ko")
 @Composable
 fun <ComponentName>_<분기식별자1>() {
     <ComponentName>(
@@ -135,7 +146,7 @@ fun <ComponentName>_<분기식별자1>() {
 }
 
 @PreviewTest
-@Preview(showBackground = true, widthDp = 360)
+@Preview(showBackground = true, widthDp = 360, locale = "ko")
 @Composable
 fun <ComponentName>_<분기식별자2>() { ... }
 ```
@@ -144,7 +155,9 @@ fun <ComponentName>_<분기식별자2>() { ... }
   top-level public 함수만 preview 로 discover 한다. `private` 로 두면 "discovered no tests" 로 실행 단계에서
   조용히 누락된다.
 - 람다 파라미터는 `{}` 로 무력화한다. 실제 동작은 screenshot test 의 관심사가 아니다.
-- `@Preview` 옵션: 기본 `showBackground = true`, `widthDp = 360`. 컴포넌트 특성에 따라 조정 가능.
+- `@Preview` 옵션: 기본 `showBackground = true`, `widthDp = 360`, `locale = "ko"`. locale 은 prod 주
+  사용 언어에 맞춰 고정한다. 다국어 회귀를 별도로 방어할 필요가 생긴 컴포넌트에 한해 개별 preview 에서
+  locale 을 오버라이드한다.
 - 멀티 컨피그 (`@PreviewLightDark`, `@PreviewFontScale`, `@PreviewScreenSizes`) 는 기본 **적용하지 않는다.**
   다크모드/폰트스케일 등에서 회귀가 잦은 것이 확인된 핵심 컴포넌트에만 선별 적용한다.
 
@@ -212,6 +225,11 @@ fun <ComponentName>_<분기식별자2>() { ... }
 ```
 
 alpha14 에서는 골든 갱신 태스크 이름이 `update*` 이다 (구버전의 `record*` 아님).
+
+**골든 파일명에 preview config hash 가 들어간다.** `@Preview` 의 옵션(`locale`, `widthDp` 등) 이 변경되면
+파일명 hash 가 바뀌어 이전 골든이 고아(orphan) 가 된다. `update*` 는 새 골든을 추가할 뿐 이전 파일을 지우지
+않으므로, 옵션을 바꾼 뒤에는 `find app/src/screenshotTestStagingDebug/reference -name "*_<이전hash>_0.png"
+-delete` 로 수동 정리한다. 컴포저블 이름·함수명 변경 시에도 동일.
 
 이 스킬은 기본적으로 빌드까지 돌리지 않는다 (변경 단위가 작을 때 과한 비용). 사용자가 명시적으로 요청하거나
 변경 범위가 클 때 실행한다.
