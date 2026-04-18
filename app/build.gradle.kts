@@ -117,6 +117,14 @@ android {
     }
 }
 
+composeCompiler {
+    if (project.findProperty("composeCompilerReports") == "true") {
+        val reportsDir = layout.buildDirectory.dir("compose_compiler")
+        reportsDestination = reportsDir
+        metricsDestination = reportsDir
+    }
+}
+
 dependencies {
     // Testing
     testImplementation(libs.junit)
