@@ -1,7 +1,7 @@
 package com.wafflestudio.snutt2.feature.login
 
 import android.content.Intent
-import android.net.Uri
+import androidx.core.net.toUri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -224,7 +224,7 @@ private fun SignUpScreen(
                             textDecoration = TextDecoration.Underline,
                             modifier = Modifier.clicks {
                                 val termsPageUrl = apiServer + termsPath
-                                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(termsPageUrl)))
+                                context.startActivity(Intent(Intent.ACTION_VIEW, termsPageUrl.toUri()))
                             },
                         )
                         Text(text = stringResource(id = R.string.sign_up_terms_3), style = SNUTTTypography.body2)

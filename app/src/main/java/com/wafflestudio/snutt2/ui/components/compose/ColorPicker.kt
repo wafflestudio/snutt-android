@@ -60,6 +60,8 @@ import androidx.core.graphics.toRect
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.toColorInt
 import com.wafflestudio.snutt2.ui.theme.onSurfaceVariant
 import android.graphics.Color as AndroidColor
 
@@ -81,7 +83,7 @@ fun ColorPicker(
     }
     val setHsvWithHexCode = {
         try {
-            hsv = colorToHsv(Color(AndroidColor.parseColor(hexCode)))
+            hsv = colorToHsv(Color(hexCode.toColorInt()))
             onColorChanged(Color.hsv(hsv.first, hsv.second, hsv.third))
         } catch (e: Exception) {
             hexCode = hsvToString(hsv)
@@ -229,12 +231,7 @@ fun HueBackground(
     Canvas(
         modifier = modifier,
     ) {
-        val bitmap =
-            Bitmap.createBitmap(
-                size.width.toInt(),
-                size.height.toInt(),
-                Bitmap.Config.ARGB_8888,
-            )
+        val bitmap = createBitmap(size.width.toInt(), size.height.toInt())
         val hueCanvas = Canvas(bitmap)
         val huePanel = RectF(0f, 0f, bitmap.width.toFloat(), bitmap.height.toFloat())
         val hueColors = IntArray(huePanel.width().toInt()) {
@@ -321,12 +318,7 @@ fun SatValBackground(
         // TODO: hue가 바뀌면 전부 다시 그려야 함. 최적화?
         modifier = modifier,
     ) {
-        val bitmap =
-            Bitmap.createBitmap(
-                size.width.toInt(),
-                size.height.toInt(),
-                Bitmap.Config.ARGB_8888,
-            )
+        val bitmap = createBitmap(size.width.toInt(), size.height.toInt())
         val canvas = Canvas(bitmap)
         val satValPanel = RectF(0f, 0f, bitmap.width.toFloat(), bitmap.height.toFloat())
         val rgb = AndroidColor.HSVToColor(floatArrayOf(hue, 1f, 1f))

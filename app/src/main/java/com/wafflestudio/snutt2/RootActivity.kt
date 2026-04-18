@@ -1,7 +1,7 @@
 package com.wafflestudio.snutt2
 
 import android.Manifest
-import android.net.Uri
+import androidx.core.net.toUri
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -200,7 +200,7 @@ class RootActivity : AppCompatActivity() {
     // 이를 Jetpack Navigation 이 딥링크로 인식하고 navigate 할 수 있도록 intent.data 로 넣어준다.
     private fun parseDeeplinkExtra() {
         intent.extras?.getString(URL_SCHEME)?.let {
-            intent.data = Uri.parse(it)
+            intent.data = it.toUri()
         }
     }
 

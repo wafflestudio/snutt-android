@@ -2,7 +2,7 @@ package com.wafflestudio.snutt2.ui.components.compose.embed_map
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
+import androidx.core.net.toUri
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.CameraUpdate
@@ -55,14 +55,12 @@ object EmbedMapUtils {
         context.startActivity(
             Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse(
-                    "nmap://place?lat=${building.coordinate.latitude}&lng=${building.coordinate.longitude}&name=${
-                    URLEncoder.encode(
-                        building.buildingNameKor,
-                        StandardCharsets.UTF_8.toString(),
-                    )
-                    }&appname=com.wafflestudio.snutt2",
-                ),
+                "nmap://place?lat=${building.coordinate.latitude}&lng=${building.coordinate.longitude}&name=${
+                URLEncoder.encode(
+                    building.buildingNameKor,
+                    StandardCharsets.UTF_8.toString(),
+                )
+                }&appname=com.wafflestudio.snutt2".toUri(),
             ),
         )
     }
@@ -71,7 +69,7 @@ object EmbedMapUtils {
         context.startActivity(
             Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse("kakaomap://look?p=${building.coordinate.latitude},${building.coordinate.longitude}"),
+                "kakaomap://look?p=${building.coordinate.latitude},${building.coordinate.longitude}".toUri(),
             ),
         )
     }

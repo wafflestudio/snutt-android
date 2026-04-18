@@ -30,7 +30,7 @@
         errorLine2="                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/com/wafflestudio/snutt2/TimetableWidgetProvider.kt"
-            line="69"
+            line="70"
             column="51"/>
     </issue>
 
@@ -661,127 +661,6 @@
         message="Missing the following drawables in `drawable-hdpi`: ic_alarm_default.png, ic_setting_selected.png, ic_setting_unselected.png, img_reviews_coming_soon.png, theme_preview_autumn.png... (5 more)">
         <location
             file="src/main/res/drawable-hdpi"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `String.toColorInt` instead?"
-        errorLine1="            hsv = colorToHsv(Color(AndroidColor.parseColor(hexCode)))"
-        errorLine2="                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/wafflestudio/snutt2/ui/components/compose/ColorPicker.kt"
-            line="84"
-            column="36"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX function `createBitmap` instead?"
-        errorLine1="            Bitmap.createBitmap("
-        errorLine2="            ^">
-        <location
-            file="src/main/java/com/wafflestudio/snutt2/ui/components/compose/ColorPicker.kt"
-            line="233"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX function `createBitmap` instead?"
-        errorLine1="            Bitmap.createBitmap("
-        errorLine2="            ^">
-        <location
-            file="src/main/java/com/wafflestudio/snutt2/ui/components/compose/ColorPicker.kt"
-            line="325"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `String.toUri` instead?"
-        errorLine1="                Uri.parse("
-        errorLine2="                ^">
-        <location
-            file="src/main/java/com/wafflestudio/snutt2/ui/components/compose/embed_map/EmbedMapUtils.kt"
-            line="58"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `String.toUri` instead?"
-        errorLine1="                Uri.parse(&quot;kakaomap://look?p=${building.coordinate.latitude},${building.coordinate.longitude}&quot;),"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/wafflestudio/snutt2/ui/components/compose/embed_map/EmbedMapUtils.kt"
-            line="74"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `String.toUri` instead?"
-        errorLine1="            intent.data = Uri.parse(it)"
-        errorLine2="                          ~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/wafflestudio/snutt2/RootActivity.kt"
-            line="203"
-            column="27"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `String.toUri` instead?"
-        errorLine1="            intent.data = Uri.parse(it)"
-        errorLine2="                          ~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/wafflestudio/snutt2/RootActivity.kt"
-            line="203"
-            column="27"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX function `createBitmap` instead?"
-        errorLine1="        Bitmap.createBitmap("
-        errorLine2="        ^">
-        <location
-            file="src/main/java/com/wafflestudio/snutt2/feature/home/drawer/ScreenshotUtil.kt"
-            line="37"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `String.toUri` instead?"
-        errorLine1="                                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(termsPageUrl)))"
-        errorLine2="                                                                                 ~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/wafflestudio/snutt2/feature/login/SignUpPage.kt"
-            line="227"
-            column="82"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX function `createBitmap` instead?"
-        errorLine1="            val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)"
-        errorLine2="                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/wafflestudio/snutt2/TimetableWidgetProvider.kt"
-            line="127"
-            column="26"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `Bitmap.scale` instead?"
-        errorLine1="            val resizedBitmap = Bitmap.createScaledBitmap(bitmap, (width / scale).toInt(), (height / scale).toInt(), false)"
-        errorLine2="                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/wafflestudio/snutt2/TimetableWidgetProvider.kt"
-            line="134"
-            column="33"/>
     </issue>
 
     <issue

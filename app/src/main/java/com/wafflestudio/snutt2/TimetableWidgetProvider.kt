@@ -6,8 +6,9 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.Canvas
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.scale
 import android.os.Build
 import android.os.Bundle
 import android.util.SizeF
@@ -124,14 +125,14 @@ TimetableWidgetProvider : AppWidgetProvider() {
             tableView.lectures = table.lectures
             tableView.trimParam = tableDisplayRepository.tableTrimParam.value
 
-            val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+            val bitmap = createBitmap(width, height)
             val canvas = Canvas(bitmap)
 
             tableView.measure(width, height)
             tableView.layout(0, 0, width, height)
             tableView.draw(canvas)
 
-            val resizedBitmap = Bitmap.createScaledBitmap(bitmap, (width / scale).toInt(), (height / scale).toInt(), false)
+            val resizedBitmap = bitmap.scale((width / scale).toInt(), (height / scale).toInt(), false)
 
             views.setViewVisibility(R.id.placeholder, View.GONE)
             views.setViewVisibility(R.id.table, View.VISIBLE)
