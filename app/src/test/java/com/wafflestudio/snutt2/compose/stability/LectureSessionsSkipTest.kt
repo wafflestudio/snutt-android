@@ -3,7 +3,6 @@ package com.wafflestudio.snutt2.compose.stability
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.junit4.createComposeRule
 import com.wafflestudio.snutt2.domain.model.LectureSession
@@ -76,16 +75,6 @@ class LectureSessionsSkipTest {
             place = "",
         ),
     )
-}
-
-@Stable
-private class RecomposeCounter {
-    var count = 0
-        private set
-
-    fun increment() {
-        count++
-    }
 }
 
 @Composable
