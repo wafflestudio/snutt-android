@@ -13,24 +13,13 @@
     </issue>
 
     <issue
-        id="UnusedAttribute"
-        message="Attribute `enableOnBackInvokedCallback` is only used in API level 33 and higher (current min is 24)"
-        errorLine1="        android:enableOnBackInvokedCallback=&quot;false&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="12"
-            column="9"/>
-    </issue>
-
-    <issue
         id="AppLinkUrlError"
         message="Scheme matching is case sensitive and should only use lower-case characters"
         errorLine1="                    android:scheme=&quot;@string/kakao_native_app_key_kakao&quot; />"
         errorLine2="                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/AndroidManifest.xml"
-            line="53"
+            line="55"
             column="37"/>
     </issue>
 
@@ -41,7 +30,7 @@
         errorLine2="                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/AndroidManifest.xml"
-            line="70"
+            line="72"
             column="37"/>
     </issue>
 
@@ -52,7 +41,7 @@
         errorLine2="     ~~~~~~~~~~~">
         <location
             file="src/main/AndroidManifest.xml"
-            line="9"
+            line="10"
             column="6"/>
     </issue>
 
@@ -195,7 +184,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/AndroidManifest.xml"
-            line="37"
+            line="39"
             column="13"/>
     </issue>
 
@@ -338,7 +327,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/AndroidManifest.xml"
-            line="37"
+            line="39"
             column="13"/>
     </issue>
 
