@@ -46,36 +46,29 @@ enum class ThemeMode(@param:StringRes val labelResId: Int) {
     DARK(R.string.theme_mode_dark),
     LIGHT(R.string.theme_mode_light),
     AUTO(R.string.theme_mode_auto),
-    ;
 }
 
 val LocalThemeState = compositionLocalOf { ThemeMode.AUTO }
 
 @Composable
-fun isDarkMode(): Boolean {
-    return when (LocalThemeState.current) {
-        ThemeMode.DARK -> true
-        ThemeMode.LIGHT -> false
-        ThemeMode.AUTO -> isSystemInDarkTheme()
-    }
+fun isDarkMode(): Boolean = when (LocalThemeState.current) {
+    ThemeMode.DARK -> true
+    ThemeMode.LIGHT -> false
+    ThemeMode.AUTO -> isSystemInDarkTheme()
 }
 
 fun isDarkMode(
     context: Context,
     theme: ThemeMode,
-): Boolean {
-    return when (theme) {
-        ThemeMode.AUTO -> isSystemDarkMode(context)
-        else -> (theme == ThemeMode.DARK)
-    }
+): Boolean = when (theme) {
+    ThemeMode.AUTO -> isSystemDarkMode(context)
+    else -> (theme == ThemeMode.DARK)
 }
 
-fun isSystemDarkMode(context: Context): Boolean {
-    return when (context.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
-        Configuration.UI_MODE_NIGHT_YES -> true
-        Configuration.UI_MODE_NIGHT_NO -> false
-        else -> false
-    }
+fun isSystemDarkMode(context: Context): Boolean = when (context.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+    Configuration.UI_MODE_NIGHT_YES -> true
+    Configuration.UI_MODE_NIGHT_NO -> false
+    else -> false
 }
 
 @Composable

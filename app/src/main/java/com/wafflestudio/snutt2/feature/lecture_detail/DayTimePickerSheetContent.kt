@@ -305,9 +305,7 @@ private fun rememberDayList(): List<String> {
  * Picker의 인접한 item끼리 Text에 들어갈 String의 길이가 같으면 드래그할 때 글리치가 생긴다. (원인 불명)
  * 길이가 다르면 문제가 없다. 임시 대처용 함수
  */
-private fun String.tempBlank(a: Int): String {
-    return if (a % 2 == 0) this else " $this "
-}
+private fun String.tempBlank(a: Int): String = if (a % 2 == 0) this else " $this "
 
 // --- Preview ---
 

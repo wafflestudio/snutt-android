@@ -146,4 +146,3 @@ private fun CustomLectureViewModePreview() {
         onReset = {},
     )
 }
-

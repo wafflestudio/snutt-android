@@ -195,7 +195,7 @@ private fun CustomTextOnlySnackBar(content: @Composable () -> Unit) {
         ) {
             content()
         }
-    },) { measurables, constraints ->
+    }) { measurables, constraints ->
         val textPlaceables = ArrayList<Placeable>(measurables.size)
         var firstBaseline = AlignmentLine.Unspecified
         var lastBaseline = AlignmentLine.Unspecified

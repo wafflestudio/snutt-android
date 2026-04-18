@@ -141,9 +141,7 @@ class FakeUserRepository : UserRepository {
     override suspend fun sendCodeToEmail(email: String): Result<Unit> = TODO()
     override suspend fun verifyEmailCode(code: String): Result<Unit> = TODO()
     override suspend fun getAccessTokenByAuthCode(authCode: String, clientId: String, clientSecret: String): Result<String> = TODO()
-    override suspend fun getPushPreferences(): Result<PushPreferences> {
-        return getPushPreferencesResult
-    }
+    override suspend fun getPushPreferences(): Result<PushPreferences> = getPushPreferencesResult
     override suspend fun postPushPreferences(pushPreferences: PushPreferences): Result<Unit> {
         postPushPreferencesCalledWith = pushPreferences
         return postPushPreferencesResult

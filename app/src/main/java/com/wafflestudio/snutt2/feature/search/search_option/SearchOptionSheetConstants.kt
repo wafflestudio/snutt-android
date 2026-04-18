@@ -23,8 +23,10 @@ object SearchOptionSheetConstants {
 
     @ColorInt
     val TimeBlockFgColorDark = "#777777".toColorInt()
+
     @ColorInt
     val TimeBlockBgColorLight = "#B3DADADA".toColorInt()
+
     @ColorInt
     val TimeBlockBgColorDark = "#B3505050".toColorInt()
 }

@@ -16,31 +16,26 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class NotificationRepositoryImpl @Inject constructor(private val api: SNUTTRestApi) :
-    NotificationRepository {
-    override fun getNotificationListStream(): Flow<PagingData<Notification>> {
-        return Pager(
-            config = PagingConfig(
-                pageSize = NOTIFICATIONS_LOAD_PAGE_SIZE,
-                enablePlaceholders = false,
-            ),
-            pagingSourceFactory = { NotificationPagingSource(api) },
-        ).flow.map { pagingData ->
-            pagingData.map { notification ->
-                notification.toDomain()
-            }
+class NotificationRepositoryImpl @Inject constructor(private val api: SNUTTRestApi) : NotificationRepository {
+    override fun getNotificationListStream(): Flow<PagingData<Notification>> = Pager(
+        config = PagingConfig(
+            pageSize = NOTIFICATIONS_LOAD_PAGE_SIZE,
+            enablePlaceholders = false,
+        ),
+        pagingSourceFactory = { NotificationPagingSource(api) },
+    ).flow.map { pagingData ->
+        pagingData.map { notification ->
+            notification.toDomain()
         }
     }
 
     override val notificationCount: MutableStateFlow<Long> = MutableStateFlow(0)
 
-    override suspend fun fetchNotificationCount(): Result<Unit> {
-        return try {
-            notificationCount.value = api._getNotificationCount().count
-            Result.Success(Unit)
-        } catch (e: Exception) {
-            Result.Fail(e.toDomainError())
-        }
+    override suspend fun fetchNotificationCount(): Result<Unit> = try {
+        notificationCount.value = api._getNotificationCount().count
+        Result.Success(Unit)
+    } catch (e: Exception) {
+        Result.Fail(e.toDomainError())
     }
 
     companion object {

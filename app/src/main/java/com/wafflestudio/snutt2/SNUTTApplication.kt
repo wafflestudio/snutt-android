@@ -26,12 +26,10 @@ class SNUTTApplication : Application() {
     }
 
     // targerSDK 34 대응 (https://github.com/joltup/rn-fetch-blob/issues/866#issuecomment-2227436658)
-    override fun registerReceiver(receiver: BroadcastReceiver?, filter: IntentFilter?): Intent? {
-        return if (Build.VERSION.SDK_INT >= 34 && applicationInfo.targetSdkVersion >= 34) {
-            super.registerReceiver(receiver, filter, Context.RECEIVER_EXPORTED)
-        } else {
-            super.registerReceiver(receiver, filter)
-        }
+    override fun registerReceiver(receiver: BroadcastReceiver?, filter: IntentFilter?): Intent? = if (Build.VERSION.SDK_INT >= 34 && applicationInfo.targetSdkVersion >= 34) {
+        super.registerReceiver(receiver, filter, Context.RECEIVER_EXPORTED)
+    } else {
+        super.registerReceiver(receiver, filter)
     }
 
     companion object {

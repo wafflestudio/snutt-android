@@ -29,9 +29,7 @@ class FakeThemeRepository : ThemeRepository {
         private set
 
     // --- 인터페이스 구현 ---
-    override fun getTheme(themeId: String): CustomTheme {
-        return getThemeResult ?: error("getThemeResult not set for themeId=$themeId")
-    }
+    override fun getTheme(themeId: String): CustomTheme = getThemeResult ?: error("getThemeResult not set for themeId=$themeId")
 
     override suspend fun fetchThemes(): Result<Unit> {
         fetchThemesCalled = true

@@ -368,7 +368,10 @@ class SearchViewModel @Inject constructor(
                     ),
                 )
                 val courseBook = tableRepository.currentTable.value?.summary?.courseBook ?: return@launch
-                bookmarkRepository.addBookmark(courseBook, lecture).onFailure { handleSearchError(it); return@launch }
+                bookmarkRepository.addBookmark(courseBook, lecture).onFailure {
+                    handleSearchError(it)
+                    return@launch
+                }
 
                 if (bookmarkRepository.firstBookmarkAlert.value) {
                     bookmarkRepository.setFirstBookmarkAlertShown()
@@ -383,7 +386,10 @@ class SearchViewModel @Inject constructor(
             _uiState.update { it.copy(dialogState = SearchUiState.DialogState.None) }
             val courseBook = tableRepository.currentTable.value?.summary?.courseBook ?: return@launch
             bookmarkRepository.deleteBookmark(courseBook, lecture)
-                .onFailure { handleSearchError(it); return@launch }
+                .onFailure {
+                    handleSearchError(it)
+                    return@launch
+                }
         }
     }
 
@@ -400,7 +406,10 @@ class SearchViewModel @Inject constructor(
                         ),
                     ),
                 )
-                vacancyRepository.addVacancyLecture(lecture).onFailure { handleSearchError(it); return@launch }
+                vacancyRepository.addVacancyLecture(lecture).onFailure {
+                    handleSearchError(it)
+                    return@launch
+                }
                 if (vacancyRepository.firstVacancyAdd.value) {
                     vacancyRepository.setVacancyAdded()
                     _uiEvent.emit(SearchUiEvent.ShowSnackBar(SearchUiEvent.ShowSnackBar.SearchSnackBarEvent.FIRST_VACANCY_ADD))
@@ -412,7 +421,10 @@ class SearchViewModel @Inject constructor(
     fun confirmDeleteVacancy(lecture: SearchedLecture) {
         viewModelScope.launch {
             _uiState.update { it.copy(dialogState = SearchUiState.DialogState.None) }
-            vacancyRepository.removeVacancyLecture(lecture).onFailure { handleSearchError(it); return@launch }
+            vacancyRepository.removeVacancyLecture(lecture).onFailure {
+                handleSearchError(it)
+                return@launch
+            }
         }
     }
 
@@ -423,7 +435,10 @@ class SearchViewModel @Inject constructor(
     fun onToggleLectureContained(lecture: SearchedLecture, contained: Boolean) {
         viewModelScope.launch {
             if (contained) {
-                currentTableLectureRepository.removeLecture(lecture).onFailure { handleSearchError(it); return@launch }
+                currentTableLectureRepository.removeLecture(lecture).onFailure {
+                    handleSearchError(it)
+                    return@launch
+                }
                 onToggleLectureSelection(lecture)
             } else {
                 addLecture(lecture, isForced = false)
@@ -462,7 +477,9 @@ class SearchViewModel @Inject constructor(
                     val bt = current.bottomSheetType
                     if (bt is SearchUiState.BottomSheetType.LectureDetail && bt.lecture.id == lecture.id) {
                         current.copy(bottomSheetType = bt.copy(buildings = buildings))
-                    } else current
+                    } else {
+                        current
+                    }
                 }
             }
     }
@@ -496,12 +513,10 @@ class SearchViewModel @Inject constructor(
 
     // region Private methods
 
-    private fun resolveActionReferrer(): LectureActionReferrer {
-        return if (_uiState.value.bottomSheetType is SearchUiState.BottomSheetType.LectureDetail) {
-            LectureActionReferrer.LectureDetail
-        } else {
-            LectureActionReferrer.Search(_uiState.value.searchTitle)
-        }
+    private fun resolveActionReferrer(): LectureActionReferrer = if (_uiState.value.bottomSheetType is SearchUiState.BottomSheetType.LectureDetail) {
+        LectureActionReferrer.LectureDetail
+    } else {
+        LectureActionReferrer.Search(_uiState.value.searchTitle)
     }
 
     private suspend fun query() {
@@ -566,11 +581,9 @@ class SearchViewModel @Inject constructor(
         allTags: List<SearchTag>,
         selectedTagType: TagType,
         selectedTags: List<SearchTag>,
-    ): List<Selectable<SearchTag>> {
-        return allTags
-            .filter { it.type == selectedTagType }
-            .map { it.toDataWithState(selectedTags.contains(it)) }
-    }
+    ): List<Selectable<SearchTag>> = allTags
+        .filter { it.type == selectedTagType }
+        .map { it.toDataWithState(selectedTags.contains(it)) }
 
     private fun buildRecentDepts(
         recentDepts: List<SearchTag>,
@@ -610,7 +623,7 @@ data class SearchUiState(
     val searchResultListState: SearchResultListState,
     val tagTypes: List<TagType>,
     val selectedTagType: TagType,
-    val allSearchTags: List<SearchTag>,       // 전체 태그 (탭 전환 시 재계산용)
+    val allSearchTags: List<SearchTag>, // 전체 태그 (탭 전환 시 재계산용)
     val searchTags: List<Selectable<SearchTag>>,
     val recentSearchedDepartments: List<Selectable<SearchTag>>,
     val draggedTimeBlock: List<List<Boolean>>,
@@ -627,7 +640,6 @@ data class SearchUiState(
             val referrer: DetailScreenReferrer,
             val buildings: List<Building> = emptyList(),
         ) : BottomSheetType
-
     }
 
     sealed interface DialogState {

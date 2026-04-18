@@ -7,9 +7,7 @@ data class SemesterStatus(
     val current: CourseBook?,
     val next: CourseBook,
 ) {
-    fun isActiveSemester(courseBook: CourseBook): Boolean {
-        return courseBook == current || (current == null && courseBook == next)
-    }
+    fun isActiveSemester(courseBook: CourseBook): Boolean = courseBook == current || (current == null && courseBook == next)
 
     companion object {
         val Default = SemesterStatus(

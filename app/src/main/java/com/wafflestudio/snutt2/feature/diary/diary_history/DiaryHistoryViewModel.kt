@@ -71,22 +71,20 @@ class DiaryHistoryViewModel @Inject constructor(
 
     private fun convertToDiarySummariesByCourseBook(
         courseBookDiarySubmissionsList: List<CourseBookDiarySubmissions>,
-    ): Map<CourseBook, Map<LocalDate, Selectable<List<DiarySummary>>>> {
-        return courseBookDiarySubmissionsList.associate { courseBookDiarySubmissions ->
-            val diarySummariesByDate = courseBookDiarySubmissions.submissions
-                .groupBy { submission ->
-                    submission.date.toLocalDate()
-                }
-                .mapValues { (_, submissionList) ->
-                    Selectable(
-                        item = submissionList,
-                        state = false,
-                    )
-                }
-                .toSortedMap(reverseOrder())
+    ): Map<CourseBook, Map<LocalDate, Selectable<List<DiarySummary>>>> = courseBookDiarySubmissionsList.associate { courseBookDiarySubmissions ->
+        val diarySummariesByDate = courseBookDiarySubmissions.submissions
+            .groupBy { submission ->
+                submission.date.toLocalDate()
+            }
+            .mapValues { (_, submissionList) ->
+                Selectable(
+                    item = submissionList,
+                    state = false,
+                )
+            }
+            .toSortedMap(reverseOrder())
 
-            courseBookDiarySubmissions.courseBook to diarySummariesByDate
-        }
+        courseBookDiarySubmissions.courseBook to diarySummariesByDate
     }
 
     fun selectCourseBook(coursebookIndex: Int) {

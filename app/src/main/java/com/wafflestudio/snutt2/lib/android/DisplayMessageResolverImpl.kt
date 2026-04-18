@@ -17,21 +17,17 @@ import javax.inject.Inject
 class DisplayMessageResolverImpl @Inject constructor(
     @param:ApplicationContext private val context: Context,
 ) : DisplayMessageResolver {
-    override fun getDisplayTitle(error: DomainError): String {
-        return when (error) {
-            is NetworkDisconnect -> context.getString(R.string.error_title_no_network)
-            is Unknown -> error.displayTitle
-            else -> error.displayTitle
-        }
+    override fun getDisplayTitle(error: DomainError): String = when (error) {
+        is NetworkDisconnect -> context.getString(R.string.error_title_no_network)
+        is Unknown -> error.displayTitle
+        else -> error.displayTitle
     }
-    override fun getDisplayMessage(error: DomainError): String {
-        return when (error) {
-            is NetworkDisconnect -> context.getString(R.string.error_no_network)
-            is TimetableLectureNotFound -> context.getString(R.string.deeplink_page_timetable_lecture_page_not_existing_lecture)
-            is BookmarkLectureNotFound -> context.getString(R.string.deeplink_page_timetable_lecture_page_not_existing_bookmark_lecture)
-            is NotSelectedTimetable -> context.getString(R.string.home_drawer_change_theme_unable_alert_message)
-            is Unknown -> error.displayMessage.takeUnless { it.isBlank() } ?: context.getString(R.string.error_unknown)
-            else -> error.displayMessage
-        }
+    override fun getDisplayMessage(error: DomainError): String = when (error) {
+        is NetworkDisconnect -> context.getString(R.string.error_no_network)
+        is TimetableLectureNotFound -> context.getString(R.string.deeplink_page_timetable_lecture_page_not_existing_lecture)
+        is BookmarkLectureNotFound -> context.getString(R.string.deeplink_page_timetable_lecture_page_not_existing_bookmark_lecture)
+        is NotSelectedTimetable -> context.getString(R.string.home_drawer_change_theme_unable_alert_message)
+        is Unknown -> error.displayMessage.takeUnless { it.isBlank() } ?: context.getString(R.string.error_unknown)
+        else -> error.displayMessage
     }
 }

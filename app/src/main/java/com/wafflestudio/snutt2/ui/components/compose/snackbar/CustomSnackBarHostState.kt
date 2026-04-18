@@ -21,19 +21,18 @@ class CustomSnackBarHostState {
         message: String,
         actionLabel: String? = null,
         duration: CustomSnackBarDuration,
-    ): SnackbarResult =
-        mutex.withLock {
-            try {
-                return suspendCancellableCoroutine { continuation ->
-                    currentSnackBarData =
-                        CustomSnackBarStatus.FadeInOrBetween(
-                            CustomSnackBarDataImpl(message, actionLabel, duration, continuation),
-                        )
-                }
-            } finally {
-                currentSnackBarData = CustomSnackBarStatus.FadeOut
+    ): SnackbarResult = mutex.withLock {
+        try {
+            return suspendCancellableCoroutine { continuation ->
+                currentSnackBarData =
+                    CustomSnackBarStatus.FadeInOrBetween(
+                        CustomSnackBarDataImpl(message, actionLabel, duration, continuation),
+                    )
             }
+        } finally {
+            currentSnackBarData = CustomSnackBarStatus.FadeOut
         }
+    }
 
     @Stable
     private class CustomSnackBarDataImpl(

@@ -40,7 +40,6 @@ fun HomeDrawerBottomSheetLayout(
     onClickShare: (tableSummary: TableSummary) -> Unit,
     onClickSetTheme: (tableSummary: TableSummary) -> Unit,
     onClickDeleteTable: (tableSummary: TableSummary) -> Unit,
-
     drawerState: DrawerState,
     onToggleCourseBookDrawerItemExpand: (drawerItemIndex: Int) -> Unit,
     onClickExitIcon: () -> Unit,

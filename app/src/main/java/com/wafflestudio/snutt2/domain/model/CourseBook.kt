@@ -12,7 +12,9 @@ data class CourseBook(
         } else {
             if (semester > other.semester) {
                 return -1
-            } else if (semester < other.semester) return 1
+            } else if (semester < other.semester) {
+                return 1
+            }
         }
         return 0
     }

@@ -27,38 +27,36 @@ import java.time.LocalTime
 
 fun LectureDto.toDomain(): Lecture = if (review != null) toSearchedLecture() else toLocalLecture()
 
-fun LectureDto.toLocalLecture(): LocalLecture {
-    return if (lecture_id != null) {
-        SyllabusLecture(
-            id = id,
-            courseTitle = course_title,
-            lectureSessions = class_time_json.map { it.toLectureSession() },
-            instructor = instructor,
-            credit = credit,
-            remark = remark,
-            classification = classification ?: "",
-            department = department ?: "",
-            academicYear = academic_year ?: "",
-            courseNumber = course_number ?: "",
-            lectureNumber = lecture_number ?: "",
-            category = category ?: "",
-            categoryPre2025 = categoryPre2025 ?: "",
-            quota = quota,
-            freshmanQuota = freshmanQuota ?: 0, // TODO
-            originalLectureId = lecture_id,
-            color = colorDtoToLectureColor(colorIndex.toInt(), color),
-        )
-    } else {
-        CustomLecture(
-            id = id,
-            courseTitle = course_title,
-            lectureSessions = class_time_json.map { it.toLectureSession() },
-            instructor = instructor,
-            credit = credit,
-            remark = remark,
-            color = colorDtoToLectureColor(colorIndex.toInt(), color),
-        )
-    }
+fun LectureDto.toLocalLecture(): LocalLecture = if (lecture_id != null) {
+    SyllabusLecture(
+        id = id,
+        courseTitle = course_title,
+        lectureSessions = class_time_json.map { it.toLectureSession() },
+        instructor = instructor,
+        credit = credit,
+        remark = remark,
+        classification = classification ?: "",
+        department = department ?: "",
+        academicYear = academic_year ?: "",
+        courseNumber = course_number ?: "",
+        lectureNumber = lecture_number ?: "",
+        category = category ?: "",
+        categoryPre2025 = categoryPre2025 ?: "",
+        quota = quota,
+        freshmanQuota = freshmanQuota ?: 0, // TODO
+        originalLectureId = lecture_id,
+        color = colorDtoToLectureColor(colorIndex.toInt(), color),
+    )
+} else {
+    CustomLecture(
+        id = id,
+        courseTitle = course_title,
+        lectureSessions = class_time_json.map { it.toLectureSession() },
+        instructor = instructor,
+        credit = credit,
+        remark = remark,
+        color = colorDtoToLectureColor(colorIndex.toInt(), color),
+    )
 }
 
 fun LectureDto.toSearchedLecture(): SearchedLecture = SearchedLecture(
@@ -147,41 +145,38 @@ fun SearchedLecture.toLectureDto(): LectureDto = LectureDto(
 
 // region TimetableLectureDto ↔ Lecture
 
-fun TimetableLectureDto.toDomain(): Lecture =
-    if (snuttEvLecture != null) toSearchedLecture() else toLocalLecture()
+fun TimetableLectureDto.toDomain(): Lecture = if (snuttEvLecture != null) toSearchedLecture() else toLocalLecture()
 
-fun TimetableLectureDto.toLocalLecture(): LocalLecture {
-    return if (lectureId != null) {
-        SyllabusLecture(
-            id = id ?: "",
-            courseTitle = courseTitle,
-            lectureSessions = classPlaceAndTimes.map { it.toLectureSession(id ?: "") },
-            instructor = instructor ?: "",
-            credit = credit ?: 0,
-            remark = remark ?: "",
-            classification = classification ?: "",
-            department = department ?: "",
-            academicYear = academicYear ?: "",
-            courseNumber = courseNumber ?: "",
-            lectureNumber = lectureNumber ?: "",
-            category = category ?: "",
-            categoryPre2025 = categoryPre2025 ?: "",
-            quota = quota?.toLong() ?: 0,
-            freshmanQuota = freshmanQuota?.toLong() ?: 0,
-            originalLectureId = lectureId,
-            color = colorSetDtoToLectureColor(colorIndex, color),
-        )
-    } else {
-        CustomLecture(
-            id = id ?: "",
-            courseTitle = courseTitle,
-            lectureSessions = classPlaceAndTimes.map { it.toLectureSession(id ?: "") },
-            instructor = instructor ?: "",
-            credit = credit ?: 0,
-            remark = remark ?: "",
-            color = colorSetDtoToLectureColor(colorIndex, color),
-        )
-    }
+fun TimetableLectureDto.toLocalLecture(): LocalLecture = if (lectureId != null) {
+    SyllabusLecture(
+        id = id ?: "",
+        courseTitle = courseTitle,
+        lectureSessions = classPlaceAndTimes.map { it.toLectureSession(id ?: "") },
+        instructor = instructor ?: "",
+        credit = credit ?: 0,
+        remark = remark ?: "",
+        classification = classification ?: "",
+        department = department ?: "",
+        academicYear = academicYear ?: "",
+        courseNumber = courseNumber ?: "",
+        lectureNumber = lectureNumber ?: "",
+        category = category ?: "",
+        categoryPre2025 = categoryPre2025 ?: "",
+        quota = quota?.toLong() ?: 0,
+        freshmanQuota = freshmanQuota?.toLong() ?: 0,
+        originalLectureId = lectureId,
+        color = colorSetDtoToLectureColor(colorIndex, color),
+    )
+} else {
+    CustomLecture(
+        id = id ?: "",
+        courseTitle = courseTitle,
+        lectureSessions = classPlaceAndTimes.map { it.toLectureSession(id ?: "") },
+        instructor = instructor ?: "",
+        credit = credit ?: 0,
+        remark = remark ?: "",
+        color = colorSetDtoToLectureColor(colorIndex, color),
+    )
 }
 
 fun TimetableLectureDto.toSearchedLecture(): SearchedLecture = SearchedLecture(
@@ -316,28 +311,25 @@ private fun LectureSession.toClassPlaceAndTimeDto(): ClassPlaceAndTimeDto = Clas
     endMinute = endTime.hour * 60 + endTime.minute,
 )
 
-private fun colorDtoToLectureColor(colorIndex: Int, color: ColorDto): LectureColor =
-    if (colorIndex == 0) {
-        LectureColor.Custom(
-            foreground = color.fgRaw?.let { parseHexColor(it) } ?: 0xFFFFFFFF.toInt(),
-            background = color.bgRaw?.let { parseHexColor(it) } ?: 0xFFFFFFFF.toInt(),
-        )
-    } else {
-        LectureColor.BuiltIn(colorIndex = colorIndex - 1)
-    }
+private fun colorDtoToLectureColor(colorIndex: Int, color: ColorDto): LectureColor = if (colorIndex == 0) {
+    LectureColor.Custom(
+        foreground = color.fgRaw?.let { parseHexColor(it) } ?: 0xFFFFFFFF.toInt(),
+        background = color.bgRaw?.let { parseHexColor(it) } ?: 0xFFFFFFFF.toInt(),
+    )
+} else {
+    LectureColor.BuiltIn(colorIndex = colorIndex - 1)
+}
 
-private fun colorSetDtoToLectureColor(colorIndex: Int, color: ColorSetDto?): LectureColor =
-    if (colorIndex == 0) {
-        LectureColor.Custom(
-            foreground = color?.fg?.let { parseHexColor(it) } ?: 0xFFFFFFFF.toInt(),
-            background = color?.bg?.let { parseHexColor(it) } ?: 0xFFFFFFFF.toInt(),
-        )
-    } else {
-        LectureColor.BuiltIn(colorIndex = colorIndex - 1)
-    }
+private fun colorSetDtoToLectureColor(colorIndex: Int, color: ColorSetDto?): LectureColor = if (colorIndex == 0) {
+    LectureColor.Custom(
+        foreground = color?.fg?.let { parseHexColor(it) } ?: 0xFFFFFFFF.toInt(),
+        background = color?.bg?.let { parseHexColor(it) } ?: 0xFFFFFFFF.toInt(),
+    )
+} else {
+    LectureColor.BuiltIn(colorIndex = colorIndex - 1)
+}
 
-private fun lectureColorToColorIndex(color: LectureColor): Int =
-    ((color as? LectureColor.BuiltIn)?.colorIndex ?: -1) + 1
+private fun lectureColorToColorIndex(color: LectureColor): Int = ((color as? LectureColor.BuiltIn)?.colorIndex ?: -1) + 1
 
 private fun lectureColorToColorDto(color: LectureColor): ColorDto = when (color) {
     is LectureColor.Custom -> ColorDto(fgColor = color.foreground, bgColor = color.background)

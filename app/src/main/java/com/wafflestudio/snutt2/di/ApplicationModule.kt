@@ -21,21 +21,15 @@ object ApplicationModule {
 
     @Provides
     @Singleton
-    fun provideMoshi(): Moshi {
-        return Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
-    }
+    fun provideMoshi(): Moshi = Moshi.Builder()
+        .add(KotlinJsonAdapterFactory())
+        .build()
 
     @Provides
     @Singleton
-    fun provideCoroutineScope(): CoroutineScope {
-        return CoroutineScope(SupervisorJob() + Dispatchers.Default)
-    }
+    fun provideCoroutineScope(): CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     @Provides
     @Named("AppScheme")
-    fun provideAppScheme(@ApplicationContext context: Context): String {
-        return context.getString(R.string.scheme)
-    }
+    fun provideAppScheme(@ApplicationContext context: Context): String = context.getString(R.string.scheme)
 }

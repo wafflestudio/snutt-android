@@ -56,10 +56,10 @@ object EmbedMapUtils {
             Intent(
                 Intent.ACTION_VIEW,
                 "nmap://place?lat=${building.coordinate.latitude}&lng=${building.coordinate.longitude}&name=${
-                URLEncoder.encode(
-                    building.buildingNameKor,
-                    StandardCharsets.UTF_8.toString(),
-                )
+                    URLEncoder.encode(
+                        building.buildingNameKor,
+                        StandardCharsets.UTF_8.toString(),
+                    )
                 }&appname=com.wafflestudio.snutt2".toUri(),
             ),
         )

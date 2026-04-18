@@ -148,7 +148,8 @@ class RootActivity : AppCompatActivity() {
                 // FIXME: 궁극적으로는 ApiOnError를 제거해야 한다.
                 lifecycleScope.launch {
                     rootViewModel.accessToken.collect { token ->
-                        if (token.isEmpty() && navController.currentDestination?.hasRoute(
+                        if (token.isEmpty() &&
+                            navController.currentDestination?.hasRoute(
                                 NavigationDestination.Tutorial::class,
                             ) == false
                         ) {

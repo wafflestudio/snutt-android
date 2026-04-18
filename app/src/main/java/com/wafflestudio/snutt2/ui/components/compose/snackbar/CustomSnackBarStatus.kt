@@ -15,18 +15,16 @@ fun CustomSnackBarStatus.dismiss() {
     }
 }
 
-fun CustomSnackBarStatus.copy(data: CustomSnackBarData? = null): CustomSnackBarStatus {
-    return if (data == null) {
-        this
-    } else {
-        when (this) {
-            is CustomSnackBarStatus.FadeInOrBetween -> {
-                CustomSnackBarStatus.FadeInOrBetween(data = data)
-            }
+fun CustomSnackBarStatus.copy(data: CustomSnackBarData? = null): CustomSnackBarStatus = if (data == null) {
+    this
+} else {
+    when (this) {
+        is CustomSnackBarStatus.FadeInOrBetween -> {
+            CustomSnackBarStatus.FadeInOrBetween(data = data)
+        }
 
-            else -> {
-                this
-            }
+        else -> {
+            this
         }
     }
 }

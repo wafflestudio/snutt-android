@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.ui.components.compose
 
-import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.ComposeShader
 import android.graphics.LinearGradient
@@ -245,7 +244,8 @@ fun HueBackground(
         }
         Paint().let { linePaint ->
             linePaint.strokeWidth = 0f
-            hueColors.forEachIndexed { idx, col -> // 배열에 저장된 색을 x좌표 0부터 huePanel.width()까지 1픽셀씩 그림
+            hueColors.forEachIndexed { idx, col ->
+                // 배열에 저장된 색을 x좌표 0부터 huePanel.width()까지 1픽셀씩 그림
                 linePaint.color = col
                 hueCanvas.drawLine(idx.toFloat(), 0f, idx.toFloat(), huePanel.bottom, linePaint)
             }
@@ -384,9 +384,7 @@ private fun colorToHsv(color: Color): Triple<Float, Float, Float> {
     return Triple(temp[0], temp[1], temp[2])
 }
 
-private fun hsvToString(hsv: Triple<Float, Float, Float>): String {
-    return String.format(
-        "#%06X",
-        0xFFFFFF and Color.hsv(hsv.first, hsv.second, hsv.third).toArgb(),
-    )
-}
+private fun hsvToString(hsv: Triple<Float, Float, Float>): String = String.format(
+    "#%06X",
+    0xFFFFFF and Color.hsv(hsv.first, hsv.second, hsv.third).toArgb(),
+)

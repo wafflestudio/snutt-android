@@ -36,25 +36,23 @@ class LectureSearchRepositoryImpl @Inject constructor(
         tags: List<SearchTag>,
         times: List<SearchTime>?,
         timesToExclude: List<SearchTime>?,
-    ): Flow<PagingData<SearchedLecture>> {
-        return Pager(
-            config = PagingConfig(
-                pageSize = LECTURES_LOAD_PAGE_SIZE,
-                enablePlaceholders = false,
-            ),
-            pagingSourceFactory = {
-                LectureSearchPagingSource(
-                    api,
-                    year = courseBook.year,
-                    semester = courseBook.semester,
-                    title = title,
-                    tags = tags.map { it.toDto() },
-                    times = times?.map { it.toDto() },
-                    timesToExclude = timesToExclude?.map { it.toDto() },
-                )
-            },
-        ).flow.map { pagingData -> pagingData.map { it.toSearchedLecture() } }
-    }
+    ): Flow<PagingData<SearchedLecture>> = Pager(
+        config = PagingConfig(
+            pageSize = LECTURES_LOAD_PAGE_SIZE,
+            enablePlaceholders = false,
+        ),
+        pagingSourceFactory = {
+            LectureSearchPagingSource(
+                api,
+                year = courseBook.year,
+                semester = courseBook.semester,
+                title = title,
+                tags = tags.map { it.toDto() },
+                times = times?.map { it.toDto() },
+                timesToExclude = timesToExclude?.map { it.toDto() },
+            )
+        },
+    ).flow.map { pagingData -> pagingData.map { it.toSearchedLecture() } }
 
     override suspend fun getSearchTags(courseBook: CourseBook): List<SearchTag> {
         val response = api._getTagList(courseBook.year.toInt(), courseBook.semester.toInt())

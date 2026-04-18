@@ -28,9 +28,7 @@ class FakeBookmarkRepository : BookmarkRepository {
         private set
 
     // --- 인터페이스 구현 ---
-    override suspend fun fetchBookmarks(courseBook: CourseBook): Result<List<SearchedLecture>> {
-        return fetchBookmarksResult
-    }
+    override suspend fun fetchBookmarks(courseBook: CourseBook): Result<List<SearchedLecture>> = fetchBookmarksResult
 
     override suspend fun addBookmark(courseBook: CourseBook, lecture: Lecture): Result<Unit> {
         addBookmarkCalledWith = courseBook to lecture
@@ -47,6 +45,5 @@ class FakeBookmarkRepository : BookmarkRepository {
     }
 
     // --- 미사용 메서드 ---
-    override suspend fun isLectureBookmarked(courseBook: CourseBook, lecture: Lecture): Result<Boolean> =
-        TODO("Not used in this test")
+    override suspend fun isLectureBookmarked(courseBook: CourseBook, lecture: Lecture): Result<Boolean> = TODO("Not used in this test")
 }

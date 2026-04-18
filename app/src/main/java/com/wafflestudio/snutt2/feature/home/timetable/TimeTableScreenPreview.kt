@@ -71,4 +71,3 @@ private fun TimeTableScreenAllBadgesPreview() {
         onVisitSessionlessLectureList = {},
     )
 }
-

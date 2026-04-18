@@ -27,4 +27,3 @@ sealed class HomeItem {
         }
     }
 }
-

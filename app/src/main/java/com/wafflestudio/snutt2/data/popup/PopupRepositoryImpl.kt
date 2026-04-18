@@ -39,35 +39,31 @@ class PopupRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun closePopupWithHiddenDays(): Result<Unit> {
-        return try {
-            val popup = _popups.value?.firstOrNull()
-            if (popup != null) {
-                val expiredDay: Long = popup.hideDays?.let { hideDays ->
-                    System.currentTimeMillis() + TimeUnit.DAYS.toMillis(hideDays.toLong())
-                } ?: INFINITE_LONG_MILLIS
+    override suspend fun closePopupWithHiddenDays(): Result<Unit> = try {
+        val popup = _popups.value?.firstOrNull()
+        if (popup != null) {
+            val expiredDay: Long = popup.hideDays?.let { hideDays ->
+                System.currentTimeMillis() + TimeUnit.DAYS.toMillis(hideDays.toLong())
+            } ?: INFINITE_LONG_MILLIS
 
-                storage.shownPopupIdsAndTimestamp.update(
-                    storage.shownPopupIdsAndTimestamp.get()
-                        .toMutableMap()
-                        .also { it[popup.key] = expiredDay },
-                )
+            storage.shownPopupIdsAndTimestamp.update(
+                storage.shownPopupIdsAndTimestamp.get()
+                    .toMutableMap()
+                    .also { it[popup.key] = expiredDay },
+            )
 
-                _popups.value = _popups.value?.drop(1)
-            }
-            Result.Success(Unit)
-        } catch (e: Exception) {
-            Result.Fail(e.toDomainError())
+            _popups.value = _popups.value?.drop(1)
         }
+        Result.Success(Unit)
+    } catch (e: Exception) {
+        Result.Fail(e.toDomainError())
     }
 
-    override suspend fun closePopup(): Result<Unit> {
-        return try {
-            _popups.value = _popups.value?.drop(1)
-            Result.Success(Unit)
-        } catch (e: Exception) {
-            Result.Fail(e.toDomainError())
-        }
+    override suspend fun closePopup(): Result<Unit> = try {
+        _popups.value = _popups.value?.drop(1)
+        Result.Success(Unit)
+    } catch (e: Exception) {
+        Result.Fail(e.toDomainError())
     }
 
     companion object {

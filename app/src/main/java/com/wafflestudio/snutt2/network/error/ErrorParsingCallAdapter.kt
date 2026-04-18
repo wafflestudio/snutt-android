@@ -14,9 +14,7 @@ class ErrorParsingCallAdapter<R, T : Any>(
 ) : CallAdapter<R, T> {
     override fun responseType(): Type = delegate.responseType()
 
-    override fun adapt(call: Call<R>): T {
-        return delegate.adapt(ErrorParsingCall(call, serializer))
-    }
+    override fun adapt(call: Call<R>): T = delegate.adapt(ErrorParsingCall(call, serializer))
 }
 
 private class ErrorParsingCall<T>(

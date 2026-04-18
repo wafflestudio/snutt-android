@@ -25,9 +25,7 @@ class FakeVacancyRepository : VacancyRepository {
         private set
 
     // --- 인터페이스 구현 ---
-    override suspend fun fetchVacancyLectures(): Result<Unit> {
-        return fetchVacancyLecturesResult
-    }
+    override suspend fun fetchVacancyLectures(): Result<Unit> = fetchVacancyLecturesResult
 
     override suspend fun removeVacancyLecture(lecture: Lecture): Result<Unit> {
         removeVacancyLectureCalledWith.add(lecture)

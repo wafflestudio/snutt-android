@@ -62,21 +62,15 @@ class LectureSearchPagingSource(
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Long, LectureDto>): Long? {
-        return state.anchorPosition?.let { anchorPosition ->
-            state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
-                ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
-        }
+    override fun getRefreshKey(state: PagingState<Long, LectureDto>): Long? = state.anchorPosition?.let { anchorPosition ->
+        state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
+            ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
     }
 
-    private fun List<TagDto>.extractTagString(type: TagType): List<String> {
-        return filter { it.type == type }.map { it.name }
-    }
+    private fun List<TagDto>.extractTagString(type: TagType): List<String> = filter { it.type == type }.map { it.name }
 
     // FIXME: 서버 인터페이스 수정 필요, 클라단에서 불필요한 컨버팅으로 보임
-    private fun String.toCreditNumber(): Long {
-        return substring(0, length - 2).toLong()
-    }
+    private fun String.toCreditNumber(): Long = substring(0, length - 2).toLong()
 
     companion object {
         const val LECTURE_SEARCH_STARTING_PAGE_INDEX: Long = 0

@@ -32,9 +32,16 @@ sealed interface VacancyError : DomainError
 sealed interface AddLectureError : DomainError
 
 data class LectureOverlap(override val displayTitle: String, override val displayMessage: String) : AddLectureError
-data class InvalidId(override val displayTitle: String, override val displayMessage: String) : SignupError, AddLocalIdError
-data class InvalidPassword(override val displayTitle: String, override val displayMessage: String) : SignupError, AddLocalIdError, ChangePasswordError
-data class DuplicateId(override val displayTitle: String, override val displayMessage: String) : SignupError, AddLocalIdError
+data class InvalidId(override val displayTitle: String, override val displayMessage: String) :
+    SignupError,
+    AddLocalIdError
+data class InvalidPassword(override val displayTitle: String, override val displayMessage: String) :
+    SignupError,
+    AddLocalIdError,
+    ChangePasswordError
+data class DuplicateId(override val displayTitle: String, override val displayMessage: String) :
+    SignupError,
+    AddLocalIdError
 data class UsedEmail(override val displayTitle: String, override val displayMessage: String) : SignupError
 data class WrongPassword(override val displayTitle: String, override val displayMessage: String) : ChangePasswordError
 data class PastSemester(override val displayTitle: String, override val displayMessage: String) : LectureReminderError
@@ -54,6 +61,7 @@ object BookmarkLectureNotFound : DomainError {
 
 object NotSelectedTimetable : DomainError {
     override val displayTitle = ""
+
     // FIXME: 하드코딩 한국어. 실제로는 DisplayMessageResolverImpl에서 리소스로 대체되므로 사용되지 않지만,
     //  displayMessage를 직접 참조하는 코드가 추가될 경우 문제 발생 가능. DomainError를 @StringRes 기반으로 전환 검토.
     override val displayMessage = "현재 선택된 시간표의 테마만 변경할 수 있습니다."

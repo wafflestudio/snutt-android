@@ -20,11 +20,10 @@ data class SearchTime(
     }
 }
 
-fun List<LocalLecture>.flatMapToSearchTime(): List<SearchTime> =
-    flatMap { it.lectureSessions }.map { session ->
-        SearchTime(
-            day = session.day,
-            startTime = session.startTime,
-            endTime = session.endTime,
-        )
-    }
+fun List<LocalLecture>.flatMapToSearchTime(): List<SearchTime> = flatMap { it.lectureSessions }.map { session ->
+    SearchTime(
+        day = session.day,
+        startTime = session.startTime,
+        endTime = session.endTime,
+    )
+}

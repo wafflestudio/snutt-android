@@ -39,7 +39,6 @@ import com.wafflestudio.snutt2.ui.components.compose.ArrowLeftBold
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
-
 @Composable
 fun HomeSessionlessLectureHint(
     modifier: Modifier = Modifier,

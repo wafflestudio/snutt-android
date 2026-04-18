@@ -212,7 +212,10 @@ private fun ColorEditItem(
     if (showFgPicker) {
         ColorPickerDialog(
             initialColor = fgColor,
-            onConfirm = { color -> onFgColorPicked(color); showFgPicker = false },
+            onConfirm = { color ->
+                onFgColorPicked(color)
+                showFgPicker = false
+            },
             onDismiss = { showFgPicker = false },
         )
     }
@@ -220,7 +223,10 @@ private fun ColorEditItem(
     if (showBgPicker) {
         ColorPickerDialog(
             initialColor = bgColor,
-            onConfirm = { color -> onBgColorPicked(color); showBgPicker = false },
+            onConfirm = { color ->
+                onBgColorPicked(color)
+                showBgPicker = false
+            },
             onDismiss = { showBgPicker = false },
         )
     }

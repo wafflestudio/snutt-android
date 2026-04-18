@@ -31,7 +31,8 @@ import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import kotlin.math.roundToInt
 
 private enum class OptionSheetMode {
-    Normal, TimeSelect,
+    Normal,
+    TimeSelect,
 }
 
 @Composable

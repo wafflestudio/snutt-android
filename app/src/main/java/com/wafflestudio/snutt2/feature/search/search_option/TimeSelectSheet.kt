@@ -312,8 +312,10 @@ private fun DrawDragEventDetector(
                 val dayIndex = ((it.x - hourLabelWidth) / unitWidth).toInt()
                 val timeIndex = ((it.y - dayLabelHeight) / unitHeight).toInt()
 
-                if (dayIndex < 0 || dayIndex > fittedTrimParam.dayOfWeekTo - fittedTrimParam.dayOfWeekFrom ||
-                    timeIndex < 0 || timeIndex > (fittedTrimParam.hourTo - fittedTrimParam.hourFrom) * 2 + 1
+                if (dayIndex < 0 ||
+                    dayIndex > fittedTrimParam.dayOfWeekTo - fittedTrimParam.dayOfWeekFrom ||
+                    timeIndex < 0 ||
+                    timeIndex > (fittedTrimParam.hourTo - fittedTrimParam.hourFrom) * 2 + 1
                 ) {
                     return@pointerInteropFilter false
                 }
@@ -367,7 +369,6 @@ private fun DrawDragEventDetector(
                                 }
                             }
                         }
-
 
                         touchedTimeIndex = timeIndex
                         touchedDayIndex = dayIndex

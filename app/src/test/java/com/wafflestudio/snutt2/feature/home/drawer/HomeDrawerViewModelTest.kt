@@ -3,8 +3,6 @@ package com.wafflestudio.snutt2.feature.home.drawer
 import app.cash.turbine.test
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
 import com.wafflestudio.snutt2.domain.model.BuiltInTheme
-import com.wafflestudio.snutt2.domain.model.CustomTheme
-import com.wafflestudio.snutt2.domain.model.ThemeColor
 import com.wafflestudio.snutt2.domain.model.ThemeReference
 import com.wafflestudio.snutt2.fake.FakeCourseBookRepository
 import com.wafflestudio.snutt2.fake.FakeDisplayMessageResolver
@@ -236,8 +234,8 @@ class HomeDrawerViewModelTest {
         viewModel.toggleCourseBookDrawerItem(1)
 
         // tableSummaryList 변경 → combine 재실행
-        val summary2025_2 = tableSummary(id = "t3", courseBook = courseBook2025_1)
-        fakeTableRepository.tableSummaryList.value = listOf(summary2025, summary2024, summary2025_2)
+        val summary2025Second = tableSummary(id = "t3", courseBook = courseBook2025_1)
+        fakeTableRepository.tableSummaryList.value = listOf(summary2025, summary2024, summary2025Second)
 
         assertEquals(
             HomeDrawerUiState(
@@ -245,7 +243,7 @@ class HomeDrawerViewModelTest {
                     CoursebookDrawerItem(
                         courseBook = courseBook2025_1,
                         showNewCoursebookDot = false,
-                        tableList = listOf(summary2025, summary2025_2),
+                        tableList = listOf(summary2025, summary2025Second),
                     ).toDataWithState(true), // current → expanded
                     CoursebookDrawerItem(
                         courseBook = courseBook2024_2,

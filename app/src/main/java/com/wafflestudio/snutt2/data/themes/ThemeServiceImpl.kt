@@ -11,10 +11,8 @@ class ThemeServiceImpl @Inject constructor(
     private val themeRepository: ThemeRepository,
 ) : ThemeService {
 
-    override suspend fun resolveTheme(table: Table): TableTheme {
-        return when (table.themeRef) {
-            is ThemeReference.BuiltIn -> BuiltInTheme.fromCode(table.themeRef.code)
-            is ThemeReference.Custom -> themeRepository.getTheme(table.themeRef.themeId)
-        }
+    override suspend fun resolveTheme(table: Table): TableTheme = when (table.themeRef) {
+        is ThemeReference.BuiltIn -> BuiltInTheme.fromCode(table.themeRef.code)
+        is ThemeReference.Custom -> themeRepository.getTheme(table.themeRef.themeId)
     }
 }

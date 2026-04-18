@@ -142,11 +142,9 @@ class DeeplinkBookmarkLectureDetailViewModel @Inject constructor(
         return isBookmarked
     }
 
-    private suspend fun fetchVacancyRegistered(lecture: Lecture): Boolean {
-        return when (val result = vacancyRepository.isVacancyRegistered(lecture)) {
-            is Result.Success -> result.data
-            is Result.Fail -> false
-        }
+    private suspend fun fetchVacancyRegistered(lecture: Lecture): Boolean = when (val result = vacancyRepository.isVacancyRegistered(lecture)) {
+        is Result.Success -> result.data
+        is Result.Fail -> false
     }
 
     fun toggleBookmark() {

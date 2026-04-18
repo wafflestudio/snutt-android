@@ -63,7 +63,6 @@ fun NotificationRoute(
     val notificationList = viewModel.notificationList.collectAsLazyPagingItems()
     val notificationUiState = notificationList.notificationUiState()
 
-
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {

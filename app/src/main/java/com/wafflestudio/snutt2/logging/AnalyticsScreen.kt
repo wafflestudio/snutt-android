@@ -44,13 +44,11 @@ sealed class AnalyticsScreen {
     data object Login : AnalyticsScreen()
     data object Onboard : AnalyticsScreen()
 
-    fun getExtraParameters(): Bundle? {
-        return when (this) {
-            is LectureDetail -> parameter.toBundle()
-            is ReviewDetail -> parameter.toBundle()
-            is LectureSyllabus -> parameter.toBundle()
-            else -> null
-        }
+    fun getExtraParameters(): Bundle? = when (this) {
+        is LectureDetail -> parameter.toBundle()
+        is ReviewDetail -> parameter.toBundle()
+        is LectureSyllabus -> parameter.toBundle()
+        else -> null
     }
 }
 
@@ -58,11 +56,9 @@ data class LectureDetailParameter(
     val lectureId: String,
     val referrer: DetailScreenReferrer?,
 ) {
-    fun toBundle(): Bundle {
-        return Bundle().apply {
-            putString("lecture_id", lectureId)
-            putString("referrer", referrer?.encode())
-        }
+    fun toBundle(): Bundle = Bundle().apply {
+        putString("lecture_id", lectureId)
+        putString("referrer", referrer?.encode())
     }
 }
 
@@ -70,21 +66,17 @@ data class ReviewDetailParameter(
     val lectureId: String,
     val referrer: DetailScreenReferrer,
 ) {
-    fun toBundle(): Bundle {
-        return Bundle().apply {
-            putString("lecture_id", lectureId)
-            putString("referrer", referrer.encode())
-        }
+    fun toBundle(): Bundle = Bundle().apply {
+        putString("lecture_id", lectureId)
+        putString("referrer", referrer.encode())
     }
 }
 
 data class LectureSyllabusParameter(
     val lectureId: String,
 ) {
-    fun toBundle(): Bundle {
-        return Bundle().apply {
-            putString("lecture_id", lectureId)
-        }
+    fun toBundle(): Bundle = Bundle().apply {
+        putString("lecture_id", lectureId)
     }
 }
 
@@ -96,29 +88,25 @@ sealed class DetailScreenReferrer {
     data object LectureList : DetailScreenReferrer()
     data object LectureDetail : DetailScreenReferrer()
 
-    fun encode(): String {
-        return when (this) {
-            is Search -> "search=$query"
-            is Notification -> "notification"
-            is Bookmark -> "bookmark"
-            is Timetable -> "timetable"
-            is LectureList -> "lectureList"
-            is LectureDetail -> "lectureDetail"
-        }
+    fun encode(): String = when (this) {
+        is Search -> "search=$query"
+        is Notification -> "notification"
+        is Bookmark -> "bookmark"
+        is Timetable -> "timetable"
+        is LectureList -> "lectureList"
+        is LectureDetail -> "lectureDetail"
     }
 
     companion object {
         /** [encode]의 역연산. Search만 query 파라미터를 포함하므로 prefix 매칭으로 처리한다. */
-        fun decode(value: String): DetailScreenReferrer? {
-            return when {
-                value.startsWith("search=") -> Search(value.removePrefix("search="))
-                value == "notification" -> Notification
-                value == "bookmark" -> Bookmark
-                value == "timetable" -> Timetable
-                value == "lectureList" -> LectureList
-                value == "lectureDetail" -> LectureDetail
-                else -> null
-            }
+        fun decode(value: String): DetailScreenReferrer? = when {
+            value.startsWith("search=") -> Search(value.removePrefix("search="))
+            value == "notification" -> Notification
+            value == "bookmark" -> Bookmark
+            value == "timetable" -> Timetable
+            value == "lectureList" -> LectureList
+            value == "lectureDetail" -> LectureDetail
+            else -> null
         }
     }
 }

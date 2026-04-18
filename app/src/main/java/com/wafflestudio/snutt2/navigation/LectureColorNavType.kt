@@ -11,12 +11,9 @@ val LectureColorNavType = object : NavType<LectureColor>(isNullableAllowed = fal
         bundle.putParcelable(key, value)
     }
 
-    override fun get(bundle: Bundle, key: String): LectureColor =
-        BundleCompat.getParcelable(bundle, key, LectureColor::class.java)!!
+    override fun get(bundle: Bundle, key: String): LectureColor = BundleCompat.getParcelable(bundle, key, LectureColor::class.java)!!
 
-    override fun parseValue(value: String): LectureColor =
-        Json.decodeFromString(value)
+    override fun parseValue(value: String): LectureColor = Json.decodeFromString(value)
 
-    override fun serializeAsValue(value: LectureColor): String =
-        Json.encodeToString(LectureColor.serializer(), value)
+    override fun serializeAsValue(value: LectureColor): String = Json.encodeToString(LectureColor.serializer(), value)
 }

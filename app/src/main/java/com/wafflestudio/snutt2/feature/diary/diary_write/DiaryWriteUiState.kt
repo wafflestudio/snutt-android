@@ -14,8 +14,7 @@ sealed interface DiaryWriteUiState {
         val nextLecture: NextLecture? = null,
     ) : DiaryWriteUiState {
 
-        fun allQuestionAnswered(): Boolean =
-            questions.all { question -> question.selectableAnswers.anySelected() }
+        fun allQuestionAnswered(): Boolean = questions.all { question -> question.selectableAnswers.anySelected() }
     }
 
     data object Error : DiaryWriteUiState
@@ -26,10 +25,12 @@ sealed interface DiaryWriteUiState {
 }
 
 enum class ActivitySelectionState {
-    InitialSelecting, Complete, ReSelecting;
+    InitialSelecting,
+    Complete,
+    ReSelecting,
+    ;
 
-    fun isSelecting() =
-        this == InitialSelecting || this == ReSelecting
+    fun isSelecting() = this == InitialSelecting || this == ReSelecting
 }
 
 data class NextLecture(val lectureId: String, val courseTitle: String)

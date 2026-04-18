@@ -365,7 +365,9 @@ class BookmarkViewModel @Inject constructor(
                     val bt = current.bottomSheetType
                     if (bt is BookmarkUiState.BottomSheetType.LectureDetail && bt.lecture.id == lecture.id) {
                         current.copy(bottomSheetType = bt.copy(buildings = buildings))
-                    } else current
+                    } else {
+                        current
+                    }
                 }
             }
     }
@@ -434,6 +436,5 @@ sealed interface BookmarkUiState {
             val isBookmarked: Boolean = false,
             val isVacancyRegistered: Boolean = false,
         ) : BottomSheetType
-
     }
 }

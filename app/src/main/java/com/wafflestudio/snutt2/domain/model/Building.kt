@@ -14,5 +14,7 @@ data class GeoCoordinate(
 )
 
 enum class Campus {
-    GWANAK, YEONGEON, PYEONGCHANG,
+    GWANAK,
+    YEONGEON,
+    PYEONGCHANG,
 }

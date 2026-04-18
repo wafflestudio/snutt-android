@@ -597,5 +597,4 @@ class VacancyViewModelTest {
     }
 
     // endregion
-
 }

@@ -11,7 +11,8 @@ sealed class Lecture {
 
 sealed class LocalLecture(
     override val color: LectureColor,
-) : Lecture(), LectureUIInfo
+) : Lecture(),
+    LectureUIInfo
 
 data class SearchedLecture(
     override val id: String,
@@ -38,7 +39,9 @@ data class SearchedLecture(
     // 하지만 SearchedLecture 는 태생부터 reviewInfo 정보를 전부 가지는 반면,
     // SyllabusLecture 는 처음에는 reviewInfo.id 값만 있고 rating 과 reviewCount 는 별도 API 로 불러와야 한다. (originalLectureId 사용)
     val reviewInfo: LectureReviewInfo,
-) : Lecture(), LectureSyllabusInfo, LectureVacancyInfo
+) : Lecture(),
+    LectureSyllabusInfo,
+    LectureVacancyInfo
 
 data class SyllabusLecture(
     override val id: String,
@@ -61,7 +64,8 @@ data class SyllabusLecture(
     override val freshmanQuota: Long, // TODO: Nullable?
 
     val originalLectureId: String,
-) : LocalLecture(color), LectureSyllabusInfo
+) : LocalLecture(color),
+    LectureSyllabusInfo
 
 data class CustomLecture(
     override val id: String,

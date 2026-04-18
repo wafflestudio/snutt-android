@@ -218,4 +218,3 @@ fun CurrentTableLectureDetailRoute(
         }
     }
 }
-

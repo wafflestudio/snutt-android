@@ -34,33 +34,27 @@ class VacancyRepositoryImpl @Inject constructor(
         return lectures
     }
 
-    override suspend fun fetchVacancyLectures(): Result<Unit> {
-        return try {
-            refetch()
-            Result.Success(Unit)
-        } catch (e: Exception) {
-            Result.Fail(e.toDomainError())
-        }
+    override suspend fun fetchVacancyLectures(): Result<Unit> = try {
+        refetch()
+        Result.Success(Unit)
+    } catch (e: Exception) {
+        Result.Fail(e.toDomainError())
     }
 
-    override suspend fun addVacancyLecture(lecture: Lecture): Result<Unit> {
-        return try {
-            api._postVacancyLecture(lecture.resolveApiId())
-            refetch()
-            Result.Success(Unit)
-        } catch (e: Exception) {
-            Result.Fail(e.toDomainError())
-        }
+    override suspend fun addVacancyLecture(lecture: Lecture): Result<Unit> = try {
+        api._postVacancyLecture(lecture.resolveApiId())
+        refetch()
+        Result.Success(Unit)
+    } catch (e: Exception) {
+        Result.Fail(e.toDomainError())
     }
 
-    override suspend fun removeVacancyLecture(lecture: Lecture): Result<Unit> {
-        return try {
-            api._deleteVacancyLecture(lecture.resolveApiId())
-            refetch()
-            Result.Success(Unit)
-        } catch (e: Exception) {
-            Result.Fail(e.toDomainError())
-        }
+    override suspend fun removeVacancyLecture(lecture: Lecture): Result<Unit> = try {
+        api._deleteVacancyLecture(lecture.resolveApiId())
+        refetch()
+        Result.Success(Unit)
+    } catch (e: Exception) {
+        Result.Fail(e.toDomainError())
     }
 
     override suspend fun isVacancyRegistered(lecture: Lecture): Result<Boolean> {
@@ -73,14 +67,12 @@ class VacancyRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun isLectureVacancyRegistered(lecture: Lecture): Result<Boolean> {
-        return try {
-            val list = refetch()
-            val targetId = lecture.resolveApiId()
-            Result.Success(list.any { it.id == targetId })
-        } catch (e: Exception) {
-            Result.Fail(e.toDomainError())
-        }
+    override suspend fun isLectureVacancyRegistered(lecture: Lecture): Result<Boolean> = try {
+        val list = refetch()
+        val targetId = lecture.resolveApiId()
+        Result.Success(list.any { it.id == targetId })
+    } catch (e: Exception) {
+        Result.Fail(e.toDomainError())
     }
 
     override suspend fun setVacancyVisited(): Result<Unit> {

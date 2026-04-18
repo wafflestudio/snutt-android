@@ -415,7 +415,6 @@ class HomeDrawerViewModel @Inject constructor(
             _uiEvent.emit(HomeDrawerUiEvent.ShowToast(displayMessage))
         }
     }
-
 }
 
 sealed interface HomeDrawerUiEvent {

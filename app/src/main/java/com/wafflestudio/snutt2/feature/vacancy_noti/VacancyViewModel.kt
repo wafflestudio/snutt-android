@@ -199,4 +199,3 @@ sealed interface VacancyUiEvent {
     data object LoggedOut : VacancyUiEvent
     data class OpenWebPage(val url: String) : VacancyUiEvent
 }
-

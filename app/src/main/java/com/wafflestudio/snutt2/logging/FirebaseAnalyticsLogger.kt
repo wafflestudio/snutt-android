@@ -48,9 +48,7 @@ class FirebaseAnalyticsLogger @Inject constructor(
         logLocalTrace("[AnalyticsEvent] $eventName recorded with $parameters.")
     }
 
-    private fun String.toSnakeCase(): String {
-        return replace(Regex("([a-z])([A-Z])"), "$1_$2").lowercase()
-    }
+    private fun String.toSnakeCase(): String = replace(Regex("([a-z])([A-Z])"), "$1_$2").lowercase()
 
     private fun logLocalTrace(message: String) {
         Timber.d(message)
