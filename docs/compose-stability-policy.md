@@ -327,5 +327,4 @@ CI에서 §3.5의 canary 테스트가 실패
 ## 7. 참고 문서
 
 - [`color-theme-policy.md`](./color-theme-policy.md) — 테마 도메인 모델 설계 배경
-- [`viewmodel-test-setup-policy.md`](./viewmodel-test-setup-policy.md) — 테스트 setup 구조
 - `CLAUDE.md` (프로젝트 루트) — 전체 아키텍처 원칙
