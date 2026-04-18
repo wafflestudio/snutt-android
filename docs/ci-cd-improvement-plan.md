@@ -35,11 +35,18 @@
     - 조치: `ci.yml` java-version 21 → 17. `manual_deploy.yml` distribution `adopt`(legacy) → `temurin` 도 함께 정렬.
     - 별도 발견: `core/network` 모듈은 실제 존재하지 않음. 3개 워크플로우의 `./core/network/...` secrets 셋업 스텝은 쓸모없는 디렉토리만 생성. **1-2 에서 정리**.
 
-### [ ] 1-2. Secrets 셋업 composite action 추출
+### [x] 1-2. Secrets 셋업 composite action 추출
 
 - 현재: google-services.json / secrets.xml(app, core:network) / gcp-service-account.json / keystore 가 3개 워크플로우에 거의 동일하게 중복.
 - 할 일: `.github/actions/setup-secrets/action.yml` composite action 으로 뽑아 공통화. `variant` (staging/live) 를 입력으로 받아 분기.
 - 효과: 한 곳만 수정하면 됨. 휴먼 에러 감소.
+- 결정/결과:
+    - `.github/actions/setup-secrets/action.yml` composite action 신설. inputs: `variant`, `google_services_json`, `secrets_xml_app`, `gcp_service_account`(optional), `keystore_base64`(optional).
+    - `ci.yml` / `cd.yml` / `manual_deploy.yml` 의 중복 secrets 셋업 블록 전부 composite action 호출 한 스텝으로 치환.
+    - 내부 구현은 `env:` 로 시크릿을 스텝에 주입하고 `printf '%s' "$VAR" > ...` 로 파일에 기록. heredoc 미사용(1-5 목표가 여기서 해소 — 별도 PR 불필요).
+    - 실제 존재하지 않는 `core/network` 모듈용 secrets.xml 셋업 스텝 모두 제거. 관련 GitHub Secret (`secrets_xml_staging_core_network`, `secrets_xml_live_core_network`) 은 현재 참조되지 않음. (UI 에서 수동 제거 가능)
+    - `manual_deploy.yml` 의 `startsWith(inputs.variant, 'live')` 조건은 값이 고정 enum 이라 `== 'live'` 로 단순화.
+    - 별도 발견: `app/src/staging/res/value/strings.xml` 디렉토리 오타(`value` 단수형). Android 가 리소스로 인식 안 함. CI/CD 범위 밖이라 플래그만.
 
 ### [ ] 1-3. Gradle 셋업 개선
 

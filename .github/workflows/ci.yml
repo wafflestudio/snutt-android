@@ -24,24 +24,12 @@ jobs:
           java-version: 17
           distribution: 'temurin'
           cache: 'gradle'
-      - name: Setup google-services.json (Staging)
-        run: |
-          mkdir -p ./app/src/staging
-          cat << EOF > ./app/src/staging/google-services.json
-          ${{ secrets.google_services_json_staging }}
-          EOF
-      - name: Setup secrets.xml for app module (Staging)
-        run: |
-          mkdir -p ./app/src/staging/res/values
-          cat << EOF > ./app/src/staging/res/values/secrets.xml
-          ${{ secrets.secrets_xml_staging }}
-          EOF
-      - name: Setup secrets.xml for core:network module (Staging)
-        run: |
-          mkdir -p ./core/network/src/staging/res/values
-          cat << EOF > ./core/network/src/staging/res/values/secrets.xml
-          ${{ secrets.secrets_xml_staging_core_network }}
-          EOF
+      - name: Setup secrets
+        uses: ./.github/actions/setup-secrets
+        with:
+          variant: staging
+          google_services_json: ${{ secrets.google_services_json_staging }}
+          secrets_xml_app: ${{ secrets.secrets_xml_staging }}
       - name: Run ktlint and build debug APK
         run: ./gradlew ktlintCheck assembleStagingDebug --stacktrace
       - name: Run unit tests
