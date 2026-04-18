@@ -93,11 +93,21 @@
     - 실패 시 lint html report 업로드.
     - **후속 과제**: baseline 을 점진적으로 줄이는 작업. 별도 이슈/PR 로 단계적으로 처리해야 함. 여기선 가드만 세움.
 
-### [ ] 2-2. detekt 도입 검토
+### [x] 2-2. detekt 도입 검토
 
 - 현재: 없음.
 - 할 일: 먼저 **검토**. 프로젝트 규모 대비 유용성 / ktlint 와의 역할 중복 판단. 도입 결정 시 규칙 세트 선정 후 별 PR.
 - 고려: ktlint 는 포맷팅, detekt 는 코드 스멜 — 역할 다름. 둘 다 돌려도 의미 있음.
+- 결정/결과: **현 시점 도입 보류**.
+    - 근거:
+        - ktlint (포맷팅) + Android Lint (Android/리소스/버그 패턴) 로 기본 가드 이미 확보 (2-1 도입).
+        - 2-1 에서 경험했듯 기존 Kotlin 코드베이스는 정적 분석 baseline 규모가 크다(lint baseline 3700 줄). detekt 도입 시 또 하나의 baseline 을 관리해야 하며, 초기 규칙 튜닝 / 팀 합의 비용 존재.
+        - 리팩토링이 활발한 시기에는 baseline 이 자주 움직여 가치가 부분적으로 상쇄.
+    - 재도입 트리거:
+        - 복잡도(Cyclomatic, LongMethod 등) 규칙을 팀이 적극적으로 원함.
+        - custom 룰(도메인 패턴 강제) 필요.
+        - Android Lint 커버하지 못하는 Kotlin 특유의 코드 스멜이 리뷰에서 반복적으로 지적됨.
+    - 재도입 시 절차: rule set 선정 → `./gradlew detekt` baseline 생성 → CI 통합 → 팀에 공지.
 
 ---
 
