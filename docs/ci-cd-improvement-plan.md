@@ -111,40 +111,179 @@
 
 ---
 
-## Phase 3. PR 자동화
+## Phase 3. ~~PR 자동화~~ (삭제)
 
-### [ ] 3-1. PR labeler 도입
-
-- 할 일: `actions/labeler` 로 변경된 파일 경로 기반 영역 라벨 (`feature/bookmark`, `core/network`, `ci`, `docs` 등) 자동 부여.
-- 효과: PR 리뷰어/필터링 편의.
-
-### [ ] 3-2. PR size label
-
-- 할 일: `CodelyTV/pr-size-labeler` 또는 유사 액션으로 S/M/L/XL 라벨링.
-
-### [ ] 3-3. Danger-Kotlin 검토
-
-- 현재: 없음.
-- 할 일: 먼저 **검토**. "체크리스트 미작성 / 큰 PR 경고 / CHANGELOG 업데이트 확인" 등 어떤 규칙을 강제할지 먼저 정의 → 규칙 없으면 도입 보류.
+사용자 판단으로 제거. PR labeler / size label / Danger-Kotlin 모두 현 팀 규모와 프로세스 특성상 ROI 불명확하여 도입하지 않음. 필요해지면 Phase 번호와 무관하게 별도 도입 검토.
 
 ---
 
 ## Phase 4. 릴리스 자동화
 
-### [ ] 4-1. `cd.yml` ↔ `manual_deploy.yml` 정리
+### 배경: 현재 릴리스 흐름 (수동)
 
-- 현재: 두 워크플로우가 거의 같은 job 을 중복으로 들고 있음. (Phase 1-2 composite action 이 적용되면 부담이 크게 줄어듦)
-- 할 일: reusable workflow (`workflow_call`) 로 공통화 검토.
+1. 담당자가 `develop` 에서 `release-X.Y.Z` 브랜치 분기.
+2. `version.properties` 를 `X.Y.Z-rc.1` 로 수정 → push.
+3. `cd.yml` 트리거 → live AAB(Firebase) + staging APK(Firebase + Slack) 빌드/배포.
+4. **(수동)** 담당자가 Play Console 에서 AAB 를 internal track 에 업로드 → 내부자 테스트 배포.
+5. QA 에서 이슈 발견 시 release 브랜치에 수정 커밋 → **담당자가 직접** `version.properties` 를 `X.Y.Z-rc.2` 로 수정 push → 3–4 반복.
+6. QA 완료 시 `version.properties` 를 `X.Y.Z` (rc 제거) 로 수정 push → live AAB 재빌드.
+7. **(수동)** Play Console 에서 production 업로드 & 릴리스.
+8. **(수동)** GitHub 에서 tag + release note 작성.
+9. `release-X.Y.Z` 를 `develop` 으로 merge back.
 
-### [ ] 4-2. `version.properties` 자동 bump
+### 자동화 목표 (Phase 4 완료 후)
 
-- 할 일: 릴리스 브랜치 생성 시 버전 자동 증분 워크플로우. semver 규칙 선정 필요.
-- 고려: 현재 릴리스 플로우(누가, 언제 `version.properties` 를 바꾸는지)를 먼저 파악해야 안전.
+1. 담당자가 `release-X.Y.Z` 브랜치 분기. (유지, 시작 시그널)
+2. 담당자가 `version.properties` 를 `X.Y.Z-rc.1` 로 최초 설정 push. (유지, 릴리스 시작 시그널)
+3. **이후 release 브랜치에 코드 커밋 push 시 자동으로 `rc.N` → `rc.N+1` bump + 빌드 + Play Store internal 업로드 + Firebase + Slack.**
+4. QA 완료 후 담당자가 `version.properties` 를 rc 제거해 push → **자동으로 live 빌드 + Play Store production `draft` 업로드 + GitHub Release draft/tag 생성 + Firebase + Slack**.
+5. 담당자가 Play Console 에서 production release "Review and release" 클릭 (수동 유지 — blast radius 가드).
+6. 담당자가 GitHub Release 페이지에서 **한국어 릴리스 노트 작성 후 publish** (수동 유지 — 릴리스마다 직접 작성).
+7. `release-X.Y.Z` → `develop` merge back. (수동 유지)
 
-### [ ] 4-3. 릴리스 노트 자동 생성
+### 트랙 정책 (결정됨)
 
-- 할 일: PR 제목/라벨 기반 `release-drafter` 도입 검토.
-- 전제: 커밋/PR 메시지 컨벤션(현재 `[폴더위계정리] refactor: ...` 같은 대괄호 prefix)이 있어서 릴리스 노트 그룹핑 규칙을 어떻게 잡을지 결정 필요.
+- `-rc.N` 포함 버전 → `internal` track
+- 정식 버전 → `production` track, **`status: draft`**. Play Console 에서 release 개시만 수동 클릭. `production` 에 완전 자동 승격은 blast radius 가 너무 큼. (옵션 (a) 자동 승격, (b) internal 만 + 수동 승격, (c) production draft, (d) 단계적 rollout 중 (c) 채택)
+
+### 툴 선정: Fastlane (결정됨)
+
+- 비교군: (A) r0adkll/upload-google-play GHA, (B) Fastlane supply, (C) Triple-T/gradle-play-publisher, (D) 공식 SDK 직접 호출, (E) curl + JWT.
+- 최종 선택: **(B) Fastlane**.
+    - Google 공식은 아니지만 Android 릴리스 자동화의 de facto standard. 유지보수 주체가 크고 오래됨.
+    - CI 밖(로컬)에서도 동일 명령으로 재현 가능. 트러블슈팅 정보 풍부.
+    - 향후 확장(스크린샷/메타데이터 자동화) 용이.
+- (A) 는 단일 개인 메인테이너 의존. (C) 는 Gradle 설정이 과하게 커짐. (D)(E) 는 유지보수 부담.
+
+### [ ] 4-1. Play Store 자동 업로드 (Fastlane)
+
+- 목표: `cd.yml` 에서 AAB 빌드 후 Play Store 에 자동 업로드.
+- 구성:
+    - `Gemfile` 에 `fastlane` gem 추가.
+    - `fastlane/Appfile`: `package_name` (live/staging 모두 `com.wafflestudio.snutt2.live` 등 variant suffix 포함), `json_key_file` 은 env 로 주입.
+    - `fastlane/Fastfile` 에 2 개 레인 정의:
+        - `upload_internal`: `aab` + `track: internal` + `release_status: completed` 로 업로드.
+        - `upload_production_draft`: `aab` + `track: production` + `release_status: draft` 로 업로드.
+    - CI 에서 `ruby/setup-ruby@v1` + `bundle install` → 트랙 판별 후 `bundle exec fastlane <lane>`.
+- 트랙 판별 로직: `version.properties` 읽어 `snuttVersionName` 에 `-rc` 포함 여부로 분기. Shell step 에서 판별 후 `GITHUB_ENV` 에 `FASTLANE_LANE` 내보내거나, Fastfile 내부에서 판단.
+- 필요한 사용자 사전 준비 (코드 변경으로 해결 불가):
+    - Google Play Console → Settings → API access → 서비스 계정 발급 또는 기존 연결 확인.
+    - 계정 권한: Release 를 만들/업로드할 수 있는 수준 ("Release manager" 이상).
+    - 해당 서비스 계정 **JSON key 파일 다운로드**.
+    - GitHub Secrets 에 `GOOGLE_PLAY_SERVICE_ACCOUNT` 이름으로 JSON **원문** 등록.
+    - Play Console 에 **이미 최초 릴리스(internal)가 manual 로 한 번은 올라가 있어야** Fastlane 이후 업로드가 동작. (Play 정책)
+- 개방된 설계 결정:
+    - Fastlane metadata 관리(스크린샷/설명 텍스트 자동화)는 4-1 범위 **밖**. 일단 바이너리 업로드만.
+    - staging variant 도 Play 에 올릴지? 현재 staging 은 applicationIdSuffix `.staging` 이라 별 package. **업로드 대상은 live 만** 으로 한정. staging 은 기존대로 Firebase + Slack.
+
+### [ ] 4-2. reusable workflow 통합
+
+- 현재: Phase 1-2 composite action 덕분에 secrets 중복은 해소. 그러나 Checkout / Setup Java / Setup Gradle / 빌드·Firebase·Slack 로직 자체는 `cd.yml` 과 `manual_deploy.yml` 에 여전히 중복.
+- 4-1 Play Store 업로드까지 합치면 로직 분량이 더 커져 중복 비용이 크다.
+- 설계:
+    - `.github/workflows/_build-and-deploy.yml` (prefix `_` 는 "내부용" 관행) 을 `workflow_call` 로 정의.
+    - inputs: `variant` (live/staging), `upload_firebase` (bool), `upload_play_store` (bool), `slack_message` (string, optional).
+    - secrets: 필요한 모든 secret을 `secrets: inherit` 로 받음.
+    - 책임: Checkout → Setup Java → Setup Gradle → Setup secrets(composite) → build → Firebase(조건부) → Play Store(조건부, 4-1 기준) → Slack(조건부).
+- 호출 측:
+    - `cd.yml`: `release-*` branch + `version.properties` 변경 push → job 2개 (live / staging) 가 각각 reusable workflow 호출.
+    - `manual_deploy.yml`: `workflow_dispatch` → variant / firebase / play_store / slack 입력 받아 reusable workflow 호출.
+    - `rc-bump.yml` (4-4): bump 후 내부적으로 reusable workflow 호출 (또는 commit push 로 cd.yml 간접 트리거).
+- 리스크: reusable workflow 의 `secrets: inherit` 는 caller repo 와 callee 가 같은 repo 에 있을 때 잘 동작. 본 레포에서는 전부 내부 파일이므로 문제 없음.
+
+### [ ] 4-3. GitHub Release draft 자동 생성
+
+- 사용자 결정: PR 기반 자동 노트 생성 **안 함**. `release-drafter` 도입 안 함. 릴리스 노트는 매 릴리스마다 담당자가 한국어로 직접 작성.
+- Phase 4 에서 자동화할 범위: **정식 릴리스 시점에 빈 draft Release + tag 를 자동 생성**. 담당자가 페이지 열어 본문만 작성 → publish.
+- 구현:
+    - `_build-and-deploy.yml` 또는 `cd.yml` 의 live 경로 말미에, `version.properties` 가 `-rc` 없는 정식 버전일 때만 실행되는 스텝 추가.
+    - `softprops/action-gh-release@v2` 로 `tag_name: ${VERSION}`, `draft: true`, `name: v${VERSION}` Release 생성.
+    - tag 도 같은 액션이 만들어줌 (`GITHUB_TOKEN` 권한: `contents: write` 필요).
+- 수동 유지 영역: Release 본문(한국어), publish 버튼.
+- 질문점(추후 결정): tag 기준 커밋을 어디로 할지. 현 흐름상 `release-X.Y.Z` 브랜치의 정식 bump 커밋이 기준이 되는 게 자연스러움. action-gh-release 는 기본적으로 트리거된 ref 기준으로 tag 를 만드므로 정합.
+
+### [ ] 4-4. release 브랜치 push 기반 자동 rc bump
+
+- 사용자 결정: **(iii) 완전 자동** 모드 채택. release 브랜치에 코드 커밋이 들어오면 자동으로 rc 가 +1 되고 빌드/배포까지 연쇄.
+- 설계:
+    - 새 워크플로우 `.github/workflows/rc-bump.yml`.
+    - 트리거:
+        ```yaml
+        on:
+          push:
+            branches: ['release-*']
+            paths-ignore: ['version.properties']
+        ```
+    - 즉 **`version.properties` 가 아닌 파일이 release 브랜치에 push 되면 트리거**. `version.properties` 를 바꾸는 push 는 기존 `cd.yml` 이 담당.
+- 내부 동작:
+    1. 현재 `version.properties` 읽어 `snuttVersionName` 파싱.
+    2. 규칙:
+        - 값이 `X.Y.Z` 형태(rc 없음)면: **에러로 중단**. 정식 버전 상태의 release 브랜치에 코드 커밋이 들어오는 건 의도 불명(이미 릴리스된 상태일 수 있음). 명시적 사용자 개입 필요.
+        - 값이 `X.Y.Z-rc.N` 형태면: `X.Y.Z-rc.(N+1)` 로 계산.
+    3. `version.properties` 업데이트 → commit(작자: `github-actions[bot]`) → push.
+    4. 이 push 는 `version.properties` 변경을 포함하므로 `cd.yml` 이 자연 트리거되어 빌드/배포 수행.
+- 무한 루프 방지:
+    - `rc-bump.yml` 의 `paths-ignore: ['version.properties']` 덕분에 bump 커밋 자체는 `rc-bump.yml` 을 재트리거하지 않음.
+    - 단, 담당자가 한 push 에 **코드 수정 + `version.properties` 를 함께 포함**하면 `paths-ignore` 가 skip 하지 않음 (GitHub Actions 의 paths-ignore semantics: 모든 변경 파일이 ignore 목록 안에 있을 때만 skip). 이 경우 이중 bump 가 일어날 수 있음.
+    - 가드: `rc-bump.yml` 내부에서 "마지막 커밋이 이미 `version.properties` 를 변경했으면 skip" 검사 추가.
+- 트리거 연쇄의 GITHUB_TOKEN 문제:
+    - 일반 `GITHUB_TOKEN` 으로 만든 push 는 **다른 워크플로우를 트리거하지 않음**. 즉 `rc-bump.yml` 이 `GITHUB_TOKEN` 으로 push 하면 `cd.yml` 이 따라 돌지 않음.
+    - 해결: `rc-bump.yml` 이 bump 후 **reusable workflow (`_build-and-deploy.yml`) 를 직접 호출**하여 빌드/배포 연쇄. 별도 workflow 간접 트리거 없이 한 워크플로우 내에서 모두 처리.
+    - 이 설계는 `cd.yml` 의 기존 동작(버전 직접 편집 push)과도 호환됨 — `cd.yml` 역시 같은 reusable workflow 호출.
+- Fastlane 트랙 로직과의 정합: bump 후 버전은 반드시 `-rc.N` 이므로 `upload_internal` 로만 감. 정식 릴리스는 4-4 대상이 아니고 담당자가 직접 `version.properties` 수정.
+
+### 전체 흐름 정리 (Phase 4 완료 시)
+
+```
+[담당자] release-X.Y.Z 브랜치 분기
+[담당자] version.properties → X.Y.Z-rc.1 push
+  └─ cd.yml 트리거
+       └─ _build-and-deploy.yml
+            ├─ live AAB 빌드
+            ├─ Firebase upload
+            ├─ Fastlane: Play Store internal
+            └─ Slack 알림
+
+[담당자] 코드 수정 커밋 push (버그 수정 등)
+  └─ rc-bump.yml 트리거 (paths-ignore: version.properties)
+       ├─ rc.N → rc.N+1 계산
+       ├─ version.properties commit + push
+       └─ _build-and-deploy.yml 직접 호출
+            ├─ live AAB 빌드
+            ├─ Firebase upload
+            ├─ Fastlane: Play Store internal
+            └─ Slack 알림
+
+[담당자] QA 완료 → version.properties → X.Y.Z (rc 제거) push
+  └─ cd.yml 트리거
+       └─ _build-and-deploy.yml
+            ├─ live AAB 빌드
+            ├─ Firebase upload
+            ├─ Fastlane: Play Store production draft ★
+            ├─ GitHub Release draft + tag 생성 ★
+            └─ Slack 알림
+
+[담당자] Play Console "Review and release" 수동 클릭
+[담당자] GitHub Release 페이지에서 한국어 노트 작성 + publish
+[담당자] release-X.Y.Z → develop merge back
+```
+
+### Phase 4 진행 순서
+
+1. **4-2 reusable workflow 틀 먼저 구축**. 기존 `cd.yml`, `manual_deploy.yml` 의 현재 동작을 이 틀로 이관.
+2. **4-1 Fastlane + Play Store 업로드** 를 reusable workflow 에 조건부 스텝으로 추가.
+3. **4-3 GitHub Release draft** 생성 스텝 추가 (정식 버전일 때만).
+4. **4-4 rc-bump 워크플로우** 신설 + reusable workflow 호출.
+
+이 순서로 가는 이유: 4-2 가 나머지 전부의 기반이 되며, 4-4 는 reusable workflow 가 있어야 연쇄 호출이 깔끔. 4-1 은 Phase 4 의 핵심 가치지만 구조가 먼저 정돈된 후 붙이는 것이 리스크가 적음.
+
+### Phase 4 사용자 사전 준비 체크리스트
+
+- [ ] Google Play Console → Settings → API access → 서비스 계정 발급 또는 기존 서비스 계정 연결 확인
+- [ ] 서비스 계정 권한 "Release manager" 이상 부여 (Releases 생성/업로드 필요)
+- [ ] 서비스 계정 JSON key 파일 다운로드
+- [ ] GitHub Secrets 에 `GOOGLE_PLAY_SERVICE_ACCOUNT` 이름으로 JSON 원문 등록
+- [ ] Play Console 에 해당 `applicationId` 앱의 **최초 internal release 가 manual 로 한 번 업로드되어 있을 것** (Play Console 정책상 서비스 계정 업로드는 최초 수동 릴리스 이후에 가능)
 
 ---
 
