@@ -81,11 +81,17 @@
 
 ## Phase 2. 코드 품질 강화
 
-### [ ] 2-1. Android Lint CI 통합
+### [x] 2-1. Android Lint CI 통합
 
 - 현재: ktlint 만. Android Lint 는 돌지 않음.
 - 할 일: `./gradlew lintStagingDebug` 추가. `app/lint-baseline.xml` 도입하여 기존 경고는 baseline 처리.
 - 고려: 경고 양이 많으면 baseline 으로 처음엔 가드만 세우고 점진적으로 줄인다.
+- 결정/결과:
+    - 최초 실측: **86 errors / 254 warnings / 2 hints**. 일괄 수정은 이 PR 범위 밖.
+    - `app/build.gradle.kts` 의 `android { ... }` 에 `lint { baseline = file("lint-baseline.xml") }` 추가, `./gradlew updateLintBaseline` 으로 baseline 생성 (app/lint-baseline.xml, 약 3700 줄).
+    - `ci.yml` 의 `build-and-test` job 이 `assembleStagingDebug testStagingDebugUnitTest lintStagingDebug` 를 한 명령으로 실행 — compile 공유.
+    - 실패 시 lint html report 업로드.
+    - **후속 과제**: baseline 을 점진적으로 줄이는 작업. 별도 이슈/PR 로 단계적으로 처리해야 함. 여기선 가드만 세움.
 
 ### [ ] 2-2. detekt 도입 검토
 
