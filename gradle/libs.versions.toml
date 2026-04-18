@@ -54,6 +54,7 @@ junit = "4.13.2"
 coroutinesTest = "1.10.2"
 turbine = "1.2.1"
 kotlinTest = "2.3.10"
+robolectric = "4.15.1"
 
 # Haze
 haze = "1.7.2"
@@ -136,6 +137,9 @@ junit = { module = "junit:junit", version.ref = "junit" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutinesTest" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlinTest" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
+compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 
 # Haze
 haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
