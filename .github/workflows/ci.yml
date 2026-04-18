@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  ktlint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -33,13 +33,40 @@ jobs:
           variant: staging
           google_services_json: ${{ secrets.google_services_json_staging }}
           secrets_xml_app: ${{ secrets.secrets_xml_staging }}
-      - name: Run ktlint and build debug APK
-        run: ./gradlew ktlintCheck assembleStagingDebug --stacktrace
-      - name: Run unit tests
-        run: ./gradlew testStagingDebugUnitTest --stacktrace
+      - name: Run ktlint
+        run: ./gradlew ktlintCheck --stacktrace
       - name: Upload ktlint report
         uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: ktlint-result
           path: ./**/build/reports/ktlint/**/*.html
+
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'temurin'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.event_name == 'pull_request' }}
+      - name: Setup secrets
+        uses: ./.github/actions/setup-secrets
+        with:
+          variant: staging
+          google_services_json: ${{ secrets.google_services_json_staging }}
+          secrets_xml_app: ${{ secrets.secrets_xml_staging }}
+      - name: Build debug APK and run unit tests
+        run: ./gradlew assembleStagingDebug testStagingDebugUnitTest --stacktrace
+      - name: Upload unit test report
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: unit-test-report
+          path: ./**/build/reports/tests/**

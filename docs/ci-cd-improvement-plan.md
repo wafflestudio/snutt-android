@@ -58,18 +58,24 @@
     - `ci.yml` 에 한해 `cache-read-only: ${{ github.event_name == 'pull_request' }}` 지정. PR 에서는 캐시 write 금지하여 caching poisoning 방지, develop push 시만 쓰기.
     - 도입 직후 최초 실행은 캐시 미스로 느릴 수 있으나 이후 점진적으로 히트율 상승 예상.
 
-### [ ] 1-4. CI job 분리 (병렬화)
+### [x] 1-4. CI job 분리 (병렬화)
 
 - 현재: ktlint → build → unit test 직렬.
 - 할 일: ktlint / build / unit test 를 별도 job 으로 분리. 독립 실행 가능한 것은 병렬화.
 - 효과: 실패 원인 분명, 빠른 피드백.
 - 고려: Gradle 캐시/warm-up 중복 비용과의 트레이드오프 — 병렬화해도 실제로 빨라지는지 실측 필요.
+- 결정/결과:
+    - **2 job 분리** (`ktlint` / `build-and-test`). 3 job 완전 분리는 setup 오버헤드 × 3 + compile 중복으로 오히려 느려질 가능성 높음.
+    - `build-and-test` 는 `assembleStagingDebug testStagingDebugUnitTest` 를 한 번에 실행 → compile 산출물 공유.
+    - 테스트 실패 시 `./**/build/reports/tests/**` 업로드 추가.
+    - 실제 병렬 효과는 첫 실행 이후 캐시가 데워진 다음에 관측 가능.
 
-### [ ] 1-5. Secrets 주입 방식 개선
+### [x] 1-5. Secrets 주입 방식 개선
 
 - 현재: heredoc 방식. multi-line JSON 에서 변수 expansion / escape 취약점.
 - 할 일: base64 인코딩 → `base64 -d` 디코딩 방식 또는 안전한 write 방식으로 치환.
 - 관련: GitHub Actions 의 secret masking 과도 어울려야 함.
+- 결정/결과: **1-2 에 흡수되어 해소**. composite action 내부에서 `env:` 로 secret 을 주입 후 `printf '%s' "$VAR" > path` 로 기록. base64 인코딩 전환(GitHub Secrets 재등록) 없이도 heredoc 의 expansion/escape 이슈는 제거됨. keystore 만 기존대로 base64 로 저장(바이너리 파일이라 텍스트 기록 불가).
 
 ---
 
