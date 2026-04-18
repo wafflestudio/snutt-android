@@ -110,7 +110,7 @@ class RootActivity : AppCompatActivity() {
                             .fillMaxSize()
                             .safeDrawingPadding(),
                     ) {
-                        setUpUI(startDestination)
+                        SetUpUI(startDestination)
                     }
                 }
             }
@@ -118,7 +118,7 @@ class RootActivity : AppCompatActivity() {
     }
 
     @Composable
-    fun setUpUI(startDestination: NavigationDestination) {
+    fun SetUpUI(startDestination: NavigationDestination) {
         val navBottomSheetState = rememberModalBottomSheetState(
             initialValue = ModalBottomSheetValue.Hidden,
             skipHalfExpanded = true,

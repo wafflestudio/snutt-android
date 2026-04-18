@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
@@ -40,7 +41,7 @@ fun SearchOptionConfirmButton(
 
     Row(
         modifier = Modifier
-            .offset(y = offsetYAnimatedDp)
+            .offset { IntOffset(0, offsetYAnimatedDp.roundToPx()) }
             .alpha(alphaAnimatedFloat)
             .background(SNUTTColors.Sky)
             .fillMaxWidth()

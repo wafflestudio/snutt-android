@@ -310,17 +310,6 @@
     </issue>
 
     <issue
-        id="ComposableNaming"
-        message="Composable functions that return Unit should start with an uppercase letter"
-        errorLine1="    fun setUpUI(startDestination: NavigationDestination) {"
-        errorLine2="        ~~~~~~~">
-        <location
-            file="src/main/java/com/wafflestudio/snutt2/RootActivity.kt"
-            line="121"
-            column="9"/>
-    </issue>
-
-    <issue
         id="ConfigurationScreenWidthHeight"
         message="Using Configuration.screenWidthDp instead of LocalWindowInfo.current.containerSize"
         errorLine1="    val imageWidth = min((LocalConfiguration.current.screenWidthDp * 0.8).dp, 400.dp)"
@@ -384,39 +373,6 @@
             file="src/main/java/com/wafflestudio/snutt2/feature/settings/TimetableConfigPage.kt"
             line="238"
             column="26"/>
-    </issue>
-
-    <issue
-        id="ModifierParameter"
-        message="Optional Modifier parameter should have a default value of `Modifier`"
-        errorLine1="    modifier: Modifier = Modifier"
-        errorLine2="    ~~~~~~~~">
-        <location
-            file="src/main/java/com/wafflestudio/snutt2/ui/components/compose/AnimatedLazyRow.kt"
-            line="16"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="ModifierParameter"
-        message="Optional Modifier parameter should have a default value of `Modifier`"
-        errorLine1="    modifier: Modifier = Modifier.size(30.dp),"
-        errorLine2="    ~~~~~~~~">
-        <location
-            file="src/main/java/com/wafflestudio/snutt2/ui/components/compose/Icon.kt"
-            line="61"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="ModifierParameter"
-        message="Optional Modifier parameter should have a default value of `Modifier`"
-        errorLine1="    modifier: Modifier = Modifier.size(30.dp),"
-        errorLine2="    ~~~~~~~~">
-        <location
-            file="src/main/java/com/wafflestudio/snutt2/ui/components/compose/Icon.kt"
-            line="679"
-            column="5"/>
     </issue>
 
     <issue
@@ -494,50 +450,6 @@
             file="src/main/res/layout/widget_timetable.xml"
             line="6"
             column="5"/>
-    </issue>
-
-    <issue
-        id="UseOfNonLambdaOffsetOverload"
-        message="State backed values should use the lambda overload of Modifier.offset"
-        errorLine1="                .offset(x = 5.dp + yOffsetTop),"
-        errorLine2="                 ~~~~~~">
-        <location
-            file="src/main/java/com/wafflestudio/snutt2/feature/home/timetable/HomeSessionlessLectureHint.kt"
-            line="131"
-            column="18"/>
-    </issue>
-
-    <issue
-        id="UseOfNonLambdaOffsetOverload"
-        message="State backed values should use the lambda overload of Modifier.offset"
-        errorLine1="                .offset(x = 40.dp + yOffsetBottom),"
-        errorLine2="                 ~~~~~~">
-        <location
-            file="src/main/java/com/wafflestudio/snutt2/feature/home/timetable/HomeSessionlessLectureHint.kt"
-            line="137"
-            column="18"/>
-    </issue>
-
-    <issue
-        id="UseOfNonLambdaOffsetOverload"
-        message="State backed values should use the lambda overload of Modifier.offset"
-        errorLine1="            .offset(y = offsetYAnimatedDp)"
-        errorLine2="             ~~~~~~">
-        <location
-            file="src/main/java/com/wafflestudio/snutt2/feature/search/search_option/SearchOptionConfirmButton.kt"
-            line="43"
-            column="14"/>
-    </issue>
-
-    <issue
-        id="UseOfNonLambdaOffsetOverload"
-        message="State backed values should use the lambda overload of Modifier.offset"
-        errorLine1="                    .offset(x = indicatorOffset)"
-        errorLine2="                     ~~~~~~">
-        <location
-            file="src/main/java/com/wafflestudio/snutt2/ui/components/compose/SegmentedPicker.kt"
-            line="101"
-            column="22"/>
     </issue>
 
     <issue
