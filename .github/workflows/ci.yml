@@ -23,6 +23,8 @@ jobs:
         with:
           java-version: 21
           distribution: 'jetbrains'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
         with:
@@ -52,6 +54,8 @@ jobs:
         with:
           java-version: 21
           distribution: 'jetbrains'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
         with:
