@@ -188,7 +188,7 @@ fetch 완료 전까지 emission이 발생하지 않아 Loading 유지. 성공 �
 
 **Preview / Screenshot Test**
 
-`main` 의 `@Preview` 와 `screenshotTest` 의 `@Preview` 는 역할이 명백히 다르다. 세부 규약(도구, 커버리지 기준, 네이밍, 인라인 휴리스틱)은
+`main` 의 `@Preview` 와 `screenshotTest` 의 `@Preview` 는 역할이 명백히 다르다. 세부 규약(도구, 커버리지 기준, 네이밍 등)은
 `docs/screenshot-test-policy.md` 참조.
 
 원칙
@@ -198,7 +198,6 @@ fetch 완료 전까지 emission이 발생하지 않아 Loading 유지. 성공 �
 - 커버리지 단위는 **컴포넌트**. 플로우/Screen 단위 테스트는 현 범위에서 제외한다.
 - "유의미한 분기" 는 파라미터의 곱집합이 아니라 **실제 `when`/`if` 분기 로직이 바뀌는 경로**를 말한다.
 - `X.kt` ↔ `XScreenshotTest.kt` 1:1 대응. 테스트 preview 이름은 `{ComponentName}_{분기식별자}`.
-- 별도 컴포저블인데 (a) 스킵 경계·접근성 등 정당 사유가 없고 (b) 유의미한 시각 분기가 0~1개면 인라인 코드 스멜로 본다.
 
 **ModalBottomSheet**
 
