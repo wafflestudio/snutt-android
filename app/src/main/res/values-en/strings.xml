@@ -469,4 +469,8 @@
     <string name="theme_mode_auto">System</string>
 
     <!-- Theme Default Name -->
+
+    <!-- Widget -->
+    <string name="widget_timetable_login_required">Please sign in</string>
+    <string name="widget_timetable_image_description">Timetable preview</string>
 </resources>

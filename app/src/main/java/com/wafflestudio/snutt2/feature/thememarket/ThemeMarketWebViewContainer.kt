@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.feature.thememarket
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Build
@@ -27,6 +28,7 @@ class ThemeMarketWebViewContainer(
 ) : WebViewContainer {
     val loadState: MutableState<LoadState> = mutableStateOf(LoadState.Loading(0))
 
+    @SuppressLint("SetJavaScriptEnabled")
     override val webView: WebView = WebView(context).apply {
         if (BuildConfig.DEBUG) {
             WebView.setWebContentsDebuggingEnabled(true)
