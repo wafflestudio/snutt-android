@@ -6,7 +6,7 @@ import com.android.tools.screenshot.PreviewTest
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 
 @PreviewTest
-@Preview(showBackground = true, widthDp = 360)
+@Preview(showBackground = true, widthDp = 360, locale = "ko")
 @Composable
 fun LectureActionButtons_SyllabusLecture_ViewMode() {
     LectureActionButtons(
@@ -20,7 +20,7 @@ fun LectureActionButtons_SyllabusLecture_ViewMode() {
 }
 
 @PreviewTest
-@Preview(showBackground = true, widthDp = 360)
+@Preview(showBackground = true, widthDp = 360, locale = "ko")
 @Composable
 fun LectureActionButtons_SyllabusLecture_EditMode() {
     LectureActionButtons(
@@ -34,7 +34,7 @@ fun LectureActionButtons_SyllabusLecture_EditMode() {
 }
 
 @PreviewTest
-@Preview(showBackground = true, widthDp = 360)
+@Preview(showBackground = true, widthDp = 360, locale = "ko")
 @Composable
 fun LectureActionButtons_CustomLecture_ViewMode() {
     LectureActionButtons(
@@ -48,7 +48,7 @@ fun LectureActionButtons_CustomLecture_ViewMode() {
 }
 
 @PreviewTest
-@Preview(showBackground = true, widthDp = 360)
+@Preview(showBackground = true, widthDp = 360, locale = "ko")
 @Composable
 fun LectureActionButtons_CustomLecture_EditMode() {
     LectureActionButtons(
@@ -62,7 +62,7 @@ fun LectureActionButtons_CustomLecture_EditMode() {
 }
 
 @PreviewTest
-@Preview(showBackground = true, widthDp = 360)
+@Preview(showBackground = true, widthDp = 360, locale = "ko")
 @Composable
 fun LectureActionButtons_SearchedLecture_ViewMode() {
     LectureActionButtons(
@@ -76,7 +76,7 @@ fun LectureActionButtons_SearchedLecture_ViewMode() {
 }
 
 @PreviewTest
-@Preview(showBackground = true, widthDp = 360)
+@Preview(showBackground = true, widthDp = 360, locale = "ko")
 @Composable
 fun LectureActionButtons_HideDeleteButton_SyllabusLecture_ViewMode() {
     LectureActionButtons(

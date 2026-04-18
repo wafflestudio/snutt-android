@@ -7,7 +7,7 @@ import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 
 @PreviewTest
-@Preview(showBackground = true, widthDp = 360)
+@Preview(showBackground = true, widthDp = 360, locale = "ko")
 @Composable
 fun LectureHeaderFields_LectureUIInfo_CustomColor_ViewMode() {
     LectureHeaderFields(
@@ -21,7 +21,7 @@ fun LectureHeaderFields_LectureUIInfo_CustomColor_ViewMode() {
 }
 
 @PreviewTest
-@Preview(showBackground = true, widthDp = 360)
+@Preview(showBackground = true, widthDp = 360, locale = "ko")
 @Composable
 fun LectureHeaderFields_LectureUIInfo_CustomColor_EditMode() {
     LectureHeaderFields(
@@ -35,7 +35,7 @@ fun LectureHeaderFields_LectureUIInfo_CustomColor_EditMode() {
 }
 
 @PreviewTest
-@Preview(showBackground = true, widthDp = 360)
+@Preview(showBackground = true, widthDp = 360, locale = "ko")
 @Composable
 fun LectureHeaderFields_LectureUIInfo_BuiltInColor_ViewMode() {
     LectureHeaderFields(
@@ -49,7 +49,7 @@ fun LectureHeaderFields_LectureUIInfo_BuiltInColor_ViewMode() {
 }
 
 @PreviewTest
-@Preview(showBackground = true, widthDp = 360)
+@Preview(showBackground = true, widthDp = 360, locale = "ko")
 @Composable
 fun LectureHeaderFields_LectureUIInfo_BuiltInColor_EditMode() {
     LectureHeaderFields(
@@ -63,7 +63,7 @@ fun LectureHeaderFields_LectureUIInfo_BuiltInColor_EditMode() {
 }
 
 @PreviewTest
-@Preview(showBackground = true, widthDp = 360)
+@Preview(showBackground = true, widthDp = 360, locale = "ko")
 @Composable
 fun LectureHeaderFields_NonUIInfo_ViewMode() {
     LectureHeaderFields(
