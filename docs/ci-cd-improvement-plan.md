@@ -48,11 +48,15 @@
     - `manual_deploy.yml` 의 `startsWith(inputs.variant, 'live')` 조건은 값이 고정 enum 이라 `== 'live'` 로 단순화.
     - 별도 발견: `app/src/staging/res/value/strings.xml` 디렉토리 오타(`value` 단수형). Android 가 리소스로 인식 안 함. CI/CD 범위 밖이라 플래그만.
 
-### [ ] 1-3. Gradle 셋업 개선
+### [x] 1-3. Gradle 셋업 개선
 
 - 현재: `actions/setup-java@v4` 의 `cache: gradle`.
 - 할 일: `gradle/actions/setup-gradle@v4` 도입. build-cache / configuration-cache / dependency 캐시 전략 개선.
 - 효과: 캐시 히트 향상 → CI 시간 단축.
+- 결정/결과:
+    - 3개 워크플로우 모두 `setup-java` 의 `cache: 'gradle'` 제거 후 `gradle/actions/setup-gradle@v4` 별도 스텝 추가.
+    - `ci.yml` 에 한해 `cache-read-only: ${{ github.event_name == 'pull_request' }}` 지정. PR 에서는 캐시 write 금지하여 caching poisoning 방지, develop push 시만 쓰기.
+    - 도입 직후 최초 실행은 캐시 미스로 느릴 수 있으나 이후 점진적으로 히트율 상승 예상.
 
 ### [ ] 1-4. CI job 분리 (병렬화)
 
