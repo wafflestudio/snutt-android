@@ -15,7 +15,7 @@ import android.widget.RemoteViews
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.scale
-import com.wafflestudio.snutt2.data.table_display.TableDisplayRepository
+import com.wafflestudio.snutt2.data.tabledisplay.TableDisplayRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.domain.ThemeService
 import com.wafflestudio.snutt2.ui.components.view.TimetableView

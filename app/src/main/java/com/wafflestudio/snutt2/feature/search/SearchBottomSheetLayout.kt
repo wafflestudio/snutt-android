@@ -8,7 +8,7 @@ import androidx.compose.runtime.LaunchedEffect
 import com.wafflestudio.snutt2.domain.model.SearchTag
 import com.wafflestudio.snutt2.domain.model.SearchedLecture
 import com.wafflestudio.snutt2.domain.model.TagType
-import com.wafflestudio.snutt2.feature.search.search_option.SearchOptionSheet
+import com.wafflestudio.snutt2.feature.search.searchoption.SearchOptionSheet
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.LocalAnalyticsLogger
 import com.wafflestudio.snutt2.ui.components.compose.ModalBottomSheetPlaceholder

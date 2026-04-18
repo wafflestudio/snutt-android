@@ -37,7 +37,7 @@ import com.wafflestudio.snutt2.domain.model.TableLectureCustom
 import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import com.wafflestudio.snutt2.feature.home.drawer.VacancyBanner
-import com.wafflestudio.snutt2.feature.table_lectures.TableLectureItem
+import com.wafflestudio.snutt2.feature.tablelectures.TableLectureItem
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 

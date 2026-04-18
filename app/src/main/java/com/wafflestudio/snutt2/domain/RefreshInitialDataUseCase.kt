@@ -1,7 +1,7 @@
 package com.wafflestudio.snutt2.domain
 
 import com.wafflestudio.snutt2.data.onFailure
-import com.wafflestudio.snutt2.data.semester_status.SemesterStatusRepository
+import com.wafflestudio.snutt2.data.semesterstatus.SemesterStatusRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
 import com.wafflestudio.snutt2.data.user.UserRepository

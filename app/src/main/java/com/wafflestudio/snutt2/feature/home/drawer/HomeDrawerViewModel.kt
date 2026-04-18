@@ -2,7 +2,7 @@ package com.wafflestudio.snutt2.feature.home.drawer
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wafflestudio.snutt2.data.course_books.CourseBookRepository
+import com.wafflestudio.snutt2.data.coursebooks.CourseBookRepository
 import com.wafflestudio.snutt2.data.onFailure
 import com.wafflestudio.snutt2.data.onSuccess
 import com.wafflestudio.snutt2.data.tables.TableRepository
