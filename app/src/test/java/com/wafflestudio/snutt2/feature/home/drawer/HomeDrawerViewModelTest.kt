@@ -1,7 +1,10 @@
 package com.wafflestudio.snutt2.feature.home.drawer
 
 import app.cash.turbine.test
+import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
+import com.wafflestudio.snutt2.domain.NotSelectedTimetable
+import com.wafflestudio.snutt2.domain.Unknown
 import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.ThemeReference
 import com.wafflestudio.snutt2.fake.FakeCourseBookRepository
@@ -13,9 +16,6 @@ import com.wafflestudio.snutt2.fixture.TestFixtures.courseBook2025_1
 import com.wafflestudio.snutt2.fixture.TestFixtures.customTheme
 import com.wafflestudio.snutt2.fixture.TestFixtures.table
 import com.wafflestudio.snutt2.fixture.TestFixtures.tableSummary
-import com.wafflestudio.snutt2.domain.NotSelectedTimetable
-import com.wafflestudio.snutt2.data.Result
-import com.wafflestudio.snutt2.domain.Unknown
 import com.wafflestudio.snutt2.lib.toDataWithState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

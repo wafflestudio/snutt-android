@@ -273,7 +273,11 @@ private fun SocialLinkScreenPreview() {
     SocialLinkScreen(
         uiState = SocialLinkUiState(
             socialProviders = SocialProviders(
-                local = true, facebook = false, google = true, kakao = false, apple = false,
+                local = true,
+                facebook = false,
+                google = true,
+                kakao = false,
+                apple = false,
             ),
         ),
         onKakaoConnect = {},

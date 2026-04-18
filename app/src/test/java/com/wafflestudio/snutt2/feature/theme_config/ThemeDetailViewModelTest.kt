@@ -2,12 +2,16 @@ package com.wafflestudio.snutt2.feature.theme_config
 
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
+import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
+import com.wafflestudio.snutt2.domain.Unknown
+import com.wafflestudio.snutt2.domain.WrongUserToken
 import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.CustomTheme
 import com.wafflestudio.snutt2.domain.model.EditingTheme
 import com.wafflestudio.snutt2.domain.model.TableLectureCustom
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
+import com.wafflestudio.snutt2.domain.model.ThemeColor
 import com.wafflestudio.snutt2.domain.model.ThemeReference
 import com.wafflestudio.snutt2.fake.FakeDisplayMessageResolver
 import com.wafflestudio.snutt2.fake.FakeTableDisplayRepository
@@ -17,10 +21,6 @@ import com.wafflestudio.snutt2.fake.FakeUserRepository
 import com.wafflestudio.snutt2.fixture.TestFixtures.customTheme
 import com.wafflestudio.snutt2.fixture.TestFixtures.table
 import com.wafflestudio.snutt2.fixture.TestFixtures.tableSummary
-import com.wafflestudio.snutt2.domain.model.ThemeColor
-import com.wafflestudio.snutt2.data.Result
-import com.wafflestudio.snutt2.domain.Unknown
-import com.wafflestudio.snutt2.domain.WrongUserToken
 import com.wafflestudio.snutt2.lib.toDataWithState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -237,7 +237,11 @@ class ThemeDetailViewModelTest {
         val viewModel = createViewModel(themeId = "my-1")
         val before = viewModel.uiState.value as ThemeDetailUiState.Success
         val newTrimParam = TableTrimParam(
-            dayOfWeekFrom = 0, dayOfWeekTo = 6, hourFrom = 8, hourTo = 22, forceFitLectures = false,
+            dayOfWeekFrom = 0,
+            dayOfWeekTo = 6,
+            hourFrom = 8,
+            hourTo = 22,
+            forceFitLectures = false,
         )
 
         fakeTableDisplayRepository.tableTrimParam.value = newTrimParam
@@ -265,7 +269,11 @@ class ThemeDetailViewModelTest {
         val before = viewModel.uiState.value as ThemeDetailUiState.Success
 
         val forceFitTrimParam = TableTrimParam(
-            dayOfWeekFrom = 0, dayOfWeekTo = 6, hourFrom = 8, hourTo = 22, forceFitLectures = true,
+            dayOfWeekFrom = 0,
+            dayOfWeekTo = 6,
+            hourFrom = 8,
+            hourTo = 22,
+            forceFitLectures = true,
         )
         fakeTableDisplayRepository.tableTrimParam.value = forceFitTrimParam
 

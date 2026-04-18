@@ -1,11 +1,11 @@
 package com.wafflestudio.snutt2.fake
 
+import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.data.current_table_lecture.CurrentTableLectureRepository
 import com.wafflestudio.snutt2.domain.model.CustomLecture
 import com.wafflestudio.snutt2.domain.model.Lecture
 import com.wafflestudio.snutt2.domain.model.LocalLecture
 import com.wafflestudio.snutt2.domain.model.SearchedLecture
-import com.wafflestudio.snutt2.data.Result
 
 class FakeCurrentTableLectureRepository : CurrentTableLectureRepository {
 

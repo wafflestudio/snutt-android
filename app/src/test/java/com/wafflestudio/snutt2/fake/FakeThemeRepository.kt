@@ -1,10 +1,10 @@
 package com.wafflestudio.snutt2.fake
 
+import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.data.themes.ThemeRepository
 import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.CustomTheme
 import com.wafflestudio.snutt2.domain.model.ThemeColor
-import com.wafflestudio.snutt2.data.Result
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class FakeThemeRepository : ThemeRepository {

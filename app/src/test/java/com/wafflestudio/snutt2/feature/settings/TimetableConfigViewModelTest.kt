@@ -1,10 +1,15 @@
 package com.wafflestudio.snutt2.feature.settings
 
 import app.cash.turbine.test
+import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
+import com.wafflestudio.snutt2.domain.Unknown
+import com.wafflestudio.snutt2.domain.WrongUserToken
 import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.TableLectureCustom
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
+import com.wafflestudio.snutt2.domain.model.ThemeReference
+import com.wafflestudio.snutt2.domain.model.getFittingTrimParam
 import com.wafflestudio.snutt2.fake.FakeDisplayMessageResolver
 import com.wafflestudio.snutt2.fake.FakeTableDisplayRepository
 import com.wafflestudio.snutt2.fake.FakeTableRepository
@@ -12,11 +17,6 @@ import com.wafflestudio.snutt2.fake.FakeThemeRepository
 import com.wafflestudio.snutt2.fake.FakeUserRepository
 import com.wafflestudio.snutt2.fixture.TestFixtures.table
 import com.wafflestudio.snutt2.fixture.TestFixtures.tableSummary
-import com.wafflestudio.snutt2.domain.model.getFittingTrimParam
-import com.wafflestudio.snutt2.domain.model.ThemeReference
-import com.wafflestudio.snutt2.data.Result
-import com.wafflestudio.snutt2.domain.Unknown
-import com.wafflestudio.snutt2.domain.WrongUserToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -71,7 +71,10 @@ class TimetableConfigViewModelTest {
         fakeTableDisplayRepository.tableTrimParam.value = trimParam
         fakeTableDisplayRepository.compactMode.value = true
         fakeTableDisplayRepository.tableLectureCustomOption.value = TableLectureCustom(
-            title = true, place = false, lectureNumber = true, instructor = false,
+            title = true,
+            place = false,
+            lectureNumber = true,
+            instructor = false,
         )
         fakeTableRepository.currentTable.value = table(
             summary = tableSummary(id = "t1"),
@@ -85,7 +88,10 @@ class TimetableConfigViewModelTest {
                 tableTrimParam = trimParam,
                 compactMode = true,
                 tableLectureCustom = TableLectureCustom(
-                    title = true, place = false, lectureNumber = true, instructor = false,
+                    title = true,
+                    place = false,
+                    lectureNumber = true,
+                    instructor = false,
                 ),
                 lectures = emptyList(),
                 theme = BuiltInTheme.SNUTT,

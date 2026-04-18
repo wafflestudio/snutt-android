@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2
 
 import android.Manifest
-import androidx.core.net.toUri
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -26,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope

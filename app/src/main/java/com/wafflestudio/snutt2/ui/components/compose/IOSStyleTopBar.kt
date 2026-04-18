@@ -36,7 +36,8 @@ fun IOSStyleTopBar(
                 onDrawWithContent {
                     drawLine(
                         color = SNUTTColors.EditTextHint,
-                        start = Offset(0f, this.size.height), end = Offset(this.size.width, this.size.height),
+                        start = Offset(0f, this.size.height),
+                        end = Offset(this.size.width, this.size.height),
                         strokeWidth = 0.5.dp.toPx(),
                     )
                     drawContent()

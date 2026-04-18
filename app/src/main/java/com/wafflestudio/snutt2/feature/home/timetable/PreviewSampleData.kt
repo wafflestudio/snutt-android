@@ -42,7 +42,9 @@ internal fun syllabusLecture(
 // 모든 강의가 BuiltIn 색인 사용
 internal val builtInOnlyLectures: List<LocalLecture> = listOf(
     syllabusLecture(
-        id = "1", courseTitle = "논리설계", instructor = "이창건",
+        id = "1",
+        courseTitle = "논리설계",
+        instructor = "이창건",
         color = LectureColor.BuiltIn(0),
         sessions = listOf(
             LectureSession(null, DayOfWeek.MONDAY, LocalTime.of(14, 0), LocalTime.of(15, 15), "301-118"),
@@ -50,7 +52,9 @@ internal val builtInOnlyLectures: List<LocalLecture> = listOf(
         ),
     ),
     syllabusLecture(
-        id = "2", courseTitle = "이산수학", instructor = "김민수",
+        id = "2",
+        courseTitle = "이산수학",
+        instructor = "김민수",
         color = LectureColor.BuiltIn(1),
         sessions = listOf(
             LectureSession(null, DayOfWeek.TUESDAY, LocalTime.of(10, 30), LocalTime.of(12, 0), "302-208"),
@@ -58,14 +62,18 @@ internal val builtInOnlyLectures: List<LocalLecture> = listOf(
         ),
     ),
     syllabusLecture(
-        id = "3", courseTitle = "대학 글쓰기 1", instructor = "박지영",
+        id = "3",
+        courseTitle = "대학 글쓰기 1",
+        instructor = "박지영",
         color = LectureColor.BuiltIn(2),
         sessions = listOf(
             LectureSession(null, DayOfWeek.FRIDAY, LocalTime.of(9, 0), LocalTime.of(11, 0), "5-302"),
         ),
     ),
     syllabusLecture(
-        id = "4", courseTitle = "컴퓨터 프로그래밍", instructor = "홍길동",
+        id = "4",
+        courseTitle = "컴퓨터 프로그래밍",
+        instructor = "홍길동",
         color = LectureColor.BuiltIn(3),
         sessions = listOf(
             LectureSession(null, DayOfWeek.MONDAY, LocalTime.of(9, 0), LocalTime.of(10, 15), "302-308"),
@@ -73,14 +81,18 @@ internal val builtInOnlyLectures: List<LocalLecture> = listOf(
         ),
     ),
     syllabusLecture(
-        id = "5", courseTitle = "통계학", instructor = "최수진",
+        id = "5",
+        courseTitle = "통계학",
+        instructor = "최수진",
         color = LectureColor.BuiltIn(4),
         sessions = listOf(
             LectureSession(null, DayOfWeek.TUESDAY, LocalTime.of(14, 0), LocalTime.of(15, 30), "25-210"),
         ),
     ),
     syllabusLecture(
-        id = "5", courseTitle = "통계학", instructor = "최수진",
+        id = "5",
+        courseTitle = "통계학",
+        instructor = "최수진",
         color = LectureColor.BuiltIn(4),
         sessions = listOf(),
     ),
@@ -89,7 +101,9 @@ internal val builtInOnlyLectures: List<LocalLecture> = listOf(
 // BuiltIn 색인 + Custom 색 혼합 (빌트인 테마에서 일부 강의만 사용자 커스텀 색)
 internal val mixedColorLectures: List<LocalLecture> = listOf(
     syllabusLecture(
-        id = "1", courseTitle = "논리설계", instructor = "이창건",
+        id = "1",
+        courseTitle = "논리설계",
+        instructor = "이창건",
         color = LectureColor.BuiltIn(0),
         sessions = listOf(
             LectureSession(null, DayOfWeek.MONDAY, LocalTime.of(14, 0), LocalTime.of(15, 15), "301-118"),
@@ -97,7 +111,9 @@ internal val mixedColorLectures: List<LocalLecture> = listOf(
         ),
     ),
     syllabusLecture(
-        id = "2", courseTitle = "이산수학", instructor = "김민수",
+        id = "2",
+        courseTitle = "이산수학",
+        instructor = "김민수",
         color = LectureColor.Custom(foreground = 0xFFFFFFFF.toInt(), background = 0xFF6172E9.toInt()),
         sessions = listOf(
             LectureSession(null, DayOfWeek.TUESDAY, LocalTime.of(10, 30), LocalTime.of(12, 0), "302-208"),
@@ -105,14 +121,18 @@ internal val mixedColorLectures: List<LocalLecture> = listOf(
         ),
     ),
     syllabusLecture(
-        id = "3", courseTitle = "대학 글쓰기 1", instructor = "박지영",
+        id = "3",
+        courseTitle = "대학 글쓰기 1",
+        instructor = "박지영",
         color = LectureColor.BuiltIn(2),
         sessions = listOf(
             LectureSession(null, DayOfWeek.FRIDAY, LocalTime.of(9, 0), LocalTime.of(11, 0), "5-302"),
         ),
     ),
     syllabusLecture(
-        id = "4", courseTitle = "컴퓨터 프로그래밍", instructor = "홍길동",
+        id = "4",
+        courseTitle = "컴퓨터 프로그래밍",
+        instructor = "홍길동",
         color = LectureColor.Custom(foreground = 0xFF1A1A1A.toInt(), background = 0xFFFFD700.toInt()),
         sessions = listOf(
             LectureSession(null, DayOfWeek.MONDAY, LocalTime.of(9, 0), LocalTime.of(10, 15), "302-308"),
@@ -120,8 +140,11 @@ internal val mixedColorLectures: List<LocalLecture> = listOf(
         ),
     ),
     CustomLecture(
-        id = "5", courseTitle = "스터디", instructor = "",
-        credit = 0, remark = "",
+        id = "5",
+        courseTitle = "스터디",
+        instructor = "",
+        credit = 0,
+        remark = "",
         color = LectureColor.Custom(foreground = 0xFFFFFFFF.toInt(), background = 0xFF333333.toInt()),
         lectureSessions = listOf(
             LectureSession(null, DayOfWeek.MONDAY, LocalTime.of(19, 0), LocalTime.of(20, 30), "카페"),
