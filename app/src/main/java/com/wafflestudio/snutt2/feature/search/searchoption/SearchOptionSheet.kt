@@ -99,7 +99,7 @@ fun SearchOptionSheet(
                     )
                     .offset(x = offsetXAnimatedDp)
                     .alpha(alphaAnimatedFloat),
-                recentSearchedDepartments = recentSearchedDepartments,
+                recentSearchedDepartments = if (selectedTagType == TagType.DEPARTMENT) recentSearchedDepartments else emptyList(),
                 searchTags = searchTags,
                 selectedTimes = draggedTimeBlock,
                 onToggleTag = { searchTag ->
