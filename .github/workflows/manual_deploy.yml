@@ -30,8 +30,8 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v5
         with:
-          java-version: 17
-          distribution: 'temurin'
+          java-version: 21
+          distribution: 'jetbrains'
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
       - name: Setup secrets (Live)
