@@ -4,7 +4,7 @@ kotlin = "2.3.20"
 androidGradle = "9.1.1"
 
 # Build tools
-ktlintGradle = "14.2.0"
+ktlintGradle = "14.0.1"
 hilt = "2.59.2"
 ksp = "2.3.5"
 
