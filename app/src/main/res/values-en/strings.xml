@@ -195,6 +195,7 @@
     <string name="settings_personal_information_policy">Privacy Policy</string>
     <string name="settings_push_preferences_title">Push Notification Settings</string>
     <string name="settings_push_preferences_lecture_update">Lecture Updates</string>
+    <string name="settings_push_preferences_lecture_diary">Lecture Diary</string>
     <string name="settings_push_preferences_vacancy">Vacancy Alerts</string>
     <string name="settings_lecture_reminder_title">Lecture Reminder</string>
     <string name="settings_lecture_reminder_my_reminders">My Reminders</string>

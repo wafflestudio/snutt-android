@@ -5,7 +5,7 @@
 
     <string name="send_report">문의사항 보내기</string>
 
-    <string name="api_google_server">https://oauth2.googleapis.com</string>
+    <string name="api_google_server" translatable="false">https://oauth2.googleapis.com</string>
 
     <!-- For sign up fragment -->
     <string name="sign_up_terms_1">회원가입을 누르시면</string>
@@ -30,12 +30,12 @@
     <string name="sign_up_password_confirm_hint">비밀번호를 한 번 더 입력하세요</string>
     <string name="sign_up_email_input_title">이메일</string>
     <string name="sign_up_email_input_hint">이메일 주소를 입력하세요</string>
-    <string name="sign_up_email_form">\@snu.ac.kr</string>
+    <string name="sign_up_email_form" translatable="false">\@snu.ac.kr</string>
     <string name="sign_up_sign_up_button">계정 만들기</string>
 
     <!--social-login-->
 <string name="sign_in_app_bar_title">로그인</string>
-    <string name="sign_in_logo_title">SNUTT</string>
+    <string name="sign_in_logo_title" translatable="false">SNUTT</string>
     <string name="sign_in_sign_in_button">로그인</string>
     <string name="continue_with_sns_account">SNS 계정으로 계속하기</string>
 <string name="sign_in_sign_in_google_cancelled">구글 로그인이 취소되었습니다.</string>
@@ -54,10 +54,10 @@
 
     <!--licenses-->
     <string name="settings_licenses_title">오픈소스 라이선스</string>
-    <string name="license_colorpicker_route">colorpicker</string>
-    <string name="license_colorpicker_title">Color Picker</string>
-    <string name="license_colorpicker_name">Apache License</string>
-    <string name="license_colorpicker_content">Copyright 2014-2017 QuadFlask
+    <string name="license_colorpicker_route" translatable="false">colorpicker</string>
+    <string name="license_colorpicker_title" translatable="false">Color Picker</string>
+    <string name="license_colorpicker_name" translatable="false">Apache License</string>
+    <string name="license_colorpicker_content" translatable="false">Copyright 2014-2017 QuadFlask
 
     \n\nLicensed under the Apache License, Version 2.0 (the "License");
     \nyou may not use this file except in compliance with the License.
@@ -70,10 +70,10 @@
     \nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     \nSee the License for the specific language governing permissions and
     \nlimitations under the License.</string>
-    <string name="license_guava_route">guava</string>
-    <string name="license_guava_title">Guava</string>
-    <string name="license_guava_name">Apache License</string>
-    <string name="license_guava_content">Licensed under the Apache License, Version 2.0 (the "License");
+    <string name="license_guava_route" translatable="false">guava</string>
+    <string name="license_guava_title" translatable="false">Guava</string>
+    <string name="license_guava_name" translatable="false">Apache License</string>
+    <string name="license_guava_content" translatable="false">Licensed under the Apache License, Version 2.0 (the "License");
     \nyou may not use this file except in compliance with the License.
     \nYou may obtain a copy of the License at
 
@@ -84,10 +84,10 @@
     \nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     \nSee the License for the specific language governing permissions and
     \nlimitations under the License.</string>
-    <string name="license_retrofit_route">retrofit</string>
-    <string name="license_retrofit_title">Retrofit</string>
-    <string name="license_retrofit_name">Apache License</string>
-    <string name="license_retrofit_content">Copyright 2013 Square, Inc.
+    <string name="license_retrofit_route" translatable="false">retrofit</string>
+    <string name="license_retrofit_title" translatable="false">Retrofit</string>
+    <string name="license_retrofit_name" translatable="false">Apache License</string>
+    <string name="license_retrofit_content" translatable="false">Copyright 2013 Square, Inc.
 
     \n\nLicensed under the Apache License, Version 2.0 (the "License");
     \nyou may not use this file except in compliance with the License.
@@ -100,10 +100,10 @@
     \nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     \nSee the License for the specific language governing permissions and
     \nlimitations under the License.</string>
-    <string name="license_okhttp_route">okhttp</string>
-    <string name="license_okhttp_title">Okhttp</string>
-    <string name="license_okhttp_name">Apache License</string>
-    <string name="license_okhttp_content">Copyright 2019 Square, Inc.
+    <string name="license_okhttp_route" translatable="false">okhttp</string>
+    <string name="license_okhttp_title" translatable="false">Okhttp</string>
+    <string name="license_okhttp_name" translatable="false">Apache License</string>
+    <string name="license_okhttp_content" translatable="false">Copyright 2019 Square, Inc.
 
     \n\nLicensed under the Apache License, Version 2.0 (the "License");
     \nyou may not use this file except in compliance with the License.
@@ -116,10 +116,10 @@
     \nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     \nSee the License for the specific language governing permissions and
     \nlimitations under the License.</string>
-    <string name="license_pretendard_route">pretendard</string>
-    <string name="license_pretendard_title">Pretendard</string>
-    <string name="license_pretendard_name">SIL OPEN FONT LICENSE</string>
-    <string name="license_pretendard_content">Copyright © 2021, Kil Hyung-jin (https://github.com/orioncactus/pretendard),
+    <string name="license_pretendard_route" translatable="false">pretendard</string>
+    <string name="license_pretendard_title" translatable="false">Pretendard</string>
+    <string name="license_pretendard_name" translatable="false">SIL OPEN FONT LICENSE</string>
+    <string name="license_pretendard_content" translatable="false">Copyright © 2021, Kil Hyung-jin (https://github.com/orioncactus/pretendard),
 \nwith Reserved Font Name \'Pretendard\'.
 
 \n\nCopyright 2014-2021 Adobe (http://www.adobe.com/),
@@ -337,7 +337,7 @@
     <string name="lecture_detail_top_bar_complete">완료</string>
     <string name="lecture_detail_top_bar_edit">편집</string>
     <string name="home_select_theme_confirm">적용</string>
-    <string name="home_select_theme_snutt">SNUTT</string>
+    <string name="home_select_theme_snutt" translatable="false">SNUTT</string>
     <string name="home_select_theme_autumn">가을</string>
     <string name="home_select_theme_modern">모던</string>
     <string name="home_select_theme_pink">벚꽃</string>
@@ -371,7 +371,7 @@
     <string name="settings_app_report_title">개발자 괴롭히기</string>
     <string name="settings_app_report_email">이메일</string>
     <string name="settings_app_report_detail">내용</string>
-<string name="settings_app_report_detail_hint"> </string>
+<string name="settings_app_report_detail_hint" translatable="false"> </string>
     <string name="settings_app_report_description">불편한 점이나 버그를 제보해주세요.\n더 나은 SNUTT를 위한 아이디어도 환영해요.</string>
     <string name="settings_personal_information_policy">개인정보처리방침</string>
     <string name="settings_push_preferences_title">푸시알림 설정</string>
@@ -490,7 +490,7 @@
     <string name="feedback_empty_detail_warning">내용을 입력해 주세요.</string>
     <string name="feedback_invalid_email_warning">이메일을 올바르게 입력해 주세요.</string>
     <string name="feedback_send_success_message">전송하였습니다.</string>
-    <string name="example_email">example@gmail.com</string>
+    <string name="example_email" translatable="false">example@gmail.com</string>
     <string name="reviews_error_message">네트워크 연결을 확인해주세요</string>
     <string name="reviews_error_retry">다시 불러오기</string>
     <string name="lecture_overlap_error_message">시간대 겹침</string>
