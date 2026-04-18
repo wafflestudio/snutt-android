@@ -145,6 +145,9 @@ compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 # Haze
 haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
 
+# Compose Preview Screenshot Test
+screenshot-validation-api = { module = "com.android.tools.screenshot:screenshot-validation-api", version.ref = "composeScreenshot" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradle" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }

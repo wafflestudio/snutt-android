@@ -149,6 +149,7 @@ dependencies {
     // Compose Preview Screenshot Test
     screenshotTestImplementation(platform(libs.compose.bom))
     screenshotTestImplementation(libs.compose.ui.tooling)
+    screenshotTestImplementation(libs.screenshot.validation.api)
 
     // Android Core
     implementation(libs.material)

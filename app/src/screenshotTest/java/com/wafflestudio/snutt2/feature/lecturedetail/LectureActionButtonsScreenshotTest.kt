@@ -2,11 +2,13 @@ package com.wafflestudio.snutt2.feature.lecturedetail
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.android.tools.screenshot.PreviewTest
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 
+@PreviewTest
 @Preview(showBackground = true, widthDp = 360)
 @Composable
-private fun LectureActionButtons_SyllabusLecture_ViewMode() {
+fun LectureActionButtons_SyllabusLecture_ViewMode() {
     LectureActionButtons(
         lecture = PreviewData.syllabusLecture,
         editMode = false,
@@ -17,9 +19,10 @@ private fun LectureActionButtons_SyllabusLecture_ViewMode() {
     )
 }
 
+@PreviewTest
 @Preview(showBackground = true, widthDp = 360)
 @Composable
-private fun LectureActionButtons_SyllabusLecture_EditMode() {
+fun LectureActionButtons_SyllabusLecture_EditMode() {
     LectureActionButtons(
         lecture = PreviewData.syllabusLecture,
         editMode = true,
@@ -30,9 +33,10 @@ private fun LectureActionButtons_SyllabusLecture_EditMode() {
     )
 }
 
+@PreviewTest
 @Preview(showBackground = true, widthDp = 360)
 @Composable
-private fun LectureActionButtons_CustomLecture_ViewMode() {
+fun LectureActionButtons_CustomLecture_ViewMode() {
     LectureActionButtons(
         lecture = PreviewData.customLecture,
         editMode = false,
@@ -43,9 +47,10 @@ private fun LectureActionButtons_CustomLecture_ViewMode() {
     )
 }
 
+@PreviewTest
 @Preview(showBackground = true, widthDp = 360)
 @Composable
-private fun LectureActionButtons_CustomLecture_EditMode() {
+fun LectureActionButtons_CustomLecture_EditMode() {
     LectureActionButtons(
         lecture = PreviewData.customLecture,
         editMode = true,
@@ -56,9 +61,10 @@ private fun LectureActionButtons_CustomLecture_EditMode() {
     )
 }
 
+@PreviewTest
 @Preview(showBackground = true, widthDp = 360)
 @Composable
-private fun LectureActionButtons_SearchedLecture_ViewMode() {
+fun LectureActionButtons_SearchedLecture_ViewMode() {
     LectureActionButtons(
         lecture = PreviewData.searchedLecture,
         editMode = false,
@@ -69,9 +75,10 @@ private fun LectureActionButtons_SearchedLecture_ViewMode() {
     )
 }
 
+@PreviewTest
 @Preview(showBackground = true, widthDp = 360)
 @Composable
-private fun LectureActionButtons_HideDeleteButton_SyllabusLecture_ViewMode() {
+fun LectureActionButtons_HideDeleteButton_SyllabusLecture_ViewMode() {
     LectureActionButtons(
         lecture = PreviewData.syllabusLecture,
         editMode = false,
