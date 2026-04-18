@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.compose.screenshot)
 }
 
 ktlint {
@@ -112,6 +113,9 @@ android {
         buildConfig = true
     }
 
+    @Suppress("UnstableApiUsage")
+    experimentalProperties["android.experimental.enableScreenshotTest"] = true
+
     lint {
         baseline = file("lint-baseline.xml")
     }
@@ -131,6 +135,15 @@ composeCompiler {
     }
 }
 
+// Workaround: compose-screenshot alpha14 의 layoutlib 번들 stdlib 이 Kotlin 2.3.20 의
+// `kotlin.jvm.internal.KotlinGenericDeclaration` 을 모른다. kotlin-reflect 만 2.3.0 으로
+// 고정해 ClassNotFoundException 을 피한다. main 코드는 2.3.20 유지.
+configurations.configureEach {
+    if (name.contains("screenshot", ignoreCase = true)) {
+        resolutionStrategy.force("org.jetbrains.kotlin:kotlin-reflect:2.3.0")
+    }
+}
+
 dependencies {
     // Testing
     testImplementation(libs.junit)
@@ -141,6 +154,11 @@ dependencies {
     testImplementation(platform(libs.compose.bom))
     testImplementation(libs.compose.ui.test.junit4)
     debugImplementation(libs.compose.ui.test.manifest)
+
+    // Compose Preview Screenshot Test
+    screenshotTestImplementation(platform(libs.compose.bom))
+    screenshotTestImplementation(libs.compose.ui.tooling)
+    screenshotTestImplementation(libs.screenshot.validation.api)
 
     // Android Core
     implementation(libs.material)

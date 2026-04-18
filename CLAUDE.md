@@ -186,6 +186,19 @@ fetch 완료 전까지 emission이 발생하지 않아 Loading 유지. 성공 �
 - 컴포즈 UI 라이브러리의 상태(예: `ModalBottomSheetState`)는 Route가 소유한다. ViewModel은 직접 제어하지 않고 UiEvent를 통해 제어를
   요청한다.
 
+**Preview / Screenshot Test**
+
+`main` 의 `@Preview` 와 `screenshotTest` 의 `@Preview` 는 역할이 명백히 다르다. 세부 규약(도구, 커버리지 기준, 네이밍 등)은
+`docs/screenshot-test-policy.md` 참조.
+
+원칙
+
+- `main` 의 `@Preview`: 개발자의 시각적 단서 목적. 해당 컴포넌트가 어떻게 생겼는지 인지할 수 있을 정도의 최소 분기만 포함.
+- `screenshotTest` 의 `@Preview`: 코드 변경에 따른 의도치 않은 시각 회귀를 방어하는 논리적 방어막. 유의미한 모든 분기를 1:1로 커버한다.
+- 커버리지 단위는 **컴포넌트**. 플로우/Screen 단위 테스트는 현 범위에서 제외한다.
+- "유의미한 분기" 는 파라미터의 곱집합이 아니라 **실제 `when`/`if` 분기 로직이 바뀌는 경로**를 말한다.
+- `X.kt` ↔ `XScreenshotTest.kt` 1:1 대응. 테스트 preview 이름은 `{ComponentName}_{분기식별자}`.
+
 **ModalBottomSheet**
 
 `ModalBottomSheetLayout` 사용 시 ViewModel의 UiState와 Compose의 `ModalBottomSheetState`라는 이중 상태가 발생한다. 상태
