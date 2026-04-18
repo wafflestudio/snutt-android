@@ -12,6 +12,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraPosition
@@ -36,6 +37,8 @@ fun EmbedMap(
     buildings: List<Building>,
 ) {
     val context = LocalContext.current
+    val pinHighlightedFindTemplate = stringResource(R.string.embed_map_pin_highlighted_find)
+    val pinHighlightedDongTemplate = stringResource(R.string.embed_map_pin_highlighted_dong)
 
     /* 지도 dim */
     var mapDimmed by remember {
@@ -68,20 +71,14 @@ fun EmbedMap(
                 OverlayImage.fromView(
                     MapPinBinding.inflate(LayoutInflater.from(context)).root.also {
                         it.findViewById<TextView>(R.id.building_text).text =
-                            context.getString(
-                                R.string.embed_map_pin_highlighted_find,
-                                building.buildingNumber,
-                            )
+                            pinHighlightedFindTemplate.format(building.buildingNumber)
                     },
                 )
             }
             Marker(
                 anchor = if (mapDimmed) MarkerDefaults.Anchor else Offset(0.5f, 0.6f),
                 icon = if (mapDimmed) dimmedMarker else EmbedMapConstants.normalMarker,
-                captionText = context.getString(
-                    R.string.embed_map_pin_highlighted_dong,
-                    building.buildingNumber,
-                ),
+                captionText = pinHighlightedDongTemplate.format(building.buildingNumber),
                 captionOffset = (-26).dp,
                 state = rememberUpdatedMarkerState(
                     position = CameraPosition(

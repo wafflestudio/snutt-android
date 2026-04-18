@@ -43,6 +43,13 @@ fun UserConfigRoute(
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    val invalidIdError = stringResource(R.string.error_invalid_id)
+    val invalidPasswordError = stringResource(R.string.error_invalid_password)
+    val passwordMismatchError = stringResource(R.string.settings_user_config_password_confirm_fail)
+    val changePasswordSuccess = stringResource(R.string.settings_user_config_change_password_success)
+    val addIdPasswordSuccess = stringResource(R.string.settings_user_config_add_local_id_success)
+    val nicknameCopiedToast = stringResource(R.string.settings_user_nickname_copied_toast)
+
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { uiEvent ->
             when (uiEvent) {
@@ -55,11 +62,11 @@ fun UserConfigRoute(
 
                 is UserConfigUiEvent.ShowToastByEvent -> {
                     val message = when (uiEvent.event) {
-                        UserConfigEvent.InvalidIdError -> context.getString(R.string.error_invalid_id)
-                        UserConfigEvent.InvalidPasswordError -> context.getString(R.string.error_invalid_password)
-                        UserConfigEvent.PasswordMismatchError -> context.getString(R.string.settings_user_config_password_confirm_fail)
-                        UserConfigEvent.ChangePasswordSuccess -> context.getString(R.string.settings_user_config_change_password_success)
-                        UserConfigEvent.AddIdPasswordSuccess -> context.getString(R.string.settings_user_config_add_local_id_success)
+                        UserConfigEvent.InvalidIdError -> invalidIdError
+                        UserConfigEvent.InvalidPasswordError -> invalidPasswordError
+                        UserConfigEvent.PasswordMismatchError -> passwordMismatchError
+                        UserConfigEvent.ChangePasswordSuccess -> changePasswordSuccess
+                        UserConfigEvent.AddIdPasswordSuccess -> addIdPasswordSuccess
                     }
                     context.toast(message)
                 }
@@ -86,7 +93,7 @@ fun UserConfigRoute(
             copyToClipboard(
                 context = context,
                 content = uiState.userName,
-                toastMessage = context.getString(R.string.settings_user_nickname_copied_toast),
+                toastMessage = nicknameCopiedToast,
             )
         },
         onClickChangePassword = viewModel::showChangePasswordDialog,

@@ -45,6 +45,7 @@ fun EnterFullEmailStep(
 ) {
     val focusRequester = remember { FocusRequester() }
     val context = LocalContext.current
+    val enterIdHintMessage = stringResource(R.string.find_password_enter_id_hint)
 
     var emailField by remember {
         mutableStateOf(
@@ -63,7 +64,7 @@ fun EnterFullEmailStep(
     val sendIdAndRequestMaskedEmail: () -> Unit = {
         if (buttonEnabled) {
             if (emailField.text.isEmpty()) {
-                context.toast(context.getString(R.string.find_password_enter_id_hint))
+                context.toast(enterIdHintMessage)
             } else {
                 onSubmitFullEmail(emailField.text)
             }

@@ -41,6 +41,7 @@ fun CheckIdStep(
 ) {
     val focusRequester = remember { FocusRequester() }
     val context = LocalContext.current
+    val enterIdHintMessage = stringResource(R.string.find_password_enter_id_hint)
 
     var idField by remember {
         mutableStateOf(
@@ -58,7 +59,7 @@ fun CheckIdStep(
 
     val sendIdAndRequestMaskedEmail = {
         if (idField.text.isEmpty()) {
-            context.toast(context.getString(R.string.find_password_enter_id_hint))
+            context.toast(enterIdHintMessage)
         } else {
             onSubmit(idField.text)
         }

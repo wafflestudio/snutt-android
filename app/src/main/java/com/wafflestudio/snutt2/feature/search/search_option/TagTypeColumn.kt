@@ -7,11 +7,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
@@ -29,20 +28,17 @@ fun TagTypeColumn(
     onSelectTagType: (TagType) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current
-    val tagTypeList = remember {
-        listOf(
-            context.getString(R.string.search_option_tag_type_sort_criteria) to TagType.SORT_CRITERIA,
-            context.getString(R.string.search_option_tag_type_classification) to TagType.CLASSIFICATION,
-            context.getString(R.string.search_option_tag_type_department) to TagType.DEPARTMENT,
-            context.getString(R.string.search_option_tag_type_academic_year) to TagType.ACADEMIC_YEAR,
-            context.getString(R.string.search_option_tag_type_credit) to TagType.CREDIT,
-            context.getString(R.string.search_option_tag_type_time) to TagType.TIME,
-            context.getString(R.string.search_option_tag_type_general_category) to TagType.CATEGORY,
-            context.getString(R.string.search_option_tag_type_general_category_pre2025) to TagType.CATEGORY_PRE2025,
-            context.getString(R.string.search_option_tag_type_etc) to TagType.ETC,
-        )
-    }
+    val tagTypeList = listOf(
+        stringResource(R.string.search_option_tag_type_sort_criteria) to TagType.SORT_CRITERIA,
+        stringResource(R.string.search_option_tag_type_classification) to TagType.CLASSIFICATION,
+        stringResource(R.string.search_option_tag_type_department) to TagType.DEPARTMENT,
+        stringResource(R.string.search_option_tag_type_academic_year) to TagType.ACADEMIC_YEAR,
+        stringResource(R.string.search_option_tag_type_credit) to TagType.CREDIT,
+        stringResource(R.string.search_option_tag_type_time) to TagType.TIME,
+        stringResource(R.string.search_option_tag_type_general_category) to TagType.CATEGORY,
+        stringResource(R.string.search_option_tag_type_general_category_pre2025) to TagType.CATEGORY_PRE2025,
+        stringResource(R.string.search_option_tag_type_etc) to TagType.ETC,
+    )
 
     val alphaAnimatedFloat = 1f - baseAnimatedFloat.value
     val offsetXAnimatedDp =

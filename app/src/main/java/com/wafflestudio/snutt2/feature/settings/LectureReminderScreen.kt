@@ -68,6 +68,10 @@ fun LectureReminderRoute(
     val snackBarHostState = remember { CustomSnackBarHostState() }
     val hazeState = rememberHazeState()
 
+    val tenMinutesBeforeMessage = stringResource(R.string.settings_lecture_reminder_update_success_ten_minutes_before)
+    val atStartTimeMessage = stringResource(R.string.settings_lecture_reminder_update_success_at_start_time)
+    val tenMinutesAfterMessage = stringResource(R.string.settings_lecture_reminder_update_success_ten_minutes_after)
+
     LaunchedEffect(Unit) {
         viewModel.lectureReminderUiEvent.collect { uiEvent ->
             when (uiEvent) {
@@ -81,14 +85,9 @@ fun LectureReminderRoute(
                 is LectureReminderUiEvent.ShowSnackBarByEvent -> {
                     val message = when (uiEvent.event) {
                         LectureReminderEvent.LECTURE_REMINDER_UPDATE_SUCCESS_NONE -> ""
-                        LectureReminderEvent.LECTURE_REMINDER_UPDATE_SUCCESS_TEN_MINUTES_BEFORE,
-                            -> context.getString(R.string.settings_lecture_reminder_update_success_ten_minutes_before)
-
-                        LectureReminderEvent.LECTURE_REMINDER_UPDATE_SUCCESS_AT_START_TIME,
-                            -> context.getString(R.string.settings_lecture_reminder_update_success_at_start_time)
-
-                        LectureReminderEvent.LECTURE_REMINDER_UPDATE_SUCCESS_TEN_MINUTES_AFTER,
-                            -> context.getString(R.string.settings_lecture_reminder_update_success_ten_minutes_after)
+                        LectureReminderEvent.LECTURE_REMINDER_UPDATE_SUCCESS_TEN_MINUTES_BEFORE -> tenMinutesBeforeMessage
+                        LectureReminderEvent.LECTURE_REMINDER_UPDATE_SUCCESS_AT_START_TIME -> atStartTimeMessage
+                        LectureReminderEvent.LECTURE_REMINDER_UPDATE_SUCCESS_TEN_MINUTES_AFTER -> tenMinutesAfterMessage
                     }
                     if (message.isNotEmpty()) {
                         launch {
