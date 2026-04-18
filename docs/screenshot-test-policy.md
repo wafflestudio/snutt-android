@@ -13,6 +13,18 @@
 - 채택 이유: (a) 공식/네이티브 지원, (b) `@Preview` 를 그대로 테스트 입력으로 사용 — 기존 컴포저블 작성 관습과 충돌하지 않음.
 - 대안(Paparazzi, Roborazzi)은 현재 후보에서 제외한다. 공식 도구가 안정화되기 전까지 재검토 가능.
 
+### 1.1 알려진 제약 — Kotlin 2.3.20 × alpha14 호환 workaround
+
+`com.android.compose.screenshot:0.0.1-alpha14` 가 포함한 `layoutlib:16.1.0-jdk17` 의 번들 stdlib 이
+`kotlin-reflect:2.3.20` 이 link-time 참조하는 신규 클래스 `kotlin.jvm.internal.KotlinGenericDeclaration`
+을 모른다. 그 결과 screenshot test 실행 시 layoutlib 렌더링에서 `ClassNotFoundException` 이 발생하며
+모든 preview 가 실패한다.
+
+우회: `app/build.gradle.kts` 에서 `screenshotTest` 관련 configuration 에 한해 `kotlin-reflect` 를
+2.3.0 으로 `resolutionStrategy.force`. main 코드의 Kotlin 2.3.20 은 유지한다.
+
+제거 시점: alpha15 또는 layoutlib 번들 갱신에서 해당 조합이 재검증되는 즉시 블록 전체 제거.
+
 ---
 
 ## 2. `main` 과 `screenshotTest` 의 역할 구분

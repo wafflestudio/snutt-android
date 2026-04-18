@@ -209,6 +209,13 @@ private fun <ComponentName>_<분기식별자2>() { ... }
 이 스킬은 기본적으로 빌드까지 돌리지 않는다 (변경 단위가 작을 때 과한 비용). 사용자가 명시적으로 요청하거나
 변경 범위가 클 때 실행한다.
 
+### 환경 주의사항 — Kotlin 2.3.20 × alpha14 workaround
+
+현재 조합에서는 `app/build.gradle.kts` 에 `screenshotTest` configuration 의 `kotlin-reflect` 를
+2.3.0 으로 force 하는 블록이 없으면 layoutlib 렌더에서 `ClassNotFoundException` 으로 전 preview 가 실패한다.
+원인·제거 조건은 `docs/screenshot-test-policy.md` §1.1. 빌드가 해당 예외로 실패하면 이 블록이 유지되고
+있는지부터 확인한다.
+
 ---
 
 # 보고 형식
