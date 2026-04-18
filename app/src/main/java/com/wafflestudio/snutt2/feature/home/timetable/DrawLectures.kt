@@ -8,7 +8,7 @@ import com.wafflestudio.snutt2.domain.model.LocalLecture
 import com.wafflestudio.snutt2.domain.model.TableLectureCustom
 import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
-import com.wafflestudio.snutt2.ui.util.trimByTrimParam
+import com.wafflestudio.snutt2.domain.model.trimByTrimParam
 
 @Composable
 fun DrawLectures(

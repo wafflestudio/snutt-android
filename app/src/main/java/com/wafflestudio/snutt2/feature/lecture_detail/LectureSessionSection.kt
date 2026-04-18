@@ -37,7 +37,7 @@ import com.wafflestudio.snutt2.ui.components.compose.TipCloseIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
-import com.wafflestudio.snutt2.ui.util.SNUTTStringUtilsNew
+import com.wafflestudio.snutt2.ui.util.formatter.getLectureSessionString
 
 @Composable
 internal fun LectureSessionListSection(
@@ -66,7 +66,7 @@ internal fun LectureSessionListSection(
 
         sessions.forEachIndexed { idx, session ->
             TimeAndLocationItem(
-                timeText = SNUTTStringUtilsNew.getLectureSessionString(session),
+                timeText = getLectureSessionString(session),
                 locationText = session.place,
                 editTime = { onEditTime(idx, session) },
                 onLocationTextChange = { onLocationChange(idx, it) },

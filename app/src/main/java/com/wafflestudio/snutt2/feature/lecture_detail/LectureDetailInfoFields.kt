@@ -25,7 +25,8 @@ import com.wafflestudio.snutt2.domain.model.Lecture
 import com.wafflestudio.snutt2.domain.model.LectureSyllabusInfo
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
-import com.wafflestudio.snutt2.ui.util.SNUTTStringUtilsNew
+import com.wafflestudio.snutt2.ui.util.formatter.getFullQuota
+import com.wafflestudio.snutt2.ui.util.formatter.getQuotaTitle
 
 @Composable
 internal fun LectureDetailInfoFields(
@@ -112,8 +113,8 @@ internal fun LectureDetailInfoFields(
                 editable = false,
             )
             LectureDetailItem(
-                title = SNUTTStringUtilsNew.getQuotaTitle(lecture, LocalContext.current),
-                value = SNUTTStringUtilsNew.getFullQuota(lecture),
+                title = getQuotaTitle(lecture, LocalContext.current),
+                value = getFullQuota(lecture),
                 editable = false,
             )
         }

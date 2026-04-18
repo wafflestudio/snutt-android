@@ -18,12 +18,12 @@ import com.wafflestudio.snutt2.domain.model.LectureSession
 import com.wafflestudio.snutt2.domain.model.LocalLecture
 import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
+import com.wafflestudio.snutt2.domain.model.contains
+import com.wafflestudio.snutt2.domain.model.getFittingTrimParam
+import com.wafflestudio.snutt2.lib.roundToCompact
 import com.wafflestudio.snutt2.storage.SNUTTStorage
 import com.wafflestudio.snutt2.ui.theme.isSystemDarkMode
-import com.wafflestudio.snutt2.ui.util.contains
 import com.wafflestudio.snutt2.ui.util.dp
-import com.wafflestudio.snutt2.ui.util.getFittingTrimParam
-import com.wafflestudio.snutt2.ui.util.roundToCompact
 import com.wafflestudio.snutt2.ui.util.sp
 import com.wafflestudio.snutt2.ui.util.toDayString
 import kotlin.math.max

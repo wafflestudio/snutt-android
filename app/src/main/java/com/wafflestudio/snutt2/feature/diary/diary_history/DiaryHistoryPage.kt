@@ -40,7 +40,7 @@ import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.theme.SNUTTTheme
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
-import com.wafflestudio.snutt2.ui.util.toAbbvString
+import com.wafflestudio.snutt2.ui.util.formatter.toAbbvString
 import com.wafflestudio.snutt2.ui.util.toast
 import java.time.LocalDate
 

@@ -34,7 +34,7 @@ import com.wafflestudio.snutt2.ui.components.compose.RoundBorderButton
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
-import com.wafflestudio.snutt2.ui.util.SNUTTStringUtils.toFormattedTimeString
+import com.wafflestudio.snutt2.ui.util.toFormattedTimeString
 import java.time.DayOfWeek
 import java.time.LocalTime
 

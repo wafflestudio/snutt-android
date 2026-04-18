@@ -34,3 +34,9 @@ fun Float.sp(context: Context): Float {
         context.resources.displayMetrics,
     )
 }
+
+val Context.displayWidth: Float
+    get() = this.resources.displayMetrics.widthPixels.toFloat()
+
+val Context.displayHeight: Float
+    get() = this.resources.displayMetrics.heightPixels.toFloat()

@@ -12,8 +12,8 @@ import com.wafflestudio.snutt2.domain.model.Table
 import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.components.view.TimetableView
-import com.wafflestudio.snutt2.ui.util.SNUTTUtils.displayHeight
-import com.wafflestudio.snutt2.ui.util.SNUTTUtils.displayWidth
+import com.wafflestudio.snutt2.ui.util.displayHeight
+import com.wafflestudio.snutt2.ui.util.displayWidth
 import java.io.File
 import java.io.FileOutputStream
 

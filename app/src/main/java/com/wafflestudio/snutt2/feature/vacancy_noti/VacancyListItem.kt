@@ -41,7 +41,9 @@ import com.wafflestudio.snutt2.ui.components.compose.TagIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
-import com.wafflestudio.snutt2.ui.util.SNUTTStringUtils
+import com.wafflestudio.snutt2.ui.util.formatter.getLectureTagText
+import com.wafflestudio.snutt2.ui.util.formatter.getSimplifiedClassTimeForLecture
+import com.wafflestudio.snutt2.ui.util.formatter.getSimplifiedLocation
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -63,8 +65,8 @@ fun LazyItemScope.VacancyListItem(
         lecture.item.registrationCount,
         lecture.item.quota,
     )
-    val tagText = SNUTTStringUtils.getLectureTagText(context, lecture.item)
-    val classTimeText = SNUTTStringUtils.getSimplifiedClassTimeForLecture(context, lecture.item)
+    val tagText = getLectureTagText(context, lecture.item)
+    val classTimeText = getSimplifiedClassTimeForLecture(context, lecture.item)
     val backgroundColor = if (hasVacancy) SNUTTColors.VacancyRedBg else SNUTTColors.White900
 
     Row(
@@ -190,7 +192,7 @@ fun LazyItemScope.VacancyListItem(
                     )
                     Spacer(modifier = Modifier.width(7.dp))
                     Text(
-                        text = SNUTTStringUtils.getSimplifiedLocation(context, lecture.item),
+                        text = getSimplifiedLocation(context, lecture.item),
                         style = SNUTTTypography.body2.copy(
                             fontSize = 13.sp,
                             fontWeight = FontWeight.Normal,
