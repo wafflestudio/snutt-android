@@ -113,6 +113,9 @@ android {
         buildConfig = true
     }
 
+    @Suppress("UnstableApiUsage")
+    experimentalProperties["android.experimental.enableScreenshotTest"] = true
+
     lint {
         baseline = file("lint-baseline.xml")
     }
