@@ -18,36 +18,16 @@ jobs:
         with:
           java-version: 17
           distribution: 'temurin'
-          cache: 'gradle'
-      - name: Setup google-services.json (Live)
-        run: |
-          mkdir -p ./app/src/live
-          cat << EOF > ./app/src/live/google-services.json
-          ${{ secrets.google_services_json_live }}
-          EOF
-      - name: Setup gcp-service-account.json (Live)
-        run: |
-          cat << EOF > ./gcp-service-account-live.json
-          ${{ secrets.app_distribution_service_account_live }}
-          EOF
-      - name: Setup secrets.xml for app module (Live)
-        run: |
-          mkdir -p ./app/src/live/res/values
-          cat << EOF > ./app/src/live/res/values/secrets.xml
-          ${{ secrets.secrets_xml_live }}
-          EOF
-      - name: Setup secrets.xml for core:network module (Live)
-        run: |
-          mkdir -p ./core/network/src/live/res/values
-          cat << EOF > ./core/network/src/live/res/values/secrets.xml
-          ${{ secrets.secrets_xml_live_core_network }}
-          EOF
-      - name: Decode Keystore
-        env:
-          ENCODED_STRING: ${{ secrets.KEYSTORE }}
-        run: |
-          mkdir -p ./app/keystore
-          echo $ENCODED_STRING | base64 -di > ./app/keystore/android.jks
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Setup secrets
+        uses: ./.github/actions/setup-secrets
+        with:
+          variant: live
+          google_services_json: ${{ secrets.google_services_json_live }}
+          secrets_xml_app: ${{ secrets.secrets_xml_live }}
+          gcp_service_account: ${{ secrets.app_distribution_service_account_live }}
+          keystore_base64: ${{ secrets.KEYSTORE }}
       - name: Build production apk
         run: ./gradlew bundleLiveRelease
         env:
@@ -84,36 +64,16 @@ jobs:
         with:
           java-version: 17
           distribution: 'temurin'
-          cache: 'gradle'
-      - name: Setup google-services.json (Staging)
-        run: |
-          mkdir -p ./app/src/staging
-          cat << EOF > ./app/src/staging/google-services.json
-          ${{ secrets.google_services_json_staging }}
-          EOF
-      - name: Setup gcp-service-account.json (Staging)
-        run: |
-          cat << EOF > ./gcp-service-account-staging.json
-          ${{ secrets.app_distribution_service_account_staging }}
-          EOF
-      - name: Setup secrets.xml for app module (Staging)
-        run: |
-          mkdir -p ./app/src/staging/res/values
-          cat << EOF > ./app/src/staging/res/values/secrets.xml
-          ${{ secrets.secrets_xml_staging }}
-          EOF
-      - name: Setup secrets.xml for core:network module (Staging)
-        run: |
-          mkdir -p ./core/network/src/staging/res/values
-          cat << EOF > ./core/network/src/staging/res/values/secrets.xml
-          ${{ secrets.secrets_xml_staging_core_network }}
-          EOF
-      - name: Decode Keystore
-        env:
-          ENCODED_STRING: ${{ secrets.KEYSTORE }}
-        run: |
-          mkdir -p ./app/keystore
-          echo $ENCODED_STRING | base64 -di > ./app/keystore/android.jks
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Setup secrets
+        uses: ./.github/actions/setup-secrets
+        with:
+          variant: staging
+          google_services_json: ${{ secrets.google_services_json_staging }}
+          secrets_xml_app: ${{ secrets.secrets_xml_staging }}
+          gcp_service_account: ${{ secrets.app_distribution_service_account_staging }}
+          keystore_base64: ${{ secrets.KEYSTORE }}
       - name: Build production apk
         run: ./gradlew assembleStagingRelease
         env:

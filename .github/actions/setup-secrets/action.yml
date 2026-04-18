@@ -1,0 +1,60 @@
+name: Setup Secrets
+description: 'Write build-time secrets (google-services.json, secrets.xml, gcp-service-account.json, keystore) for a given product flavor.'
+
+inputs:
+  variant:
+    description: 'Product flavor: staging or live'
+    required: true
+  google_services_json:
+    description: 'Contents of google-services.json for the variant'
+    required: true
+  secrets_xml_app:
+    description: 'Contents of app/src/<variant>/res/values/secrets.xml'
+    required: true
+  gcp_service_account:
+    description: 'Contents of gcp-service-account-<variant>.json (optional)'
+    required: false
+    default: ''
+  keystore_base64:
+    description: 'Base64-encoded release keystore (optional, required for release builds)'
+    required: false
+    default: ''
+
+runs:
+  using: composite
+  steps:
+    - name: Write google-services.json
+      shell: bash
+      env:
+        CONTENT: ${{ inputs.google_services_json }}
+        VARIANT: ${{ inputs.variant }}
+      run: |
+        mkdir -p "./app/src/${VARIANT}"
+        printf '%s' "$CONTENT" > "./app/src/${VARIANT}/google-services.json"
+
+    - name: Write app secrets.xml
+      shell: bash
+      env:
+        CONTENT: ${{ inputs.secrets_xml_app }}
+        VARIANT: ${{ inputs.variant }}
+      run: |
+        mkdir -p "./app/src/${VARIANT}/res/values"
+        printf '%s' "$CONTENT" > "./app/src/${VARIANT}/res/values/secrets.xml"
+
+    - name: Write gcp-service-account.json
+      if: inputs.gcp_service_account != ''
+      shell: bash
+      env:
+        CONTENT: ${{ inputs.gcp_service_account }}
+        VARIANT: ${{ inputs.variant }}
+      run: |
+        printf '%s' "$CONTENT" > "./gcp-service-account-${VARIANT}.json"
+
+    - name: Decode keystore
+      if: inputs.keystore_base64 != ''
+      shell: bash
+      env:
+        ENCODED: ${{ inputs.keystore_base64 }}
+      run: |
+        mkdir -p ./app/keystore
+        printf '%s' "$ENCODED" | base64 -d > ./app/keystore/android.jks
