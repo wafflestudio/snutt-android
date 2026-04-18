@@ -2,6 +2,7 @@
 # Kotlin & Android
 kotlin = "2.3.20"
 androidGradle = "9.1.1"
+composeScreenshot = "0.0.1-alpha14"
 
 # Build tools
 ktlintGradle = "14.2.0"
@@ -155,6 +156,7 @@ firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+compose-screenshot = { id = "com.android.compose.screenshot", version.ref = "composeScreenshot" }
 
 [bundles]
 retrofit = [
