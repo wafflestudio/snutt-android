@@ -25,6 +25,7 @@ import com.wafflestudio.snutt2.domain.model.Table
 import com.wafflestudio.snutt2.domain.model.TableLectureCustom
 import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
+import com.wafflestudio.snutt2.domain.model.getFittingTrimParam
 import com.wafflestudio.snutt2.feature.search.LectureState
 import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.toDataWithState
@@ -34,7 +35,6 @@ import com.wafflestudio.snutt2.logging.AddToVacancyParameter
 import com.wafflestudio.snutt2.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.logging.AnalyticsLogger
 import com.wafflestudio.snutt2.logging.LectureActionReferrer
-import com.wafflestudio.snutt2.ui.util.getFittingTrimParam
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow

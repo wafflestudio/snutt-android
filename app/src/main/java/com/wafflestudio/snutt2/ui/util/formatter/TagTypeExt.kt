@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.ui.util
+package com.wafflestudio.snutt2.ui.util.formatter
 
 import com.wafflestudio.snutt2.domain.model.TagType
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors

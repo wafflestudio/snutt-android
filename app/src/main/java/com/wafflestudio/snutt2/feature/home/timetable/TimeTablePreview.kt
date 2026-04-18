@@ -8,8 +8,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.TableLectureCustom
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
+import com.wafflestudio.snutt2.domain.model.getFittingTrimParam
 import com.wafflestudio.snutt2.ui.theme.SNUTTTheme
-import com.wafflestudio.snutt2.ui.util.getFittingTrimParam
 
 @Preview(showBackground = true, widthDp = 360, heightDp = 600, name = "SNUTT Light")
 @Composable

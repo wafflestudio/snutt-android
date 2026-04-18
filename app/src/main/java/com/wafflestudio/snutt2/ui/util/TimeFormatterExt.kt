@@ -4,15 +4,8 @@ import android.content.Context
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.SearchTime
 import java.time.Duration
-import java.time.Instant
 import java.time.LocalDateTime
-import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-
-fun getLocalDateTimeFromString(data: String): LocalDateTime {
-    val instant = Instant.parse(data)
-    return instant.atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime()
-}
 
 fun getNotificationTime(context: Context, dateTime: LocalDateTime): String {
     val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd")

@@ -25,8 +25,8 @@ import com.wafflestudio.snutt2.domain.model.Lecture
 import com.wafflestudio.snutt2.domain.model.LectureSyllabusInfo
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
-import com.wafflestudio.snutt2.ui.util.getFullQuota
-import com.wafflestudio.snutt2.ui.util.getQuotaTitle
+import com.wafflestudio.snutt2.ui.util.formatter.getFullQuota
+import com.wafflestudio.snutt2.ui.util.formatter.getQuotaTitle
 
 @Composable
 internal fun LectureDetailInfoFields(

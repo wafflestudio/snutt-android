@@ -16,7 +16,7 @@ import com.wafflestudio.snutt2.domain.model.Friend
 import com.wafflestudio.snutt2.domain.model.FriendState
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import com.wafflestudio.snutt2.domain.model.ThemeReference
-import com.wafflestudio.snutt2.ui.util.getFittingTrimParam
+import com.wafflestudio.snutt2.domain.model.getFittingTrimParam
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

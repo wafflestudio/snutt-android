@@ -12,7 +12,6 @@ import com.wafflestudio.snutt2.domain.model.PushPreferences
 import com.wafflestudio.snutt2.domain.model.SocialProviders
 import com.wafflestudio.snutt2.domain.model.User
 import com.wafflestudio.snutt2.lib.map
-import com.wafflestudio.snutt2.storage.unwrap
 import com.wafflestudio.snutt2.network.api.SNUTTRestApi
 import com.wafflestudio.snutt2.network.api.google.PostAccessTokenByAuthCodeParams
 import com.wafflestudio.snutt2.network.api.google.SNUTTRestApiForGoogle
@@ -35,6 +34,7 @@ import com.wafflestudio.snutt2.network.dto.RegisterFirebaseTokenParams
 import com.wafflestudio.snutt2.network.error.toDomainError
 import com.wafflestudio.snutt2.storage.SNUTTStorage
 import com.wafflestudio.snutt2.storage.toOptional
+import com.wafflestudio.snutt2.storage.unwrap
 import com.wafflestudio.snutt2.ui.theme.ThemeMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow

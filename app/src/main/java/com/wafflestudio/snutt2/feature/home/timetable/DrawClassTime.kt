@@ -24,10 +24,10 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.wafflestudio.snutt2.domain.model.LectureSession
 import com.wafflestudio.snutt2.domain.model.TableLectureCustom
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
+import com.wafflestudio.snutt2.domain.model.endTimeInFloat
+import com.wafflestudio.snutt2.domain.model.startTimeInFloat
+import com.wafflestudio.snutt2.lib.roundToCompact
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
-import com.wafflestudio.snutt2.ui.util.endTimeInFloat
-import com.wafflestudio.snutt2.ui.util.roundToCompact
-import com.wafflestudio.snutt2.ui.util.startTimeInFloat
 import kotlin.math.max
 import kotlin.math.min
 

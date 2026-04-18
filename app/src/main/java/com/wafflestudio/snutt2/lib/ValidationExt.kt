@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.ui.util
+package com.wafflestudio.snutt2.lib
 
 fun String.isEmailInvalid(): Boolean {
     val regex = Regex(

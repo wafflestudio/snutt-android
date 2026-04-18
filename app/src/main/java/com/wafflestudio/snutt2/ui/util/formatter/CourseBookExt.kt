@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.ui.util
+package com.wafflestudio.snutt2.ui.util.formatter
 
 import android.content.Context
 import com.wafflestudio.snutt2.R

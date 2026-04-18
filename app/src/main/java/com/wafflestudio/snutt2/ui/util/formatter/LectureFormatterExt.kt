@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.ui.util
+package com.wafflestudio.snutt2.ui.util.formatter
 
 import android.content.Context
 import com.wafflestudio.snutt2.R
@@ -21,7 +21,7 @@ fun getSimplifiedClassTimeForLecture(context: Context, lecture: SearchedLecture)
     }
     return lecture.lectureSessions.joinToString(", ") { session ->
         buildString {
-            append(session.day.getString())
+            append(session.day.getDayOfWeekString())
             append("(")
             append(session.startTime.getHourMinuteString())
             append("~")
@@ -90,10 +90,6 @@ fun getInstructorAndCreditText(context: Context, lecture: Lecture): String {
     return "${lecture.instructor} / $creditText"
 }
 
-fun getCreditSumFromLectureList(lectureList: List<Lecture>): Long {
-    return lectureList.fold(0L) { acc, lecture -> acc + lecture.credit }
-}
-
 fun getQuotaTitle(info: LectureSyllabusInfo, context: Context): String = buildString {
     append(context.getString(R.string.lecture_detail_quota))
     if (info.freshmanQuota != 0L) {
@@ -108,8 +104,8 @@ fun getFullQuota(info: LectureSyllabusInfo): String = buildString {
     }
 }
 
-fun LocalTime.getHourMinuteString(): String =
+private fun LocalTime.getHourMinuteString(): String =
     "%02d:%02d".format(this.hour, this.minute)
 
-fun DayOfWeek.getString(): String =
+private fun DayOfWeek.getDayOfWeekString(): String =
     this.getDisplayName(TextStyle.SHORT, Locale.getDefault())

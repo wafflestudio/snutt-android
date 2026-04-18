@@ -37,7 +37,7 @@ import com.wafflestudio.snutt2.ui.components.compose.TipCloseIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
-import com.wafflestudio.snutt2.ui.util.getLectureSessionString
+import com.wafflestudio.snutt2.ui.util.formatter.getLectureSessionString
 
 @Composable
 internal fun LectureSessionListSection(

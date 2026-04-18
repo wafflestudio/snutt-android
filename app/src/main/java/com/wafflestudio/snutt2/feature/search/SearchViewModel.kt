@@ -35,6 +35,7 @@ import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import com.wafflestudio.snutt2.domain.model.TagType
 import com.wafflestudio.snutt2.domain.model.flatMapToSearchTime
+import com.wafflestudio.snutt2.domain.model.getFittingTrimParam
 import com.wafflestudio.snutt2.feature.search.search_option.clusterToTimeBlocks
 import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.Selectable
@@ -47,7 +48,6 @@ import com.wafflestudio.snutt2.logging.AnalyticsLogger
 import com.wafflestudio.snutt2.logging.DetailScreenReferrer
 import com.wafflestudio.snutt2.logging.LectureActionReferrer
 import com.wafflestudio.snutt2.logging.SearchLectureParameter
-import com.wafflestudio.snutt2.ui.util.getFittingTrimParam
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
