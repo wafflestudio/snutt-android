@@ -72,7 +72,7 @@ class RootActivity : AppCompatActivity() {
         splashScreen.setKeepOnScreenCondition { isLoading }
 
         enableEdgeToEdge()
-        super.onCreate(null)
+        super.onCreate(savedInstanceState)
 
         FirebaseApp.initializeApp(this)
         parseDeeplinkExtra()
