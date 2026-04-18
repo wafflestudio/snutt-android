@@ -259,16 +259,14 @@ class BuiltInTheme(
             ),
         )
 
-        fun fromCode(code: Int): BuiltInTheme {
-            return when (code) {
-                0 -> SNUTT
-                1 -> MODERN
-                2 -> AUTUMN
-                3 -> CHERRY
-                4 -> ICE
-                5 -> GRASS
-                else -> SNUTT
-            }
+        fun fromCode(code: Int): BuiltInTheme = when (code) {
+            0 -> SNUTT
+            1 -> MODERN
+            2 -> AUTUMN
+            3 -> CHERRY
+            4 -> ICE
+            5 -> GRASS
+            else -> SNUTT
         }
     }
 }
@@ -286,47 +284,39 @@ data class EditingTheme(
     val canRemoveColor get() = isEditable && colors.size > 1
     val canDuplicateColor get() = canAddColor
 
-    fun getDisplayColors(isDarkMode: Boolean): List<Selectable<ThemeColor>> {
-        return if (isEditable) {
-            colors
-        } else {
-            originalTheme.getColors(isDarkMode).map { Selectable(it, false) }
-        }
+    fun getDisplayColors(isDarkMode: Boolean): List<Selectable<ThemeColor>> = if (isEditable) {
+        colors
+    } else {
+        originalTheme.getColors(isDarkMode).map { Selectable(it, false) }
     }
 
-    fun hasChange(): Boolean {
-        return if (originalTheme.isEditable) {
-            name != originalTheme.name ||
-                colors.map { it.item } != originalTheme.getColors(false)
-        } else {
-            false
-        }
+    fun hasChange(): Boolean = if (originalTheme.isEditable) {
+        name != originalTheme.name ||
+            colors.map { it.item } != originalTheme.getColors(false)
+    } else {
+        false
     }
 
-    fun toTableTheme(): TableTheme {
-        return when (originalTheme) {
-            is CustomTheme -> {
-                CustomTheme(
-                    id = originalTheme.id,
-                    name = name,
-                    isFromMarket = originalTheme.isFromMarket,
-                    colors = colors.map { it.item },
-                )
-            }
-
-            is BuiltInTheme -> originalTheme
+    fun toTableTheme(): TableTheme = when (originalTheme) {
+        is CustomTheme -> {
+            CustomTheme(
+                id = originalTheme.id,
+                name = name,
+                isFromMarket = originalTheme.isFromMarket,
+                colors = colors.map { it.item },
+            )
         }
+
+        is BuiltInTheme -> originalTheme
     }
 
     companion object {
-        fun fromTableTheme(tableTheme: TableTheme): EditingTheme {
-            return EditingTheme(
-                name = tableTheme.name,
-                colors = tableTheme.getColors(false).mapIndexed { index, color ->
-                    Selectable(color, tableTheme.isEditable && index == 0)
-                },
-                originalTheme = tableTheme,
-            )
-        }
+        fun fromTableTheme(tableTheme: TableTheme): EditingTheme = EditingTheme(
+            name = tableTheme.name,
+            colors = tableTheme.getColors(false).mapIndexed { index, color ->
+                Selectable(color, tableTheme.isEditable && index == 0)
+            },
+            originalTheme = tableTheme,
+        )
     }
 }

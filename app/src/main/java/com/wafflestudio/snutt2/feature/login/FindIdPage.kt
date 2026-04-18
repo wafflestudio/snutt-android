@@ -27,13 +27,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.lib.isEmailInvalid
 import com.wafflestudio.snutt2.ui.components.compose.EditText
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.ui.components.compose.WebViewStyleButton
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
-import com.wafflestudio.snutt2.ui.util.SNUTTStringUtils.isEmailInvalid
 import com.wafflestudio.snutt2.ui.util.toast
 
 @Composable
@@ -42,13 +42,14 @@ fun FindIdPage(
     onNavigateBack: () -> Unit,
 ) {
     val context = LocalContext.current
+    val successMessageTemplate = stringResource(R.string.find_id_send_email_success_message)
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is FindIdUiEvent.ShowToast -> context.toast(event.message)
                 is FindIdUiEvent.Success -> {
-                    context.toast(context.getString(R.string.find_id_send_email_success_message).format(event.email))
+                    context.toast(successMessageTemplate.format(event.email))
                     onNavigateBack()
                 }
             }
@@ -68,6 +69,8 @@ private fun FindIdScreen(
 ) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
+    val enterEmailMessage = stringResource(R.string.settings_user_config_enter_email)
+    val wrongEmailFormatMessage = stringResource(R.string.find_id_wrong_email_format)
 
     // TODO: 뷰모델로 상태 옮기기
     var emailField by remember { mutableStateOf("") }
@@ -75,9 +78,9 @@ private fun FindIdScreen(
 
     val handleSendIdToEmail = {
         if (emailField.isEmpty()) {
-            context.toast(context.getString(R.string.settings_user_config_enter_email))
+            context.toast(enterEmailMessage)
         } else if (emailField.isEmailInvalid()) {
-            context.toast(context.getString(R.string.find_id_wrong_email_format))
+            context.toast(wrongEmailFormatMessage)
         } else {
             onSubmit(emailField)
         }

@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2
 
 import android.Manifest
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -26,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
@@ -72,7 +72,7 @@ class RootActivity : AppCompatActivity() {
         splashScreen.setKeepOnScreenCondition { isLoading }
 
         enableEdgeToEdge()
-        super.onCreate(null)
+        super.onCreate(savedInstanceState)
 
         FirebaseApp.initializeApp(this)
         parseDeeplinkExtra()
@@ -110,7 +110,7 @@ class RootActivity : AppCompatActivity() {
                             .fillMaxSize()
                             .safeDrawingPadding(),
                     ) {
-                        setUpUI(startDestination)
+                        SetUpUI(startDestination)
                     }
                 }
             }
@@ -118,7 +118,7 @@ class RootActivity : AppCompatActivity() {
     }
 
     @Composable
-    fun setUpUI(startDestination: NavigationDestination) {
+    fun SetUpUI(startDestination: NavigationDestination) {
         val navBottomSheetState = rememberModalBottomSheetState(
             initialValue = ModalBottomSheetValue.Hidden,
             skipHalfExpanded = true,
@@ -148,7 +148,8 @@ class RootActivity : AppCompatActivity() {
                 // FIXME: 궁극적으로는 ApiOnError를 제거해야 한다.
                 lifecycleScope.launch {
                     rootViewModel.accessToken.collect { token ->
-                        if (token.isEmpty() && navController.currentDestination?.hasRoute(
+                        if (token.isEmpty() &&
+                            navController.currentDestination?.hasRoute(
                                 NavigationDestination.Tutorial::class,
                             ) == false
                         ) {
@@ -200,7 +201,7 @@ class RootActivity : AppCompatActivity() {
     // 이를 Jetpack Navigation 이 딥링크로 인식하고 navigate 할 수 있도록 intent.data 로 넣어준다.
     private fun parseDeeplinkExtra() {
         intent.extras?.getString(URL_SCHEME)?.let {
-            intent.data = Uri.parse(it)
+            intent.data = it.toUri()
         }
     }
 

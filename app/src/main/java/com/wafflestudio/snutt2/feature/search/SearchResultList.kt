@@ -5,6 +5,7 @@ import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -41,7 +42,13 @@ fun SearchResultList(
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
-        AnimatedLazyRow(itemList = selectedTags, itemKey = { it.toItemKey() }) {
+        AnimatedLazyRow(
+            modifier = Modifier
+                .padding(5.dp)
+                .fillMaxWidth(),
+            itemList = selectedTags,
+            itemKey = { it.toItemKey() },
+        ) {
             SearchTagCell(
                 modifier = Modifier
                     .animateItem()

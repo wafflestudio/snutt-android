@@ -14,13 +14,9 @@ object OAuthModule {
 
     @Provides
     @Singleton
-    fun provideFacebookCallbackManager(): CallbackManager {
-        return CallbackManager.Factory.create()
-    }
+    fun provideFacebookCallbackManager(): CallbackManager = CallbackManager.Factory.create()
 
     @Provides
     @Singleton
-    fun provideLoginManager(): LoginManager {
-        return LoginManager.getInstance()
-    }
+    fun provideLoginManager(): LoginManager = LoginManager.getInstance()
 }

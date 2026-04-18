@@ -36,9 +36,7 @@ class PrefCacheImpl(private val cacheSizePerDomain: Int) : PrefCache {
         }
     }
 
-    private fun getCache(domainName: String): LruCache<String, Optional<Any>> {
-        return cacheMap[domainName] ?: LruCache<String, Optional<Any>>(cacheSizePerDomain).also {
-            cacheMap[domainName] = it
-        }
+    private fun getCache(domainName: String): LruCache<String, Optional<Any>> = cacheMap[domainName] ?: LruCache<String, Optional<Any>>(cacheSizePerDomain).also {
+        cacheMap[domainName] = it
     }
 }

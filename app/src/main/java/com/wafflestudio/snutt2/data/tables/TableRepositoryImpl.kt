@@ -70,14 +70,12 @@ class TableRepositoryImpl @Inject constructor(
         snuttStorage.lastViewedTable.update(response.toOptional())
     }
 
-    override suspend fun fetchAndSelectDefaultTable(): Result<Unit> {
-        return try {
-            val response = api._getRecentTable()
-            snuttStorage.lastViewedTable.update(response.toOptional())
-            Result.Success(Unit)
-        } catch (e: Exception) {
-            Result.Fail(e.toDomainError())
-        }
+    override suspend fun fetchAndSelectDefaultTable(): Result<Unit> = try {
+        val response = api._getRecentTable()
+        snuttStorage.lastViewedTable.update(response.toOptional())
+        Result.Success(Unit)
+    } catch (e: Exception) {
+        Result.Fail(e.toDomainError())
     }
 
     override suspend fun fetchTableList(): Result<Unit> {
@@ -90,14 +88,12 @@ class TableRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun fetchAndSelectTable(id: String): Result<Unit> {
-        return try {
-            val response = api._getTableById(id)
-            snuttStorage.lastViewedTable.update(response.toOptional())
-            Result.Success(Unit)
-        } catch (e: Exception) {
-            Result.Fail(e.toDomainError())
-        }
+    override suspend fun fetchAndSelectTable(id: String): Result<Unit> = try {
+        val response = api._getTableById(id)
+        snuttStorage.lastViewedTable.update(response.toOptional())
+        Result.Success(Unit)
+    } catch (e: Exception) {
+        Result.Fail(e.toDomainError())
     }
 
     override suspend fun getTableById(id: String): Result<Table> {
@@ -206,38 +202,34 @@ class TableRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateTableTheme(tableId: String, code: Int): Result<Unit> {
-        return try {
-            val response = api._putTableTheme(tableId, PutTableThemeParams(theme = code))
-            val prev = snuttStorage.lastViewedTable.get().value
-            snuttStorage.lastViewedTable.update(
-                if (prev?.id == tableId) {
-                    response.toOptional()
-                } else {
-                    prev.toOptional()
-                },
-            )
-            Result.Success(Unit)
-        } catch (e: Exception) {
-            Result.Fail(e.toDomainError())
-        }
+    override suspend fun updateTableTheme(tableId: String, code: Int): Result<Unit> = try {
+        val response = api._putTableTheme(tableId, PutTableThemeParams(theme = code))
+        val prev = snuttStorage.lastViewedTable.get().value
+        snuttStorage.lastViewedTable.update(
+            if (prev?.id == tableId) {
+                response.toOptional()
+            } else {
+                prev.toOptional()
+            },
+        )
+        Result.Success(Unit)
+    } catch (e: Exception) {
+        Result.Fail(e.toDomainError())
     }
 
-    override suspend fun updateTableTheme(tableId: String, themeId: String): Result<Unit> {
-        return try {
-            val response = api._putTableTheme(tableId, PutTableThemeParams(themeId = themeId))
-            val prev = snuttStorage.lastViewedTable.get().value
-            snuttStorage.lastViewedTable.update(
-                if (prev?.id == tableId) {
-                    response.toOptional()
-                } else {
-                    prev.toOptional()
-                },
-            )
-            Result.Success(Unit)
-        } catch (e: Exception) {
-            Result.Fail(e.toDomainError())
-        }
+    override suspend fun updateTableTheme(tableId: String, themeId: String): Result<Unit> = try {
+        val response = api._putTableTheme(tableId, PutTableThemeParams(themeId = themeId))
+        val prev = snuttStorage.lastViewedTable.get().value
+        snuttStorage.lastViewedTable.update(
+            if (prev?.id == tableId) {
+                response.toOptional()
+            } else {
+                prev.toOptional()
+            },
+        )
+        Result.Success(Unit)
+    } catch (e: Exception) {
+        Result.Fail(e.toDomainError())
     }
 
     override suspend fun getTimetableReminders(timetableId: String): Result<TimetableLectureReminders> {

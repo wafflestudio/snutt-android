@@ -58,7 +58,7 @@ fun NotificationIcon(
 
 @Composable
 fun ShareIcon(
-    modifier: Modifier = Modifier.size(30.dp),
+    modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
     Image(
@@ -676,11 +676,11 @@ fun BookmarkIcon(
 
 @Composable
 fun BookmarkPageIcon(
-    modifier: Modifier = Modifier.size(30.dp),
+    modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
     Image(
-        modifier = modifier,
+        modifier = modifier.size(30.dp),
         painter = painterResource(R.drawable.ic_bookmark_page),
         contentDescription = "",
         colorFilter = colorFilter,

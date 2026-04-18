@@ -6,14 +6,15 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
 import androidx.core.content.FileProvider
+import androidx.core.graphics.createBitmap
 import com.facebook.FacebookSdk
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.Table
 import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.components.view.TimetableView
-import com.wafflestudio.snutt2.ui.util.SNUTTUtils.displayHeight
-import com.wafflestudio.snutt2.ui.util.SNUTTUtils.displayWidth
+import com.wafflestudio.snutt2.ui.util.displayHeight
+import com.wafflestudio.snutt2.ui.util.displayWidth
 import java.io.File
 import java.io.FileOutputStream
 
@@ -33,12 +34,7 @@ fun shareScreenshot(
     view.measure(width, height)
     view.layout(0, 0, width, height)
 
-    val bitmap =
-        Bitmap.createBitmap(
-            view.width,
-            view.height,
-            Bitmap.Config.ARGB_8888,
-        )
+    val bitmap = createBitmap(view.width, view.height)
     val canvas = Canvas(bitmap)
     view.draw(canvas)
 

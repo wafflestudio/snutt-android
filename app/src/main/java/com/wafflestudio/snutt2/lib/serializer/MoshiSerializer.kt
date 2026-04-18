@@ -9,11 +9,7 @@ import javax.inject.Singleton
 class MoshiSerializer @Inject constructor(
     private val moshi: Moshi,
 ) : Serializer {
-    override fun <T : Any> deserialize(raw: String, type: Type): T {
-        return moshi.adapter<T>(type).fromJson(raw)!!
-    }
+    override fun <T : Any> deserialize(raw: String, type: Type): T = moshi.adapter<T>(type).fromJson(raw)!!
 
-    override fun <T : Any> serialize(raw: T, type: Type): String {
-        return moshi.adapter<T>(type).toJson(raw)
-    }
+    override fun <T : Any> serialize(raw: T, type: Type): String = moshi.adapter<T>(type).toJson(raw)
 }

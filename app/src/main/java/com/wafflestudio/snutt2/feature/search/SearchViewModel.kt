@@ -7,15 +7,15 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.wafflestudio.snutt2.config.RemoteConfig
 import com.wafflestudio.snutt2.data.bookmark.BookmarkRepository
-import com.wafflestudio.snutt2.data.current_table_lecture.CurrentTableLectureRepository
-import com.wafflestudio.snutt2.data.lecture_info.LectureInfoRepository
-import com.wafflestudio.snutt2.data.lecture_search.LectureSearchRepository
+import com.wafflestudio.snutt2.data.currenttablelecture.CurrentTableLectureRepository
+import com.wafflestudio.snutt2.data.lectureinfo.LectureInfoRepository
+import com.wafflestudio.snutt2.data.lecturesearch.LectureSearchRepository
 import com.wafflestudio.snutt2.data.onFailure
 import com.wafflestudio.snutt2.data.onSuccess
-import com.wafflestudio.snutt2.data.table_display.TableDisplayRepository
+import com.wafflestudio.snutt2.data.tabledisplay.TableDisplayRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
-import com.wafflestudio.snutt2.data.vacancy_noti.VacancyRepository
+import com.wafflestudio.snutt2.data.vacancynoti.VacancyRepository
 import com.wafflestudio.snutt2.domain.AuthError
 import com.wafflestudio.snutt2.domain.DisplayMessageResolver
 import com.wafflestudio.snutt2.domain.DomainError
@@ -35,7 +35,8 @@ import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import com.wafflestudio.snutt2.domain.model.TagType
 import com.wafflestudio.snutt2.domain.model.flatMapToSearchTime
-import com.wafflestudio.snutt2.feature.search.search_option.clusterToTimeBlocks
+import com.wafflestudio.snutt2.domain.model.getFittingTrimParam
+import com.wafflestudio.snutt2.feature.search.searchoption.clusterToTimeBlocks
 import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.toDataWithState
@@ -47,8 +48,6 @@ import com.wafflestudio.snutt2.logging.AnalyticsLogger
 import com.wafflestudio.snutt2.logging.DetailScreenReferrer
 import com.wafflestudio.snutt2.logging.LectureActionReferrer
 import com.wafflestudio.snutt2.logging.SearchLectureParameter
-import com.wafflestudio.snutt2.ui.util.concatenate
-import com.wafflestudio.snutt2.ui.util.getFittingTrimParam
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -88,7 +87,7 @@ class SearchViewModel @Inject constructor(
     private val remoteConfig: RemoteConfig,
 ) : ViewModel() {
 
-    private val _querySignal = MutableSharedFlow<Unit>(replay = 0)
+    private val querySignal = MutableSharedFlow<Unit>(replay = 0)
 
     private val _uiEvent = MutableSharedFlow<SearchUiEvent>(replay = 0)
     val uiEvent = _uiEvent.asSharedFlow()
@@ -124,7 +123,7 @@ class SearchViewModel @Inject constructor(
 
     // PagingData는 UiState에 통합 불가 - 별도 StateFlow로 유지
     val queryResults: StateFlow<PagingData<DataWithState<SearchedLecture, LectureState>>> = combine(
-        _querySignal.flatMapLatest {
+        querySignal.flatMapLatest {
             combine(
                 tableRepository.currentTable.filterNotNull(),
                 uiState,
@@ -293,9 +292,9 @@ class SearchViewModel @Inject constructor(
                 current.selectedTags.filter { it != tag }
             } else {
                 if (tag.type.isExclusive) {
-                    concatenate(current.selectedTags.filter { it.type != tag.type }, listOf(tag))
+                    current.selectedTags.filter { it.type != tag.type } + tag
                 } else {
-                    concatenate(current.selectedTags, listOf(tag))
+                    current.selectedTags + tag
                 }
             }
             current.copy(
@@ -369,7 +368,10 @@ class SearchViewModel @Inject constructor(
                     ),
                 )
                 val courseBook = tableRepository.currentTable.value?.summary?.courseBook ?: return@launch
-                bookmarkRepository.addBookmark(courseBook, lecture).onFailure { handleSearchError(it); return@launch }
+                bookmarkRepository.addBookmark(courseBook, lecture).onFailure {
+                    handleSearchError(it)
+                    return@launch
+                }
 
                 if (bookmarkRepository.firstBookmarkAlert.value) {
                     bookmarkRepository.setFirstBookmarkAlertShown()
@@ -384,7 +386,10 @@ class SearchViewModel @Inject constructor(
             _uiState.update { it.copy(dialogState = SearchUiState.DialogState.None) }
             val courseBook = tableRepository.currentTable.value?.summary?.courseBook ?: return@launch
             bookmarkRepository.deleteBookmark(courseBook, lecture)
-                .onFailure { handleSearchError(it); return@launch }
+                .onFailure {
+                    handleSearchError(it)
+                    return@launch
+                }
         }
     }
 
@@ -401,7 +406,10 @@ class SearchViewModel @Inject constructor(
                         ),
                     ),
                 )
-                vacancyRepository.addVacancyLecture(lecture).onFailure { handleSearchError(it); return@launch }
+                vacancyRepository.addVacancyLecture(lecture).onFailure {
+                    handleSearchError(it)
+                    return@launch
+                }
                 if (vacancyRepository.firstVacancyAdd.value) {
                     vacancyRepository.setVacancyAdded()
                     _uiEvent.emit(SearchUiEvent.ShowSnackBar(SearchUiEvent.ShowSnackBar.SearchSnackBarEvent.FIRST_VACANCY_ADD))
@@ -413,7 +421,10 @@ class SearchViewModel @Inject constructor(
     fun confirmDeleteVacancy(lecture: SearchedLecture) {
         viewModelScope.launch {
             _uiState.update { it.copy(dialogState = SearchUiState.DialogState.None) }
-            vacancyRepository.removeVacancyLecture(lecture).onFailure { handleSearchError(it); return@launch }
+            vacancyRepository.removeVacancyLecture(lecture).onFailure {
+                handleSearchError(it)
+                return@launch
+            }
         }
     }
 
@@ -424,7 +435,10 @@ class SearchViewModel @Inject constructor(
     fun onToggleLectureContained(lecture: SearchedLecture, contained: Boolean) {
         viewModelScope.launch {
             if (contained) {
-                currentTableLectureRepository.removeLecture(lecture).onFailure { handleSearchError(it); return@launch }
+                currentTableLectureRepository.removeLecture(lecture).onFailure {
+                    handleSearchError(it)
+                    return@launch
+                }
                 onToggleLectureSelection(lecture)
             } else {
                 addLecture(lecture, isForced = false)
@@ -463,7 +477,9 @@ class SearchViewModel @Inject constructor(
                     val bt = current.bottomSheetType
                     if (bt is SearchUiState.BottomSheetType.LectureDetail && bt.lecture.id == lecture.id) {
                         current.copy(bottomSheetType = bt.copy(buildings = buildings))
-                    } else current
+                    } else {
+                        current
+                    }
                 }
             }
     }
@@ -497,16 +513,14 @@ class SearchViewModel @Inject constructor(
 
     // region Private methods
 
-    private fun resolveActionReferrer(): LectureActionReferrer {
-        return if (_uiState.value.bottomSheetType is SearchUiState.BottomSheetType.LectureDetail) {
-            LectureActionReferrer.LectureDetail
-        } else {
-            LectureActionReferrer.Search(_uiState.value.searchTitle)
-        }
+    private fun resolveActionReferrer(): LectureActionReferrer = if (_uiState.value.bottomSheetType is SearchUiState.BottomSheetType.LectureDetail) {
+        LectureActionReferrer.LectureDetail
+    } else {
+        LectureActionReferrer.Search(_uiState.value.searchTitle)
     }
 
     private suspend fun query() {
-        _querySignal.emit(Unit)
+        querySignal.emit(Unit)
         _uiEvent.emit(SearchUiEvent.ResetScroll)
         val state = _uiState.value
         analyticsLogger.logEvent(
@@ -567,11 +581,9 @@ class SearchViewModel @Inject constructor(
         allTags: List<SearchTag>,
         selectedTagType: TagType,
         selectedTags: List<SearchTag>,
-    ): List<Selectable<SearchTag>> {
-        return allTags
-            .filter { it.type == selectedTagType }
-            .map { it.toDataWithState(selectedTags.contains(it)) }
-    }
+    ): List<Selectable<SearchTag>> = allTags
+        .filter { it.type == selectedTagType }
+        .map { it.toDataWithState(selectedTags.contains(it)) }
 
     private fun buildRecentDepts(
         recentDepts: List<SearchTag>,
@@ -611,7 +623,7 @@ data class SearchUiState(
     val searchResultListState: SearchResultListState,
     val tagTypes: List<TagType>,
     val selectedTagType: TagType,
-    val allSearchTags: List<SearchTag>,       // 전체 태그 (탭 전환 시 재계산용)
+    val allSearchTags: List<SearchTag>, // 전체 태그 (탭 전환 시 재계산용)
     val searchTags: List<Selectable<SearchTag>>,
     val recentSearchedDepartments: List<Selectable<SearchTag>>,
     val draggedTimeBlock: List<List<Boolean>>,
@@ -628,7 +640,6 @@ data class SearchUiState(
             val referrer: DetailScreenReferrer,
             val buildings: List<Building> = emptyList(),
         ) : BottomSheetType
-
     }
 
     sealed interface DialogState {

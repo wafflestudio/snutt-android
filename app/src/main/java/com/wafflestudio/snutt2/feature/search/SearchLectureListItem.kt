@@ -42,7 +42,8 @@ import com.wafflestudio.snutt2.ui.components.compose.ThickReviewIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
-import com.wafflestudio.snutt2.ui.util.SNUTTStringUtilsNew
+import com.wafflestudio.snutt2.ui.util.formatter.getSimplifiedClassTimeForLecture
+import com.wafflestudio.snutt2.ui.util.formatter.getSimplifiedLocation
 
 @Composable
 fun SearchLectureListItem(
@@ -116,7 +117,7 @@ fun SearchLectureListItem(
                         colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
                     )
                 },
-                text = SNUTTStringUtilsNew.getSimplifiedClassTimeForLecture(LocalContext.current, lecture),
+                text = getSimplifiedClassTimeForLecture(LocalContext.current, lecture),
             )
             // 장소
             LectureInfoRow(
@@ -126,7 +127,7 @@ fun SearchLectureListItem(
                         colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
                     )
                 },
-                text = SNUTTStringUtilsNew.getSimplifiedLocation(LocalContext.current, lecture),
+                text = getSimplifiedLocation(LocalContext.current, lecture),
             )
             // 비고
             LectureInfoRow(

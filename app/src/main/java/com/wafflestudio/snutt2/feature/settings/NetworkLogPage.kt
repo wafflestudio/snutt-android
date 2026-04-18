@@ -67,7 +67,8 @@ fun NetworkLogPage(
             },
             actions = {
                 Text(
-                    stringResource(R.string.debug_network_log_clear), style = SNUTTTypography.button,
+                    stringResource(R.string.debug_network_log_clear),
+                    style = SNUTTTypography.button,
                     modifier = Modifier.clicks {
                         viewModel.clearNetworkLog()
                     },

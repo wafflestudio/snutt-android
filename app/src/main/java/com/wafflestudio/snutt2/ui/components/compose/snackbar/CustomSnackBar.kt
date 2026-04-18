@@ -23,6 +23,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.currentRecomposeScope
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -194,7 +195,7 @@ private fun CustomTextOnlySnackBar(content: @Composable () -> Unit) {
         ) {
             content()
         }
-    },) { measurables, constraints ->
+    }) { measurables, constraints ->
         val textPlaceables = ArrayList<Placeable>(measurables.size)
         var firstBaseline = AlignmentLine.Unspecified
         var lastBaseline = AlignmentLine.Unspecified
@@ -451,7 +452,7 @@ private fun customAnimatedScale(animation: AnimationSpec<Float>, visible: Boolea
 //    return scale.asState()
 
     // background blur 이동 현상 때문에 ScaleAnimation 삭제
-    return remember { mutableStateOf(1F) }
+    return remember { mutableFloatStateOf(1F) }
 }
 
 private val TextEndExtraSpacing = 8.dp

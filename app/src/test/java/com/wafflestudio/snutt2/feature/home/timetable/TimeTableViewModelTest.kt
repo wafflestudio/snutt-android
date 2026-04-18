@@ -1,12 +1,15 @@
 package com.wafflestudio.snutt2.feature.home.timetable
 
 import app.cash.turbine.test
+import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
+import com.wafflestudio.snutt2.domain.Unknown
 import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.LectureSession
 import com.wafflestudio.snutt2.domain.model.TableLectureCustom
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import com.wafflestudio.snutt2.domain.model.ThemeReference
+import com.wafflestudio.snutt2.domain.model.getFittingTrimParam
 import com.wafflestudio.snutt2.fake.FakeCourseBookRepository
 import com.wafflestudio.snutt2.fake.FakeDisplayMessageResolver
 import com.wafflestudio.snutt2.fake.FakeNotificationRepository
@@ -19,9 +22,6 @@ import com.wafflestudio.snutt2.fixture.TestFixtures.courseBook2025_1
 import com.wafflestudio.snutt2.fixture.TestFixtures.syllabusLecture
 import com.wafflestudio.snutt2.fixture.TestFixtures.table
 import com.wafflestudio.snutt2.fixture.TestFixtures.tableSummary
-import com.wafflestudio.snutt2.ui.util.getFittingTrimParam
-import com.wafflestudio.snutt2.data.Result
-import com.wafflestudio.snutt2.domain.Unknown
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher

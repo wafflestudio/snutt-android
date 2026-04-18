@@ -1,9 +1,9 @@
 package com.wafflestudio.snutt2.fake
 
-import com.wafflestudio.snutt2.data.vacancy_noti.VacancyRepository
+import com.wafflestudio.snutt2.data.Result
+import com.wafflestudio.snutt2.data.vacancynoti.VacancyRepository
 import com.wafflestudio.snutt2.domain.model.Lecture
 import com.wafflestudio.snutt2.domain.model.SearchedLecture
-import com.wafflestudio.snutt2.data.Result
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class FakeVacancyRepository : VacancyRepository {
@@ -25,9 +25,7 @@ class FakeVacancyRepository : VacancyRepository {
         private set
 
     // --- 인터페이스 구현 ---
-    override suspend fun fetchVacancyLectures(): Result<Unit> {
-        return fetchVacancyLecturesResult
-    }
+    override suspend fun fetchVacancyLectures(): Result<Unit> = fetchVacancyLecturesResult
 
     override suspend fun removeVacancyLecture(lecture: Lecture): Result<Unit> {
         removeVacancyLectureCalledWith.add(lecture)

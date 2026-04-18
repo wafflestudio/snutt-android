@@ -19,22 +19,16 @@ import javax.inject.Singleton
 object PreferenceModule {
     @Provides
     @Singleton
-    fun providePrefContext(prefStorage: PrefStorage, prefCache: PrefCache): PrefContext {
-        return PrefContext(prefStorage, prefCache)
-    }
+    fun providePrefContext(prefStorage: PrefStorage, prefCache: PrefCache): PrefContext = PrefContext(prefStorage, prefCache)
 
     @Provides
     @Singleton
     fun providePrefStorage(
         @ApplicationContext context: Context,
         serializer: Serializer,
-    ): PrefStorage {
-        return PrefStorageImpl(context, serializer)
-    }
+    ): PrefStorage = PrefStorageImpl(context, serializer)
 
     @Provides
     @Singleton
-    fun providePrefCache(): PrefCache {
-        return PrefCacheImpl(64)
-    }
+    fun providePrefCache(): PrefCache = PrefCacheImpl(64)
 }

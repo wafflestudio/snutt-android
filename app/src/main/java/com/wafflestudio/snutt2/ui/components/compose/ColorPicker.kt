@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.ui.components.compose
 
-import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.ComposeShader
 import android.graphics.LinearGradient
@@ -56,6 +55,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.toColorInt
 import androidx.core.graphics.toRect
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
@@ -81,7 +82,7 @@ fun ColorPicker(
     }
     val setHsvWithHexCode = {
         try {
-            hsv = colorToHsv(Color(AndroidColor.parseColor(hexCode)))
+            hsv = colorToHsv(Color(hexCode.toColorInt()))
             onColorChanged(Color.hsv(hsv.first, hsv.second, hsv.third))
         } catch (e: Exception) {
             hexCode = hsvToString(hsv)
@@ -229,12 +230,7 @@ fun HueBackground(
     Canvas(
         modifier = modifier,
     ) {
-        val bitmap =
-            Bitmap.createBitmap(
-                size.width.toInt(),
-                size.height.toInt(),
-                Bitmap.Config.ARGB_8888,
-            )
+        val bitmap = createBitmap(size.width.toInt(), size.height.toInt())
         val hueCanvas = Canvas(bitmap)
         val huePanel = RectF(0f, 0f, bitmap.width.toFloat(), bitmap.height.toFloat())
         val hueColors = IntArray(huePanel.width().toInt()) {
@@ -248,7 +244,8 @@ fun HueBackground(
         }
         Paint().let { linePaint ->
             linePaint.strokeWidth = 0f
-            hueColors.forEachIndexed { idx, col -> // 배열에 저장된 색을 x좌표 0부터 huePanel.width()까지 1픽셀씩 그림
+            hueColors.forEachIndexed { idx, col ->
+                // 배열에 저장된 색을 x좌표 0부터 huePanel.width()까지 1픽셀씩 그림
                 linePaint.color = col
                 hueCanvas.drawLine(idx.toFloat(), 0f, idx.toFloat(), huePanel.bottom, linePaint)
             }
@@ -321,22 +318,27 @@ fun SatValBackground(
         // TODO: hue가 바뀌면 전부 다시 그려야 함. 최적화?
         modifier = modifier,
     ) {
-        val bitmap =
-            Bitmap.createBitmap(
-                size.width.toInt(),
-                size.height.toInt(),
-                Bitmap.Config.ARGB_8888,
-            )
+        val bitmap = createBitmap(size.width.toInt(), size.height.toInt())
         val canvas = Canvas(bitmap)
         val satValPanel = RectF(0f, 0f, bitmap.width.toFloat(), bitmap.height.toFloat())
         val rgb = AndroidColor.HSVToColor(floatArrayOf(hue, 1f, 1f))
         val satShader = LinearGradient(
-            satValPanel.left, satValPanel.top, satValPanel.right, satValPanel.top,
-            -0x1, rgb, Shader.TileMode.CLAMP,
+            satValPanel.left,
+            satValPanel.top,
+            satValPanel.right,
+            satValPanel.top,
+            -0x1,
+            rgb,
+            Shader.TileMode.CLAMP,
         ) // 하얀색부터 HSV(hue, 1, 1)까지를 좌상단에서 우상단까지 gradient
         val valShader = LinearGradient(
-            satValPanel.left, satValPanel.top, satValPanel.left, satValPanel.bottom,
-            -0x1, -0x10000000, Shader.TileMode.CLAMP,
+            satValPanel.left,
+            satValPanel.top,
+            satValPanel.left,
+            satValPanel.bottom,
+            -0x1,
+            -0x10000000,
+            Shader.TileMode.CLAMP,
         ) // 하얀색부터 검정색까지를 좌상단에서 좌하단까지 gradient
         canvas.drawRoundRect(
             satValPanel,
@@ -392,9 +394,7 @@ private fun colorToHsv(color: Color): Triple<Float, Float, Float> {
     return Triple(temp[0], temp[1], temp[2])
 }
 
-private fun hsvToString(hsv: Triple<Float, Float, Float>): String {
-    return String.format(
-        "#%06X",
-        0xFFFFFF and Color.hsv(hsv.first, hsv.second, hsv.third).toArgb(),
-    )
-}
+private fun hsvToString(hsv: Triple<Float, Float, Float>): String = String.format(
+    "#%06X",
+    0xFFFFFF and Color.hsv(hsv.first, hsv.second, hsv.third).toArgb(),
+)

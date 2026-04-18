@@ -7,7 +7,7 @@ import com.wafflestudio.snutt2.domain.model.CourseBook
 import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
 import com.wafflestudio.snutt2.domain.model.SearchedLecture
 import com.wafflestudio.snutt2.domain.model.TableTheme
-import com.wafflestudio.snutt2.feature.lecture_detail.LectureDetail
+import com.wafflestudio.snutt2.feature.lecturedetail.LectureDetail
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.LectureDetailParameter
 import com.wafflestudio.snutt2.logging.compose.logImpression

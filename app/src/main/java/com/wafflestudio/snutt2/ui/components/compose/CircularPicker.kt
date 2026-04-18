@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -52,7 +53,7 @@ fun <T> CircularPicker(
     // 중앙에 두 item의 중간이 위치할 때 threshold 및 centerItemIndex 값이 변경
     val threshold = (offset + columnHeightDp.value / 2) % columnHeightDp.value
     val centerItemIndex by remember(threshold) {
-        mutableStateOf(
+        mutableIntStateOf(
             (offset / columnHeightDp.value).roundToInt().coerceAtMost(list.size - 1),
         )
     }

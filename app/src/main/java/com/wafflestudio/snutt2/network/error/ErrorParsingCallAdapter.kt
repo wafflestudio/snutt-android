@@ -14,9 +14,7 @@ class ErrorParsingCallAdapter<R, T : Any>(
 ) : CallAdapter<R, T> {
     override fun responseType(): Type = delegate.responseType()
 
-    override fun adapt(call: Call<R>): T {
-        return delegate.adapt(ErrorParsingCall(call, serializer))
-    }
+    override fun adapt(call: Call<R>): T = delegate.adapt(ErrorParsingCall(call, serializer))
 }
 
 private class ErrorParsingCall<T>(
@@ -25,20 +23,21 @@ private class ErrorParsingCall<T>(
 ) : Call<T> by delegate {
 
     override fun enqueue(callback: Callback<T>) {
-        delegate.enqueue(object : Callback<T> {
-            override fun onResponse(call: Call<T>, response: Response<T>) {
-                if (response.isSuccessful) {
-                    callback.onResponse(call, response)
-                } else {
-                    val exception = parseError(response)
-                    callback.onFailure(call, exception)
+        delegate.enqueue(
+            object : Callback<T> {
+                override fun onResponse(call: Call<T>, response: Response<T>) {
+                    if (response.isSuccessful) {
+                        callback.onResponse(call, response)
+                    } else {
+                        val exception = parseError(response)
+                        callback.onFailure(call, exception)
+                    }
                 }
-            }
 
-            override fun onFailure(call: Call<T>, t: Throwable) {
-                callback.onFailure(call, t)
-            }
-        },
+                override fun onFailure(call: Call<T>, t: Throwable) {
+                    callback.onFailure(call, t)
+                }
+            },
         )
     }
 

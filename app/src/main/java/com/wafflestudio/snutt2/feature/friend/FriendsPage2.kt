@@ -61,7 +61,7 @@ import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
-import com.wafflestudio.snutt2.ui.util.toFormattedString
+import com.wafflestudio.snutt2.ui.util.formatter.toFormattedString
 import com.wafflestudio.snutt2.ui.util.toast
 import kotlinx.coroutines.launch
 
@@ -75,6 +75,7 @@ fun FriendsRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val bottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    val acceptFriendSuccessTemplate = stringResource(R.string.kakao_friend_accept_success)
 
     // 카카오톡 링크로 진입한 경우 처리
     LaunchedEffect(Unit) {
@@ -139,12 +140,7 @@ fun FriendsRoute(
                 }
 
                 is FriendUiEvent.ShowAcceptFriendSuccess -> {
-                    context.toast(
-                        context.getString(
-                            com.wafflestudio.snutt2.R.string.kakao_friend_accept_success,
-                            event.friendNickname,
-                        ),
-                    )
+                    context.toast(acceptFriendSuccessTemplate.format(event.friendNickname))
                 }
 
                 is FriendUiEvent.ShowToast -> {

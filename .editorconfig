@@ -1,11 +1,14 @@
-root=true
+root = true
+
 [*.{kt,kts}]
-indent_size=4
-insert_final_newline=true
-max_line_length=off
-ij_kotlin_allow_trailing_comma=true
-ij_kotlin_allow_trailing_comma_on_call_site=true
-ktlint_standard_import-ordering=disabled
-ktlint_standard_no-wildcard-imports=disabled
-ktlint_standard_package-name=disabled
-ktlint_standard_argument-list-wrapping=disabled
+indent_size = 4
+insert_final_newline = true
+max_line_length = off
+ij_kotlin_allow_trailing_comma = true
+ij_kotlin_allow_trailing_comma_on_call_site = true
+
+# IDE의 Kotlin code style(KOTLIN_OFFICIAL)과 호환되도록 고정. 기본값(ktlint_official) 사용 시 IDE auto-format와 충돌.
+ktlint_code_style = intellij_idea
+
+# @Composable 함수의 PascalCase 관례와 충돌.
+ktlint_standard_function-naming = disabled

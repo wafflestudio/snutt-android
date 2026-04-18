@@ -8,7 +8,7 @@ import com.wafflestudio.snutt2.domain.model.TableLectureCustom
 import com.wafflestudio.snutt2.domain.model.TableSummary
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import com.wafflestudio.snutt2.domain.model.ThemeReference
-import com.wafflestudio.snutt2.ui.util.getFittingTrimParam
+import com.wafflestudio.snutt2.domain.model.getFittingTrimParam
 
 private val sampleTable = Table(
     summary = TableSummary.Default,
@@ -71,4 +71,3 @@ private fun TimeTableScreenAllBadgesPreview() {
         onVisitSessionlessLectureList = {},
     )
 }
-

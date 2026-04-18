@@ -6,7 +6,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.TableSummary
@@ -27,8 +26,6 @@ fun HomeDrawerDialogs(
     onConfirmChangeTableTitle: (TableSummary, String) -> Unit,
     onConfirmDeleteTable: (tableSummary: TableSummary) -> Unit,
 ) {
-    val context = LocalContext.current
-
     when (uiState.dialogState) {
         HomeDrawerUiState.DialogState.None -> {}
         is HomeDrawerUiState.DialogState.ChangeTableName -> {
@@ -39,9 +36,9 @@ fun HomeDrawerDialogs(
                 onConfirm = {
                     onConfirmChangeTableTitle(uiState.dialogState.tableSummary, newTitle)
                 },
-                title = context.getString(R.string.home_drawer_change_name_dialog_title),
-                positiveButtonText = context.getString(R.string.common_ok),
-                negativeButtonText = context.getString(R.string.common_cancel),
+                title = stringResource(R.string.home_drawer_change_name_dialog_title),
+                positiveButtonText = stringResource(R.string.common_ok),
+                negativeButtonText = stringResource(R.string.common_cancel),
             ) {
                 EditText(value = newTitle, onValueChange = { newTitle = it })
             }
@@ -53,9 +50,9 @@ fun HomeDrawerDialogs(
                 onConfirm = {
                     onConfirmDeleteTable(uiState.dialogState.tableSummary)
                 },
-                title = context.getString(R.string.home_drawer_table_delete),
-                positiveButtonText = context.getString(R.string.common_ok),
-                negativeButtonText = context.getString(R.string.common_cancel),
+                title = stringResource(R.string.home_drawer_table_delete),
+                positiveButtonText = stringResource(R.string.common_ok),
+                negativeButtonText = stringResource(R.string.common_cancel),
             ) {
                 Text(
                     stringResource(R.string.table_delete_alert_message),

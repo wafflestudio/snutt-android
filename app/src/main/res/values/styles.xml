@@ -33,15 +33,7 @@
         <item name="android:background">@drawable/edittext_background</item>
     </style>
 
-    <style name="AppBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
-        <item name="bottomSheetStyle">@style/AppModalStyle</item>
-    </style>
-
-    <style name="AppModalStyle" parent="Widget.Design.BottomSheet.Modal">
-        <item name="android:background">@drawable/background_search_option</item>
-    </style>
-
-    <!-- Text -->
+<!-- Text -->
 
     <!-- For searched lecture list -->
 
@@ -64,14 +56,7 @@
 
     <!--For report Fragment-->
 
-    <style name="popup_dialog" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="windowMinWidthMajor">100%</item>
-        <item name="windowMinWidthMinor">100%</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-    </style>
-
-    <style name="Theme.Snutt.Splash" parent="Theme.SplashScreen">
+<style name="Theme.Snutt.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">?android:attr/colorBackground</item>
         <item name="postSplashScreenTheme">@style/AppTheme</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/snutt_splash_icon</item>

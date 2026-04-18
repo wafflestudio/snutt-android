@@ -37,7 +37,7 @@ import com.wafflestudio.snutt2.domain.model.TableLectureCustom
 import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import com.wafflestudio.snutt2.feature.home.drawer.VacancyBanner
-import com.wafflestudio.snutt2.feature.table_lectures.TableLectureItem
+import com.wafflestudio.snutt2.feature.tablelectures.TableLectureItem
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 
@@ -50,7 +50,6 @@ fun ScrollableTimetableContent(
     onVisitSessionlessLectureList: () -> Unit,
     onClickVacancyBanner: () -> Unit,
     onClickLectureCell: (LocalLecture) -> Unit,
-
     fittedTrimParam: TableTrimParam,
     theme: TableTheme,
     previewTheme: TableTheme? = null,
@@ -82,9 +81,7 @@ fun ScrollableTimetableContent(
                 }
             }
 
-            override suspend fun onPreFling(available: Velocity): Velocity {
-                return if (available.y > 0) available else Velocity.Zero
-            }
+            override suspend fun onPreFling(available: Velocity): Velocity = if (available.y > 0) available else Velocity.Zero
         }
     }
 
@@ -161,11 +158,9 @@ fun ScrollableTimetableContent(
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 fun ScrollableTimetableContentPreview() {
-
     val lectures = builtInOnlyLectures
 
     ScrollableTimetableContent(

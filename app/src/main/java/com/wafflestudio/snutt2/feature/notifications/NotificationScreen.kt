@@ -48,7 +48,7 @@ import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
-import com.wafflestudio.snutt2.ui.util.SNUTTStringUtils.getNotificationTime
+import com.wafflestudio.snutt2.ui.util.getNotificationTime
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
@@ -62,7 +62,6 @@ fun NotificationRoute(
 ) {
     val notificationList = viewModel.notificationList.collectAsLazyPagingItems()
     val notificationUiState = notificationList.notificationUiState()
-
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
@@ -232,7 +231,8 @@ fun NotificationError() {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         WarningIcon(
-            modifier = Modifier.size(40.dp), colorFilter = ColorFilter.tint(SNUTTColors.Gray200),
+            modifier = Modifier.size(40.dp),
+            colorFilter = ColorFilter.tint(SNUTTColors.Gray200),
         )
         Spacer(modifier = Modifier.height(10.dp))
         Text(

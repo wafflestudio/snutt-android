@@ -375,7 +375,9 @@ object PreviewData {
     // --- Theme 프리뷰 ---
 
     val previewCustomTheme1 = CustomTheme(
-        id = "p1", name = "봄 테마", isFromMarket = false,
+        id = "p1",
+        name = "봄 테마",
+        isFromMarket = false,
         colors = listOf(
             ThemeColor(0xFFFFFFFF.toInt(), 0xFFFF6B6B.toInt()),
             ThemeColor(0xFFFFFFFF.toInt(), 0xFFFF8E53.toInt()),
@@ -386,7 +388,9 @@ object PreviewData {
     )
 
     val previewCustomTheme2 = CustomTheme(
-        id = "p2", name = "오션 테마", isFromMarket = false,
+        id = "p2",
+        name = "오션 테마",
+        isFromMarket = false,
         colors = listOf(
             ThemeColor(0xFFFFFFFF.toInt(), 0xFF0077B6.toInt()),
             ThemeColor(0xFFFFFFFF.toInt(), 0xFF0096C7.toInt()),
@@ -397,7 +401,9 @@ object PreviewData {
     )
 
     val previewMarketTheme = CustomTheme(
-        id = "mkt", name = "갤럭시 테마", isFromMarket = true,
+        id = "mkt",
+        name = "갤럭시 테마",
+        isFromMarket = true,
         colors = listOf(
             ThemeColor(0xFFFFFFFF.toInt(), 0xFF845EC2.toInt()),
             ThemeColor(0xFFFFFFFF.toInt(), 0xFFD65DB1.toInt()),

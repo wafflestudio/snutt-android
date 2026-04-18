@@ -65,7 +65,8 @@ fun CourseBookDrawerItem(
             )
             Text(
                 text = stringResource(
-                    R.string.home_drawer_table_credit, tableSummary.totalCredit,
+                    R.string.home_drawer_table_credit,
+                    tableSummary.totalCredit,
                 ),
                 style = SNUTTTypography.body2.copy(color = SNUTTColors.Black300),
                 maxLines = 1,

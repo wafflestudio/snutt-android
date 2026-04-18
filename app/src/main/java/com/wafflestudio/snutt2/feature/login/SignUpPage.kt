@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.feature.login
 
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,17 +39,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.lib.isIdInvalid
+import com.wafflestudio.snutt2.lib.isPasswordInvalid
 import com.wafflestudio.snutt2.ui.components.compose.EditText
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.ui.components.compose.WebViewStyleButton
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
-import com.wafflestudio.snutt2.ui.util.SNUTTStringUtils.isIdInvalid
-import com.wafflestudio.snutt2.ui.util.SNUTTStringUtils.isPasswordInvalid
 import com.wafflestudio.snutt2.ui.util.toast
 
 @Composable
@@ -86,6 +86,12 @@ private fun SignUpScreen(
 ) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
+    val invalidIdMessage = stringResource(R.string.error_invalid_id)
+    val invalidPasswordMessage = stringResource(R.string.error_invalid_password)
+    val passwordConfirmInvalidMessage = stringResource(R.string.sign_up_password_confirm_invalid_toast)
+    val emailForm = stringResource(R.string.sign_up_email_form)
+    val apiServer = stringResource(R.string.api_server)
+    val termsPath = stringResource(R.string.terms)
 
     // TODO: 상태 뷰모델로 올리기
     var idField by remember { mutableStateOf("") }
@@ -101,13 +107,13 @@ private fun SignUpScreen(
     val handleLocalSignUp = {
         val isPasswordConfirmPassed = (passwordConfirmField == passwordField)
         if (idField.isIdInvalid()) {
-            context.toast(context.getString(R.string.error_invalid_id))
+            context.toast(invalidIdMessage)
         } else if (passwordField.isPasswordInvalid()) {
-            context.toast(context.getString(R.string.error_invalid_password))
+            context.toast(invalidPasswordMessage)
         } else if (isPasswordConfirmPassed.not()) {
-            context.toast(context.getString(R.string.sign_up_password_confirm_invalid_toast))
+            context.toast(passwordConfirmInvalidMessage)
         } else {
-            onSignUp(idField, emailField.plus(context.getString(R.string.sign_up_email_form)), passwordField)
+            onSignUp(idField, emailField.plus(emailForm), passwordField)
         }
     }
 
@@ -217,8 +223,8 @@ private fun SignUpScreen(
                             style = SNUTTTypography.body2.copy(fontWeight = FontWeight.Bold),
                             textDecoration = TextDecoration.Underline,
                             modifier = Modifier.clicks {
-                                val termsPageUrl = context.getString(R.string.api_server) + context.getString(R.string.terms)
-                                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(termsPageUrl)))
+                                val termsPageUrl = apiServer + termsPath
+                                context.startActivity(Intent(Intent.ACTION_VIEW, termsPageUrl.toUri()))
                             },
                         )
                         Text(text = stringResource(id = R.string.sign_up_terms_3), style = SNUTTTypography.body2)

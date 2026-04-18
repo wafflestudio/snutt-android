@@ -5,8 +5,8 @@ import com.wafflestudio.snutt2.domain.model.SearchedLecture
 import com.wafflestudio.snutt2.domain.model.TableLectureCustom
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
 
-private const val SELECTED_FG_COLOR = -0xcccccd  // 0xFF333333
-private const val SELECTED_BG_COLOR = -0x1f1f20  // 0xFFE0E0E0
+private const val SELECTED_FG_COLOR = -0xcccccd // 0xFF333333
+private const val SELECTED_BG_COLOR = -0x1f1f20 // 0xFFE0E0E0
 
 @Composable
 fun DrawSelectedLecture(

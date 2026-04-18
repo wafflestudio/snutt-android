@@ -19,6 +19,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -45,6 +46,9 @@ fun SearchRoute(
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
+    val vacancyFirstAddMessage = stringResource(R.string.vacancy_first_add_snackbar_message)
+    val bookmarkFirstAlertMessage = stringResource(R.string.bookmark_first_alert_message)
+    val vacancyFirstAddActionLabel = stringResource(R.string.vacancy_first_add_snackbar_action_label)
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val queryResults = viewModel.queryResults.collectAsLazyPagingItems()
@@ -91,8 +95,8 @@ fun SearchRoute(
 
                 is SearchUiEvent.ShowSnackBar -> {
                     val message = when (uiEvent.event) {
-                        SearchSnackBarEvent.FIRST_VACANCY_ADD -> context.getString(R.string.vacancy_first_add_snackbar_message)
-                        SearchSnackBarEvent.FIRST_BOOKMARK_ADD -> context.getString(R.string.bookmark_first_alert_message)
+                        SearchSnackBarEvent.FIRST_VACANCY_ADD -> vacancyFirstAddMessage
+                        SearchSnackBarEvent.FIRST_BOOKMARK_ADD -> bookmarkFirstAlertMessage
                     }
                     val onActionPerformed = when (uiEvent.event) {
                         SearchSnackBarEvent.FIRST_VACANCY_ADD -> onNavigateVacancy
@@ -104,7 +108,7 @@ fun SearchRoute(
                         snackBarHostState.currentSnackBarData.dismiss()
                         val result = snackBarHostState.showSnackBar(
                             message = message,
-                            actionLabel = context.getString(R.string.vacancy_first_add_snackbar_action_label),
+                            actionLabel = vacancyFirstAddActionLabel,
                             duration = CustomSnackBarDuration(
                                 fadeIn = 500L,
                                 inBetween = 3000L,

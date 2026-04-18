@@ -8,7 +8,7 @@ import androidx.compose.runtime.LaunchedEffect
 import com.wafflestudio.snutt2.domain.model.SearchTag
 import com.wafflestudio.snutt2.domain.model.SearchedLecture
 import com.wafflestudio.snutt2.domain.model.TagType
-import com.wafflestudio.snutt2.feature.search.search_option.SearchOptionSheet
+import com.wafflestudio.snutt2.feature.search.searchoption.SearchOptionSheet
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.LocalAnalyticsLogger
 import com.wafflestudio.snutt2.ui.components.compose.ModalBottomSheetPlaceholder
@@ -18,7 +18,6 @@ import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 fun SearchBottomSheetLayout(
     uiState: SearchUiState,
     sheetState: ModalBottomSheetState,
-
     onSelectTagType: (TagType) -> Unit,
     onToggleTag: (SearchTag) -> Unit,
     onRemoveRecent: (SearchTag) -> Unit,
@@ -26,12 +25,10 @@ fun SearchBottomSheetLayout(
     onTimeSelectConfirm: (List<List<Boolean>>) -> Unit,
     applyFilter: () -> Unit,
     onDismiss: () -> Unit,
-
     onBookmarkToggle: (lecture: SearchedLecture, isBookmarked: Boolean) -> Unit,
     onVacancyToggle: (lecture: SearchedLecture, isVacancyRegistered: Boolean) -> Unit,
     onSyllabus: (SearchedLecture) -> Unit,
     onReview: (SearchedLecture) -> Unit,
-
     content: @Composable () -> Unit,
 ) {
     val analyticsLogger = LocalAnalyticsLogger.current

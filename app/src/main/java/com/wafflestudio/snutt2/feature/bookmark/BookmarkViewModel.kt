@@ -4,15 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.config.RemoteConfig
 import com.wafflestudio.snutt2.data.bookmark.BookmarkRepository
-import com.wafflestudio.snutt2.data.current_table_lecture.CurrentTableLectureRepository
-import com.wafflestudio.snutt2.data.lecture_info.LectureInfoRepository
+import com.wafflestudio.snutt2.data.currenttablelecture.CurrentTableLectureRepository
+import com.wafflestudio.snutt2.data.lectureinfo.LectureInfoRepository
 import com.wafflestudio.snutt2.data.notifications.NotificationRepository
 import com.wafflestudio.snutt2.data.onFailure
 import com.wafflestudio.snutt2.data.onSuccess
-import com.wafflestudio.snutt2.data.table_display.TableDisplayRepository
+import com.wafflestudio.snutt2.data.tabledisplay.TableDisplayRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
-import com.wafflestudio.snutt2.data.vacancy_noti.VacancyRepository
+import com.wafflestudio.snutt2.data.vacancynoti.VacancyRepository
 import com.wafflestudio.snutt2.domain.AuthError
 import com.wafflestudio.snutt2.domain.DisplayMessageResolver
 import com.wafflestudio.snutt2.domain.DomainError
@@ -25,6 +25,7 @@ import com.wafflestudio.snutt2.domain.model.Table
 import com.wafflestudio.snutt2.domain.model.TableLectureCustom
 import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
+import com.wafflestudio.snutt2.domain.model.getFittingTrimParam
 import com.wafflestudio.snutt2.feature.search.LectureState
 import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.toDataWithState
@@ -34,7 +35,6 @@ import com.wafflestudio.snutt2.logging.AddToVacancyParameter
 import com.wafflestudio.snutt2.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.logging.AnalyticsLogger
 import com.wafflestudio.snutt2.logging.LectureActionReferrer
-import com.wafflestudio.snutt2.ui.util.getFittingTrimParam
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -365,7 +365,9 @@ class BookmarkViewModel @Inject constructor(
                     val bt = current.bottomSheetType
                     if (bt is BookmarkUiState.BottomSheetType.LectureDetail && bt.lecture.id == lecture.id) {
                         current.copy(bottomSheetType = bt.copy(buildings = buildings))
-                    } else current
+                    } else {
+                        current
+                    }
                 }
             }
     }
@@ -434,6 +436,5 @@ sealed interface BookmarkUiState {
             val isBookmarked: Boolean = false,
             val isVacancyRegistered: Boolean = false,
         ) : BottomSheetType
-
     }
 }

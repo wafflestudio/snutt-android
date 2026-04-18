@@ -6,7 +6,6 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Build
 import android.os.Bundle
@@ -14,12 +13,14 @@ import android.util.SizeF
 import android.view.View
 import android.widget.RemoteViews
 import androidx.compose.animation.ExperimentalAnimationApi
-import com.wafflestudio.snutt2.data.table_display.TableDisplayRepository
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.scale
+import com.wafflestudio.snutt2.data.tabledisplay.TableDisplayRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.domain.ThemeService
 import com.wafflestudio.snutt2.ui.components.view.TimetableView
-import com.wafflestudio.snutt2.ui.util.SNUTTUtils.displayHeight
-import com.wafflestudio.snutt2.ui.util.SNUTTUtils.displayWidth
+import com.wafflestudio.snutt2.ui.util.displayHeight
+import com.wafflestudio.snutt2.ui.util.displayWidth
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
@@ -124,14 +125,14 @@ TimetableWidgetProvider : AppWidgetProvider() {
             tableView.lectures = table.lectures
             tableView.trimParam = tableDisplayRepository.tableTrimParam.value
 
-            val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+            val bitmap = createBitmap(width, height)
             val canvas = Canvas(bitmap)
 
             tableView.measure(width, height)
             tableView.layout(0, 0, width, height)
             tableView.draw(canvas)
 
-            val resizedBitmap = Bitmap.createScaledBitmap(bitmap, (width / scale).toInt(), (height / scale).toInt(), false)
+            val resizedBitmap = bitmap.scale((width / scale).toInt(), (height / scale).toInt(), false)
 
             views.setViewVisibility(R.id.placeholder, View.GONE)
             views.setViewVisibility(R.id.table, View.VISIBLE)
