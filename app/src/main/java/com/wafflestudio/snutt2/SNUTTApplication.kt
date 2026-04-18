@@ -22,7 +22,7 @@ class SNUTTApplication : Application() {
         KakaoSdk.init(this, getString(R.string.kakao_native_app_key))
         Timber.plant(Timber.DebugTree())
         NaverMapSdk.getInstance(this).client =
-            NaverMapSdk.NaverCloudPlatformClient(getString(R.string.naver_map_client_id))
+            NaverMapSdk.NcpKeyClient(getString(R.string.naver_map_ncp_key_id))
     }
 
     // targerSDK 34 대응 (https://github.com/joltup/rn-fetch-blob/issues/866#issuecomment-2227436658)
