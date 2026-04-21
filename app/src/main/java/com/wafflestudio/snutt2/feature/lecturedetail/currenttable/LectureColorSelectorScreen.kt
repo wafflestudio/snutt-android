@@ -46,22 +46,22 @@ fun LectureColorSelectorScreen(
         )
         Spacer(modifier = Modifier.height(10.dp))
 
-        when (uiState) {
-            is LectureColorSelectorUiState.Loading -> {
+        when (val contentState = uiState.contentState) {
+            is LectureColorSelectorUiState.ContentState.Loading -> {
                 // empty
             }
 
-            is LectureColorSelectorUiState.Loaded -> {
+            is LectureColorSelectorUiState.ContentState.Loaded -> {
                 val isDarkMode = isDarkMode()
-                val paletteColors = uiState.tableTheme.getColors(isDarkMode)
+                val paletteColors = contentState.tableTheme.getColors(isDarkMode)
 
-                if (uiState.tableTheme is CustomTheme) {
+                if (contentState.tableTheme is CustomTheme) {
                     paletteColors.forEachIndexed { idx, color ->
                         ColorItem(
                             foreground = Color(color.foreground),
                             background = Color(color.background),
-                            title = "${uiState.tableTheme.name} ${idx + 1}",
-                            isSelected = idx == uiState.selectedIndex,
+                            title = "${contentState.tableTheme.name} ${idx + 1}",
+                            isSelected = idx == contentState.selectedIndex,
                             onClick = { onSelectPalette(idx) },
                         )
                     }
@@ -70,48 +70,48 @@ fun LectureColorSelectorScreen(
                         ColorItem(
                             foreground = Color(color.foreground),
                             background = Color(color.background),
-                            title = "${uiState.tableTheme.name} ${idx + 1}",
-                            isSelected = idx == uiState.selectedIndex,
+                            title = "${contentState.tableTheme.name} ${idx + 1}",
+                            isSelected = idx == contentState.selectedIndex,
                             onClick = { onSelectPalette(idx) },
                         )
                     }
 
                     Column {
                         ColorItem(
-                            foreground = Color(uiState.customFgColor),
-                            background = Color(uiState.customBgColor),
+                            foreground = Color(contentState.customFgColor),
+                            background = Color(contentState.customBgColor),
                             title = stringResource(R.string.lecture_color_selector_page_custom_color),
-                            isSelected = uiState.selectedIndex == -1,
+                            isSelected = contentState.selectedIndex == -1,
                             onClick = onSelectCustom,
                         )
                         CustomColorSection(
-                            fgColor = Color(uiState.customFgColor),
-                            bgColor = Color(uiState.customBgColor),
+                            fgColor = Color(contentState.customFgColor),
+                            bgColor = Color(contentState.customBgColor),
                             onFgPickerClick = onOpenFgPicker,
                             onBgPickerClick = onOpenBgPicker,
                         )
                     }
                 }
-
-                when (val dialogState = uiState.dialogState) {
-                    is LectureColorSelectorUiState.DialogState.None -> {}
-                    is LectureColorSelectorUiState.DialogState.ForegroundPicker -> {
-                        ColorPickerDialog(
-                            initialColor = Color(dialogState.initialColor),
-                            onConfirm = { color -> onPickFgColor(color.toArgb()) },
-                            onDismiss = onDismissDialog,
-                        )
-                    }
-
-                    is LectureColorSelectorUiState.DialogState.BackgroundPicker -> {
-                        ColorPickerDialog(
-                            initialColor = Color(dialogState.initialColor),
-                            onConfirm = { color -> onPickBgColor(color.toArgb()) },
-                            onDismiss = onDismissDialog,
-                        )
-                    }
-                }
             }
+        }
+    }
+
+    when (val dialogState = uiState.dialogState) {
+        is LectureColorSelectorUiState.DialogState.None -> {}
+        is LectureColorSelectorUiState.DialogState.ForegroundPicker -> {
+            ColorPickerDialog(
+                initialColor = Color(dialogState.initialColor),
+                onConfirm = { color -> onPickFgColor(color.toArgb()) },
+                onDismiss = onDismissDialog,
+            )
+        }
+
+        is LectureColorSelectorUiState.DialogState.BackgroundPicker -> {
+            ColorPickerDialog(
+                initialColor = Color(dialogState.initialColor),
+                onConfirm = { color -> onPickBgColor(color.toArgb()) },
+                onDismiss = onDismissDialog,
+            )
         }
     }
 }

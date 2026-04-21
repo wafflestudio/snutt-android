@@ -15,7 +15,11 @@ fun LectureColorSelectorRoute(
 
     LectureColorSelectorScreen(
         uiState = uiState,
-        onBackPressed = { onNavigateBackWithResult(vm.getSelectedColor()) },
+        onBackPressed = {
+            val selected = (uiState.contentState as? LectureColorSelectorUiState.ContentState.Loaded)
+                ?.selectedColor ?: LectureColor.BuiltIn(0)
+            onNavigateBackWithResult(selected)
+        },
         onSelectPalette = vm::selectPaletteColor,
         onSelectCustom = vm::selectCustom,
         onOpenFgPicker = vm::openFgPicker,

@@ -24,15 +24,15 @@ class LectureColorSelectorViewModel @Inject constructor(
     private val initialColor: LectureColor =
         checkNotNull(savedStateHandle[NavigationDestination.LectureColorSelector.ARG_COLOR])
 
-    private val _uiState = MutableStateFlow<LectureColorSelectorUiState>(LectureColorSelectorUiState.Loading)
+    private val _uiState = MutableStateFlow(LectureColorSelectorUiState())
     val uiState = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
             getCurrentTableThemeUseCase().collect { tableTheme ->
                 _uiState.update { state ->
-                    when (state) {
-                        is LectureColorSelectorUiState.Loading -> {
+                    val newContentState = when (val content = state.contentState) {
+                        is LectureColorSelectorUiState.ContentState.Loading -> {
                             val isBuiltIn = tableTheme !is CustomTheme
                             val selectedIndex = when (initialColor) {
                                 is LectureColor.BuiltIn -> initialColor.colorIndex
@@ -44,7 +44,7 @@ class LectureColorSelectorViewModel @Inject constructor(
                                 is LectureColor.Custom -> initialColor
                                 is LectureColor.BuiltIn -> LectureColor.Custom.Default
                             }
-                            LectureColorSelectorUiState.Loaded(
+                            LectureColorSelectorUiState.ContentState.Loaded(
                                 tableTheme = tableTheme,
                                 isBuiltInTheme = isBuiltIn,
                                 selectedIndex = selectedIndex,
@@ -53,102 +53,102 @@ class LectureColorSelectorViewModel @Inject constructor(
                             )
                         }
 
-                        is LectureColorSelectorUiState.Loaded -> state.copy(
+                        is LectureColorSelectorUiState.ContentState.Loaded -> content.copy(
                             tableTheme = tableTheme,
                             isBuiltInTheme = tableTheme !is CustomTheme,
                         )
                     }
+                    state.copy(contentState = newContentState)
                 }
             }
         }
     }
 
     fun selectPaletteColor(index: Int) {
-        updateLoaded { copy(selectedIndex = index) }
+        _uiState.update { state ->
+            val loaded = state.contentState as? LectureColorSelectorUiState.ContentState.Loaded ?: return@update state
+            state.copy(contentState = loaded.copy(selectedIndex = index))
+        }
     }
 
     fun selectCustom() {
-        updateLoaded { copy(selectedIndex = -1) }
+        _uiState.update { state ->
+            val loaded = state.contentState as? LectureColorSelectorUiState.ContentState.Loaded ?: return@update state
+            state.copy(contentState = loaded.copy(selectedIndex = -1))
+        }
     }
 
     fun openFgPicker() {
-        updateLoaded {
-            copy(
-                dialogState = LectureColorSelectorUiState.DialogState.ForegroundPicker(customFgColor),
-            )
+        _uiState.update { state ->
+            val loaded = state.contentState as? LectureColorSelectorUiState.ContentState.Loaded ?: return@update state
+            state.copy(dialogState = LectureColorSelectorUiState.DialogState.ForegroundPicker(loaded.customFgColor))
         }
     }
 
     fun openBgPicker() {
-        updateLoaded {
-            copy(
-                dialogState = LectureColorSelectorUiState.DialogState.BackgroundPicker(customBgColor),
-            )
+        _uiState.update { state ->
+            val loaded = state.contentState as? LectureColorSelectorUiState.ContentState.Loaded ?: return@update state
+            state.copy(dialogState = LectureColorSelectorUiState.DialogState.BackgroundPicker(loaded.customBgColor))
         }
     }
 
     fun dismissDialog() {
-        updateLoaded { copy(dialogState = LectureColorSelectorUiState.DialogState.None) }
+        _uiState.update { it.copy(dialogState = LectureColorSelectorUiState.DialogState.None) }
     }
 
     fun pickFgColor(argb: Int) {
-        updateLoaded {
-            copy(
-                customFgColor = argb,
-                selectedIndex = -1,
+        _uiState.update { state ->
+            val loaded = state.contentState as? LectureColorSelectorUiState.ContentState.Loaded ?: return@update state
+            state.copy(
+                contentState = loaded.copy(
+                    customFgColor = argb,
+                    selectedIndex = -1,
+                ),
                 dialogState = LectureColorSelectorUiState.DialogState.None,
             )
         }
     }
 
     fun pickBgColor(argb: Int) {
-        updateLoaded {
-            copy(
-                customBgColor = argb,
-                selectedIndex = -1,
+        _uiState.update { state ->
+            val loaded = state.contentState as? LectureColorSelectorUiState.ContentState.Loaded ?: return@update state
+            state.copy(
+                contentState = loaded.copy(
+                    customBgColor = argb,
+                    selectedIndex = -1,
+                ),
                 dialogState = LectureColorSelectorUiState.DialogState.None,
             )
         }
     }
-
-    fun getSelectedColor(): LectureColor {
-        val state = _uiState.value as? LectureColorSelectorUiState.Loaded
-            ?: return LectureColor.BuiltIn(0)
-
-        return when {
-            state.selectedIndex == -1 -> LectureColor.Custom(state.customFgColor, state.customBgColor)
-            state.tableTheme is CustomTheme -> {
-                val c = state.tableTheme.getColors(false)[state.selectedIndex]
-                LectureColor.Custom(c.foreground, c.background)
-            }
-
-            else -> LectureColor.BuiltIn(state.selectedIndex)
-        }
-    }
-
-    private fun updateLoaded(
-        transform: LectureColorSelectorUiState.Loaded.() -> LectureColorSelectorUiState.Loaded,
-    ) {
-        _uiState.update { state ->
-            when (state) {
-                is LectureColorSelectorUiState.Loaded -> state.transform()
-                else -> state
-            }
-        }
-    }
 }
 
-sealed interface LectureColorSelectorUiState {
-    data object Loading : LectureColorSelectorUiState
+data class LectureColorSelectorUiState(
+    val contentState: ContentState = ContentState.Loading,
+    val dialogState: DialogState = DialogState.None,
+) {
+    sealed interface ContentState {
+        data object Loading : ContentState
 
-    data class Loaded(
-        val tableTheme: TableTheme,
-        val isBuiltInTheme: Boolean,
-        val selectedIndex: Int,
-        val customFgColor: Int,
-        val customBgColor: Int,
-        val dialogState: DialogState = DialogState.None,
-    ) : LectureColorSelectorUiState
+        data class Loaded(
+            val tableTheme: TableTheme,
+            val isBuiltInTheme: Boolean,
+            val selectedIndex: Int,
+            val customFgColor: Int,
+            val customBgColor: Int,
+        ) : ContentState {
+            val selectedColor: LectureColor
+                get() = when {
+                    selectedIndex == -1 -> LectureColor.Custom(customFgColor, customBgColor)
+                    tableTheme is CustomTheme -> {
+                        val c = tableTheme.getColors(false)[selectedIndex]
+                        LectureColor.Custom(c.foreground, c.background)
+                    }
+
+                    else -> LectureColor.BuiltIn(selectedIndex)
+                }
+        }
+    }
 
     sealed interface DialogState {
         data object None : DialogState
