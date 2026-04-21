@@ -54,6 +54,8 @@ fun LectureColorSelectorScreen(
             is LectureColorSelectorUiState.ContentState.Loaded -> {
                 val isDarkMode = isDarkMode()
                 val paletteColors = contentState.tableTheme.getColors(isDarkMode)
+                val selection = contentState.selection
+                val selectedPaletteIndex = (selection as? LectureColorSelectorUiState.Selection.Palette)?.index
 
                 if (contentState.tableTheme is CustomTheme) {
                     paletteColors.forEachIndexed { idx, color ->
@@ -61,7 +63,7 @@ fun LectureColorSelectorScreen(
                             foreground = Color(color.foreground),
                             background = Color(color.background),
                             title = "${contentState.tableTheme.name} ${idx + 1}",
-                            isSelected = idx == contentState.selectedIndex,
+                            isSelected = idx == selectedPaletteIndex,
                             onClick = { onSelectPalette(idx) },
                         )
                     }
@@ -71,7 +73,7 @@ fun LectureColorSelectorScreen(
                             foreground = Color(color.foreground),
                             background = Color(color.background),
                             title = "${contentState.tableTheme.name} ${idx + 1}",
-                            isSelected = idx == contentState.selectedIndex,
+                            isSelected = idx == selectedPaletteIndex,
                             onClick = { onSelectPalette(idx) },
                         )
                     }
@@ -81,7 +83,7 @@ fun LectureColorSelectorScreen(
                             foreground = Color(contentState.customFgColor),
                             background = Color(contentState.customBgColor),
                             title = stringResource(R.string.lecture_color_selector_page_custom_color),
-                            isSelected = contentState.selectedIndex == -1,
+                            isSelected = selection is LectureColorSelectorUiState.Selection.Custom,
                             onClick = onSelectCustom,
                         )
                         CustomColorSection(

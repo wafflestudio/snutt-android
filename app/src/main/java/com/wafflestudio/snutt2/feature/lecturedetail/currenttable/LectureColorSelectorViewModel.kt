@@ -34,10 +34,17 @@ class LectureColorSelectorViewModel @Inject constructor(
                     val newContentState = when (val content = state.contentState) {
                         is LectureColorSelectorUiState.ContentState.Loading -> {
                             val isBuiltIn = tableTheme !is CustomTheme
-                            val selectedIndex = when (initialColor) {
-                                is LectureColor.BuiltIn -> initialColor.colorIndex
-                                is LectureColor.Custom -> tableTheme.getColors(false).indexOfFirst {
-                                    it.foreground == initialColor.foreground && it.background == initialColor.background
+                            val selection = when (initialColor) {
+                                is LectureColor.BuiltIn -> LectureColorSelectorUiState.Selection.Palette(initialColor.colorIndex)
+                                is LectureColor.Custom -> {
+                                    val matchedIndex = tableTheme.getColors(false).indexOfFirst {
+                                        it.foreground == initialColor.foreground && it.background == initialColor.background
+                                    }
+                                    if (matchedIndex >= 0) {
+                                        LectureColorSelectorUiState.Selection.Palette(matchedIndex)
+                                    } else {
+                                        LectureColorSelectorUiState.Selection.Custom
+                                    }
                                 }
                             }
                             val customColors = when (initialColor) {
@@ -47,7 +54,7 @@ class LectureColorSelectorViewModel @Inject constructor(
                             LectureColorSelectorUiState.ContentState.Loaded(
                                 tableTheme = tableTheme,
                                 isBuiltInTheme = isBuiltIn,
-                                selectedIndex = selectedIndex,
+                                selection = selection,
                                 customFgColor = customColors.foreground,
                                 customBgColor = customColors.background,
                             )
@@ -67,14 +74,14 @@ class LectureColorSelectorViewModel @Inject constructor(
     fun selectPaletteColor(index: Int) {
         _uiState.update { state ->
             val loaded = state.contentState as? LectureColorSelectorUiState.ContentState.Loaded ?: return@update state
-            state.copy(contentState = loaded.copy(selectedIndex = index))
+            state.copy(contentState = loaded.copy(selection = LectureColorSelectorUiState.Selection.Palette(index)))
         }
     }
 
     fun selectCustom() {
         _uiState.update { state ->
             val loaded = state.contentState as? LectureColorSelectorUiState.ContentState.Loaded ?: return@update state
-            state.copy(contentState = loaded.copy(selectedIndex = -1))
+            state.copy(contentState = loaded.copy(selection = LectureColorSelectorUiState.Selection.Custom))
         }
     }
 
@@ -102,7 +109,7 @@ class LectureColorSelectorViewModel @Inject constructor(
             state.copy(
                 contentState = loaded.copy(
                     customFgColor = argb,
-                    selectedIndex = -1,
+                    selection = LectureColorSelectorUiState.Selection.Custom,
                 ),
                 dialogState = LectureColorSelectorUiState.DialogState.None,
             )
@@ -115,7 +122,7 @@ class LectureColorSelectorViewModel @Inject constructor(
             state.copy(
                 contentState = loaded.copy(
                     customBgColor = argb,
-                    selectedIndex = -1,
+                    selection = LectureColorSelectorUiState.Selection.Custom,
                 ),
                 dialogState = LectureColorSelectorUiState.DialogState.None,
             )
@@ -133,21 +140,29 @@ data class LectureColorSelectorUiState(
         data class Loaded(
             val tableTheme: TableTheme,
             val isBuiltInTheme: Boolean,
-            val selectedIndex: Int,
+            val selection: Selection,
             val customFgColor: Int,
             val customBgColor: Int,
         ) : ContentState {
             val selectedColor: LectureColor
-                get() = when {
-                    selectedIndex == -1 -> LectureColor.Custom(customFgColor, customBgColor)
-                    tableTheme is CustomTheme -> {
-                        val c = tableTheme.getColors(false)[selectedIndex]
-                        LectureColor.Custom(c.foreground, c.background)
+                get() = when (val s = selection) {
+                    is Selection.Palette -> {
+                        if (tableTheme is CustomTheme) {
+                            val c = tableTheme.getColors(false)[s.index]
+                            LectureColor.Custom(c.foreground, c.background)
+                        } else {
+                            LectureColor.BuiltIn(s.index)
+                        }
                     }
 
-                    else -> LectureColor.BuiltIn(selectedIndex)
+                    is Selection.Custom -> LectureColor.Custom(customFgColor, customBgColor)
                 }
         }
+    }
+
+    sealed interface Selection {
+        data class Palette(val index: Int) : Selection
+        data object Custom : Selection
     }
 
     sealed interface DialogState {
