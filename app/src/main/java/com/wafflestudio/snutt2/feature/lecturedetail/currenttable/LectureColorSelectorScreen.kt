@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.feature.lecturedetail.currenttable
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -33,8 +32,6 @@ fun LectureColorSelectorScreen(
     onPickFgColor: (Int) -> Unit,
     onPickBgColor: (Int) -> Unit,
 ) {
-    BackHandler { onBackPressed() }
-
     Column(
         modifier = Modifier
             .background(MaterialTheme.colors.background)

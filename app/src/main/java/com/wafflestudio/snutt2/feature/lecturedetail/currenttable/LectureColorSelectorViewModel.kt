@@ -9,7 +9,9 @@ import com.wafflestudio.snutt2.domain.model.LectureColor
 import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.navigation.NavigationDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -26,6 +28,9 @@ class LectureColorSelectorViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(LectureColorSelectorUiState())
     val uiState = _uiState.asStateFlow()
+
+    private val _uiEvent = MutableSharedFlow<LectureColorSelectorUiEvent>()
+    val uiEvent = _uiEvent.asSharedFlow()
 
     init {
         viewModelScope.launch {
@@ -68,6 +73,14 @@ class LectureColorSelectorViewModel @Inject constructor(
                     state.copy(contentState = newContentState)
                 }
             }
+        }
+    }
+
+    fun onBackPressed() {
+        val loaded = _uiState.value.contentState as? LectureColorSelectorUiState.ContentState.Loaded
+        val selected = loaded?.selectedColor ?: LectureColor.BuiltIn(0)
+        viewModelScope.launch {
+            _uiEvent.emit(LectureColorSelectorUiEvent.NavigateBackWithResult(selected))
         }
     }
 
@@ -170,4 +183,8 @@ data class LectureColorSelectorUiState(
         data class ForegroundPicker(val initialColor: Int) : DialogState
         data class BackgroundPicker(val initialColor: Int) : DialogState
     }
+}
+
+sealed interface LectureColorSelectorUiEvent {
+    data class NavigateBackWithResult(val selectedColor: LectureColor) : LectureColorSelectorUiEvent
 }
