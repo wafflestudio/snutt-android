@@ -43,54 +43,46 @@ fun LectureColorSelectorScreen(
         )
         Spacer(modifier = Modifier.height(10.dp))
 
-        when (val contentState = uiState.contentState) {
-            is LectureColorSelectorUiState.ContentState.Loading -> {
-                // empty
+        val isDarkMode = isDarkMode()
+        val paletteColors = uiState.tableTheme.getColors(isDarkMode)
+        val selection = uiState.selection
+        val selectedPaletteIndex = (selection as? LectureColorSelectorUiState.Selection.Palette)?.index
+
+        if (uiState.tableTheme is CustomTheme) {
+            paletteColors.forEachIndexed { idx, color ->
+                ColorItem(
+                    foreground = Color(color.foreground),
+                    background = Color(color.background),
+                    title = "${uiState.tableTheme.name} ${idx + 1}",
+                    isSelected = idx == selectedPaletteIndex,
+                    onClick = { onSelectPalette(idx) },
+                )
+            }
+        } else {
+            paletteColors.forEachIndexed { idx, color ->
+                ColorItem(
+                    foreground = Color(color.foreground),
+                    background = Color(color.background),
+                    title = "${uiState.tableTheme.name} ${idx + 1}",
+                    isSelected = idx == selectedPaletteIndex,
+                    onClick = { onSelectPalette(idx) },
+                )
             }
 
-            is LectureColorSelectorUiState.ContentState.Loaded -> {
-                val isDarkMode = isDarkMode()
-                val paletteColors = contentState.tableTheme.getColors(isDarkMode)
-                val selection = contentState.selection
-                val selectedPaletteIndex = (selection as? LectureColorSelectorUiState.Selection.Palette)?.index
-
-                if (contentState.tableTheme is CustomTheme) {
-                    paletteColors.forEachIndexed { idx, color ->
-                        ColorItem(
-                            foreground = Color(color.foreground),
-                            background = Color(color.background),
-                            title = "${contentState.tableTheme.name} ${idx + 1}",
-                            isSelected = idx == selectedPaletteIndex,
-                            onClick = { onSelectPalette(idx) },
-                        )
-                    }
-                } else {
-                    paletteColors.forEachIndexed { idx, color ->
-                        ColorItem(
-                            foreground = Color(color.foreground),
-                            background = Color(color.background),
-                            title = "${contentState.tableTheme.name} ${idx + 1}",
-                            isSelected = idx == selectedPaletteIndex,
-                            onClick = { onSelectPalette(idx) },
-                        )
-                    }
-
-                    Column {
-                        ColorItem(
-                            foreground = Color(contentState.customFgColor),
-                            background = Color(contentState.customBgColor),
-                            title = stringResource(R.string.lecture_color_selector_page_custom_color),
-                            isSelected = selection is LectureColorSelectorUiState.Selection.Custom,
-                            onClick = onSelectCustom,
-                        )
-                        CustomColorSection(
-                            fgColor = Color(contentState.customFgColor),
-                            bgColor = Color(contentState.customBgColor),
-                            onFgPickerClick = onOpenFgPicker,
-                            onBgPickerClick = onOpenBgPicker,
-                        )
-                    }
-                }
+            Column {
+                ColorItem(
+                    foreground = Color(uiState.customFgColor),
+                    background = Color(uiState.customBgColor),
+                    title = stringResource(R.string.lecture_color_selector_page_custom_color),
+                    isSelected = selection is LectureColorSelectorUiState.Selection.Custom,
+                    onClick = onSelectCustom,
+                )
+                CustomColorSection(
+                    fgColor = Color(uiState.customFgColor),
+                    bgColor = Color(uiState.customBgColor),
+                    onFgPickerClick = onOpenFgPicker,
+                    onBgPickerClick = onOpenBgPicker,
+                )
             }
         }
     }
