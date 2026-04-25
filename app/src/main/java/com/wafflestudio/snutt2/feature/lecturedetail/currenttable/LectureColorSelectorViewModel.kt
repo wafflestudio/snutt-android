@@ -33,24 +33,6 @@ class LectureColorSelectorViewModel @Inject constructor(
     private val _uiEvent = MutableSharedFlow<LectureColorSelectorUiEvent>()
     val uiEvent = _uiEvent.asSharedFlow()
 
-    init {
-        viewModelScope.launch {
-            getCurrentTableThemeUseCase().collect { tableTheme ->
-                _uiState.update { current ->
-                    // 외부에서 시간표 테마가 갱신될 수 있으나 모드 자체가 바뀌는 경우는 거의 없음.
-                    // 같은 모드 안에서만 tableTheme 필드만 갱신, 모드 전환 케이스는 무시.
-                    when {
-                        tableTheme is BuiltInTheme && current is LectureColorSelectorUiState.BuiltInThemeMode ->
-                            current.copy(tableTheme = tableTheme)
-                        tableTheme is CustomTheme && current is LectureColorSelectorUiState.CustomThemeMode ->
-                            current.copy(tableTheme = tableTheme)
-                        else -> current
-                    }
-                }
-            }
-        }
-    }
-
     private fun buildInitialUiState(): LectureColorSelectorUiState =
         when (val tableTheme = getCurrentTableThemeUseCase.current()) {
             is BuiltInTheme -> buildBuiltInMode(tableTheme)
