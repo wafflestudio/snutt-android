@@ -13,10 +13,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.IntOffset
 import com.wafflestudio.snutt2.domain.model.SearchedLecture
+import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.feature.bookmark.BookmarkPlaceHolder
 import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 
 @Composable
@@ -61,5 +64,47 @@ fun BookmarkList(
                 item { Divider(color = SNUTTColors.White400) }
             }
         }
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun BookmarkList_Empty() {
+    SnuttPreviewSurface {
+        BookmarkList(
+            bookmarks = emptyList(),
+            onToggleLectureSelection = {},
+            onClickLectureDetail = {},
+            onClickReview = {},
+            onClickBookmark = {},
+            onClickVacancy = {},
+            onClickAddOrRemove = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun BookmarkList_Loaded() {
+    SnuttPreviewSurface {
+        BookmarkList(
+            bookmarks = PreviewData.sampleLectures.take(3).map {
+                DataWithState(
+                    it,
+                    LectureState(
+                        selected = false,
+                        contained = false,
+                        isBookmarked = true,
+                        isVacancyRegistered = false,
+                    ),
+                )
+            },
+            onToggleLectureSelection = {},
+            onClickLectureDetail = {},
+            onClickReview = {},
+            onClickBookmark = {},
+            onClickVacancy = {},
+            onClickAddOrRemove = {},
+        )
     }
 }

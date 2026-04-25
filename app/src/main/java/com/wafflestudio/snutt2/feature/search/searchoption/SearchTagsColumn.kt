@@ -17,7 +17,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.domain.model.SearchTag
@@ -29,6 +28,8 @@ import com.wafflestudio.snutt2.ui.components.compose.VividCheckedIcon
 import com.wafflestudio.snutt2.ui.components.compose.VividUncheckedIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.components.compose.displayName
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
@@ -152,9 +153,9 @@ private fun SelectableTagItem(
 
 // region Preview
 
-@Preview(showBackground = true)
+@SnuttPreview
 @Composable
-private fun SearchTagsColumnPreview() {
+private fun SearchTagsColumn_DepartmentWithRecent() {
     val sampleTags: List<Selectable<SearchTag>> = listOf(
         DataWithState(SearchTag.Regular(TagType.DEPARTMENT, "수리과학부"), true),
         DataWithState(SearchTag.Regular(TagType.DEPARTMENT, "조선해양공학과"), false),
@@ -165,20 +166,22 @@ private fun SearchTagsColumnPreview() {
         DataWithState(SearchTag.Regular(TagType.DEPARTMENT, "전기·정보공학부"), true),
     )
 
-    SearchTagsColumn(
-        recentSearchedDepartments = sampleRecent,
-        searchTags = sampleTags,
-        selectedTimes = emptyList(),
-        onToggleTag = {},
-        onRemoveRecentSearchedDepartment = {},
-        openTimeSelectSheet = {},
-        modifier = Modifier.width(250.dp),
-    )
+    SnuttPreviewSurface {
+        SearchTagsColumn(
+            recentSearchedDepartments = sampleRecent,
+            searchTags = sampleTags,
+            selectedTimes = emptyList(),
+            onToggleTag = {},
+            onRemoveRecentSearchedDepartment = {},
+            openTimeSelectSheet = {},
+            modifier = Modifier.width(250.dp),
+        )
+    }
 }
 
-@Preview(showBackground = true)
+@SnuttPreview
 @Composable
-private fun SearchTagsColumnPreview_TimeSelect() {
+private fun SearchTagsColumn_TimeSelect() {
     val sampleTags: List<Selectable<SearchTag>> = listOf(
         DataWithState(SearchTag.TimeEmpty, false),
         DataWithState(SearchTag.TimeSelect, true),
@@ -187,15 +190,17 @@ private fun SearchTagsColumnPreview_TimeSelect() {
         List(30) { slot -> day == 0 && slot in 2..5 }
     }
 
-    SearchTagsColumn(
-        recentSearchedDepartments = emptyList(),
-        searchTags = sampleTags,
-        selectedTimes = sampleTimeSlots,
-        onToggleTag = {},
-        onRemoveRecentSearchedDepartment = {},
-        openTimeSelectSheet = {},
-        modifier = Modifier.width(250.dp),
-    )
+    SnuttPreviewSurface {
+        SearchTagsColumn(
+            recentSearchedDepartments = emptyList(),
+            searchTags = sampleTags,
+            selectedTimes = sampleTimeSlots,
+            onToggleTag = {},
+            onRemoveRecentSearchedDepartment = {},
+            openTimeSelectSheet = {},
+            modifier = Modifier.width(250.dp),
+        )
+    }
 }
 
 // endregion

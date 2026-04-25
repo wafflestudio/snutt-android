@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,13 +19,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
+import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.wafflestudio.snutt2.domain.model.SearchTag
 import com.wafflestudio.snutt2.domain.model.SearchedLecture
+import com.wafflestudio.snutt2.domain.model.TagType
+import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.components.compose.AnimatedLazyRow
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
+import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun SearchResultList(
@@ -128,5 +136,65 @@ fun SearchResultList(
                 }
             }
         }
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun SearchResultList_Placeholder() {
+    val pagingItems = flowOf(PagingData.empty<DataWithState<SearchedLecture, LectureState>>())
+        .collectAsLazyPagingItems()
+    SnuttPreviewSurface {
+        SearchResultList(
+            searchResultPagingItems = pagingItems,
+            searchResultListState = SearchResultListState.PLACEHOLDER,
+            selectedTags = emptyList(),
+            lazyListState = rememberLazyListState(),
+            onToggleTag = {},
+            onToggleLectureSelection = {},
+            onClickLectureDetail = {},
+            onClickReview = {},
+            onClickBookmark = {},
+            onClickVacancy = {},
+            onClickAddOrRemove = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun SearchResultList_Searched() {
+    val pagingItems = flowOf(
+        PagingData.from(
+            PreviewData.sampleLectures.take(3).map {
+                DataWithState(
+                    it,
+                    LectureState(
+                        selected = false,
+                        contained = false,
+                        isBookmarked = false,
+                        isVacancyRegistered = false,
+                    ),
+                )
+            },
+        ),
+    ).collectAsLazyPagingItems()
+    SnuttPreviewSurface {
+        SearchResultList(
+            searchResultPagingItems = pagingItems,
+            searchResultListState = SearchResultListState.SEARCHED,
+            selectedTags = listOf(
+                SearchTag.Regular(TagType.DEPARTMENT, "컴퓨터공학부"),
+                SearchTag.Regular(TagType.CLASSIFICATION, "전공선택"),
+            ),
+            lazyListState = rememberLazyListState(),
+            onToggleTag = {},
+            onToggleLectureSelection = {},
+            onClickLectureDetail = {},
+            onClickReview = {},
+            onClickBookmark = {},
+            onClickVacancy = {},
+            onClickAddOrRemove = {},
+        )
     }
 }

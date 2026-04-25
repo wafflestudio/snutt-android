@@ -21,7 +21,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
@@ -40,6 +39,8 @@ import com.wafflestudio.snutt2.ui.components.compose.StarIcon
 import com.wafflestudio.snutt2.ui.components.compose.TagIcon
 import com.wafflestudio.snutt2.ui.components.compose.ThickReviewIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.util.formatter.getLectureTagText
@@ -304,20 +305,26 @@ fun LectureListItemButton(
     }
 }
 
+@SnuttPreview
 @Composable
-@Preview(showBackground = true)
-fun ExpandableLectureListItemPreview() {
-    ExpandableLectureListItem(
-        modifier = Modifier,
-        lectureDataWithState = DataWithState(
-            PreviewData.sampleLectures.first(),
-            LectureState(selected = false, contained = false, isBookmarked = false, isVacancyRegistered = false),
-        ),
-        onToggleLectureSelection = { },
-        onClickLectureDetail = { },
-        onClickReview = { a -> },
-        onClickBookmark = { a, b -> },
-        onClickVacancy = { a, b -> },
-        onToggleLectureContained = { a, b -> },
-    )
+private fun ExpandableLectureListItem_Default() {
+    SnuttPreviewSurface {
+        ExpandableLectureListItem(
+            lectureDataWithState = DataWithState(
+                PreviewData.sampleLectures.first(),
+                LectureState(
+                    selected = false,
+                    contained = false,
+                    isBookmarked = false,
+                    isVacancyRegistered = false,
+                ),
+            ),
+            onToggleLectureSelection = {},
+            onClickLectureDetail = {},
+            onClickReview = {},
+            onClickBookmark = { _, _ -> },
+            onClickVacancy = { _, _ -> },
+            onToggleLectureContained = { _, _ -> },
+        )
+    }
 }

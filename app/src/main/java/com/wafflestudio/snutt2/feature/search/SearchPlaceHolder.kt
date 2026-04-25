@@ -16,6 +16,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.components.compose.BigSearchIcon
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
@@ -95,5 +97,21 @@ fun SearchEmptyPlaceholder(
             text = stringResource(R.string.search_result_empty),
             style = SNUTTTypography.subtitle1.copy(color = SNUTTColors.White700, fontSize = 18.sp),
         )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun SearchPlaceHolder_Default() {
+    SnuttPreviewSurface {
+        SearchPlaceHolder()
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun SearchEmptyPlaceholder_Default() {
+    SnuttPreviewSurface {
+        SearchEmptyPlaceholder()
     }
 }

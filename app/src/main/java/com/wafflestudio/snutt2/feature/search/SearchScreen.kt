@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -24,10 +25,18 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.domain.model.BuiltInTheme
+import com.wafflestudio.snutt2.domain.model.CourseBook
 import com.wafflestudio.snutt2.domain.model.SearchTag
 import com.wafflestudio.snutt2.domain.model.SearchedLecture
+import com.wafflestudio.snutt2.domain.model.TableLectureCustom
+import com.wafflestudio.snutt2.domain.model.TableTrimParam
+import com.wafflestudio.snutt2.domain.model.TagType
+import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.feature.home.timetable.TimeTable
 import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.ui.components.compose.EditText
@@ -37,8 +46,11 @@ import com.wafflestudio.snutt2.ui.components.compose.SearchIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.clearFocusOnKeyboardDismiss
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
+import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun SearchScreen(
@@ -179,3 +191,110 @@ private fun RowScope.SearchTopBarContent(
         }
     }
 }
+
+// region Preview
+
+private fun previewSearchUiState(
+    searchTitle: String = "",
+    searchResultListState: SearchResultListState = SearchResultListState.PLACEHOLDER,
+    selectedTags: List<SearchTag> = emptyList(),
+): SearchUiState = SearchUiState(
+    courseBook = CourseBook(semester = 1, year = 2025),
+    selectedLecture = null,
+    currentTableLectures = emptyList(),
+    tableTrimParam = TableTrimParam.Default,
+    tableLectureCustomOptions = TableLectureCustom.Default,
+    tableTheme = BuiltInTheme.SNUTT,
+    isCompactMode = false,
+    bookmarks = emptyList(),
+    vacancyList = emptyList(),
+    disableMapFeature = true,
+    bottomSheetType = SearchUiState.BottomSheetType.None,
+    dialogState = SearchUiState.DialogState.None,
+    searchTitle = searchTitle,
+    selectedTags = selectedTags,
+    searchResultListState = searchResultListState,
+    tagTypes = emptyList(),
+    selectedTagType = TagType.SORT_CRITERIA,
+    allSearchTags = emptyList(),
+    searchTags = emptyList(),
+    recentSearchedDepartments = emptyList(),
+    draggedTimeBlock = TableTrimParam.TimeBlockGridDefault,
+)
+
+@SnuttPreview
+@Composable
+private fun SearchScreen_Placeholder() {
+    val pagingItems = flowOf(PagingData.empty<DataWithState<SearchedLecture, LectureState>>())
+        .collectAsLazyPagingItems()
+    SnuttPreviewSurface {
+        SearchScreen(
+            uiState = previewSearchUiState(),
+            searchResultPagingItems = pagingItems,
+            lazyListState = rememberLazyListState(),
+            onSearch = {},
+            onSearchTitleChange = {},
+            onClearEditText = {},
+            onFilter = {},
+            onToggleTagAndQuery = {},
+            onToggleLectureSelection = {},
+            onClickLectureDetail = {},
+            onClickReview = {},
+            onClickBookmark = { _, _ -> },
+            onClickVacancy = { _, _ -> },
+            onToggleLectureContained = { _, _ -> },
+            onDismissDialog = {},
+            onConfirmDeleteBookmark = {},
+            onConfirmDeleteVacancy = {},
+            onConfirmAddWithOverlap = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun SearchScreen_Searched() {
+    val pagingItems = flowOf(
+        PagingData.from(
+            PreviewData.sampleLectures.take(3).map {
+                DataWithState(
+                    it,
+                    LectureState(
+                        selected = false,
+                        contained = false,
+                        isBookmarked = false,
+                        isVacancyRegistered = false,
+                    ),
+                )
+            },
+        ),
+    ).collectAsLazyPagingItems()
+    SnuttPreviewSurface {
+        SearchScreen(
+            uiState = previewSearchUiState(
+                searchTitle = "알고리즘",
+                searchResultListState = SearchResultListState.SEARCHED,
+                selectedTags = listOf(SearchTag.Regular(TagType.DEPARTMENT, "컴퓨터공학부")),
+            ),
+            searchResultPagingItems = pagingItems,
+            lazyListState = rememberLazyListState(),
+            onSearch = {},
+            onSearchTitleChange = {},
+            onClearEditText = {},
+            onFilter = {},
+            onToggleTagAndQuery = {},
+            onToggleLectureSelection = {},
+            onClickLectureDetail = {},
+            onClickReview = {},
+            onClickBookmark = { _, _ -> },
+            onClickVacancy = { _, _ -> },
+            onToggleLectureContained = { _, _ -> },
+            onDismissDialog = {},
+            onConfirmDeleteBookmark = {},
+            onConfirmDeleteVacancy = {},
+            onConfirmAddWithOverlap = {},
+        )
+    }
+}
+
+// endregion

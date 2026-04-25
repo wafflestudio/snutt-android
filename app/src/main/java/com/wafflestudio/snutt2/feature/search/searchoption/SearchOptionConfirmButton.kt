@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,6 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
@@ -56,6 +59,18 @@ fun SearchOptionConfirmButton(
             text = stringResource(R.string.search_option_apply_button),
             textAlign = TextAlign.Center,
             style = SNUTTTypography.h3.copy(fontSize = 17.sp, color = SNUTTColors.AllWhite),
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun SearchOptionConfirmButton_Default() {
+    val baseAnimatedFloat = remember { mutableFloatStateOf(0f) }
+    SnuttPreviewSurface {
+        SearchOptionConfirmButton(
+            baseAnimatedFloat = baseAnimatedFloat,
+            onConfirm = {},
         )
     }
 }
