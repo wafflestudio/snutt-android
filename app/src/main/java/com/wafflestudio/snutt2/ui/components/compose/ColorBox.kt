@@ -11,6 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 
 @Composable
@@ -37,6 +39,17 @@ fun ColorBox(
                 .background(background)
                 .weight(1f)
                 .fillMaxHeight(),
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun ColorBox_LectureForegroundBackground() {
+    SnuttPreviewSurface {
+        ColorBox(
+            foreground = Color(0xFF3B41FF),
+            background = Color(0xFFCD4A2E),
         )
     }
 }

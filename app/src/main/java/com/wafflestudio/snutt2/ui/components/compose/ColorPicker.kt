@@ -58,6 +58,8 @@ import androidx.compose.ui.unit.sp
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.toColorInt
 import androidx.core.graphics.toRect
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
@@ -398,3 +400,16 @@ private fun hsvToString(hsv: Triple<Float, Float, Float>): String = String.forma
     "#%06X",
     0xFFFFFF and Color.hsv(hsv.first, hsv.second, hsv.third).toArgb(),
 )
+
+@SnuttPreview
+@Composable
+private fun ColorPicker_InitialColor() {
+    SnuttPreviewSurface {
+        Box(modifier = Modifier.padding(16.dp).width(360.dp)) {
+            ColorPicker(
+                initialColor = Color(0xFFCD4A2E),
+                onColorChanged = {},
+            )
+        }
+    }
+}

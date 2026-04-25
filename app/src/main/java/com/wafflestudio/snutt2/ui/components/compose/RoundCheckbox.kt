@@ -20,6 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 
 @Composable
@@ -57,5 +59,21 @@ fun RoundCheckbox(
                 contentDescription = null,
             )
         }
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun RoundCheckbox_Checked() {
+    SnuttPreviewSurface {
+        RoundCheckbox(checked = true, onCheckedChange = {})
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun RoundCheckbox_Unchecked() {
+    SnuttPreviewSurface {
+        RoundCheckbox(checked = false, onCheckedChange = {})
     }
 }

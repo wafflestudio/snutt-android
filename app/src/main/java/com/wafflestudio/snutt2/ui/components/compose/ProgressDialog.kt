@@ -29,6 +29,8 @@ import androidx.compose.ui.unit.min
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
@@ -167,6 +169,39 @@ fun CustomDialog(
                     }
                 }
             }
+        }
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun ConfirmDialog_Default() {
+    SnuttPreviewSurface {
+        ConfirmDialog(
+            onDismiss = {},
+            onConfirm = {},
+            title = "정말 삭제하시겠습니까?",
+            positiveButtonText = "삭제",
+            negativeButtonText = "취소",
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun CustomDialog_TitleWithBody() {
+    SnuttPreviewSurface {
+        CustomDialog(
+            onDismiss = {},
+            onConfirm = {},
+            title = "닉네임 변경",
+            positiveButtonText = "확인",
+            negativeButtonText = "취소",
+        ) {
+            Text(
+                text = "변경할 닉네임을 입력해주세요.",
+                style = SNUTTTypography.body1,
+            )
         }
     }
 }

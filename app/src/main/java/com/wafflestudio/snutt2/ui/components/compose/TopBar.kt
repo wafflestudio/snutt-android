@@ -19,10 +19,10 @@ import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
-import com.wafflestudio.snutt2.ui.theme.SNUTTTheme
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 
@@ -135,10 +135,10 @@ fun CenteredTopBar(
     }
 }
 
-@Preview
+@SnuttPreview
 @Composable
-fun TopBarPreview() {
-    Column {
+private fun TopBar_TitleWithActions() {
+    SnuttPreviewSurface {
         TopBar(
             title = {
                 Text(
@@ -163,20 +163,34 @@ fun TopBarPreview() {
                 NotificationIcon(Modifier.padding(end = 12.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
             },
         )
-        Box(modifier = Modifier.weight(1f))
     }
 }
 
-@Preview
+@SnuttPreview
 @Composable
-fun SimpleTopBarPreview() {
-    SNUTTTheme {
-        Column {
-            SimpleTopBar(title = "강의 상세보기", onClickNavigateBack = {})
+private fun SimpleTopBar_BackWithTitle() {
+    SnuttPreviewSurface {
+        SimpleTopBar(title = "강의 상세보기", onClickNavigateBack = {})
+    }
+}
 
-            Box(
-                modifier = Modifier.weight(1f),
-            )
-        }
+@SnuttPreview
+@Composable
+private fun CenteredTopBar_TitleWithActions() {
+    SnuttPreviewSurface {
+        CenteredTopBar(
+            title = {
+                Text(
+                    text = "검색",
+                    style = SNUTTTypography.h3,
+                )
+            },
+            navigationIcon = {
+                ArrowBackIcon(colorFilter = ColorFilter.tint(SNUTTColors.Black900))
+            },
+            actions = {
+                FilterIcon()
+            },
+        )
     }
 }

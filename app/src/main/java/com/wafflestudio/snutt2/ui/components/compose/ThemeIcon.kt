@@ -16,16 +16,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.CustomTheme
 import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.domain.model.ThemeColor
+import com.wafflestudio.snutt2.domain.model.preview.PreviewData
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
-import kotlin.random.Random
 
 @Composable
 fun ThemeIcon(
@@ -294,28 +295,63 @@ private fun RowScope.Column3Colors(color1: Color, color2: Color, color3: Color) 
     }
 }
 
-@Preview(showBackground = true)
+@SnuttPreview
 @Composable
-fun ThemeIconPreview() {
-    Column(
-        modifier = Modifier.padding(10.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-    ) {
-        (1..9).forEach {
-            ThemeIcon(
-                theme = CustomTheme(
-                    id = "",
-                    name = "",
-                    colors = List(it) {
-                        ThemeColor(
-                            foreground = SNUTTColors.White.value.toInt(),
-                            background = (0xFF000000.toInt() or Random.nextInt(0x0, 0xffffff)),
-                        )
-                    },
-                    isFromMarket = false,
-                ),
-                modifier = Modifier.size(80.dp),
+private fun ThemeIcon_Builtin() {
+    SnuttPreviewSurface {
+        ThemeIcon(
+            theme = BuiltInTheme.SNUTT,
+            modifier = Modifier.size(80.dp),
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun ThemeIcon_CustomFiveColors() {
+    SnuttPreviewSurface {
+        ThemeIcon(
+            theme = PreviewData.previewCustomTheme1,
+            modifier = Modifier.size(80.dp),
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun ThemeIcon_CustomVariousColorCountsGrid() {
+    SnuttPreviewSurface {
+        Column(
+            modifier = Modifier.padding(10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            val sampleColors = listOf(
+                0xFFFF6B6B.toInt(),
+                0xFFFF8E53.toInt(),
+                0xFFFFD93D.toInt(),
+                0xFF6BCB77.toInt(),
+                0xFF4D96FF.toInt(),
+                0xFF845EC2.toInt(),
+                0xFFD65DB1.toInt(),
+                0xFF0096C7.toInt(),
+                0xFF90E0EF.toInt(),
             )
+            (1..9).forEach { count ->
+                ThemeIcon(
+                    theme = CustomTheme(
+                        id = "",
+                        name = "",
+                        colors = List(count) { idx ->
+                            ThemeColor(
+                                foreground = SNUTTColors.White.value.toInt(),
+                                background = sampleColors[idx % sampleColors.size],
+                            )
+                        },
+                        isFromMarket = false,
+                    ),
+                    modifier = Modifier.size(80.dp),
+                )
+            }
         }
     }
 }

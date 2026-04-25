@@ -16,6 +16,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 
@@ -1072,4 +1074,52 @@ fun FriendHashIcon(
         contentDescription = "",
         colorFilter = colorFilter,
     )
+}
+
+@SnuttPreview
+@Composable
+private fun RedDot_Default() {
+    SnuttPreviewSurface {
+        Box(modifier = Modifier.size(20.dp), contentAlignment = Alignment.Center) {
+            RedDot()
+        }
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun RedDotWithNumber_Default() {
+    SnuttPreviewSurface {
+        Box(modifier = Modifier.size(30.dp), contentAlignment = Alignment.Center) {
+            RedDotWithNumber(number = 3)
+        }
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun IconWithAlertDot_Default() {
+    SnuttPreviewSurface {
+        Box(modifier = Modifier.size(40.dp), contentAlignment = Alignment.Center) {
+            IconWithAlertDot(redDotExist = true) {
+                NotificationIcon(modifier = it.size(30.dp))
+            }
+        }
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun StarIcon_Filled() {
+    SnuttPreviewSurface {
+        StarIcon(modifier = Modifier.size(24.dp), filled = true)
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun StarIcon_Empty() {
+    SnuttPreviewSurface {
+        StarIcon(modifier = Modifier.size(24.dp), filled = false)
+    }
 }
