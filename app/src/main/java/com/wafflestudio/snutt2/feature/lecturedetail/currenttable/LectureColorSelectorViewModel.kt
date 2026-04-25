@@ -26,7 +26,7 @@ class LectureColorSelectorViewModel @Inject constructor(
     private val initialColor: LectureColor =
         checkNotNull(savedStateHandle[NavigationDestination.LectureColorSelector.ARG_COLOR])
 
-    private val _uiState = MutableStateFlow(buildInitialUiState(getCurrentTableThemeUseCase.current()))
+    private val _uiState = MutableStateFlow(buildInitialUiState())
     val uiState = _uiState.asStateFlow()
 
     private val _uiEvent = MutableSharedFlow<LectureColorSelectorUiEvent>()
@@ -45,18 +45,22 @@ class LectureColorSelectorViewModel @Inject constructor(
         }
     }
 
-    private fun buildInitialUiState(tableTheme: TableTheme): LectureColorSelectorUiState {
+    private fun buildInitialUiState(): LectureColorSelectorUiState {
+        val tableTheme = getCurrentTableThemeUseCase.current()
+
         val selection = when (initialColor) {
             is LectureColor.BuiltIn -> LectureColorSelectorUiState.Selection.Palette(initialColor.colorIndex)
-            is LectureColor.Custom -> {
-                val matchedIndex = tableTheme.getColors(false).indexOfFirst {
-                    it.foreground == initialColor.foreground && it.background == initialColor.background
+            is LectureColor.Custom -> when (tableTheme) {
+                is CustomTheme -> {
+                    // CustomTheme 시간표에선 사용자가 팔레트에서만 색을 고를 수 있으므로 매칭이 항상 성공해야 정상.
+                    // 매칭 실패는 테마 갱신 race 등 invariant 위반이지만 화면을 막지 않기 위해 Custom 으로 fallback.
+                    val matchedIndex = tableTheme.getColors(false).indexOfFirst {
+                        it.foreground == initialColor.foreground && it.background == initialColor.background
+                    }
+                    if (matchedIndex >= 0) LectureColorSelectorUiState.Selection.Palette(matchedIndex)
+                    else LectureColorSelectorUiState.Selection.Custom
                 }
-                if (matchedIndex >= 0) {
-                    LectureColorSelectorUiState.Selection.Palette(matchedIndex)
-                } else {
-                    LectureColorSelectorUiState.Selection.Custom
-                }
+                else -> LectureColorSelectorUiState.Selection.Custom
             }
         }
         val customColors = when (initialColor) {
