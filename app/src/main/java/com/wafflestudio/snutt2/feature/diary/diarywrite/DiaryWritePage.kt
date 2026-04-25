@@ -48,7 +48,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -59,6 +58,8 @@ import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.components.compose.ExitIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.util.toast
 import kotlinx.coroutines.flow.first
@@ -421,60 +422,35 @@ private fun DiaryComplete(
     }
 }
 
+@SnuttPreview
 @Composable
-@Preview(heightDp = 1100)
-private fun DiaryWritingPreview() {
-    DiaryTheme {
-        DiaryWriting(
-            uiState = DiaryPreviewData.sampleWriteUiState,
-            onToggleActivitySelection = {},
-            onCompleteSelectActivities = {},
-            onRestartSelectActivities = {},
-            onToggleAnswer = { _, _ -> },
-            onSubmitDiary = {},
-            onClickBackButton = {},
-        )
+private fun DiaryWriting_InProgress() {
+    SnuttPreviewSurface {
+        DiaryTheme {
+            DiaryWriting(
+                uiState = DiaryPreviewData.sampleWriteUiState,
+                onToggleActivitySelection = {},
+                onCompleteSelectActivities = {},
+                onRestartSelectActivities = {},
+                onToggleAnswer = { _, _ -> },
+                onSubmitDiary = {},
+                onClickBackButton = {},
+            )
+        }
     }
 }
 
+@SnuttPreview
 @Composable
-@Preview(heightDp = 1100, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
-private fun DiaryWritingDarkPreview() {
-    DiaryTheme(darkTheme = true) {
-        DiaryWriting(
-            uiState = DiaryPreviewData.sampleWriteUiState,
-            onToggleActivitySelection = {},
-            onCompleteSelectActivities = {},
-            onRestartSelectActivities = {},
-            onToggleAnswer = { _, _ -> },
-            onSubmitDiary = {},
-            onClickBackButton = {},
-        )
-    }
-}
-
-@Composable
-@Preview
-private fun DiaryCompletePreview() {
-    DiaryTheme {
-        DiaryComplete(
-            uiState = DiaryWriteUiState.Complete(DiaryNextAction.WriteReview),
-            onClickGoHomeButton = {},
-            onClickWriteNextButton = {},
-            onClickWriteReviewButton = {},
-        )
-    }
-}
-
-@Composable
-@Preview(uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
-private fun DiaryCompleteDarkPreview() {
-    DiaryTheme(darkTheme = true) {
-        DiaryComplete(
-            uiState = DiaryWriteUiState.Complete(DiaryNextAction.WriteReview),
-            onClickGoHomeButton = {},
-            onClickWriteNextButton = {},
-            onClickWriteReviewButton = {},
-        )
+private fun DiaryComplete_Default() {
+    SnuttPreviewSurface {
+        DiaryTheme {
+            DiaryComplete(
+                uiState = DiaryWriteUiState.Complete(DiaryNextAction.WriteReview),
+                onClickGoHomeButton = {},
+                onClickWriteNextButton = {},
+                onClickWriteReviewButton = {},
+            )
+        }
     }
 }

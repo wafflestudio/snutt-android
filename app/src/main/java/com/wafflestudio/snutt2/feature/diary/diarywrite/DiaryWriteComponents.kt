@@ -32,7 +32,6 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
@@ -44,6 +43,8 @@ import com.wafflestudio.snutt2.lib.anySelected
 import com.wafflestudio.snutt2.ui.components.compose.ArrowDownIcon
 import com.wafflestudio.snutt2.ui.components.compose.EditText
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
 @Composable
@@ -328,112 +329,81 @@ fun MoreTextItem(
     }
 }
 
+@SnuttPreview
 @Composable
-@Preview
-fun DiaryActivitySelectingPreview() {
-    DiaryTheme {
-        DiaryActivitySelectSection(
-            activitySelectionState = ActivitySelectionState.Complete,
-            onToggleActivitySelection = {},
-            onCompleteSelectActivities = {},
-            onRestartSelectActivities = {},
-            dailyClassTypes = DiaryPreviewData.sampleWriteUiStateSelecting.dailyClassTypes,
-        )
+private fun DiaryActivitySelectSection_Selecting() {
+    SnuttPreviewSurface {
+        DiaryTheme {
+            DiaryActivitySelectSection(
+                activitySelectionState = ActivitySelectionState.InitialSelecting,
+                onToggleActivitySelection = {},
+                onCompleteSelectActivities = {},
+                onRestartSelectActivities = {},
+                dailyClassTypes = DiaryPreviewData.sampleWriteUiStateSelecting.dailyClassTypes,
+            )
+        }
     }
 }
 
+@SnuttPreview
 @Composable
-@Preview(uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES, showBackground = true, backgroundColor = 0xFF1a1a1a)
-fun DiaryActivitySelectingDarkPreview() {
-    DiaryTheme(darkTheme = true) {
-        DiaryActivitySelectSection(
-            activitySelectionState = ActivitySelectionState.Complete,
-            onToggleActivitySelection = {},
-            onCompleteSelectActivities = {},
-            onRestartSelectActivities = {},
-            dailyClassTypes = DiaryPreviewData.sampleWriteUiStateSelecting.dailyClassTypes,
-        )
+private fun DiaryActivitySelectSection_Completed() {
+    SnuttPreviewSurface {
+        DiaryTheme {
+            DiaryActivitySelectSection(
+                activitySelectionState = ActivitySelectionState.Complete,
+                onToggleActivitySelection = {},
+                onCompleteSelectActivities = {},
+                onRestartSelectActivities = {},
+                dailyClassTypes = DiaryPreviewData.sampleWriteUiStateSelecting.dailyClassTypes,
+            )
+        }
     }
 }
 
+@SnuttPreview
 @Composable
-@Preview
-fun DiaryQuestionBoxPreview() {
-    DiaryTheme {
-        DiaryQuestionsSection(
-            questions = DiaryPreviewData.getQuestionsForActivities(
-                listOf("수업"),
-                "컴퓨터프로그래밍",
-            ),
-            onChange = { _, _ -> },
-        )
+private fun DiaryQuestionsSection_Default() {
+    SnuttPreviewSurface {
+        DiaryTheme {
+            DiaryQuestionsSection(
+                questions = DiaryPreviewData.getQuestionsForActivities(
+                    listOf("수업"),
+                    "컴퓨터프로그래밍",
+                ),
+                onChange = { _, _ -> },
+            )
+        }
     }
 }
 
+@SnuttPreview
 @Composable
-@Preview(uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES, showBackground = true, backgroundColor = 0xFF1a1a1a)
-fun DiaryQuestionBoxDarkPreview() {
-    DiaryTheme(darkTheme = true) {
-        DiaryQuestionsSection(
-            questions = DiaryPreviewData.getQuestionsForActivities(
-                listOf("수업"),
-                "컴퓨터프로그래밍",
-            ),
-            onChange = { _, _ -> },
-        )
+private fun DiaryQuestionItem_Default() {
+    SnuttPreviewSurface {
+        DiaryTheme {
+            val sampleQuestion =
+                DiaryPreviewData.getQuestionsForActivities(listOf("수업"))
+                    .first()
+            DiaryQuestionItem(
+                isDuplicate = false,
+                question = sampleQuestion.question,
+                options = sampleQuestion.selectableAnswers,
+                onChange = {},
+            )
+        }
     }
 }
 
+@SnuttPreview
 @Composable
-@Preview(showBackground = true)
-fun DiaryQuestionPreview() {
-    DiaryTheme {
-        val sampleQuestion =
-            DiaryPreviewData.getQuestionsForActivities(listOf("수업"))
-                .first()
-        DiaryQuestionItem(
-            isDuplicate = false,
-            question = sampleQuestion.question,
-            options = sampleQuestion.selectableAnswers,
-            onChange = {},
-        )
-    }
-}
-
-@Composable
-@Preview(uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES, showBackground = true, backgroundColor = 0xFF1a1a1a)
-fun DiaryQuestionDarkPreview() {
-    DiaryTheme(darkTheme = true) {
-        val sampleQuestion =
-            DiaryPreviewData.getQuestionsForActivities(listOf("수업"))
-                .first()
-        DiaryQuestionItem(
-            isDuplicate = false,
-            question = sampleQuestion.question,
-            options = sampleQuestion.selectableAnswers,
-            onChange = {},
-        )
-    }
-}
-
-@Composable
-@Preview
-fun MoreTextPreview() {
-    DiaryTheme {
-        MoreTextItem(
-            moreText = "시험을 예고 없이 보니 주의하시기 바랍니다.",
-            onChange = {},
-        )
-    }
-}
-
-@Composable
-@Preview(uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES, showBackground = true, backgroundColor = 0xFF1a1a1a)
-fun MoreTextDarkPreview() {
-    DiaryTheme(darkTheme = true) {
-        MoreTextItem(
-            moreText = "시험을 예고 없이 보니 주의하시기 바랍니다.",
-            onChange = {},
-        )
+private fun MoreTextItem_Filled() {
+    SnuttPreviewSurface {
+        DiaryTheme {
+            MoreTextItem(
+                moreText = "시험을 예고 없이 보니 주의하시기 바랍니다.",
+                onChange = {},
+            )
+        }
     }
 }

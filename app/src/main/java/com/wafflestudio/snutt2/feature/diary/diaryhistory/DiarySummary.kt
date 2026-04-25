@@ -23,7 +23,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
@@ -33,6 +32,8 @@ import com.wafflestudio.snutt2.feature.diary.DiaryTheme
 import com.wafflestudio.snutt2.ui.components.compose.ArrowDownIcon
 import com.wafflestudio.snutt2.ui.components.compose.TrashIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -206,50 +207,32 @@ private val previewSummary2 = DiarySummary(
     comment = "좋아요",
 )
 
+@SnuttPreview
 @Composable
-@Preview(showBackground = true)
-fun DiarySummariesOfDayFoldedPreview() {
-    DiaryTheme {
-        DiarySummariesOfDay(LocalDate.of(2025, 3, 20), listOf(previewSummary1), false, {}, { _ -> })
+private fun DiarySummariesOfDay_Collapsed() {
+    SnuttPreviewSurface {
+        DiaryTheme {
+            DiarySummariesOfDay(LocalDate.of(2025, 3, 20), listOf(previewSummary1), false, {}, { _ -> })
+        }
     }
 }
 
+@SnuttPreview
 @Composable
-@Preview(uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES, showBackground = true, backgroundColor = 0xFF1a1a1a)
-fun DiarySummariesOfDayFoldedDarkPreview() {
-    DiaryTheme(darkTheme = true) {
-        DiarySummariesOfDay(LocalDate.of(2025, 3, 20), listOf(previewSummary1), false, {}, { _ -> })
+private fun DiarySummariesOfDay_Expanded() {
+    SnuttPreviewSurface {
+        DiaryTheme {
+            DiarySummariesOfDay(LocalDate.of(2025, 3, 20), listOf(previewSummary1, previewSummary2), true, {}, { _ -> })
+        }
     }
 }
 
+@SnuttPreview
 @Composable
-@Preview(showBackground = true)
-fun DiarySummariesOfDayExpandedPreview() {
-    DiaryTheme {
-        DiarySummariesOfDay(LocalDate.of(2025, 3, 20), listOf(previewSummary1, previewSummary2), true, {}, { _ -> })
-    }
-}
-
-@Composable
-@Preview(uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES, showBackground = true, backgroundColor = 0xFF1a1a1a)
-fun DiarySummariesOfDayExpandedDarkPreview() {
-    DiaryTheme(darkTheme = true) {
-        DiarySummariesOfDay(LocalDate.of(2025, 3, 20), listOf(previewSummary1, previewSummary2), true, {}, { _ -> })
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DiarySummaryPreview() {
-    DiaryTheme {
-        DiarySummary(previewSummary2, {})
-    }
-}
-
-@Preview(uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES, showBackground = true, backgroundColor = 0xFF1a1a1a)
-@Composable
-fun DiarySummaryDarkPreview() {
-    DiaryTheme(darkTheme = true) {
-        DiarySummary(previewSummary2, {})
+private fun DiarySummary_Default() {
+    SnuttPreviewSurface {
+        DiaryTheme {
+            DiarySummary(previewSummary2, {})
+        }
     }
 }
