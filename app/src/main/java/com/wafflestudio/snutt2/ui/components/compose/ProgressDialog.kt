@@ -128,6 +128,7 @@ fun CustomDialog(
         ) {
             Column(
                 modifier = Modifier
+                    .widthIn(min = 280.dp)
                     .width(dialogWidth)
                     .background(SNUTTColors.White900),
             ) {
