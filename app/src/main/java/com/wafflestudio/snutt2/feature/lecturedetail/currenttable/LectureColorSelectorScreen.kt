@@ -116,7 +116,7 @@ fun LectureColorSelectorScreen(
 
 private val previewBuiltInPickerColors = LectureColor.Custom.Default
 
-@Preview(showBackground = true, widthDp = 360, name = "BuiltInTheme + Palette 선택")
+@Preview(showBackground = true, widthDp = 360, locale = "ko", name = "BuiltInTheme + Palette 선택")
 @Composable
 private fun LectureColorSelectorScreen_BuiltInTheme_Palette_Preview() {
     LectureColorSelectorScreen(
@@ -137,7 +137,7 @@ private fun LectureColorSelectorScreen_BuiltInTheme_Palette_Preview() {
     )
 }
 
-@Preview(showBackground = true, widthDp = 360, name = "BuiltInTheme + Picker 선택")
+@Preview(showBackground = true, widthDp = 360, locale = "ko", name = "BuiltInTheme + Picker 선택")
 @Composable
 private fun LectureColorSelectorScreen_BuiltInTheme_Picker_Preview() {
     LectureColorSelectorScreen(
@@ -158,7 +158,7 @@ private fun LectureColorSelectorScreen_BuiltInTheme_Picker_Preview() {
     )
 }
 
-@Preview(showBackground = true, widthDp = 360, name = "CustomTheme")
+@Preview(showBackground = true, widthDp = 360, locale = "ko", name = "CustomTheme")
 @Composable
 private fun LectureColorSelectorScreen_CustomTheme_Preview() {
     LectureColorSelectorScreen(
