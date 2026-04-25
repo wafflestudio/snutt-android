@@ -51,7 +51,7 @@ fun LectureColorSelectorScreen(
                         foreground = Color(color.foreground),
                         background = Color(color.background),
                         title = "${uiState.tableTheme.name} ${idx + 1}",
-                        isSelected = idx == uiState.selectedPaletteIndex,
+                        isSelected = idx == uiState.selection.index,
                         onClick = { onSelectPalette(idx) },
                     )
                 }

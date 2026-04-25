@@ -86,7 +86,7 @@ class LectureColorSelectorViewModel @Inject constructor(
         }
         return LectureColorSelectorUiState.CustomThemeMode(
             tableTheme = tableTheme,
-            selectedPaletteIndex = matchedIndex.coerceAtLeast(0),
+            selection = LectureColorSelectorUiState.Selection.Palette(matchedIndex.coerceAtLeast(0)),
         )
     }
 
@@ -102,7 +102,7 @@ class LectureColorSelectorViewModel @Inject constructor(
                 is LectureColorSelectorUiState.BuiltInThemeMode ->
                     it.copy(selection = LectureColorSelectorUiState.Selection.Palette(index))
                 is LectureColorSelectorUiState.CustomThemeMode ->
-                    it.copy(selectedPaletteIndex = index)
+                    it.copy(selection = LectureColorSelectorUiState.Selection.Palette(index))
             }
         }
     }
@@ -176,11 +176,12 @@ class LectureColorSelectorViewModel @Inject constructor(
 
 sealed interface LectureColorSelectorUiState {
     val tableTheme: TableTheme
+    val selection: Selection
     val selectedColor: LectureColor
 
     data class BuiltInThemeMode(
         override val tableTheme: BuiltInTheme,
-        val selection: Selection,
+        override val selection: Selection,
         val customFgColor: Int,
         val customBgColor: Int,
         val dialogState: DialogState = DialogState.None,
@@ -194,11 +195,11 @@ sealed interface LectureColorSelectorUiState {
 
     data class CustomThemeMode(
         override val tableTheme: CustomTheme,
-        val selectedPaletteIndex: Int,
+        override val selection: Selection.Palette,
     ) : LectureColorSelectorUiState {
         override val selectedColor: LectureColor
             get() {
-                val c = tableTheme.getColors(false)[selectedPaletteIndex]
+                val c = tableTheme.getColors(false)[selection.index]
                 return LectureColor.Custom(c.foreground, c.background)
             }
     }
