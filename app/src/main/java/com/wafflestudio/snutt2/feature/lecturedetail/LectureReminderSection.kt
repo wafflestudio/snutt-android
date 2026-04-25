@@ -10,12 +10,13 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.LectureReminderOffset
 import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.ui.components.compose.SegmentedPicker
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 
 @Composable
@@ -72,22 +73,26 @@ internal fun LectureReminderSection(
     }
 }
 
-@Preview(showBackground = true, widthDp = 360, name = "리마인더 활성")
+@SnuttPreview
 @Composable
-private fun EnabledPreview() {
-    LectureReminderSection(
-        lectureWithReminderOption = PreviewData.sampleReminderOption,
-        enableLectureReminderPicker = true,
-        onReminderOptionChange = {},
-    )
+private fun LectureReminderSection_Enabled() {
+    SnuttPreviewSurface {
+        LectureReminderSection(
+            lectureWithReminderOption = PreviewData.sampleReminderOption,
+            enableLectureReminderPicker = true,
+            onReminderOptionChange = {},
+        )
+    }
 }
 
-@Preview(showBackground = true, widthDp = 360, name = "리마인더 비활성")
+@SnuttPreview
 @Composable
-private fun DisabledPreview() {
-    LectureReminderSection(
-        lectureWithReminderOption = PreviewData.sampleReminderOptionDefault,
-        enableLectureReminderPicker = false,
-        onReminderOptionChange = {},
-    )
+private fun LectureReminderSection_Disabled() {
+    SnuttPreviewSurface {
+        LectureReminderSection(
+            lectureWithReminderOption = PreviewData.sampleReminderOptionDefault,
+            enableLectureReminderPicker = false,
+            onReminderOptionChange = {},
+        )
+    }
 }

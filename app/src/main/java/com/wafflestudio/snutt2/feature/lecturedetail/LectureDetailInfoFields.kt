@@ -18,12 +18,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.Lecture
 import com.wafflestudio.snutt2.domain.model.LectureSyllabusInfo
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.util.formatter.getFullQuota
 import com.wafflestudio.snutt2.ui.util.formatter.getQuotaTitle
@@ -141,36 +142,40 @@ internal fun LectureDetailInfoFields(
     }
 }
 
-@Preview(showBackground = true, widthDp = 360, name = "SyllabusLecture")
+@SnuttPreview
 @Composable
-private fun SyllabusLectureWithCategoryPre2025Preview() {
-    LectureDetailInfoFields(
-        lecture = PreviewData.syllabusLecture,
-        editMode = false,
-        showCategoryPre2025 = true,
-        onDepartmentChange = {},
-        onAcademicYearChange = {},
-        onCreditChange = {},
-        onClassificationChange = {},
-        onCategoryChange = {},
-        onCategoryPre2025Change = {},
-        onRemarkChange = {},
-    )
+private fun LectureDetailInfoFields_SyllabusLecture() {
+    SnuttPreviewSurface {
+        LectureDetailInfoFields(
+            lecture = PreviewData.syllabusLecture,
+            editMode = false,
+            showCategoryPre2025 = true,
+            onDepartmentChange = {},
+            onAcademicYearChange = {},
+            onCreditChange = {},
+            onClassificationChange = {},
+            onCategoryChange = {},
+            onCategoryPre2025Change = {},
+            onRemarkChange = {},
+        )
+    }
 }
 
-@Preview(showBackground = true, widthDp = 360, name = "CustomLecture")
+@SnuttPreview
 @Composable
-private fun CustomLecturePreview() {
-    LectureDetailInfoFields(
-        lecture = PreviewData.customLecture,
-        editMode = false,
-        showCategoryPre2025 = false,
-        onDepartmentChange = {},
-        onAcademicYearChange = {},
-        onCreditChange = {},
-        onClassificationChange = {},
-        onCategoryChange = {},
-        onCategoryPre2025Change = {},
-        onRemarkChange = {},
-    )
+private fun LectureDetailInfoFields_CustomLecture() {
+    SnuttPreviewSurface {
+        LectureDetailInfoFields(
+            lecture = PreviewData.customLecture,
+            editMode = false,
+            showCategoryPre2025 = false,
+            onDepartmentChange = {},
+            onAcademicYearChange = {},
+            onCreditChange = {},
+            onClassificationChange = {},
+            onCategoryChange = {},
+            onCategoryPre2025Change = {},
+            onRemarkChange = {},
+        )
+    }
 }

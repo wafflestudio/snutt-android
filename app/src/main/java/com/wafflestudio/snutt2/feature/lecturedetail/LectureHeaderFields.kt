@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.BuiltInTheme
@@ -24,6 +23,8 @@ import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.ui.components.compose.ArrowRight
 import com.wafflestudio.snutt2.ui.components.compose.ColorBox
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 
@@ -115,54 +116,62 @@ private fun LectureColorField(
     }
 }
 
-@Preview(showBackground = true, widthDp = 360, name = "Custom 색상")
+@SnuttPreview
 @Composable
-private fun CustomColorPreview() {
-    LectureHeaderFields(
-        lecture = PreviewData.syllabusLecture,
-        editMode = false,
-        tableTheme = BuiltInTheme.SNUTT,
-        onCourseTitleChange = {},
-        onInstructorChange = {},
-        onColorClick = {},
-    )
+private fun LectureHeaderFields_CustomColor() {
+    SnuttPreviewSurface {
+        LectureHeaderFields(
+            lecture = PreviewData.syllabusLecture,
+            editMode = false,
+            tableTheme = BuiltInTheme.SNUTT,
+            onCourseTitleChange = {},
+            onInstructorChange = {},
+            onColorClick = {},
+        )
+    }
 }
 
-@Preview(showBackground = true, widthDp = 360, name = "BuiltIn 색상")
+@SnuttPreview
 @Composable
-private fun BuiltInColorPreview() {
-    LectureHeaderFields(
-        lecture = PreviewData.builtInColorLecture,
-        editMode = false,
-        tableTheme = BuiltInTheme.SNUTT,
-        onCourseTitleChange = {},
-        onInstructorChange = {},
-        onColorClick = {},
-    )
+private fun LectureHeaderFields_BuiltInColor() {
+    SnuttPreviewSurface {
+        LectureHeaderFields(
+            lecture = PreviewData.builtInColorLecture,
+            editMode = false,
+            tableTheme = BuiltInTheme.SNUTT,
+            onCourseTitleChange = {},
+            onInstructorChange = {},
+            onColorClick = {},
+        )
+    }
 }
 
-@Preview(showBackground = true, widthDp = 360, name = "편집 모드")
+@SnuttPreview
 @Composable
-private fun EditModePreview() {
-    LectureHeaderFields(
-        lecture = PreviewData.syllabusLecture,
-        editMode = true,
-        tableTheme = BuiltInTheme.SNUTT,
-        onCourseTitleChange = {},
-        onInstructorChange = {},
-        onColorClick = {},
-    )
+private fun LectureHeaderFields_EditMode() {
+    SnuttPreviewSurface {
+        LectureHeaderFields(
+            lecture = PreviewData.syllabusLecture,
+            editMode = true,
+            tableTheme = BuiltInTheme.SNUTT,
+            onCourseTitleChange = {},
+            onInstructorChange = {},
+            onColorClick = {},
+        )
+    }
 }
 
-@Preview(showBackground = true, widthDp = 360, name = "SearchedLecture")
+@SnuttPreview
 @Composable
-private fun SearchedLecturePreview() {
-    LectureHeaderFields(
-        lecture = PreviewData.searchedLecture,
-        editMode = false,
-        tableTheme = BuiltInTheme.SNUTT,
-        onCourseTitleChange = {},
-        onInstructorChange = {},
-        onColorClick = {},
-    )
+private fun LectureHeaderFields_SearchedLecture() {
+    SnuttPreviewSurface {
+        LectureHeaderFields(
+            lecture = PreviewData.searchedLecture,
+            editMode = false,
+            tableTheme = BuiltInTheme.SNUTT,
+            onCourseTitleChange = {},
+            onInstructorChange = {},
+            onColorClick = {},
+        )
+    }
 }

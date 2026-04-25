@@ -21,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.components.compose.CheckedIcon
@@ -30,6 +29,8 @@ import com.wafflestudio.snutt2.ui.components.compose.ColorCircle
 import com.wafflestudio.snutt2.ui.components.compose.ColorPicker
 import com.wafflestudio.snutt2.ui.components.compose.CustomDialog
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.onSurfaceVariant
@@ -142,37 +143,55 @@ internal fun ColorPickerDialog(
     }
 }
 
-@Preview(showBackground = true, widthDp = 360, name = "ColorItem - 선택됨")
+@SnuttPreview
 @Composable
-private fun ColorItemSelectedPreview() {
-    ColorItem(
-        foreground = Color.White,
-        background = Color(0xFFE54459),
-        title = "색상 1",
-        isSelected = true,
-        onClick = {},
-    )
+private fun ColorItem_Selected() {
+    SnuttPreviewSurface {
+        ColorItem(
+            foreground = Color.White,
+            background = Color(0xFFE54459),
+            title = "색상 1",
+            isSelected = true,
+            onClick = {},
+        )
+    }
 }
 
-@Preview(showBackground = true, widthDp = 360, name = "ColorItem - 미선택")
+@SnuttPreview
 @Composable
-private fun ColorItemUnselectedPreview() {
-    ColorItem(
-        foreground = Color.White,
-        background = Color(0xFF1BD0C8),
-        title = "색상 2",
-        isSelected = false,
-        onClick = {},
-    )
+private fun ColorItem_Unselected() {
+    SnuttPreviewSurface {
+        ColorItem(
+            foreground = Color.White,
+            background = Color(0xFF1BD0C8),
+            title = "색상 2",
+            isSelected = false,
+            onClick = {},
+        )
+    }
 }
 
-@Preview(showBackground = true, widthDp = 360, name = "PickerColorSection")
+@SnuttPreview
 @Composable
-private fun PickerColorSectionPreview() {
-    PickerColorSection(
-        fgColor = Color.White,
-        bgColor = Color(0xFF5965B2),
-        onFgPickerClick = {},
-        onBgPickerClick = {},
-    )
+private fun PickerColorSection_Default() {
+    SnuttPreviewSurface {
+        PickerColorSection(
+            fgColor = Color.White,
+            bgColor = Color(0xFF5965B2),
+            onFgPickerClick = {},
+            onBgPickerClick = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun ColorPickerDialog_Default() {
+    SnuttPreviewSurface {
+        ColorPickerDialog(
+            initialColor = Color(0xFF5965B2),
+            onConfirm = {},
+            onDismiss = {},
+        )
+    }
 }

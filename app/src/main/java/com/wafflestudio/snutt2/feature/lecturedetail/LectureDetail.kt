@@ -14,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.domain.model.Building
 import com.wafflestudio.snutt2.domain.model.BuiltInTheme
@@ -26,6 +25,8 @@ import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
 import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.ui.components.compose.embedmap.FoldableEmbedMap
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 
 @Composable
@@ -187,46 +188,94 @@ fun LectureDetail(
     }
 }
 
-@Preview(showBackground = true, widthDp = 360, heightDp = 1400)
+@SnuttPreview
 @Composable
-private fun LectureDetailPreview() {
-    LectureDetail(
-        lecture = PreviewData.syllabusLecture,
-        editMode = false,
-        tableTheme = BuiltInTheme.SNUTT,
-        reviewInfo = PreviewData.sampleReviewInfo,
-        buildings = emptyList(),
-        isBookmarked = true,
-        vacancyRegistered = false,
-        showCategoryPre2025 = true,
-        disableMapFeature = true,
-        showLectureReminderPicker = true,
-        lectureWithReminderOption = PreviewData.sampleReminderOption,
-        enableLectureReminderPicker = true,
-        showFloatingButton = true,
-        onBackPressed = {},
-        onEditModeToggle = {},
-        onBookmarkToggle = {},
-        onVacancyToggle = {},
-        onCourseTitleChange = {},
-        onInstructorChange = {},
-        onColorClick = {},
-        onReminderOptionChange = {},
-        onCreditChange = {},
-        onDepartmentChange = {},
-        onAcademicYearChange = {},
-        onClassificationChange = {},
-        onCategoryChange = {},
-        onCategoryPre2025Change = {},
-        onRemarkChange = {},
-        onEditTime = { _, _ -> },
-        onLocationChange = { _, _ -> },
-        onDeleteSession = {},
-        onAddSession = {},
-        onSyllabus = {},
-        onReview = {},
-        onDelete = {},
-        onReset = {},
-        onFloatingButtonClick = {},
-    )
+private fun LectureDetail_SyllabusLecture_ViewMode() {
+    SnuttPreviewSurface {
+        LectureDetail(
+            lecture = PreviewData.syllabusLecture,
+            editMode = false,
+            tableTheme = BuiltInTheme.SNUTT,
+            reviewInfo = PreviewData.sampleReviewInfo,
+            buildings = emptyList(),
+            isBookmarked = true,
+            vacancyRegistered = false,
+            showCategoryPre2025 = true,
+            disableMapFeature = true,
+            showLectureReminderPicker = true,
+            lectureWithReminderOption = PreviewData.sampleReminderOption,
+            enableLectureReminderPicker = true,
+            showFloatingButton = true,
+            onBackPressed = {},
+            onEditModeToggle = {},
+            onBookmarkToggle = {},
+            onVacancyToggle = {},
+            onCourseTitleChange = {},
+            onInstructorChange = {},
+            onColorClick = {},
+            onReminderOptionChange = {},
+            onCreditChange = {},
+            onDepartmentChange = {},
+            onAcademicYearChange = {},
+            onClassificationChange = {},
+            onCategoryChange = {},
+            onCategoryPre2025Change = {},
+            onRemarkChange = {},
+            onEditTime = { _, _ -> },
+            onLocationChange = { _, _ -> },
+            onDeleteSession = {},
+            onAddSession = {},
+            onSyllabus = {},
+            onReview = {},
+            onDelete = {},
+            onReset = {},
+            onFloatingButtonClick = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun LectureDetail_SyllabusLecture_EditMode() {
+    SnuttPreviewSurface {
+        LectureDetail(
+            lecture = PreviewData.syllabusLecture,
+            editMode = true,
+            tableTheme = BuiltInTheme.SNUTT,
+            reviewInfo = PreviewData.sampleReviewInfo,
+            buildings = emptyList(),
+            isBookmarked = true,
+            vacancyRegistered = false,
+            showCategoryPre2025 = true,
+            disableMapFeature = true,
+            showLectureReminderPicker = true,
+            lectureWithReminderOption = PreviewData.sampleReminderOption,
+            enableLectureReminderPicker = true,
+            showFloatingButton = false,
+            onBackPressed = {},
+            onEditModeToggle = {},
+            onBookmarkToggle = {},
+            onVacancyToggle = {},
+            onCourseTitleChange = {},
+            onInstructorChange = {},
+            onColorClick = {},
+            onReminderOptionChange = {},
+            onCreditChange = {},
+            onDepartmentChange = {},
+            onAcademicYearChange = {},
+            onClassificationChange = {},
+            onCategoryChange = {},
+            onCategoryPre2025Change = {},
+            onRemarkChange = {},
+            onEditTime = { _, _ -> },
+            onLocationChange = { _, _ -> },
+            onDeleteSession = {},
+            onAddSession = {},
+            onSyllabus = {},
+            onReview = {},
+            onDelete = {},
+            onReset = {},
+            onFloatingButtonClick = {},
+        )
+    }
 }

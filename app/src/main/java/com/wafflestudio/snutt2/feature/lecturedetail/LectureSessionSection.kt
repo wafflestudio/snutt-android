@@ -26,7 +26,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
@@ -35,6 +34,8 @@ import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.ui.components.compose.EditText
 import com.wafflestudio.snutt2.ui.components.compose.TipCloseIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.util.formatter.getLectureSessionString
@@ -183,28 +184,32 @@ private fun TimeAndLocationItem(
     }
 }
 
-@Preview(showBackground = true, widthDp = 360, name = "보기 모드")
+@SnuttPreview
 @Composable
-private fun ViewModePreview() {
-    LectureSessionListSection(
-        sessions = PreviewData.syllabusLecture.lectureSessions,
-        editMode = false,
-        onEditTime = { _, _ -> },
-        onLocationChange = { _, _ -> },
-        onDeleteSession = {},
-        onAddSession = {},
-    )
+private fun LectureSessionListSection_ViewMode() {
+    SnuttPreviewSurface {
+        LectureSessionListSection(
+            sessions = PreviewData.syllabusLecture.lectureSessions,
+            editMode = false,
+            onEditTime = { _, _ -> },
+            onLocationChange = { _, _ -> },
+            onDeleteSession = {},
+            onAddSession = {},
+        )
+    }
 }
 
-@Preview(showBackground = true, widthDp = 360, name = "편집 모드")
+@SnuttPreview
 @Composable
-private fun EditModePreview() {
-    LectureSessionListSection(
-        sessions = PreviewData.syllabusLecture.lectureSessions,
-        editMode = true,
-        onEditTime = { _, _ -> },
-        onLocationChange = { _, _ -> },
-        onDeleteSession = {},
-        onAddSession = {},
-    )
+private fun LectureSessionListSection_EditMode() {
+    SnuttPreviewSurface {
+        LectureSessionListSection(
+            sessions = PreviewData.syllabusLecture.lectureSessions,
+            editMode = true,
+            onEditTime = { _, _ -> },
+            onLocationChange = { _, _ -> },
+            onDeleteSession = {},
+            onAddSession = {},
+        )
+    }
 }
