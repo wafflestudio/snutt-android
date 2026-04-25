@@ -78,15 +78,12 @@ class LectureColorSelectorViewModel @Inject constructor(
     private fun buildCustomMode(tableTheme: CustomTheme): LectureColorSelectorUiState.CustomThemeMode {
         // CustomTheme 시간표에선 사용자가 팔레트에서만 색을 고를 수 있으므로 매칭이 항상 성공해야 정상.
         // 매칭 실패는 테마 갱신 race 등 invariant 위반이지만 화면을 막지 않기 위해 0번 색으로 fallback.
-        val matchedIndex = when (initialColor) {
-            is LectureColor.Custom -> tableTheme.getColors(false).indexOfFirst {
-                it.foreground == initialColor.foreground && it.background == initialColor.background
-            }
-            is LectureColor.BuiltIn -> -1
-        }
+        val matchedIndex = (initialColor as? LectureColor.Custom)
+            ?.let { tableTheme.findPaletteIndex(it) }
+            ?: 0
         return LectureColorSelectorUiState.CustomThemeMode(
             tableTheme = tableTheme,
-            selection = LectureColorSelectorUiState.Selection.Palette(matchedIndex.coerceAtLeast(0)),
+            selection = LectureColorSelectorUiState.Selection.Palette(matchedIndex),
         )
     }
 
