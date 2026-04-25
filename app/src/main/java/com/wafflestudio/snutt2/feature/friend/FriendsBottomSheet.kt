@@ -20,7 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.Friend
@@ -32,6 +31,8 @@ import com.wafflestudio.snutt2.ui.components.compose.MoreActionItem
 import com.wafflestudio.snutt2.ui.components.compose.TrashIcon
 import com.wafflestudio.snutt2.ui.components.compose.WarningIcon
 import com.wafflestudio.snutt2.ui.components.compose.WriteIcon
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
@@ -283,64 +284,76 @@ private fun EditDisplayNameBottomSheet(
     }
 }
 
-@Preview(showBackground = true)
+@SnuttPreview
 @Composable
 private fun RequestMethodListBottomSheetPreview() {
-    AddFriendMethodListBottomSheet(
-        onRequestWithNickName = {},
-        onRequestWithKakaoTalk = {},
-    )
+    SnuttPreviewSurface {
+        AddFriendMethodListBottomSheet(
+            onRequestWithNickName = {},
+            onRequestWithKakaoTalk = {},
+        )
+    }
 }
 
-@Preview(showBackground = true)
+@SnuttPreview
 @Composable
 private fun RequestWithNicknameBottomSheetPreview() {
-    RequestWithNicknameBottomSheet(
-        initialNickname = "",
-        onSubmit = {},
-        onDismiss = {},
-    )
+    SnuttPreviewSurface {
+        RequestWithNicknameBottomSheet(
+            initialNickname = "",
+            onSubmit = {},
+            onDismiss = {},
+        )
+    }
 }
 
-@Preview(showBackground = true)
+@SnuttPreview
 @Composable
 private fun RequestWithNicknameBottomSheetFilledPreview() {
-    RequestWithNicknameBottomSheet(
-        initialNickname = "홍길동#1234",
-        onSubmit = {},
-        onDismiss = {},
-    )
+    SnuttPreviewSurface {
+        RequestWithNicknameBottomSheet(
+            initialNickname = "홍길동#1234",
+            onSubmit = {},
+            onDismiss = {},
+        )
+    }
 }
 
-@Preview(showBackground = true)
+@SnuttPreview
 @Composable
 private fun FriendDetailBottomSheetPreview() {
-    FriendDetailBottomSheet(
-        friend = PreviewData.sampleFriends.first(),
-        onEditDisplayName = {},
-        onDeleteFriend = {},
-        onDismiss = {},
-    )
+    SnuttPreviewSurface {
+        FriendDetailBottomSheet(
+            friend = PreviewData.sampleFriends.first(),
+            onEditDisplayName = {},
+            onDeleteFriend = {},
+            onDismiss = {},
+        )
+    }
 }
 
-@Preview(showBackground = true)
+@SnuttPreview
 @Composable
 private fun EditDisplayNameBottomSheetPreview() {
-    EditDisplayNameBottomSheet(
-        friend = PreviewData.sampleFriends.first(),
-        initialDisplayName = "김철수",
-        onSubmit = {},
-        onDismiss = {},
-    )
+    SnuttPreviewSurface {
+        EditDisplayNameBottomSheet(
+            friend = PreviewData.sampleFriends.first(),
+            initialDisplayName = "김철수",
+            onSubmit = {},
+            onDismiss = {},
+        )
+    }
 }
 
-@Preview(showBackground = true)
+@SnuttPreview
 @Composable
 private fun EditDisplayNameBottomSheetEmptyPreview() {
-    EditDisplayNameBottomSheet(
-        friend = PreviewData.sampleFriends[1],
-        initialDisplayName = "",
-        onSubmit = {},
-        onDismiss = {},
-    )
+    SnuttPreviewSurface {
+        EditDisplayNameBottomSheet(
+            friend = PreviewData.sampleFriends[1],
+            initialDisplayName = "",
+            onSubmit = {},
+            onDismiss = {},
+        )
+    }
 }
