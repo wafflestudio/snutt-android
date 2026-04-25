@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.feature.lecturedetail.ColorItem
 import com.wafflestudio.snutt2.feature.lecturedetail.ColorPickerDialog
-import com.wafflestudio.snutt2.feature.lecturedetail.CustomColorSection
+import com.wafflestudio.snutt2.feature.lecturedetail.PickerColorSection
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 
@@ -24,7 +24,7 @@ fun LectureColorSelectorScreen(
     uiState: LectureColorSelectorUiState,
     onBackPressed: () -> Unit,
     onSelectPalette: (Int) -> Unit,
-    onSelectCustom: () -> Unit,
+    onSelectPicker: () -> Unit,
     onOpenFgPicker: () -> Unit,
     onOpenBgPicker: () -> Unit,
     onDismissDialog: () -> Unit,
@@ -70,15 +70,15 @@ fun LectureColorSelectorScreen(
 
                 Column {
                     ColorItem(
-                        foreground = Color(uiState.customFgColor),
-                        background = Color(uiState.customBgColor),
+                        foreground = Color(uiState.pickerFgColor),
+                        background = Color(uiState.pickerBgColor),
                         title = stringResource(R.string.lecture_color_selector_page_custom_color),
-                        isSelected = uiState.selection is LectureColorSelectorUiState.Selection.Custom,
-                        onClick = onSelectCustom,
+                        isSelected = uiState.selection is LectureColorSelectorUiState.Selection.Picker,
+                        onClick = onSelectPicker,
                     )
-                    CustomColorSection(
-                        fgColor = Color(uiState.customFgColor),
-                        bgColor = Color(uiState.customBgColor),
+                    PickerColorSection(
+                        fgColor = Color(uiState.pickerFgColor),
+                        bgColor = Color(uiState.pickerBgColor),
                         onFgPickerClick = onOpenFgPicker,
                         onBgPickerClick = onOpenBgPicker,
                     )
