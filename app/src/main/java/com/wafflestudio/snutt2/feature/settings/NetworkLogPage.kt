@@ -32,7 +32,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
@@ -42,6 +41,8 @@ import com.wafflestudio.snutt2.ui.components.compose.ArrowDownIcon
 import com.wafflestudio.snutt2.ui.components.compose.DuplicateIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors.SettingBackground
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
@@ -185,17 +186,53 @@ private fun SimpleTextToggle(
     }
 }
 
-@Preview(showBackground = true)
+@SnuttPreview
 @Composable
-private fun NetworkLogItemPreview() {
-    NetworkLogItem(
-        NetworkLog(
-            requestMethod = "GET",
-            requestUrl = "https://example.com",
-            requestHeader = "header",
-            requestBody = "body",
-            responseCode = "200",
-            responseBody = "response",
-        ),
-    )
+private fun NetworkLogItem_Success() {
+    SnuttPreviewSurface {
+        NetworkLogItem(
+            NetworkLog(
+                requestMethod = "GET",
+                requestUrl = "https://example.com",
+                requestHeader = "header",
+                requestBody = "body",
+                responseCode = "200",
+                responseBody = "response",
+            ),
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun NetworkLogItem_ClientError() {
+    SnuttPreviewSurface {
+        NetworkLogItem(
+            NetworkLog(
+                requestMethod = "POST",
+                requestUrl = "https://example.com/auth",
+                requestHeader = "header",
+                requestBody = "body",
+                responseCode = "401",
+                responseBody = "Unauthorized",
+            ),
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun NetworkLogItem_ServerError() {
+    SnuttPreviewSurface {
+        NetworkLogItem(
+            NetworkLog(
+                requestMethod = "PUT",
+                requestUrl = "https://example.com/users/1",
+                requestHeader = "header",
+                requestBody = "body",
+                responseCode = "500",
+                responseBody = "Internal Server Error",
+            ),
+        )
+    }
 }

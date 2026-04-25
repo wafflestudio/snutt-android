@@ -42,7 +42,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -54,6 +53,8 @@ import com.wafflestudio.snutt2.feature.home.timetable.TimeTable
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
@@ -433,19 +434,37 @@ private fun Label(
     }
 }
 
-@Preview
+@SnuttPreview
 @Composable
-fun TimetableConfigPagePreview() {
-    TimetableConfigScreen(
-        uiState = TimeTableConfigUiState.Default,
-        onNavigateBack = {},
-        onToggleAutoTrim = {},
-        onSetDayOfWeekRange = { _, _ -> },
-        onSetHourRange = { _, _ -> },
-        onToggleCompactMode = {},
-        onToggleTitleVisible = {},
-        onTogglePlaceVisible = {},
-        onToggleLectureNumberVisible = {},
-        onToggleInstructorVisible = {},
-    )
+private fun TimetableConfigScreen_Default() {
+    SnuttPreviewSurface {
+        TimetableConfigScreen(
+            uiState = TimeTableConfigUiState.Default,
+            onNavigateBack = {},
+            onToggleAutoTrim = {},
+            onSetDayOfWeekRange = { _, _ -> },
+            onSetHourRange = { _, _ -> },
+            onToggleCompactMode = {},
+            onToggleTitleVisible = {},
+            onTogglePlaceVisible = {},
+            onToggleLectureNumberVisible = {},
+            onToggleInstructorVisible = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun PoorSwitch_On() {
+    SnuttPreviewSurface {
+        PoorSwitch(state = true)
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun PoorSwitch_Off() {
+    SnuttPreviewSurface {
+        PoorSwitch(state = false)
+    }
 }

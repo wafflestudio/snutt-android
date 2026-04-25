@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -26,6 +25,8 @@ import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.components.compose.DuplicateIcon
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.util.copyToClipboard
@@ -225,27 +226,56 @@ fun UserConfigScreen(
     )
 }
 
-@Preview
+@SnuttPreview
 @Composable
-fun UserConfigPagePreview() {
-    UserConfigScreen(
-        uiState = UserConfigUiState(
-            userName = "이현도",
-            localId = "lhd",
-            email = "lhd@email.com",
-        ),
-        onNavigateBack = {},
-        onNavigateChangeNickname = {},
-        onCopyNicknameToClipboard = {},
-        onClickChangePassword = {},
-        onConfirmChangePassword = { _, _, _ -> },
-        onDismissChangePassword = {},
-        onClickAddIdPassword = {},
-        onConfirmAddIdPassword = { _, _, _ -> },
-        onDismissAddIdPassword = {},
-        onClickLeave = {},
-        onConfirmLeave = {},
-        onDismissLeave = {},
-        onNavigateSocialLink = {},
-    )
+private fun UserConfigScreen_WithLocalId() {
+    SnuttPreviewSurface {
+        UserConfigScreen(
+            uiState = UserConfigUiState(
+                userName = "이현도",
+                localId = "lhd",
+                email = "lhd@email.com",
+            ),
+            onNavigateBack = {},
+            onNavigateChangeNickname = {},
+            onCopyNicknameToClipboard = {},
+            onClickChangePassword = {},
+            onConfirmChangePassword = { _, _, _ -> },
+            onDismissChangePassword = {},
+            onClickAddIdPassword = {},
+            onConfirmAddIdPassword = { _, _, _ -> },
+            onDismissAddIdPassword = {},
+            onClickLeave = {},
+            onConfirmLeave = {},
+            onDismissLeave = {},
+            onNavigateSocialLink = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun UserConfigScreen_WithoutLocalId() {
+    SnuttPreviewSurface {
+        UserConfigScreen(
+            uiState = UserConfigUiState(
+                userName = "이현도",
+                localId = null,
+                email = "lhd@email.com",
+            ),
+            onNavigateBack = {},
+            onNavigateChangeNickname = {},
+            onCopyNicknameToClipboard = {},
+            onClickChangePassword = {},
+            onConfirmChangePassword = { _, _, _ -> },
+            onDismissChangePassword = {},
+            onClickAddIdPassword = {},
+            onConfirmAddIdPassword = { _, _, _ -> },
+            onDismissAddIdPassword = {},
+            onClickLeave = {},
+            onConfirmLeave = {},
+            onDismissLeave = {},
+            onNavigateSocialLink = {},
+        )
+    }
 }

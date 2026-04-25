@@ -29,7 +29,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -45,6 +44,8 @@ import com.wafflestudio.snutt2.ui.components.compose.RedDotWithNumber
 import com.wafflestudio.snutt2.ui.components.compose.RightArrowIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.ThemeMode
@@ -435,32 +436,115 @@ fun NewBadge(
     }
 }
 
-@Preview(showBackground = true)
+@SnuttPreview
 @Composable
-fun SettingsPagePreview() {
-    SettingsScreen(
-        uiState = SettingsUiState("양주현", ThemeMode.DARK, false, listOf("빈자리 알림")),
-        uncheckedNotifications = 0L,
-        onClickUserConfig = {},
-        onClickNotification = {},
-        onClickThemeModeSelect = {},
-        onClickTimeTableConfig = {},
-        onClickThemeConfig = {},
-        onClickVacancyNotification = {},
-        onClickThemeMarket = {},
-        onClickPushPreference = {},
-        onClickLectureReminder = {},
-        onClickDiaryWrite = {},
-        onClickDiaryHistory = {},
-        onClickTeamInfo = {},
-        onClickAppReport = {},
-        onClickOpenLicenses = {},
-        onClickServiceInfo = {},
-        onClickPersonalInformationPolicy = {},
-        onClickNetworkLog = {},
-        onClickTest = {},
-        onClickLogout = {},
-        onConfirmLogout = {},
-        onDismissLogout = {},
-    )
+private fun SettingsScreen_Default() {
+    SnuttPreviewSurface {
+        SettingsScreen(
+            uiState = SettingsUiState("양주현", ThemeMode.DARK, false, listOf("빈자리 알림")),
+            uncheckedNotifications = 0L,
+            onClickUserConfig = {},
+            onClickNotification = {},
+            onClickThemeModeSelect = {},
+            onClickTimeTableConfig = {},
+            onClickThemeConfig = {},
+            onClickVacancyNotification = {},
+            onClickThemeMarket = {},
+            onClickPushPreference = {},
+            onClickLectureReminder = {},
+            onClickDiaryWrite = {},
+            onClickDiaryHistory = {},
+            onClickTeamInfo = {},
+            onClickAppReport = {},
+            onClickOpenLicenses = {},
+            onClickServiceInfo = {},
+            onClickPersonalInformationPolicy = {},
+            onClickNetworkLog = {},
+            onClickTest = {},
+            onClickLogout = {},
+            onConfirmLogout = {},
+            onDismissLogout = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun SettingItem_TitleOnly() {
+    SnuttPreviewSurface {
+        SettingItem(
+            title = "알림",
+            onClick = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun SettingItem_WithLeadingIconAndContent() {
+    SnuttPreviewSurface {
+        SettingItem(
+            title = "내 계정",
+            leadingIcon = {
+                PersonIcon(
+                    modifier = Modifier
+                        .size(22.dp)
+                        .padding(end = 5.dp),
+                )
+            },
+            onClick = {},
+            content = {
+                Text(
+                    text = "양주현",
+                    style = SNUTTTypography.body1.copy(color = SNUTTColors.Black500),
+                )
+            },
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun SettingItem_WithRedDotAndNewBadge() {
+    SnuttPreviewSurface {
+        SettingItem(
+            title = "빈자리 알림",
+            settingPageNewBadgeTitles = listOf("빈자리 알림"),
+            redDotIconNumber = 3L,
+            onClick = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun SettingItem_LogoutStyle() {
+    SnuttPreviewSurface {
+        SettingItem(
+            title = "로그아웃",
+            titleColor = SNUTTColors.Red,
+            onClick = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun SettingColumn_WithTitle() {
+    SnuttPreviewSurface {
+        SettingColumn(
+            title = "테마 설정",
+        ) {
+            SettingItem(title = "색상 모드 선택", onClick = {})
+            SettingItem(title = "시간표 설정", onClick = {})
+        }
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun NewBadge_Default() {
+    SnuttPreviewSurface {
+        NewBadge()
+    }
 }

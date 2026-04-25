@@ -19,13 +19,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.PushPreferenceType
 import com.wafflestudio.snutt2.domain.model.PushPreferences
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.util.toast
 
@@ -153,34 +154,40 @@ fun PushPreferencesError() {
     }
 }
 
+@SnuttPreview
 @Composable
-@Preview(showBackground = true)
-fun PushPreferencesLoadingPreview() {
-    PushPreferencesScreen(
-        onClickBack = {},
-        uiState = PushPreferencesUiState.Loading,
-        toggleUiState = {},
-    )
+private fun PushPreferencesScreen_Success() {
+    SnuttPreviewSurface {
+        PushPreferencesScreen(
+            onClickBack = {},
+            uiState = PushPreferencesUiState.Success(
+                PushPreferences(lectureUpdate = false, vacancyNotification = true, lectureDiary = true),
+            ),
+            toggleUiState = {},
+        )
+    }
 }
 
+@SnuttPreview
 @Composable
-@Preview(showBackground = true)
-fun PushPreferencesErrorPreview() {
-    PushPreferencesScreen(
-        onClickBack = {},
-        uiState = PushPreferencesUiState.Error,
-        toggleUiState = {},
-    )
+private fun PushPreferencesScreen_Loading() {
+    SnuttPreviewSurface {
+        PushPreferencesScreen(
+            onClickBack = {},
+            uiState = PushPreferencesUiState.Loading,
+            toggleUiState = {},
+        )
+    }
 }
 
+@SnuttPreview
 @Composable
-@Preview(showBackground = true)
-fun PushPreferencesSuccessPreview() {
-    PushPreferencesScreen(
-        onClickBack = {},
-        uiState = PushPreferencesUiState.Success(
-            PushPreferences(lectureUpdate = false, vacancyNotification = true, lectureDiary = true),
-        ),
-        toggleUiState = {},
-    )
+private fun PushPreferencesScreen_Error() {
+    SnuttPreviewSurface {
+        PushPreferencesScreen(
+            onClickBack = {},
+            uiState = PushPreferencesUiState.Error,
+            toggleUiState = {},
+        )
+    }
 }

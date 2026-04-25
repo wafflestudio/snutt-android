@@ -10,12 +10,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.ThemeMode
 
 @Composable
@@ -67,11 +68,13 @@ private fun ServiceInfoScreen(
     }
 }
 
-@Preview
+@SnuttPreview
 @Composable
-private fun ServiceInfoScreenPreview() {
-    ServiceInfoScreen(
-        themeMode = ThemeMode.AUTO,
-        onNavigateBack = {},
-    )
+private fun ServiceInfoScreen_Default() {
+    SnuttPreviewSurface {
+        ServiceInfoScreen(
+            themeMode = ThemeMode.AUTO,
+            onNavigateBack = {},
+        )
+    }
 }

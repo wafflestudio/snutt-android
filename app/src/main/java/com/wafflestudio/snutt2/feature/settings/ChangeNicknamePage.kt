@@ -35,7 +35,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextIndent
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -46,6 +45,8 @@ import com.wafflestudio.snutt2.ui.components.compose.EditText
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.clearFocusOnKeyboardDismiss
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.util.toDp
@@ -227,12 +228,14 @@ private fun BulletedParagraph(
     )
 }
 
-@Preview(showBackground = true)
+@SnuttPreview
 @Composable
-private fun ChangeNicknameScreenPreview() {
-    ChangeNicknameScreen(
-        initialNickname = "와플",
-        onSave = {},
-        onNavigateBack = {},
-    )
+private fun ChangeNicknameScreen_Default() {
+    SnuttPreviewSurface {
+        ChangeNicknameScreen(
+            initialNickname = "와플",
+            onSave = {},
+            onNavigateBack = {},
+        )
+    }
 }
