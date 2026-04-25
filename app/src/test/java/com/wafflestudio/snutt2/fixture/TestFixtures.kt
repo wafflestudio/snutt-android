@@ -126,10 +126,15 @@ object TestFixtures {
         id: String = "theme-1",
         name: String = "내 테마",
         isFromMarket: Boolean = false,
+        colors: List<ThemeColor> = listOf(ThemeColor(0xFFFFFFFF.toInt(), 0xFF000000.toInt())),
     ) = CustomTheme(
         id = id,
         name = name,
         isFromMarket = isFromMarket,
-        colors = listOf(ThemeColor(0xFFFFFFFF.toInt(), 0xFF000000.toInt())),
+        colors = colors,
     )
+
+    // --- ThemeColor ---
+
+    fun themeColor(fg: Int = 0xFFFFFFFF.toInt(), bg: Int = 0xFF000000.toInt()) = ThemeColor(fg, bg)
 }
