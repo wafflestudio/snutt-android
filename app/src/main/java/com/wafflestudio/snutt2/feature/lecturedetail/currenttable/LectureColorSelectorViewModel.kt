@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
+import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.CustomTheme
 import com.wafflestudio.snutt2.domain.model.LectureColor
 import com.wafflestudio.snutt2.domain.model.TableTheme
@@ -35,45 +36,57 @@ class LectureColorSelectorViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             getCurrentTableThemeUseCase().collect { tableTheme ->
-                _uiState.update {
-                    it.copy(
-                        tableTheme = tableTheme,
-                        isBuiltInTheme = tableTheme !is CustomTheme,
-                    )
+                _uiState.update { current ->
+                    // 외부에서 시간표 테마가 갱신될 수 있으나 모드 자체가 바뀌는 경우는 거의 없음.
+                    // 같은 모드 안에서만 tableTheme 필드만 갱신, 모드 전환 케이스는 무시.
+                    when {
+                        tableTheme is BuiltInTheme && current is LectureColorSelectorUiState.BuiltInThemeMode ->
+                            current.copy(tableTheme = tableTheme)
+                        tableTheme is CustomTheme && current is LectureColorSelectorUiState.CustomThemeMode ->
+                            current.copy(tableTheme = tableTheme)
+                        else -> current
+                    }
                 }
             }
         }
     }
 
-    private fun buildInitialUiState(): LectureColorSelectorUiState {
-        val tableTheme = getCurrentTableThemeUseCase.current()
+    private fun buildInitialUiState(): LectureColorSelectorUiState =
+        when (val tableTheme = getCurrentTableThemeUseCase.current()) {
+            is BuiltInTheme -> buildBuiltInMode(tableTheme)
+            is CustomTheme -> buildCustomMode(tableTheme)
+        }
 
+    private fun buildBuiltInMode(tableTheme: BuiltInTheme): LectureColorSelectorUiState.BuiltInThemeMode {
         val selection = when (initialColor) {
             is LectureColor.BuiltIn -> LectureColorSelectorUiState.Selection.Palette(initialColor.colorIndex)
-            is LectureColor.Custom -> when (tableTheme) {
-                is CustomTheme -> {
-                    // CustomTheme 시간표에선 사용자가 팔레트에서만 색을 고를 수 있으므로 매칭이 항상 성공해야 정상.
-                    // 매칭 실패는 테마 갱신 race 등 invariant 위반이지만 화면을 막지 않기 위해 Custom 으로 fallback.
-                    val matchedIndex = tableTheme.getColors(false).indexOfFirst {
-                        it.foreground == initialColor.foreground && it.background == initialColor.background
-                    }
-                    if (matchedIndex >= 0) LectureColorSelectorUiState.Selection.Palette(matchedIndex)
-                    else LectureColorSelectorUiState.Selection.Custom
-                }
-                else -> LectureColorSelectorUiState.Selection.Custom
-            }
+            is LectureColor.Custom -> LectureColorSelectorUiState.Selection.Custom
         }
         // selection 이 Custom 일 땐 현재 색, Palette 일 땐 picker 다이얼로그를 처음 열 때 보일 초기값.
         val initialCustomColors = when (initialColor) {
             is LectureColor.Custom -> initialColor
             is LectureColor.BuiltIn -> LectureColor.Custom.Default
         }
-        return LectureColorSelectorUiState(
+        return LectureColorSelectorUiState.BuiltInThemeMode(
             tableTheme = tableTheme,
-            isBuiltInTheme = tableTheme !is CustomTheme,
             selection = selection,
             customFgColor = initialCustomColors.foreground,
             customBgColor = initialCustomColors.background,
+        )
+    }
+
+    private fun buildCustomMode(tableTheme: CustomTheme): LectureColorSelectorUiState.CustomThemeMode {
+        // CustomTheme 시간표에선 사용자가 팔레트에서만 색을 고를 수 있으므로 매칭이 항상 성공해야 정상.
+        // 매칭 실패는 테마 갱신 race 등 invariant 위반이지만 화면을 막지 않기 위해 0번 색으로 fallback.
+        val matchedIndex = when (initialColor) {
+            is LectureColor.Custom -> tableTheme.getColors(false).indexOfFirst {
+                it.foreground == initialColor.foreground && it.background == initialColor.background
+            }
+            is LectureColor.BuiltIn -> -1
+        }
+        return LectureColorSelectorUiState.CustomThemeMode(
+            tableTheme = tableTheme,
+            selectedPaletteIndex = matchedIndex.coerceAtLeast(0),
         )
     }
 
@@ -84,67 +97,111 @@ class LectureColorSelectorViewModel @Inject constructor(
     }
 
     fun selectPaletteColor(index: Int) {
-        _uiState.update { it.copy(selection = LectureColorSelectorUiState.Selection.Palette(index)) }
+        _uiState.update {
+            when (it) {
+                is LectureColorSelectorUiState.BuiltInThemeMode ->
+                    it.copy(selection = LectureColorSelectorUiState.Selection.Palette(index))
+                is LectureColorSelectorUiState.CustomThemeMode ->
+                    it.copy(selectedPaletteIndex = index)
+            }
+        }
     }
 
     fun selectCustom() {
-        _uiState.update { it.copy(selection = LectureColorSelectorUiState.Selection.Custom) }
+        _uiState.update {
+            when (it) {
+                is LectureColorSelectorUiState.BuiltInThemeMode ->
+                    it.copy(selection = LectureColorSelectorUiState.Selection.Custom)
+                is LectureColorSelectorUiState.CustomThemeMode -> it
+            }
+        }
     }
 
     fun openFgPicker() {
-        _uiState.update { it.copy(dialogState = LectureColorSelectorUiState.DialogState.ForegroundPicker(it.customFgColor)) }
+        _uiState.update {
+            when (it) {
+                is LectureColorSelectorUiState.BuiltInThemeMode ->
+                    it.copy(dialogState = LectureColorSelectorUiState.DialogState.ForegroundPicker(it.customFgColor))
+                is LectureColorSelectorUiState.CustomThemeMode -> it
+            }
+        }
     }
 
     fun openBgPicker() {
-        _uiState.update { it.copy(dialogState = LectureColorSelectorUiState.DialogState.BackgroundPicker(it.customBgColor)) }
+        _uiState.update {
+            when (it) {
+                is LectureColorSelectorUiState.BuiltInThemeMode ->
+                    it.copy(dialogState = LectureColorSelectorUiState.DialogState.BackgroundPicker(it.customBgColor))
+                is LectureColorSelectorUiState.CustomThemeMode -> it
+            }
+        }
     }
 
     fun dismissDialog() {
-        _uiState.update { it.copy(dialogState = LectureColorSelectorUiState.DialogState.None) }
+        _uiState.update {
+            when (it) {
+                is LectureColorSelectorUiState.BuiltInThemeMode ->
+                    it.copy(dialogState = LectureColorSelectorUiState.DialogState.None)
+                is LectureColorSelectorUiState.CustomThemeMode -> it
+            }
+        }
     }
 
     fun pickFgColor(argb: Int) {
         _uiState.update {
-            it.copy(
-                customFgColor = argb,
-                selection = LectureColorSelectorUiState.Selection.Custom,
-                dialogState = LectureColorSelectorUiState.DialogState.None,
-            )
+            when (it) {
+                is LectureColorSelectorUiState.BuiltInThemeMode -> it.copy(
+                    customFgColor = argb,
+                    selection = LectureColorSelectorUiState.Selection.Custom,
+                    dialogState = LectureColorSelectorUiState.DialogState.None,
+                )
+                is LectureColorSelectorUiState.CustomThemeMode -> it
+            }
         }
     }
 
     fun pickBgColor(argb: Int) {
         _uiState.update {
-            it.copy(
-                customBgColor = argb,
-                selection = LectureColorSelectorUiState.Selection.Custom,
-                dialogState = LectureColorSelectorUiState.DialogState.None,
-            )
+            when (it) {
+                is LectureColorSelectorUiState.BuiltInThemeMode -> it.copy(
+                    customBgColor = argb,
+                    selection = LectureColorSelectorUiState.Selection.Custom,
+                    dialogState = LectureColorSelectorUiState.DialogState.None,
+                )
+                is LectureColorSelectorUiState.CustomThemeMode -> it
+            }
         }
     }
 }
 
-data class LectureColorSelectorUiState(
-    val tableTheme: TableTheme,
-    val isBuiltInTheme: Boolean,
-    val selection: Selection,
-    val customFgColor: Int,
-    val customBgColor: Int,
-    val dialogState: DialogState = DialogState.None,
-) {
+sealed interface LectureColorSelectorUiState {
+    val tableTheme: TableTheme
     val selectedColor: LectureColor
-        get() = when (val s = selection) {
-            is Selection.Palette -> {
-                if (tableTheme is CustomTheme) {
-                    val c = tableTheme.getColors(false)[s.index]
-                    LectureColor.Custom(c.foreground, c.background)
-                } else {
-                    LectureColor.BuiltIn(s.index)
-                }
-            }
 
-            is Selection.Custom -> LectureColor.Custom(customFgColor, customBgColor)
-        }
+    data class BuiltInThemeMode(
+        override val tableTheme: BuiltInTheme,
+        val selection: Selection,
+        val customFgColor: Int,
+        val customBgColor: Int,
+        val dialogState: DialogState = DialogState.None,
+    ) : LectureColorSelectorUiState {
+        override val selectedColor: LectureColor
+            get() = when (selection) {
+                is Selection.Palette -> LectureColor.BuiltIn(selection.index)
+                is Selection.Custom -> LectureColor.Custom(customFgColor, customBgColor)
+            }
+    }
+
+    data class CustomThemeMode(
+        override val tableTheme: CustomTheme,
+        val selectedPaletteIndex: Int,
+    ) : LectureColorSelectorUiState {
+        override val selectedColor: LectureColor
+            get() {
+                val c = tableTheme.getColors(false)[selectedPaletteIndex]
+                return LectureColor.Custom(c.foreground, c.background)
+            }
+    }
 
     sealed interface Selection {
         data class Palette(val index: Int) : Selection
