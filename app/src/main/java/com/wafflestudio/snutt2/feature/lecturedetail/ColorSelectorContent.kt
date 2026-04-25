@@ -176,3 +176,13 @@ private fun PickerColorSectionPreview() {
         onBgPickerClick = {},
     )
 }
+
+@Preview(showBackground = true, widthDp = 360, name = "ColorPickerDialog")
+@Composable
+private fun ColorPickerDialogPreview() {
+    ColorPickerDialog(
+        initialColor = Color(0xFFE54459),
+        onConfirm = {},
+        onDismiss = {},
+    )
+}
