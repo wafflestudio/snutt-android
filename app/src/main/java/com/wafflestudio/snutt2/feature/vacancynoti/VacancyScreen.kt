@@ -55,7 +55,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -75,8 +74,9 @@ import com.wafflestudio.snutt2.ui.components.compose.TipCloseIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.WebViewStyleButton
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
-import com.wafflestudio.snutt2.ui.theme.SNUTTTheme
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 import com.wafflestudio.snutt2.ui.util.toast
@@ -686,151 +686,84 @@ fun SugangSnuFloatingActionButton(
     }
 }
 
+@SnuttPreview
 @Composable
-@Preview(showBackground = true)
-fun VacancyScreenErrorPreview() {
-    VacancyScreen(
-        uiState = VacancyUiState(contentState = VacancyUiState.ContentState.Error),
-        onClickBack = {},
-        onShowIntroDialog = {},
-        onDismissDialog = {},
-        onToggleEditMode = {},
-        onReloadVacancyLectures = {},
-        onToggleLectureSelected = { _ -> },
-        onShowDeleteDialog = {},
-        onDeleteSelectedLectures = {},
-        onOpenSugangSnu = {},
-    )
-}
-
-@Composable
-@Preview(showBackground = true)
-fun VacancyScreenLoadingPreview() {
-    VacancyScreen(
-        uiState = VacancyUiState(),
-        onClickBack = {},
-        onShowIntroDialog = {},
-        onDismissDialog = {},
-        onToggleEditMode = {},
-        onReloadVacancyLectures = {},
-        onToggleLectureSelected = { _ -> },
-        onShowDeleteDialog = {},
-        onDeleteSelectedLectures = {},
-        onOpenSugangSnu = {},
-    )
-}
-
-@Composable
-@Preview(showBackground = true)
-fun VacancyScreenIntroPreview() {
-    VacancyScreen(
-        uiState = VacancyUiState(
-            contentState = VacancyUiState.ContentState.Loaded(
-                vacancyLecturesWithSelection = PreviewData.sampleLectures.map { it.toDataWithState(false) },
+private fun VacancyScreen_Registered() {
+    SnuttPreviewSurface {
+        VacancyScreen(
+            uiState = VacancyUiState(
+                contentState = VacancyUiState.ContentState.Loaded(
+                    vacancyLecturesWithSelection = PreviewData.sampleLectures.map { it.toDataWithState(false) },
+                ),
             ),
-            dialogState = VacancyUiState.DialogState.Intro,
-        ),
-        onClickBack = {},
-        onShowIntroDialog = {},
-        onDismissDialog = {},
-        onToggleEditMode = {},
-        onReloadVacancyLectures = {},
-        onToggleLectureSelected = { _ -> },
-        onShowDeleteDialog = {},
-        onDeleteSelectedLectures = {},
-        onOpenSugangSnu = {},
-    )
+            onClickBack = {},
+            onShowIntroDialog = {},
+            onDismissDialog = {},
+            onToggleEditMode = {},
+            onReloadVacancyLectures = {},
+            onToggleLectureSelected = { _ -> },
+            onShowDeleteDialog = {},
+            onDeleteSelectedLectures = {},
+            onOpenSugangSnu = {},
+        )
+    }
 }
 
+@SnuttPreview
 @Composable
-@Preview(showBackground = true)
-fun VacancyScreenNormalModePreview() {
-    VacancyScreen(
-        uiState = VacancyUiState(
-            contentState = VacancyUiState.ContentState.Loaded(
-                vacancyLecturesWithSelection = PreviewData.sampleLectures.map { it.toDataWithState(false) },
-            ),
-        ),
-        onClickBack = {},
-        onShowIntroDialog = {},
-        onDismissDialog = {},
-        onToggleEditMode = {},
-        onReloadVacancyLectures = {},
-        onToggleLectureSelected = { _ -> },
-        onShowDeleteDialog = {},
-        onDeleteSelectedLectures = {},
-        onOpenSugangSnu = {},
-    )
+private fun VacancyScreen_Empty() {
+    SnuttPreviewSurface {
+        VacancyScreen(
+            uiState = VacancyUiState(contentState = VacancyUiState.ContentState.Empty),
+            onClickBack = {},
+            onShowIntroDialog = {},
+            onDismissDialog = {},
+            onToggleEditMode = {},
+            onReloadVacancyLectures = {},
+            onToggleLectureSelected = { _ -> },
+            onShowDeleteDialog = {},
+            onDeleteSelectedLectures = {},
+            onOpenSugangSnu = {},
+        )
+    }
 }
 
+@SnuttPreview
 @Composable
-@Preview(showBackground = true)
-fun VacancyScreenEmptyPreview() {
-    VacancyScreen(
-        uiState = VacancyUiState(contentState = VacancyUiState.ContentState.Empty),
-        onClickBack = {},
-        onShowIntroDialog = {},
-        onDismissDialog = {},
-        onToggleEditMode = {},
-        onReloadVacancyLectures = {},
-        onToggleLectureSelected = { _ -> },
-        onShowDeleteDialog = {},
-        onDeleteSelectedLectures = {},
-        onOpenSugangSnu = {},
-    )
+private fun VacancyLoading_Default() {
+    SnuttPreviewSurface {
+        VacancyLoading(onClickBack = {})
+    }
 }
 
+@SnuttPreview
 @Composable
-@Preview(showBackground = true)
-fun VacancyScreenEditModePreview() {
-    VacancyScreen(
-        uiState = VacancyUiState(
-            contentState = VacancyUiState.ContentState.Loaded(
-                vacancyLecturesWithSelection = PreviewData.sampleLectures.map { it.toDataWithState(false) },
-            ),
-            isEditMode = true,
-        ),
-        onClickBack = {},
-        onShowIntroDialog = {},
-        onDismissDialog = {},
-        onToggleEditMode = {},
-        onReloadVacancyLectures = {},
-        onToggleLectureSelected = { _ -> },
-        onShowDeleteDialog = {},
-        onDeleteSelectedLectures = {},
-        onOpenSugangSnu = {},
-    )
+private fun VacancyError_Default() {
+    SnuttPreviewSurface {
+        VacancyError(onClickBack = {})
+    }
 }
 
+@SnuttPreview
 @Composable
-@Preview(showBackground = true)
-fun VacancyScreenDeleteEnabledPreview() {
-    VacancyScreen(
-        uiState = VacancyUiState(
-            contentState = VacancyUiState.ContentState.Loaded(
-                vacancyLecturesWithSelection = PreviewData.sampleLectures.mapIndexed { index, it ->
-                    it.toDataWithState(index < 3)
-                },
-                deleteButtonEnabled = true,
-            ),
-            isEditMode = true,
-        ),
-        onClickBack = {},
-        onShowIntroDialog = {},
-        onDismissDialog = {},
-        onToggleEditMode = {},
-        onReloadVacancyLectures = {},
-        onToggleLectureSelected = { _ -> },
-        onShowDeleteDialog = {},
-        onDeleteSelectedLectures = {},
-        onOpenSugangSnu = {},
-    )
+private fun VacancyPlaceholder_Default() {
+    SnuttPreviewSurface {
+        VacancyPlaceholder(onClickDetail = {})
+    }
 }
 
-@Preview
+@SnuttPreview
 @Composable
-private fun SugangSnuFloatingActionButtonPreview() {
-    SNUTTTheme {
-        SugangSnuFloatingActionButton({})
+private fun VacancyIntroDialog_Default() {
+    SnuttPreviewSurface {
+        VacancyIntroDialog(onDismiss = {})
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun SugangSnuFloatingActionButton_Default() {
+    SnuttPreviewSurface {
+        SugangSnuFloatingActionButton(onClick = {})
     }
 }

@@ -6,6 +6,8 @@ import androidx.compose.ui.res.stringResource
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.SearchedLecture
 import com.wafflestudio.snutt2.ui.components.compose.CustomDialog
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
 @Composable
@@ -99,6 +101,40 @@ private fun LectureTimeOverlapDialog(
         Text(
             text = displayMessage,
             style = SNUTTTypography.body2,
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun DeleteBookmarkDialog_Default() {
+    SnuttPreviewSurface {
+        DeleteBookmarkDialog(
+            onDismiss = {},
+            onConfirm = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun DeleteVacancyNotificationDialog_Default() {
+    SnuttPreviewSurface {
+        DeleteVacancyNotificationDialog(
+            onDismiss = {},
+            onConfirm = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun LectureTimeOverlapDialog_Default() {
+    SnuttPreviewSurface {
+        LectureTimeOverlapDialog(
+            displayMessage = "월(14:00~15:15)에 다른 강의와 시간이 겹칩니다.\n그래도 추가하시겠습니까?",
+            onDismiss = {},
+            onConfirmForceAddLecture = {},
         )
     }
 }

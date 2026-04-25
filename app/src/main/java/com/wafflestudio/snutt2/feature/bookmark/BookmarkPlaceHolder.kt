@@ -13,6 +13,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
@@ -42,5 +44,13 @@ fun BookmarkPlaceHolder() {
             style = SNUTTTypography.subtitle1.copy(fontSize = 18.sp, color = SNUTTColors.White700),
         )
         Spacer(modifier = Modifier.weight(1f))
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun BookmarkPlaceHolder_Empty() {
+    SnuttPreviewSurface {
+        BookmarkPlaceHolder()
     }
 }

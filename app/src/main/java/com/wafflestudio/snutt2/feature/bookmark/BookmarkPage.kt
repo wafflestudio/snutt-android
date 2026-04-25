@@ -19,11 +19,23 @@ import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.domain.model.BuiltInTheme
+import com.wafflestudio.snutt2.domain.model.CourseBook
 import com.wafflestudio.snutt2.domain.model.SearchedLecture
+import com.wafflestudio.snutt2.domain.model.Table
+import com.wafflestudio.snutt2.domain.model.TableLectureCustom
+import com.wafflestudio.snutt2.domain.model.TableSummary
+import com.wafflestudio.snutt2.domain.model.TableTrimParam
+import com.wafflestudio.snutt2.domain.model.ThemeReference
+import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.feature.home.timetable.TimeTable
 import com.wafflestudio.snutt2.feature.search.BookmarkList
+import com.wafflestudio.snutt2.feature.search.LectureState
+import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.ui.components.compose.BottomSheetDismissEffect
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 import com.wafflestudio.snutt2.ui.util.toast
@@ -170,5 +182,56 @@ fun BookmarkScreen(
                 }
             }
         }
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun BookmarkScreen_List() {
+    SnuttPreviewSurface {
+        BookmarkScreen(
+            uiState = BookmarkUiState.Success(
+                currentTable = Table(
+                    summary = TableSummary(
+                        id = "table1",
+                        courseBook = CourseBook(semester = 1, year = 2025),
+                        title = "2025-1학기",
+                        totalCredit = 0L,
+                        isPrimary = true,
+                    ),
+                    lectures = emptyList(),
+                    themeRef = ThemeReference.BuiltIn(0),
+                ),
+                tableTheme = BuiltInTheme.SNUTT,
+                bookmarkList = PreviewData.sampleLectures.take(3).map { lecture ->
+                    lecture.toDataWithState(
+                        LectureState(
+                            selected = false,
+                            contained = false,
+                            isBookmarked = true,
+                            isVacancyRegistered = false,
+                        ),
+                    )
+                },
+                selectedLecture = null,
+                tableTrimParam = TableTrimParam.Default,
+                tableLectureCustomOptions = TableLectureCustom.Default,
+                isCompactMode = false,
+                uncheckedNotificationCount = 0,
+                disableMapFeature = false,
+                vacancyList = emptyList(),
+            ),
+            onClickLectureDetail = {},
+            onClickReview = {},
+            onClickBookmark = {},
+            onClickVacancy = {},
+            onToggleLectureContained = {},
+            onToggleLectureSelection = {},
+            onDismissDialog = {},
+            onConfirmDeleteBookmark = {},
+            onConfirmDeleteVacancyNotification = {},
+            onConfirmForceAddLecture = {},
+            onNavigateBack = {},
+        )
     }
 }

@@ -21,13 +21,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.ui.components.compose.RightArrowIcon
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.util.toast
@@ -154,20 +155,21 @@ fun TestScreen(
     }
 }
 
-@Preview(showBackground = true)
+@SnuttPreview
 @Composable
-fun TestScreenPreview() {
-    TestScreen(
-        uiState = TestUiState.Fail,
-        segmentPickerUiState = "option 1",
-        onClickBack = {},
-        onFirstTestCase = {},
-        onSecondTestCase = {},
-        onThirdTestCase = { _, _, _ ->
-        },
-        onFourthTestCase = {},
-        onSegmentPickerUiStateChange = { _ -> },
-    )
+private fun TestScreen_Default() {
+    SnuttPreviewSurface {
+        TestScreen(
+            uiState = TestUiState.Fail,
+            segmentPickerUiState = "option 1",
+            onClickBack = {},
+            onFirstTestCase = {},
+            onSecondTestCase = {},
+            onThirdTestCase = { _, _, _ -> },
+            onFourthTestCase = {},
+            onSegmentPickerUiStateChange = { _ -> },
+        )
+    }
 }
 
 @Composable
@@ -204,5 +206,27 @@ fun SettingItemForTest(
                 colorFilter = ColorFilter.tint(SNUTTColors.Black500),
             )
         }
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun SettingItemForTest_HasNextPage() {
+    SnuttPreviewSurface {
+        SettingItemForTest(
+            title = "테스트 항목",
+            hasNextPage = true,
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun SettingItemForTest_NoNextPage() {
+    SnuttPreviewSurface {
+        SettingItemForTest(
+            title = "테스트 항목",
+            hasNextPage = false,
+        )
     }
 }

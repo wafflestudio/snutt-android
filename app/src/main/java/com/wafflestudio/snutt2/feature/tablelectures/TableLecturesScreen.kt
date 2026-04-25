@@ -23,7 +23,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -37,6 +36,8 @@ import com.wafflestudio.snutt2.ui.components.compose.LocationIcon
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.ui.components.compose.TagIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.util.formatter.getInstructorAndCreditText
@@ -163,11 +164,28 @@ fun TableLectureItem(
     }
 }
 
-@Preview(showBackground = true)
+@SnuttPreview
 @Composable
-fun TableLectureItemPreview() {
-    TableLectureItem(
-        modifier = Modifier.padding(horizontal = 20.dp, vertical = 7.dp),
-        lecture = PreviewData.syllabusLecture,
-    ) {}
+private fun TableLectureItem_Default() {
+    SnuttPreviewSurface {
+        TableLectureItem(
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 7.dp),
+            lecture = PreviewData.syllabusLecture,
+            onClickLecture = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun TableLecturesScreen_Default() {
+    SnuttPreviewSurface {
+        TableLecturesScreen(
+            uiState = TableLecturesUiState(
+                lectures = listOf(PreviewData.syllabusLecture, PreviewData.builtInColorLecture),
+            ),
+            onClickLecture = {},
+            onBack = {},
+        )
+    }
 }

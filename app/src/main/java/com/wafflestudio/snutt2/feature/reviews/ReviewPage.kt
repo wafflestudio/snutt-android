@@ -34,6 +34,8 @@ import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.components.compose.TimetableIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import kotlinx.coroutines.launch
@@ -181,6 +183,28 @@ private fun WebViewLoading(modifier: Modifier, progress: Float) {
                 .height(2.dp),
             progress = progress,
             color = SNUTTColors.Gray200,
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun WebViewErrorPage_Default() {
+    SnuttPreviewSurface {
+        WebViewErrorPage(
+            modifier = Modifier.fillMaxSize(),
+            onRetry = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun WebViewLoading_Default() {
+    SnuttPreviewSurface {
+        WebViewLoading(
+            modifier = Modifier.fillMaxSize(),
+            progress = 0.5f,
         )
     }
 }
