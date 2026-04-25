@@ -11,12 +11,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.domain.model.BuiltInTheme
+import com.wafflestudio.snutt2.domain.model.LectureColor
+import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.feature.lecturedetail.ColorItem
 import com.wafflestudio.snutt2.feature.lecturedetail.ColorPickerDialog
 import com.wafflestudio.snutt2.feature.lecturedetail.PickerColorSection
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 
 @Composable
@@ -107,4 +112,67 @@ fun LectureColorSelectorScreen(
             }
         }
     }
+}
+
+private val previewBuiltInPickerColors = LectureColor.Custom.Default
+
+@Preview(showBackground = true, widthDp = 360, name = "BuiltInTheme + Palette 선택")
+@Composable
+private fun LectureColorSelectorScreen_BuiltInTheme_Palette_Preview() {
+    LectureColorSelectorScreen(
+        uiState = LectureColorSelectorUiState.BuiltInThemeMode(
+            tableTheme = BuiltInTheme.SNUTT,
+            selection = LectureColorSelectorUiState.ColorSelection.Palette(2),
+            pickerFgColor = previewBuiltInPickerColors.foreground,
+            pickerBgColor = previewBuiltInPickerColors.background,
+        ),
+        onBackPressed = {},
+        onSelectPalette = {},
+        onSelectPicker = {},
+        onOpenFgPicker = {},
+        onOpenBgPicker = {},
+        onDismissDialog = {},
+        onPickFgColor = {},
+        onPickBgColor = {},
+    )
+}
+
+@Preview(showBackground = true, widthDp = 360, name = "BuiltInTheme + Picker 선택")
+@Composable
+private fun LectureColorSelectorScreen_BuiltInTheme_Picker_Preview() {
+    LectureColorSelectorScreen(
+        uiState = LectureColorSelectorUiState.BuiltInThemeMode(
+            tableTheme = BuiltInTheme.SNUTT,
+            selection = LectureColorSelectorUiState.ColorSelection.Picker,
+            pickerFgColor = SNUTTColors.White.toArgb(),
+            pickerBgColor = 0xFF5965B2.toInt(),
+        ),
+        onBackPressed = {},
+        onSelectPalette = {},
+        onSelectPicker = {},
+        onOpenFgPicker = {},
+        onOpenBgPicker = {},
+        onDismissDialog = {},
+        onPickFgColor = {},
+        onPickBgColor = {},
+    )
+}
+
+@Preview(showBackground = true, widthDp = 360, name = "CustomTheme")
+@Composable
+private fun LectureColorSelectorScreen_CustomTheme_Preview() {
+    LectureColorSelectorScreen(
+        uiState = LectureColorSelectorUiState.CustomThemeMode(
+            tableTheme = PreviewData.previewCustomTheme1,
+            selection = LectureColorSelectorUiState.ColorSelection.Palette(0),
+        ),
+        onBackPressed = {},
+        onSelectPalette = {},
+        onSelectPicker = {},
+        onOpenFgPicker = {},
+        onOpenBgPicker = {},
+        onDismissDialog = {},
+        onPickFgColor = {},
+        onPickBgColor = {},
+    )
 }
