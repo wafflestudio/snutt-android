@@ -40,8 +40,8 @@ class LectureColorSelectorViewModel @Inject constructor(
 
     private fun buildBuiltInMode(tableTheme: BuiltInTheme): LectureColorSelectorUiState.BuiltInThemeMode {
         val selection = when (initialColor) {
-            is LectureColor.BuiltIn -> LectureColorSelectorUiState.Selection.Palette(initialColor.colorIndex)
-            is LectureColor.Custom -> LectureColorSelectorUiState.Selection.Picker
+            is LectureColor.BuiltIn -> LectureColorSelectorUiState.ColorSelection.Palette(initialColor.colorIndex)
+            is LectureColor.Custom -> LectureColorSelectorUiState.ColorSelection.Picker
         }
         // selection 이 Custom 일 땐 현재 색, Palette 일 땐 picker 다이얼로그를 처음 열 때 보일 초기값.
         val initialPickerColors = when (initialColor) {
@@ -64,7 +64,7 @@ class LectureColorSelectorViewModel @Inject constructor(
             ?: 0
         return LectureColorSelectorUiState.CustomThemeMode(
             tableTheme = tableTheme,
-            selection = LectureColorSelectorUiState.Selection.Palette(matchedIndex),
+            selection = LectureColorSelectorUiState.ColorSelection.Palette(matchedIndex),
         )
     }
 
@@ -78,16 +78,16 @@ class LectureColorSelectorViewModel @Inject constructor(
         _uiState.update {
             when (it) {
                 is LectureColorSelectorUiState.BuiltInThemeMode ->
-                    it.copy(selection = LectureColorSelectorUiState.Selection.Palette(index))
+                    it.copy(selection = LectureColorSelectorUiState.ColorSelection.Palette(index))
 
                 is LectureColorSelectorUiState.CustomThemeMode ->
-                    it.copy(selection = LectureColorSelectorUiState.Selection.Palette(index))
+                    it.copy(selection = LectureColorSelectorUiState.ColorSelection.Palette(index))
             }
         }
     }
 
-    fun selectPicker() = updateBuiltIn {
-        it.copy(selection = LectureColorSelectorUiState.Selection.Picker)
+    fun selectPickerColor() = updateBuiltIn {
+        it.copy(selection = LectureColorSelectorUiState.ColorSelection.Picker)
     }
 
     fun openFgPicker() = updateBuiltIn {
@@ -105,7 +105,7 @@ class LectureColorSelectorViewModel @Inject constructor(
     fun pickFgColor(argb: Int) = updateBuiltIn {
         it.copy(
             pickerFgColor = argb,
-            selection = LectureColorSelectorUiState.Selection.Picker,
+            selection = LectureColorSelectorUiState.ColorSelection.Picker,
             dialogState = LectureColorSelectorUiState.DialogState.None,
         )
     }
@@ -113,7 +113,7 @@ class LectureColorSelectorViewModel @Inject constructor(
     fun pickBgColor(argb: Int) = updateBuiltIn {
         it.copy(
             pickerBgColor = argb,
-            selection = LectureColorSelectorUiState.Selection.Picker,
+            selection = LectureColorSelectorUiState.ColorSelection.Picker,
             dialogState = LectureColorSelectorUiState.DialogState.None,
         )
     }
@@ -130,26 +130,26 @@ class LectureColorSelectorViewModel @Inject constructor(
 
 sealed interface LectureColorSelectorUiState {
     val tableTheme: TableTheme
-    val selection: Selection
+    val selection: ColorSelection
     val selectedColor: LectureColor
 
     data class BuiltInThemeMode(
         override val tableTheme: BuiltInTheme,
-        override val selection: Selection,
+        override val selection: ColorSelection,
         val pickerFgColor: Int,
         val pickerBgColor: Int,
         val dialogState: DialogState = DialogState.None,
     ) : LectureColorSelectorUiState {
         override val selectedColor: LectureColor
             get() = when (selection) {
-                is Selection.Palette -> LectureColor.BuiltIn(selection.index)
-                is Selection.Picker -> LectureColor.Custom(pickerFgColor, pickerBgColor)
+                is ColorSelection.Palette -> LectureColor.BuiltIn(selection.index)
+                is ColorSelection.Picker -> LectureColor.Custom(pickerFgColor, pickerBgColor)
             }
     }
 
     data class CustomThemeMode(
         override val tableTheme: CustomTheme,
-        override val selection: Selection.Palette,
+        override val selection: ColorSelection.Palette,
     ) : LectureColorSelectorUiState {
         override val selectedColor: LectureColor
             get() {
@@ -158,9 +158,9 @@ sealed interface LectureColorSelectorUiState {
             }
     }
 
-    sealed interface Selection {
-        data class Palette(val index: Int) : Selection
-        data object Picker : Selection
+    sealed interface ColorSelection {
+        data class Palette(val index: Int) : ColorSelection
+        data object Picker : ColorSelection
     }
 
     sealed interface DialogState {

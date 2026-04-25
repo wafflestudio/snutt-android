@@ -64,7 +64,7 @@ class LectureColorSelectorViewModelTest {
     // region init 결과: tableTheme x initialColor 분기
 
     @Test
-    fun `BuiltIn 테마 시간표에 BuiltIn 색이 들어오면 Selection은 Palette, picker 초기값은 Default 가 된다`() = runTest {
+    fun `BuiltIn 테마 시간표에 BuiltIn 색이 들어오면 ColorSelection은 Palette, picker 초기값은 Default 가 된다`() = runTest {
         setBuiltInTableTheme(code = 0)
 
         val viewModel = createViewModel(initialColor = LectureColor.BuiltIn(3))
@@ -72,7 +72,7 @@ class LectureColorSelectorViewModelTest {
         assertEquals(
             LectureColorSelectorUiState.BuiltInThemeMode(
                 tableTheme = BuiltInTheme.SNUTT,
-                selection = LectureColorSelectorUiState.Selection.Palette(3),
+                selection = LectureColorSelectorUiState.ColorSelection.Palette(3),
                 pickerFgColor = LectureColor.Custom.Default.foreground,
                 pickerBgColor = LectureColor.Custom.Default.background,
             ),
@@ -81,7 +81,7 @@ class LectureColorSelectorViewModelTest {
     }
 
     @Test
-    fun `BuiltIn 테마 시간표에 Custom 색이 들어오면 Selection은 Picker, picker 초기값은 들어온 색이 된다`() = runTest {
+    fun `BuiltIn 테마 시간표에 Custom 색이 들어오면 ColorSelection은 Picker, picker 초기값은 들어온 색이 된다`() = runTest {
         setBuiltInTableTheme(code = 0)
 
         val viewModel = createViewModel(initialColor = LectureColor.Custom(0x12345678, 0x789ABCDE))
@@ -89,7 +89,7 @@ class LectureColorSelectorViewModelTest {
         assertEquals(
             LectureColorSelectorUiState.BuiltInThemeMode(
                 tableTheme = BuiltInTheme.SNUTT,
-                selection = LectureColorSelectorUiState.Selection.Picker,
+                selection = LectureColorSelectorUiState.ColorSelection.Picker,
                 pickerFgColor = 0x12345678,
                 pickerBgColor = 0x789ABCDE,
             ),
@@ -114,7 +114,7 @@ class LectureColorSelectorViewModelTest {
         assertEquals(
             LectureColorSelectorUiState.CustomThemeMode(
                 tableTheme = customTheme,
-                selection = LectureColorSelectorUiState.Selection.Palette(1),
+                selection = LectureColorSelectorUiState.ColorSelection.Palette(1),
             ),
             viewModel.uiState.value,
         )
@@ -135,7 +135,7 @@ class LectureColorSelectorViewModelTest {
         assertEquals(
             LectureColorSelectorUiState.CustomThemeMode(
                 tableTheme = customTheme,
-                selection = LectureColorSelectorUiState.Selection.Palette(0),
+                selection = LectureColorSelectorUiState.ColorSelection.Palette(0),
             ),
             viewModel.uiState.value,
         )
@@ -156,7 +156,7 @@ class LectureColorSelectorViewModelTest {
         assertEquals(
             LectureColorSelectorUiState.CustomThemeMode(
                 tableTheme = customTheme,
-                selection = LectureColorSelectorUiState.Selection.Palette(0),
+                selection = LectureColorSelectorUiState.ColorSelection.Palette(0),
             ),
             viewModel.uiState.value,
         )
@@ -228,7 +228,7 @@ class LectureColorSelectorViewModelTest {
 
         assertEquals(
             (before as LectureColorSelectorUiState.BuiltInThemeMode).copy(
-                selection = LectureColorSelectorUiState.Selection.Palette(5),
+                selection = LectureColorSelectorUiState.ColorSelection.Palette(5),
             ),
             viewModel.uiState.value,
         )
@@ -251,7 +251,7 @@ class LectureColorSelectorViewModelTest {
 
         assertEquals(
             (before as LectureColorSelectorUiState.CustomThemeMode).copy(
-                selection = LectureColorSelectorUiState.Selection.Palette(2),
+                selection = LectureColorSelectorUiState.ColorSelection.Palette(2),
             ),
             viewModel.uiState.value,
         )
@@ -259,26 +259,26 @@ class LectureColorSelectorViewModelTest {
 
     // endregion
 
-    // region selectPicker
+    // region selectPickerColor
 
     @Test
-    fun `BuiltInThemeMode 에서 selectPicker 호출 시 selection 이 Picker 로 변경된다`() = runTest {
+    fun `BuiltInThemeMode 에서 selectPickerColor 호출 시 selection 이 Picker 로 변경된다`() = runTest {
         setBuiltInTableTheme(code = 0)
         val viewModel = createViewModel(initialColor = LectureColor.BuiltIn(0))
         val before = viewModel.uiState.value
 
-        viewModel.selectPicker()
+        viewModel.selectPickerColor()
 
         assertEquals(
             (before as LectureColorSelectorUiState.BuiltInThemeMode).copy(
-                selection = LectureColorSelectorUiState.Selection.Picker,
+                selection = LectureColorSelectorUiState.ColorSelection.Picker,
             ),
             viewModel.uiState.value,
         )
     }
 
     @Test
-    fun `CustomThemeMode 에서 selectPicker 호출 시 상태가 변경되지 않는다`() = runTest {
+    fun `CustomThemeMode 에서 selectPickerColor 호출 시 상태가 변경되지 않는다`() = runTest {
         val customTheme = TestFixtures.customTheme(
             colors = listOf(TestFixtures.themeColor(fg = 0x111, bg = 0x222)),
         )
@@ -286,7 +286,7 @@ class LectureColorSelectorViewModelTest {
         val viewModel = createViewModel(initialColor = LectureColor.Custom(foreground = 0x111, background = 0x222))
         val before = viewModel.uiState.value
 
-        viewModel.selectPicker()
+        viewModel.selectPickerColor()
 
         assertEquals(before, viewModel.uiState.value)
     }
@@ -410,7 +410,7 @@ class LectureColorSelectorViewModelTest {
         assertEquals(
             (before as LectureColorSelectorUiState.BuiltInThemeMode).copy(
                 pickerFgColor = 0xCAFE,
-                selection = LectureColorSelectorUiState.Selection.Picker,
+                selection = LectureColorSelectorUiState.ColorSelection.Picker,
                 dialogState = LectureColorSelectorUiState.DialogState.None,
             ),
             viewModel.uiState.value,
@@ -447,7 +447,7 @@ class LectureColorSelectorViewModelTest {
         assertEquals(
             (before as LectureColorSelectorUiState.BuiltInThemeMode).copy(
                 pickerBgColor = 0xBABE,
-                selection = LectureColorSelectorUiState.Selection.Picker,
+                selection = LectureColorSelectorUiState.ColorSelection.Picker,
                 dialogState = LectureColorSelectorUiState.DialogState.None,
             ),
             viewModel.uiState.value,

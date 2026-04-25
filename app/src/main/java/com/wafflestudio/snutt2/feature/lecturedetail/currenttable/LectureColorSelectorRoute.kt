@@ -30,7 +30,7 @@ fun LectureColorSelectorRoute(
         uiState = uiState,
         onBackPressed = vm::onBackPressed,
         onSelectPalette = vm::selectPaletteColor,
-        onSelectPicker = vm::selectPicker,
+        onSelectPicker = vm::selectPickerColor,
         onOpenFgPicker = vm::openFgPicker,
         onOpenBgPicker = vm::openBgPicker,
         onDismissDialog = vm::dismissDialog,

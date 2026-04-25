@@ -57,7 +57,7 @@ fun LectureColorSelectorScreen(
                 }
             }
             is LectureColorSelectorUiState.BuiltInThemeMode -> {
-                val selectedPaletteIndex = (uiState.selection as? LectureColorSelectorUiState.Selection.Palette)?.index
+                val selectedPaletteIndex = (uiState.selection as? LectureColorSelectorUiState.ColorSelection.Palette)?.index
                 uiState.tableTheme.getColors(isDarkMode).forEachIndexed { idx, color ->
                     ColorItem(
                         foreground = Color(color.foreground),
@@ -73,7 +73,7 @@ fun LectureColorSelectorScreen(
                         foreground = Color(uiState.pickerFgColor),
                         background = Color(uiState.pickerBgColor),
                         title = stringResource(R.string.lecture_color_selector_page_custom_color),
-                        isSelected = uiState.selection is LectureColorSelectorUiState.Selection.Picker,
+                        isSelected = uiState.selection is LectureColorSelectorUiState.ColorSelection.Picker,
                         onClick = onSelectPicker,
                     )
                     PickerColorSection(
