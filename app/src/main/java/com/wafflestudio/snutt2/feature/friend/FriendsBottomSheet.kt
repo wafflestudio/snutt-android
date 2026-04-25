@@ -286,7 +286,7 @@ private fun EditDisplayNameBottomSheet(
 
 @SnuttPreview
 @Composable
-private fun RequestMethodListBottomSheetPreview() {
+private fun FriendAdd_MethodList() {
     SnuttPreviewSurface {
         AddFriendMethodListBottomSheet(
             onRequestWithNickName = {},
@@ -297,7 +297,7 @@ private fun RequestMethodListBottomSheetPreview() {
 
 @SnuttPreview
 @Composable
-private fun RequestWithNicknameBottomSheetPreview() {
+private fun FriendAdd_NicknameInput_Empty() {
     SnuttPreviewSurface {
         RequestWithNicknameBottomSheet(
             initialNickname = "",
@@ -309,7 +309,7 @@ private fun RequestWithNicknameBottomSheetPreview() {
 
 @SnuttPreview
 @Composable
-private fun RequestWithNicknameBottomSheetFilledPreview() {
+private fun FriendAdd_NicknameInput_Filled() {
     SnuttPreviewSurface {
         RequestWithNicknameBottomSheet(
             initialNickname = "홍길동#1234",
@@ -321,7 +321,7 @@ private fun RequestWithNicknameBottomSheetFilledPreview() {
 
 @SnuttPreview
 @Composable
-private fun FriendDetailBottomSheetPreview() {
+private fun FriendDetail_ActionList() {
     SnuttPreviewSurface {
         FriendDetailBottomSheet(
             friend = PreviewData.sampleFriends.first(),
@@ -334,7 +334,7 @@ private fun FriendDetailBottomSheetPreview() {
 
 @SnuttPreview
 @Composable
-private fun EditDisplayNameBottomSheetPreview() {
+private fun DisplayNameEdit_Filled() {
     SnuttPreviewSurface {
         EditDisplayNameBottomSheet(
             friend = PreviewData.sampleFriends.first(),
@@ -347,7 +347,7 @@ private fun EditDisplayNameBottomSheetPreview() {
 
 @SnuttPreview
 @Composable
-private fun EditDisplayNameBottomSheetEmptyPreview() {
+private fun DisplayNameEdit_Empty() {
     SnuttPreviewSurface {
         EditDisplayNameBottomSheet(
             friend = PreviewData.sampleFriends[1],
