@@ -71,6 +71,10 @@ class CustomTheme(
 ) {
     fun getColors(): List<ThemeColor> = getColors(false)
 
+    fun findPaletteIndex(color: LectureColor.Custom): Int? = getColors()
+        .indexOfFirst { it.foreground == color.foreground && it.background == color.background }
+        .takeIf { it >= 0 }
+
     companion object {
         // FIXME: 다국어 대응 미완료. "새 테마"가 영어 로케일에서도 그대로 노출됨.
         //  Default가 색상 템플릿과 UI 표시용 기본 이름을 동시에 갖고 있어서,

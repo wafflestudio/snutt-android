@@ -1,6 +1,8 @@
 package com.wafflestudio.snutt2.feature.lecturedetail.currenttable
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -13,11 +15,22 @@ fun LectureColorSelectorRoute(
 ) {
     val uiState by vm.uiState.collectAsStateWithLifecycle()
 
+    BackHandler { vm.onBackPressed() }
+
+    LaunchedEffect(Unit) {
+        vm.uiEvent.collect { event ->
+            when (event) {
+                is LectureColorSelectorUiEvent.NavigateBackWithResult ->
+                    onNavigateBackWithResult(event.selectedColor)
+            }
+        }
+    }
+
     LectureColorSelectorScreen(
         uiState = uiState,
-        onBackPressed = { onNavigateBackWithResult(vm.getSelectedColor()) },
+        onBackPressed = vm::onBackPressed,
         onSelectPalette = vm::selectPaletteColor,
-        onSelectCustom = vm::selectCustom,
+        onSelectPicker = vm::selectPickerColor,
         onOpenFgPicker = vm::openFgPicker,
         onOpenBgPicker = vm::openBgPicker,
         onDismissDialog = vm::dismissDialog,

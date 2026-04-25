@@ -68,7 +68,7 @@ internal fun ColorItem(
 }
 
 @Composable
-internal fun CustomColorSection(
+internal fun PickerColorSection(
     fgColor: Color,
     bgColor: Color,
     onFgPickerClick: () -> Unit,
@@ -166,10 +166,10 @@ private fun ColorItemUnselectedPreview() {
     )
 }
 
-@Preview(showBackground = true, widthDp = 360, name = "CustomColorSection")
+@Preview(showBackground = true, widthDp = 360, name = "PickerColorSection")
 @Composable
-private fun CustomColorSectionPreview() {
-    CustomColorSection(
+private fun PickerColorSectionPreview() {
+    PickerColorSection(
         fgColor = Color.White,
         bgColor = Color(0xFF5965B2),
         onFgPickerClick = {},
