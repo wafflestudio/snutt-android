@@ -63,7 +63,8 @@ class LectureColorSelectorViewModel @Inject constructor(
                 else -> LectureColorSelectorUiState.Selection.Custom
             }
         }
-        val customColors = when (initialColor) {
+        // selection 이 Custom 일 땐 현재 색, Palette 일 땐 picker 다이얼로그를 처음 열 때 보일 초기값.
+        val initialCustomColors = when (initialColor) {
             is LectureColor.Custom -> initialColor
             is LectureColor.BuiltIn -> LectureColor.Custom.Default
         }
@@ -71,8 +72,8 @@ class LectureColorSelectorViewModel @Inject constructor(
             tableTheme = tableTheme,
             isBuiltInTheme = tableTheme !is CustomTheme,
             selection = selection,
-            customFgColor = customColors.foreground,
-            customBgColor = customColors.background,
+            customFgColor = initialCustomColors.foreground,
+            customBgColor = initialCustomColors.background,
         )
     }
 
