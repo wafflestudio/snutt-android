@@ -23,7 +23,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
@@ -32,6 +31,8 @@ import com.wafflestudio.snutt2.ui.components.compose.EditText
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.ui.components.compose.WebViewStyleButton
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.util.toast
@@ -135,11 +136,13 @@ private fun FindIdScreen(
     }
 }
 
-@Preview(showBackground = true)
+@SnuttPreview
 @Composable
-private fun FindIdScreenPreview() {
-    FindIdScreen(
-        onSubmit = {},
-        onNavigateBack = {},
-    )
+private fun FindIdScreen_Default() {
+    SnuttPreviewSurface {
+        FindIdScreen(
+            onSubmit = {},
+            onNavigateBack = {},
+        )
+    }
 }

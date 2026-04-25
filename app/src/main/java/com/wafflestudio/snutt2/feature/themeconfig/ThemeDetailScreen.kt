@@ -30,7 +30,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -46,7 +45,8 @@ import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.components.compose.CenteredTopBar
 import com.wafflestudio.snutt2.ui.components.compose.EditText
 import com.wafflestudio.snutt2.ui.components.compose.clicks
-import com.wafflestudio.snutt2.ui.theme.SNUTTTheme
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 import com.wafflestudio.snutt2.ui.theme.onSurfaceVariant
@@ -288,10 +288,10 @@ fun ThemeDetailScreen(
 
 // region Preview
 
-@Preview
+@SnuttPreview
 @Composable
-private fun ThemeDetailScreenPreview() {
-    SNUTTTheme {
+private fun ThemeDetailScreen_Success() {
+    SnuttPreviewSurface {
         ThemeDetailScreen(
             uiState = ThemeDetailUiState.Success(
                 editingTheme = PreviewData.previewEditingThemeCustom,
@@ -302,6 +302,50 @@ private fun ThemeDetailScreenPreview() {
                 tableLectureCustomOptions = TableLectureCustom.Default,
                 compactMode = false,
             ),
+            onClickBack = {},
+            onSaveTheme = {},
+            onUpdateName = {},
+            onToggleColorExpanded = {},
+            onDuplicateColor = {},
+            onRemoveColor = {},
+            onUpdateColor = { _, _, _ -> },
+            onAddColor = {},
+            onConfirmCancelEdit = {},
+            onDismissCancelEdit = {},
+            onConfirmApplyToTable = {},
+            onDismissApplyToTable = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun ThemeDetailScreen_Loading() {
+    SnuttPreviewSurface {
+        ThemeDetailScreen(
+            uiState = ThemeDetailUiState.Loading,
+            onClickBack = {},
+            onSaveTheme = {},
+            onUpdateName = {},
+            onToggleColorExpanded = {},
+            onDuplicateColor = {},
+            onRemoveColor = {},
+            onUpdateColor = { _, _, _ -> },
+            onAddColor = {},
+            onConfirmCancelEdit = {},
+            onDismissCancelEdit = {},
+            onConfirmApplyToTable = {},
+            onDismissApplyToTable = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun ThemeDetailScreen_Error() {
+    SnuttPreviewSurface {
+        ThemeDetailScreen(
+            uiState = ThemeDetailUiState.Error,
             onClickBack = {},
             onSaveTheme = {},
             onUpdateName = {},

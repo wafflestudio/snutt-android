@@ -26,7 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.ThemeColor
@@ -38,8 +37,9 @@ import com.wafflestudio.snutt2.ui.components.compose.ColorPicker
 import com.wafflestudio.snutt2.ui.components.compose.CustomDialog
 import com.wafflestudio.snutt2.ui.components.compose.DuplicateIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
-import com.wafflestudio.snutt2.ui.theme.SNUTTTheme
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 import com.wafflestudio.snutt2.ui.theme.onSurfaceVariant
@@ -256,10 +256,10 @@ private fun ColorPickerDialog(
 
 // region Previews
 
-@Preview
+@SnuttPreview
 @Composable
-private fun ThemeColorRowEditableExpandedPreview() {
-    SNUTTTheme {
+private fun ThemeColorRow_EditableExpanded() {
+    SnuttPreviewSurface {
         val editableColor = PreviewData.previewEditingThemeCustom.colors[0]
         ThemeColorRow(
             index = 0,
@@ -276,10 +276,10 @@ private fun ThemeColorRowEditableExpandedPreview() {
     }
 }
 
-@Preview
+@SnuttPreview
 @Composable
-private fun ThemeColorRowEditableCollapsedPreview() {
-    SNUTTTheme {
+private fun ThemeColorRow_EditableCollapsed() {
+    SnuttPreviewSurface {
         val editableColor = PreviewData.previewEditingThemeCustom.colors[1]
         ThemeColorRow(
             index = 1,
@@ -296,10 +296,10 @@ private fun ThemeColorRowEditableCollapsedPreview() {
     }
 }
 
-@Preview
+@SnuttPreview
 @Composable
-private fun ThemeColorRowReadonlyPreview() {
-    SNUTTTheme {
+private fun ThemeColorRow_Readonly() {
+    SnuttPreviewSurface {
         val readonlyColor = PreviewData.previewEditingThemeBuiltIn.colors[0]
         ThemeColorRow(
             index = 0,

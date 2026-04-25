@@ -29,7 +29,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -50,6 +49,8 @@ import com.wafflestudio.snutt2.ui.components.compose.BorderButton
 import com.wafflestudio.snutt2.ui.components.compose.DividerWithText
 import com.wafflestudio.snutt2.ui.components.compose.SocialLoginButton
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.util.toast
@@ -306,16 +307,18 @@ private fun TutorialScreen(
     }
 }
 
-@Preview(showBackground = true)
+@SnuttPreview
 @Composable
-private fun TutorialScreenPreview() {
-    TutorialScreen(
-        isLoading = false,
-        onNavigateSignIn = {},
-        onNavigateSignUp = {},
-        onNavigateAppReport = {},
-        onFacebookSignIn = {},
-        onGoogleSignIn = {},
-        onKakaoSignIn = {},
-    )
+private fun TutorialScreen_Default() {
+    SnuttPreviewSurface {
+        TutorialScreen(
+            isLoading = false,
+            onNavigateSignIn = {},
+            onNavigateSignUp = {},
+            onNavigateAppReport = {},
+            onFacebookSignIn = {},
+            onGoogleSignIn = {},
+            onKakaoSignIn = {},
+        )
+    }
 }
