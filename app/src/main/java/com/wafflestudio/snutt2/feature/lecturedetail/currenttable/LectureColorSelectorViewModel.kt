@@ -107,69 +107,44 @@ class LectureColorSelectorViewModel @Inject constructor(
         }
     }
 
-    fun selectCustom() {
-        _uiState.update {
-            when (it) {
-                is LectureColorSelectorUiState.BuiltInThemeMode ->
-                    it.copy(selection = LectureColorSelectorUiState.Selection.Custom)
-                is LectureColorSelectorUiState.CustomThemeMode -> it
-            }
-        }
+    fun selectCustom() = updateBuiltIn {
+        it.copy(selection = LectureColorSelectorUiState.Selection.Custom)
     }
 
-    fun openFgPicker() {
-        _uiState.update {
-            when (it) {
-                is LectureColorSelectorUiState.BuiltInThemeMode ->
-                    it.copy(dialogState = LectureColorSelectorUiState.DialogState.ForegroundPicker(it.customFgColor))
-                is LectureColorSelectorUiState.CustomThemeMode -> it
-            }
-        }
+    fun openFgPicker() = updateBuiltIn {
+        it.copy(dialogState = LectureColorSelectorUiState.DialogState.ForegroundPicker(it.customFgColor))
     }
 
-    fun openBgPicker() {
-        _uiState.update {
-            when (it) {
-                is LectureColorSelectorUiState.BuiltInThemeMode ->
-                    it.copy(dialogState = LectureColorSelectorUiState.DialogState.BackgroundPicker(it.customBgColor))
-                is LectureColorSelectorUiState.CustomThemeMode -> it
-            }
-        }
+    fun openBgPicker() = updateBuiltIn {
+        it.copy(dialogState = LectureColorSelectorUiState.DialogState.BackgroundPicker(it.customBgColor))
     }
 
-    fun dismissDialog() {
-        _uiState.update {
-            when (it) {
-                is LectureColorSelectorUiState.BuiltInThemeMode ->
-                    it.copy(dialogState = LectureColorSelectorUiState.DialogState.None)
-                is LectureColorSelectorUiState.CustomThemeMode -> it
-            }
-        }
+    fun dismissDialog() = updateBuiltIn {
+        it.copy(dialogState = LectureColorSelectorUiState.DialogState.None)
     }
 
-    fun pickFgColor(argb: Int) {
-        _uiState.update {
-            when (it) {
-                is LectureColorSelectorUiState.BuiltInThemeMode -> it.copy(
-                    customFgColor = argb,
-                    selection = LectureColorSelectorUiState.Selection.Custom,
-                    dialogState = LectureColorSelectorUiState.DialogState.None,
-                )
-                is LectureColorSelectorUiState.CustomThemeMode -> it
-            }
-        }
+    fun pickFgColor(argb: Int) = updateBuiltIn {
+        it.copy(
+            customFgColor = argb,
+            selection = LectureColorSelectorUiState.Selection.Custom,
+            dialogState = LectureColorSelectorUiState.DialogState.None,
+        )
     }
 
-    fun pickBgColor(argb: Int) {
-        _uiState.update {
-            when (it) {
-                is LectureColorSelectorUiState.BuiltInThemeMode -> it.copy(
-                    customBgColor = argb,
-                    selection = LectureColorSelectorUiState.Selection.Custom,
-                    dialogState = LectureColorSelectorUiState.DialogState.None,
-                )
-                is LectureColorSelectorUiState.CustomThemeMode -> it
-            }
+    fun pickBgColor(argb: Int) = updateBuiltIn {
+        it.copy(
+            customBgColor = argb,
+            selection = LectureColorSelectorUiState.Selection.Custom,
+            dialogState = LectureColorSelectorUiState.DialogState.None,
+        )
+    }
+
+    // BuiltInThemeMode 전제 액션을 위한 helper. 다른 모드일 땐 no-op.
+    private inline fun updateBuiltIn(
+        transform: (LectureColorSelectorUiState.BuiltInThemeMode) -> LectureColorSelectorUiState.BuiltInThemeMode,
+    ) {
+        _uiState.update { current ->
+            if (current is LectureColorSelectorUiState.BuiltInThemeMode) transform(current) else current
         }
     }
 }
