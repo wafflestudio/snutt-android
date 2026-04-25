@@ -30,12 +30,13 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.components.compose.ArrowLeftBold
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
@@ -140,8 +141,10 @@ fun HomeSessionlessLectureHint(
     }
 }
 
+@SnuttPreview
 @Composable
-@Preview(showBackground = true)
-fun HomeSessionlessLectureHintPreview() {
-    HomeSessionlessLectureHint()
+private fun HomeSessionlessLectureHint_Default() {
+    SnuttPreviewSurface {
+        HomeSessionlessLectureHint()
+    }
 }

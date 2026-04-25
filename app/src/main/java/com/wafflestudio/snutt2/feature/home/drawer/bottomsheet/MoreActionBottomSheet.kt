@@ -25,6 +25,8 @@ import com.wafflestudio.snutt2.ui.components.compose.ShareIcon
 import com.wafflestudio.snutt2.ui.components.compose.TrashIcon
 import com.wafflestudio.snutt2.ui.components.compose.WriteIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
@@ -129,5 +131,43 @@ private fun MoreActionItem(
                 ),
             )
         }
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun MoreActionSheet_PrimaryTable() {
+    SnuttPreviewSurface {
+        MoreActionSheet(
+            tableSummary = TableSummary.Default.copy(
+                title = "2025-1학기",
+                isPrimary = true,
+            ),
+            onClickChangeTableName = {},
+            onClickSetPrimary = {},
+            onClickUnsetPrimary = {},
+            onClickShare = {},
+            onClickSetTheme = {},
+            onClickDeleteTable = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun MoreActionSheet_NonPrimaryTable() {
+    SnuttPreviewSurface {
+        MoreActionSheet(
+            tableSummary = TableSummary.Default.copy(
+                title = "백업 시간표",
+                isPrimary = false,
+            ),
+            onClickChangeTableName = {},
+            onClickSetPrimary = {},
+            onClickUnsetPrimary = {},
+            onClickShare = {},
+            onClickSetTheme = {},
+            onClickDeleteTable = {},
+        )
     }
 }

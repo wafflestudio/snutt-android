@@ -28,7 +28,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.domain.model.BuiltInTheme
@@ -38,6 +37,8 @@ import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import com.wafflestudio.snutt2.feature.home.drawer.VacancyBanner
 import com.wafflestudio.snutt2.feature.tablelectures.TableLectureItem
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 
@@ -159,24 +160,24 @@ fun ScrollableTimetableContent(
     }
 }
 
-@Preview(showBackground = true)
+@SnuttPreview
 @Composable
-fun ScrollableTimetableContentPreview() {
-    val lectures = builtInOnlyLectures
+private fun ScrollableTimetableContent_Default() {
+    SnuttPreviewSurface {
+        ScrollableTimetableContent(
+            modifier = Modifier.fillMaxSize(),
+            lectures = builtInOnlyLectures,
+            vacancyNotificationBannerEnabled = true,
+            isSessionlessLectureHintVisible = true,
+            onVisitSessionlessLectureList = {},
+            onClickVacancyBanner = {},
+            onClickLectureCell = {},
 
-    ScrollableTimetableContent(
-        modifier = Modifier.fillMaxSize(),
-        lectures = lectures,
-        vacancyNotificationBannerEnabled = true,
-        isSessionlessLectureHintVisible = true,
-        onVisitSessionlessLectureList = {},
-        onClickVacancyBanner = {},
-        onClickLectureCell = {},
-
-        fittedTrimParam = TableTrimParam.Default,
-        theme = BuiltInTheme.SNUTT,
-        previewTheme = null,
-        compactMode = false,
-        tableLectureCustomOptions = TableLectureCustom.Default,
-    )
+            fittedTrimParam = TableTrimParam.Default,
+            theme = BuiltInTheme.SNUTT,
+            previewTheme = null,
+            compactMode = false,
+            tableLectureCustomOptions = TableLectureCustom.Default,
+        )
+    }
 }

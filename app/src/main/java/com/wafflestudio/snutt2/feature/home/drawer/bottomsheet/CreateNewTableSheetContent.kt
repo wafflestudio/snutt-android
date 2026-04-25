@@ -24,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.CourseBook
@@ -32,6 +31,8 @@ import com.wafflestudio.snutt2.feature.home.drawer.HomeDrawerBottomSheetType
 import com.wafflestudio.snutt2.ui.components.compose.EditText
 import com.wafflestudio.snutt2.ui.components.compose.Picker
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.util.formatter.toFormattedString
@@ -133,37 +134,41 @@ fun CreateTableBottomSheet(
 }
 
 @OptIn(ExperimentalMaterialApi::class)
-@Preview(showBackground = true)
+@SnuttPreview
 @Composable
-private fun CreateTableBottomSheetSelectCourseBookPreview() {
-    val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Expanded)
-    val sampleCourseBooks = listOf(
-        CourseBook(semester = 1, year = 2025),
-        CourseBook(semester = 2, year = 2024),
-        CourseBook(semester = 1, year = 2024),
-    )
-    CreateTableBottomSheet(
-        sheetState = sheetState,
-        sheetType = HomeDrawerBottomSheetType.CreateNewTable.SelectCourseBook(
-            initialCourseBook = sampleCourseBooks[0],
-            allCourseBook = sampleCourseBooks,
-        ),
-        onDismiss = {},
-        onSubmit = { _, _ -> },
-    )
+private fun CreateTableBottomSheet_SelectCourseBook() {
+    SnuttPreviewSurface {
+        val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Expanded)
+        val sampleCourseBooks = listOf(
+            CourseBook(semester = 1, year = 2025),
+            CourseBook(semester = 2, year = 2024),
+            CourseBook(semester = 1, year = 2024),
+        )
+        CreateTableBottomSheet(
+            sheetState = sheetState,
+            sheetType = HomeDrawerBottomSheetType.CreateNewTable.SelectCourseBook(
+                initialCourseBook = sampleCourseBooks[0],
+                allCourseBook = sampleCourseBooks,
+            ),
+            onDismiss = {},
+            onSubmit = { _, _ -> },
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
-@Preview(showBackground = true)
+@SnuttPreview
 @Composable
-private fun CreateTableBottomSheetSpecificCourseBookPreview() {
-    val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Expanded)
-    CreateTableBottomSheet(
-        sheetState = sheetState,
-        sheetType = HomeDrawerBottomSheetType.CreateNewTable.SpecificCourseBook(
-            courseBook = CourseBook(semester = 1, year = 2025),
-        ),
-        onDismiss = {},
-        onSubmit = { _, _ -> },
-    )
+private fun CreateTableBottomSheet_SpecificCourseBook() {
+    SnuttPreviewSurface {
+        val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Expanded)
+        CreateTableBottomSheet(
+            sheetState = sheetState,
+            sheetType = HomeDrawerBottomSheetType.CreateNewTable.SpecificCourseBook(
+                courseBook = CourseBook(semester = 1, year = 2025),
+            ),
+            onDismiss = {},
+            onSubmit = { _, _ -> },
+        )
+    }
 }

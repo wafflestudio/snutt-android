@@ -22,6 +22,8 @@ import com.wafflestudio.snutt2.ui.components.compose.DuplicateIcon
 import com.wafflestudio.snutt2.ui.components.compose.MoreIcon
 import com.wafflestudio.snutt2.ui.components.compose.VividCheckedIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
@@ -95,6 +97,42 @@ fun CourseBookDrawerItem(
                     onClickMoreIcon(tableSummary)
                 },
             colorFilter = ColorFilter.tint(SNUTTColors.Black500),
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun CourseBookDrawerItem_Selected() {
+    SnuttPreviewSurface {
+        CourseBookDrawerItem(
+            tableSummary = TableSummary.Default.copy(
+                title = "2025-1학기",
+                totalCredit = 18,
+                isPrimary = true,
+            ),
+            isSelectedTable = true,
+            onSelectTable = {},
+            onClickCopyIcon = {},
+            onClickMoreIcon = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun CourseBookDrawerItem_Unselected() {
+    SnuttPreviewSurface {
+        CourseBookDrawerItem(
+            tableSummary = TableSummary.Default.copy(
+                title = "기본 시간표",
+                totalCredit = 12,
+                isPrimary = false,
+            ),
+            isSelectedTable = false,
+            onSelectTable = {},
+            onClickCopyIcon = {},
+            onClickMoreIcon = {},
         )
     }
 }

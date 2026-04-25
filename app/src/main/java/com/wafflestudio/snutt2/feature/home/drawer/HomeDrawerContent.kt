@@ -21,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
@@ -33,6 +32,8 @@ import com.wafflestudio.snutt2.ui.components.compose.ExitIcon
 import com.wafflestudio.snutt2.ui.components.compose.LogoIcon
 import com.wafflestudio.snutt2.ui.components.compose.RedDot
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.util.formatter.toFormattedString
@@ -181,42 +182,44 @@ private fun CreateTableItem(
     }
 }
 
-@Preview
+@SnuttPreview
 @Composable
-private fun HomeDrawerScreenPreview() {
-    HomeDrawerContent(
-        modifier = Modifier,
-        uiState = HomeDrawerUiState(
-            courseBookDrawerItemList = listOf(
-                CoursebookDrawerItem(
-                    courseBook = CourseBook(1, 2026),
-                    showNewCoursebookDot = false,
-                    tableList = listOf(TableSummary.Default, TableSummary.Default),
-                ).toDataWithState(true),
-                CoursebookDrawerItem(
-                    courseBook = CourseBook(1, 2025),
-                    showNewCoursebookDot = false,
-                    tableList = emptyList(),
-                ).toDataWithState(false),
-                CoursebookDrawerItem(
-                    courseBook = CourseBook(1, 2024),
-                    showNewCoursebookDot = false,
-                    tableList = emptyList(),
-                ).toDataWithState(false),
+private fun HomeDrawerContent_Default() {
+    SnuttPreviewSurface {
+        HomeDrawerContent(
+            modifier = Modifier,
+            uiState = HomeDrawerUiState(
+                courseBookDrawerItemList = listOf(
+                    CoursebookDrawerItem(
+                        courseBook = CourseBook(1, 2026),
+                        showNewCoursebookDot = false,
+                        tableList = listOf(TableSummary.Default, TableSummary.Default),
+                    ).toDataWithState(true),
+                    CoursebookDrawerItem(
+                        courseBook = CourseBook(1, 2025),
+                        showNewCoursebookDot = false,
+                        tableList = emptyList(),
+                    ).toDataWithState(false),
+                    CoursebookDrawerItem(
+                        courseBook = CourseBook(1, 2024),
+                        showNewCoursebookDot = false,
+                        tableList = emptyList(),
+                    ).toDataWithState(false),
+                ),
+                TableSummary.Default,
+                homeDrawerBottomSheetType = HomeDrawerBottomSheetType.Empty,
+                dialogState = HomeDrawerUiState.DialogState.None,
             ),
-            TableSummary.Default,
-            homeDrawerBottomSheetType = HomeDrawerBottomSheetType.Empty,
-            dialogState = HomeDrawerUiState.DialogState.None,
-        ),
-        onToggleExpand = {},
-        onClickExitIcon = {},
-        onClickCreateNewTable = {},
-        onClickCreateNewTableOfCourseBook = {},
-        onSelectTable = {},
-        onClickCopyIcon = {},
-        onClickMoreIcon = {},
-        onDismissDialog = {},
-        onConfirmChangeTableTitle = { _, _ -> },
-        onConfirmDeleteTable = {},
-    )
+            onToggleExpand = {},
+            onClickExitIcon = {},
+            onClickCreateNewTable = {},
+            onClickCreateNewTableOfCourseBook = {},
+            onSelectTable = {},
+            onClickCopyIcon = {},
+            onClickMoreIcon = {},
+            onDismissDialog = {},
+            onConfirmChangeTableTitle = { _, _ -> },
+            onConfirmDeleteTable = {},
+        )
+    }
 }

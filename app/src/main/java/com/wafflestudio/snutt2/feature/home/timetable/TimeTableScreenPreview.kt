@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.feature.home.timetable
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.Table
 import com.wafflestudio.snutt2.domain.model.TableLectureCustom
@@ -9,6 +8,8 @@ import com.wafflestudio.snutt2.domain.model.TableSummary
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import com.wafflestudio.snutt2.domain.model.ThemeReference
 import com.wafflestudio.snutt2.domain.model.getFittingTrimParam
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 
 private val sampleTable = Table(
     summary = TableSummary.Default,
@@ -30,44 +31,48 @@ private val baseLoadedState = TimeTableUiState.Loaded(
     isSessionlessLectureHintVisible = true,
 )
 
-@Preview(showBackground = true, widthDp = 360, heightDp = 700, name = "Default")
+@SnuttPreview
 @Composable
-private fun TimeTableScreenDefaultPreview() {
-    TimeTableScreen(
-        uiState = baseLoadedState,
-        onClickDrawerIcon = {},
-        onClickTableTitle = {},
-        onClickTableLecturesListIcon = {},
-        onClickVacancyBanner = {},
-        onClickLectureCell = {},
-        onDismissDialog = {},
-        onConfirmChangeTableTitle = { _, _ -> },
-        onClickBookmarkIcon = {},
-        onClickAddBySearch = {},
-        onClickAddManually = {},
-        onVisitSessionlessLectureList = {},
-    )
+private fun TimeTableScreen_Default() {
+    SnuttPreviewSurface {
+        TimeTableScreen(
+            uiState = baseLoadedState,
+            onClickDrawerIcon = {},
+            onClickTableTitle = {},
+            onClickTableLecturesListIcon = {},
+            onClickVacancyBanner = {},
+            onClickLectureCell = {},
+            onDismissDialog = {},
+            onConfirmChangeTableTitle = { _, _ -> },
+            onClickBookmarkIcon = {},
+            onClickAddBySearch = {},
+            onClickAddManually = {},
+            onVisitSessionlessLectureList = {},
+        )
+    }
 }
 
-@Preview(showBackground = true, widthDp = 360, heightDp = 700, name = "All Badges + Banner")
+@SnuttPreview
 @Composable
-private fun TimeTableScreenAllBadgesPreview() {
-    TimeTableScreen(
-        uiState = baseLoadedState.copy(
-            newSemesterExist = true,
-            uncheckedNotificationExist = true,
-            vacancyNotificationBannerEnabled = true,
-        ),
-        onClickDrawerIcon = {},
-        onClickTableTitle = {},
-        onClickTableLecturesListIcon = {},
-        onClickVacancyBanner = {},
-        onClickLectureCell = {},
-        onDismissDialog = {},
-        onConfirmChangeTableTitle = { _, _ -> },
-        onClickBookmarkIcon = {},
-        onClickAddBySearch = {},
-        onClickAddManually = {},
-        onVisitSessionlessLectureList = {},
-    )
+private fun TimeTableScreen_AllBadgesAndBanner() {
+    SnuttPreviewSurface {
+        TimeTableScreen(
+            uiState = baseLoadedState.copy(
+                newSemesterExist = true,
+                uncheckedNotificationExist = true,
+                vacancyNotificationBannerEnabled = true,
+            ),
+            onClickDrawerIcon = {},
+            onClickTableTitle = {},
+            onClickTableLecturesListIcon = {},
+            onClickVacancyBanner = {},
+            onClickLectureCell = {},
+            onDismissDialog = {},
+            onConfirmChangeTableTitle = { _, _ -> },
+            onClickBookmarkIcon = {},
+            onClickAddBySearch = {},
+            onClickAddManually = {},
+            onVisitSessionlessLectureList = {},
+        )
+    }
 }

@@ -17,6 +17,8 @@ import com.wafflestudio.snutt2.ui.components.compose.IconWithAlertDot
 import com.wafflestudio.snutt2.ui.components.compose.ReviewIcon
 import com.wafflestudio.snutt2.ui.components.compose.SearchIcon
 import com.wafflestudio.snutt2.ui.components.compose.TimetableIcon
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 
 @Composable
@@ -116,5 +118,29 @@ internal fun BottomNavigation(
                 )
             }
         }
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun BottomNavigation_TimetableSelected() {
+    SnuttPreviewSurface {
+        BottomNavigation(
+            pageState = HomeItem.Timetable,
+            uncheckedNotificationExist = false,
+            onUpdatePageState = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun BottomNavigation_SettingsSelectedWithDot() {
+    SnuttPreviewSurface {
+        BottomNavigation(
+            pageState = HomeItem.Settings,
+            uncheckedNotificationExist = true,
+            onUpdatePageState = {},
+        )
     }
 }

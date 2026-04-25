@@ -7,9 +7,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.domain.model.BuiltInTheme
+import com.wafflestudio.snutt2.domain.model.Table
+import com.wafflestudio.snutt2.domain.model.TableLectureCustom
 import com.wafflestudio.snutt2.domain.model.TableSummary
+import com.wafflestudio.snutt2.domain.model.TableTrimParam
+import com.wafflestudio.snutt2.domain.model.ThemeReference
 import com.wafflestudio.snutt2.ui.components.compose.CustomDialog
 import com.wafflestudio.snutt2.ui.components.compose.EditText
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 
 @Composable
 fun TimeTableDialogs(
@@ -36,5 +43,35 @@ fun TimeTableDialogs(
                 EditText(value = newTitle, onValueChange = { newTitle = it })
             }
         }
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun TimeTableDialogs_ChangeTableName() {
+    SnuttPreviewSurface {
+        TimeTableDialogs(
+            uiState = TimeTableUiState.Loaded(
+                table = Table(
+                    summary = TableSummary.Default,
+                    lectures = emptyList(),
+                    themeRef = ThemeReference.BuiltIn(0),
+                ),
+                theme = BuiltInTheme.SNUTT,
+                previewTheme = null,
+                tableTrimParam = TableTrimParam.Default,
+                isCompactMode = false,
+                tableLectureCustomOptions = TableLectureCustom.Default,
+                newSemesterExist = false,
+                uncheckedNotificationExist = false,
+                vacancyNotificationBannerEnabled = false,
+                isSessionlessLectureHintVisible = false,
+                dialogState = TimeTableUiState.DialogState.ChangeTableName(
+                    tableSummary = TableSummary.Default,
+                ),
+            ),
+            onDismiss = {},
+            onConfirmChangeTableTitle = { _, _ -> },
+        )
     }
 }

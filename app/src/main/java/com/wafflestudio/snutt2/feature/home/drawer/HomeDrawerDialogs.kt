@@ -11,6 +11,8 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.TableSummary
 import com.wafflestudio.snutt2.ui.components.compose.CustomDialog
 import com.wafflestudio.snutt2.ui.components.compose.EditText
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
 /**
@@ -60,5 +62,39 @@ fun HomeDrawerDialogs(
                 )
             }
         }
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun HomeDrawerDialogs_ChangeTableName() {
+    SnuttPreviewSurface {
+        HomeDrawerDialogs(
+            uiState = HomeDrawerUiState(
+                dialogState = HomeDrawerUiState.DialogState.ChangeTableName(
+                    tableSummary = TableSummary.Default,
+                ),
+            ),
+            onDismiss = {},
+            onConfirmChangeTableTitle = { _, _ -> },
+            onConfirmDeleteTable = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun HomeDrawerDialogs_DeleteTable() {
+    SnuttPreviewSurface {
+        HomeDrawerDialogs(
+            uiState = HomeDrawerUiState(
+                dialogState = HomeDrawerUiState.DialogState.DeleteTable(
+                    tableSummary = TableSummary.Default,
+                ),
+            ),
+            onDismiss = {},
+            onConfirmChangeTableTitle = { _, _ -> },
+            onConfirmDeleteTable = {},
+        )
     }
 }

@@ -27,12 +27,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.TableTheme
+import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.feature.home.drawer.HomeDrawerBottomSheetType
 import com.wafflestudio.snutt2.feature.themeconfig.AddThemeItem
 import com.wafflestudio.snutt2.ui.components.compose.ThemeIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.components.compose.displayName
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
@@ -152,6 +156,53 @@ private fun ThemeItem(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             style = SNUTTTypography.body2,
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun SelectThemeSheetContent_BuiltInOnly() {
+    SnuttPreviewSurface {
+        SelectThemeSheetContent(
+            sheetType = HomeDrawerBottomSheetType.SelectTheme(
+                customThemes = emptyList(),
+                builtInThemes = listOf(
+                    BuiltInTheme.SNUTT,
+                    BuiltInTheme.MODERN,
+                    BuiltInTheme.AUTUMN,
+                    BuiltInTheme.CHERRY,
+                ),
+                selectedPreviewTheme = BuiltInTheme.SNUTT,
+            ),
+            onClickPreviewTheme = {},
+            onApply = {},
+            onDismiss = {},
+            onClickAddTheme = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun SelectThemeSheetContent_CustomAndBuiltIn() {
+    SnuttPreviewSurface {
+        SelectThemeSheetContent(
+            sheetType = HomeDrawerBottomSheetType.SelectTheme(
+                customThemes = listOf(
+                    PreviewData.previewCustomTheme1,
+                    PreviewData.previewCustomTheme2,
+                ),
+                builtInThemes = listOf(
+                    BuiltInTheme.SNUTT,
+                    BuiltInTheme.MODERN,
+                ),
+                selectedPreviewTheme = PreviewData.previewCustomTheme1,
+            ),
+            onClickPreviewTheme = {},
+            onApply = {},
+            onDismiss = {},
+            onClickAddTheme = {},
         )
     }
 }

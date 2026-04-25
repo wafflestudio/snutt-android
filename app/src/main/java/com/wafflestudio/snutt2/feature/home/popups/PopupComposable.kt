@@ -21,7 +21,6 @@ import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.zIndex
@@ -29,6 +28,8 @@ import coil.compose.AsyncImage
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.logging.compose.PopupLoggingEffect
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 
 @Composable
@@ -107,8 +108,10 @@ fun Popup(
     }
 }
 
-@Preview(showBackground = true)
+@SnuttPreview
 @Composable
-fun PopupPreview() {
-    Popup(imageUri = "", {}, {}, {})
+private fun Popup_Default() {
+    SnuttPreviewSurface {
+        Popup(imageUri = "", {}, {}, {})
+    }
 }
