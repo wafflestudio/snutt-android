@@ -60,7 +60,8 @@ fun ScrollableTimetableContent(
     val isSessionlessLectureExists = sessionlessLectures.isNotEmpty()
 
     val scrollState = rememberLazyListState()
-    var scrollUnlocked by remember { mutableStateOf(false) }
+    // scrollState가 saveable이라 화면 복귀 시 위치는 복원되므로, lock 상태도 visited와 동기화한다.
+    var scrollUnlocked by remember { mutableStateOf(!isSessionlessLectureHintVisible) }
 
     val isHintVisible = isSessionlessLectureHintVisible && !scrollUnlocked
 
