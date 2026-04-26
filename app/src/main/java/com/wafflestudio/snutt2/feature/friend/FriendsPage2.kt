@@ -52,7 +52,6 @@ import com.wafflestudio.snutt2.feature.home.timetable.TimeTable
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.components.compose.BottomSheetDismissEffect
-import com.wafflestudio.snutt2.ui.components.compose.DrawerIcon
 import com.wafflestudio.snutt2.ui.components.compose.IconWithAlertDot
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
@@ -362,10 +361,13 @@ private fun FriendsLoadedScreen(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         IconWithAlertDot(uiState.requestedFriends.isNotEmpty()) { centerAlignedModifier ->
-                            DrawerIcon(
+                            SnuttIcon(
+                                R.drawable.ic_drawer,
                                 modifier = centerAlignedModifier
                                     .size(30.dp)
-                                    .clicks { onOpenDrawer() },
+                                    .clicks { onOpenDrawer() }.size(30.dp),
+                                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                                contentDescription = stringResource(R.string.home_timetable_drawer),
                             )
                         }
                         Row(
@@ -524,9 +526,11 @@ private fun FriendsLoadedScreen(
                                     style = SNUTTTypography.subtitle2.copy(fontSize = 12.sp),
                                     color = SNUTTColors.TextMed,
                                 )
-                                DrawerIcon(
-                                    modifier = Modifier.size(12.5.dp),
+                                SnuttIcon(
+                                    R.drawable.ic_drawer,
+                                    modifier = Modifier.size(12.5.dp).size(30.dp),
                                     colorFilter = ColorFilter.tint(SNUTTColors.TextMed),
+                                    contentDescription = stringResource(R.string.home_timetable_drawer),
                                 )
                                 Text(
                                     text = stringResource(R.string.friend_empty_guide_sidebar2),

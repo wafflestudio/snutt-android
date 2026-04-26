@@ -31,7 +31,6 @@ import androidx.compose.ui.window.Dialog
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.Friend
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
-import com.wafflestudio.snutt2.ui.components.compose.ArrowBackIcon
 import com.wafflestudio.snutt2.ui.components.compose.CustomDialog
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
@@ -189,7 +188,8 @@ private fun GuideDialog(
                         }
 
                         if (pagerState.currentPage > 0) {
-                            ArrowBackIcon(
+                            SnuttIcon(
+                                R.drawable.ic_arrow_back,
                                 modifier = Modifier
                                     .align(Alignment.CenterStart)
                                     .size(30.dp)
@@ -197,7 +197,7 @@ private fun GuideDialog(
                                         scope.launch {
                                             pagerState.animateScrollToPage(pagerState.currentPage - 1)
                                         }
-                                    },
+                                    }.size(30.dp),
                                 colorFilter = ColorFilter.tint(SNUTTColors.VacancyGray),
                             )
                         }

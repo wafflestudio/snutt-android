@@ -65,7 +65,6 @@ import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
-import com.wafflestudio.snutt2.ui.components.compose.ArrowBackIcon
 import com.wafflestudio.snutt2.ui.components.compose.CustomDialog
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
@@ -275,10 +274,11 @@ fun VacancyEmpty(
                     )
                 },
                 navigationIcon = {
-                    ArrowBackIcon(
+                    SnuttIcon(
+                        R.drawable.ic_arrow_back,
                         modifier = Modifier
                             .size(30.dp)
-                            .clicks { onClickBack() },
+                            .clicks { onClickBack() }.size(30.dp),
                         colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                     )
                 },
@@ -402,10 +402,11 @@ fun VacancySuccess(
                     )
                 },
                 navigationIcon = {
-                    ArrowBackIcon(
+                    SnuttIcon(
+                        R.drawable.ic_arrow_back,
                         modifier = Modifier
                             .size(30.dp)
-                            .clicks { onClickBack() },
+                            .clicks { onClickBack() }.size(30.dp),
                         colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                     )
                 },
@@ -594,7 +595,8 @@ fun VacancyIntroDialog(
                         }
 
                         if (pagerState.currentPage > 0) {
-                            ArrowBackIcon(
+                            SnuttIcon(
+                                R.drawable.ic_arrow_back,
                                 modifier = Modifier
                                     .align(Alignment.CenterStart)
                                     .size(30.dp)
@@ -602,7 +604,7 @@ fun VacancyIntroDialog(
                                         scope.launch {
                                             pagerState.animateScrollToPage(pagerState.currentPage - 1)
                                         }
-                                    },
+                                    }.size(30.dp),
                                 colorFilter = ColorFilter.tint(SNUTTColors.VacancyGray),
                             )
                         }

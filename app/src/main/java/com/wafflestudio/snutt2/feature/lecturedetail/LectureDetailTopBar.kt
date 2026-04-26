@@ -13,9 +13,9 @@ import com.wafflestudio.snutt2.domain.model.Lecture
 import com.wafflestudio.snutt2.domain.model.LectureSyllabusInfo
 import com.wafflestudio.snutt2.domain.model.LocalLecture
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
-import com.wafflestudio.snutt2.ui.components.compose.ArrowBackIcon
 import com.wafflestudio.snutt2.ui.components.compose.BookmarkIcon
 import com.wafflestudio.snutt2.ui.components.compose.RingingAlarmIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
@@ -45,10 +45,11 @@ internal fun LectureDetailTopBar(
             )
         },
         navigationIcon = {
-            ArrowBackIcon(
+            SnuttIcon(
+                R.drawable.ic_arrow_back,
                 modifier = Modifier
                     .size(30.dp)
-                    .clicks { onBackPressed() },
+                    .clicks { onBackPressed() }.size(30.dp),
                 colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
         },

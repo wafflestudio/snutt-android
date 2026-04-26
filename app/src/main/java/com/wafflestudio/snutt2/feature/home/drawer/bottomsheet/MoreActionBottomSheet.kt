@@ -18,7 +18,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.TableSummary
-import com.wafflestudio.snutt2.ui.components.compose.ShareIcon
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
@@ -79,7 +78,7 @@ fun MoreActionSheet(
             }
         }
         MoreActionItem(
-            icon = { ShareIcon(modifier = Modifier.size(30.dp)) },
+            icon = { SnuttIcon(R.drawable.ic_share, modifier = Modifier.size(30.dp).size(30.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900)) },
             text = stringResource(R.string.home_drawer_table_share),
         ) {
             onClickShare(tableSummary)

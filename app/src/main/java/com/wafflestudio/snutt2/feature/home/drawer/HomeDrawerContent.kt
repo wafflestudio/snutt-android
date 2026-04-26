@@ -29,7 +29,6 @@ import com.wafflestudio.snutt2.domain.model.CourseBook
 import com.wafflestudio.snutt2.domain.model.TableSummary
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.lib.toDataWithState
-import com.wafflestudio.snutt2.ui.components.compose.ExitIcon
 import com.wafflestudio.snutt2.ui.components.compose.RedDot
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
@@ -83,10 +82,12 @@ fun HomeDrawerContent(
                 style = SNUTTTypography.h2,
             )
             Spacer(modifier = Modifier.weight(1f))
-            ExitIcon(
+            SnuttIcon(
+                R.drawable.ic_exit,
                 modifier = Modifier.clicks {
                     onClickExitIcon()
-                },
+                }.size(30.dp),
+                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
         }
         Divider(

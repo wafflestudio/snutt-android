@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
@@ -25,79 +24,6 @@ fun SnuttIcon(
         modifier = modifier,
         painter = painterResource(id = id),
         contentDescription = contentDescription,
-        colorFilter = colorFilter,
-    )
-}
-
-@Composable
-fun DrawerIcon(
-    modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
-) {
-    SnuttIcon(
-        id = R.drawable.ic_drawer,
-        modifier = modifier.size(30.dp),
-        colorFilter = colorFilter,
-        contentDescription = stringResource(R.string.home_timetable_drawer),
-    )
-}
-
-@Composable
-fun NotificationIcon(
-    modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = null,
-) {
-    SnuttIcon(
-        id = R.drawable.ic_alarm_default,
-        modifier = modifier.size(30.dp),
-        colorFilter = colorFilter,
-    )
-}
-
-@Composable
-fun ShareIcon(
-    modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
-) {
-    SnuttIcon(
-        id = R.drawable.ic_share,
-        modifier = modifier.size(30.dp),
-        colorFilter = colorFilter,
-    )
-}
-
-@Composable
-fun ArrowBackIcon(
-    modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = null,
-) {
-    SnuttIcon(
-        id = R.drawable.ic_arrow_back,
-        modifier = modifier.size(30.dp),
-        colorFilter = colorFilter,
-    )
-}
-
-@Composable
-fun FilterIcon(
-    modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
-) {
-    SnuttIcon(
-        id = R.drawable.ic_filter,
-        modifier = modifier.size(30.dp),
-        colorFilter = colorFilter,
-    )
-}
-
-@Composable
-fun ExitIcon(
-    modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
-) {
-    SnuttIcon(
-        id = R.drawable.ic_exit,
-        modifier = modifier.size(30.dp),
         colorFilter = colorFilter,
     )
 }
@@ -189,42 +115,6 @@ fun RingingAlarmIcon(
     SnuttIcon(
         id = if (marked) R.drawable.ic_ringing_alarm_selected else R.drawable.ic_ringing_alarm_unselected,
         modifier = modifier,
-        colorFilter = colorFilter,
-    )
-}
-
-@Composable
-fun NotificationVacancyIcon(
-    modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
-) {
-    SnuttIcon(
-        id = R.drawable.ic_ringing_alarm_notification,
-        modifier = modifier.size(30.dp),
-        colorFilter = colorFilter,
-    )
-}
-
-@Composable
-fun NotificationFriendIcon(
-    modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = null,
-) {
-    SnuttIcon(
-        id = R.drawable.ic_ringing_alarm_notification,
-        modifier = modifier.size(30.dp),
-        colorFilter = colorFilter,
-    )
-}
-
-@Composable
-fun NotificationTrashIcon(
-    modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = null,
-) {
-    SnuttIcon(
-        id = R.drawable.ic_trash_new,
-        modifier = modifier.size(30.dp),
         colorFilter = colorFilter,
     )
 }

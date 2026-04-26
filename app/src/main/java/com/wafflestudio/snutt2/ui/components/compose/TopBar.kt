@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -18,8 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
@@ -43,8 +46,9 @@ fun SimpleTopBar(
             )
         },
         navigationIcon = {
-            ArrowBackIcon(
-                modifier = Modifier.clicks(1000L) { onClickNavigateBack() },
+            SnuttIcon(
+                R.drawable.ic_arrow_back,
+                modifier = Modifier.clicks(1000L) { onClickNavigateBack() }.size(30.dp),
                 colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
         },
@@ -155,11 +159,15 @@ private fun TopBar_TitleWithActions() {
                 )
             },
             navigationIcon = {
-                DrawerIcon()
+                SnuttIcon(R.drawable.ic_drawer, modifier = Modifier.size(30.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900), contentDescription = stringResource(R.string.home_timetable_drawer))
             },
             actions = {
-                ShareIcon(Modifier.padding(end = 8.dp))
-                NotificationIcon(Modifier.padding(end = 12.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
+                SnuttIcon(R.drawable.ic_share, Modifier.padding(end = 8.dp).size(30.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
+                SnuttIcon(
+                    R.drawable.ic_alarm_default,
+                    modifier = Modifier.padding(end = 12.dp).size(30.dp),
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                )
             },
         )
     }
@@ -185,10 +193,10 @@ private fun CenteredTopBar_TitleWithActions() {
                 )
             },
             navigationIcon = {
-                ArrowBackIcon(colorFilter = ColorFilter.tint(SNUTTColors.Black900))
+                SnuttIcon(R.drawable.ic_arrow_back, colorFilter = ColorFilter.tint(SNUTTColors.Black900), modifier = Modifier.size(30.dp))
             },
             actions = {
-                FilterIcon()
+                SnuttIcon(R.drawable.ic_filter, modifier = Modifier.size(30.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
             },
         )
     }

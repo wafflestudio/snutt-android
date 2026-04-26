@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,6 +17,7 @@ import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
@@ -51,8 +53,10 @@ fun IOSStyleTopBar(
             modifier = Modifier.clicks(1000L) { onBack() },
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            ArrowBackIcon(
+            SnuttIcon(
+                R.drawable.ic_arrow_back,
                 colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                modifier = Modifier.size(30.dp),
             )
             AnimatedContent(backButtonText, label = "") {
                 Text(

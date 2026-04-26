@@ -42,9 +42,8 @@ import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.feature.home.timetable.TimeTable
 import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.ui.components.compose.EditText
-import com.wafflestudio.snutt2.ui.components.compose.ExitIcon
-import com.wafflestudio.snutt2.ui.components.compose.FilterIcon
 import com.wafflestudio.snutt2.ui.components.compose.SearchIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.clearFocusOnKeyboardDismiss
 import com.wafflestudio.snutt2.ui.components.compose.clicks
@@ -191,9 +190,9 @@ private fun RowScope.SearchTopBarContent(
             clearFocusFlag = !searchEditTextFocused,
         )
         if (searchEditTextFocused) {
-            ExitIcon(modifier = Modifier.clicks { onClearEditText() })
+            SnuttIcon(R.drawable.ic_exit, modifier = Modifier.clicks { onClearEditText() }.size(30.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
         } else {
-            FilterIcon(modifier = Modifier.clicks { onFilter() })
+            SnuttIcon(R.drawable.ic_filter, modifier = Modifier.clicks { onFilter() }.size(30.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
         }
     }
 }

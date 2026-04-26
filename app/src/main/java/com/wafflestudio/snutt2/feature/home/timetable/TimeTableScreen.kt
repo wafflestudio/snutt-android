@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -19,8 +20,8 @@ import com.wafflestudio.snutt2.domain.model.getCreditSumFromLectureList
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.components.compose.BookmarkIcon
-import com.wafflestudio.snutt2.ui.components.compose.DrawerIcon
 import com.wafflestudio.snutt2.ui.components.compose.IconWithAlertDot
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
@@ -82,10 +83,13 @@ fun TimeTableScreen(
                     },
                     navigationIcon = {
                         IconWithAlertDot(uiState.newSemesterExist) { centerAlignedModifier ->
-                            DrawerIcon(
+                            SnuttIcon(
+                                R.drawable.ic_drawer,
                                 modifier = centerAlignedModifier
                                     .size(30.dp)
-                                    .clicks { onClickDrawerIcon() },
+                                    .clicks { onClickDrawerIcon() }.size(30.dp),
+                                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                                contentDescription = stringResource(R.string.home_timetable_drawer),
                             )
                         }
                     },

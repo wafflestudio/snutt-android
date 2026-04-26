@@ -40,7 +40,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.ui.components.compose.ArrowBackIcon
 import com.wafflestudio.snutt2.ui.components.compose.EditText
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
@@ -109,10 +108,11 @@ private fun ChangeNicknameScreen(
                 )
             },
             navigationIcon = {
-                ArrowBackIcon(
+                SnuttIcon(
+                    R.drawable.ic_arrow_back,
                     modifier = Modifier
                         .size(30.dp)
-                        .clicks { onNavigateBack() },
+                        .clicks { onNavigateBack() }.size(30.dp),
                     colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
             },

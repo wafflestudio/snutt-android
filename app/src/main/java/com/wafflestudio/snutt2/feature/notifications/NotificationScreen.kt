@@ -32,9 +32,6 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.Notification
 import com.wafflestudio.snutt2.domain.model.NotificationType
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
-import com.wafflestudio.snutt2.ui.components.compose.NotificationFriendIcon
-import com.wafflestudio.snutt2.ui.components.compose.NotificationTrashIcon
-import com.wafflestudio.snutt2.ui.components.compose.NotificationVacancyIcon
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
@@ -204,18 +201,21 @@ fun NotificationIcon(type: NotificationType) {
             colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
         )
 
-        NotificationType.Trash -> NotificationTrashIcon(
-            modifier = Modifier.size(30.dp),
+        NotificationType.Trash -> SnuttIcon(
+            R.drawable.ic_trash_new,
+            modifier = Modifier.size(30.dp).size(30.dp),
             colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
         )
 
-        NotificationType.Vacancy -> NotificationVacancyIcon(
-            modifier = Modifier.size(30.dp),
+        NotificationType.Vacancy -> SnuttIcon(
+            R.drawable.ic_ringing_alarm_notification,
+            modifier = Modifier.size(30.dp).size(30.dp),
             colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
         )
 
-        NotificationType.Friend -> NotificationFriendIcon(
-            modifier = Modifier.size(30.dp),
+        NotificationType.Friend -> SnuttIcon(
+            R.drawable.ic_ringing_alarm_notification,
+            modifier = Modifier.size(30.dp).size(30.dp),
             colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
         )
 

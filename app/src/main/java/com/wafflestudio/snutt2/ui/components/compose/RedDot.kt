@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
@@ -103,7 +104,7 @@ private fun IconWithAlertDot_Default() {
     SnuttPreviewSurface {
         Box(modifier = Modifier.size(40.dp), contentAlignment = Alignment.Center) {
             IconWithAlertDot(redDotExist = true) {
-                NotificationIcon(modifier = it.size(30.dp))
+                SnuttIcon(R.drawable.ic_alarm_default, modifier = it.size(30.dp))
             }
         }
     }

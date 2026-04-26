@@ -32,7 +32,6 @@ import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.Friend
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
-import com.wafflestudio.snutt2.ui.components.compose.ExitIcon
 import com.wafflestudio.snutt2.ui.components.compose.RedDot
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
@@ -69,12 +68,14 @@ fun FriendsDrawerContent(
                 style = SNUTTTypography.h2,
             )
             Spacer(modifier = Modifier.weight(1f))
-            ExitIcon(
+            SnuttIcon(
+                R.drawable.ic_exit,
                 modifier = Modifier
                     .size(30.dp)
                     .clicks {
                         onClose()
-                    },
+                    }.size(30.dp),
+                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
         }
 

@@ -15,6 +15,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -24,7 +25,6 @@ import com.wafflestudio.snutt2.domain.model.SearchTag
 import com.wafflestudio.snutt2.domain.model.TagType
 import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.Selectable
-import com.wafflestudio.snutt2.ui.components.compose.ExitIcon
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.components.compose.displayName
@@ -127,7 +127,7 @@ private fun SelectableTagItem(
                     modifier = Modifier.clicks { onRemoveRecent(selectableTag.item) },
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    ExitIcon(modifier = Modifier.size(18.dp))
+                    SnuttIcon(R.drawable.ic_exit, modifier = Modifier.size(18.dp).size(30.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
                 }
             }
         }

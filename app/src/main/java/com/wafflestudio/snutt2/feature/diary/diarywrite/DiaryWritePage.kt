@@ -60,7 +60,7 @@ import com.wafflestudio.snutt2.domain.model.preview.DiaryPreviewData
 import com.wafflestudio.snutt2.feature.diary.DiaryTheme
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
-import com.wafflestudio.snutt2.ui.components.compose.ExitIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
@@ -233,13 +233,14 @@ private fun DiaryWriting(
                 )
             }
 
-            ExitIcon(
+            SnuttIcon(
+                R.drawable.ic_exit,
                 modifier = Modifier
                     .padding(start = 57.dp)
                     .width(24.dp)
                     .clicks {
                         onClickBackButton()
-                    },
+                    }.size(30.dp),
                 colorFilter = ColorFilter.tint(
                     DiaryTheme.colors.exitIcon,
                 ),

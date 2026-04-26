@@ -33,7 +33,6 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.isEmailInvalid
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
-import com.wafflestudio.snutt2.ui.components.compose.ArrowBackIcon
 import com.wafflestudio.snutt2.ui.components.compose.EditText
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
@@ -118,10 +117,11 @@ private fun AppReportScreen(
                 )
             },
             navigationIcon = {
-                ArrowBackIcon(
+                SnuttIcon(
+                    R.drawable.ic_arrow_back,
                     modifier = Modifier
                         .size(30.dp)
-                        .clicks { onNavigateBack() },
+                        .clicks { onNavigateBack() }.size(30.dp),
                     colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
             },

@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.android.NetworkLog
-import com.wafflestudio.snutt2.ui.components.compose.ArrowBackIcon
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.clicks
@@ -60,8 +59,9 @@ fun NetworkLogPage(
                 Text(stringResource(R.string.debug_network_log_title), style = SNUTTTypography.h2)
             },
             navigationIcon = {
-                ArrowBackIcon(
-                    modifier = Modifier.clicks { onNavigateBack() },
+                SnuttIcon(
+                    R.drawable.ic_arrow_back,
+                    modifier = Modifier.clicks { onNavigateBack() }.size(30.dp),
                     colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
             },
