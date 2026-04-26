@@ -5,8 +5,6 @@ import com.wafflestudio.snutt2.domain.model.diary.DiaryDailyClassType
 import com.wafflestudio.snutt2.domain.model.diary.DiaryQuestion
 import com.wafflestudio.snutt2.domain.model.diary.DiaryQuestionAnswer
 import com.wafflestudio.snutt2.domain.model.diary.DiarySummary
-import com.wafflestudio.snutt2.feature.diary.diarywrite.ActivitySelectionState
-import com.wafflestudio.snutt2.feature.diary.diarywrite.DiaryWriteUiState
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.toDataWithState
 import java.time.LocalDate
@@ -95,7 +93,7 @@ object DiaryPreviewData {
                 comment = "오티 했어용. 교수님이 과제량 많다고 하셨는데 도움이 많이 될 것 같아 기대가 돼요. 수업 들으려고 과외도 끊었지 뭐에요 😮‍💨",
             ),
 
-            ).toDataWithState(true),
+        ).toDataWithState(true),
         LocalDate.of(2024, 3, 19) to listOf(
             DiarySummary(
                 id = "diary-id-3",
@@ -144,7 +142,7 @@ object DiaryPreviewData {
 
     // --- DiaryWrite 프리뷰 ---
 
-    private val dailyClassTypes = listOf(
+    val dailyClassTypes = listOf(
         DiaryDailyClassType("1", "개강"),
         DiaryDailyClassType("2", "수업"),
         DiaryDailyClassType("3", "실기"),
@@ -155,7 +153,7 @@ object DiaryPreviewData {
         DiaryDailyClassType("8", "드랍"),
     )
 
-    private val selectableDailyClassTypesSelected =
+    val selectableDailyClassTypesSelected =
         dailyClassTypes.mapIndexed { index, dailyClassType ->
             Selectable(
                 dailyClassType,
@@ -356,33 +354,4 @@ object DiaryPreviewData {
             ),
         )
     }
-
-    val sampleWriteUiState = DiaryWriteUiState.Write(
-        lectureName = "컴퓨터프로그래밍",
-        activitySelectingState = ActivitySelectionState.Complete,
-        dailyClassTypes = selectableDailyClassTypesSelected,
-        questions = getQuestionsForActivities(
-            listOf("수업"),
-            "컴퓨터프로그래밍",
-        ),
-    )
-
-    val sampleWriteUiStateSelecting =
-        DiaryWriteUiState.Write(
-            lectureName = "데이터구조",
-            activitySelectingState = ActivitySelectionState.InitialSelecting,
-            dailyClassTypes = dailyClassTypes.mapIndexed { index, dailyClassType ->
-                Selectable(
-                    dailyClassType,
-                    index == 1 || index == 3,
-                ) // "수업", "시험" selected
-            },
-            questions = getQuestionsForActivities(
-                listOf(
-                    "수업",
-                    "시험",
-                ),
-                "데이터구조",
-            ),
-        )
 }

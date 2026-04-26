@@ -19,13 +19,8 @@ import com.wafflestudio.snutt2.domain.model.SearchedLecture
 import com.wafflestudio.snutt2.domain.model.SyllabusLecture
 import com.wafflestudio.snutt2.domain.model.Table
 import com.wafflestudio.snutt2.domain.model.TableSummary
-import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import com.wafflestudio.snutt2.domain.model.ThemeColor
 import com.wafflestudio.snutt2.domain.model.ThemeReference
-import com.wafflestudio.snutt2.feature.friend.FriendBottomSheetContent
-import com.wafflestudio.snutt2.feature.friend.FriendDialogState
-import com.wafflestudio.snutt2.feature.friend.FriendDrawerTab
-import com.wafflestudio.snutt2.feature.friend.FriendsUiState
 import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -604,19 +599,5 @@ object PreviewData {
         lectureId = "",
         lectureTitle = "",
         lectureReminderOffset = LectureReminderOffset.NONE,
-    )
-
-    val sampleFriendsUiState = FriendsUiState.Loaded(
-        activeFriends = sampleFriends,
-        requestedFriends = sampleRequestedFriends,
-        selectedFriend = sampleFriends.firstOrNull(),
-        selectedFriendCourseBooks = sampleCourseBooks,
-        selectedCourseBook = sampleCourseBooks.firstOrNull(),
-        selectedFriendTable = sampleFriendTable,
-        selectedFriendTableTheme = BuiltInTheme.SNUTT,
-        selectedFriendTableTrimParam = TableTrimParam.Default,
-        drawerTab = FriendDrawerTab.ACTIVE,
-        bottomSheetContent = FriendBottomSheetContent.Hidden,
-        dialogState = FriendDialogState.None,
     )
 }

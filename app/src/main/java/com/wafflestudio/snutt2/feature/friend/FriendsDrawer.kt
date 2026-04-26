@@ -30,11 +30,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.Friend
-import com.wafflestudio.snutt2.ui.preview.PreviewData
+import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import com.wafflestudio.snutt2.ui.components.compose.RedDot
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.PreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
@@ -393,12 +395,26 @@ private fun FriendRequestItem(
     }
 }
 
+private val sampleFriendsUiStateLoaded = FriendsUiState.Loaded(
+    activeFriends = PreviewData.sampleFriends,
+    requestedFriends = PreviewData.sampleRequestedFriends,
+    selectedFriend = PreviewData.sampleFriends.firstOrNull(),
+    selectedFriendCourseBooks = PreviewData.sampleCourseBooks,
+    selectedCourseBook = PreviewData.sampleCourseBooks.firstOrNull(),
+    selectedFriendTable = PreviewData.sampleFriendTable,
+    selectedFriendTableTheme = BuiltInTheme.SNUTT,
+    selectedFriendTableTrimParam = TableTrimParam.Default,
+    drawerTab = FriendDrawerTab.ACTIVE,
+    bottomSheetContent = FriendBottomSheetContent.Hidden,
+    dialogState = FriendDialogState.None,
+)
+
 @SnuttPreview
 @Composable
 private fun FriendsDrawer_FriendsTab() {
     SnuttPreviewSurface {
         FriendsDrawerContent(
-            uiState = PreviewData.sampleFriendsUiState,
+            uiState = sampleFriendsUiStateLoaded,
             onClose = {},
             onSelectTab = {},
             onSelectFriend = {},
@@ -415,7 +431,7 @@ private fun FriendsDrawer_FriendsTab() {
 private fun FriendsDrawer_RequestsTab() {
     SnuttPreviewSurface {
         FriendsDrawerContent(
-            uiState = PreviewData.sampleFriendsUiState.copy(
+            uiState = sampleFriendsUiStateLoaded.copy(
                 drawerTab = FriendDrawerTab.REQUESTED,
             ),
             onClose = {},
@@ -434,7 +450,7 @@ private fun FriendsDrawer_RequestsTab() {
 private fun FriendsDrawer_FriendsTab_Empty() {
     SnuttPreviewSurface {
         FriendsDrawerContent(
-            uiState = PreviewData.sampleFriendsUiState.copy(
+            uiState = sampleFriendsUiStateLoaded.copy(
                 activeFriends = emptyList(),
                 requestedFriends = emptyList(),
                 selectedFriend = null,

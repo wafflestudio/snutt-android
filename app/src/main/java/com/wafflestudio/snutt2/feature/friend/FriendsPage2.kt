@@ -46,8 +46,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.Friend
-import com.wafflestudio.snutt2.ui.preview.PreviewData
+import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import com.wafflestudio.snutt2.feature.home.timetable.TimeTable
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
@@ -55,6 +56,7 @@ import com.wafflestudio.snutt2.ui.components.compose.BottomSheetDismissEffect
 import com.wafflestudio.snutt2.ui.components.compose.IconWithAlertDot
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.PreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
@@ -622,12 +624,26 @@ private fun SemesterDropdown(
     }
 }
 
+private val sampleFriendsUiStateLoaded = FriendsUiState.Loaded(
+    activeFriends = PreviewData.sampleFriends,
+    requestedFriends = PreviewData.sampleRequestedFriends,
+    selectedFriend = PreviewData.sampleFriends.firstOrNull(),
+    selectedFriendCourseBooks = PreviewData.sampleCourseBooks,
+    selectedCourseBook = PreviewData.sampleCourseBooks.firstOrNull(),
+    selectedFriendTable = PreviewData.sampleFriendTable,
+    selectedFriendTableTheme = BuiltInTheme.SNUTT,
+    selectedFriendTableTrimParam = TableTrimParam.Default,
+    drawerTab = FriendDrawerTab.ACTIVE,
+    bottomSheetContent = FriendBottomSheetContent.Hidden,
+    dialogState = FriendDialogState.None,
+)
+
 @SnuttPreview
 @Composable
 private fun FriendsPage_FriendSelected() {
     SnuttPreviewSurface {
         FriendsScreen(
-            uiState = PreviewData.sampleFriendsUiState,
+            uiState = sampleFriendsUiStateLoaded,
             bottomBar = {},
             drawerState = rememberDrawerState(DrawerValue.Closed),
             bottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden),
@@ -662,7 +678,7 @@ private fun FriendsPage_FriendSelected() {
 private fun FriendsPage_Empty() {
     SnuttPreviewSurface {
         FriendsScreen(
-            uiState = PreviewData.sampleFriendsUiState.copy(
+            uiState = sampleFriendsUiStateLoaded.copy(
                 activeFriends = emptyList(),
                 requestedFriends = emptyList(),
                 selectedFriend = null,
