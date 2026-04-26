@@ -40,20 +40,20 @@ class AppReportViewModelTest {
         displayMessageResolver = fakeDisplayMessageResolver,
     )
 
-    // region initialEmail
+    // region initial state
 
     @Test
-    fun `user가 있으면 initialEmail이 user의 email이다`() {
+    fun `user가 있으면 초기 email이 user의 email이다`() {
         fakeUserRepository.user.value = User(email = "user@snu.ac.kr", localId = null, nickname = null)
         val viewModel = createViewModel()
-        assertEquals("user@snu.ac.kr", viewModel.initialEmail)
+        assertEquals("user@snu.ac.kr", viewModel.uiState.value.email)
     }
 
     @Test
-    fun `user가 없으면 initialEmail이 빈 문자열이다`() {
+    fun `user가 없으면 초기 email이 빈 문자열이다`() {
         fakeUserRepository.user.value = null
         val viewModel = createViewModel()
-        assertEquals("", viewModel.initialEmail)
+        assertEquals("", viewModel.uiState.value.email)
     }
 
     // endregion
@@ -65,7 +65,9 @@ class AppReportViewModelTest {
         fakeUserRepository.postFeedbackResult = Result.Success(Unit)
         val viewModel = createViewModel()
 
-        viewModel.sendFeedback("test@snu.ac.kr", "버그 발견")
+        viewModel.onEmailChange("test@snu.ac.kr")
+        viewModel.onDetailChange("버그 발견")
+        viewModel.sendFeedback()
 
         assertEquals("test@snu.ac.kr" to "버그 발견", fakeUserRepository.postFeedbackCalledWith)
     }
@@ -75,8 +77,11 @@ class AppReportViewModelTest {
         fakeUserRepository.postFeedbackResult = Result.Success(Unit)
         val viewModel = createViewModel()
 
+        viewModel.onEmailChange("test@snu.ac.kr")
+        viewModel.onDetailChange("버그 발견")
+
         viewModel.uiEvent.test {
-            viewModel.sendFeedback("test@snu.ac.kr", "버그 발견")
+            viewModel.sendFeedback()
             assertEquals(AppReportUiEvent.Success, awaitItem())
         }
     }
@@ -87,10 +92,25 @@ class AppReportViewModelTest {
         fakeUserRepository.postFeedbackResult = Result.Fail(error)
         val viewModel = createViewModel()
 
+        viewModel.onEmailChange("test@snu.ac.kr")
+        viewModel.onDetailChange("버그 발견")
+
         viewModel.uiEvent.test {
-            viewModel.sendFeedback("test@snu.ac.kr", "버그 발견")
+            viewModel.sendFeedback()
             assertEquals(AppReportUiEvent.ShowToast("전송 실패"), awaitItem())
         }
+    }
+
+    @Test
+    fun `sendFeedback 호출 시 sentEnabled가 false가 된다`() = runTest {
+        fakeUserRepository.postFeedbackResult = Result.Success(Unit)
+        val viewModel = createViewModel()
+
+        viewModel.onEmailChange("test@snu.ac.kr")
+        viewModel.onDetailChange("버그 발견")
+        viewModel.sendFeedback()
+
+        assertEquals(false, viewModel.uiState.value.sentEnabled)
     }
 
     // endregion

@@ -9,7 +9,11 @@ import com.wafflestudio.snutt2.domain.DisplayMessageResolver
 import com.wafflestudio.snutt2.domain.DomainError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,18 +23,34 @@ class AppReportViewModel @Inject constructor(
     private val displayMessageResolver: DisplayMessageResolver,
 ) : ViewModel() {
 
+    private val _uiState = MutableStateFlow(
+        AppReportUiState(email = userRepository.user.value?.email ?: ""),
+    )
+    val uiState: StateFlow<AppReportUiState> = _uiState.asStateFlow()
+
     private val _uiEvent = MutableSharedFlow<AppReportUiEvent>()
     val uiEvent = _uiEvent.asSharedFlow()
 
-    val initialEmail: String = userRepository.user.value?.email ?: ""
+    fun onEmailChange(value: String) {
+        _uiState.update { it.copy(email = value) }
+    }
 
-    fun sendFeedback(email: String, detail: String) {
+    fun onDetailChange(value: String) {
+        _uiState.update { it.copy(detail = value) }
+    }
+
+    fun sendFeedback() {
+        val state = _uiState.value
+        _uiState.update { it.copy(sentEnabled = false) }
         viewModelScope.launch {
-            userRepository.postFeedback(email, detail)
+            userRepository.postFeedback(state.email, state.detail)
                 .onSuccess {
                     _uiEvent.emit(AppReportUiEvent.Success)
                 }
-                .onFailure { handleError(it) }
+                .onFailure {
+                    _uiState.update { current -> current.copy(sentEnabled = true) }
+                    handleError(it)
+                }
         }
     }
 
@@ -38,6 +58,12 @@ class AppReportViewModel @Inject constructor(
         _uiEvent.emit(AppReportUiEvent.ShowToast(displayMessageResolver.getDisplayMessage(error)))
     }
 }
+
+data class AppReportUiState(
+    val email: String = "",
+    val detail: String = "",
+    val sentEnabled: Boolean = true,
+)
 
 sealed interface AppReportUiEvent {
     data class ShowToast(val message: String) : AppReportUiEvent
