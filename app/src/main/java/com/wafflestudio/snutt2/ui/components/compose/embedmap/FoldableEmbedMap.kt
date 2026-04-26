@@ -17,12 +17,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.Building
-import com.wafflestudio.snutt2.ui.components.compose.ArrowDownIcon
-import com.wafflestudio.snutt2.ui.components.compose.MapIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
@@ -54,7 +54,8 @@ fun FoldableEmbedMap(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    MapIcon(
+                    SnuttIcon(
+                        R.drawable.ic_map,
                         modifier = Modifier.size(17.dp, 19.dp),
                     )
                     Text(
@@ -62,7 +63,7 @@ fun FoldableEmbedMap(
                         style = SNUTTTypography.body1.copy(color = SNUTTColors.DarkGray),
                         modifier = Modifier.padding(start = 8.dp, end = 4.dp),
                     )
-                    ArrowDownIcon(modifier = Modifier.size(24.dp))
+                    SnuttIcon(R.drawable.ic_arrow_down, modifier = Modifier.size(24.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
                 }
             }
             AnimatedVisibility(visible = embedMapFolded.not()) {
@@ -97,10 +98,12 @@ fun FoldableEmbedMap(
                             style = SNUTTTypography.body1.copy(color = SNUTTColors.DarkGray),
                             modifier = Modifier.padding(start = 8.dp, end = 4.dp),
                         )
-                        ArrowDownIcon(
+                        SnuttIcon(
+                            R.drawable.ic_arrow_down,
                             modifier = Modifier
                                 .size(24.dp)
                                 .rotate(180f),
+                            colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                         )
                     }
                 }

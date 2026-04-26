@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -31,10 +32,8 @@ import com.wafflestudio.snutt2.domain.model.LocalLecture
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
-import com.wafflestudio.snutt2.ui.components.compose.ClockIcon
-import com.wafflestudio.snutt2.ui.components.compose.LocationIcon
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
-import com.wafflestudio.snutt2.ui.components.compose.TagIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
@@ -135,7 +134,7 @@ fun TableLectureItem(
             )
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
-            TagIcon(modifier = Modifier.size(15.dp))
+            SnuttIcon(R.drawable.ic_tag, modifier = Modifier.size(15.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
             Spacer(Modifier.width(10.dp))
             Text(
                 text = tagText,
@@ -144,7 +143,7 @@ fun TableLectureItem(
             )
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
-            ClockIcon(modifier = Modifier.size(15.dp))
+            SnuttIcon(R.drawable.ic_clock, modifier = Modifier.size(15.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
             Spacer(Modifier.width(10.dp))
             Text(
                 text = classTimeText,
@@ -153,7 +152,7 @@ fun TableLectureItem(
             )
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
-            LocationIcon(modifier = Modifier.size(15.dp, 15.dp))
+            SnuttIcon(R.drawable.ic_location, modifier = Modifier.size(15.dp, 15.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
             Spacer(Modifier.width(10.dp))
             Text(
                 text = locationText,

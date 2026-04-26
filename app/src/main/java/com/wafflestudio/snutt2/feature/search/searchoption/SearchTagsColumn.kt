@@ -15,17 +15,17 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.SearchTag
 import com.wafflestudio.snutt2.domain.model.TagType
 import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.Selectable
-import com.wafflestudio.snutt2.ui.components.compose.ExitIcon
-import com.wafflestudio.snutt2.ui.components.compose.VividCheckedIcon
-import com.wafflestudio.snutt2.ui.components.compose.VividUncheckedIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.components.compose.displayName
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
@@ -111,9 +111,9 @@ private fun SelectableTagItem(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 if (selectableTag.state) {
-                    VividCheckedIcon(modifier = Modifier.size(15.dp))
+                    SnuttIcon(R.drawable.ic_vivid_checked, modifier = Modifier.size(15.dp))
                 } else {
-                    VividUncheckedIcon(modifier = Modifier.size(15.dp))
+                    SnuttIcon(R.drawable.ic_vivid_unchecked, modifier = Modifier.size(15.dp))
                 }
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
@@ -127,7 +127,7 @@ private fun SelectableTagItem(
                     modifier = Modifier.clicks { onRemoveRecent(selectableTag.item) },
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    ExitIcon(modifier = Modifier.size(18.dp))
+                    SnuttIcon(R.drawable.ic_exit, modifier = Modifier.size(18.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
                 }
             }
         }

@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.ui.components.compose.ArrowLeftBold
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
@@ -126,13 +126,15 @@ fun HomeSessionlessLectureHint(
                 color = SNUTTColors.SNUTTDarkMintBlue,
             )
         }
-        ArrowLeftBold(
+        SnuttIcon(
+            R.drawable.arrow_left_bold,
             modifier = Modifier
                 .rotate(-90F)
                 .offset { IntOffset((5.dp + yOffsetTop).roundToPx(), 0) },
             colorFilter = ColorFilter.tint(SNUTTColors.Hint1),
         )
-        ArrowLeftBold(
+        SnuttIcon(
+            R.drawable.arrow_left_bold,
             modifier = Modifier
                 .rotate(-90F)
                 .offset { IntOffset((40.dp + yOffsetBottom).roundToPx(), 0) },

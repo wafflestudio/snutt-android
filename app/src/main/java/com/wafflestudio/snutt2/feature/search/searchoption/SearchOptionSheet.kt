@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
@@ -35,7 +36,7 @@ import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import com.wafflestudio.snutt2.domain.model.TagType
 import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.Selectable
-import com.wafflestudio.snutt2.ui.components.compose.ExitIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
@@ -156,7 +157,7 @@ fun SearchOptionSheet(
             Row(
                 modifier = Modifier.clicks { hideBottomSheet() },
             ) {
-                ExitIcon()
+                SnuttIcon(R.drawable.ic_exit, modifier = Modifier.size(30.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
             }
         }.first().measure(constraints)
 

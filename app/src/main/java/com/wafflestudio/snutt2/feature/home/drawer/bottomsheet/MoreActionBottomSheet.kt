@@ -18,12 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.TableSummary
-import com.wafflestudio.snutt2.ui.components.compose.PaletteIcon
-import com.wafflestudio.snutt2.ui.components.compose.PeopleIcon
-import com.wafflestudio.snutt2.ui.components.compose.PeopleOffIcon
-import com.wafflestudio.snutt2.ui.components.compose.ShareIcon
-import com.wafflestudio.snutt2.ui.components.compose.TrashIcon
-import com.wafflestudio.snutt2.ui.components.compose.WriteIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
@@ -48,19 +43,21 @@ fun MoreActionSheet(
             .fillMaxWidth(),
     ) {
         MoreActionItem(
-            icon = { WriteIcon(modifier = Modifier.size(30.dp)) },
+            icon = { SnuttIcon(R.drawable.ic_write, modifier = Modifier.size(30.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900)) },
             text = stringResource(R.string.home_drawer_table_title_change),
             onClick = { onClickChangeTableName(tableSummary) },
         )
         MoreActionItem(
             icon = {
                 if (tableSummary.isPrimary) {
-                    PeopleOffIcon(
+                    SnuttIcon(
+                        R.drawable.ic_people_off,
                         modifier = Modifier.size(30.dp),
                         colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                     )
                 } else {
-                    PeopleIcon(
+                    SnuttIcon(
+                        R.drawable.ic_people_on,
                         modifier = Modifier.size(30.dp),
                         colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                     )
@@ -81,19 +78,19 @@ fun MoreActionSheet(
             }
         }
         MoreActionItem(
-            icon = { ShareIcon(modifier = Modifier.size(30.dp)) },
+            icon = { SnuttIcon(R.drawable.ic_share, modifier = Modifier.size(30.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900)) },
             text = stringResource(R.string.home_drawer_table_share),
         ) {
             onClickShare(tableSummary)
         }
         MoreActionItem(
-            icon = { PaletteIcon(modifier = Modifier.size(30.dp)) },
+            icon = { SnuttIcon(R.drawable.ic_palette, modifier = Modifier.size(30.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900)) },
             text = stringResource(R.string.home_drawer_table_theme_change),
         ) {
             onClickSetTheme(tableSummary)
         }
         MoreActionItem(
-            icon = { TrashIcon(modifier = Modifier.size(30.dp)) },
+            icon = { SnuttIcon(R.drawable.ic_trash, modifier = Modifier.size(30.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900)) },
             text = stringResource(R.string.home_drawer_table_delete),
         ) {
             onClickDeleteTable(tableSummary)

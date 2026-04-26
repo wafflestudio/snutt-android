@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -40,9 +42,7 @@ import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.feature.home.timetable.TimeTable
 import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.ui.components.compose.EditText
-import com.wafflestudio.snutt2.ui.components.compose.ExitIcon
-import com.wafflestudio.snutt2.ui.components.compose.FilterIcon
-import com.wafflestudio.snutt2.ui.components.compose.SearchIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.clearFocusOnKeyboardDismiss
 import com.wafflestudio.snutt2.ui.components.compose.clicks
@@ -163,8 +163,12 @@ private fun RowScope.SearchTopBarContent(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        SearchIcon(
-            modifier = Modifier.clicks { onSearch() },
+        SnuttIcon(
+            R.drawable.ic_search_unselected,
+            modifier = Modifier
+                .size(30.dp)
+                .clicks { onSearch() },
+            colorFilter = ColorFilter.tint(SNUTTColors.Black900),
         )
         EditText(
             modifier = Modifier
@@ -186,9 +190,9 @@ private fun RowScope.SearchTopBarContent(
             clearFocusFlag = !searchEditTextFocused,
         )
         if (searchEditTextFocused) {
-            ExitIcon(modifier = Modifier.clicks { onClearEditText() })
+            SnuttIcon(R.drawable.ic_exit, modifier = Modifier.clicks { onClearEditText() }.size(30.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
         } else {
-            FilterIcon(modifier = Modifier.clicks { onFilter() })
+            SnuttIcon(R.drawable.ic_filter, modifier = Modifier.clicks { onFilter() }.size(30.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
         }
     }
 }

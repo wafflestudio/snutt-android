@@ -33,9 +33,8 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.isEmailInvalid
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
-import com.wafflestudio.snutt2.ui.components.compose.ArrowBackIcon
 import com.wafflestudio.snutt2.ui.components.compose.EditText
-import com.wafflestudio.snutt2.ui.components.compose.SendIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
@@ -118,7 +117,8 @@ private fun AppReportScreen(
                 )
             },
             navigationIcon = {
-                ArrowBackIcon(
+                SnuttIcon(
+                    R.drawable.ic_arrow_back,
                     modifier = Modifier
                         .size(30.dp)
                         .clicks { onNavigateBack() },
@@ -126,7 +126,8 @@ private fun AppReportScreen(
                 )
             },
             actions = {
-                SendIcon(
+                SnuttIcon(
+                    R.drawable.ic_send,
                     modifier = Modifier
                         .size(20.dp)
                         .clicks(throttleMs = 1000L, enabled = sentEnabled) { sendFeedback() },

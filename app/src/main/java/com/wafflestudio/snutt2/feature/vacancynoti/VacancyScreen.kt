@@ -65,12 +65,9 @@ import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
-import com.wafflestudio.snutt2.ui.components.compose.ArrowBackIcon
 import com.wafflestudio.snutt2.ui.components.compose.CustomDialog
-import com.wafflestudio.snutt2.ui.components.compose.QuestionCircleIcon
-import com.wafflestudio.snutt2.ui.components.compose.RightArrowIcon
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
-import com.wafflestudio.snutt2.ui.components.compose.TipCloseIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.WebViewStyleButton
 import com.wafflestudio.snutt2.ui.components.compose.clicks
@@ -269,14 +266,16 @@ fun VacancyEmpty(
                         overflow = TextOverflow.Ellipsis,
                     )
                     Spacer(modifier = Modifier.size(5.dp))
-                    QuestionCircleIcon(
+                    SnuttIcon(
+                        R.drawable.ic_question_circle,
                         modifier = Modifier
                             .size(18.dp)
                             .clicks { onShowIntroDialog() },
                     )
                 },
                 navigationIcon = {
-                    ArrowBackIcon(
+                    SnuttIcon(
+                        R.drawable.ic_arrow_back,
                         modifier = Modifier
                             .size(30.dp)
                             .clicks { onClickBack() },
@@ -342,7 +341,8 @@ fun VacancyPlaceholder(
                 .clicks { onClickDetail() },
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            QuestionCircleIcon(
+            SnuttIcon(
+                R.drawable.ic_question_circle,
                 modifier = Modifier.size(12.dp),
                 colorFilter = ColorFilter.tint(SNUTTColors.DARKER_GRAY),
             )
@@ -394,14 +394,16 @@ fun VacancySuccess(
                         overflow = TextOverflow.Ellipsis,
                     )
                     Spacer(modifier = Modifier.size(5.dp))
-                    QuestionCircleIcon(
+                    SnuttIcon(
+                        R.drawable.ic_question_circle,
                         modifier = Modifier
                             .size(18.dp)
                             .clicks { onShowIntroDialog() },
                     )
                 },
                 navigationIcon = {
-                    ArrowBackIcon(
+                    SnuttIcon(
+                        R.drawable.ic_arrow_back,
                         modifier = Modifier
                             .size(30.dp)
                             .clicks { onClickBack() },
@@ -549,7 +551,8 @@ fun VacancyIntroDialog(
                         modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 24.dp),
                     ) {
                         Spacer(modifier = Modifier.weight(1f))
-                        TipCloseIcon(
+                        SnuttIcon(
+                            R.drawable.btntipclose,
                             modifier = Modifier
                                 .size(15.dp)
                                 .clicks { onDismiss() },
@@ -592,7 +595,8 @@ fun VacancyIntroDialog(
                         }
 
                         if (pagerState.currentPage > 0) {
-                            ArrowBackIcon(
+                            SnuttIcon(
+                                R.drawable.ic_arrow_back,
                                 modifier = Modifier
                                     .align(Alignment.CenterStart)
                                     .size(30.dp)
@@ -605,7 +609,8 @@ fun VacancyIntroDialog(
                             )
                         }
                         if (pagerState.currentPage < 3) {
-                            RightArrowIcon(
+                            SnuttIcon(
+                                R.drawable.ic_arrow_right,
                                 modifier = Modifier
                                     .align(Alignment.CenterEnd)
                                     .size(30.dp)
@@ -615,6 +620,7 @@ fun VacancyIntroDialog(
                                         }
                                     },
                                 colorFilter = ColorFilter.tint(SNUTTColors.VacancyGray),
+                                contentDescription = "add arrow",
                             )
                         }
                     }

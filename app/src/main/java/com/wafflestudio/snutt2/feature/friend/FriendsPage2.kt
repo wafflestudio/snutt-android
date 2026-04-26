@@ -51,13 +51,9 @@ import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.feature.home.timetable.TimeTable
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
-import com.wafflestudio.snutt2.ui.components.compose.AddFriendIcon
-import com.wafflestudio.snutt2.ui.components.compose.ArrowDownIcon
 import com.wafflestudio.snutt2.ui.components.compose.BottomSheetDismissEffect
-import com.wafflestudio.snutt2.ui.components.compose.DrawerIcon
 import com.wafflestudio.snutt2.ui.components.compose.IconWithAlertDot
-import com.wafflestudio.snutt2.ui.components.compose.PersonIcon
-import com.wafflestudio.snutt2.ui.components.compose.QuestionCircleIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
@@ -365,10 +361,13 @@ private fun FriendsLoadedScreen(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         IconWithAlertDot(uiState.requestedFriends.isNotEmpty()) { centerAlignedModifier ->
-                            DrawerIcon(
+                            SnuttIcon(
+                                R.drawable.ic_drawer,
                                 modifier = centerAlignedModifier
                                     .size(30.dp)
                                     .clicks { onOpenDrawer() },
+                                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                                contentDescription = stringResource(R.string.home_timetable_drawer),
                             )
                         }
                         Row(
@@ -379,7 +378,8 @@ private fun FriendsLoadedScreen(
                                 style = SNUTTTypography.subtitle1.copy(color = SNUTTColors.Black900),
                             )
                             Spacer(modifier = Modifier.width(6.dp))
-                            QuestionCircleIcon(
+                            SnuttIcon(
+                                R.drawable.ic_question_circle,
                                 modifier = Modifier
                                     .size(16.dp)
                                     .clicks {
@@ -387,7 +387,8 @@ private fun FriendsLoadedScreen(
                                     },
                             )
                         }
-                        AddFriendIcon(
+                        SnuttIcon(
+                            R.drawable.ic_user_add,
                             modifier = Modifier
                                 .size(25.dp)
                                 .clicks { onOpenRequestFriendBottomSheet() },
@@ -413,7 +414,8 @@ private fun FriendsLoadedScreen(
                                 modifier = Modifier.weight(1f, fill = false),
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
-                                PersonIcon(
+                                SnuttIcon(
+                                    R.drawable.ic_person,
                                     modifier = Modifier.size(15.dp),
                                     colorFilter = ColorFilter.tint(SNUTTColors.SNUTTTheme),
                                 )
@@ -498,7 +500,8 @@ private fun FriendsLoadedScreen(
                                     style = SNUTTTypography.subtitle2.copy(fontSize = 12.sp),
                                     color = SNUTTColors.Gray600,
                                 )
-                                AddFriendIcon(
+                                SnuttIcon(
+                                    R.drawable.ic_user_add,
                                     modifier = Modifier.size(12.5.dp),
                                     colorFilter = ColorFilter.tint(SNUTTColors.Gray600),
                                 )
@@ -523,9 +526,11 @@ private fun FriendsLoadedScreen(
                                     style = SNUTTTypography.subtitle2.copy(fontSize = 12.sp),
                                     color = SNUTTColors.TextMed,
                                 )
-                                DrawerIcon(
+                                SnuttIcon(
+                                    R.drawable.ic_drawer,
                                     modifier = Modifier.size(12.5.dp),
                                     colorFilter = ColorFilter.tint(SNUTTColors.TextMed),
+                                    contentDescription = stringResource(R.string.home_timetable_drawer),
                                 )
                                 Text(
                                     text = stringResource(R.string.friend_empty_guide_sidebar2),
@@ -541,7 +546,7 @@ private fun FriendsLoadedScreen(
                                     onShowGuideDialog()
                                 },
                             ) {
-                                QuestionCircleIcon(modifier = Modifier.size(11.5.dp))
+                                SnuttIcon(R.drawable.ic_question_circle, modifier = Modifier.size(11.5.dp))
                                 Text(
                                     text = stringResource(R.string.friend_guide_detail),
                                     style = SNUTTTypography.subtitle2.copy(fontSize = 11.sp),
@@ -593,7 +598,7 @@ private fun SemesterDropdown(
                 style = SNUTTTypography.body2.copy(color = SNUTTColors.Black900),
             )
             Spacer(modifier = Modifier.width(5.dp))
-            ArrowDownIcon(modifier = Modifier.size(15.dp))
+            SnuttIcon(R.drawable.ic_arrow_down, modifier = Modifier.size(15.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
         }
 
         DropdownMenu(

@@ -23,6 +23,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -36,10 +37,8 @@ import com.wafflestudio.snutt2.domain.model.SearchedLecture
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.toDataWithState
-import com.wafflestudio.snutt2.ui.components.compose.ClockIcon
-import com.wafflestudio.snutt2.ui.components.compose.LocationIcon
 import com.wafflestudio.snutt2.ui.components.compose.RoundCheckbox
-import com.wafflestudio.snutt2.ui.components.compose.TagIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
@@ -145,10 +144,12 @@ fun LazyItemScope.VacancyListItem(
                             .weight(1f),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        TagIcon(
+                        SnuttIcon(
+                            R.drawable.ic_tag,
                             modifier = Modifier
                                 .padding(top = 2.dp) // 태그 텍스트의 알 수 없는 수직 위치 때문에 쓴 꼼수
                                 .size(13.dp),
+                            colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                         )
                         Spacer(modifier = Modifier.width(7.dp))
                         Text(
@@ -176,8 +177,10 @@ fun LazyItemScope.VacancyListItem(
                     modifier = Modifier.padding(bottom = 6.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    ClockIcon(
+                    SnuttIcon(
+                        R.drawable.ic_clock,
                         modifier = Modifier.size(13.dp),
+                        colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                     )
                     Spacer(modifier = Modifier.width(7.dp))
                     Text(
@@ -191,8 +194,10 @@ fun LazyItemScope.VacancyListItem(
                     )
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    LocationIcon(
+                    SnuttIcon(
+                        R.drawable.ic_location,
                         modifier = Modifier.size(13.dp),
+                        colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                     )
                     Spacer(modifier = Modifier.width(7.dp))
                     Text(

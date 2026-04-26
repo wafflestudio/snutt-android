@@ -10,13 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
-import com.wafflestudio.snutt2.ui.components.compose.BigPeopleIcon
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.components.compose.BorderButton
-import com.wafflestudio.snutt2.ui.components.compose.HorizontalMoreIcon
 import com.wafflestudio.snutt2.ui.components.compose.IconWithAlertDot
-import com.wafflestudio.snutt2.ui.components.compose.ReviewIcon
-import com.wafflestudio.snutt2.ui.components.compose.SearchIcon
-import com.wafflestudio.snutt2.ui.components.compose.TimetableIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
@@ -42,9 +39,9 @@ internal fun BottomNavigation(
                 onUpdatePageState(HomeItem.Timetable)
             },
         ) {
-            TimetableIcon(
+            SnuttIcon(
+                if (pageState == HomeItem.Timetable) R.drawable.ic_timetable_selected else R.drawable.ic_timetable_unselected,
                 modifier = Modifier.size(30.dp),
-                isSelected = pageState == HomeItem.Timetable,
                 colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
         }
@@ -58,9 +55,9 @@ internal fun BottomNavigation(
                 onUpdatePageState(HomeItem.Search)
             },
         ) {
-            SearchIcon(
+            SnuttIcon(
+                if (pageState == HomeItem.Search) R.drawable.ic_search_selected else R.drawable.ic_search_unselected,
                 modifier = Modifier.size(30.dp),
-                isSelected = pageState == HomeItem.Search,
                 colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
         }
@@ -74,9 +71,9 @@ internal fun BottomNavigation(
                 onUpdatePageState(HomeItem.Review())
             },
         ) {
-            ReviewIcon(
+            SnuttIcon(
+                if (pageState is HomeItem.Review) R.drawable.ic_review_selected else R.drawable.ic_review_unselected,
                 modifier = Modifier.size(30.dp),
-                isSelected = pageState is HomeItem.Review,
                 colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
         }
@@ -90,9 +87,9 @@ internal fun BottomNavigation(
                 onUpdatePageState(HomeItem.Friends)
             },
         ) {
-            BigPeopleIcon(
+            SnuttIcon(
+                if (pageState is HomeItem.Friends) R.drawable.ic_people_selected else R.drawable.ic_people_unselected,
                 modifier = Modifier.size(30.dp),
-                isSelected = pageState is HomeItem.Friends,
                 colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
         }
@@ -111,9 +108,9 @@ internal fun BottomNavigation(
                 dotSize = 4.dp,
                 dotYOffset = 3.dp,
             ) {
-                HorizontalMoreIcon(
+                SnuttIcon(
+                    if (pageState == HomeItem.Settings) R.drawable.ic_horizontal_more_selected else R.drawable.ic_horizontal_more_unselected,
                     modifier = Modifier.size(30.dp),
-                    isSelected = pageState == HomeItem.Settings,
                     colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
             }

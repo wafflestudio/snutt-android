@@ -36,9 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.android.NetworkLog
-import com.wafflestudio.snutt2.ui.components.compose.ArrowBackIcon
-import com.wafflestudio.snutt2.ui.components.compose.ArrowDownIcon
-import com.wafflestudio.snutt2.ui.components.compose.DuplicateIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
@@ -61,8 +59,9 @@ fun NetworkLogPage(
                 Text(stringResource(R.string.debug_network_log_title), style = SNUTTTypography.h2)
             },
             navigationIcon = {
-                ArrowBackIcon(
-                    modifier = Modifier.clicks { onNavigateBack() },
+                SnuttIcon(
+                    R.drawable.ic_arrow_back,
+                    modifier = Modifier.clicks { onNavigateBack() }.size(30.dp),
                     colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
             },
@@ -120,7 +119,8 @@ private fun NetworkLogItem(log: NetworkLog) {
                 overflow = if (expanded.not()) TextOverflow.Ellipsis else TextOverflow.Visible,
                 maxLines = if (expanded.not()) 1 else Int.MAX_VALUE,
             )
-            DuplicateIcon(
+            SnuttIcon(
+                R.drawable.ic_duplicate,
                 modifier = Modifier
                     .size(20.dp)
                     .clicks {
@@ -154,10 +154,12 @@ private fun SimpleTextToggle(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(text = title, style = SNUTTTypography.subtitle1)
-        ArrowDownIcon(
+        SnuttIcon(
+            R.drawable.ic_arrow_down,
             modifier = Modifier
                 .size(15.dp)
                 .rotate(rotation),
+            colorFilter = ColorFilter.tint(SNUTTColors.Black900),
         )
     }
     AnimatedVisibility(
@@ -171,7 +173,8 @@ private fun SimpleTextToggle(
                 .padding(10.dp),
         ) {
             Text(text = content, style = SNUTTTypography.body1)
-            DuplicateIcon(
+            SnuttIcon(
+                R.drawable.ic_duplicate,
                 modifier = Modifier
                     .size(20.dp)
                     .align(Alignment.TopEnd)

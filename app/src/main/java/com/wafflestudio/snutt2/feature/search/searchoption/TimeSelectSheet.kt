@@ -51,8 +51,7 @@ import com.wafflestudio.snutt2.domain.model.trimByTrimParam
 import com.wafflestudio.snutt2.feature.home.timetable.DrawClassTime
 import com.wafflestudio.snutt2.feature.home.timetable.DrawTableGrid
 import com.wafflestudio.snutt2.feature.home.timetable.TimetableCanvasObjects
-import com.wafflestudio.snutt2.ui.components.compose.MagicIcon
-import com.wafflestudio.snutt2.ui.components.compose.ResetIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
@@ -142,7 +141,8 @@ fun TimeSelectSheet(
                     .padding(vertical = 4.dp, horizontal = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                MagicIcon(
+                SnuttIcon(
+                    R.drawable.ic_magic,
                     modifier = Modifier
                         .size(20.dp)
                         .padding(3.dp),
@@ -166,7 +166,8 @@ fun TimeSelectSheet(
                     .padding(vertical = 4.dp, horizontal = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                ResetIcon(
+                SnuttIcon(
+                    R.drawable.ic_reset,
                     modifier = Modifier.size(20.dp),
                 )
                 Text(

@@ -15,7 +15,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.ui.components.compose.ArrowLeftBold
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
@@ -39,7 +39,8 @@ internal fun FloatingButton(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(2.dp),
     ) {
-        ArrowLeftBold(
+        SnuttIcon(
+            R.drawable.arrow_left_bold,
             modifier = Modifier.size(23.dp),
             colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
         )

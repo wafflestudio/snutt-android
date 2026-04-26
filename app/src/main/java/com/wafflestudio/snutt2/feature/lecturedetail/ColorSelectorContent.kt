@@ -23,11 +23,11 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.ui.components.compose.CheckedIcon
 import com.wafflestudio.snutt2.ui.components.compose.ColorBox
 import com.wafflestudio.snutt2.ui.components.compose.ColorCircle
 import com.wafflestudio.snutt2.ui.components.compose.ColorPicker
 import com.wafflestudio.snutt2.ui.components.compose.CustomDialog
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
@@ -58,7 +58,8 @@ internal fun ColorItem(
             style = SNUTTTypography.body1,
         )
         if (isSelected) {
-            CheckedIcon(
+            SnuttIcon(
+                R.drawable.checked,
                 modifier = Modifier.size(20.dp),
                 colorFilter = ColorFilter.tint(SNUTTColors.Black500),
             )

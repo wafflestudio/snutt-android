@@ -24,8 +24,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.wafflestudio.snutt2.ui.components.compose.RightArrowIcon
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
@@ -201,9 +202,11 @@ fun SettingItemForTest(
         Spacer(modifier = Modifier.weight(1f))
         content()
         if (hasNextPage) {
-            RightArrowIcon(
+            SnuttIcon(
+                R.drawable.ic_arrow_right,
                 modifier = Modifier.size(22.dp),
                 colorFilter = ColorFilter.tint(SNUTTColors.Black500),
+                contentDescription = "add arrow",
             )
         }
     }

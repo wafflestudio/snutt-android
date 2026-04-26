@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
@@ -32,11 +33,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.DialogWindowProvider
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.ui.components.compose.DrawerIcon
-import com.wafflestudio.snutt2.ui.components.compose.ExitIcon
-import com.wafflestudio.snutt2.ui.components.compose.NotificationVacancyIcon
-import com.wafflestudio.snutt2.ui.components.compose.SearchIcon
-import com.wafflestudio.snutt2.ui.components.compose.WriteUnderlineIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
@@ -56,11 +53,13 @@ fun TimetableMoreAction(
         animationSpec = spring(),
     )
 
-    ExitIcon(
+    SnuttIcon(
+        R.drawable.ic_exit,
         modifier = Modifier
             .size(30.dp)
             .graphicsLayer { rotationZ = iconRotation }
             .clicks { expanded = true },
+        colorFilter = ColorFilter.tint(SNUTTColors.Black900),
     )
 
     if (expanded) {
@@ -129,7 +128,11 @@ fun TimetableDropdownOverlay(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                SearchIcon(modifier = Modifier.size(22.dp))
+                SnuttIcon(
+                    R.drawable.ic_search_unselected,
+                    modifier = Modifier.size(22.dp),
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                )
                 Text(
                     text = stringResource(R.string.home_dropdown_menu_content_add_lecture_by_search),
                     style = SNUTTTypography.h3.copy(fontWeight = FontWeight.Normal),
@@ -143,7 +146,7 @@ fun TimetableDropdownOverlay(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                WriteUnderlineIcon(modifier = Modifier.size(22.dp))
+                SnuttIcon(R.drawable.ic_write_underline, modifier = Modifier.size(22.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
                 Text(
                     text = stringResource(R.string.home_dropdown_menu_content_add_lecture_manually),
                     style = SNUTTTypography.h3.copy(fontWeight = FontWeight.Normal),
@@ -165,7 +168,7 @@ fun TimetableDropdownOverlay(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                DrawerIcon(modifier = Modifier.size(22.dp))
+                SnuttIcon(R.drawable.ic_drawer, modifier = Modifier.size(22.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900), contentDescription = stringResource(R.string.home_timetable_drawer))
                 Text(
                     text = stringResource(R.string.home_dropdown_menu_content_current_timetable_lecture_list),
                     style = SNUTTTypography.h3.copy(fontWeight = FontWeight.Normal),
@@ -179,7 +182,7 @@ fun TimetableDropdownOverlay(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                NotificationVacancyIcon(modifier = Modifier.size(22.dp))
+                SnuttIcon(R.drawable.ic_ringing_alarm_notification, modifier = Modifier.size(22.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
                 Text(
                     text = stringResource(R.string.home_dropdown_menu_content_vacancy_lecture_list),
                     style = SNUTTTypography.h3.copy(fontWeight = FontWeight.Normal),

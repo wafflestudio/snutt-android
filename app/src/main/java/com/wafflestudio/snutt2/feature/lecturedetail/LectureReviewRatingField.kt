@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.LectureReviewInfo
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
-import com.wafflestudio.snutt2.ui.components.compose.StarIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
@@ -45,8 +45,8 @@ internal fun LectureReviewRatingField(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(2.dp),
             ) {
-                StarIcon(
-                    filled = true,
+                SnuttIcon(
+                    R.drawable.ic_star_filled,
                     modifier = Modifier
                         .size(18.dp)
                         .offset(y = 1.dp),

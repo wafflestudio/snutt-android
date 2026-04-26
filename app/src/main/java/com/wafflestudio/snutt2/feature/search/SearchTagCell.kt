@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.SearchTag
 import com.wafflestudio.snutt2.domain.model.TagType
-import com.wafflestudio.snutt2.ui.components.compose.CloseIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.components.compose.displayName
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
@@ -46,7 +46,8 @@ fun SearchTagCell(
             style = SNUTTTypography.body1.copy(fontSize = 14.sp, color = SNUTTColors.AllWhite),
             textAlign = TextAlign.Center,
         )
-        CloseIcon(
+        SnuttIcon(
+            R.drawable.ic_close,
             modifier = Modifier
                 .width(20.dp)
                 .clicks { onClick() },

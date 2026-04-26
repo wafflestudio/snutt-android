@@ -32,11 +32,8 @@ import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.Friend
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
-import com.wafflestudio.snutt2.ui.components.compose.AddFriendIcon
-import com.wafflestudio.snutt2.ui.components.compose.ExitIcon
-import com.wafflestudio.snutt2.ui.components.compose.LogoIcon
-import com.wafflestudio.snutt2.ui.components.compose.MoreIcon
 import com.wafflestudio.snutt2.ui.components.compose.RedDot
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
@@ -64,19 +61,21 @@ fun FriendsDrawerContent(
             modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 22.5.dp, bottom = 20.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            LogoIcon(modifier = Modifier.size(20.dp))
+            SnuttIcon(R.drawable.logo, modifier = Modifier.size(20.dp))
             Spacer(modifier = Modifier.width(11.dp))
             Text(
                 text = stringResource(R.string.sign_in_logo_title),
                 style = SNUTTTypography.h2,
             )
             Spacer(modifier = Modifier.weight(1f))
-            ExitIcon(
+            SnuttIcon(
+                R.drawable.ic_exit,
                 modifier = Modifier
                     .size(30.dp)
                     .clicks {
                         onClose()
                     },
+                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
         }
 
@@ -153,7 +152,8 @@ fun FriendsDrawerContent(
                 color = SNUTTColors.Gray600,
                 modifier = Modifier.weight(1f),
             )
-            AddFriendIcon(
+            SnuttIcon(
+                R.drawable.ic_user_add,
                 modifier = Modifier.size(20.dp),
                 colorFilter = ColorFilter.tint(SNUTTColors.Gray600),
             )
@@ -220,7 +220,8 @@ private fun FriendsActiveList(
                     style = SNUTTTypography.subtitle2.copy(fontSize = 11.sp),
                     color = SNUTTColors.Gray600,
                 )
-                AddFriendIcon(
+                SnuttIcon(
+                    R.drawable.ic_user_add,
                     modifier = Modifier.size(11.dp),
                     colorFilter = ColorFilter.tint(SNUTTColors.Gray600),
                 )
@@ -326,7 +327,8 @@ private fun FriendListItem(
             fontSize = 14.sp,
             modifier = Modifier.weight(1f),
         )
-        MoreIcon(
+        SnuttIcon(
+            R.drawable.ic_more,
             modifier = Modifier
                 .size(30.dp)
                 .clicks { onMoreClick() },

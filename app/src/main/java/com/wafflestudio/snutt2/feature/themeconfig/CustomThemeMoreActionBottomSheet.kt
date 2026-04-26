@@ -12,11 +12,8 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.ui.components.compose.DuplicateIcon
 import com.wafflestudio.snutt2.ui.components.compose.MoreActionItem
-import com.wafflestudio.snutt2.ui.components.compose.PaletteIcon
-import com.wafflestudio.snutt2.ui.components.compose.TimetableIcon
-import com.wafflestudio.snutt2.ui.components.compose.TrashIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 
@@ -36,7 +33,8 @@ fun MyCustomThemeMoreActionBottomSheet(
     ) {
         MoreActionItem(
             icon = {
-                PaletteIcon(
+                SnuttIcon(
+                    R.drawable.ic_palette,
                     modifier = Modifier.size(30.dp),
                     colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
                 )
@@ -46,7 +44,8 @@ fun MyCustomThemeMoreActionBottomSheet(
         )
         MoreActionItem(
             icon = {
-                TimetableIcon(
+                SnuttIcon(
+                    R.drawable.ic_timetable_unselected,
                     modifier = Modifier.size(30.dp),
                     colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
                 )
@@ -56,7 +55,8 @@ fun MyCustomThemeMoreActionBottomSheet(
         )
         MoreActionItem(
             icon = {
-                DuplicateIcon(
+                SnuttIcon(
+                    R.drawable.ic_duplicate,
                     modifier = Modifier.size(30.dp),
                     colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
                 )
@@ -66,7 +66,8 @@ fun MyCustomThemeMoreActionBottomSheet(
         )
         MoreActionItem(
             icon = {
-                TrashIcon(
+                SnuttIcon(
+                    R.drawable.ic_trash,
                     modifier = Modifier.size(30.dp),
                     colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
                 )
@@ -92,7 +93,8 @@ fun MarketCustomThemeMoreActionBottomSheet(
     ) {
         MoreActionItem(
             icon = {
-                PaletteIcon(
+                SnuttIcon(
+                    R.drawable.ic_palette,
                     modifier = Modifier.size(30.dp),
                     colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
                 )
@@ -102,7 +104,8 @@ fun MarketCustomThemeMoreActionBottomSheet(
         )
         MoreActionItem(
             icon = {
-                TimetableIcon(
+                SnuttIcon(
+                    R.drawable.ic_timetable_unselected,
                     modifier = Modifier.size(30.dp),
                     colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
                 )
@@ -112,7 +115,8 @@ fun MarketCustomThemeMoreActionBottomSheet(
         )
         MoreActionItem(
             icon = {
-                TrashIcon(
+                SnuttIcon(
+                    R.drawable.ic_trash,
                     modifier = Modifier.size(30.dp),
                     colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
                 )
@@ -137,7 +141,8 @@ fun BuiltInThemeClickBottomSheet(
     ) {
         MoreActionItem(
             icon = {
-                PaletteIcon(
+                SnuttIcon(
+                    R.drawable.ic_palette,
                     modifier = Modifier.size(30.dp),
                     colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
                 )
@@ -147,7 +152,8 @@ fun BuiltInThemeClickBottomSheet(
         )
         MoreActionItem(
             icon = {
-                TimetableIcon(
+                SnuttIcon(
+                    R.drawable.ic_timetable_unselected,
                     modifier = Modifier.size(30.dp),
                     colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
                 )

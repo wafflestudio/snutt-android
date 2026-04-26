@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -28,10 +29,8 @@ import com.wafflestudio.snutt2.domain.model.CourseBook
 import com.wafflestudio.snutt2.domain.model.TableSummary
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.lib.toDataWithState
-import com.wafflestudio.snutt2.ui.components.compose.ArrowDownIcon
-import com.wafflestudio.snutt2.ui.components.compose.ExitIcon
-import com.wafflestudio.snutt2.ui.components.compose.LogoIcon
 import com.wafflestudio.snutt2.ui.components.compose.RedDot
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
@@ -76,17 +75,19 @@ fun HomeDrawerContent(
             .padding(20.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            LogoIcon(modifier = Modifier.size(20.dp))
+            SnuttIcon(R.drawable.logo, modifier = Modifier.size(20.dp))
             Spacer(modifier = Modifier.width(10.dp))
             Text(
                 text = stringResource(R.string.sign_in_logo_title),
                 style = SNUTTTypography.h2,
             )
             Spacer(modifier = Modifier.weight(1f))
-            ExitIcon(
+            SnuttIcon(
+                R.drawable.ic_exit,
                 modifier = Modifier.clicks {
                     onClickExitIcon()
-                },
+                }.size(30.dp),
+                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
         }
         Divider(
@@ -132,10 +133,12 @@ fun HomeDrawerContent(
                         style = SNUTTTypography.h3,
                     )
                     Spacer(modifier = Modifier.width(6.dp))
-                    ArrowDownIcon(
+                    SnuttIcon(
+                        R.drawable.ic_arrow_down,
                         modifier = Modifier
                             .size(22.dp)
                             .rotate(rotation),
+                        colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     if (courseBookDrawerItem.showNewCoursebookDot) {

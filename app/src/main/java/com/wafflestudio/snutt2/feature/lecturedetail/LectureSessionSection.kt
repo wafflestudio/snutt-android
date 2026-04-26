@@ -32,7 +32,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.LectureSession
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.ui.components.compose.EditText
-import com.wafflestudio.snutt2.ui.components.compose.TipCloseIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
@@ -174,7 +174,8 @@ private fun TimeAndLocationItem(
                         .clicks { onClickDeleteIcon() },
                     contentAlignment = Alignment.Center,
                 ) {
-                    TipCloseIcon(
+                    SnuttIcon(
+                        R.drawable.btntipclose,
                         modifier = Modifier.size(16.dp),
                         colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                     )

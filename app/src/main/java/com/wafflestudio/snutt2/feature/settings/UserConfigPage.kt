@@ -23,8 +23,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
-import com.wafflestudio.snutt2.ui.components.compose.DuplicateIcon
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
@@ -174,7 +174,8 @@ fun UserConfigScreen(
                     hasNextPage = false,
                     onClick = onCopyNicknameToClipboard,
                 ) {
-                    DuplicateIcon(
+                    SnuttIcon(
+                        R.drawable.ic_duplicate,
                         modifier = Modifier.size(30.dp),
                         colorFilter = ColorFilter.tint(SNUTTColors.Black500),
                     )

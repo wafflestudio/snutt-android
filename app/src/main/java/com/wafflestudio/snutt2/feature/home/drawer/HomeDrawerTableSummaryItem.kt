@@ -17,10 +17,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.TableSummary
-import com.wafflestudio.snutt2.ui.components.compose.BigPeopleIcon
-import com.wafflestudio.snutt2.ui.components.compose.DuplicateIcon
-import com.wafflestudio.snutt2.ui.components.compose.MoreIcon
-import com.wafflestudio.snutt2.ui.components.compose.VividCheckedIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
@@ -53,7 +50,8 @@ fun CourseBookDrawerItem(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(5.dp),
         ) {
-            VividCheckedIcon(
+            SnuttIcon(
+                R.drawable.ic_vivid_checked,
                 modifier = Modifier
                     .size(15.dp)
                     .alpha(if (isSelectedTable) 1f else 0f),
@@ -74,14 +72,15 @@ fun CourseBookDrawerItem(
                 maxLines = 1,
             )
             if (tableSummary.isPrimary) {
-                BigPeopleIcon(
+                SnuttIcon(
+                    R.drawable.ic_people_selected,
                     modifier = Modifier.size(15.dp),
-                    isSelected = true,
                     colorFilter = ColorFilter.tint(SNUTTColors.SNUTTTheme),
                 )
             }
         }
-        DuplicateIcon(
+        SnuttIcon(
+            R.drawable.ic_duplicate,
             modifier = Modifier
                 .size(30.dp)
                 .clicks {
@@ -90,7 +89,8 @@ fun CourseBookDrawerItem(
             colorFilter = ColorFilter.tint(SNUTTColors.Black500),
         )
         Spacer(modifier = Modifier.width(10.dp))
-        MoreIcon(
+        SnuttIcon(
+            R.drawable.ic_more,
             modifier = Modifier
                 .size(30.dp)
                 .clicks {

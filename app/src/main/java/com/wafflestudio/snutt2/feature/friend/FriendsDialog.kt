@@ -31,10 +31,8 @@ import androidx.compose.ui.window.Dialog
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.Friend
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
-import com.wafflestudio.snutt2.ui.components.compose.ArrowBackIcon
 import com.wafflestudio.snutt2.ui.components.compose.CustomDialog
-import com.wafflestudio.snutt2.ui.components.compose.RightArrowIcon
-import com.wafflestudio.snutt2.ui.components.compose.TipCloseIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
@@ -144,7 +142,8 @@ private fun GuideDialog(
                         modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 24.dp),
                     ) {
                         Spacer(modifier = Modifier.weight(1f))
-                        TipCloseIcon(
+                        SnuttIcon(
+                            R.drawable.btntipclose,
                             modifier = Modifier
                                 .size(15.dp)
                                 .clicks { onDismiss() },
@@ -189,7 +188,8 @@ private fun GuideDialog(
                         }
 
                         if (pagerState.currentPage > 0) {
-                            ArrowBackIcon(
+                            SnuttIcon(
+                                R.drawable.ic_arrow_back,
                                 modifier = Modifier
                                     .align(Alignment.CenterStart)
                                     .size(30.dp)
@@ -202,7 +202,8 @@ private fun GuideDialog(
                             )
                         }
                         if (pagerState.currentPage < 4) {
-                            RightArrowIcon(
+                            SnuttIcon(
+                                R.drawable.ic_arrow_right,
                                 modifier = Modifier
                                     .align(Alignment.CenterEnd)
                                     .size(30.dp)
@@ -212,6 +213,7 @@ private fun GuideDialog(
                                         }
                                     },
                                 colorFilter = ColorFilter.tint(SNUTTColors.VacancyGray),
+                                contentDescription = "add arrow",
                             )
                         }
                     }
