@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.feature.bookmark
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -22,7 +23,8 @@ import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 fun BookmarkPlaceHolder() {
     Column(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .background(SNUTTColors.Dim2),
         verticalArrangement = Arrangement.spacedBy(5.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {

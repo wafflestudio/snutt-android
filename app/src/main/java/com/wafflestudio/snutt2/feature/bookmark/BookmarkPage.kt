@@ -161,16 +161,15 @@ fun BookmarkScreen(
                                 touchEnabled = false,
                             )
 
-                            val bookmarkOverlayModifier = Modifier
-                                .background(SNUTTColors.Dim2)
-                                .logImpression(AnalyticsScreen.Bookmark)
+                            val bookmarkImpressionModifier =
+                                Modifier.logImpression(AnalyticsScreen.Bookmark)
                             if (uiState.bookmarkList.isEmpty()) {
-                                Box(modifier = bookmarkOverlayModifier) {
+                                Box(modifier = bookmarkImpressionModifier) {
                                     BookmarkPlaceHolder()
                                 }
                             } else {
                                 BookmarkList(
-                                    modifier = bookmarkOverlayModifier,
+                                    modifier = bookmarkImpressionModifier,
                                     bookmarks = uiState.bookmarkList,
                                     onToggleLectureSelection = onToggleLectureSelection,
                                     onClickLectureDetail = onClickLectureDetail,

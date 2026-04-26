@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.feature.search
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -31,7 +32,9 @@ fun BookmarkList(
 ) {
     LazyColumn(
         state = rememberLazyListState(),
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .background(SNUTTColors.Dim2),
     ) {
         items(bookmarks) { (lecture, lectureState) ->
             SearchLectureListItem(
