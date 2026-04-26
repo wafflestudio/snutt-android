@@ -43,16 +43,6 @@ fun DrawerIcon(
 }
 
 @Composable
-fun ListIcon(
-    modifier: Modifier = Modifier,
-) {
-    SnuttIcon(
-        id = R.drawable.ic_lecture_list,
-        modifier = modifier.size(30.dp),
-    )
-}
-
-@Composable
 fun NotificationIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,

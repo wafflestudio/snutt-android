@@ -158,7 +158,6 @@ private fun TopBar_TitleWithActions() {
                 DrawerIcon()
             },
             actions = {
-                ListIcon(Modifier.padding(end = 8.dp))
                 ShareIcon(Modifier.padding(end = 8.dp))
                 NotificationIcon(Modifier.padding(end = 12.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
             },
