@@ -32,6 +32,8 @@ import com.wafflestudio.snutt2.feature.home.timetable.TimeTable
 import com.wafflestudio.snutt2.feature.search.BookmarkList
 import com.wafflestudio.snutt2.feature.search.LectureState
 import com.wafflestudio.snutt2.lib.toDataWithState
+import com.wafflestudio.snutt2.logging.AnalyticsScreen
+import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.components.compose.BottomSheetDismissEffect
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
@@ -159,16 +161,25 @@ fun BookmarkScreen(
                                 touchEnabled = false,
                             )
 
-                            BookmarkList(
-                                modifier = Modifier.background(SNUTTColors.Dim2),
-                                bookmarks = uiState.bookmarkList,
-                                onToggleLectureSelection = onToggleLectureSelection,
-                                onClickLectureDetail = onClickLectureDetail,
-                                onClickReview = onClickReview,
-                                onClickBookmark = onClickBookmark,
-                                onClickVacancy = onClickVacancy,
-                                onClickAddOrRemove = onToggleLectureContained,
-                            )
+                            val bookmarkOverlayModifier = Modifier
+                                .background(SNUTTColors.Dim2)
+                                .logImpression(AnalyticsScreen.Bookmark)
+                            if (uiState.bookmarkList.isEmpty()) {
+                                Box(modifier = bookmarkOverlayModifier) {
+                                    BookmarkPlaceHolder()
+                                }
+                            } else {
+                                BookmarkList(
+                                    modifier = bookmarkOverlayModifier,
+                                    bookmarks = uiState.bookmarkList,
+                                    onToggleLectureSelection = onToggleLectureSelection,
+                                    onClickLectureDetail = onClickLectureDetail,
+                                    onClickReview = onClickReview,
+                                    onClickBookmark = onClickBookmark,
+                                    onClickVacancy = onClickVacancy,
+                                    onClickAddOrRemove = onToggleLectureContained,
+                                )
+                            }
                         }
                     }
 
@@ -203,10 +214,10 @@ private fun BookmarkScreen_List() {
                     themeRef = ThemeReference.BuiltIn(0),
                 ),
                 tableTheme = BuiltInTheme.SNUTT,
-                bookmarkList = PreviewData.sampleLectures.take(3).map { lecture ->
+                bookmarkList = PreviewData.sampleLectures.take(3).mapIndexed { index, lecture ->
                     lecture.toDataWithState(
                         LectureState(
-                            selected = false,
+                            selected = index == 0,
                             contained = false,
                             isBookmarked = true,
                             isVacancyRegistered = false,
