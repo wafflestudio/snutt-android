@@ -7,10 +7,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
@@ -30,9 +26,15 @@ import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 @Composable
 fun UserConfigDialogs(
     dialogState: UserConfigUiState.DialogState,
-    onConfirmChangePassword: (String, String, String) -> Unit,
+    onChangePasswordCurrentChange: (String) -> Unit,
+    onChangePasswordNewChange: (String) -> Unit,
+    onChangePasswordNewConfirmChange: (String) -> Unit,
+    onConfirmChangePassword: () -> Unit,
     onDismissChangePassword: () -> Unit,
-    onConfirmAddIdPassword: (String, String, String) -> Unit,
+    onAddIdPasswordIdChange: (String) -> Unit,
+    onAddIdPasswordPasswordChange: (String) -> Unit,
+    onAddIdPasswordPasswordConfirmChange: (String) -> Unit,
+    onConfirmAddIdPassword: () -> Unit,
     onDismissAddIdPassword: () -> Unit,
     onConfirmLeave: () -> Unit,
     onDismissLeave: () -> Unit,
@@ -40,22 +42,18 @@ fun UserConfigDialogs(
     when (dialogState) {
         UserConfigUiState.DialogState.None -> {}
 
-        UserConfigUiState.DialogState.ChangePassword -> {
-            var currentPassword by remember { mutableStateOf("") }
-            var newPassword by remember { mutableStateOf("") }
-            var newPasswordConfirm by remember { mutableStateOf("") }
-
+        is UserConfigUiState.DialogState.ChangePassword -> {
             CustomDialog(
                 onDismiss = onDismissChangePassword,
-                onConfirm = { onConfirmChangePassword(currentPassword, newPassword, newPasswordConfirm) },
+                onConfirm = onConfirmChangePassword,
                 title = stringResource(R.string.settings_user_config_change_password),
                 positiveButtonText = stringResource(R.string.notifications_noti_change),
             ) {
                 val focusManager = LocalFocusManager.current
                 Column {
                     EditText(
-                        value = currentPassword,
-                        onValueChange = { currentPassword = it },
+                        value = dialogState.currentPassword,
+                        onValueChange = onChangePasswordCurrentChange,
                         textStyle = SNUTTTypography.body1.copy(fontSize = 16.sp),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
                         keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
@@ -64,8 +62,8 @@ fun UserConfigDialogs(
                     )
                     Spacer(modifier = Modifier.height(25.dp))
                     EditText(
-                        value = newPassword,
-                        onValueChange = { newPassword = it },
+                        value = dialogState.newPassword,
+                        onValueChange = onChangePasswordNewChange,
                         textStyle = SNUTTTypography.body1.copy(fontSize = 16.sp),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
                         keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
@@ -74,11 +72,11 @@ fun UserConfigDialogs(
                     )
                     Spacer(modifier = Modifier.height(25.dp))
                     EditText(
-                        value = newPasswordConfirm,
-                        onValueChange = { newPasswordConfirm = it },
+                        value = dialogState.newPasswordConfirm,
+                        onValueChange = onChangePasswordNewConfirmChange,
                         textStyle = SNUTTTypography.body1.copy(fontSize = 16.sp),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
-                        keyboardActions = KeyboardActions(onDone = { onConfirmChangePassword(currentPassword, newPassword, newPasswordConfirm) }),
+                        keyboardActions = KeyboardActions(onDone = { onConfirmChangePassword() }),
                         visualTransformation = PasswordVisualTransformation(),
                         hint = stringResource(R.string.settings_user_config_new_password_confirm_hint),
                     )
@@ -86,22 +84,18 @@ fun UserConfigDialogs(
             }
         }
 
-        UserConfigUiState.DialogState.AddIdPassword -> {
-            var id by remember { mutableStateOf("") }
-            var password by remember { mutableStateOf("") }
-            var passwordConfirm by remember { mutableStateOf("") }
-
+        is UserConfigUiState.DialogState.AddIdPassword -> {
             CustomDialog(
                 onDismiss = onDismissAddIdPassword,
-                onConfirm = { onConfirmAddIdPassword(id, password, passwordConfirm) },
+                onConfirm = onConfirmAddIdPassword,
                 title = stringResource(R.string.settings_user_config_add_local_id),
                 positiveButtonText = stringResource(R.string.notifications_noti_add),
             ) {
                 val focusManager = LocalFocusManager.current
                 Column {
                     EditText(
-                        value = id,
-                        onValueChange = { id = it },
+                        value = dialogState.id,
+                        onValueChange = onAddIdPasswordIdChange,
                         textStyle = SNUTTTypography.body1.copy(fontSize = 16.sp),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
                         keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
@@ -109,8 +103,8 @@ fun UserConfigDialogs(
                     )
                     Spacer(modifier = Modifier.height(25.dp))
                     EditText(
-                        value = password,
-                        onValueChange = { password = it },
+                        value = dialogState.password,
+                        onValueChange = onAddIdPasswordPasswordChange,
                         textStyle = SNUTTTypography.body1.copy(fontSize = 16.sp),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
                         keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
@@ -119,11 +113,11 @@ fun UserConfigDialogs(
                     )
                     Spacer(modifier = Modifier.height(25.dp))
                     EditText(
-                        value = passwordConfirm,
-                        onValueChange = { passwordConfirm = it },
+                        value = dialogState.passwordConfirm,
+                        onValueChange = onAddIdPasswordPasswordConfirmChange,
                         textStyle = SNUTTTypography.body1.copy(fontSize = 16.sp),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
-                        keyboardActions = KeyboardActions(onNext = { onConfirmAddIdPassword(id, password, passwordConfirm) }),
+                        keyboardActions = KeyboardActions(onDone = { onConfirmAddIdPassword() }),
                         visualTransformation = PasswordVisualTransformation(),
                         hint = stringResource(R.string.sign_up_password_confirm_hint),
                     )
@@ -149,10 +143,16 @@ fun UserConfigDialogs(
 private fun UserConfigDialogs_ChangePassword() {
     SnuttPreviewSurface {
         UserConfigDialogs(
-            dialogState = UserConfigUiState.DialogState.ChangePassword,
-            onConfirmChangePassword = { _, _, _ -> },
+            dialogState = UserConfigUiState.DialogState.ChangePassword(),
+            onChangePasswordCurrentChange = {},
+            onChangePasswordNewChange = {},
+            onChangePasswordNewConfirmChange = {},
+            onConfirmChangePassword = {},
             onDismissChangePassword = {},
-            onConfirmAddIdPassword = { _, _, _ -> },
+            onAddIdPasswordIdChange = {},
+            onAddIdPasswordPasswordChange = {},
+            onAddIdPasswordPasswordConfirmChange = {},
+            onConfirmAddIdPassword = {},
             onDismissAddIdPassword = {},
             onConfirmLeave = {},
             onDismissLeave = {},
@@ -165,10 +165,16 @@ private fun UserConfigDialogs_ChangePassword() {
 private fun UserConfigDialogs_AddIdPassword() {
     SnuttPreviewSurface {
         UserConfigDialogs(
-            dialogState = UserConfigUiState.DialogState.AddIdPassword,
-            onConfirmChangePassword = { _, _, _ -> },
+            dialogState = UserConfigUiState.DialogState.AddIdPassword(),
+            onChangePasswordCurrentChange = {},
+            onChangePasswordNewChange = {},
+            onChangePasswordNewConfirmChange = {},
+            onConfirmChangePassword = {},
             onDismissChangePassword = {},
-            onConfirmAddIdPassword = { _, _, _ -> },
+            onAddIdPasswordIdChange = {},
+            onAddIdPasswordPasswordChange = {},
+            onAddIdPasswordPasswordConfirmChange = {},
+            onConfirmAddIdPassword = {},
             onDismissAddIdPassword = {},
             onConfirmLeave = {},
             onDismissLeave = {},
@@ -182,9 +188,15 @@ private fun UserConfigDialogs_Leave() {
     SnuttPreviewSurface {
         UserConfigDialogs(
             dialogState = UserConfigUiState.DialogState.Leave,
-            onConfirmChangePassword = { _, _, _ -> },
+            onChangePasswordCurrentChange = {},
+            onChangePasswordNewChange = {},
+            onChangePasswordNewConfirmChange = {},
+            onConfirmChangePassword = {},
             onDismissChangePassword = {},
-            onConfirmAddIdPassword = { _, _, _ -> },
+            onAddIdPasswordIdChange = {},
+            onAddIdPasswordPasswordChange = {},
+            onAddIdPasswordPasswordConfirmChange = {},
+            onConfirmAddIdPassword = {},
             onDismissAddIdPassword = {},
             onConfirmLeave = {},
             onDismissLeave = {},

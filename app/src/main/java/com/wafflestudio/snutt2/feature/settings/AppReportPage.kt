@@ -15,9 +15,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -31,6 +28,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.isEmailInvalid
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
@@ -55,6 +53,7 @@ fun AppReportPage(
     val context = LocalContext.current
     val keyboardManager = LocalSoftwareKeyboardController.current
     val sendSuccessMessage = stringResource(R.string.feedback_send_success_message)
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
@@ -70,16 +69,24 @@ fun AppReportPage(
     }
 
     AppReportScreen(
-        initialEmail = viewModel.initialEmail,
-        onSendFeedback = { email, detail -> viewModel.sendFeedback(email, detail) },
+        email = uiState.email,
+        detail = uiState.detail,
+        sentEnabled = uiState.sentEnabled,
+        onEmailChange = viewModel::onEmailChange,
+        onDetailChange = viewModel::onDetailChange,
+        onSendFeedback = viewModel::sendFeedback,
         onNavigateBack = onNavigateBack,
     )
 }
 
 @Composable
 private fun AppReportScreen(
-    initialEmail: String,
-    onSendFeedback: (email: String, detail: String) -> Unit,
+    email: String,
+    detail: String,
+    sentEnabled: Boolean,
+    onEmailChange: (String) -> Unit,
+    onDetailChange: (String) -> Unit,
+    onSendFeedback: () -> Unit,
     onNavigateBack: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -87,18 +94,13 @@ private fun AppReportScreen(
     val emptyDetailWarning = stringResource(R.string.feedback_empty_detail_warning)
     val invalidEmailWarning = stringResource(R.string.feedback_invalid_email_warning)
 
-    var email by remember { mutableStateOf(initialEmail) }
-    var detail by remember { mutableStateOf("") }
-    var sentEnabled by remember { mutableStateOf(true) }
-
     val sendFeedback = {
         if (detail.isEmpty()) {
             context.toast(emptyDetailWarning)
         } else if (email.isEmailInvalid()) {
             context.toast(invalidEmailWarning)
         } else {
-            sentEnabled = false
-            onSendFeedback(email, detail)
+            onSendFeedback()
         }
     }
 
@@ -145,7 +147,7 @@ private fun AppReportScreen(
             Spacer(modifier = Modifier.height(10.dp))
             EditText(
                 value = email,
-                onValueChange = { email = it },
+                onValueChange = onEmailChange,
                 hint = stringResource(R.string.example_email),
                 textStyle = SNUTTTypography.body1.copy(fontSize = 15.sp),
                 singleLine = true,
@@ -165,7 +167,7 @@ private fun AppReportScreen(
             Spacer(modifier = Modifier.height(10.dp))
             EditText(
                 value = detail,
-                onValueChange = { detail = it },
+                onValueChange = onDetailChange,
                 hint = stringResource(R.string.settings_app_report_detail_hint),
                 textStyle = SNUTTTypography.body1.copy(fontSize = 15.sp),
             )
@@ -183,8 +185,12 @@ private fun AppReportScreen(
 private fun AppReportScreen_Default() {
     SnuttPreviewSurface {
         AppReportScreen(
-            initialEmail = "user@snu.ac.kr",
-            onSendFeedback = { _, _ -> },
+            email = "user@snu.ac.kr",
+            detail = "",
+            sentEnabled = true,
+            onEmailChange = {},
+            onDetailChange = {},
+            onSendFeedback = {},
             onNavigateBack = {},
         )
     }

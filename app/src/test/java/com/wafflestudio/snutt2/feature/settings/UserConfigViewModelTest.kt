@@ -42,6 +42,28 @@ class UserConfigViewModelTest {
         displayMessageResolver = fakeDisplayMessageResolver,
     )
 
+    private fun UserConfigViewModel.openChangePassword(
+        currentPassword: String,
+        newPassword: String,
+        newPasswordConfirm: String,
+    ) {
+        showChangePasswordDialog()
+        onChangePasswordCurrentChange(currentPassword)
+        onChangePasswordNewChange(newPassword)
+        onChangePasswordNewConfirmChange(newPasswordConfirm)
+    }
+
+    private fun UserConfigViewModel.openAddIdPassword(
+        id: String,
+        password: String,
+        passwordConfirm: String,
+    ) {
+        showAddIdPasswordDialog()
+        onAddIdPasswordIdChange(id)
+        onAddIdPasswordPasswordChange(password)
+        onAddIdPasswordPasswordConfirmChange(passwordConfirm)
+    }
+
     // region Source 반응 — user
 
     @Test
@@ -116,7 +138,7 @@ class UserConfigViewModelTest {
         viewModel.showChangePasswordDialog()
 
         assertEquals(
-            before.copy(dialogState = UserConfigUiState.DialogState.ChangePassword),
+            before.copy(dialogState = UserConfigUiState.DialogState.ChangePassword()),
             viewModel.uiState.value,
         )
     }
@@ -157,7 +179,7 @@ class UserConfigViewModelTest {
         viewModel.showAddIdPasswordDialog()
 
         assertEquals(
-            before.copy(dialogState = UserConfigUiState.DialogState.AddIdPassword),
+            before.copy(dialogState = UserConfigUiState.DialogState.AddIdPassword()),
             viewModel.uiState.value,
         )
     }
@@ -236,7 +258,8 @@ class UserConfigViewModelTest {
         fakeUserRepository.putUserPasswordResult = Result.Success(Unit)
 
         val viewModel = createViewModel()
-        viewModel.changePassword("oldPw1", "newPw1a", "newPw1a")
+        viewModel.openChangePassword("oldPw1", "newPw1a", "newPw1a")
+        viewModel.changePassword()
 
         assertEquals("oldPw1" to "newPw1a", fakeUserRepository.putUserPasswordCalledWith)
     }
@@ -252,7 +275,8 @@ class UserConfigViewModelTest {
         val viewModel = createViewModel()
 
         viewModel.uiEvent.test {
-            viewModel.changePassword("oldPw1", "newPw1a", "newPw1a")
+            viewModel.openChangePassword("oldPw1", "newPw1a", "newPw1a")
+            viewModel.changePassword()
             assertEquals(
                 UserConfigUiEvent.ShowToastByEvent(UserConfigEvent.ChangePasswordSuccess),
                 awaitItem(),
@@ -272,7 +296,8 @@ class UserConfigViewModelTest {
         viewModel.showChangePasswordDialog()
         val before = viewModel.uiState.value
 
-        viewModel.changePassword("oldPw1", "newPw1a", "newPw1a")
+        viewModel.openChangePassword("oldPw1", "newPw1a", "newPw1a")
+        viewModel.changePassword()
 
         assertEquals(
             before.copy(dialogState = UserConfigUiState.DialogState.None),
@@ -290,7 +315,8 @@ class UserConfigViewModelTest {
         val viewModel = createViewModel()
 
         viewModel.uiEvent.test {
-            viewModel.changePassword("oldPw1", "short", "short") // 숫자+영문 6~20자 불만족
+            viewModel.openChangePassword("oldPw1", "short", "short") // 숫자+영문 6~20자 불만족
+            viewModel.changePassword()
             assertEquals(
                 UserConfigUiEvent.ShowToastByEvent(UserConfigEvent.InvalidPasswordError),
                 awaitItem(),
@@ -308,7 +334,8 @@ class UserConfigViewModelTest {
         val viewModel = createViewModel()
 
         viewModel.uiEvent.test {
-            viewModel.changePassword("oldPw1", "newPw1a", "different1")
+            viewModel.openChangePassword("oldPw1", "newPw1a", "different1")
+            viewModel.changePassword()
             assertEquals(
                 UserConfigUiEvent.ShowToastByEvent(UserConfigEvent.PasswordMismatchError),
                 awaitItem(),
@@ -328,7 +355,8 @@ class UserConfigViewModelTest {
         val viewModel = createViewModel()
 
         viewModel.uiEvent.test {
-            viewModel.changePassword("oldPw1", "newPw1a", "newPw1a")
+            viewModel.openChangePassword("oldPw1", "newPw1a", "newPw1a")
+            viewModel.changePassword()
             assertEquals(UserConfigUiEvent.ShowToast("비밀번호 오류"), awaitItem())
         }
     }
@@ -345,7 +373,8 @@ class UserConfigViewModelTest {
         val viewModel = createViewModel()
 
         viewModel.uiEvent.test {
-            viewModel.changePassword("oldPw1", "newPw1a", "newPw1a")
+            viewModel.openChangePassword("oldPw1", "newPw1a", "newPw1a")
+            viewModel.changePassword()
             assertEquals(UserConfigUiEvent.ShowToast("토큰 만료"), awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
@@ -362,7 +391,8 @@ class UserConfigViewModelTest {
             Result.Fail(WrongUserToken(displayTitle = "", displayMessage = "토큰 만료"))
         val viewModel = createViewModel()
 
-        viewModel.changePassword("oldPw1", "newPw1a", "newPw1a")
+        viewModel.openChangePassword("oldPw1", "newPw1a", "newPw1a")
+        viewModel.changePassword()
 
         assertEquals(true, fakeUserRepository.performLogoutCalled)
     }
@@ -379,7 +409,8 @@ class UserConfigViewModelTest {
         val viewModel = createViewModel()
 
         viewModel.uiEvent.test {
-            viewModel.changePassword("oldPw1", "newPw1a", "newPw1a")
+            viewModel.openChangePassword("oldPw1", "newPw1a", "newPw1a")
+            viewModel.changePassword()
             awaitItem() // ShowToast
             assertEquals(UserConfigUiEvent.NavigateToOnboard, awaitItem())
         }
@@ -399,7 +430,8 @@ class UserConfigViewModelTest {
         fakeUserRepository.postUserPasswordResult = Result.Success(Unit)
 
         val viewModel = createViewModel()
-        viewModel.addNewLocalId("testid", "testPw1", "testPw1")
+        viewModel.openAddIdPassword("testid", "testPw1", "testPw1")
+        viewModel.addNewLocalId()
 
         assertEquals("testid" to "testPw1", fakeUserRepository.postUserPasswordCalledWith)
     }
@@ -415,7 +447,8 @@ class UserConfigViewModelTest {
         val viewModel = createViewModel()
 
         viewModel.uiEvent.test {
-            viewModel.addNewLocalId("testid", "testPw1", "testPw1")
+            viewModel.openAddIdPassword("testid", "testPw1", "testPw1")
+            viewModel.addNewLocalId()
             assertEquals(
                 UserConfigUiEvent.ShowToastByEvent(UserConfigEvent.AddIdPasswordSuccess),
                 awaitItem(),
@@ -435,7 +468,8 @@ class UserConfigViewModelTest {
         viewModel.showAddIdPasswordDialog()
         val before = viewModel.uiState.value
 
-        viewModel.addNewLocalId("testid", "testPw1", "testPw1")
+        viewModel.openAddIdPassword("testid", "testPw1", "testPw1")
+        viewModel.addNewLocalId()
 
         assertEquals(
             before.copy(dialogState = UserConfigUiState.DialogState.None),
@@ -453,7 +487,8 @@ class UserConfigViewModelTest {
         fakeUserRepository.postUserPasswordResult = Result.Success(Unit)
         val viewModel = createViewModel()
 
-        viewModel.addNewLocalId("testid", "testPw1", "testPw1")
+        viewModel.openAddIdPassword("testid", "testPw1", "testPw1")
+        viewModel.addNewLocalId()
 
         assertEquals(true, fakeUserRepository.fetchUserInfoCalled)
     }
@@ -468,7 +503,8 @@ class UserConfigViewModelTest {
         val viewModel = createViewModel()
 
         viewModel.uiEvent.test {
-            viewModel.addNewLocalId("ab", "testPw1", "testPw1") // 4~32자 영숫자 불만족
+            viewModel.openAddIdPassword("ab", "testPw1", "testPw1") // 4~32자 영숫자 불만족
+            viewModel.addNewLocalId()
             assertEquals(
                 UserConfigUiEvent.ShowToastByEvent(UserConfigEvent.InvalidIdError),
                 awaitItem(),
@@ -486,7 +522,8 @@ class UserConfigViewModelTest {
         val viewModel = createViewModel()
 
         viewModel.uiEvent.test {
-            viewModel.addNewLocalId("testid", "short", "short")
+            viewModel.openAddIdPassword("testid", "short", "short")
+            viewModel.addNewLocalId()
             assertEquals(
                 UserConfigUiEvent.ShowToastByEvent(UserConfigEvent.InvalidPasswordError),
                 awaitItem(),
@@ -504,7 +541,8 @@ class UserConfigViewModelTest {
         val viewModel = createViewModel()
 
         viewModel.uiEvent.test {
-            viewModel.addNewLocalId("testid", "testPw1", "different1")
+            viewModel.openAddIdPassword("testid", "testPw1", "different1")
+            viewModel.addNewLocalId()
             assertEquals(
                 UserConfigUiEvent.ShowToastByEvent(UserConfigEvent.PasswordMismatchError),
                 awaitItem(),
@@ -524,7 +562,8 @@ class UserConfigViewModelTest {
         val viewModel = createViewModel()
 
         viewModel.uiEvent.test {
-            viewModel.addNewLocalId("testid", "testPw1", "testPw1")
+            viewModel.openAddIdPassword("testid", "testPw1", "testPw1")
+            viewModel.addNewLocalId()
             assertEquals(UserConfigUiEvent.ShowToast("중복 ID"), awaitItem())
         }
     }
@@ -541,7 +580,8 @@ class UserConfigViewModelTest {
         val viewModel = createViewModel()
 
         viewModel.uiEvent.test {
-            viewModel.addNewLocalId("testid", "testPw1", "testPw1")
+            viewModel.openAddIdPassword("testid", "testPw1", "testPw1")
+            viewModel.addNewLocalId()
             assertEquals(UserConfigUiEvent.ShowToast("토큰 만료"), awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
@@ -558,7 +598,8 @@ class UserConfigViewModelTest {
             Result.Fail(WrongUserToken(displayTitle = "", displayMessage = "토큰 만료"))
         val viewModel = createViewModel()
 
-        viewModel.addNewLocalId("testid", "testPw1", "testPw1")
+        viewModel.openAddIdPassword("testid", "testPw1", "testPw1")
+        viewModel.addNewLocalId()
 
         assertEquals(true, fakeUserRepository.performLogoutCalled)
     }
@@ -575,7 +616,8 @@ class UserConfigViewModelTest {
         val viewModel = createViewModel()
 
         viewModel.uiEvent.test {
-            viewModel.addNewLocalId("testid", "testPw1", "testPw1")
+            viewModel.openAddIdPassword("testid", "testPw1", "testPw1")
+            viewModel.addNewLocalId()
             awaitItem() // ShowToast
             assertEquals(UserConfigUiEvent.NavigateToOnboard, awaitItem())
         }

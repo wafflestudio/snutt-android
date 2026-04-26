@@ -38,6 +38,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.components.compose.ArrowBackIcon
 import com.wafflestudio.snutt2.ui.components.compose.CloseCircleIcon
@@ -58,6 +59,7 @@ fun ChangeNicknamePage(
     onNavigateBack: () -> Unit,
 ) {
     val context = LocalContext.current
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
@@ -70,7 +72,9 @@ fun ChangeNicknamePage(
 
     ChangeNicknameScreen(
         initialNickname = viewModel.initialNickname,
-        onSave = { nickname -> viewModel.changeNickname(nickname) },
+        nicknameField = uiState.nicknameField,
+        onNicknameFieldChange = viewModel::onNicknameFieldChange,
+        onSave = viewModel::changeNickname,
         onNavigateBack = onNavigateBack,
     )
 }
@@ -78,10 +82,11 @@ fun ChangeNicknamePage(
 @Composable
 private fun ChangeNicknameScreen(
     initialNickname: String,
-    onSave: (String) -> Unit,
+    nicknameField: String,
+    onNicknameFieldChange: (String) -> Unit,
+    onSave: () -> Unit,
     onNavigateBack: () -> Unit,
 ) {
-    var nicknameField by remember { mutableStateOf(initialNickname) }
     val nicknameRequirementTexts = listOf(
         stringResource(R.string.settings_change_nickname_requirement_0),
         stringResource(R.string.settings_change_nickname_requirement_1),
@@ -89,7 +94,7 @@ private fun ChangeNicknameScreen(
     )
 
     val canSave = nicknameField.isNotEmpty() && nicknameField != initialNickname
-    val handleSave = { if (canSave) onSave(nicknameField) }
+    val handleSave = { if (canSave) onSave() }
 
     Column(
         modifier = Modifier
@@ -128,7 +133,7 @@ private fun ChangeNicknameScreen(
             ) {
                 NicknameEditText(
                     value = nicknameField,
-                    onValueChange = { nicknameField = it },
+                    onValueChange = onNicknameFieldChange,
                     onDone = { handleSave() },
                     hint = initialNickname,
                 )
@@ -234,6 +239,8 @@ private fun ChangeNicknameScreen_Default() {
     SnuttPreviewSurface {
         ChangeNicknameScreen(
             initialNickname = "와플",
+            nicknameField = "와플",
+            onNicknameFieldChange = {},
             onSave = {},
             onNavigateBack = {},
         )

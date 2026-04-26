@@ -45,7 +45,32 @@ class UserConfigViewModel @Inject constructor(
         }
     }
 
-    fun addNewLocalId(id: String, password: String, passwordConfirm: String) {
+    fun onAddIdPasswordIdChange(value: String) {
+        _uiState.update {
+            val dialog = it.dialogState as? UserConfigUiState.DialogState.AddIdPassword ?: return@update it
+            it.copy(dialogState = dialog.copy(id = value))
+        }
+    }
+
+    fun onAddIdPasswordPasswordChange(value: String) {
+        _uiState.update {
+            val dialog = it.dialogState as? UserConfigUiState.DialogState.AddIdPassword ?: return@update it
+            it.copy(dialogState = dialog.copy(password = value))
+        }
+    }
+
+    fun onAddIdPasswordPasswordConfirmChange(value: String) {
+        _uiState.update {
+            val dialog = it.dialogState as? UserConfigUiState.DialogState.AddIdPassword ?: return@update it
+            it.copy(dialogState = dialog.copy(passwordConfirm = value))
+        }
+    }
+
+    fun addNewLocalId() {
+        val dialog = _uiState.value.dialogState as? UserConfigUiState.DialogState.AddIdPassword ?: return
+        val id = dialog.id
+        val password = dialog.password
+        val passwordConfirm = dialog.passwordConfirm
         viewModelScope.launch {
             if (id.isIdInvalid()) {
                 _uiEvent.emit(UserConfigUiEvent.ShowToastByEvent(UserConfigEvent.InvalidIdError))
@@ -70,7 +95,32 @@ class UserConfigViewModel @Inject constructor(
         }
     }
 
-    fun changePassword(oldPassword: String, newPassword: String, newPasswordConfirm: String) {
+    fun onChangePasswordCurrentChange(value: String) {
+        _uiState.update {
+            val dialog = it.dialogState as? UserConfigUiState.DialogState.ChangePassword ?: return@update it
+            it.copy(dialogState = dialog.copy(currentPassword = value))
+        }
+    }
+
+    fun onChangePasswordNewChange(value: String) {
+        _uiState.update {
+            val dialog = it.dialogState as? UserConfigUiState.DialogState.ChangePassword ?: return@update it
+            it.copy(dialogState = dialog.copy(newPassword = value))
+        }
+    }
+
+    fun onChangePasswordNewConfirmChange(value: String) {
+        _uiState.update {
+            val dialog = it.dialogState as? UserConfigUiState.DialogState.ChangePassword ?: return@update it
+            it.copy(dialogState = dialog.copy(newPasswordConfirm = value))
+        }
+    }
+
+    fun changePassword() {
+        val dialog = _uiState.value.dialogState as? UserConfigUiState.DialogState.ChangePassword ?: return
+        val oldPassword = dialog.currentPassword
+        val newPassword = dialog.newPassword
+        val newPasswordConfirm = dialog.newPasswordConfirm
         viewModelScope.launch {
             if (newPassword.isPasswordInvalid()) {
                 _uiEvent.emit(UserConfigUiEvent.ShowToastByEvent(UserConfigEvent.InvalidPasswordError))
@@ -105,7 +155,7 @@ class UserConfigViewModel @Inject constructor(
     }
 
     fun showChangePasswordDialog() {
-        _uiState.update { it.copy(dialogState = UserConfigUiState.DialogState.ChangePassword) }
+        _uiState.update { it.copy(dialogState = UserConfigUiState.DialogState.ChangePassword()) }
     }
 
     fun hideChangePasswordDialog() {
@@ -113,7 +163,7 @@ class UserConfigViewModel @Inject constructor(
     }
 
     fun showAddIdPasswordDialog() {
-        _uiState.update { it.copy(dialogState = UserConfigUiState.DialogState.AddIdPassword) }
+        _uiState.update { it.copy(dialogState = UserConfigUiState.DialogState.AddIdPassword()) }
     }
 
     fun hideAddIdPasswordDialog() {
@@ -167,8 +217,16 @@ data class UserConfigUiState(
 ) {
     sealed interface DialogState {
         data object None : DialogState
-        data object ChangePassword : DialogState
-        data object AddIdPassword : DialogState
+        data class ChangePassword(
+            val currentPassword: String = "",
+            val newPassword: String = "",
+            val newPasswordConfirm: String = "",
+        ) : DialogState
+        data class AddIdPassword(
+            val id: String = "",
+            val password: String = "",
+            val passwordConfirm: String = "",
+        ) : DialogState
         data object Leave : DialogState
     }
 }
