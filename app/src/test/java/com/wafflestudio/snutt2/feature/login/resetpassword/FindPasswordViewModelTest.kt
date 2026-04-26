@@ -56,10 +56,11 @@ class FindPasswordViewModelTest {
     // region checkEmailById
 
     @Test
-    fun `checkEmailById 호출 시 repository의 checkEmailById를 호출한다`() = runTest {
+    fun `checkEmailById 호출 시 onIdFieldChange 로 입력한 값으로 repository를 호출한다`() = runTest {
         fakeUserRepository.checkEmailByIdResult = Result.Success("t***@snu.ac.kr")
 
-        viewModel.checkEmailById("testuser")
+        viewModel.onIdFieldChange("testuser")
+        viewModel.checkEmailById()
 
         assertEquals("testuser", fakeUserRepository.checkEmailByIdCalledWith)
     }
@@ -68,7 +69,8 @@ class FindPasswordViewModelTest {
     fun `checkEmailById 성공 시 EnterFullEmail 상태로 전이한다`() = runTest {
         fakeUserRepository.checkEmailByIdResult = Result.Success("t***@snu.ac.kr")
 
-        viewModel.checkEmailById("testuser")
+        viewModel.onIdFieldChange("testuser")
+        viewModel.checkEmailById()
 
         assertEquals(
             FindPasswordViewModel.UIState.EnterFullEmail(
@@ -85,19 +87,36 @@ class FindPasswordViewModelTest {
         fakeUserRepository.checkEmailByIdResult =
             Result.Fail(Unknown(displayTitle = "", displayMessage = "존재하지 않는 ID"))
 
+        viewModel.onIdFieldChange("wronguser")
+
         viewModel.uiEvent.test {
-            viewModel.checkEmailById("wronguser")
+            viewModel.checkEmailById()
             assertEquals(FindPasswordUiEvent.ShowToast("존재하지 않는 ID"), awaitItem())
         }
     }
 
     @Test
-    fun `checkEmailById 실패 시 상태는 변하지 않는다`() = runTest {
+    fun `checkEmailById 실패 시 step 은 변하지 않고 입력값은 보존된다`() = runTest {
         fakeUserRepository.checkEmailByIdResult =
             Result.Fail(Unknown(displayTitle = "", displayMessage = "에러"))
+
+        viewModel.onIdFieldChange("wronguser")
+        viewModel.checkEmailById()
+
+        assertEquals(
+            FindPasswordViewModel.UIState.CheckId(userId = "wronguser"),
+            viewModel.uiState.value,
+        )
+    }
+
+    @Test
+    fun `CheckId step 이 아니면 checkEmailById 는 무시된다`() = runTest {
+        fakeUserRepository.checkEmailByIdResult = Result.Success("t***@snu.ac.kr")
+        viewModel.onIdFieldChange("testuser")
+        viewModel.checkEmailById() // EnterFullEmail 로 전이
         val before = viewModel.uiState.value
 
-        viewModel.checkEmailById("wronguser")
+        viewModel.checkEmailById()
 
         assertEquals(before, viewModel.uiState.value)
     }
@@ -107,19 +126,27 @@ class FindPasswordViewModelTest {
     // region sendFullEmailAndRequestCode
 
     @Test
-    fun `sendFullEmailAndRequestCode 호출 시 repository의 sendPwResetCodeToEmail을 호출한다`() = runTest {
+    fun `sendFullEmailAndRequestCode 호출 시 onEmailFieldChange 입력값으로 repository를 호출한다`() = runTest {
+        fakeUserRepository.checkEmailByIdResult = Result.Success("t***@snu.ac.kr")
+        viewModel.onIdFieldChange("testuser")
+        viewModel.checkEmailById()
         fakeUserRepository.sendPwResetCodeToEmailResult = Result.Success(Unit)
 
-        viewModel.sendFullEmailAndRequestCode("test@snu.ac.kr")
+        viewModel.onEmailFieldChange("test@snu.ac.kr")
+        viewModel.sendFullEmailAndRequestCode()
 
         assertEquals("test@snu.ac.kr", fakeUserRepository.sendPwResetCodeToEmailCalledWith)
     }
 
     @Test
     fun `sendFullEmailAndRequestCode 성공 시 VerifyCode 상태로 전이한다`() = runTest {
+        fakeUserRepository.checkEmailByIdResult = Result.Success("t***@snu.ac.kr")
+        viewModel.onIdFieldChange("testuser")
+        viewModel.checkEmailById()
         fakeUserRepository.sendPwResetCodeToEmailResult = Result.Success(Unit)
 
-        viewModel.sendFullEmailAndRequestCode("test@snu.ac.kr")
+        viewModel.onEmailFieldChange("test@snu.ac.kr")
+        viewModel.sendFullEmailAndRequestCode()
 
         assertEquals(
             FindPasswordViewModel.UIState.VerifyCode(fullEmail = "test@snu.ac.kr"),
@@ -129,13 +156,25 @@ class FindPasswordViewModelTest {
 
     @Test
     fun `sendFullEmailAndRequestCode 실패 시 ShowToast 이벤트가 발생한다`() = runTest {
+        fakeUserRepository.checkEmailByIdResult = Result.Success("t***@snu.ac.kr")
+        viewModel.onIdFieldChange("testuser")
+        viewModel.checkEmailById()
         fakeUserRepository.sendPwResetCodeToEmailResult =
             Result.Fail(Unknown(displayTitle = "", displayMessage = "이메일 불일치"))
 
+        viewModel.onEmailFieldChange("wrong@snu.ac.kr")
+
         viewModel.uiEvent.test {
-            viewModel.sendFullEmailAndRequestCode("wrong@snu.ac.kr")
+            viewModel.sendFullEmailAndRequestCode()
             assertEquals(FindPasswordUiEvent.ShowToast("이메일 불일치"), awaitItem())
         }
+    }
+
+    @Test
+    fun `EnterFullEmail step 이 아니면 sendFullEmailAndRequestCode 는 무시된다`() = runTest {
+        viewModel.sendFullEmailAndRequestCode()
+
+        assertEquals(null, fakeUserRepository.sendPwResetCodeToEmailCalledWith)
     }
 
     // endregion
@@ -143,14 +182,17 @@ class FindPasswordViewModelTest {
     // region verifyCode
 
     @Test
-    fun `verifyCode 호출 시 savedStateHandle의 userId로 repository를 호출한다`() = runTest {
+    fun `verifyCode 호출 시 savedStateHandle의 userId 와 onCodeFieldChange 입력값으로 repository를 호출한다`() = runTest {
         fakeUserRepository.checkEmailByIdResult = Result.Success("t***@snu.ac.kr")
-        viewModel.checkEmailById("testuser") // savedStateHandle에 userId 저장
+        viewModel.onIdFieldChange("testuser")
+        viewModel.checkEmailById()
         fakeUserRepository.sendPwResetCodeToEmailResult = Result.Success(Unit)
-        viewModel.sendFullEmailAndRequestCode("test@snu.ac.kr")
+        viewModel.onEmailFieldChange("test@snu.ac.kr")
+        viewModel.sendFullEmailAndRequestCode()
         fakeUserRepository.verifyPwResetCodeResult = Result.Success(Unit)
 
-        viewModel.verifyCode("123456")
+        viewModel.onCodeFieldChange("123456")
+        viewModel.verifyCode()
 
         assertEquals("testuser" to "123456", fakeUserRepository.verifyPwResetCodeCalledWith)
     }
@@ -158,80 +200,302 @@ class FindPasswordViewModelTest {
     @Test
     fun `verifyCode 성공 시 EnterNewPassword 상태로 전이한다`() = runTest {
         fakeUserRepository.checkEmailByIdResult = Result.Success("t***@snu.ac.kr")
-        viewModel.checkEmailById("testuser")
+        viewModel.onIdFieldChange("testuser")
+        viewModel.checkEmailById()
         fakeUserRepository.sendPwResetCodeToEmailResult = Result.Success(Unit)
-        viewModel.sendFullEmailAndRequestCode("test@snu.ac.kr")
+        viewModel.onEmailFieldChange("test@snu.ac.kr")
+        viewModel.sendFullEmailAndRequestCode()
         fakeUserRepository.verifyPwResetCodeResult = Result.Success(Unit)
 
-        viewModel.verifyCode("123456")
+        viewModel.onCodeFieldChange("123456")
+        viewModel.verifyCode()
 
         assertEquals(
-            FindPasswordViewModel.UIState.EnterNewPassword(showCompleteDialog = false),
+            FindPasswordViewModel.UIState.EnterNewPassword(),
             viewModel.uiState.value,
         )
     }
 
     @Test
     fun `verifyCode 실패 시 ShowToast 이벤트가 발생한다`() = runTest {
+        fakeUserRepository.checkEmailByIdResult = Result.Success("t***@snu.ac.kr")
+        viewModel.onIdFieldChange("testuser")
+        viewModel.checkEmailById()
+        fakeUserRepository.sendPwResetCodeToEmailResult = Result.Success(Unit)
+        viewModel.onEmailFieldChange("test@snu.ac.kr")
+        viewModel.sendFullEmailAndRequestCode()
         fakeUserRepository.verifyPwResetCodeResult =
             Result.Fail(Unknown(displayTitle = "", displayMessage = "잘못된 코드"))
 
+        viewModel.onCodeFieldChange("000000")
+
         viewModel.uiEvent.test {
-            viewModel.verifyCode("000000")
+            viewModel.verifyCode()
             assertEquals(FindPasswordUiEvent.ShowToast("잘못된 코드"), awaitItem())
         }
     }
 
+    @Test
+    fun `VerifyCode step 이 아니면 verifyCode 는 무시된다`() = runTest {
+        viewModel.verifyCode()
+
+        assertEquals(null, fakeUserRepository.verifyPwResetCodeCalledWith)
+    }
+
     // endregion
 
-    // region resetPassword
+    // region resendVerifyCode
 
     @Test
-    fun `resetPassword 호출 시 savedStateHandle의 userId와 code로 repository를 호출한다`() = runTest {
-        // 전체 플로우를 거쳐 savedStateHandle에 userId, code 저장
+    fun `resendVerifyCode 호출 시 같은 fullEmail 로 sendPwResetCodeToEmail 을 다시 호출한다`() = runTest {
         fakeUserRepository.checkEmailByIdResult = Result.Success("t***@snu.ac.kr")
-        viewModel.checkEmailById("testuser")
+        viewModel.onIdFieldChange("testuser")
+        viewModel.checkEmailById()
         fakeUserRepository.sendPwResetCodeToEmailResult = Result.Success(Unit)
-        viewModel.sendFullEmailAndRequestCode("test@snu.ac.kr")
+        viewModel.onEmailFieldChange("test@snu.ac.kr")
+        viewModel.sendFullEmailAndRequestCode()
+
+        viewModel.resendVerifyCode()
+
+        assertEquals("test@snu.ac.kr", fakeUserRepository.sendPwResetCodeToEmailCalledWith)
+    }
+
+    // endregion
+
+    // region validateAndResetPassword
+
+    @Test
+    fun `validateAndResetPassword 성공 시 savedStateHandle의 userId, code 와 입력 비밀번호로 repository를 호출한다`() = runTest {
+        fakeUserRepository.checkEmailByIdResult = Result.Success("t***@snu.ac.kr")
+        viewModel.onIdFieldChange("testuser")
+        viewModel.checkEmailById()
+        fakeUserRepository.sendPwResetCodeToEmailResult = Result.Success(Unit)
+        viewModel.onEmailFieldChange("test@snu.ac.kr")
+        viewModel.sendFullEmailAndRequestCode()
         fakeUserRepository.verifyPwResetCodeResult = Result.Success(Unit)
-        viewModel.verifyCode("123456")
+        viewModel.onCodeFieldChange("123456")
+        viewModel.verifyCode()
         fakeUserRepository.resetPasswordResult = Result.Success(Unit)
 
-        viewModel.resetPassword("newPassword!")
+        viewModel.onNewPasswordFieldChange("newPassword1!")
+        viewModel.onNewPasswordConfirmFieldChange("newPassword1!")
+        viewModel.validateAndResetPassword(timerRunning = true)
 
         assertEquals(
-            Triple("testuser", "newPassword!", "123456"),
+            Triple("testuser", "newPassword1!", "123456"),
             fakeUserRepository.resetPasswordCalledWith,
         )
     }
 
     @Test
-    fun `resetPassword 성공 시 showCompleteDialog가 true가 된다`() = runTest {
+    fun `validateAndResetPassword 성공 시 dialogState 가 Complete 가 된다`() = runTest {
         fakeUserRepository.checkEmailByIdResult = Result.Success("t***@snu.ac.kr")
-        viewModel.checkEmailById("testuser")
+        viewModel.onIdFieldChange("testuser")
+        viewModel.checkEmailById()
         fakeUserRepository.sendPwResetCodeToEmailResult = Result.Success(Unit)
-        viewModel.sendFullEmailAndRequestCode("test@snu.ac.kr")
+        viewModel.onEmailFieldChange("test@snu.ac.kr")
+        viewModel.sendFullEmailAndRequestCode()
         fakeUserRepository.verifyPwResetCodeResult = Result.Success(Unit)
-        viewModel.verifyCode("123456")
+        viewModel.onCodeFieldChange("123456")
+        viewModel.verifyCode()
         fakeUserRepository.resetPasswordResult = Result.Success(Unit)
 
-        viewModel.resetPassword("newPassword!")
+        viewModel.onNewPasswordFieldChange("newPassword1!")
+        viewModel.onNewPasswordConfirmFieldChange("newPassword1!")
+        viewModel.validateAndResetPassword(timerRunning = true)
 
         assertEquals(
-            FindPasswordViewModel.UIState.EnterNewPassword(showCompleteDialog = true),
+            FindPasswordViewModel.UIState.EnterNewPassword(
+                newPasswordField = "newPassword1!",
+                newPasswordConfirmField = "newPassword1!",
+                dialogState = FindPasswordViewModel.UIState.EnterNewPassword.NewPasswordDialogState.Complete,
+            ),
             viewModel.uiState.value,
         )
     }
 
     @Test
-    fun `resetPassword 실패 시 ShowToast 이벤트가 발생한다`() = runTest {
+    fun `validateAndResetPassword 시 비밀번호 미일치면 ConfirmFail 다이얼로그가 뜨고 repository는 호출되지 않는다`() = runTest {
+        fakeUserRepository.checkEmailByIdResult = Result.Success("t***@snu.ac.kr")
+        viewModel.onIdFieldChange("testuser")
+        viewModel.checkEmailById()
+        fakeUserRepository.sendPwResetCodeToEmailResult = Result.Success(Unit)
+        viewModel.onEmailFieldChange("test@snu.ac.kr")
+        viewModel.sendFullEmailAndRequestCode()
+        fakeUserRepository.verifyPwResetCodeResult = Result.Success(Unit)
+        viewModel.onCodeFieldChange("123456")
+        viewModel.verifyCode()
+
+        viewModel.onNewPasswordFieldChange("newPassword1!")
+        viewModel.onNewPasswordConfirmFieldChange("different1!")
+        viewModel.validateAndResetPassword(timerRunning = true)
+
+        val state = viewModel.uiState.value as FindPasswordViewModel.UIState.EnterNewPassword
+        assertEquals(
+            FindPasswordViewModel.UIState.EnterNewPassword.NewPasswordDialogState.Error(
+                FindPasswordViewModel.UIState.EnterNewPassword.ErrorType.ConfirmFail,
+            ),
+            state.dialogState,
+        )
+        assertEquals(null, fakeUserRepository.resetPasswordCalledWith)
+    }
+
+    @Test
+    fun `validateAndResetPassword 시 비밀번호 형식이 부적합하면 InvalidPassword 다이얼로그가 뜨고 repository는 호출되지 않는다`() = runTest {
+        fakeUserRepository.checkEmailByIdResult = Result.Success("t***@snu.ac.kr")
+        viewModel.onIdFieldChange("testuser")
+        viewModel.checkEmailById()
+        fakeUserRepository.sendPwResetCodeToEmailResult = Result.Success(Unit)
+        viewModel.onEmailFieldChange("test@snu.ac.kr")
+        viewModel.sendFullEmailAndRequestCode()
+        fakeUserRepository.verifyPwResetCodeResult = Result.Success(Unit)
+        viewModel.onCodeFieldChange("123456")
+        viewModel.verifyCode()
+
+        viewModel.onNewPasswordFieldChange("short")
+        viewModel.onNewPasswordConfirmFieldChange("short")
+        viewModel.validateAndResetPassword(timerRunning = true)
+
+        val state = viewModel.uiState.value as FindPasswordViewModel.UIState.EnterNewPassword
+        assertEquals(
+            FindPasswordViewModel.UIState.EnterNewPassword.NewPasswordDialogState.Error(
+                FindPasswordViewModel.UIState.EnterNewPassword.ErrorType.InvalidPassword,
+            ),
+            state.dialogState,
+        )
+        assertEquals(null, fakeUserRepository.resetPasswordCalledWith)
+    }
+
+    @Test
+    fun `validateAndResetPassword 시 timer 가 종료되었으면 아무 동작도 하지 않는다`() = runTest {
+        fakeUserRepository.checkEmailByIdResult = Result.Success("t***@snu.ac.kr")
+        viewModel.onIdFieldChange("testuser")
+        viewModel.checkEmailById()
+        fakeUserRepository.sendPwResetCodeToEmailResult = Result.Success(Unit)
+        viewModel.onEmailFieldChange("test@snu.ac.kr")
+        viewModel.sendFullEmailAndRequestCode()
+        fakeUserRepository.verifyPwResetCodeResult = Result.Success(Unit)
+        viewModel.onCodeFieldChange("123456")
+        viewModel.verifyCode()
+
+        viewModel.onNewPasswordFieldChange("newPassword1!")
+        viewModel.onNewPasswordConfirmFieldChange("newPassword1!")
+        viewModel.validateAndResetPassword(timerRunning = false)
+
+        assertEquals(null, fakeUserRepository.resetPasswordCalledWith)
+    }
+
+    @Test
+    fun `validateAndResetPassword repository 실패 시 ShowToast 이벤트가 발생한다`() = runTest {
+        fakeUserRepository.checkEmailByIdResult = Result.Success("t***@snu.ac.kr")
+        viewModel.onIdFieldChange("testuser")
+        viewModel.checkEmailById()
+        fakeUserRepository.sendPwResetCodeToEmailResult = Result.Success(Unit)
+        viewModel.onEmailFieldChange("test@snu.ac.kr")
+        viewModel.sendFullEmailAndRequestCode()
+        fakeUserRepository.verifyPwResetCodeResult = Result.Success(Unit)
+        viewModel.onCodeFieldChange("123456")
+        viewModel.verifyCode()
         fakeUserRepository.resetPasswordResult =
-            Result.Fail(Unknown(displayTitle = "", displayMessage = "비밀번호 조건 불충족"))
+            Result.Fail(Unknown(displayTitle = "", displayMessage = "비밀번호 변경 실패"))
+
+        viewModel.onNewPasswordFieldChange("newPassword1!")
+        viewModel.onNewPasswordConfirmFieldChange("newPassword1!")
 
         viewModel.uiEvent.test {
-            viewModel.resetPassword("weak")
-            assertEquals(FindPasswordUiEvent.ShowToast("비밀번호 조건 불충족"), awaitItem())
+            viewModel.validateAndResetPassword(timerRunning = true)
+            assertEquals(FindPasswordUiEvent.ShowToast("비밀번호 변경 실패"), awaitItem())
         }
+    }
+
+    // endregion
+
+    // region onTimerExpired / dismissNewPasswordDialog
+
+    @Test
+    fun `onTimerExpired 호출 시 Expired 다이얼로그가 뜬다`() = runTest {
+        fakeUserRepository.checkEmailByIdResult = Result.Success("t***@snu.ac.kr")
+        viewModel.onIdFieldChange("testuser")
+        viewModel.checkEmailById()
+        fakeUserRepository.sendPwResetCodeToEmailResult = Result.Success(Unit)
+        viewModel.onEmailFieldChange("test@snu.ac.kr")
+        viewModel.sendFullEmailAndRequestCode()
+        fakeUserRepository.verifyPwResetCodeResult = Result.Success(Unit)
+        viewModel.onCodeFieldChange("123456")
+        viewModel.verifyCode()
+
+        viewModel.onTimerExpired()
+
+        val state = viewModel.uiState.value as FindPasswordViewModel.UIState.EnterNewPassword
+        assertEquals(
+            FindPasswordViewModel.UIState.EnterNewPassword.NewPasswordDialogState.Error(
+                FindPasswordViewModel.UIState.EnterNewPassword.ErrorType.Expired,
+            ),
+            state.dialogState,
+        )
+    }
+
+    @Test
+    fun `dismissNewPasswordDialog 호출 시 dialogState 가 None 으로 돌아간다`() = runTest {
+        fakeUserRepository.checkEmailByIdResult = Result.Success("t***@snu.ac.kr")
+        viewModel.onIdFieldChange("testuser")
+        viewModel.checkEmailById()
+        fakeUserRepository.sendPwResetCodeToEmailResult = Result.Success(Unit)
+        viewModel.onEmailFieldChange("test@snu.ac.kr")
+        viewModel.sendFullEmailAndRequestCode()
+        fakeUserRepository.verifyPwResetCodeResult = Result.Success(Unit)
+        viewModel.onCodeFieldChange("123456")
+        viewModel.verifyCode()
+        viewModel.onTimerExpired()
+
+        viewModel.dismissNewPasswordDialog()
+
+        val state = viewModel.uiState.value as FindPasswordViewModel.UIState.EnterNewPassword
+        assertEquals(
+            FindPasswordViewModel.UIState.EnterNewPassword.NewPasswordDialogState.None,
+            state.dialogState,
+        )
+    }
+
+    // endregion
+
+    // region showWhyNotCodeComingDialog / dismissVerifyCodeDialog
+
+    @Test
+    fun `showWhyNotCodeComingDialog 호출 시 VerifyCode dialogState 가 WhyNotCodeComing 이 된다`() = runTest {
+        fakeUserRepository.checkEmailByIdResult = Result.Success("t***@snu.ac.kr")
+        viewModel.onIdFieldChange("testuser")
+        viewModel.checkEmailById()
+        fakeUserRepository.sendPwResetCodeToEmailResult = Result.Success(Unit)
+        viewModel.onEmailFieldChange("test@snu.ac.kr")
+        viewModel.sendFullEmailAndRequestCode()
+
+        viewModel.showWhyNotCodeComingDialog()
+
+        val state = viewModel.uiState.value as FindPasswordViewModel.UIState.VerifyCode
+        assertEquals(
+            FindPasswordViewModel.UIState.VerifyCode.VerifyCodeDialogState.WhyNotCodeComing,
+            state.dialogState,
+        )
+    }
+
+    @Test
+    fun `dismissVerifyCodeDialog 호출 시 VerifyCode dialogState 가 None 이 된다`() = runTest {
+        fakeUserRepository.checkEmailByIdResult = Result.Success("t***@snu.ac.kr")
+        viewModel.onIdFieldChange("testuser")
+        viewModel.checkEmailById()
+        fakeUserRepository.sendPwResetCodeToEmailResult = Result.Success(Unit)
+        viewModel.onEmailFieldChange("test@snu.ac.kr")
+        viewModel.sendFullEmailAndRequestCode()
+        viewModel.showWhyNotCodeComingDialog()
+
+        viewModel.dismissVerifyCodeDialog()
+
+        val state = viewModel.uiState.value as FindPasswordViewModel.UIState.VerifyCode
+        assertEquals(
+            FindPasswordViewModel.UIState.VerifyCode.VerifyCodeDialogState.None,
+            state.dialogState,
+        )
     }
 
     // endregion
@@ -241,7 +505,8 @@ class FindPasswordViewModelTest {
     @Test
     fun `EnterFullEmail에서 goToPreviousStep 호출 시 CheckId로 돌아가고 userId가 복원된다`() = runTest {
         fakeUserRepository.checkEmailByIdResult = Result.Success("t***@snu.ac.kr")
-        viewModel.checkEmailById("testuser")
+        viewModel.onIdFieldChange("testuser")
+        viewModel.checkEmailById()
 
         viewModel.goToPreviousStep()
 
@@ -254,9 +519,11 @@ class FindPasswordViewModelTest {
     @Test
     fun `VerifyCode에서 goToPreviousStep 호출 시 EnterFullEmail로 돌아가고 저장값이 복원된다`() = runTest {
         fakeUserRepository.checkEmailByIdResult = Result.Success("t***@snu.ac.kr")
-        viewModel.checkEmailById("testuser")
+        viewModel.onIdFieldChange("testuser")
+        viewModel.checkEmailById()
         fakeUserRepository.sendPwResetCodeToEmailResult = Result.Success(Unit)
-        viewModel.sendFullEmailAndRequestCode("test@snu.ac.kr")
+        viewModel.onEmailFieldChange("test@snu.ac.kr")
+        viewModel.sendFullEmailAndRequestCode()
 
         viewModel.goToPreviousStep()
 
@@ -273,11 +540,14 @@ class FindPasswordViewModelTest {
     @Test
     fun `EnterNewPassword에서 goToPreviousStep 호출 시 CheckId로 돌아간다`() = runTest {
         fakeUserRepository.checkEmailByIdResult = Result.Success("t***@snu.ac.kr")
-        viewModel.checkEmailById("testuser")
+        viewModel.onIdFieldChange("testuser")
+        viewModel.checkEmailById()
         fakeUserRepository.sendPwResetCodeToEmailResult = Result.Success(Unit)
-        viewModel.sendFullEmailAndRequestCode("test@snu.ac.kr")
+        viewModel.onEmailFieldChange("test@snu.ac.kr")
+        viewModel.sendFullEmailAndRequestCode()
         fakeUserRepository.verifyPwResetCodeResult = Result.Success(Unit)
-        viewModel.verifyCode("123456")
+        viewModel.onCodeFieldChange("123456")
+        viewModel.verifyCode()
 
         viewModel.goToPreviousStep()
 
