@@ -73,9 +73,8 @@ fun CourseBookDrawerItem(
             )
             if (tableSummary.isPrimary) {
                 SnuttIcon(
-                    if (true) R.drawable.ic_people_selected else R.drawable.ic_people_unselected,
+                    R.drawable.ic_people_selected,
                     modifier = Modifier.size(15.dp),
-
                     colorFilter = ColorFilter.tint(SNUTTColors.SNUTTTheme),
                 )
             }

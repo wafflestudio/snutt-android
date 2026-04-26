@@ -111,9 +111,8 @@ private fun WebViewErrorPage(modifier: Modifier, onRetry: () -> Unit) {
             },
             navigationIcon = {
                 SnuttIcon(
-                    if (true) R.drawable.ic_timetable_selected else R.drawable.ic_timetable_unselected,
+                    R.drawable.ic_timetable_selected,
                     modifier = Modifier.size(30.dp),
-
                     colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
             },

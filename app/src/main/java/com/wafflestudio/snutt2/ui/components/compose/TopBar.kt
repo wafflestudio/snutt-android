@@ -48,7 +48,9 @@ fun SimpleTopBar(
         navigationIcon = {
             SnuttIcon(
                 R.drawable.ic_arrow_back,
-                modifier = Modifier.clicks(1000L) { onClickNavigateBack() }.size(30.dp),
+                modifier = Modifier
+                    .clicks(1000L) { onClickNavigateBack() }
+                    .size(30.dp),
                 colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
         },
@@ -162,10 +164,18 @@ private fun TopBar_TitleWithActions() {
                 SnuttIcon(R.drawable.ic_drawer, modifier = Modifier.size(30.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900), contentDescription = stringResource(R.string.home_timetable_drawer))
             },
             actions = {
-                SnuttIcon(R.drawable.ic_share, Modifier.padding(end = 8.dp).size(30.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
+                SnuttIcon(
+                    R.drawable.ic_share,
+                    Modifier
+                        .padding(end = 8.dp)
+                        .size(30.dp),
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                )
                 SnuttIcon(
                     R.drawable.ic_alarm_default,
-                    modifier = Modifier.padding(end = 12.dp).size(30.dp),
+                    modifier = Modifier
+                        .padding(end = 12.dp)
+                        .size(30.dp),
                     colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
             },

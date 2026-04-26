@@ -59,7 +59,6 @@ internal fun LectureDetailTopBar(
                         .size(30.dp)
                         .clicks { onVacancyToggle() },
                     colorFilter = ColorFilter.tint(SNUTTColors.Black900),
-
                 )
                 SnuttIcon(
                     if (isBookmarked) R.drawable.ic_bookmark_selected else R.drawable.ic_bookmark_unselected,

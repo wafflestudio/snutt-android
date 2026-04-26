@@ -130,7 +130,7 @@ fun TimetableDropdownOverlay(
             ) {
                 SnuttIcon(
                     R.drawable.ic_search_unselected,
-                    modifier = Modifier.size(30.dp),
+                    modifier = Modifier.size(22.dp),
                     colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
                 Text(

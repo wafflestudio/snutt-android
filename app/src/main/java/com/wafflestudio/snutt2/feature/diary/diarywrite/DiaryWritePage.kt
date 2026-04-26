@@ -240,7 +240,7 @@ private fun DiaryWriting(
                     .width(24.dp)
                     .clicks {
                         onClickBackButton()
-                    }.size(30.dp),
+                    },
                 colorFilter = ColorFilter.tint(
                     DiaryTheme.colors.exitIcon,
                 ),

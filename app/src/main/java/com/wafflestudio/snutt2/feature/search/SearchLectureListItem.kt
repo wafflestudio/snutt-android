@@ -167,11 +167,10 @@ private fun ReviewRating(reviewInfo: LectureReviewInfo) {
 
     Row(verticalAlignment = Alignment.CenterVertically) {
         SnuttIcon(
-            if (false) R.drawable.ic_star_filled else R.drawable.ic_star_outline,
+            R.drawable.ic_star_outline,
             modifier = Modifier
                 .size(12.dp)
                 .offset(y = 1.dp),
-
             colorFilter = ColorFilter.tint(SNUTTColors.White),
         )
         Spacer(modifier = Modifier.width(2.dp))
@@ -255,7 +254,6 @@ private fun LectureActionBar(
             SnuttIcon(
                 if (isBookmarked) R.drawable.ic_bookmark_selected else R.drawable.ic_bookmark_unselected,
                 modifier = Modifier.size(23.dp),
-
                 colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
             )
         }
@@ -269,7 +267,6 @@ private fun LectureActionBar(
                 if (isVacancyRegistered) R.drawable.ic_ringing_alarm_selected else R.drawable.ic_ringing_alarm_unselected,
                 modifier = Modifier.size(23.dp),
                 colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
-
             )
         }
         Spacer(modifier = Modifier.weight(0.3f))

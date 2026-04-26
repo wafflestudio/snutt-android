@@ -42,7 +42,6 @@ internal fun BottomNavigation(
             SnuttIcon(
                 if (pageState == HomeItem.Timetable) R.drawable.ic_timetable_selected else R.drawable.ic_timetable_unselected,
                 modifier = Modifier.size(30.dp),
-
                 colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
         }
@@ -59,7 +58,6 @@ internal fun BottomNavigation(
             SnuttIcon(
                 if (pageState == HomeItem.Search) R.drawable.ic_search_selected else R.drawable.ic_search_unselected,
                 modifier = Modifier.size(30.dp),
-
                 colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
         }
@@ -76,7 +74,6 @@ internal fun BottomNavigation(
             SnuttIcon(
                 if (pageState is HomeItem.Review) R.drawable.ic_review_selected else R.drawable.ic_review_unselected,
                 modifier = Modifier.size(30.dp),
-
                 colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
         }
@@ -93,7 +90,6 @@ internal fun BottomNavigation(
             SnuttIcon(
                 if (pageState is HomeItem.Friends) R.drawable.ic_people_selected else R.drawable.ic_people_unselected,
                 modifier = Modifier.size(30.dp),
-
                 colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
         }
@@ -115,7 +111,6 @@ internal fun BottomNavigation(
                 SnuttIcon(
                     if (pageState == HomeItem.Settings) R.drawable.ic_horizontal_more_selected else R.drawable.ic_horizontal_more_unselected,
                     modifier = Modifier.size(30.dp),
-
                     colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
             }

@@ -46,8 +46,7 @@ internal fun LectureReviewRatingField(
                 horizontalArrangement = Arrangement.spacedBy(2.dp),
             ) {
                 SnuttIcon(
-                    if (true) R.drawable.ic_star_filled else R.drawable.ic_star_outline,
-
+                    R.drawable.ic_star_filled,
                     modifier = Modifier
                         .size(18.dp)
                         .offset(y = 1.dp),
