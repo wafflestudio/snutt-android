@@ -33,7 +33,9 @@ fun HomeDrawerBottomSheetLayout(
     uiState: HomeDrawerUiState,
     sheetState: ModalBottomSheetState,
     onDismiss: () -> Unit,
-    onCreateNewTable: (coursebook: CourseBook, title: String) -> Unit,
+    onCreateNewTableTitleChange: (String) -> Unit,
+    onCreateNewTableCourseBookChange: (CourseBook) -> Unit,
+    onCreateNewTable: () -> Unit,
     onClickChangeTableName: (tableSummary: TableSummary) -> Unit,
     onClickSetPrimary: (tableSummary: TableSummary) -> Unit,
     onClickUnsetPrimary: (tableSummary: TableSummary) -> Unit,
@@ -89,6 +91,8 @@ fun HomeDrawerBottomSheetLayout(
                         sheetState = sheetState,
                         sheetType = uiState.homeDrawerBottomSheetType,
                         onDismiss = onDismiss,
+                        onTitleChange = onCreateNewTableTitleChange,
+                        onCourseBookChange = onCreateNewTableCourseBookChange,
                         onSubmit = onCreateNewTable,
                     )
                 }

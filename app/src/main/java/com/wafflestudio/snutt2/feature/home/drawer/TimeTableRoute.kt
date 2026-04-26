@@ -131,6 +131,8 @@ fun TimeTableRoute(
         uiState = drawerUiState,
         sheetState = sheetState,
         onDismiss = drawerViewModel::closeSheet,
+        onCreateNewTableTitleChange = drawerViewModel::onCreateNewTableTitleChange,
+        onCreateNewTableCourseBookChange = drawerViewModel::onCreateNewTableCourseBookChange,
         onCreateNewTable = drawerViewModel::createNewTable,
         onClickChangeTableName = drawerViewModel::openChangeTableNameDialog,
         onClickSetPrimary = drawerViewModel::setPrimaryTable,

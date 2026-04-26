@@ -424,7 +424,9 @@ class HomeDrawerViewModelTest {
     @Test
     fun `createNewTable 호출 시 repository의 createAndSelectTable을 호출한다`() = runTest {
         val viewModel = createViewModel()
-        viewModel.createNewTable(courseBook2025_1, "새 시간표")
+        viewModel.openCreateNewTableOfSpecificCourseBookSheet(courseBook2025_1)
+        viewModel.onCreateNewTableTitleChange("새 시간표")
+        viewModel.createNewTable()
         assertEquals(courseBook2025_1 to "새 시간표", fakeTableRepository.createAndSelectTableCalledWith)
     }
 
@@ -432,9 +434,11 @@ class HomeDrawerViewModelTest {
     fun `createNewTable 성공 시 CloseBottomSheet와 CloseDrawer 이벤트가 순서대로 발생한다`() = runTest {
         fakeTableRepository.createAndSelectTableResult = Result.Success(Unit)
         val viewModel = createViewModel()
+        viewModel.openCreateNewTableOfSpecificCourseBookSheet(courseBook2025_1)
+        viewModel.onCreateNewTableTitleChange("새 시간표")
 
         viewModel.uiEvent.test {
-            viewModel.createNewTable(courseBook2025_1, "새 시간표")
+            viewModel.createNewTable()
             assertEquals(HomeDrawerUiEvent.CloseBottomSheet, awaitItem())
             assertEquals(HomeDrawerUiEvent.CloseDrawer, awaitItem())
         }
@@ -445,9 +449,11 @@ class HomeDrawerViewModelTest {
         fakeTableRepository.createAndSelectTableResult =
             Result.Fail(Unknown(displayTitle = "", displayMessage = "에러"))
         val viewModel = createViewModel()
+        viewModel.openCreateNewTableOfSpecificCourseBookSheet(courseBook2025_1)
+        viewModel.onCreateNewTableTitleChange("새 시간표")
 
         viewModel.uiEvent.test {
-            viewModel.createNewTable(courseBook2025_1, "새 시간표")
+            viewModel.createNewTable()
             assertEquals(HomeDrawerUiEvent.ShowToast("에러"), awaitItem())
         }
     }
