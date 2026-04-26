@@ -237,7 +237,9 @@ private fun AddThemeItem_Default() {
 @Composable
 private fun ThemeGuideTexts_Default() {
     SnuttPreviewSurface {
-        ThemeGuideTexts()
+        Box(modifier = Modifier.background(MaterialTheme.colors.background)) {
+            ThemeGuideTexts()
+        }
     }
 }
 

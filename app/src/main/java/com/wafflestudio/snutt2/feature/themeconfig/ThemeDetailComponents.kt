@@ -5,6 +5,7 @@ import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -260,19 +261,21 @@ private fun ColorPickerDialog(
 @Composable
 private fun ThemeColorRow_EditableExpanded() {
     SnuttPreviewSurface {
-        val editableColor = PreviewData.previewEditingThemeCustom.colors[0]
-        ThemeColorRow(
-            index = 0,
-            isEditable = true,
-            color = editableColor.item,
-            isExpanded = true,
-            isDuplicateEnabled = true,
-            isRemoveEnabled = true,
-            onToggleColorExpanded = {},
-            onDuplicateColor = {},
-            onRemoveColor = {},
-            onUpdateColor = { _, _, _ -> },
-        )
+        Box(modifier = Modifier.background(MaterialTheme.colors.background)) {
+            val editableColor = PreviewData.previewEditingThemeCustom.colors[0]
+            ThemeColorRow(
+                index = 0,
+                isEditable = true,
+                color = editableColor.item,
+                isExpanded = true,
+                isDuplicateEnabled = true,
+                isRemoveEnabled = true,
+                onToggleColorExpanded = {},
+                onDuplicateColor = {},
+                onRemoveColor = {},
+                onUpdateColor = { _, _, _ -> },
+            )
+        }
     }
 }
 
@@ -280,19 +283,21 @@ private fun ThemeColorRow_EditableExpanded() {
 @Composable
 private fun ThemeColorRow_Readonly() {
     SnuttPreviewSurface {
-        val readonlyColor = PreviewData.previewEditingThemeBuiltIn.colors[0]
-        ThemeColorRow(
-            index = 0,
-            isEditable = false,
-            color = readonlyColor.item,
-            isExpanded = false,
-            isDuplicateEnabled = false,
-            isRemoveEnabled = false,
-            onToggleColorExpanded = {},
-            onDuplicateColor = {},
-            onRemoveColor = {},
-            onUpdateColor = { _, _, _ -> },
-        )
+        Box(modifier = Modifier.background(MaterialTheme.colors.background)) {
+            val readonlyColor = PreviewData.previewEditingThemeBuiltIn.colors[0]
+            ThemeColorRow(
+                index = 0,
+                isEditable = false,
+                color = readonlyColor.item,
+                isExpanded = false,
+                isDuplicateEnabled = false,
+                isRemoveEnabled = false,
+                onToggleColorExpanded = {},
+                onDuplicateColor = {},
+                onRemoveColor = {},
+                onUpdateColor = { _, _, _ -> },
+            )
+        }
     }
 }
 
