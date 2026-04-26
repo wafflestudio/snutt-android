@@ -88,7 +88,23 @@ private fun ExampleComponent_Default() {
 
 ---
 
-## 6. screenshotTest 와의 관계
+## 6. Mock 데이터 중앙화
+
+preview 가 사용하는 mock fixture 는 file-private 으로 두지 않고, 중앙 집결지에 모은다.
+
+- 일반 fixture: `com.wafflestudio.snutt2.domain.model.preview.PreviewData`
+- 도메인별 fixture: `DiaryPreviewData` 처럼 도메인 접두 + `PreviewData` 접미.
+
+명명 컨벤션은 `sample*` (예: `sampleLectures`, `sampleDiarySummaryShortComment`).
+
+이렇게 하면:
+- 같은 fixture 를 여러 preview 에서 재사용 가능.
+- mock 데이터 자체의 일관성 (실제 도메인 모델 구조 변경 시 한 곳만 수정).
+- 컴포저블 파일이 짧아짐.
+
+---
+
+## 7. screenshotTest 와의 관계
 
 - main 의 `@Preview` 는 **screenshotTest 의 입력이 아니다.** `com.android.compose.screenshot` 플러그인은
   `screenshotTest/` 소스셋의 `@Preview` 만 스캔한다.
@@ -104,7 +120,7 @@ private fun ExampleComponent_Default() {
 
 ---
 
-## 7. 체크리스트
+## 8. 체크리스트
 
 새 컴포넌트 / 화면을 작성할 때:
 

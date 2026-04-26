@@ -23,12 +23,19 @@ preview 는 시각 회귀 방어막이 아니라 **시각적 단서**(`preview-p
 ## 2. 진단 분기
 
 ```
-preview 부착 시 어색함이 발견됨
+preview 부착 시 어색함 또는 redundancy 가 발견됨
   │
   ├─ 다른 컴포넌트의 preview 와 시각이 정확히 동일
-  │   → 책임 중복 시그널
-  │     해소: 한 컴포넌트의 분기 책임을 호출자로 이전 (책임 분리)
-  │     사례: §3.1
+  │   │
+  │   ├─ 두 컴포넌트가 다른 책임 단위인데 시각이 우연히 동일
+  │   │   → 책임 중복 시그널
+  │   │     해소: 한 컴포넌트의 분기 책임을 호출자로 이전 (책임 분리)
+  │   │     사례: §3.1
+  │   │
+  │   └─ 자식 컴포넌트의 시각이 부모 preview 에서 이미 완전히 보임
+  │       → preview redundant 시그널 (분리 자체는 OK)
+  │         해소: 자식의 별도 preview 만 제거 (분리는 유지)
+  │         사례: §3.4
   │
   └─ 단독 호출 시 시각이 빈 화면 또는 의도와 다름 (예: 라이트 모드 흰 화면)
       │
@@ -135,6 +142,34 @@ preview 부착 시 어색함이 발견됨
   늘어날 때 인프라가 ad-hoc 으로 부풀 위험을 회피.
 
 **커밋**: `7925ce68 refactor: SearchLectureListItem preview 에 호출 컨텍스트 wrapper 추가`
+
+---
+
+### 3.4 자식 컴포넌트의 redundant preview — `DiarySummary_Default`
+
+**시그널**: 부모(`DiarySummariesOfDay_Expanded`) preview 에서 자식(`DiarySummary`)
+컴포넌트의 시각이 이미 완전히 노출되며, IDE 클릭으로 자식 정의로의 네비게이션도 부모를
+통해 가능. 자식의 별도 preview 는 시각·네비게이션 가치가 모두 부모에 흡수되어 redundant.
+
+**원인**:
+- `DiarySummary` 는 `DiarySummariesOfDay` 안에서만 사용되는 private helper.
+- 추출 자체는 가독성/책임 측면에서 합리 — **분리가 잘못된 것은 아님**.
+- 다만 추출된 모든 함수마다 preview 를 부착해야 하는 것은 아님. 부모 preview 에서
+  자식이 충분히 노출되면 별도 preview 의 가치가 사라짐.
+
+**해소**:
+- 자식의 별도 preview 만 제거.
+- 컴포넌트 분리는 그대로 유지.
+- 추가로 file-private fixture (`previewSummary1/2`) 는 중앙 집결지
+  (`DiaryPreviewData`) 로 이전 (preview-policy.md §6 참조).
+
+**판단 기준** (자식 preview 를 제거할지):
+- 부모 preview 에서 자식이 의미 있게 노출되는가?
+- 자식이 호출 컨텍스트 없이 단독으로 의미 있는 분기를 가지는가? (있다면 부모에서 못
+  보여주는 분기가 있을 수 있음 → 자식 preview 유지)
+- 부모 preview 에서 자식 호출부 클릭으로 자식 정의에 도달 가능한가?
+
+**커밋**: `77461db7 refactor: DiarySummary 의 file-private fixture 를 DiaryPreviewData 로 이전 + redundant preview 제거`
 
 ---
 
