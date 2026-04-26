@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.feature.lecturedetail.currenttable
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.BuiltInTheme
@@ -20,7 +22,6 @@ import com.wafflestudio.snutt2.feature.lecturedetail.ColorItem
 import com.wafflestudio.snutt2.feature.lecturedetail.ColorPickerDialog
 import com.wafflestudio.snutt2.feature.lecturedetail.PickerColorSection
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
-import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
@@ -115,7 +116,8 @@ fun LectureColorSelectorScreen(
     }
 }
 
-@SnuttPreview
+@Preview(name = "1. Light", uiMode = Configuration.UI_MODE_NIGHT_NO, locale = "ko", heightDp = 1200)
+@Preview(name = "2. Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ko", heightDp = 1200)
 @Composable
 private fun LectureColorSelectorScreen_BuiltInTheme_Palette() {
     SnuttPreviewSurface {
@@ -138,7 +140,8 @@ private fun LectureColorSelectorScreen_BuiltInTheme_Palette() {
     }
 }
 
-@SnuttPreview
+@Preview(name = "1. Light", uiMode = Configuration.UI_MODE_NIGHT_NO, locale = "ko", heightDp = 1200)
+@Preview(name = "2. Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ko", heightDp = 1200)
 @Composable
 private fun LectureColorSelectorScreen_BuiltInTheme_Picker() {
     SnuttPreviewSurface {
@@ -161,7 +164,8 @@ private fun LectureColorSelectorScreen_BuiltInTheme_Picker() {
     }
 }
 
-@SnuttPreview
+@Preview(name = "1. Light", uiMode = Configuration.UI_MODE_NIGHT_NO, locale = "ko", heightDp = 1200)
+@Preview(name = "2. Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ko", heightDp = 1200)
 @Composable
 private fun LectureColorSelectorScreen_CustomTheme() {
     SnuttPreviewSurface {

@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.feature.home.drawer
 
+import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -21,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
@@ -32,7 +34,6 @@ import com.wafflestudio.snutt2.ui.components.compose.ExitIcon
 import com.wafflestudio.snutt2.ui.components.compose.LogoIcon
 import com.wafflestudio.snutt2.ui.components.compose.RedDot
 import com.wafflestudio.snutt2.ui.components.compose.clicks
-import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
@@ -182,7 +183,8 @@ private fun CreateTableItem(
     }
 }
 
-@SnuttPreview
+@Preview(name = "1. Light", uiMode = Configuration.UI_MODE_NIGHT_NO, locale = "ko", heightDp = 1400)
+@Preview(name = "2. Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ko", heightDp = 1400)
 @Composable
 private fun HomeDrawerContent_Default() {
     SnuttPreviewSurface {

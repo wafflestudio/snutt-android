@@ -1,15 +1,16 @@
 package com.wafflestudio.snutt2.feature.lecturedetail.currenttable
 
+import android.content.res.Configuration
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.LectureSession
 import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.feature.lecturedetail.LectureDetail
 import com.wafflestudio.snutt2.ui.components.compose.CustomDialog
-import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
@@ -81,7 +82,8 @@ fun AddCustomLectureScreen(
     )
 }
 
-@SnuttPreview
+@Preview(name = "1. Light", uiMode = Configuration.UI_MODE_NIGHT_NO, locale = "ko", heightDp = 1400)
+@Preview(name = "2. Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ko", heightDp = 1400)
 @Composable
 private fun AddCustomLectureScreen_Default() {
     SnuttPreviewSurface {

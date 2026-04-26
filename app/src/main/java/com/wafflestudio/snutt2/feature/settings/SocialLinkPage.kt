@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.feature.settings
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.res.Configuration
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -20,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -39,7 +41,6 @@ import com.wafflestudio.snutt2.domain.model.getString
 import com.wafflestudio.snutt2.lib.facebook.facebookLogin
 import com.wafflestudio.snutt2.ui.components.compose.CustomDialog
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
-import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.util.toast
@@ -268,7 +269,8 @@ private fun SocialLinkScreen(
     }
 }
 
-@SnuttPreview
+@Preview(name = "1. Light", uiMode = Configuration.UI_MODE_NIGHT_NO, locale = "ko", heightDp = 1000)
+@Preview(name = "2. Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ko", heightDp = 1000)
 @Composable
 private fun SocialLinkScreen_Default() {
     SnuttPreviewSurface {

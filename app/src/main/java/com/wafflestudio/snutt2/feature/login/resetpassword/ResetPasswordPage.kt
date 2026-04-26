@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.feature.login.resetpassword
 
+import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
@@ -23,7 +25,6 @@ import com.wafflestudio.snutt2.feature.login.resetpassword.FindPasswordViewModel
 import com.wafflestudio.snutt2.feature.login.resetpassword.FindPasswordViewModel.UIState.EnterNewPassword
 import com.wafflestudio.snutt2.feature.login.resetpassword.FindPasswordViewModel.UIState.VerifyCode
 import com.wafflestudio.snutt2.ui.components.compose.IOSStyleTopBar
-import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.util.toast
 
@@ -123,7 +124,8 @@ private fun ResetPasswordScreen(
     }
 }
 
-@SnuttPreview
+@Preview(name = "1. Light", uiMode = Configuration.UI_MODE_NIGHT_NO, locale = "ko", heightDp = 1200)
+@Preview(name = "2. Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ko", heightDp = 1200)
 @Composable
 private fun ResetPasswordScreen_CheckId() {
     SnuttPreviewSurface {
@@ -139,7 +141,8 @@ private fun ResetPasswordScreen_CheckId() {
     }
 }
 
-@SnuttPreview
+@Preview(name = "1. Light", uiMode = Configuration.UI_MODE_NIGHT_NO, locale = "ko", heightDp = 1200)
+@Preview(name = "2. Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ko", heightDp = 1200)
 @Composable
 private fun ResetPasswordScreen_EnterFullEmail() {
     SnuttPreviewSurface {
@@ -155,7 +158,8 @@ private fun ResetPasswordScreen_EnterFullEmail() {
     }
 }
 
-@SnuttPreview
+@Preview(name = "1. Light", uiMode = Configuration.UI_MODE_NIGHT_NO, locale = "ko", heightDp = 1200)
+@Preview(name = "2. Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ko", heightDp = 1200)
 @Composable
 private fun ResetPasswordScreen_VerifyCode() {
     SnuttPreviewSurface {
@@ -171,7 +175,8 @@ private fun ResetPasswordScreen_VerifyCode() {
     }
 }
 
-@SnuttPreview
+@Preview(name = "1. Light", uiMode = Configuration.UI_MODE_NIGHT_NO, locale = "ko", heightDp = 1200)
+@Preview(name = "2. Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ko", heightDp = 1200)
 @Composable
 private fun ResetPasswordScreen_EnterNewPassword() {
     SnuttPreviewSurface {
