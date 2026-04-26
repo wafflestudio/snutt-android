@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.feature.search
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -309,22 +310,24 @@ fun LectureListItemButton(
 @Composable
 private fun ExpandableLectureListItem_Default() {
     SnuttPreviewSurface {
-        ExpandableLectureListItem(
-            lectureDataWithState = DataWithState(
-                PreviewData.sampleLectures.first(),
-                LectureState(
-                    selected = false,
-                    contained = false,
-                    isBookmarked = false,
-                    isVacancyRegistered = false,
+        Box(modifier = Modifier.background(SNUTTColors.Dim2)) {
+            ExpandableLectureListItem(
+                lectureDataWithState = DataWithState(
+                    PreviewData.sampleLectures.first(),
+                    LectureState(
+                        selected = false,
+                        contained = false,
+                        isBookmarked = false,
+                        isVacancyRegistered = false,
+                    ),
                 ),
-            ),
-            onToggleLectureSelection = {},
-            onClickLectureDetail = {},
-            onClickReview = {},
-            onClickBookmark = { _, _ -> },
-            onClickVacancy = { _, _ -> },
-            onToggleLectureContained = { _, _ -> },
-        )
+                onToggleLectureSelection = {},
+                onClickLectureDetail = {},
+                onClickReview = {},
+                onClickBookmark = { _, _ -> },
+                onClickVacancy = { _, _ -> },
+                onToggleLectureContained = { _, _ -> },
+            )
+        }
     }
 }

@@ -15,7 +15,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
@@ -88,7 +87,7 @@ fun Popup(
                     modifier = Modifier
                         .width(1.dp)
                         .height(17.dp)
-                        .background(Color.White),
+                        .background(SNUTTColors.AllWhite),
                 )
                 Text(
                     text = stringResource(id = R.string.popup_close_message),

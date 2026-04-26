@@ -10,7 +10,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -56,7 +55,7 @@ internal fun LectureActionButtons(
         when (lecture) {
             is CustomLecture -> {
                 AnimatedVisibility(visible = !editMode) {
-                    Box(modifier = Modifier.background(Color.White)) {
+                    Box(modifier = Modifier.background(SNUTTColors.White900)) {
                         LectureDetailActionButton(
                             title = stringResource(R.string.lecture_detail_delete_button),
                             textStyle = SNUTTTypography.body1.copy(
@@ -70,7 +69,7 @@ internal fun LectureActionButtons(
             }
 
             is SyllabusLecture -> {
-                Box(modifier = Modifier.background(Color.White)) {
+                Box(modifier = Modifier.background(SNUTTColors.White900)) {
                     LectureDetailActionButton(
                         title = if (editMode) {
                             stringResource(R.string.lecture_detail_reset_button)
