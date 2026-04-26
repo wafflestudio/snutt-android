@@ -379,24 +379,6 @@ private fun DiaryQuestionsSection_Default() {
 
 @SnuttPreview
 @Composable
-private fun DiaryQuestionItem_Default() {
-    SnuttPreviewSurface {
-        DiaryTheme {
-            val sampleQuestion =
-                DiaryPreviewData.getQuestionsForActivities(listOf("수업"))
-                    .first()
-            DiaryQuestionItem(
-                isDuplicate = false,
-                question = sampleQuestion.question,
-                options = sampleQuestion.selectableAnswers,
-                onChange = {},
-            )
-        }
-    }
-}
-
-@SnuttPreview
-@Composable
 private fun MoreTextItem_Filled() {
     SnuttPreviewSurface {
         DiaryTheme {
