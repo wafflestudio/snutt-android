@@ -932,8 +932,10 @@ class TimeTableViewModelTest {
         fakeRemoteConfig.vacancyNotificationBannerEnabled.value = false
         fakeTableRepository.updateTableNameResult = Result.Success(Unit)
         val viewModel = createViewModel()
+        viewModel.showTableTitleChangeDialog(target)
+        viewModel.onChangeTableNameTitleChange("새 제목")
 
-        viewModel.changeTableTitle(target, "새 제목")
+        viewModel.changeTableTitle()
 
         assertEquals(target to "새 제목", fakeTableRepository.updateTableNameCalledWith)
     }
@@ -955,9 +957,10 @@ class TimeTableViewModelTest {
         fakeTableRepository.updateTableNameResult = Result.Success(Unit)
         val viewModel = createViewModel()
         viewModel.showTableTitleChangeDialog(target)
+        viewModel.onChangeTableNameTitleChange("새 제목")
         val before = viewModel.uiState.value as TimeTableUiState.Loaded
 
-        viewModel.changeTableTitle(target, "새 제목")
+        viewModel.changeTableTitle()
 
         assertEquals(
             before.copy(dialogState = TimeTableUiState.DialogState.None),
@@ -982,9 +985,11 @@ class TimeTableViewModelTest {
         fakeTableRepository.updateTableNameResult =
             Result.Fail(Unknown(displayTitle = "", displayMessage = "이름 변경 실패"))
         val viewModel = createViewModel()
+        viewModel.showTableTitleChangeDialog(target)
+        viewModel.onChangeTableNameTitleChange("새 제목")
 
         viewModel.uiEvent.test {
-            viewModel.changeTableTitle(target, "새 제목")
+            viewModel.changeTableTitle()
             assertEquals(TimeTableUiEvent.ShowToast("이름 변경 실패"), awaitItem())
         }
     }

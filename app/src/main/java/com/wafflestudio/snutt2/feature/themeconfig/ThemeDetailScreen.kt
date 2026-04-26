@@ -23,8 +23,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
@@ -77,9 +75,10 @@ fun ThemeDetailRoute(
         onToggleColorExpanded = themeDetailViewModel::toggleColorExpanded,
         onDuplicateColor = themeDetailViewModel::duplicateColor,
         onRemoveColor = themeDetailViewModel::removeColor,
-        onUpdateColor = { index, fgColor, bgColor ->
-            themeDetailViewModel.updateColor(index, fgColor.toArgb(), bgColor.toArgb())
-        },
+        onShowFgColorPicker = themeDetailViewModel::showFgColorPicker,
+        onShowBgColorPicker = themeDetailViewModel::showBgColorPicker,
+        onConfirmColorPicker = themeDetailViewModel::confirmColorPicker,
+        onDismissColorPicker = themeDetailViewModel::dismissColorPicker,
         onAddColor = themeDetailViewModel::addColor,
         onConfirmCancelEdit = themeDetailViewModel::onConfirmCancelEdit,
         onDismissCancelEdit = themeDetailViewModel::onDismissCancelEdit,
@@ -97,7 +96,10 @@ fun ThemeDetailScreen(
     onToggleColorExpanded: (Int) -> Unit,
     onDuplicateColor: (Int) -> Unit,
     onRemoveColor: (Int) -> Unit,
-    onUpdateColor: (Int, foreground: Color, background: Color) -> Unit,
+    onShowFgColorPicker: (index: Int, currentFg: Int, currentBg: Int) -> Unit,
+    onShowBgColorPicker: (index: Int, currentFg: Int, currentBg: Int) -> Unit,
+    onConfirmColorPicker: (Int) -> Unit,
+    onDismissColorPicker: () -> Unit,
     onAddColor: () -> Unit,
     onConfirmCancelEdit: () -> Unit,
     onDismissCancelEdit: () -> Unit,
@@ -198,7 +200,8 @@ fun ThemeDetailScreen(
                                 onToggleColorExpanded = onToggleColorExpanded,
                                 onDuplicateColor = onDuplicateColor,
                                 onRemoveColor = onRemoveColor,
-                                onUpdateColor = onUpdateColor,
+                                onShowFgColorPicker = onShowFgColorPicker,
+                                onShowBgColorPicker = onShowBgColorPicker,
                             )
                         }
                         AnimatedVisibility(editingTheme.canAddColor) {
@@ -254,6 +257,8 @@ fun ThemeDetailScreen(
                 onDismissCancelEdit = onDismissCancelEdit,
                 onConfirmApplyToTable = onConfirmApplyToTable,
                 onDismissApplyToTable = onDismissApplyToTable,
+                onConfirmColorPicker = onConfirmColorPicker,
+                onDismissColorPicker = onDismissColorPicker,
             )
         }
 
@@ -308,7 +313,10 @@ private fun ThemeDetailScreen_Success() {
             onToggleColorExpanded = {},
             onDuplicateColor = {},
             onRemoveColor = {},
-            onUpdateColor = { _, _, _ -> },
+            onShowFgColorPicker = { _, _, _ -> },
+            onShowBgColorPicker = { _, _, _ -> },
+            onConfirmColorPicker = {},
+            onDismissColorPicker = {},
             onAddColor = {},
             onConfirmCancelEdit = {},
             onDismissCancelEdit = {},
@@ -330,7 +338,10 @@ private fun ThemeDetailScreen_Loading() {
             onToggleColorExpanded = {},
             onDuplicateColor = {},
             onRemoveColor = {},
-            onUpdateColor = { _, _, _ -> },
+            onShowFgColorPicker = { _, _, _ -> },
+            onShowBgColorPicker = { _, _, _ -> },
+            onConfirmColorPicker = {},
+            onDismissColorPicker = {},
             onAddColor = {},
             onConfirmCancelEdit = {},
             onDismissCancelEdit = {},
@@ -352,7 +363,10 @@ private fun ThemeDetailScreen_Error() {
             onToggleColorExpanded = {},
             onDuplicateColor = {},
             onRemoveColor = {},
-            onUpdateColor = { _, _, _ -> },
+            onShowFgColorPicker = { _, _, _ -> },
+            onShowBgColorPicker = { _, _, _ -> },
+            onConfirmColorPicker = {},
+            onDismissColorPicker = {},
             onAddColor = {},
             onConfirmCancelEdit = {},
             onDismissCancelEdit = {},

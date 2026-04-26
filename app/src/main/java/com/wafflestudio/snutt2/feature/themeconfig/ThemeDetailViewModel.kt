@@ -264,6 +264,42 @@ class ThemeDetailViewModel @Inject constructor(
         viewModelScope.launch { _uiEvent.emit(ThemeDetailUiEvent.NavigateBack) }
     }
 
+    fun showFgColorPicker(index: Int, currentFg: Int, currentBg: Int) {
+        _uiState.update { current ->
+            if (current !is ThemeDetailUiState.Success) return@update current
+            current.copy(dialogState = ThemeDetailUiState.DialogState.FgColorPicker(index, currentFg, currentBg))
+        }
+    }
+
+    fun showBgColorPicker(index: Int, currentFg: Int, currentBg: Int) {
+        _uiState.update { current ->
+            if (current !is ThemeDetailUiState.Success) return@update current
+            current.copy(dialogState = ThemeDetailUiState.DialogState.BgColorPicker(index, currentFg, currentBg))
+        }
+    }
+
+    fun dismissColorPicker() {
+        _uiState.update { current ->
+            if (current !is ThemeDetailUiState.Success) return@update current
+            current.copy(dialogState = ThemeDetailUiState.DialogState.None)
+        }
+    }
+
+    fun confirmColorPicker(newColorArgb: Int) {
+        val state = _uiState.value as? ThemeDetailUiState.Success ?: return
+        when (val dialog = state.dialogState) {
+            is ThemeDetailUiState.DialogState.FgColorPicker -> {
+                updateColor(dialog.colorIndex, newColorArgb, dialog.currentBg)
+                dismissColorPicker()
+            }
+            is ThemeDetailUiState.DialogState.BgColorPicker -> {
+                updateColor(dialog.colorIndex, dialog.currentFg, newColorArgb)
+                dismissColorPicker()
+            }
+            else -> Unit
+        }
+    }
+
     private suspend fun handleError(error: DomainError) {
         val displayMessage = displayMessageResolver.getDisplayMessage(error)
         when (error) {
@@ -303,5 +339,7 @@ sealed interface ThemeDetailUiState {
         data object None : DialogState
         data object ConfirmCancelEdit : DialogState
         data object ConfirmApplyToTable : DialogState
+        data class FgColorPicker(val colorIndex: Int, val currentFg: Int, val currentBg: Int) : DialogState
+        data class BgColorPicker(val colorIndex: Int, val currentFg: Int, val currentBg: Int) : DialogState
     }
 }

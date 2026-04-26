@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.feature.themeconfig
 
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.components.compose.CustomDialog
@@ -16,6 +17,8 @@ fun ThemeDetailDialogContent(
     onDismissCancelEdit: () -> Unit,
     onConfirmApplyToTable: () -> Unit,
     onDismissApplyToTable: () -> Unit,
+    onConfirmColorPicker: (Int) -> Unit,
+    onDismissColorPicker: () -> Unit,
 ) {
     when (dialogState) {
         ThemeDetailUiState.DialogState.None -> Unit
@@ -49,6 +52,22 @@ fun ThemeDetailDialogContent(
                 )
             }
         }
+
+        is ThemeDetailUiState.DialogState.FgColorPicker -> {
+            ColorPickerDialog(
+                initialColor = Color(dialogState.currentFg),
+                onConfirm = onConfirmColorPicker,
+                onDismiss = onDismissColorPicker,
+            )
+        }
+
+        is ThemeDetailUiState.DialogState.BgColorPicker -> {
+            ColorPickerDialog(
+                initialColor = Color(dialogState.currentBg),
+                onConfirm = onConfirmColorPicker,
+                onDismiss = onDismissColorPicker,
+            )
+        }
     }
 }
 
@@ -62,6 +81,8 @@ private fun ThemeDetailDialogContent_ConfirmCancelEdit() {
             onDismissCancelEdit = {},
             onConfirmApplyToTable = {},
             onDismissApplyToTable = {},
+            onConfirmColorPicker = {},
+            onDismissColorPicker = {},
         )
     }
 }
@@ -76,6 +97,8 @@ private fun ThemeDetailDialogContent_ConfirmApplyToTable() {
             onDismissCancelEdit = {},
             onConfirmApplyToTable = {},
             onDismissApplyToTable = {},
+            onConfirmColorPicker = {},
+            onDismissColorPicker = {},
         )
     }
 }

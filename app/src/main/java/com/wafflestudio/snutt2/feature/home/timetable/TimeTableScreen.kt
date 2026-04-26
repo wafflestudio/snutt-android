@@ -39,7 +39,8 @@ fun TimeTableScreen(
     onClickAddManually: () -> Unit,
     onVisitSessionlessLectureList: () -> Unit,
     onDismissDialog: () -> Unit,
-    onConfirmChangeTableTitle: (TableSummary, String) -> Unit,
+    onChangeTableNameTitleChange: (String) -> Unit,
+    onConfirmChangeTableTitle: () -> Unit,
 ) {
     when (uiState) {
         is TimeTableUiState.Loading -> {}
@@ -47,6 +48,7 @@ fun TimeTableScreen(
             TimeTableDialogs(
                 uiState = uiState,
                 onDismiss = onDismissDialog,
+                onChangeTableNameTitleChange = onChangeTableNameTitleChange,
                 onConfirmChangeTableTitle = onConfirmChangeTableTitle,
             )
 

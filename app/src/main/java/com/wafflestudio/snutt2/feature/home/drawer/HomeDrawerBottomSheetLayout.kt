@@ -49,7 +49,8 @@ fun HomeDrawerBottomSheetLayout(
     onClickCopyIcon: (TableSummary) -> Unit,
     onClickMoreIcon: (tableSummary: TableSummary) -> Unit,
     onDismissDialog: () -> Unit,
-    onConfirmChangeTableTitle: (TableSummary, String) -> Unit,
+    onChangeTableNameTitleChange: (String) -> Unit,
+    onConfirmChangeTableTitle: () -> Unit,
     onConfirmDeleteTable: (tableSummary: TableSummary) -> Unit,
     onClickPreviewTheme: (TableTheme) -> Unit,
     onClickApplyTheme: () -> Unit,
@@ -123,6 +124,7 @@ fun HomeDrawerBottomSheetLayout(
                     onClickCopyIcon = onClickCopyIcon,
                     onClickMoreIcon = onClickMoreIcon,
                     onDismissDialog = onDismissDialog,
+                    onChangeTableNameTitleChange = onChangeTableNameTitleChange,
                     onConfirmChangeTableTitle = onConfirmChangeTableTitle,
                     onConfirmDeleteTable = onConfirmDeleteTable,
                 )

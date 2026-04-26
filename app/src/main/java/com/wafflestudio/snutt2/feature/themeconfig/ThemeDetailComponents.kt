@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
@@ -56,7 +57,8 @@ internal fun ThemeColorRow(
     onToggleColorExpanded: (Int) -> Unit,
     onDuplicateColor: (Int) -> Unit,
     onRemoveColor: (Int) -> Unit,
-    onUpdateColor: (Int, foreground: Color, background: Color) -> Unit,
+    onShowFgColorPicker: (index: Int, currentFg: Int, currentBg: Int) -> Unit,
+    onShowBgColorPicker: (index: Int, currentFg: Int, currentBg: Int) -> Unit,
 ) {
     val state = remember {
         MutableTransitionState(false).apply { targetState = true }
@@ -120,12 +122,8 @@ internal fun ThemeColorRow(
                 ColorEditItem(
                     fgColor = Color(color.foreground),
                     bgColor = Color(color.background),
-                    onFgColorPicked = { pickedColor ->
-                        onUpdateColor(index, pickedColor, Color(color.background))
-                    },
-                    onBgColorPicked = { pickedColor ->
-                        onUpdateColor(index, Color(color.foreground), pickedColor)
-                    },
+                    onShowFgPicker = { onShowFgColorPicker(index, color.foreground, color.background) },
+                    onShowBgPicker = { onShowBgColorPicker(index, color.foreground, color.background) },
                 )
             }
             Divider(thickness = 0.5.dp, color = MaterialTheme.colors.background)
@@ -164,13 +162,10 @@ internal fun ThemeDetailRow(
 private fun ColorEditItem(
     fgColor: Color,
     bgColor: Color,
-    onFgColorPicked: (Color) -> Unit,
-    onBgColorPicked: (Color) -> Unit,
+    onShowFgPicker: () -> Unit,
+    onShowBgPicker: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var showFgPicker by remember { mutableStateOf(false) }
-    var showBgPicker by remember { mutableStateOf(false) }
-
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -189,7 +184,7 @@ private fun ColorEditItem(
                     color = fgColor,
                     modifier = Modifier
                         .size(25.dp)
-                        .clicks { showFgPicker = true },
+                        .clicks { onShowFgPicker() },
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -204,46 +199,24 @@ private fun ColorEditItem(
                     color = bgColor,
                     modifier = Modifier
                         .size(25.dp)
-                        .clicks { showBgPicker = true },
+                        .clicks { onShowBgPicker() },
                 )
             }
         }
     }
-
-    if (showFgPicker) {
-        ColorPickerDialog(
-            initialColor = fgColor,
-            onConfirm = { color ->
-                onFgColorPicked(color)
-                showFgPicker = false
-            },
-            onDismiss = { showFgPicker = false },
-        )
-    }
-
-    if (showBgPicker) {
-        ColorPickerDialog(
-            initialColor = bgColor,
-            onConfirm = { color ->
-                onBgColorPicked(color)
-                showBgPicker = false
-            },
-            onDismiss = { showBgPicker = false },
-        )
-    }
 }
 
 @Composable
-private fun ColorPickerDialog(
+internal fun ColorPickerDialog(
     initialColor: Color,
-    onConfirm: (Color) -> Unit,
+    onConfirm: (Int) -> Unit,
     onDismiss: () -> Unit,
 ) {
     var currentColor by remember { mutableStateOf(initialColor) }
 
     CustomDialog(
         onDismiss = onDismiss,
-        onConfirm = { onConfirm(currentColor) },
+        onConfirm = { onConfirm(currentColor.toArgb()) },
         title = stringResource(R.string.color_picker_dialog_title),
         positiveButtonText = stringResource(R.string.common_ok),
         negativeButtonText = stringResource(R.string.common_cancel),
@@ -273,7 +246,8 @@ private fun ThemeColorRow_EditableExpanded() {
                 onToggleColorExpanded = {},
                 onDuplicateColor = {},
                 onRemoveColor = {},
-                onUpdateColor = { _, _, _ -> },
+                onShowFgColorPicker = { _, _, _ -> },
+                onShowBgColorPicker = { _, _, _ -> },
             )
         }
     }
@@ -295,7 +269,8 @@ private fun ThemeColorRow_Readonly() {
                 onToggleColorExpanded = {},
                 onDuplicateColor = {},
                 onRemoveColor = {},
-                onUpdateColor = { _, _, _ -> },
+                onShowFgColorPicker = { _, _, _ -> },
+                onShowBgColorPicker = { _, _, _ -> },
             )
         }
     }

@@ -151,6 +151,7 @@ fun TimeTableRoute(
         onClickCopyIcon = drawerViewModel::copyTable,
         onClickMoreIcon = drawerViewModel::openMoreActionBottomSheet,
         onDismissDialog = drawerViewModel::dismissDialog,
+        onChangeTableNameTitleChange = drawerViewModel::onChangeTableNameTitleChange,
         onConfirmChangeTableTitle = drawerViewModel::changeTableTitle,
         onConfirmDeleteTable = drawerViewModel::deleteTable,
         onClickPreviewTheme = { theme ->
@@ -178,6 +179,7 @@ fun TimeTableRoute(
                     onClickAddManually = onNavigateAddLecture,
                     onVisitSessionlessLectureList = timeTableViewModel::visitSessionlessLectureList,
                     onDismissDialog = timeTableViewModel::dismissDialog,
+                    onChangeTableNameTitleChange = timeTableViewModel::onChangeTableNameTitleChange,
                     onConfirmChangeTableTitle = timeTableViewModel::changeTableTitle,
                 )
             }
