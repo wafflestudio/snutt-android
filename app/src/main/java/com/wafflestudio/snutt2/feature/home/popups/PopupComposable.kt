@@ -63,16 +63,33 @@ fun Popup(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.width(imageWidth),
         ) {
-            AsyncImage(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clicks {
-                        onClickImage()
-                    },
-                model = imageUri,
-                contentDescription = "",
-                error = painterResource(id = R.drawable.img_reviews_coming_soon),
-            )
+            if (LocalInspectionMode.current) {
+                // Preview 환경에서는 AsyncImage 의 painter intrinsic height 가
+                // Column 의 다른 자식 (버튼 Row) 을 밀어내므로 placeholder 만 그린다.
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .background(SNUTTColors.Gray400),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = "Preview Image",
+                        color = SNUTTColors.AllWhite,
+                    )
+                }
+            } else {
+                AsyncImage(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clicks {
+                            onClickImage()
+                        },
+                    model = imageUri,
+                    contentDescription = "",
+                    error = painterResource(id = R.drawable.img_reviews_coming_soon),
+                )
+            }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
