@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -38,8 +39,12 @@ fun Popup(
     onClickClose: () -> Unit,
     onClickImage: () -> Unit,
 ) {
-    val containerWidthDp = with(LocalDensity.current) {
-        LocalWindowInfo.current.containerSize.width.toDp()
+    val containerWidthDp = if (LocalInspectionMode.current) {
+        // Preview 환경에서는 LocalWindowInfo.current.containerSize.width 가 0 으로 떨어져
+        // 폭이 음수가 되므로 fallback 값 사용.
+        360.dp
+    } else {
+        with(LocalDensity.current) { LocalWindowInfo.current.containerSize.width.toDp() }
     }
     val imageWidth = min(containerWidthDp * 0.8f, 400.dp)
 
