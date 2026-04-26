@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.ui.components.compose
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -22,15 +23,30 @@ import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 
 @Composable
+fun SnuttIcon(
+    @DrawableRes id: Int,
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null,
+    contentDescription: String? = null,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(id = id),
+        contentDescription = contentDescription,
+        colorFilter = colorFilter,
+    )
+}
+
+@Composable
 fun DrawerIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_drawer,
         modifier = modifier.size(30.dp),
-        painter = painterResource(id = R.drawable.ic_drawer),
-        contentDescription = stringResource(R.string.home_timetable_drawer),
         colorFilter = colorFilter,
+        contentDescription = stringResource(R.string.home_timetable_drawer),
     )
 }
 
@@ -38,10 +54,9 @@ fun DrawerIcon(
 fun ListIcon(
     modifier: Modifier = Modifier,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_lecture_list,
         modifier = modifier.size(30.dp),
-        painter = painterResource(id = R.drawable.ic_lecture_list),
-        contentDescription = "",
     )
 }
 
@@ -50,10 +65,9 @@ fun NotificationIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_alarm_default,
         modifier = modifier.size(30.dp),
-        painter = painterResource(R.drawable.ic_alarm_default),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -63,10 +77,9 @@ fun ShareIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_share,
         modifier = modifier.size(30.dp),
-        painter = painterResource(id = R.drawable.ic_share),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -76,10 +89,9 @@ fun ArrowBackIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_arrow_back,
         modifier = modifier.size(30.dp),
-        painter = painterResource(id = R.drawable.ic_arrow_back),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -89,10 +101,9 @@ fun SearchIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_search_unselected,
         modifier = modifier.size(30.dp),
-        painter = painterResource(id = R.drawable.ic_search_unselected),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -102,10 +113,9 @@ fun FilterIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_filter,
         modifier = modifier.size(30.dp),
-        painter = painterResource(id = R.drawable.ic_filter),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -115,10 +125,9 @@ fun ExitIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_exit,
         modifier = modifier.size(30.dp),
-        painter = painterResource(R.drawable.ic_exit),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -128,10 +137,9 @@ fun TagIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_tag,
         modifier = modifier,
-        painter = painterResource(id = R.drawable.ic_tag),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -141,10 +149,9 @@ fun ClockIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_clock,
         modifier = modifier,
-        painter = painterResource(id = R.drawable.ic_clock),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -154,10 +161,9 @@ fun LocationIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_location,
         modifier = modifier,
-        painter = painterResource(id = R.drawable.ic_location),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -166,10 +172,9 @@ fun LocationIcon(
 fun LogoIcon(
     modifier: Modifier = Modifier,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.logo,
         modifier = modifier,
-        painter = painterResource(id = R.drawable.logo),
-        contentDescription = "",
     )
 }
 
@@ -178,10 +183,9 @@ fun ArrowUpIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_arrow_up,
         modifier = modifier,
-        painter = painterResource(R.drawable.ic_arrow_up),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -191,10 +195,9 @@ fun ArrowDownIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_arrow_down,
         modifier = modifier,
-        painter = painterResource(R.drawable.ic_arrow_down),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -203,10 +206,9 @@ fun ArrowDownIcon(
 fun VividCheckedIcon(
     modifier: Modifier = Modifier,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_vivid_checked,
         modifier = modifier,
-        painter = painterResource(R.drawable.ic_vivid_checked),
-        contentDescription = "",
     )
 }
 
@@ -214,10 +216,9 @@ fun VividCheckedIcon(
 fun VividUncheckedIcon(
     modifier: Modifier = Modifier,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_vivid_unchecked,
         modifier = modifier,
-        painter = painterResource(R.drawable.ic_vivid_unchecked),
-        contentDescription = "",
     )
 }
 
@@ -226,10 +227,9 @@ fun DuplicateIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_duplicate,
         modifier = modifier,
-        painter = painterResource(id = R.drawable.ic_duplicate),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -239,10 +239,9 @@ fun MoreIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_more,
         modifier = modifier,
-        painter = painterResource(R.drawable.ic_more),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -252,10 +251,9 @@ fun WriteIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_write,
         modifier = modifier,
-        painter = painterResource(R.drawable.ic_write),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -265,10 +263,9 @@ fun WriteUnderlineIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_write_underline,
         modifier = modifier,
-        painter = painterResource(R.drawable.ic_write_underline),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -278,10 +275,9 @@ fun TrashIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_trash,
         modifier = modifier,
-        painter = painterResource(R.drawable.ic_trash),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -291,10 +287,9 @@ fun PaletteIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_palette,
         modifier = modifier,
-        painter = painterResource(R.drawable.ic_palette),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -304,10 +299,9 @@ fun PinIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_pin,
         modifier = modifier,
-        painter = painterResource(R.drawable.ic_pin),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -317,10 +311,9 @@ fun PinOffIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_pin_off,
         modifier = modifier,
-        painter = painterResource(R.drawable.ic_pin_off),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -331,16 +324,9 @@ fun TimetableIcon(
     isSelected: Boolean = false,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = if (isSelected) R.drawable.ic_timetable_selected else R.drawable.ic_timetable_unselected,
         modifier = modifier,
-        painter = painterResource(
-            if (isSelected) {
-                R.drawable.ic_timetable_selected
-            } else {
-                R.drawable.ic_timetable_unselected
-            },
-        ),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -351,16 +337,9 @@ fun SearchIcon(
     isSelected: Boolean = false,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = if (isSelected) R.drawable.ic_search_selected else R.drawable.ic_search_unselected,
         modifier = modifier,
-        painter = painterResource(
-            if (isSelected) {
-                R.drawable.ic_search_selected
-            } else {
-                R.drawable.ic_search_unselected
-            },
-        ),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -371,16 +350,9 @@ fun ReviewIcon(
     isSelected: Boolean = false,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = if (isSelected) R.drawable.ic_review_selected else R.drawable.ic_review_unselected,
         modifier = modifier,
-        painter = painterResource(
-            if (isSelected) {
-                R.drawable.ic_review_selected
-            } else {
-                R.drawable.ic_review_unselected
-            },
-        ),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -391,16 +363,9 @@ fun BigPeopleIcon(
     isSelected: Boolean = false,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = if (isSelected) R.drawable.ic_people_selected else R.drawable.ic_people_unselected,
         modifier = modifier,
-        painter = painterResource(
-            if (isSelected) {
-                R.drawable.ic_people_selected
-            } else {
-                R.drawable.ic_people_unselected
-            },
-        ),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -410,10 +375,9 @@ fun PeopleIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_people_on,
         modifier = modifier,
-        painter = painterResource(R.drawable.ic_people_on),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -423,10 +387,9 @@ fun PeopleOffIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_people_off,
         modifier = modifier,
-        painter = painterResource(R.drawable.ic_people_off),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -436,10 +399,9 @@ fun ThickReviewIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_review_thick,
         modifier = modifier,
-        painter = painterResource(R.drawable.ic_review_thick),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -450,16 +412,9 @@ fun SettingIcon(
     isSelected: Boolean = false,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = if (isSelected) R.drawable.ic_setting_selected else R.drawable.ic_setting_unselected,
         modifier = modifier,
-        painter = painterResource(
-            if (isSelected) {
-                R.drawable.ic_setting_selected
-            } else {
-                R.drawable.ic_setting_unselected
-            },
-        ),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -470,16 +425,9 @@ fun HorizontalMoreIcon(
     isSelected: Boolean = false,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = if (isSelected) R.drawable.ic_horizontal_more_selected else R.drawable.ic_horizontal_more_unselected,
         modifier = modifier,
-        painter = painterResource(
-            if (isSelected) {
-                R.drawable.ic_horizontal_more_selected
-            } else {
-                R.drawable.ic_horizontal_more_unselected
-            },
-        ),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -489,10 +437,9 @@ fun TipCloseIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.btntipclose,
         modifier = modifier,
-        painter = painterResource(R.drawable.btntipclose),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -502,10 +449,9 @@ fun ArrowRight(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.arrowright,
         modifier = modifier,
-        painter = painterResource(R.drawable.arrowright),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -515,10 +461,9 @@ fun CheckedIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.checked,
         modifier = modifier,
-        painter = painterResource(R.drawable.checked),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -528,10 +473,9 @@ fun CloseIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_close,
         modifier = modifier,
-        painter = painterResource(R.drawable.ic_close),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -541,11 +485,10 @@ fun SendIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_send,
         modifier = modifier,
-        painter = painterResource(R.drawable.ic_send),
         colorFilter = colorFilter,
-        contentDescription = "",
     )
 }
 
@@ -592,10 +535,9 @@ fun RedDotWithNumber(
 fun BigSearchIcon(
     modifier: Modifier = Modifier,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.img_search_big,
         modifier = modifier,
-        painter = painterResource(R.drawable.img_search_big),
-        contentDescription = "",
     )
 }
 
@@ -604,10 +546,9 @@ fun WarningIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_warning,
         modifier = modifier,
-        painter = painterResource(id = R.drawable.ic_warning),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -616,10 +557,9 @@ fun WarningIcon(
 fun AlarmOnIcon(
     modifier: Modifier = Modifier,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.tab_alarm_on,
         modifier = modifier,
-        painter = painterResource(R.drawable.tab_alarm_on),
-        contentDescription = "",
     )
 }
 
@@ -628,11 +568,11 @@ fun LectureListIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_lecture_list,
         modifier = modifier,
-        painter = painterResource(R.drawable.ic_lecture_list),
-        contentDescription = stringResource(R.string.home_timetable_drawer),
         colorFilter = colorFilter,
+        contentDescription = stringResource(R.string.home_timetable_drawer),
     )
 }
 
@@ -641,10 +581,9 @@ fun CalendarIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_calendar,
         modifier = modifier,
-        painter = painterResource(id = R.drawable.ic_calendar),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -654,10 +593,9 @@ fun RefreshTimeIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_refresh_time,
         modifier = modifier,
-        painter = painterResource(id = R.drawable.ic_refresh_time),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -668,10 +606,9 @@ fun BookmarkIcon(
     colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
     marked: Boolean = false,
 ) {
-    Image(
+    SnuttIcon(
+        id = if (marked) R.drawable.ic_bookmark_selected else R.drawable.ic_bookmark_unselected,
         modifier = modifier,
-        painter = painterResource(id = if (marked) R.drawable.ic_bookmark_selected else R.drawable.ic_bookmark_unselected),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -681,10 +618,9 @@ fun BookmarkPageIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_bookmark_page,
         modifier = modifier.size(30.dp),
-        painter = painterResource(R.drawable.ic_bookmark_page),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -758,11 +694,11 @@ fun RightArrowIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_arrow_right,
         modifier = modifier,
-        painter = painterResource(id = R.drawable.ic_arrow_right),
-        contentDescription = "add arrow",
         colorFilter = colorFilter,
+        contentDescription = "add arrow",
     )
 }
 
@@ -771,10 +707,9 @@ fun RemarkIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_remark,
         modifier = modifier,
-        painter = painterResource(id = R.drawable.ic_remark),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -784,10 +719,9 @@ fun PersonIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_person,
         modifier = modifier,
-        painter = painterResource(id = R.drawable.ic_person),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -797,10 +731,9 @@ fun DetailIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_detail,
         modifier = modifier,
-        painter = painterResource(id = R.drawable.ic_detail),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -811,10 +744,9 @@ fun RingingAlarmIcon(
     colorFilter: ColorFilter? = null,
     marked: Boolean = false,
 ) {
-    Image(
+    SnuttIcon(
+        id = if (marked) R.drawable.ic_ringing_alarm_selected else R.drawable.ic_ringing_alarm_unselected,
         modifier = modifier,
-        painter = painterResource(id = if (marked) R.drawable.ic_ringing_alarm_selected else R.drawable.ic_ringing_alarm_unselected),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -824,10 +756,9 @@ fun AddCircleIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_add_circle,
         modifier = modifier,
-        painter = painterResource(id = R.drawable.ic_add_circle),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -837,10 +768,9 @@ fun RemoveCircleIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_remove_circle,
         modifier = modifier,
-        painter = painterResource(id = R.drawable.ic_remove_circle),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -850,10 +780,9 @@ fun QuestionCircleIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_question_circle,
         modifier = modifier,
-        painter = painterResource(id = R.drawable.ic_question_circle),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -863,10 +792,9 @@ fun CloseCircleIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_close_circle,
         modifier = modifier,
-        painter = painterResource(id = R.drawable.ic_close_circle),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -876,10 +804,9 @@ fun MagicIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_magic,
         modifier = modifier,
-        painter = painterResource(id = R.drawable.ic_magic),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -889,10 +816,9 @@ fun AddIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_add,
         modifier = modifier,
-        painter = painterResource(R.drawable.ic_add),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -902,10 +828,9 @@ fun MapIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_map,
         modifier = modifier,
-        painter = painterResource(id = R.drawable.ic_map),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -915,10 +840,9 @@ fun ResetIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_reset,
         modifier = modifier,
-        painter = painterResource(id = R.drawable.ic_reset),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -928,10 +852,9 @@ fun MegaphoneIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_megaphone,
         modifier = modifier,
-        painter = painterResource(id = R.drawable.ic_megaphone),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -941,10 +864,9 @@ fun NotificationVacancyIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_ringing_alarm_notification,
         modifier = modifier.size(30.dp),
-        painter = painterResource(R.drawable.ic_ringing_alarm_notification),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -954,10 +876,9 @@ fun NotificationFriendIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_ringing_alarm_notification,
         modifier = modifier.size(30.dp),
-        painter = painterResource(R.drawable.ic_ringing_alarm_notification),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -967,10 +888,9 @@ fun NotificationTrashIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_trash_new,
         modifier = modifier.size(30.dp),
-        painter = painterResource(R.drawable.ic_trash_new),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -979,12 +899,9 @@ fun NotificationTrashIcon(
 fun CustomThemeMoreIcon(
     modifier: Modifier = Modifier,
 ) {
-    Image(
+    SnuttIcon(
+        id = if (isDarkMode()) R.drawable.ic_custom_theme_more_dark else R.drawable.ic_custom_theme_more,
         modifier = modifier,
-        painter = painterResource(
-            if (isDarkMode()) R.drawable.ic_custom_theme_more_dark else R.drawable.ic_custom_theme_more,
-        ),
-        contentDescription = "",
     )
 }
 
@@ -993,10 +910,9 @@ fun ArrowLeftBold(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.arrow_left_bold,
         modifier = modifier,
-        painter = painterResource(R.drawable.arrow_left_bold),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -1007,21 +923,11 @@ fun StarIcon(
     filled: Boolean = false,
     colorFilter: ColorFilter? = null,
 ) {
-    if (filled) {
-        Image(
-            modifier = modifier,
-            painter = painterResource(R.drawable.ic_star_filled),
-            contentDescription = "",
-            colorFilter = colorFilter,
-        )
-    } else {
-        Image(
-            modifier = modifier,
-            painter = painterResource(R.drawable.ic_star_outline),
-            contentDescription = "",
-            colorFilter = colorFilter,
-        )
-    }
+    SnuttIcon(
+        id = if (filled) R.drawable.ic_star_filled else R.drawable.ic_star_outline,
+        modifier = modifier,
+        colorFilter = colorFilter,
+    )
 }
 
 @Composable
@@ -1029,10 +935,9 @@ fun ChevronIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_arrow_right,
         modifier = modifier,
-        painter = painterResource(R.drawable.ic_arrow_right),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -1042,10 +947,9 @@ fun AddFriendIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_user_add,
         modifier = modifier,
-        painter = painterResource(R.drawable.ic_user_add),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -1055,10 +959,9 @@ fun KakaoTalkIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_kakao_talk,
         modifier = modifier,
-        painter = painterResource(R.drawable.ic_kakao_talk),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
@@ -1068,10 +971,9 @@ fun FriendHashIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
 ) {
-    Image(
+    SnuttIcon(
+        id = R.drawable.ic_friend_hash,
         modifier = modifier,
-        painter = painterResource(R.drawable.ic_friend_hash),
-        contentDescription = "",
         colorFilter = colorFilter,
     )
 }
