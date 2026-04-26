@@ -80,6 +80,7 @@ dialog 가시성은 정책상 `dialogState` 로 hoist 권장. 입력 버퍼는 �
 | `feature/lecturedetail/currenttable/DayTimePickerSheetContent.kt` | `DayPickerDialog` / `TimePickerDialog` | `tempIndex` / `tempMinute` | 〃 |
 | `feature/themeconfig/ThemeDetailComponents.kt` | `ColorPickerDialog` | `currentColor` | 〃 |
 | `feature/home/timetable/ScrollableTimetable.kt` | `ScrollableTimetableContent` | `scrollUnlocked` | 외부 prop 에서 파생 + 영구 토글. 의도 재검토 필요 |
+| `feature/home/timetable/ScrollableTimetable.kt` | `ScrollableTimetableContent` | `scrollState` (`rememberLazyListState()`) | 컴포넌트가 자체 호출 → 외부에서 초기 스크롤 위치 주입 불가. preview 에서 스크롤된 상태 표현하려면 시그니처 변경 동반 |
 
 ---
 
