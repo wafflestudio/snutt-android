@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.Lecture
 import com.wafflestudio.snutt2.domain.model.LectureSyllabusInfo
-import com.wafflestudio.snutt2.domain.model.preview.PreviewData
+import com.wafflestudio.snutt2.ui.preview.PreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors

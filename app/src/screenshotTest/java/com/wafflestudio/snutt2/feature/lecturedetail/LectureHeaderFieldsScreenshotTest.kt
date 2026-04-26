@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.tools.screenshot.PreviewTest
 import com.wafflestudio.snutt2.domain.model.BuiltInTheme
-import com.wafflestudio.snutt2.domain.model.preview.PreviewData
+import com.wafflestudio.snutt2.ui.preview.PreviewData
 
 @PreviewTest
 @Preview(showBackground = true, widthDp = 360, locale = "ko")

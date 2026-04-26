@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.TableTheme
-import com.wafflestudio.snutt2.domain.model.preview.PreviewData
+import com.wafflestudio.snutt2.ui.preview.PreviewData
 import com.wafflestudio.snutt2.feature.home.drawer.HomeDrawerBottomSheetType
 import com.wafflestudio.snutt2.feature.themeconfig.AddThemeItem
 import com.wafflestudio.snutt2.ui.components.compose.ThemeIcon

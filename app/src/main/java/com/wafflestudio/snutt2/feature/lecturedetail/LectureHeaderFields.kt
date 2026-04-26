@@ -19,7 +19,7 @@ import com.wafflestudio.snutt2.domain.model.Lecture
 import com.wafflestudio.snutt2.domain.model.LectureColor
 import com.wafflestudio.snutt2.domain.model.LectureUIInfo
 import com.wafflestudio.snutt2.domain.model.TableTheme
-import com.wafflestudio.snutt2.domain.model.preview.PreviewData
+import com.wafflestudio.snutt2.ui.preview.PreviewData
 import com.wafflestudio.snutt2.ui.components.compose.ColorBox
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks

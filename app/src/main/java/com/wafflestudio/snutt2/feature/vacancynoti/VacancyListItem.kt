@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.SearchedLecture
-import com.wafflestudio.snutt2.domain.model.preview.PreviewData
+import com.wafflestudio.snutt2.ui.preview.PreviewData
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.ui.components.compose.RoundCheckbox

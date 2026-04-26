@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.diary.DiaryDailyClassType
 import com.wafflestudio.snutt2.domain.model.diary.DiaryQuestion
-import com.wafflestudio.snutt2.domain.model.preview.DiaryPreviewData
+import com.wafflestudio.snutt2.ui.preview.DiaryPreviewData
 import com.wafflestudio.snutt2.feature.diary.DiaryTheme
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.anySelected
@@ -210,7 +210,7 @@ fun DiaryQuestionItem(
                             vertical = 8.dp,
                         ),
 
-                )
+                    )
             }
         }
     }

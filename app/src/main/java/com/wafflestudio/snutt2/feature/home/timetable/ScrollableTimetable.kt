@@ -39,6 +39,7 @@ import com.wafflestudio.snutt2.feature.home.drawer.VacancyBanner
 import com.wafflestudio.snutt2.feature.tablelectures.TableLectureItem
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
+import com.wafflestudio.snutt2.ui.preview.builtInOnlyLectures
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 

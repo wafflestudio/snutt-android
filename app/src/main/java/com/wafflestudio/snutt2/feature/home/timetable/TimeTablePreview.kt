@@ -10,6 +10,10 @@ import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import com.wafflestudio.snutt2.domain.model.getFittingTrimParam
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
+import com.wafflestudio.snutt2.ui.preview.builtInOnlyLectures
+import com.wafflestudio.snutt2.ui.preview.builtInWithOneCustomLecture
+import com.wafflestudio.snutt2.ui.preview.sampleCustomTheme
+import com.wafflestudio.snutt2.ui.preview.sampleSelectedLecture
 
 @SnuttPreview
 @Composable

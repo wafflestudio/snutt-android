@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.domain.model.preview
+package com.wafflestudio.snutt2.ui.preview
 
 import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.CourseBook
@@ -370,7 +370,7 @@ object PreviewData {
         isPrimary = true,
     )
 
-    private val sampleFriendLecture = com.wafflestudio.snutt2.domain.model.CustomLecture(
+    private val sampleFriendLecture = CustomLecture(
         id = "lecture1",
         courseTitle = "컴퓨터 프로그래밍",
         instructor = "홍길동",

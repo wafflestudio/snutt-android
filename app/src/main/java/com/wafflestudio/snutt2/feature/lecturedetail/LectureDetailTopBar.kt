@@ -12,7 +12,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.Lecture
 import com.wafflestudio.snutt2.domain.model.LectureSyllabusInfo
 import com.wafflestudio.snutt2.domain.model.LocalLecture
-import com.wafflestudio.snutt2.domain.model.preview.PreviewData
+import com.wafflestudio.snutt2.ui.preview.PreviewData
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.clicks

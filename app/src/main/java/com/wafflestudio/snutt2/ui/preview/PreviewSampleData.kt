@@ -1,12 +1,14 @@
-package com.wafflestudio.snutt2.feature.home.timetable
+package com.wafflestudio.snutt2.ui.preview
 
 import com.wafflestudio.snutt2.domain.model.CustomTheme
 import com.wafflestudio.snutt2.domain.model.LectureColor
 import com.wafflestudio.snutt2.domain.model.LectureReviewInfo
 import com.wafflestudio.snutt2.domain.model.LectureSession
 import com.wafflestudio.snutt2.domain.model.LocalLecture
+import com.wafflestudio.snutt2.domain.model.SearchTag
 import com.wafflestudio.snutt2.domain.model.SearchedLecture
 import com.wafflestudio.snutt2.domain.model.SyllabusLecture
+import com.wafflestudio.snutt2.domain.model.TagType
 import com.wafflestudio.snutt2.domain.model.ThemeColor
 import java.time.DayOfWeek
 import java.time.LocalTime
@@ -39,7 +41,7 @@ internal fun syllabusLecture(
 )
 
 // 모든 강의가 BuiltIn 색인 사용
-internal val builtInOnlyLectures: List<LocalLecture> = listOf(
+val builtInOnlyLectures: List<LocalLecture> = listOf(
     syllabusLecture(
         id = "1",
         courseTitle = "논리설계",
@@ -98,7 +100,7 @@ internal val builtInOnlyLectures: List<LocalLecture> = listOf(
 )
 
 // BuiltIn 위주이지만 커스텀 색상 강의가 하나 섞인 케이스 (실제 사용 패턴: 빌트인 테마 + 일부 강의에 사용자 커스텀 색 지정)
-internal val builtInWithOneCustomLecture: List<LocalLecture> = listOf(
+val builtInWithOneCustomLecture: List<LocalLecture> = listOf(
     syllabusLecture(
         id = "1",
         courseTitle = "논리설계",
@@ -151,7 +153,7 @@ internal val builtInWithOneCustomLecture: List<LocalLecture> = listOf(
 )
 
 // CustomTheme 샘플
-internal val sampleCustomTheme = CustomTheme(
+val sampleCustomTheme = CustomTheme(
     id = "preview_custom_1",
     name = "파스텔",
     isFromMarket = false,
@@ -165,7 +167,7 @@ internal val sampleCustomTheme = CustomTheme(
 )
 
 // 선택 강의 샘플
-internal val sampleSelectedLecture = SearchedLecture(
+val sampleSelectedLecture = SearchedLecture(
     id = "search1",
     courseTitle = "알고리즘",
     lectureSessions = listOf(
@@ -187,4 +189,39 @@ internal val sampleSelectedLecture = SearchedLecture(
     registrationCount = 45,
     wasFull = false,
     reviewInfo = LectureReviewInfo("", 0.0, 0),
+)
+
+
+val previewTagTypes = listOf(
+    TagType.SORT_CRITERIA,
+    TagType.CLASSIFICATION,
+    TagType.DEPARTMENT,
+    TagType.ACADEMIC_YEAR,
+    TagType.CREDIT,
+    TagType.TIME,
+    TagType.ETC,
+)
+
+val previewAllTags = listOf(
+    SearchTag.Regular(TagType.SORT_CRITERIA, "평점 높은 순"),
+    SearchTag.Regular(TagType.SORT_CRITERIA, "강의평 많은 순"),
+    SearchTag.Regular(TagType.CLASSIFICATION, "공통"),
+    SearchTag.Regular(TagType.CLASSIFICATION, "교양"),
+    SearchTag.Regular(TagType.CLASSIFICATION, "논문"),
+    SearchTag.Regular(TagType.CLASSIFICATION, "일선"),
+    SearchTag.Regular(TagType.CLASSIFICATION, "전선"),
+    SearchTag.Regular(TagType.CLASSIFICATION, "전필"),
+    SearchTag.Regular(TagType.DEPARTMENT, "컴퓨터공학부"),
+    SearchTag.Regular(TagType.DEPARTMENT, "전기정보공학부"),
+    SearchTag.Regular(TagType.DEPARTMENT, "기계공학부"),
+    SearchTag.Regular(TagType.ACADEMIC_YEAR, "1학년"),
+    SearchTag.Regular(TagType.ACADEMIC_YEAR, "2학년"),
+    SearchTag.Regular(TagType.ACADEMIC_YEAR, "3학년"),
+    SearchTag.Regular(TagType.CREDIT, "1학점"),
+    SearchTag.Regular(TagType.CREDIT, "2학점"),
+    SearchTag.Regular(TagType.CREDIT, "3학점"),
+    SearchTag.TimeEmpty,
+    SearchTag.TimeSelect,
+    SearchTag.EtcEng,
+    SearchTag.EtcMilitary,
 )

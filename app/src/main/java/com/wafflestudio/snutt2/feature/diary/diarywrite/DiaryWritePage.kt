@@ -56,7 +56,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.domain.model.preview.DiaryPreviewData
+import com.wafflestudio.snutt2.ui.preview.DiaryPreviewData
 import com.wafflestudio.snutt2.feature.diary.DiaryTheme
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression

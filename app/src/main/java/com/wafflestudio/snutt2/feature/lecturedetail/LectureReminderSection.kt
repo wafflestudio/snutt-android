@@ -13,7 +13,7 @@ import androidx.compose.ui.text.withStyle
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.LectureReminderOffset
 import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
-import com.wafflestudio.snutt2.domain.model.preview.PreviewData
+import com.wafflestudio.snutt2.ui.preview.PreviewData
 import com.wafflestudio.snutt2.ui.components.compose.SegmentedPicker
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface

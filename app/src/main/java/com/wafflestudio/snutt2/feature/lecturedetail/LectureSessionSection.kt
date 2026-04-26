@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.LectureSession
-import com.wafflestudio.snutt2.domain.model.preview.PreviewData
+import com.wafflestudio.snutt2.ui.preview.PreviewData
 import com.wafflestudio.snutt2.ui.components.compose.EditText
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks

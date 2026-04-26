@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.diary.DiarySummary
-import com.wafflestudio.snutt2.domain.model.preview.DiaryPreviewData
+import com.wafflestudio.snutt2.ui.preview.DiaryPreviewData
 import com.wafflestudio.snutt2.feature.diary.DiaryTheme
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar

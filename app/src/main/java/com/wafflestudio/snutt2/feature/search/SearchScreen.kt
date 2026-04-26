@@ -38,7 +38,7 @@ import com.wafflestudio.snutt2.domain.model.SearchedLecture
 import com.wafflestudio.snutt2.domain.model.TableLectureCustom
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import com.wafflestudio.snutt2.domain.model.TagType
-import com.wafflestudio.snutt2.domain.model.preview.PreviewData
+import com.wafflestudio.snutt2.ui.preview.PreviewData
 import com.wafflestudio.snutt2.feature.home.timetable.TimeTable
 import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.ui.components.compose.EditText

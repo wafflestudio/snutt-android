@@ -10,6 +10,7 @@ import com.wafflestudio.snutt2.domain.model.ThemeReference
 import com.wafflestudio.snutt2.domain.model.getFittingTrimParam
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
+import com.wafflestudio.snutt2.ui.preview.builtInOnlyLectures
 
 private val sampleTable = Table(
     summary = TableSummary.Default,

@@ -22,7 +22,7 @@ import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.CustomTheme
 import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.domain.model.ThemeColor
-import com.wafflestudio.snutt2.domain.model.preview.PreviewData
+import com.wafflestudio.snutt2.ui.preview.PreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors

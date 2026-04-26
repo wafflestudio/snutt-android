@@ -61,7 +61,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.domain.model.preview.PreviewData
+import com.wafflestudio.snutt2.ui.preview.PreviewData
 import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression

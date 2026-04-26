@@ -19,7 +19,7 @@ import com.wafflestudio.snutt2.domain.model.CustomLecture
 import com.wafflestudio.snutt2.domain.model.Lecture
 import com.wafflestudio.snutt2.domain.model.LectureSyllabusInfo
 import com.wafflestudio.snutt2.domain.model.SyllabusLecture
-import com.wafflestudio.snutt2.domain.model.preview.PreviewData
+import com.wafflestudio.snutt2.ui.preview.PreviewData
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface

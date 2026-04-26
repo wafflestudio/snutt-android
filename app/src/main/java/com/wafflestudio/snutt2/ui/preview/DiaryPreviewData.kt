@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.domain.model.preview
+package com.wafflestudio.snutt2.ui.preview
 
 import com.wafflestudio.snutt2.domain.model.CourseBook
 import com.wafflestudio.snutt2.domain.model.diary.DiaryDailyClassType
@@ -56,7 +56,7 @@ object DiaryPreviewData {
                 id = "diary-id-1",
                 lectureId = "aaaaa시각디자인기초",
                 courseName = "시각디자인기초",
-                date = java.time.LocalDateTime.of(2024, 3, 20, 10, 0),
+                date = LocalDateTime.of(2024, 3, 20, 10, 0),
                 questionAnswers = listOf(
                     DiaryQuestionAnswer(
                         question = "수강신청",
@@ -77,7 +77,7 @@ object DiaryPreviewData {
                 id = "diary-id-2",
                 lectureId = "bbbb배구",
                 courseName = "배구",
-                date = java.time.LocalDateTime.of(2024, 3, 20, 14, 0),
+                date = LocalDateTime.of(2024, 3, 20, 14, 0),
                 questionAnswers = listOf(
                     DiaryQuestionAnswer(
                         question = "수강신청",
@@ -95,13 +95,13 @@ object DiaryPreviewData {
                 comment = "오티 했어용. 교수님이 과제량 많다고 하셨는데 도움이 많이 될 것 같아 기대가 돼요. 수업 들으려고 과외도 끊었지 뭐에요 😮‍💨",
             ),
 
-        ).toDataWithState(true),
+            ).toDataWithState(true),
         LocalDate.of(2024, 3, 19) to listOf(
             DiarySummary(
                 id = "diary-id-3",
                 lectureId = "cccc시각디자인기초",
                 courseName = "시각디자인기초",
-                date = java.time.LocalDateTime.of(2024, 3, 19, 10, 0),
+                date = LocalDateTime.of(2024, 3, 19, 10, 0),
                 questionAnswers = listOf(
                     DiaryQuestionAnswer(
                         question = "수강신청",
@@ -122,7 +122,7 @@ object DiaryPreviewData {
                 id = "diary-id-4",
                 lectureId = "dddd배구",
                 courseName = "배구",
-                date = java.time.LocalDateTime.of(2024, 3, 19, 14, 0),
+                date = LocalDateTime.of(2024, 3, 19, 14, 0),
                 questionAnswers = listOf(
                     DiaryQuestionAnswer(
                         question = "수강신청",

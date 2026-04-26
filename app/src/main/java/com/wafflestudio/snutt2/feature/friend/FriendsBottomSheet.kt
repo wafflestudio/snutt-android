@@ -19,7 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.Friend
-import com.wafflestudio.snutt2.domain.model.preview.PreviewData
+import com.wafflestudio.snutt2.ui.preview.PreviewData
 import com.wafflestudio.snutt2.ui.components.compose.EditText
 import com.wafflestudio.snutt2.ui.components.compose.ModalBottomSheetPlaceholder
 import com.wafflestudio.snutt2.ui.components.compose.MoreActionItem

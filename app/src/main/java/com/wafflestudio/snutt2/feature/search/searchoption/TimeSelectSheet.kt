@@ -46,7 +46,7 @@ import com.wafflestudio.snutt2.domain.model.LectureSyllabusInfo
 import com.wafflestudio.snutt2.domain.model.LocalLecture
 import com.wafflestudio.snutt2.domain.model.TableLectureCustom
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
-import com.wafflestudio.snutt2.domain.model.preview.PreviewData
+import com.wafflestudio.snutt2.ui.preview.PreviewData
 import com.wafflestudio.snutt2.domain.model.trimByTrimParam
 import com.wafflestudio.snutt2.feature.home.timetable.DrawClassTime
 import com.wafflestudio.snutt2.feature.home.timetable.DrawTableGrid
