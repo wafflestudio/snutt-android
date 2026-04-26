@@ -134,6 +134,7 @@ fun HomeDrawerBottomSheetLayout(
                 )
             },
             drawerState = drawerState,
+            scrimColor = SNUTTColors.Black.copy(alpha = 0.32f),
         ) {
             content()
         }
