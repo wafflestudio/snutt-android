@@ -278,26 +278,6 @@ private fun ThemeColorRow_EditableExpanded() {
 
 @SnuttPreview
 @Composable
-private fun ThemeColorRow_EditableCollapsed() {
-    SnuttPreviewSurface {
-        val editableColor = PreviewData.previewEditingThemeCustom.colors[1]
-        ThemeColorRow(
-            index = 1,
-            isEditable = true,
-            color = editableColor.item,
-            isExpanded = false,
-            isDuplicateEnabled = true,
-            isRemoveEnabled = true,
-            onToggleColorExpanded = {},
-            onDuplicateColor = {},
-            onRemoveColor = {},
-            onUpdateColor = { _, _, _ -> },
-        )
-    }
-}
-
-@SnuttPreview
-@Composable
 private fun ThemeColorRow_Readonly() {
     SnuttPreviewSurface {
         val readonlyColor = PreviewData.previewEditingThemeBuiltIn.colors[0]

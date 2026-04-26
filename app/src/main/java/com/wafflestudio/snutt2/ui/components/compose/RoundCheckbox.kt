@@ -69,11 +69,3 @@ private fun RoundCheckbox_Checked() {
         RoundCheckbox(checked = true, onCheckedChange = {})
     }
 }
-
-@SnuttPreview
-@Composable
-private fun RoundCheckbox_Unchecked() {
-    SnuttPreviewSurface {
-        RoundCheckbox(checked = false, onCheckedChange = {})
-    }
-}

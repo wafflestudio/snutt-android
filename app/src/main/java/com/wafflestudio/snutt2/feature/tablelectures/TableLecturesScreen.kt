@@ -166,18 +166,6 @@ fun TableLectureItem(
 
 @SnuttPreview
 @Composable
-private fun TableLectureItem_Default() {
-    SnuttPreviewSurface {
-        TableLectureItem(
-            modifier = Modifier.padding(horizontal = 20.dp, vertical = 7.dp),
-            lecture = PreviewData.syllabusLecture,
-            onClickLecture = {},
-        )
-    }
-}
-
-@SnuttPreview
-@Composable
 private fun TableLecturesScreen_Default() {
     SnuttPreviewSurface {
         TableLecturesScreen(

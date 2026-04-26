@@ -237,14 +237,6 @@ fun VacancyBadge(
 
 @SnuttPreview
 @Composable
-private fun VacancyBadge_Default() {
-    SnuttPreviewSurface {
-        VacancyBadge()
-    }
-}
-
-@SnuttPreview
-@Composable
 private fun VacancyListItem_HasVacancy() {
     SnuttPreviewSurface {
         LazyColumn {

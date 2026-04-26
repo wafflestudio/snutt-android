@@ -235,22 +235,6 @@ private fun AddThemeItem_Default() {
 
 @SnuttPreview
 @Composable
-private fun ThemeItem_BuiltIn() {
-    SnuttPreviewSurface {
-        ThemeItem(theme = BuiltInTheme.fromCode(0), onClick = {})
-    }
-}
-
-@SnuttPreview
-@Composable
-private fun ThemeItem_Custom() {
-    SnuttPreviewSurface {
-        ThemeItem(theme = PreviewData.previewCustomTheme1, onClick = {})
-    }
-}
-
-@SnuttPreview
-@Composable
 private fun ThemeGuideTexts_Default() {
     SnuttPreviewSurface {
         ThemeGuideTexts()

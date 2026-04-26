@@ -159,20 +159,6 @@ private fun ColorItem_Selected() {
 
 @SnuttPreview
 @Composable
-private fun ColorItem_Unselected() {
-    SnuttPreviewSurface {
-        ColorItem(
-            foreground = Color.White,
-            background = Color(0xFF1BD0C8),
-            title = "색상 2",
-            isSelected = false,
-            onClick = {},
-        )
-    }
-}
-
-@SnuttPreview
-@Composable
 private fun PickerColorSection_Default() {
     SnuttPreviewSurface {
         PickerColorSection(

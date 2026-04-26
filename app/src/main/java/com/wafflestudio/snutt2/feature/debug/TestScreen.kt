@@ -219,14 +219,3 @@ private fun SettingItemForTest_HasNextPage() {
         )
     }
 }
-
-@SnuttPreview
-@Composable
-private fun SettingItemForTest_NoNextPage() {
-    SnuttPreviewSurface {
-        SettingItemForTest(
-            title = "테스트 항목",
-            hasNextPage = false,
-        )
-    }
-}
