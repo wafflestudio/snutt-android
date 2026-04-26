@@ -292,7 +292,20 @@ class FriendsViewModel @Inject constructor(
         }
     }
 
-    fun requestFriend(nickname: String) {
+    fun onRequestNicknameChange(value: String) {
+        _uiState.update { state ->
+            if (state is FriendsUiState.Loaded && state.bottomSheetContent is FriendBottomSheetContent.RequestWithNickname) {
+                state.copy(bottomSheetContent = FriendBottomSheetContent.RequestWithNickname(nickname = value))
+            } else {
+                state
+            }
+        }
+    }
+
+    fun requestFriend() {
+        val state = _uiState.value as? FriendsUiState.Loaded ?: return
+        val sheet = state.bottomSheetContent as? FriendBottomSheetContent.RequestWithNickname ?: return
+        val nickname = sheet.nickname
         viewModelScope.launch {
             friendRepository.requestFriend(nickname)
                 .onSuccess {
@@ -371,7 +384,23 @@ class FriendsViewModel @Inject constructor(
         }
     }
 
-    fun saveDisplayName(friend: Friend, displayName: String) {
+    fun onEditDisplayNameChange(value: String) {
+        _uiState.update { state ->
+            if (state is FriendsUiState.Loaded && state.bottomSheetContent is FriendBottomSheetContent.EditDisplayName) {
+                state.copy(
+                    bottomSheetContent = state.bottomSheetContent.copy(displayName = value),
+                )
+            } else {
+                state
+            }
+        }
+    }
+
+    fun saveDisplayName() {
+        val state = _uiState.value as? FriendsUiState.Loaded ?: return
+        val sheet = state.bottomSheetContent as? FriendBottomSheetContent.EditDisplayName ?: return
+        val friend = sheet.friend
+        val displayName = sheet.displayName
         viewModelScope.launch {
             friendRepository.patchFriendDisplayName(friend, displayName)
                 .onSuccess {

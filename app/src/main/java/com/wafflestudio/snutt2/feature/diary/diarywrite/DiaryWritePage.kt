@@ -130,6 +130,7 @@ fun DiaryWriteRoute(
                 )
             },
             onToggleAnswer = viewModel::toggleAnswer,
+            onCommentTextChange = viewModel::onCommentTextChange,
             onSubmitDiary = viewModel::saveDiaryWrite,
             onClickBackButton = onNavigateBack,
             onClickWriteNextButton = viewModel::writeNextDiary,
@@ -147,7 +148,8 @@ private fun DiaryWriteScreen(
     onCompleteSelectActivities: () -> Unit,
     onRestartSelectActivities: () -> Unit,
     onToggleAnswer: (questionIndex: Int, answerIndex: Int) -> Unit,
-    onSubmitDiary: (comment: String) -> Unit,
+    onCommentTextChange: (String) -> Unit,
+    onSubmitDiary: () -> Unit,
     onClickBackButton: () -> Unit,
     onClickWriteNextButton: () -> Unit,
     onClickWriteReviewButton: () -> Unit,
@@ -171,6 +173,7 @@ private fun DiaryWriteScreen(
             onCompleteSelectActivities,
             onRestartSelectActivities,
             onToggleAnswer,
+            onCommentTextChange,
             onSubmitDiary,
             onClickBackButton,
         )
@@ -186,7 +189,8 @@ private fun DiaryWriting(
     onCompleteSelectActivities: () -> Unit,
     onRestartSelectActivities: () -> Unit,
     onToggleAnswer: (questionIndex: Int, answerIndex: Int) -> Unit,
-    onSubmitDiary: (comment: String) -> Unit,
+    onCommentTextChange: (String) -> Unit,
+    onSubmitDiary: () -> Unit,
     onClickBackButton: () -> Unit,
 ) {
     val scope = rememberCoroutineScope()
@@ -203,9 +207,6 @@ private fun DiaryWriting(
 
     val toScrollOffset =
         remember { mutableIntStateOf(0) }
-    var commentText by remember {
-        mutableStateOf("")
-    }
     var isMoreTextExpanded by rememberSaveable { mutableStateOf(false) }
 
     Column {
@@ -290,10 +291,8 @@ private fun DiaryWriting(
                 }
 
                 MoreTextItem(
-                    moreText = commentText,
-                    onChange = { text ->
-                        commentText = text
-                    },
+                    moreText = uiState.commentText,
+                    onChange = onCommentTextChange,
                     isExpanded = isMoreTextExpanded,
                     onExpandedChange = { isMoreTextExpanded = it },
                 )
@@ -313,7 +312,7 @@ private fun DiaryWriting(
                             ),
                         )
                         .clicks(enabled = uiState.allQuestionAnswered()) {
-                            onSubmitDiary(commentText)
+                            onSubmitDiary()
                         }
                         .padding(
                             vertical = 12.dp,
@@ -441,6 +440,7 @@ private fun DiaryWriting_InProgress() {
                 onCompleteSelectActivities = {},
                 onRestartSelectActivities = {},
                 onToggleAnswer = { _, _ -> },
+                onCommentTextChange = {},
                 onSubmitDiary = {},
                 onClickBackButton = {},
             )

@@ -12,10 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -27,6 +23,7 @@ import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.ui.components.compose.EditText
 import com.wafflestudio.snutt2.ui.components.compose.FriendHashIcon
 import com.wafflestudio.snutt2.ui.components.compose.KakaoTalkIcon
+import com.wafflestudio.snutt2.ui.components.compose.ModalBottomSheetPlaceholder
 import com.wafflestudio.snutt2.ui.components.compose.MoreActionItem
 import com.wafflestudio.snutt2.ui.components.compose.TrashIcon
 import com.wafflestudio.snutt2.ui.components.compose.WarningIcon
@@ -42,13 +39,17 @@ fun FriendsBottomSheetContent(
     onDismiss: () -> Unit,
     onRequestWithNickname: () -> Unit,
     onRequestWithKakaoTalk: () -> Unit,
-    onSubmitNickname: (String) -> Unit,
+    onNicknameChange: (String) -> Unit,
+    onSubmitNickname: () -> Unit,
     onDeleteFriend: (Friend) -> Unit,
     onEditDisplayName: (Friend) -> Unit,
-    onSubmitDisplayName: (Friend, String) -> Unit,
+    onDisplayNameChange: (String) -> Unit,
+    onSubmitDisplayName: () -> Unit,
 ) {
     when (bottomSheetContent) {
-        is FriendBottomSheetContent.Hidden -> {}
+        is FriendBottomSheetContent.Hidden -> {
+            ModalBottomSheetPlaceholder()
+        }
 
         is FriendBottomSheetContent.RequestMethodList -> {
             AddFriendMethodListBottomSheet(
@@ -59,7 +60,8 @@ fun FriendsBottomSheetContent(
 
         is FriendBottomSheetContent.RequestWithNickname -> {
             RequestWithNicknameBottomSheet(
-                initialNickname = bottomSheetContent.nickname,
+                nickname = bottomSheetContent.nickname,
+                onNicknameChange = onNicknameChange,
                 onSubmit = onSubmitNickname,
                 onDismiss = onDismiss,
             )
@@ -77,10 +79,9 @@ fun FriendsBottomSheetContent(
         is FriendBottomSheetContent.EditDisplayName -> {
             EditDisplayNameBottomSheet(
                 friend = bottomSheetContent.friend,
-                initialDisplayName = bottomSheetContent.displayName,
-                onSubmit = { newDisplayName ->
-                    onSubmitDisplayName(bottomSheetContent.friend, newDisplayName)
-                },
+                displayName = bottomSheetContent.displayName,
+                onDisplayNameChange = onDisplayNameChange,
+                onSubmit = onSubmitDisplayName,
                 onDismiss = onDismiss,
             )
         }
@@ -125,12 +126,11 @@ private fun AddFriendMethodListBottomSheet(
 
 @Composable
 private fun RequestWithNicknameBottomSheet(
-    initialNickname: String,
-    onSubmit: (String) -> Unit,
+    nickname: String,
+    onNicknameChange: (String) -> Unit,
+    onSubmit: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    var nickname by remember { mutableStateOf(initialNickname) }
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -152,7 +152,7 @@ private fun RequestWithNicknameBottomSheet(
                     SNUTTTypography.body1.copy(color = SNUTTColors.Gray200)
                 },
                 modifier = Modifier.clickable(enabled = nickname.isNotBlank()) {
-                    onSubmit(nickname)
+                    onSubmit()
                 },
             )
         }
@@ -164,7 +164,7 @@ private fun RequestWithNicknameBottomSheet(
         Spacer(modifier = Modifier.height(15.dp))
         EditText(
             value = nickname,
-            onValueChange = { nickname = it },
+            onValueChange = onNicknameChange,
             hint = stringResource(R.string.friend_request_nickname_hint),
             underlineColor = SNUTTColors.SNUTTTheme,
             underlineColorFocused = SNUTTColors.SNUTTTheme,
@@ -219,12 +219,12 @@ private fun FriendDetailBottomSheet(
 @Composable
 private fun EditDisplayNameBottomSheet(
     friend: Friend,
-    initialDisplayName: String,
-    onSubmit: (String) -> Unit,
+    displayName: String,
+    onDisplayNameChange: (String) -> Unit,
+    onSubmit: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    var displayName by remember { mutableStateOf(initialDisplayName) }
-    val isModifiable = displayName != initialDisplayName && displayName.isNotBlank()
+    val isModifiable = displayName != (friend.displayName ?: "") && displayName.isNotBlank()
 
     Column(
         modifier = Modifier
@@ -247,7 +247,7 @@ private fun EditDisplayNameBottomSheet(
                     SNUTTTypography.body1.copy(color = SNUTTColors.Gray200)
                 },
                 modifier = Modifier.clickable(enabled = isModifiable) {
-                    onSubmit(displayName)
+                    onSubmit()
                 },
             )
         }
@@ -266,7 +266,7 @@ private fun EditDisplayNameBottomSheet(
         Spacer(modifier = Modifier.height(15.dp))
         EditText(
             value = displayName,
-            onValueChange = { displayName = it },
+            onValueChange = onDisplayNameChange,
             underlineColor = SNUTTColors.SNUTTTheme,
             underlineColorFocused = SNUTTColors.SNUTTTheme,
             underlineWidth = 2.dp,
@@ -300,7 +300,8 @@ private fun FriendAdd_MethodList() {
 private fun FriendAdd_NicknameInput_Empty() {
     SnuttPreviewSurface {
         RequestWithNicknameBottomSheet(
-            initialNickname = "",
+            nickname = "",
+            onNicknameChange = {},
             onSubmit = {},
             onDismiss = {},
         )
@@ -312,7 +313,8 @@ private fun FriendAdd_NicknameInput_Empty() {
 private fun FriendAdd_NicknameInput_Filled() {
     SnuttPreviewSurface {
         RequestWithNicknameBottomSheet(
-            initialNickname = "홍길동#1234",
+            nickname = "홍길동#1234",
+            onNicknameChange = {},
             onSubmit = {},
             onDismiss = {},
         )
@@ -338,7 +340,8 @@ private fun DisplayNameEdit_Filled() {
     SnuttPreviewSurface {
         EditDisplayNameBottomSheet(
             friend = PreviewData.sampleFriends.first(),
-            initialDisplayName = "김철수",
+            displayName = "김철수",
+            onDisplayNameChange = {},
             onSubmit = {},
             onDismiss = {},
         )
@@ -351,7 +354,8 @@ private fun DisplayNameEdit_Empty() {
     SnuttPreviewSurface {
         EditDisplayNameBottomSheet(
             friend = PreviewData.sampleFriends[1],
-            initialDisplayName = "",
+            displayName = "",
+            onDisplayNameChange = {},
             onSubmit = {},
             onDismiss = {},
         )

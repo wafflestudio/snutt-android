@@ -120,7 +120,16 @@ class DiaryWriteViewModel @Inject constructor(
         }
     }
 
-    fun saveDiaryWrite(comment: String) {
+    fun onCommentTextChange(value: String) {
+        _uiState.update { state ->
+            when (state) {
+                is DiaryWriteUiState.Write -> state.copy(commentText = value)
+                else -> state
+            }
+        }
+    }
+
+    fun saveDiaryWrite() {
         analyticsLogger.logEvent(AnalyticsEvent.DiarySubmitted)
         val state = _uiState.value as? DiaryWriteUiState.Write ?: return
         val selectedDailyClassTypes = state.dailyClassTypes
@@ -138,7 +147,7 @@ class DiaryWriteViewModel @Inject constructor(
                 lectureId = lectureId,
                 dailyClassTypes = selectedDailyClassTypes,
                 questionAnswers = questionAnswers,
-                comment = comment,
+                comment = state.commentText,
             )
                 .onSuccess {
                     val nextLecture = state.nextLecture

@@ -11,6 +11,7 @@ sealed interface DiaryWriteUiState {
         val dailyClassTypes: List<Selectable<DiaryDailyClassType>>,
         val activitySelectingState: ActivitySelectionState,
         val questions: List<DiaryQuestion>,
+        val commentText: String = "",
         val nextLecture: NextLecture? = null,
     ) : DiaryWriteUiState {
 
