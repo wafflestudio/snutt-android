@@ -82,9 +82,28 @@ private fun ExampleComponent_Default() {
 
 기본적으로 `@SnuttPreview` 만 부착하면 된다 — `widthDp` / `heightDp` 는 지정하지 않는다 (wrap content).
 
-특정 컴포넌트가 좁거나 넓은 컨테이너 안에서만 의미 있게 동작하여 사이즈 지정이 필요해지면, 케이스가 충분히
-누적된 시점에 별도 multipreview annotation 을 만드는 방식으로 대응한다 (예: `@SnuttPreviewWide` 등).
-**이번 정책에서는 사이즈 지정의 표준 패턴을 정하지 않는다 — 필요해질 때 추가 결정한다.**
+### 5.1 사이즈 지정이 필요한 경우
+
+preview 가 잘리거나 컨테이너가 너무 작아 시각 단서가 부족한 경우, 해당 preview 함수에 한해
+`@SnuttPreview` 대신 **light/dark 두 `@Preview` 를 직접 부착**한다.
+
+```kotlin
+@Preview(name = "1. Light", uiMode = Configuration.UI_MODE_NIGHT_NO, locale = "ko", heightDp = 1100)
+@Preview(name = "2. Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ko", heightDp = 1100)
+@Composable
+private fun DiaryWriting_InProgress() { ... }
+```
+
+- `@SnuttPreview` 와 추가 `@Preview(heightDp=...)` 를 함께 쓰면 entry 가 (light + dark) +
+  (default uiMode 의 사이즈 지정) 3개로 늘어나 의도와 어긋난다. 따라서 multipreview 를 안 쓰고
+  inline 으로 두 entry 를 직접 작성한다.
+- 사이즈 값은 케이스마다 다르므로 (Screen 의 컨텐츠 길이에 따라) 통일된 default 를 두지 않는다.
+
+### 5.2 multipreview annotation 추출 (3-strikes rule)
+
+같은 사이즈 케이스가 **3건 이상 누적**되면 그때 `@SnuttPreviewTall` 등의 multipreview annotation
+추출을 검토한다. 그 전에는 inline 두 entry 로 유지 — 사이즈 케이스가 충분히 누적되지 않은 시점에
+미리 추상화하는 것은 over-engineering.
 
 ---
 
