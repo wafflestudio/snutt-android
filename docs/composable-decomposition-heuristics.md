@@ -37,6 +37,11 @@ preview 부착 시 어색함 또는 redundancy 가 발견됨
   │         해소: 자식의 별도 preview 만 제거 (분리는 유지)
   │         사례: §3.4
   │
+  ├─ 같은 컴포넌트의 두 분기 preview 의 시각 차이가 작고 한쪽이 다른쪽의 superset
+  │   → 분기 redundant 시그널
+  │     해소: superset 분기 preview 만 유지, subset 제거
+  │     사례: §3.5
+  │
   └─ 단독 호출 시 시각이 빈 화면 또는 의도와 다름 (예: 라이트 모드 흰 화면)
       │
       ├─ 자체 시각 책임 (배경 등) 이 빠진 게 원인 — 모르고 빠뜨림
@@ -170,6 +175,41 @@ preview 부착 시 어색함 또는 redundancy 가 발견됨
 - 부모 preview 에서 자식 호출부 클릭으로 자식 정의에 도달 가능한가?
 
 **커밋**: `77461db7 refactor: DiarySummary 의 file-private fixture 를 DiaryPreviewData 로 이전 + redundant preview 제거`
+
+---
+
+### 3.5 같은 컴포넌트 분기 간 superset/subset — `DiaryActivitySelectSection_Completed`
+
+**시그널**: 같은 컴포넌트의 두 분기 preview 의 시각 차이가 "한 element 의 가시성"
+정도로 작고, 한쪽이 다른쪽의 시각 superset.
+
+**원인** (`DiaryActivitySelectSection`):
+- `Selecting` 분기: 선택 옵션 + "완료" 버튼.
+- `Completed` 분기: 선택 옵션만 (완료 버튼 없음).
+- 시각적으로 `Selecting` 이 `Completed` 의 superset. `Completed` 는 `Selecting`
+  에서 완료 버튼만 빠진 모습이라 superset preview 만 보면 imagine 가능.
+
+**해소**:
+- superset 분기 preview (`Selecting`) 만 유지.
+- subset 분기 preview (`Completed`) 제거.
+- 컴포넌트의 분기 로직 자체는 그대로 (시각 코드는 두 분기 모두 정상 동작).
+
+**판단 기준**:
+- **시각 superset** (객관적): 한 분기의 시각 요소가 다른 분기의 시각 요소를 모두
+  포함하고 추가 요소가 있는가?
+- **representative** (주관적): 디자인 관점에서 어느 분기가 컴포넌트의 메인 사용
+  케이스인가?
+- 두 기준이 일치하면 결정 단순. 불일치 시 (예: superset 은 Selecting 인데
+  representative 는 Completed) 별도 검토 필요. 이번 사례는 두 기준이 일치 (Selecting).
+
+**§3.4 와의 차이**:
+| | §3.4 | §3.5 |
+|---|---|---|
+| 흡수 관계 | 자식 → 부모 (다른 함수) | 분기 → 분기 (같은 함수) |
+| 흡수 기준 | 부모가 시각 + 네비게이션 둘 다 제공 | 한 분기가 다른 분기의 시각 superset |
+| 해소 | 자식 preview 제거 | subset 분기 preview 제거 |
+
+**커밋**: (이번 commit)
 
 ---
 

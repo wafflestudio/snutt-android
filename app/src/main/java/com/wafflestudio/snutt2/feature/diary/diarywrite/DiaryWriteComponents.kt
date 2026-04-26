@@ -347,22 +347,6 @@ private fun DiaryActivitySelectSection_Selecting() {
 
 @SnuttPreview
 @Composable
-private fun DiaryActivitySelectSection_Completed() {
-    SnuttPreviewSurface {
-        DiaryTheme {
-            DiaryActivitySelectSection(
-                activitySelectionState = ActivitySelectionState.Complete,
-                onToggleActivitySelection = {},
-                onCompleteSelectActivities = {},
-                onRestartSelectActivities = {},
-                dailyClassTypes = DiaryPreviewData.sampleWriteUiStateSelecting.dailyClassTypes,
-            )
-        }
-    }
-}
-
-@SnuttPreview
-@Composable
 private fun DiaryQuestionsSection_Default() {
     SnuttPreviewSurface {
         DiaryTheme {
