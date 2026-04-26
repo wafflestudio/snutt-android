@@ -17,10 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -223,8 +219,9 @@ fun DiaryQuestionItem(
 fun MoreTextItem(
     moreText: String?,
     onChange: (String) -> Unit,
+    isExpanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
 ) {
-    var isExpanded by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
             .background(
@@ -237,7 +234,7 @@ fun MoreTextItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clicks { isExpanded = !isExpanded },
+                .clicks { onExpandedChange(!isExpanded) },
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
@@ -369,6 +366,8 @@ private fun MoreTextItem_Filled() {
             MoreTextItem(
                 moreText = "시험을 예고 없이 보니 주의하시기 바랍니다.",
                 onChange = {},
+                isExpanded = true,
+                onExpandedChange = {},
             )
         }
     }
