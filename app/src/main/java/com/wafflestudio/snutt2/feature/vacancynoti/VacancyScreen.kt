@@ -278,7 +278,7 @@ fun VacancyEmpty(
                         R.drawable.ic_arrow_back,
                         modifier = Modifier
                             .size(30.dp)
-                            .clicks { onClickBack() }.size(30.dp),
+                            .clicks { onClickBack() },
                         colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                     )
                 },
@@ -406,7 +406,7 @@ fun VacancySuccess(
                         R.drawable.ic_arrow_back,
                         modifier = Modifier
                             .size(30.dp)
-                            .clicks { onClickBack() }.size(30.dp),
+                            .clicks { onClickBack() },
                         colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                     )
                 },
@@ -604,7 +604,7 @@ fun VacancyIntroDialog(
                                         scope.launch {
                                             pagerState.animateScrollToPage(pagerState.currentPage - 1)
                                         }
-                                    }.size(30.dp),
+                                    },
                                 colorFilter = ColorFilter.tint(SNUTTColors.VacancyGray),
                             )
                         }

@@ -47,7 +47,7 @@ internal fun LectureDetailTopBar(
                 R.drawable.ic_arrow_back,
                 modifier = Modifier
                     .size(30.dp)
-                    .clicks { onBackPressed() }.size(30.dp),
+                    .clicks { onBackPressed() },
                 colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
         },

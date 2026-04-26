@@ -78,7 +78,7 @@ fun MoreActionSheet(
             }
         }
         MoreActionItem(
-            icon = { SnuttIcon(R.drawable.ic_share, modifier = Modifier.size(30.dp).size(30.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900)) },
+            icon = { SnuttIcon(R.drawable.ic_share, modifier = Modifier.size(30.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900)) },
             text = stringResource(R.string.home_drawer_table_share),
         ) {
             onClickShare(tableSummary)

@@ -365,7 +365,7 @@ private fun FriendsLoadedScreen(
                                 R.drawable.ic_drawer,
                                 modifier = centerAlignedModifier
                                     .size(30.dp)
-                                    .clicks { onOpenDrawer() }.size(30.dp),
+                                    .clicks { onOpenDrawer() },
                                 colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                                 contentDescription = stringResource(R.string.home_timetable_drawer),
                             )
@@ -528,7 +528,7 @@ private fun FriendsLoadedScreen(
                                 )
                                 SnuttIcon(
                                     R.drawable.ic_drawer,
-                                    modifier = Modifier.size(12.5.dp).size(30.dp),
+                                    modifier = Modifier.size(12.5.dp),
                                     colorFilter = ColorFilter.tint(SNUTTColors.TextMed),
                                     contentDescription = stringResource(R.string.home_timetable_drawer),
                                 )

@@ -197,7 +197,7 @@ private fun GuideDialog(
                                         scope.launch {
                                             pagerState.animateScrollToPage(pagerState.currentPage - 1)
                                         }
-                                    }.size(30.dp),
+                                    },
                                 colorFilter = ColorFilter.tint(SNUTTColors.VacancyGray),
                             )
                         }

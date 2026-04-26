@@ -121,7 +121,7 @@ private fun AppReportScreen(
                     R.drawable.ic_arrow_back,
                     modifier = Modifier
                         .size(30.dp)
-                        .clicks { onNavigateBack() }.size(30.dp),
+                        .clicks { onNavigateBack() },
                     colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
             },

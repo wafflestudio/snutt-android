@@ -203,19 +203,19 @@ fun NotificationIcon(type: NotificationType) {
 
         NotificationType.Trash -> SnuttIcon(
             R.drawable.ic_trash_new,
-            modifier = Modifier.size(30.dp).size(30.dp),
+            modifier = Modifier.size(30.dp),
             colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
         )
 
         NotificationType.Vacancy -> SnuttIcon(
             R.drawable.ic_ringing_alarm_notification,
-            modifier = Modifier.size(30.dp).size(30.dp),
+            modifier = Modifier.size(30.dp),
             colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
         )
 
         NotificationType.Friend -> SnuttIcon(
             R.drawable.ic_ringing_alarm_notification,
-            modifier = Modifier.size(30.dp).size(30.dp),
+            modifier = Modifier.size(30.dp),
             colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
         )
 

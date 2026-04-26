@@ -74,7 +74,7 @@ fun FriendsDrawerContent(
                     .size(30.dp)
                     .clicks {
                         onClose()
-                    }.size(30.dp),
+                    },
                 colorFilter = ColorFilter.tint(SNUTTColors.Black900),
             )
         }

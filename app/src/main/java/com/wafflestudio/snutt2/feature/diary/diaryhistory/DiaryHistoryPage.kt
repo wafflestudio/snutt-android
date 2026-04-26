@@ -114,7 +114,7 @@ fun DiaryHistoryScreen(
                     R.drawable.ic_arrow_back,
                     modifier = Modifier
                         .size(30.dp)
-                        .clicks { onNavigateBack() }.size(30.dp),
+                        .clicks { onNavigateBack() },
                     colorFilter = ColorFilter.tint(DiaryTheme.colors.iconPrimary),
                 )
             },

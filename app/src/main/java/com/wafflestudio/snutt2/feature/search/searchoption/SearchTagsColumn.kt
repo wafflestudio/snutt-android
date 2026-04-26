@@ -127,7 +127,7 @@ private fun SelectableTagItem(
                     modifier = Modifier.clicks { onRemoveRecent(selectableTag.item) },
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    SnuttIcon(R.drawable.ic_exit, modifier = Modifier.size(18.dp).size(30.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
+                    SnuttIcon(R.drawable.ic_exit, modifier = Modifier.size(18.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
                 }
             }
         }

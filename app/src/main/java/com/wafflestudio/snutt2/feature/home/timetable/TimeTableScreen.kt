@@ -86,7 +86,7 @@ fun TimeTableScreen(
                                 R.drawable.ic_drawer,
                                 modifier = centerAlignedModifier
                                     .size(30.dp)
-                                    .clicks { onClickDrawerIcon() }.size(30.dp),
+                                    .clicks { onClickDrawerIcon() },
                                 colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                                 contentDescription = stringResource(R.string.home_timetable_drawer),
                             )
