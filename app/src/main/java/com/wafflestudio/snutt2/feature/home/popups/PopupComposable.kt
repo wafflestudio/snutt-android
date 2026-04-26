@@ -16,17 +16,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalWindowInfo
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.zIndex
-import coil.compose.AsyncImage
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.logging.compose.PopupLoggingEffect
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
@@ -34,21 +30,15 @@ import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 
 @Composable
 fun Popup(
-    imageUri: String,
     onClickFewDays: () -> Unit,
     onClickClose: () -> Unit,
-    onClickImage: () -> Unit,
+    imageContent: @Composable () -> Unit,
 ) {
-    val containerWidthDp = if (LocalInspectionMode.current) {
-        // Preview 환경에서는 LocalWindowInfo.current.containerSize.width 가 0 으로 떨어져
-        // 폭이 음수가 되므로 fallback 값 사용.
-        360.dp
-    } else {
-        with(LocalDensity.current) { LocalWindowInfo.current.containerSize.width.toDp() }
+    val rawWidth = with(LocalDensity.current) {
+        LocalWindowInfo.current.containerSize.width.toDp()
     }
+    val containerWidthDp = if (rawWidth > 0.dp) rawWidth else 360.dp
     val imageWidth = min(containerWidthDp * 0.8f, 400.dp)
-
-    PopupLoggingEffect(imageUri)
 
     Box(
         modifier = Modifier
@@ -63,33 +53,7 @@ fun Popup(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.width(imageWidth),
         ) {
-            if (LocalInspectionMode.current) {
-                // Preview 환경에서는 AsyncImage 의 painter intrinsic height 가
-                // Column 의 다른 자식 (버튼 Row) 을 밀어내므로 placeholder 만 그린다.
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .background(SNUTTColors.Gray400),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text = "Preview Image",
-                        color = SNUTTColors.AllWhite,
-                    )
-                }
-            } else {
-                AsyncImage(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clicks {
-                            onClickImage()
-                        },
-                    model = imageUri,
-                    contentDescription = "",
-                    error = painterResource(id = R.drawable.img_reviews_coming_soon),
-                )
-            }
+            imageContent()
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
@@ -133,6 +97,19 @@ fun Popup(
 @Composable
 private fun Popup_Default() {
     SnuttPreviewSurface {
-        Popup(imageUri = "", {}, {}, {})
+        Popup(onClickFewDays = {}, onClickClose = {}) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .background(SNUTTColors.Gray400),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = "Preview Image",
+                    color = SNUTTColors.Gray900,
+                )
+            }
+        }
     }
 }

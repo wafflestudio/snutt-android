@@ -15,10 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.LocalLecture
 import com.wafflestudio.snutt2.domain.model.SearchedLecture
 import com.wafflestudio.snutt2.feature.friend.FriendsRoute
@@ -28,6 +31,8 @@ import com.wafflestudio.snutt2.feature.reviews.ReviewPage
 import com.wafflestudio.snutt2.feature.reviews.ReviewWebViewContainer
 import com.wafflestudio.snutt2.feature.search.SearchRoute
 import com.wafflestudio.snutt2.feature.settings.SettingsRoute
+import com.wafflestudio.snutt2.logging.compose.PopupLoggingEffect
+import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 
@@ -242,11 +247,19 @@ private fun HomePageNewScreen(
     }
 
     if (uiState.shouldShowPopup) {
+        PopupLoggingEffect(uiState.popupImageUri)
         Popup(
-            imageUri = uiState.popupImageUri,
             onClickFewDays = onPopupClickFewDays,
             onClickClose = onPopupClickClose,
-            onClickImage = onPopupClickImage,
-        )
+        ) {
+            AsyncImage(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clicks { onPopupClickImage() },
+                model = uiState.popupImageUri,
+                contentDescription = "",
+                error = painterResource(id = R.drawable.img_reviews_coming_soon),
+            )
+        }
     }
 }
