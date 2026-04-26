@@ -34,7 +34,7 @@ import com.wafflestudio.snutt2.domain.model.NotificationType
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
-import com.wafflestudio.snutt2.ui.preview.PreviewData
+import com.wafflestudio.snutt2.ui.preview.NotificationPreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.preview.rememberFakeLazyPagingItems
@@ -278,7 +278,7 @@ fun NotificationPlaceholder() {
 @SnuttPreview
 @Composable
 private fun NotificationScreen_List() {
-    val pagingItems = rememberFakeLazyPagingItems(PreviewData.sampleNotifications)
+    val pagingItems = rememberFakeLazyPagingItems(NotificationPreviewData.sampleNotifications)
     SnuttPreviewSurface {
         NotificationScreen(
             uiState = NotificationUiState.Success(pagingItems),
@@ -317,7 +317,7 @@ private fun NotificationScreen_Error() {
 private fun NotificationItem_WithDeeplink() {
     SnuttPreviewSurface {
         NotificationItem(
-            notification = PreviewData.sampleNotifications.first(),
+            notification = NotificationPreviewData.sampleNotifications.first(),
             onClick = {},
         )
     }
@@ -328,7 +328,7 @@ private fun NotificationItem_WithDeeplink() {
 private fun NotificationItem_NoDeeplink() {
     SnuttPreviewSurface {
         NotificationItem(
-            notification = PreviewData.sampleNotifications.first().copy(deeplink = null),
+            notification = NotificationPreviewData.sampleNotifications.first().copy(deeplink = null),
             onClick = {},
         )
     }

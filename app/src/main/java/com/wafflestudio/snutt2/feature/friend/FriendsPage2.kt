@@ -56,9 +56,10 @@ import com.wafflestudio.snutt2.ui.components.compose.BottomSheetDismissEffect
 import com.wafflestudio.snutt2.ui.components.compose.IconWithAlertDot
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
-import com.wafflestudio.snutt2.ui.preview.PreviewData
+import com.wafflestudio.snutt2.ui.preview.FriendPreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
+import com.wafflestudio.snutt2.ui.preview.TableSummaryPreviewData
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
@@ -625,12 +626,12 @@ private fun SemesterDropdown(
 }
 
 private val sampleFriendsUiStateLoaded = FriendsUiState.Loaded(
-    activeFriends = PreviewData.sampleFriends,
-    requestedFriends = PreviewData.sampleRequestedFriends,
-    selectedFriend = PreviewData.sampleFriends.firstOrNull(),
-    selectedFriendCourseBooks = PreviewData.sampleCourseBooks,
-    selectedCourseBook = PreviewData.sampleCourseBooks.firstOrNull(),
-    selectedFriendTable = PreviewData.sampleFriendTable,
+    activeFriends = FriendPreviewData.sampleFriends,
+    requestedFriends = FriendPreviewData.sampleRequestedFriends,
+    selectedFriend = FriendPreviewData.sampleFriends.firstOrNull(),
+    selectedFriendCourseBooks = TableSummaryPreviewData.sampleCourseBooks,
+    selectedCourseBook = TableSummaryPreviewData.sampleCourseBooks.firstOrNull(),
+    selectedFriendTable = FriendPreviewData.sampleFriendTable,
     selectedFriendTableTheme = BuiltInTheme.SNUTT,
     selectedFriendTableTrimParam = TableTrimParam.Default,
     drawerTab = FriendDrawerTab.ACTIVE,
@@ -790,8 +791,8 @@ private fun FriendsPage_Error() {
 private fun SemesterDropdown_Default() {
     SnuttPreviewSurface {
         SemesterDropdown(
-            courseBooks = PreviewData.sampleCourseBooks,
-            selectedCourseBook = PreviewData.sampleCourseBooks.first(),
+            courseBooks = TableSummaryPreviewData.sampleCourseBooks,
+            selectedCourseBook = TableSummaryPreviewData.sampleCourseBooks.first(),
             onSelectCourseBook = {},
         )
     }

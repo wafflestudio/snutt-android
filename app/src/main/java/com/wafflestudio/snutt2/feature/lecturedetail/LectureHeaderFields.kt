@@ -22,7 +22,7 @@ import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.ui.components.compose.ColorBox
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
-import com.wafflestudio.snutt2.ui.preview.PreviewData
+import com.wafflestudio.snutt2.ui.preview.LecturePreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
@@ -122,7 +122,7 @@ private fun LectureColorField(
 private fun LectureHeaderFields_CustomColor() {
     SnuttPreviewSurface {
         LectureHeaderFields(
-            lecture = PreviewData.syllabusLecture,
+            lecture = LecturePreviewData.syllabusLecture,
             editMode = false,
             tableTheme = BuiltInTheme.SNUTT,
             onCourseTitleChange = {},
@@ -137,7 +137,7 @@ private fun LectureHeaderFields_CustomColor() {
 private fun LectureHeaderFields_BuiltInColor() {
     SnuttPreviewSurface {
         LectureHeaderFields(
-            lecture = PreviewData.builtInColorLecture,
+            lecture = LecturePreviewData.builtInColorLecture,
             editMode = false,
             tableTheme = BuiltInTheme.SNUTT,
             onCourseTitleChange = {},
@@ -152,7 +152,7 @@ private fun LectureHeaderFields_BuiltInColor() {
 private fun LectureHeaderFields_EditMode() {
     SnuttPreviewSurface {
         LectureHeaderFields(
-            lecture = PreviewData.syllabusLecture,
+            lecture = LecturePreviewData.syllabusLecture,
             editMode = true,
             tableTheme = BuiltInTheme.SNUTT,
             onCourseTitleChange = {},
@@ -167,7 +167,7 @@ private fun LectureHeaderFields_EditMode() {
 private fun LectureHeaderFields_SearchedLecture() {
     SnuttPreviewSurface {
         LectureHeaderFields(
-            lecture = PreviewData.searchedLecture,
+            lecture = LecturePreviewData.searchedLecture,
             editMode = false,
             tableTheme = BuiltInTheme.SNUTT,
             onCourseTitleChange = {},

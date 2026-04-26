@@ -70,7 +70,7 @@ import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.WebViewStyleButton
 import com.wafflestudio.snutt2.ui.components.compose.clicks
-import com.wafflestudio.snutt2.ui.preview.PreviewData
+import com.wafflestudio.snutt2.ui.preview.LecturePreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
@@ -699,7 +699,7 @@ private fun VacancyScreen_Registered() {
         VacancyScreen(
             uiState = VacancyUiState(
                 contentState = VacancyUiState.ContentState.Loaded(
-                    vacancyLecturesWithSelection = PreviewData.sampleLectures.map { it.toDataWithState(false) },
+                    vacancyLecturesWithSelection = LecturePreviewData.sampleLectures.map { it.toDataWithState(false) },
                 ),
             ),
             onClickBack = {},

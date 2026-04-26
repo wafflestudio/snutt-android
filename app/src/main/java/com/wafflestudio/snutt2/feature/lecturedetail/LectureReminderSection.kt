@@ -14,7 +14,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.LectureReminderOffset
 import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
 import com.wafflestudio.snutt2.ui.components.compose.SegmentedPicker
-import com.wafflestudio.snutt2.ui.preview.PreviewData
+import com.wafflestudio.snutt2.ui.preview.LecturePreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
@@ -78,7 +78,7 @@ internal fun LectureReminderSection(
 private fun LectureReminderSection_Enabled() {
     SnuttPreviewSurface {
         LectureReminderSection(
-            lectureWithReminderOption = PreviewData.sampleReminderOption,
+            lectureWithReminderOption = LecturePreviewData.sampleReminderOption,
             enableLectureReminderPicker = true,
             onReminderOptionChange = {},
         )
@@ -90,7 +90,7 @@ private fun LectureReminderSection_Enabled() {
 private fun LectureReminderSection_Disabled() {
     SnuttPreviewSurface {
         LectureReminderSection(
-            lectureWithReminderOption = PreviewData.sampleReminderOptionDefault,
+            lectureWithReminderOption = LecturePreviewData.sampleReminderOptionDefault,
             enableLectureReminderPicker = false,
             onReminderOptionChange = {},
         )

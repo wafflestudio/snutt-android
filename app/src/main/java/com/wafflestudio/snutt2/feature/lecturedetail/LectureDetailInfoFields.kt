@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.Lecture
 import com.wafflestudio.snutt2.domain.model.LectureSyllabusInfo
-import com.wafflestudio.snutt2.ui.preview.PreviewData
+import com.wafflestudio.snutt2.ui.preview.LecturePreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
@@ -147,7 +147,7 @@ internal fun LectureDetailInfoFields(
 private fun LectureDetailInfoFields_SyllabusLecture() {
     SnuttPreviewSurface {
         LectureDetailInfoFields(
-            lecture = PreviewData.syllabusLecture,
+            lecture = LecturePreviewData.syllabusLecture,
             editMode = false,
             showCategoryPre2025 = true,
             onDepartmentChange = {},
@@ -166,7 +166,7 @@ private fun LectureDetailInfoFields_SyllabusLecture() {
 private fun LectureDetailInfoFields_CustomLecture() {
     SnuttPreviewSurface {
         LectureDetailInfoFields(
-            lecture = PreviewData.customLecture,
+            lecture = LecturePreviewData.customLecture,
             editMode = false,
             showCategoryPre2025 = false,
             onDepartmentChange = {},

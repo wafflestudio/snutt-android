@@ -19,9 +19,9 @@ import com.wafflestudio.snutt2.feature.lecturedetail.ColorItem
 import com.wafflestudio.snutt2.feature.lecturedetail.ColorPickerDialog
 import com.wafflestudio.snutt2.feature.lecturedetail.PickerColorSection
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
-import com.wafflestudio.snutt2.ui.preview.PreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
+import com.wafflestudio.snutt2.ui.preview.ThemePreviewData
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 
 @Composable
@@ -144,7 +144,7 @@ private fun LectureColorSelectorScreen_CustomTheme() {
     SnuttPreviewSurface {
         LectureColorSelectorScreen(
             uiState = LectureColorSelectorUiState.CustomThemeMode(
-                tableTheme = PreviewData.previewCustomTheme1,
+                tableTheme = ThemePreviewData.previewCustomTheme1,
                 selection = LectureColorSelectorUiState.ColorSelection.Palette(0),
             ),
             onBackPressed = {},

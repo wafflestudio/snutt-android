@@ -39,7 +39,7 @@ import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.ui.components.compose.RoundCheckbox
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
-import com.wafflestudio.snutt2.ui.preview.PreviewData
+import com.wafflestudio.snutt2.ui.preview.LecturePreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
@@ -247,7 +247,7 @@ private fun VacancyListItem_HasVacancy() {
         LazyColumn {
             item {
                 VacancyListItem(
-                    lecture = PreviewData.sampleLectures.first()
+                    lecture = LecturePreviewData.sampleLectures.first()
                         .copy(wasFull = true, registrationCount = 9, quota = 10)
                         .toDataWithState(false),
                     editing = false,
@@ -265,7 +265,7 @@ private fun VacancyListItem_EditMode() {
         LazyColumn {
             item {
                 VacancyListItem(
-                    lecture = PreviewData.sampleLectures.first().toDataWithState(true),
+                    lecture = LecturePreviewData.sampleLectures.first().toDataWithState(true),
                     editing = true,
                     onClick = {},
                 )

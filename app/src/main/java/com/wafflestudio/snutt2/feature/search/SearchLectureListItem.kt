@@ -29,7 +29,7 @@ import com.wafflestudio.snutt2.domain.model.LectureReviewInfo
 import com.wafflestudio.snutt2.domain.model.SearchedLecture
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
-import com.wafflestudio.snutt2.ui.preview.PreviewData
+import com.wafflestudio.snutt2.ui.preview.LecturePreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
@@ -327,7 +327,7 @@ private fun SearchLectureListItem_Collapsed() {
     SnuttPreviewSurface {
         Box(modifier = Modifier.background(SNUTTColors.Dim2)) {
             SearchLectureListItem(
-                lecture = PreviewData.sampleLectures.first(),
+                lecture = LecturePreviewData.sampleLectures.first(),
                 lectureState = LectureState(
                     selected = false,
                     contained = false,
@@ -351,7 +351,7 @@ private fun SearchLectureListItem_Expanded() {
     SnuttPreviewSurface {
         Box(modifier = Modifier.background(SNUTTColors.Dim2)) {
             SearchLectureListItem(
-                lecture = PreviewData.sampleLectures.first(),
+                lecture = LecturePreviewData.sampleLectures.first(),
                 lectureState = LectureState(
                     selected = true,
                     contained = false,
@@ -375,7 +375,7 @@ private fun SearchLectureListItem_ExpandedContained() {
     SnuttPreviewSurface {
         Box(modifier = Modifier.background(SNUTTColors.Dim2)) {
             SearchLectureListItem(
-                lecture = PreviewData.sampleLectures.first(),
+                lecture = LecturePreviewData.sampleLectures.first(),
                 lectureState = LectureState(
                     selected = true,
                     contained = true,

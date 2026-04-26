@@ -42,9 +42,9 @@ import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.components.compose.CenteredTopBar
 import com.wafflestudio.snutt2.ui.components.compose.EditText
 import com.wafflestudio.snutt2.ui.components.compose.clicks
-import com.wafflestudio.snutt2.ui.preview.PreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
+import com.wafflestudio.snutt2.ui.preview.ThemePreviewData
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 import com.wafflestudio.snutt2.ui.theme.onSurfaceVariant
@@ -299,10 +299,10 @@ private fun ThemeDetailScreen_Success() {
     SnuttPreviewSurface {
         ThemeDetailScreen(
             uiState = ThemeDetailUiState.Success(
-                editingTheme = PreviewData.previewEditingThemeCustom,
-                lectures = PreviewData.themeDetailSampleLectures,
+                editingTheme = ThemePreviewData.previewEditingThemeCustom,
+                lectures = ThemePreviewData.themeDetailSampleLectures,
                 theme = BuiltInTheme.SNUTT,
-                previewTheme = PreviewData.previewCustomTheme1,
+                previewTheme = ThemePreviewData.previewCustomTheme1,
                 fittedTrimParam = TableTrimParam.Default,
                 tableLectureCustomOptions = TableLectureCustom.Default,
                 compactMode = false,

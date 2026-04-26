@@ -31,7 +31,7 @@ import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.components.compose.AnimatedLazyRow
-import com.wafflestudio.snutt2.ui.preview.PreviewData
+import com.wafflestudio.snutt2.ui.preview.LecturePreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.preview.rememberFakeLazyPagingItems
@@ -171,7 +171,7 @@ private fun SearchResultList_Placeholder() {
 @Composable
 private fun SearchResultList_Searched() {
     val pagingItems = rememberFakeLazyPagingItems(
-        PreviewData.sampleLectures.take(3).map {
+        LecturePreviewData.sampleLectures.take(3).map {
             DataWithState(
                 it,
                 LectureState(

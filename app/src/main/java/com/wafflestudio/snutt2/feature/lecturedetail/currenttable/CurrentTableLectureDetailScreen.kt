@@ -5,7 +5,7 @@ import com.wafflestudio.snutt2.config.FeatureFlag
 import com.wafflestudio.snutt2.domain.model.LectureSession
 import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
 import com.wafflestudio.snutt2.feature.lecturedetail.LectureDetail
-import com.wafflestudio.snutt2.ui.preview.PreviewData
+import com.wafflestudio.snutt2.ui.preview.LecturePreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 
@@ -100,9 +100,9 @@ private fun CurrentTableLectureDetailScreen_ViewMode() {
     SnuttPreviewSurface {
         CurrentTableLectureDetailScreen(
             uiState = CurrentTableLectureDetailUiState(
-                lecture = PreviewData.syllabusLecture,
+                lecture = LecturePreviewData.syllabusLecture,
                 editMode = false,
-                reviewInfo = PreviewData.sampleReviewInfo,
+                reviewInfo = LecturePreviewData.sampleReviewInfo,
                 isBookmarked = true,
                 showCategoryPre2025 = true,
                 disableMapFeature = true,

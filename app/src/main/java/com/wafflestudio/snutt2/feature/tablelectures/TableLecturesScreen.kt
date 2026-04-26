@@ -34,7 +34,7 @@ import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
-import com.wafflestudio.snutt2.ui.preview.PreviewData
+import com.wafflestudio.snutt2.ui.preview.LecturePreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
@@ -169,7 +169,7 @@ private fun TableLecturesScreen_Default() {
     SnuttPreviewSurface {
         TableLecturesScreen(
             uiState = TableLecturesUiState(
-                lectures = listOf(PreviewData.syllabusLecture, PreviewData.builtInColorLecture),
+                lectures = listOf(LecturePreviewData.syllabusLecture, LecturePreviewData.builtInColorLecture),
             ),
             onClickLecture = {},
             onBack = {},

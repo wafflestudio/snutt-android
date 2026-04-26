@@ -37,9 +37,9 @@ import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import com.wafflestudio.snutt2.feature.home.drawer.VacancyBanner
 import com.wafflestudio.snutt2.feature.tablelectures.TableLectureItem
+import com.wafflestudio.snutt2.ui.preview.LecturePreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
-import com.wafflestudio.snutt2.ui.preview.builtInOnlyLectures
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 
@@ -167,7 +167,7 @@ private fun ScrollableTimetableContent_Default() {
     SnuttPreviewSurface {
         ScrollableTimetableContent(
             modifier = Modifier.fillMaxSize(),
-            lectures = builtInOnlyLectures,
+            lectures = LecturePreviewData.builtInOnlyLectures,
             vacancyNotificationBannerEnabled = true,
             isSessionlessLectureHintVisible = true,
             onVisitSessionlessLectureList = {},

@@ -45,7 +45,7 @@ import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.clearFocusOnKeyboardDismiss
 import com.wafflestudio.snutt2.ui.components.compose.clicks
-import com.wafflestudio.snutt2.ui.preview.PreviewData
+import com.wafflestudio.snutt2.ui.preview.LecturePreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.preview.rememberFakeLazyPagingItems
@@ -260,7 +260,7 @@ private fun SearchScreen_Placeholder() {
 @Composable
 private fun SearchScreen_Searched() {
     val pagingItems = rememberFakeLazyPagingItems(
-        PreviewData.sampleLectures.take(3).map {
+        LecturePreviewData.sampleLectures.take(3).map {
             DataWithState(
                 it,
                 LectureState(

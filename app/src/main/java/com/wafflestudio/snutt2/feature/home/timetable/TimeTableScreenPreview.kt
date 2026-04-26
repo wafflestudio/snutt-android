@@ -8,13 +8,13 @@ import com.wafflestudio.snutt2.domain.model.TableSummary
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import com.wafflestudio.snutt2.domain.model.ThemeReference
 import com.wafflestudio.snutt2.domain.model.getFittingTrimParam
+import com.wafflestudio.snutt2.ui.preview.LecturePreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
-import com.wafflestudio.snutt2.ui.preview.builtInOnlyLectures
 
 private val sampleTable = Table(
     summary = TableSummary.Default,
-    lectures = builtInOnlyLectures,
+    lectures = LecturePreviewData.builtInOnlyLectures,
     themeRef = ThemeReference.BuiltIn(0),
 )
 
@@ -22,7 +22,7 @@ private val baseLoadedState = TimeTableUiState.Loaded(
     table = sampleTable,
     theme = BuiltInTheme.SNUTT,
     previewTheme = null,
-    tableTrimParam = builtInOnlyLectures.getFittingTrimParam(TableTrimParam.Default),
+    tableTrimParam = LecturePreviewData.builtInOnlyLectures.getFittingTrimParam(TableTrimParam.Default),
     isCompactMode = false,
     tableLectureCustomOptions = TableLectureCustom.Default,
     newSemesterExist = false,

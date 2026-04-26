@@ -33,7 +33,7 @@ import com.wafflestudio.snutt2.domain.model.LectureSession
 import com.wafflestudio.snutt2.ui.components.compose.EditText
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
-import com.wafflestudio.snutt2.ui.preview.PreviewData
+import com.wafflestudio.snutt2.ui.preview.LecturePreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
@@ -190,7 +190,7 @@ private fun TimeAndLocationItem(
 private fun LectureSessionListSection_ViewMode() {
     SnuttPreviewSurface {
         LectureSessionListSection(
-            sessions = PreviewData.syllabusLecture.lectureSessions,
+            sessions = LecturePreviewData.syllabusLecture.lectureSessions,
             editMode = false,
             onEditTime = { _, _ -> },
             onLocationChange = { _, _ -> },
@@ -205,7 +205,7 @@ private fun LectureSessionListSection_ViewMode() {
 private fun LectureSessionListSection_EditMode() {
     SnuttPreviewSurface {
         LectureSessionListSection(
-            sessions = PreviewData.syllabusLecture.lectureSessions,
+            sessions = LecturePreviewData.syllabusLecture.lectureSessions,
             editMode = true,
             onEditTime = { _, _ -> },
             onLocationChange = { _, _ -> },

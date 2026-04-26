@@ -5,9 +5,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.components.compose.CustomDialog
-import com.wafflestudio.snutt2.ui.preview.PreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
+import com.wafflestudio.snutt2.ui.preview.ThemePreviewData
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
 @Composable
@@ -41,7 +41,7 @@ fun ThemeConfigDialogContent(
 private fun ThemeConfigDialogContent_DeleteTheme() {
     SnuttPreviewSurface {
         ThemeConfigDialogContent(
-            dialogState = ThemeConfigUiState.DialogState.DeleteTheme(PreviewData.previewCustomTheme1),
+            dialogState = ThemeConfigUiState.DialogState.DeleteTheme(ThemePreviewData.previewCustomTheme1),
             onConfirm = {},
             onDismiss = {},
         )

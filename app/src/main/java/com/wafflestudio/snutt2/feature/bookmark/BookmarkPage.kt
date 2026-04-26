@@ -35,7 +35,7 @@ import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.components.compose.BottomSheetDismissEffect
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
-import com.wafflestudio.snutt2.ui.preview.PreviewData
+import com.wafflestudio.snutt2.ui.preview.LecturePreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
@@ -213,7 +213,7 @@ private fun BookmarkScreen_List() {
                     themeRef = ThemeReference.BuiltIn(0),
                 ),
                 tableTheme = BuiltInTheme.SNUTT,
-                bookmarkList = PreviewData.sampleLectures.take(3).mapIndexed { index, lecture ->
+                bookmarkList = LecturePreviewData.sampleLectures.take(3).mapIndexed { index, lecture ->
                     lecture.toDataWithState(
                         LectureState(
                             selected = index == 0,

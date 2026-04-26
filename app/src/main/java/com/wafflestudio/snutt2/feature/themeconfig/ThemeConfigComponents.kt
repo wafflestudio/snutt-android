@@ -39,9 +39,9 @@ import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.ThemeIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.components.compose.displayName
-import com.wafflestudio.snutt2.ui.preview.PreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
+import com.wafflestudio.snutt2.ui.preview.ThemePreviewData
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
@@ -207,7 +207,7 @@ private fun ThemesRow_WithLeadingItem() {
     SnuttPreviewSurface {
         ThemesRow(
             title = "내 커스텀 테마",
-            themes = listOf(PreviewData.previewCustomTheme1, PreviewData.previewCustomTheme2),
+            themes = listOf(ThemePreviewData.previewCustomTheme1, ThemePreviewData.previewCustomTheme2),
             onClickItem = {},
             leadingItem = { AddThemeItem(onClick = {}) },
         )

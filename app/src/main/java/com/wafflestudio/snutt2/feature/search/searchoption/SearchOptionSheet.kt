@@ -38,10 +38,9 @@ import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SearchTagPreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
-import com.wafflestudio.snutt2.ui.preview.previewAllTags
-import com.wafflestudio.snutt2.ui.preview.previewTagTypes
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import kotlin.math.roundToInt
@@ -238,8 +237,8 @@ private fun previewSheet(
     draggedTimeBlock: List<List<Boolean>> = TableTrimParam.TimeBlockGridDefault,
 ) = @Composable {
     SearchOptionSheet(
-        searchTags = previewAllTags.filter { it.type == selectedTagType }.map { DataWithState(it, selectedTags.contains(it)) },
-        tagTypes = previewTagTypes,
+        searchTags = SearchTagPreviewData.previewAllTags.filter { it.type == selectedTagType }.map { DataWithState(it, selectedTags.contains(it)) },
+        tagTypes = SearchTagPreviewData.previewTagTypes,
         selectedTagType = selectedTagType,
         recentSearchedDepartments = recentSearchedDepartments.map { DataWithState(it, selectedTags.contains(it)) },
         draggedTimeBlock = draggedTimeBlock,

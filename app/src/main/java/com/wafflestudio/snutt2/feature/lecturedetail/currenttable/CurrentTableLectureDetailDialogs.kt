@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.components.compose.CustomDialog
-import com.wafflestudio.snutt2.ui.preview.PreviewData
+import com.wafflestudio.snutt2.ui.preview.LecturePreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
@@ -86,7 +86,7 @@ private fun CurrentTableLectureDetailDialogs_DeleteSession() {
     SnuttPreviewSurface {
         CurrentTableLectureDetailDialogs(
             uiState = CurrentTableLectureDetailUiState(
-                lecture = PreviewData.syllabusLecture,
+                lecture = LecturePreviewData.syllabusLecture,
                 dialogState = CurrentTableLectureDetailUiState.DialogState.DeleteSession(0),
             ),
             onDismiss = {},
@@ -105,7 +105,7 @@ private fun CurrentTableLectureDetailDialogs_DeleteLecture() {
     SnuttPreviewSurface {
         CurrentTableLectureDetailDialogs(
             uiState = CurrentTableLectureDetailUiState(
-                lecture = PreviewData.syllabusLecture,
+                lecture = LecturePreviewData.syllabusLecture,
                 dialogState = CurrentTableLectureDetailUiState.DialogState.DeleteLecture,
             ),
             onDismiss = {},
@@ -124,7 +124,7 @@ private fun CurrentTableLectureDetailDialogs_LectureTimeOverlap() {
     SnuttPreviewSurface {
         CurrentTableLectureDetailDialogs(
             uiState = CurrentTableLectureDetailUiState(
-                lecture = PreviewData.syllabusLecture,
+                lecture = LecturePreviewData.syllabusLecture,
                 dialogState = CurrentTableLectureDetailUiState.DialogState.LectureTimeOverlap(
                     "기존 시간표의 다른 강의와 시간이 겹칩니다. 그래도 추가하시겠습니까?",
                 ),
