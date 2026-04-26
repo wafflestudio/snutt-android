@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.feature.diary.diaryhistory
 
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,7 +26,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -39,6 +37,7 @@ import com.wafflestudio.snutt2.ui.components.compose.ArrowBackIcon
 import com.wafflestudio.snutt2.ui.components.compose.ConfirmDialog
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.util.formatter.toAbbvString
@@ -174,8 +173,7 @@ fun DiaryHistoryScreen(
     }
 }
 
-@Preview(name = "1. Light", uiMode = Configuration.UI_MODE_NIGHT_NO, locale = "ko", heightDp = 1400)
-@Preview(name = "2. Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ko", heightDp = 1400)
+@SnuttPreview
 @Composable
 private fun DiaryHistoryScreen_Default() {
     SnuttPreviewSurface {

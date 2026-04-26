@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.feature.settings
 
-import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -33,7 +32,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -321,8 +319,7 @@ fun LectureReminderEmpty() {
     }
 }
 
-@Preview(name = "1. Light", uiMode = Configuration.UI_MODE_NIGHT_NO, locale = "ko", heightDp = 1300)
-@Preview(name = "2. Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ko", heightDp = 1300)
+@SnuttPreview
 @Composable
 private fun LectureReminderScreen_Success() {
     SnuttPreviewSurface {
@@ -334,8 +331,7 @@ private fun LectureReminderScreen_Success() {
     }
 }
 
-@Preview(name = "1. Light", uiMode = Configuration.UI_MODE_NIGHT_NO, locale = "ko", heightDp = 1300)
-@Preview(name = "2. Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ko", heightDp = 1300)
+@SnuttPreview
 @Composable
 private fun LectureReminderScreen_NoPrimaryTimetable() {
     SnuttPreviewSurface {

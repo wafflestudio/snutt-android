@@ -84,8 +84,11 @@ private fun ExampleComponent_Default() {
 
 ### 5.1 사이즈 지정이 필요한 경우
 
-preview 가 잘리거나 컨테이너가 너무 작아 시각 단서가 부족한 경우, 해당 preview 함수에 한해
-`@SnuttPreview` 대신 **light/dark 두 `@Preview` 를 직접 부착**한다.
+**IDE 의 Preview 패널에서 시각적으로 잘림이 명확히 확인된 경우에만** 적용한다. 정적 분석/추정으로
+일괄 적용하지 않는다 — 일괄 적용은 잘리지 않는 컴포넌트에 빈 공간을 만들고, `@SnuttPreview`
+와 inline 두 entry 가 섞여 일관성을 해친다.
+
+해당 preview 함수에 한해 `@SnuttPreview` 대신 **light/dark 두 `@Preview` 를 직접 부착**한다.
 
 ```kotlin
 @Preview(name = "1. Light", uiMode = Configuration.UI_MODE_NIGHT_NO, locale = "ko", heightDp = 1100)

@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.feature.themeconfig
 
-import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -31,7 +30,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -47,6 +45,7 @@ import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.components.compose.CenteredTopBar
 import com.wafflestudio.snutt2.ui.components.compose.EditText
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
@@ -289,8 +288,7 @@ fun ThemeDetailScreen(
 
 // region Preview
 
-@Preview(name = "1. Light", uiMode = Configuration.UI_MODE_NIGHT_NO, locale = "ko", heightDp = 1500)
-@Preview(name = "2. Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ko", heightDp = 1500)
+@SnuttPreview
 @Composable
 private fun ThemeDetailScreen_Success() {
     SnuttPreviewSurface {
@@ -320,8 +318,7 @@ private fun ThemeDetailScreen_Success() {
     }
 }
 
-@Preview(name = "1. Light", uiMode = Configuration.UI_MODE_NIGHT_NO, locale = "ko", heightDp = 1500)
-@Preview(name = "2. Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ko", heightDp = 1500)
+@SnuttPreview
 @Composable
 private fun ThemeDetailScreen_Loading() {
     SnuttPreviewSurface {
@@ -343,8 +340,7 @@ private fun ThemeDetailScreen_Loading() {
     }
 }
 
-@Preview(name = "1. Light", uiMode = Configuration.UI_MODE_NIGHT_NO, locale = "ko", heightDp = 1500)
-@Preview(name = "2. Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ko", heightDp = 1500)
+@SnuttPreview
 @Composable
 private fun ThemeDetailScreen_Error() {
     SnuttPreviewSurface {

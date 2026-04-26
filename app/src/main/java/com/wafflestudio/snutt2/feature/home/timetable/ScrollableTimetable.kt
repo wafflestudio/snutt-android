@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.feature.home.timetable
 
-import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -29,7 +28,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.domain.model.BuiltInTheme
@@ -39,6 +37,7 @@ import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import com.wafflestudio.snutt2.feature.home.drawer.VacancyBanner
 import com.wafflestudio.snutt2.feature.tablelectures.TableLectureItem
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
@@ -161,8 +160,7 @@ fun ScrollableTimetableContent(
     }
 }
 
-@Preview(name = "1. Light", uiMode = Configuration.UI_MODE_NIGHT_NO, locale = "ko", heightDp = 1800)
-@Preview(name = "2. Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ko", heightDp = 1800)
+@SnuttPreview
 @Composable
 private fun ScrollableTimetableContent_Default() {
     SnuttPreviewSurface {

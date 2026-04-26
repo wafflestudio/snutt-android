@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.feature.lecturedetail
 
-import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -15,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.domain.model.Building
 import com.wafflestudio.snutt2.domain.model.BuiltInTheme
@@ -27,6 +25,7 @@ import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
 import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.ui.components.compose.embedmap.FoldableEmbedMap
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 
@@ -189,8 +188,7 @@ fun LectureDetail(
     }
 }
 
-@Preview(name = "1. Light", uiMode = Configuration.UI_MODE_NIGHT_NO, locale = "ko", heightDp = 1800)
-@Preview(name = "2. Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ko", heightDp = 1800)
+@SnuttPreview
 @Composable
 private fun LectureDetail_SyllabusLecture_ViewMode() {
     SnuttPreviewSurface {
@@ -236,8 +234,7 @@ private fun LectureDetail_SyllabusLecture_ViewMode() {
     }
 }
 
-@Preview(name = "1. Light", uiMode = Configuration.UI_MODE_NIGHT_NO, locale = "ko", heightDp = 1800)
-@Preview(name = "2. Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ko", heightDp = 1800)
+@SnuttPreview
 @Composable
 private fun LectureDetail_SyllabusLecture_EditMode() {
     SnuttPreviewSurface {
