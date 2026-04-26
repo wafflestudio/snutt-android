@@ -107,7 +107,11 @@ private fun ResetPasswordScreen(
             onBack()
         }
 
-        AnimatedContent(targetState = uiState, label = "") { state ->
+        AnimatedContent(
+            targetState = uiState,
+            contentKey = { it::class },
+            label = "",
+        ) { state ->
             when (state) {
                 is CheckId -> CheckIdStep(
                     uiState = state,
