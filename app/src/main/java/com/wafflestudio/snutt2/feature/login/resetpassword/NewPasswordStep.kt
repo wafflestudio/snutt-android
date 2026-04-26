@@ -36,6 +36,8 @@ import com.wafflestudio.snutt2.ui.components.compose.Timer
 import com.wafflestudio.snutt2.ui.components.compose.TimerValue
 import com.wafflestudio.snutt2.ui.components.compose.WebViewStyleButton
 import com.wafflestudio.snutt2.ui.components.compose.rememberTimerState
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
@@ -210,5 +212,17 @@ fun NewPasswordStep(
             negativeButtonText = null,
         ) {
         }
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun NewPasswordStep_Default() {
+    SnuttPreviewSurface {
+        NewPasswordStep(
+            onSubmit = {},
+            showCompleteDialog = remember { mutableStateOf(false) },
+            onComplete = {},
+        )
     }
 }

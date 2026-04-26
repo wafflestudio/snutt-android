@@ -5,6 +5,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.components.compose.CustomDialog
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
 @Composable
@@ -47,5 +49,33 @@ fun ThemeDetailDialogContent(
                 )
             }
         }
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun ThemeDetailDialogContent_ConfirmCancelEdit() {
+    SnuttPreviewSurface {
+        ThemeDetailDialogContent(
+            dialogState = ThemeDetailUiState.DialogState.ConfirmCancelEdit,
+            onConfirmCancelEdit = {},
+            onDismissCancelEdit = {},
+            onConfirmApplyToTable = {},
+            onDismissApplyToTable = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun ThemeDetailDialogContent_ConfirmApplyToTable() {
+    SnuttPreviewSurface {
+        ThemeDetailDialogContent(
+            dialogState = ThemeDetailUiState.DialogState.ConfirmApplyToTable,
+            onConfirmCancelEdit = {},
+            onDismissCancelEdit = {},
+            onConfirmApplyToTable = {},
+            onDismissApplyToTable = {},
+        )
     }
 }

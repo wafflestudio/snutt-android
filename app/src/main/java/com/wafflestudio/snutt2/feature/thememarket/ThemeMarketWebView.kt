@@ -19,13 +19,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.android.webview.LoadState
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
-import com.wafflestudio.snutt2.ui.theme.SNUTTTheme
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import kotlinx.coroutines.launch
 
@@ -129,20 +129,20 @@ private fun ThemeMarketWebViewSuccess(
     )
 }
 
-@Preview(showBackground = true, heightDp = 640)
+@SnuttPreview
 @Composable
-private fun ThemeMarketWebViewErrorPreview() {
-    SNUTTTheme {
+private fun ThemeMarketWebViewError_Default() {
+    SnuttPreviewSurface {
         ThemeMarketWebViewError(
             onRetry = {},
         )
     }
 }
 
-@Preview(showBackground = true, heightDp = 640)
+@SnuttPreview
 @Composable
-private fun ThemeMarketWebViewLoadingPreview() {
-    SNUTTTheme {
+private fun ThemeMarketWebViewLoading_Default() {
+    SnuttPreviewSurface {
         ThemeMarketWebViewLoading(
             progress = 0.5f,
         )

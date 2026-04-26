@@ -28,6 +28,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
@@ -108,5 +110,17 @@ fun ImportantNoticePage(
                 )
             }
         }
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun ImportantNoticePage_Default() {
+    SnuttPreviewSurface {
+        ImportantNoticePage(
+            title = "서버 점검 안내",
+            content = "현재 서버 점검 중입니다.\n잠시 후 다시 시도해 주세요.",
+            onNavigateAppReport = {},
+        )
     }
 }

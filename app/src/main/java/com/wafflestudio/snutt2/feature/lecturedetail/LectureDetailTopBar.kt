@@ -7,7 +7,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.Lecture
@@ -19,6 +18,8 @@ import com.wafflestudio.snutt2.ui.components.compose.BookmarkIcon
 import com.wafflestudio.snutt2.ui.components.compose.RingingAlarmIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
@@ -83,77 +84,53 @@ internal fun LectureDetailTopBar(
     )
 }
 
-@Preview(showBackground = true, widthDp = 360, name = "SyllabusLecture (북마크/알림 켜짐)")
+@SnuttPreview
 @Composable
-private fun SyllabusLectureViewMarkedPreview() {
-    LectureDetailTopBar(
-        lecture = PreviewData.syllabusLecture,
-        editMode = false,
-        isBookmarked = true,
-        isVacancyRegistered = true,
-        onBackPressed = {},
-        onEditModeToggle = {},
-        onBookmarkToggle = {},
-        onVacancyToggle = {},
-    )
+private fun LectureDetailTopBar_SyllabusLecture_Marked() {
+    SnuttPreviewSurface {
+        LectureDetailTopBar(
+            lecture = PreviewData.syllabusLecture,
+            editMode = false,
+            isBookmarked = true,
+            isVacancyRegistered = true,
+            onBackPressed = {},
+            onEditModeToggle = {},
+            onBookmarkToggle = {},
+            onVacancyToggle = {},
+        )
+    }
 }
 
-@Preview(showBackground = true, widthDp = 360, name = "SyllabusLecture (북마크/알림 꺼짐)")
+@SnuttPreview
 @Composable
-private fun SyllabusLectureViewUnmarkedPreview() {
-    LectureDetailTopBar(
-        lecture = PreviewData.syllabusLecture,
-        editMode = false,
-        isBookmarked = false,
-        isVacancyRegistered = false,
-        onBackPressed = {},
-        onEditModeToggle = {},
-        onBookmarkToggle = {},
-        onVacancyToggle = {},
-    )
+private fun LectureDetailTopBar_SyllabusLecture_EditMode() {
+    SnuttPreviewSurface {
+        LectureDetailTopBar(
+            lecture = PreviewData.syllabusLecture,
+            editMode = true,
+            isBookmarked = false,
+            isVacancyRegistered = false,
+            onBackPressed = {},
+            onEditModeToggle = {},
+            onBookmarkToggle = {},
+            onVacancyToggle = {},
+        )
+    }
 }
 
-@Preview(showBackground = true, widthDp = 360, name = "SyllabusLecture - 편집 모드")
+@SnuttPreview
 @Composable
-private fun SyllabusLectureEditModePreview() {
-    LectureDetailTopBar(
-        lecture = PreviewData.syllabusLecture,
-        editMode = true,
-        isBookmarked = false,
-        isVacancyRegistered = false,
-        onBackPressed = {},
-        onEditModeToggle = {},
-        onBookmarkToggle = {},
-        onVacancyToggle = {},
-    )
-}
-
-@Preview(showBackground = true, widthDp = 360, name = "CustomLecture")
-@Composable
-private fun CustomLectureViewPreview() {
-    LectureDetailTopBar(
-        lecture = PreviewData.customLecture,
-        editMode = false,
-        isBookmarked = false,
-        isVacancyRegistered = false,
-        onBackPressed = {},
-        onEditModeToggle = {},
-        onBookmarkToggle = {},
-        onVacancyToggle = {},
-    )
-}
-
-@Preview(showBackground = true, widthDp = 360, name = "SearchedLecture")
-@Composable
-private fun SearchedLectureViewPreview() {
-    LectureDetailTopBar(
-        lecture = PreviewData.searchedLecture,
-        editMode = false,
-        isBookmarked = true,
-        isVacancyRegistered = true,
-        onBackPressed = {},
-        onEditModeToggle = {},
-        onBookmarkToggle = {},
-        onVacancyToggle = {},
-    )
+private fun LectureDetailTopBar_SearchedLecture() {
+    SnuttPreviewSurface {
+        LectureDetailTopBar(
+            lecture = PreviewData.searchedLecture,
+            editMode = false,
+            isBookmarked = true,
+            isVacancyRegistered = true,
+            onBackPressed = {},
+            onEditModeToggle = {},
+            onBookmarkToggle = {},
+            onVacancyToggle = {},
+        )
+    }
 }

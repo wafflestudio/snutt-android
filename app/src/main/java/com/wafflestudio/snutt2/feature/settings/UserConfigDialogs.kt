@@ -23,6 +23,8 @@ import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.components.compose.CustomDialog
 import com.wafflestudio.snutt2.ui.components.compose.EditText
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
 @Composable
@@ -139,5 +141,53 @@ fun UserConfigDialogs(
                 Text(text = stringResource(R.string.settings_leave_message), style = SNUTTTypography.body2)
             }
         }
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun UserConfigDialogs_ChangePassword() {
+    SnuttPreviewSurface {
+        UserConfigDialogs(
+            dialogState = UserConfigUiState.DialogState.ChangePassword,
+            onConfirmChangePassword = { _, _, _ -> },
+            onDismissChangePassword = {},
+            onConfirmAddIdPassword = { _, _, _ -> },
+            onDismissAddIdPassword = {},
+            onConfirmLeave = {},
+            onDismissLeave = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun UserConfigDialogs_AddIdPassword() {
+    SnuttPreviewSurface {
+        UserConfigDialogs(
+            dialogState = UserConfigUiState.DialogState.AddIdPassword,
+            onConfirmChangePassword = { _, _, _ -> },
+            onDismissChangePassword = {},
+            onConfirmAddIdPassword = { _, _, _ -> },
+            onDismissAddIdPassword = {},
+            onConfirmLeave = {},
+            onDismissLeave = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun UserConfigDialogs_Leave() {
+    SnuttPreviewSurface {
+        UserConfigDialogs(
+            dialogState = UserConfigUiState.DialogState.Leave,
+            onConfirmChangePassword = { _, _, _ -> },
+            onDismissChangePassword = {},
+            onConfirmAddIdPassword = { _, _, _ -> },
+            onDismissAddIdPassword = {},
+            onConfirmLeave = {},
+            onDismissLeave = {},
+        )
     }
 }

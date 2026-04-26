@@ -15,7 +15,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
@@ -24,6 +23,8 @@ import com.wafflestudio.snutt2.feature.login.resetpassword.FindPasswordViewModel
 import com.wafflestudio.snutt2.feature.login.resetpassword.FindPasswordViewModel.UIState.EnterNewPassword
 import com.wafflestudio.snutt2.feature.login.resetpassword.FindPasswordViewModel.UIState.VerifyCode
 import com.wafflestudio.snutt2.ui.components.compose.IOSStyleTopBar
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.util.toast
 
 @Composable
@@ -122,58 +123,66 @@ private fun ResetPasswordScreen(
     }
 }
 
-@Preview(showBackground = true, name = "CheckId")
+@SnuttPreview
 @Composable
-private fun ResetPasswordScreenCheckIdPreview() {
-    ResetPasswordScreen(
-        uiState = CheckId(userId = ""),
-        onCheckEmailById = {},
-        onSendFullEmail = {},
-        onVerifyCode = {},
-        onResetPassword = {},
-        onCompleteDialogConfirm = {},
-        onBack = {},
-    )
+private fun ResetPasswordScreen_CheckId() {
+    SnuttPreviewSurface {
+        ResetPasswordScreen(
+            uiState = CheckId(userId = ""),
+            onCheckEmailById = {},
+            onSendFullEmail = {},
+            onVerifyCode = {},
+            onResetPassword = {},
+            onCompleteDialogConfirm = {},
+            onBack = {},
+        )
+    }
 }
 
-@Preview(showBackground = true, name = "EnterFullEmail")
+@SnuttPreview
 @Composable
-private fun ResetPasswordScreenEnterFullEmailPreview() {
-    ResetPasswordScreen(
-        uiState = EnterFullEmail(userId = "testuser", maskedEmail = "te****@snu.ac.kr", fullEmail = ""),
-        onCheckEmailById = {},
-        onSendFullEmail = {},
-        onVerifyCode = {},
-        onResetPassword = {},
-        onCompleteDialogConfirm = {},
-        onBack = {},
-    )
+private fun ResetPasswordScreen_EnterFullEmail() {
+    SnuttPreviewSurface {
+        ResetPasswordScreen(
+            uiState = EnterFullEmail(userId = "testuser", maskedEmail = "te****@snu.ac.kr", fullEmail = ""),
+            onCheckEmailById = {},
+            onSendFullEmail = {},
+            onVerifyCode = {},
+            onResetPassword = {},
+            onCompleteDialogConfirm = {},
+            onBack = {},
+        )
+    }
 }
 
-@Preview(showBackground = true, name = "VerifyCode")
+@SnuttPreview
 @Composable
-private fun ResetPasswordScreenVerifyCodePreview() {
-    ResetPasswordScreen(
-        uiState = VerifyCode(fullEmail = "testuser@snu.ac.kr"),
-        onCheckEmailById = {},
-        onSendFullEmail = {},
-        onVerifyCode = {},
-        onResetPassword = {},
-        onCompleteDialogConfirm = {},
-        onBack = {},
-    )
+private fun ResetPasswordScreen_VerifyCode() {
+    SnuttPreviewSurface {
+        ResetPasswordScreen(
+            uiState = VerifyCode(fullEmail = "testuser@snu.ac.kr"),
+            onCheckEmailById = {},
+            onSendFullEmail = {},
+            onVerifyCode = {},
+            onResetPassword = {},
+            onCompleteDialogConfirm = {},
+            onBack = {},
+        )
+    }
 }
 
-@Preview(showBackground = true, name = "EnterNewPassword")
+@SnuttPreview
 @Composable
-private fun ResetPasswordScreenEnterNewPasswordPreview() {
-    ResetPasswordScreen(
-        uiState = EnterNewPassword(),
-        onCheckEmailById = {},
-        onSendFullEmail = {},
-        onVerifyCode = {},
-        onResetPassword = {},
-        onCompleteDialogConfirm = {},
-        onBack = {},
-    )
+private fun ResetPasswordScreen_EnterNewPassword() {
+    SnuttPreviewSurface {
+        ResetPasswordScreen(
+            uiState = EnterNewPassword(),
+            onCheckEmailById = {},
+            onSendFullEmail = {},
+            onVerifyCode = {},
+            onResetPassword = {},
+            onCompleteDialogConfirm = {},
+            onBack = {},
+        )
+    }
 }

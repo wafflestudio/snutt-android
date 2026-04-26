@@ -5,7 +5,6 @@ import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.CustomTheme
@@ -14,8 +13,9 @@ import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.components.compose.ModalBottomSheetPlaceholder
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
-import com.wafflestudio.snutt2.ui.theme.SNUTTTheme
 
 @Composable
 internal fun ThemeConfigBottomSheetLayout(
@@ -85,10 +85,10 @@ private fun ThemeConfigBottomSheetContent(
 
 // region Previews
 
-@Preview(name = "커스텀 테마")
+@SnuttPreview
 @Composable
-private fun ThemeConfigBottomSheetMyCustomThemePreview() {
-    SNUTTTheme {
+private fun ThemeConfigBottomSheetContent_MyCustomTheme() {
+    SnuttPreviewSurface {
         ThemeConfigBottomSheetContent(
             bottomSheetType = ThemeConfigUiState.BottomSheetType.MyCustomThemeActions(PreviewData.previewCustomTheme1),
             onClickDetail = {},
@@ -99,10 +99,10 @@ private fun ThemeConfigBottomSheetMyCustomThemePreview() {
     }
 }
 
-@Preview(name = "테마마켓 테마")
+@SnuttPreview
 @Composable
-private fun ThemeConfigBottomSheetMarketCustomThemePreview() {
-    SNUTTTheme {
+private fun ThemeConfigBottomSheetContent_MarketCustomTheme() {
+    SnuttPreviewSurface {
         ThemeConfigBottomSheetContent(
             bottomSheetType = ThemeConfigUiState.BottomSheetType.MarketCustomThemeActions(PreviewData.previewMarketTheme),
             onClickDetail = {},
@@ -113,10 +113,10 @@ private fun ThemeConfigBottomSheetMarketCustomThemePreview() {
     }
 }
 
-@Preview(name = "빌트인 테마")
+@SnuttPreview
 @Composable
-private fun ThemeConfigBottomSheetBuiltInThemePreview() {
-    SNUTTTheme {
+private fun ThemeConfigBottomSheetContent_BuiltInTheme() {
+    SnuttPreviewSurface {
         ThemeConfigBottomSheetContent(
             bottomSheetType = ThemeConfigUiState.BottomSheetType.BuiltInThemeActions(BuiltInTheme.fromCode(0)),
             onClickDetail = {},

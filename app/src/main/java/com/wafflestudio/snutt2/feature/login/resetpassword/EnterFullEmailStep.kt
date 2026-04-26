@@ -33,6 +33,8 @@ import com.wafflestudio.snutt2.ui.components.compose.EditText
 import com.wafflestudio.snutt2.ui.components.compose.EditTextFieldValue
 import com.wafflestudio.snutt2.ui.components.compose.WebViewStyleButton
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.util.toast
@@ -159,5 +161,21 @@ fun EnterFullEmailStep(
                 },
             )
         }
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun EnterFullEmailStep_Default() {
+    SnuttPreviewSurface {
+        EnterFullEmailStep(
+            uiState = FindPasswordViewModel.UIState.EnterFullEmail(
+                userId = "snutt_user",
+                maskedEmail = "sn****@snu.ac.kr",
+                fullEmail = "",
+            ),
+            notMyEmail = {},
+            onSubmitFullEmail = {},
+        )
     }
 }

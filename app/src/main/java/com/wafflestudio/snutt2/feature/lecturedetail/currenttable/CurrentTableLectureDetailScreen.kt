@@ -4,7 +4,10 @@ import androidx.compose.runtime.Composable
 import com.wafflestudio.snutt2.config.FeatureFlag
 import com.wafflestudio.snutt2.domain.model.LectureSession
 import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
+import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.feature.lecturedetail.LectureDetail
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 
 @Composable
 fun CurrentTableLectureDetailScreen(
@@ -89,4 +92,51 @@ fun CurrentTableLectureDetailScreen(
         onReset = onReset,
         onFloatingButtonClick = onFloatingButtonClick,
     )
+}
+
+@SnuttPreview
+@Composable
+private fun CurrentTableLectureDetailScreen_ViewMode() {
+    SnuttPreviewSurface {
+        CurrentTableLectureDetailScreen(
+            uiState = CurrentTableLectureDetailUiState(
+                lecture = PreviewData.syllabusLecture,
+                editMode = false,
+                reviewInfo = PreviewData.sampleReviewInfo,
+                isBookmarked = true,
+                showCategoryPre2025 = true,
+                disableMapFeature = true,
+            ),
+            onBackPressed = {},
+            onEditModeToggle = {},
+            onBookmarkToggle = {},
+            onVacancyToggle = {},
+            onCourseTitleChange = {},
+            onInstructorChange = {},
+            onColorClick = {},
+            onReminderOptionChange = {},
+            onCreditChange = {},
+            onDepartmentChange = {},
+            onAcademicYearChange = {},
+            onClassificationChange = {},
+            onCategoryChange = {},
+            onCategoryPre2025Change = {},
+            onRemarkChange = {},
+            onEditTime = { _, _ -> },
+            onLocationChange = { _, _ -> },
+            onDeleteSession = {},
+            onAddSession = {},
+            onSyllabus = {},
+            onReview = {},
+            onDelete = {},
+            onReset = {},
+            onFloatingButtonClick = {},
+            onDismissDialog = {},
+            onConfirmExitEditMode = {},
+            onConfirmDeleteSession = {},
+            onConfirmDeleteLecture = {},
+            onConfirmResetLecture = {},
+            onConfirmForceUpdate = {},
+        )
+    }
 }

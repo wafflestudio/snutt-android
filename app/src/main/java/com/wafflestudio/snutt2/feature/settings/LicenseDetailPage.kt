@@ -13,6 +13,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
@@ -84,6 +86,17 @@ fun LicenseDetailPage(
             text = content,
             style = SNUTTTypography.body2,
             modifier = Modifier.padding(15.dp),
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun LicenseDetailPage_Default() {
+    SnuttPreviewSurface {
+        LicenseDetailPage(
+            licenseName = stringResource(R.string.license_okhttp_route),
+            onNavigateBack = {},
         )
     }
 }

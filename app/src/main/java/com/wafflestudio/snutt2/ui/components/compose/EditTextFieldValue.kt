@@ -31,6 +31,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
@@ -112,6 +114,29 @@ fun EditTextFieldValue(
                     }
                 }
             },
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun EditTextFieldValue_Filled() {
+    SnuttPreviewSurface {
+        EditTextFieldValue(
+            value = TextFieldValue("hello"),
+            onValueChange = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun EditTextFieldValue_EmptyWithHint() {
+    SnuttPreviewSurface {
+        EditTextFieldValue(
+            value = TextFieldValue(""),
+            onValueChange = {},
+            hint = "이름을 입력해주세요",
         )
     }
 }

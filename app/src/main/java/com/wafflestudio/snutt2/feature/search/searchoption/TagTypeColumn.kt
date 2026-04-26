@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -16,6 +18,8 @@ import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.TagType
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import kotlinx.coroutines.launch
@@ -71,5 +75,27 @@ fun TagTypeColumn(
                     },
             )
         }
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun TagTypeColumn_Default() {
+    val baseAnimatedFloat = remember { mutableFloatStateOf(0f) }
+    SnuttPreviewSurface {
+        TagTypeColumn(
+            tagTypesNotEmpty = listOf(
+                TagType.SORT_CRITERIA,
+                TagType.CLASSIFICATION,
+                TagType.DEPARTMENT,
+                TagType.ACADEMIC_YEAR,
+                TagType.CREDIT,
+                TagType.TIME,
+                TagType.ETC,
+            ),
+            selectedTagType = TagType.DEPARTMENT,
+            baseAnimatedFloat = baseAnimatedFloat,
+            onSelectTagType = {},
+        )
     }
 }

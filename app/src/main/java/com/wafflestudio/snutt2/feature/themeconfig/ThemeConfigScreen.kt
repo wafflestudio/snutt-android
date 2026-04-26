@@ -20,7 +20,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -31,7 +30,8 @@ import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.ui.components.compose.BottomSheetDismissEffect
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
-import com.wafflestudio.snutt2.ui.theme.SNUTTTheme
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.util.toast
 import kotlinx.coroutines.launch
 
@@ -144,10 +144,10 @@ private fun ThemeConfigScreen(
     )
 }
 
-@Preview
+@SnuttPreview
 @Composable
-private fun ThemeConfigScreenPreview() {
-    SNUTTTheme {
+private fun ThemeConfigScreen_Default() {
+    SnuttPreviewSurface {
         ThemeConfigScreen(
             uiState = ThemeConfigUiState(
                 myCustomThemes = listOf(PreviewData.previewCustomTheme1, PreviewData.previewCustomTheme2),

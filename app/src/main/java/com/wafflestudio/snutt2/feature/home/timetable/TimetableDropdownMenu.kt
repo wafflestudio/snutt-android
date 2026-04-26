@@ -38,6 +38,8 @@ import com.wafflestudio.snutt2.ui.components.compose.NotificationVacancyIcon
 import com.wafflestudio.snutt2.ui.components.compose.SearchIcon
 import com.wafflestudio.snutt2.ui.components.compose.WriteUnderlineIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
@@ -184,5 +186,19 @@ fun TimetableDropdownOverlay(
                 )
             }
         }
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun TimetableDropdownOverlay_Default() {
+    SnuttPreviewSurface {
+        TimetableDropdownOverlay(
+            onDismiss = {},
+            onClickAddBySearch = {},
+            onClickAddManually = {},
+            onClickTableLecturesListIcon = {},
+            onClickVacancyIcon = {},
+        )
     }
 }

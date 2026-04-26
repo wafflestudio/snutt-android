@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.feature.lecturedetail
 
+import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -26,6 +27,7 @@ import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
 import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.ui.components.compose.embedmap.FoldableEmbedMap
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 
 @Composable
@@ -187,46 +189,96 @@ fun LectureDetail(
     }
 }
 
-@Preview(showBackground = true, widthDp = 360, heightDp = 1400)
+@Preview(name = "1. Light", uiMode = Configuration.UI_MODE_NIGHT_NO, locale = "ko", heightDp = 1800)
+@Preview(name = "2. Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ko", heightDp = 1800)
 @Composable
-private fun LectureDetailPreview() {
-    LectureDetail(
-        lecture = PreviewData.syllabusLecture,
-        editMode = false,
-        tableTheme = BuiltInTheme.SNUTT,
-        reviewInfo = PreviewData.sampleReviewInfo,
-        buildings = emptyList(),
-        isBookmarked = true,
-        vacancyRegistered = false,
-        showCategoryPre2025 = true,
-        disableMapFeature = true,
-        showLectureReminderPicker = true,
-        lectureWithReminderOption = PreviewData.sampleReminderOption,
-        enableLectureReminderPicker = true,
-        showFloatingButton = true,
-        onBackPressed = {},
-        onEditModeToggle = {},
-        onBookmarkToggle = {},
-        onVacancyToggle = {},
-        onCourseTitleChange = {},
-        onInstructorChange = {},
-        onColorClick = {},
-        onReminderOptionChange = {},
-        onCreditChange = {},
-        onDepartmentChange = {},
-        onAcademicYearChange = {},
-        onClassificationChange = {},
-        onCategoryChange = {},
-        onCategoryPre2025Change = {},
-        onRemarkChange = {},
-        onEditTime = { _, _ -> },
-        onLocationChange = { _, _ -> },
-        onDeleteSession = {},
-        onAddSession = {},
-        onSyllabus = {},
-        onReview = {},
-        onDelete = {},
-        onReset = {},
-        onFloatingButtonClick = {},
-    )
+private fun LectureDetail_SyllabusLecture_ViewMode() {
+    SnuttPreviewSurface {
+        LectureDetail(
+            lecture = PreviewData.syllabusLecture,
+            editMode = false,
+            tableTheme = BuiltInTheme.SNUTT,
+            reviewInfo = PreviewData.sampleReviewInfo,
+            buildings = emptyList(),
+            isBookmarked = true,
+            vacancyRegistered = false,
+            showCategoryPre2025 = true,
+            disableMapFeature = true,
+            showLectureReminderPicker = true,
+            lectureWithReminderOption = PreviewData.sampleReminderOption,
+            enableLectureReminderPicker = true,
+            showFloatingButton = true,
+            onBackPressed = {},
+            onEditModeToggle = {},
+            onBookmarkToggle = {},
+            onVacancyToggle = {},
+            onCourseTitleChange = {},
+            onInstructorChange = {},
+            onColorClick = {},
+            onReminderOptionChange = {},
+            onCreditChange = {},
+            onDepartmentChange = {},
+            onAcademicYearChange = {},
+            onClassificationChange = {},
+            onCategoryChange = {},
+            onCategoryPre2025Change = {},
+            onRemarkChange = {},
+            onEditTime = { _, _ -> },
+            onLocationChange = { _, _ -> },
+            onDeleteSession = {},
+            onAddSession = {},
+            onSyllabus = {},
+            onReview = {},
+            onDelete = {},
+            onReset = {},
+            onFloatingButtonClick = {},
+        )
+    }
+}
+
+@Preview(name = "1. Light", uiMode = Configuration.UI_MODE_NIGHT_NO, locale = "ko", heightDp = 1800)
+@Preview(name = "2. Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ko", heightDp = 1800)
+@Composable
+private fun LectureDetail_SyllabusLecture_EditMode() {
+    SnuttPreviewSurface {
+        LectureDetail(
+            lecture = PreviewData.syllabusLecture,
+            editMode = true,
+            tableTheme = BuiltInTheme.SNUTT,
+            reviewInfo = PreviewData.sampleReviewInfo,
+            buildings = emptyList(),
+            isBookmarked = true,
+            vacancyRegistered = false,
+            showCategoryPre2025 = true,
+            disableMapFeature = true,
+            showLectureReminderPicker = true,
+            lectureWithReminderOption = PreviewData.sampleReminderOption,
+            enableLectureReminderPicker = true,
+            showFloatingButton = false,
+            onBackPressed = {},
+            onEditModeToggle = {},
+            onBookmarkToggle = {},
+            onVacancyToggle = {},
+            onCourseTitleChange = {},
+            onInstructorChange = {},
+            onColorClick = {},
+            onReminderOptionChange = {},
+            onCreditChange = {},
+            onDepartmentChange = {},
+            onAcademicYearChange = {},
+            onClassificationChange = {},
+            onCategoryChange = {},
+            onCategoryPre2025Change = {},
+            onRemarkChange = {},
+            onEditTime = { _, _ -> },
+            onLocationChange = { _, _ -> },
+            onDeleteSession = {},
+            onAddSession = {},
+            onSyllabus = {},
+            onReview = {},
+            onDelete = {},
+            onReset = {},
+            onFloatingButtonClick = {},
+        )
+    }
 }

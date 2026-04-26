@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
@@ -23,6 +22,8 @@ import com.wafflestudio.snutt2.domain.model.TagType
 import com.wafflestudio.snutt2.ui.components.compose.CloseIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.components.compose.displayName
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.util.formatter.color
@@ -55,23 +56,25 @@ fun SearchTagCell(
     }
 }
 
-@Preview
+@SnuttPreview
 @Composable
-private fun SearchTagCellPreview() {
-    Row {
-        SearchTagCell(
-            searchTag = SearchTag.Regular(TagType.DEPARTMENT, "컴퓨터공학부"),
-            onClick = {},
-        )
-        SearchTagCell(
-            searchTag = SearchTag.Regular(TagType.CLASSIFICATION, "교양"),
-            onClick = {},
-            modifier = Modifier.padding(start = 5.dp),
-        )
-        SearchTagCell(
-            searchTag = SearchTag.TimeEmpty,
-            onClick = {},
-            modifier = Modifier.padding(start = 5.dp),
-        )
+private fun SearchTagCell_Default() {
+    SnuttPreviewSurface {
+        Row {
+            SearchTagCell(
+                searchTag = SearchTag.Regular(TagType.DEPARTMENT, "컴퓨터공학부"),
+                onClick = {},
+            )
+            SearchTagCell(
+                searchTag = SearchTag.Regular(TagType.CLASSIFICATION, "교양"),
+                onClick = {},
+                modifier = Modifier.padding(start = 5.dp),
+            )
+            SearchTagCell(
+                searchTag = SearchTag.TimeEmpty,
+                onClick = {},
+                modifier = Modifier.padding(start = 5.dp),
+            )
+        }
     }
 }

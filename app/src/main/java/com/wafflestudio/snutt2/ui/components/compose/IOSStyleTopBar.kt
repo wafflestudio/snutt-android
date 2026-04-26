@@ -15,8 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
@@ -69,11 +70,13 @@ fun IOSStyleTopBar(
     }
 }
 
-@Preview
+@SnuttPreview
 @Composable
-fun IOSStyleTopBarPreview() {
-    IOSStyleTopBar(
-        title = "비밀번호 재설정",
-        backButtonText = "로그인",
-    ) { }
+private fun IOSStyleTopBar_Default() {
+    SnuttPreviewSurface {
+        IOSStyleTopBar(
+            title = "비밀번호 재설정",
+            backButtonText = "로그인",
+        ) { }
+    }
 }

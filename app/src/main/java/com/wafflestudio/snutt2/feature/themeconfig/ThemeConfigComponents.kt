@@ -29,7 +29,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
@@ -42,8 +41,9 @@ import com.wafflestudio.snutt2.ui.components.compose.QuestionCircleIcon
 import com.wafflestudio.snutt2.ui.components.compose.ThemeIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.components.compose.displayName
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
-import com.wafflestudio.snutt2.ui.theme.SNUTTTheme
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 import com.wafflestudio.snutt2.ui.theme.onSurfaceVariant
@@ -200,10 +200,10 @@ internal fun ThemeGuideTexts(
 
 // region Previews
 
-@Preview
+@SnuttPreview
 @Composable
-private fun ThemesRowWithLeadingItemPreview() {
-    SNUTTTheme {
+private fun ThemesRow_WithLeadingItem() {
+    SnuttPreviewSurface {
         ThemesRow(
             title = "내 커스텀 테마",
             themes = listOf(PreviewData.previewCustomTheme1, PreviewData.previewCustomTheme2),
@@ -213,10 +213,10 @@ private fun ThemesRowWithLeadingItemPreview() {
     }
 }
 
-@Preview
+@SnuttPreview
 @Composable
-private fun ThemesRowWithoutLeadingItemPreview() {
-    SNUTTTheme {
+private fun ThemesRow_WithoutLeadingItem() {
+    SnuttPreviewSurface {
         ThemesRow(
             title = "기본 테마",
             themes = List(6) { BuiltInTheme.fromCode(it) },
@@ -225,35 +225,21 @@ private fun ThemesRowWithoutLeadingItemPreview() {
     }
 }
 
-@Preview
+@SnuttPreview
 @Composable
-private fun AddThemeItemPreview() {
-    SNUTTTheme {
+private fun AddThemeItem_Default() {
+    SnuttPreviewSurface {
         AddThemeItem(onClick = {})
     }
 }
 
-@Preview
+@SnuttPreview
 @Composable
-private fun ThemeItemBuiltInPreview() {
-    SNUTTTheme {
-        ThemeItem(theme = BuiltInTheme.fromCode(0), onClick = {})
-    }
-}
-
-@Preview
-@Composable
-private fun ThemeItemCustomPreview() {
-    SNUTTTheme {
-        ThemeItem(theme = PreviewData.previewCustomTheme1, onClick = {})
-    }
-}
-
-@Preview
-@Composable
-private fun ThemeGuideTextsPreview() {
-    SNUTTTheme {
-        ThemeGuideTexts()
+private fun ThemeGuideTexts_Default() {
+    SnuttPreviewSurface {
+        Box(modifier = Modifier.background(MaterialTheme.colors.background)) {
+            ThemeGuideTexts()
+        }
     }
 }
 

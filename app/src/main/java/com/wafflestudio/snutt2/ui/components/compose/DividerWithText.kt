@@ -2,6 +2,8 @@ package com.wafflestudio.snutt2.ui.components.compose
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
@@ -12,6 +14,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
 @Composable
 fun DividerWithText(
@@ -40,6 +46,21 @@ fun DividerWithText(
             modifier = Modifier.weight(1f),
             color = color,
             thickness = thickness,
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun DividerWithText_CenterText() {
+    SnuttPreviewSurface {
+        DividerWithText(
+            color = SNUTTColors.Gray200,
+            text = "또는",
+            textStyle = SNUTTTypography.body2.copy(color = SNUTTColors.Gray400),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
         )
     }
 }

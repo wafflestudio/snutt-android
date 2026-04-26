@@ -24,11 +24,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.Notification
@@ -45,11 +43,13 @@ import com.wafflestudio.snutt2.ui.components.compose.RefreshTimeIcon
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.ui.components.compose.WarningIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
+import com.wafflestudio.snutt2.ui.preview.rememberFakeLazyPagingItems
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 import com.wafflestudio.snutt2.ui.util.getNotificationTime
-import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun NotificationRoute(
@@ -269,12 +269,61 @@ fun NotificationPlaceholder() {
     }
 }
 
-@Preview(showBackground = true)
+@SnuttPreview
 @Composable
-fun NotificationPagePreview() {
-    val data =
-        PagingData.from(PreviewData.sampleNotifications)
-    val flow = flowOf(data)
-    val a = flow.collectAsLazyPagingItems()
-    NotificationScreen(uiState = NotificationUiState.Success(a), onNotificationClick = {}, onBackClick = {})
+private fun NotificationScreen_List() {
+    val pagingItems = rememberFakeLazyPagingItems(PreviewData.sampleNotifications)
+    SnuttPreviewSurface {
+        NotificationScreen(
+            uiState = NotificationUiState.Success(pagingItems),
+            onNotificationClick = {},
+            onBackClick = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun NotificationScreen_Empty() {
+    SnuttPreviewSurface {
+        NotificationScreen(
+            uiState = NotificationUiState.Empty,
+            onNotificationClick = {},
+            onBackClick = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun NotificationScreen_Error() {
+    SnuttPreviewSurface {
+        NotificationScreen(
+            uiState = NotificationUiState.Error,
+            onNotificationClick = {},
+            onBackClick = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun NotificationItem_WithDeeplink() {
+    SnuttPreviewSurface {
+        NotificationItem(
+            notification = PreviewData.sampleNotifications.first(),
+            onClick = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun NotificationItem_NoDeeplink() {
+    SnuttPreviewSurface {
+        NotificationItem(
+            notification = PreviewData.sampleNotifications.first().copy(deeplink = null),
+            onClick = {},
+        )
+    }
 }

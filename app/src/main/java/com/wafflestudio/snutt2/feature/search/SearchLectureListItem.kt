@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.feature.search
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,7 +22,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
@@ -40,6 +40,8 @@ import com.wafflestudio.snutt2.ui.components.compose.StarIcon
 import com.wafflestudio.snutt2.ui.components.compose.TagIcon
 import com.wafflestudio.snutt2.ui.components.compose.ThickReviewIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.util.formatter.getSimplifiedClassTimeForLecture
@@ -321,64 +323,76 @@ private fun LectureActionButton(
 
 // region Preview
 
-@Preview(showBackground = true, backgroundColor = 0xFF2B2B2B)
+@SnuttPreview
 @Composable
-private fun SearchLectureListItemPreview_Collapsed() {
-    SearchLectureListItem(
-        lecture = PreviewData.sampleLectures.first(),
-        lectureState = LectureState(
-            selected = false,
-            contained = false,
-            isBookmarked = false,
-            isVacancyRegistered = false,
-        ),
-        onClick = {},
-        onClickDetail = {},
-        onClickReview = {},
-        onClickBookmark = {},
-        onClickVacancy = {},
-        onClickAddOrRemove = {},
-    )
+private fun SearchLectureListItem_Collapsed() {
+    SnuttPreviewSurface {
+        Box(modifier = Modifier.background(SNUTTColors.Dim2)) {
+            SearchLectureListItem(
+                lecture = PreviewData.sampleLectures.first(),
+                lectureState = LectureState(
+                    selected = false,
+                    contained = false,
+                    isBookmarked = false,
+                    isVacancyRegistered = false,
+                ),
+                onClick = {},
+                onClickDetail = {},
+                onClickReview = {},
+                onClickBookmark = {},
+                onClickVacancy = {},
+                onClickAddOrRemove = {},
+            )
+        }
+    }
 }
 
-@Preview(showBackground = true, backgroundColor = 0xFF2B2B2B)
+@SnuttPreview
 @Composable
-private fun SearchLectureListItemPreview_Expanded() {
-    SearchLectureListItem(
-        lecture = PreviewData.sampleLectures.first(),
-        lectureState = LectureState(
-            selected = true,
-            contained = false,
-            isBookmarked = false,
-            isVacancyRegistered = false,
-        ),
-        onClick = {},
-        onClickDetail = {},
-        onClickReview = {},
-        onClickBookmark = {},
-        onClickVacancy = {},
-        onClickAddOrRemove = {},
-    )
+private fun SearchLectureListItem_Expanded() {
+    SnuttPreviewSurface {
+        Box(modifier = Modifier.background(SNUTTColors.Dim2)) {
+            SearchLectureListItem(
+                lecture = PreviewData.sampleLectures.first(),
+                lectureState = LectureState(
+                    selected = true,
+                    contained = false,
+                    isBookmarked = false,
+                    isVacancyRegistered = false,
+                ),
+                onClick = {},
+                onClickDetail = {},
+                onClickReview = {},
+                onClickBookmark = {},
+                onClickVacancy = {},
+                onClickAddOrRemove = {},
+            )
+        }
+    }
 }
 
-@Preview(showBackground = true, backgroundColor = 0xFF2B2B2B)
+@SnuttPreview
 @Composable
-private fun SearchLectureListItemPreview_ExpandedContained() {
-    SearchLectureListItem(
-        lecture = PreviewData.sampleLectures.first(),
-        lectureState = LectureState(
-            selected = true,
-            contained = true,
-            isBookmarked = true,
-            isVacancyRegistered = true,
-        ),
-        onClick = {},
-        onClickDetail = {},
-        onClickReview = {},
-        onClickBookmark = {},
-        onClickVacancy = {},
-        onClickAddOrRemove = {},
-    )
+private fun SearchLectureListItem_ExpandedContained() {
+    SnuttPreviewSurface {
+        Box(modifier = Modifier.background(SNUTTColors.Dim2)) {
+            SearchLectureListItem(
+                lecture = PreviewData.sampleLectures.first(),
+                lectureState = LectureState(
+                    selected = true,
+                    contained = true,
+                    isBookmarked = true,
+                    isVacancyRegistered = true,
+                ),
+                onClick = {},
+                onClickDetail = {},
+                onClickReview = {},
+                onClickBookmark = {},
+                onClickVacancy = {},
+                onClickAddOrRemove = {},
+            )
+        }
+    }
 }
 
 // endregion

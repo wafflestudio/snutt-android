@@ -15,35 +15,30 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.zIndex
-import coil.compose.AsyncImage
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.logging.compose.PopupLoggingEffect
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 
 @Composable
 fun Popup(
-    imageUri: String,
     onClickFewDays: () -> Unit,
     onClickClose: () -> Unit,
-    onClickImage: () -> Unit,
+    imageContent: @Composable () -> Unit,
 ) {
-    val containerWidthDp = with(LocalDensity.current) {
+    val rawWidth = with(LocalDensity.current) {
         LocalWindowInfo.current.containerSize.width.toDp()
     }
+    val containerWidthDp = if (rawWidth > 0.dp) rawWidth else 360.dp
     val imageWidth = min(containerWidthDp * 0.8f, 400.dp)
-
-    PopupLoggingEffect(imageUri)
 
     Box(
         modifier = Modifier
@@ -58,16 +53,7 @@ fun Popup(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.width(imageWidth),
         ) {
-            AsyncImage(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clicks {
-                        onClickImage()
-                    },
-                model = imageUri,
-                contentDescription = "",
-                error = painterResource(id = R.drawable.img_reviews_coming_soon),
-            )
+            imageContent()
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
@@ -87,7 +73,7 @@ fun Popup(
                     modifier = Modifier
                         .width(1.dp)
                         .height(17.dp)
-                        .background(Color.White),
+                        .background(SNUTTColors.AllWhite),
                 )
                 Text(
                     text = stringResource(id = R.string.popup_close_message),
@@ -107,8 +93,23 @@ fun Popup(
     }
 }
 
-@Preview(showBackground = true)
+@SnuttPreview
 @Composable
-fun PopupPreview() {
-    Popup(imageUri = "", {}, {}, {})
+private fun Popup_Default() {
+    SnuttPreviewSurface {
+        Popup(onClickFewDays = {}, onClickClose = {}) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .background(SNUTTColors.Gray400),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = "Preview Image",
+                    color = SNUTTColors.Gray900,
+                )
+            }
+        }
+    }
 }

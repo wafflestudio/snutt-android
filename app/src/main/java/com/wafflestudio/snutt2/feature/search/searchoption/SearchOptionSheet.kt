@@ -2,22 +2,32 @@ package com.wafflestudio.snutt2.feature.search.searchoption
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.platform.LocalWindowInfo
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.LocalLecture
 import com.wafflestudio.snutt2.domain.model.SearchTag
 import com.wafflestudio.snutt2.domain.model.TableLectureCustom
@@ -27,7 +37,10 @@ import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.ui.components.compose.ExitIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import kotlin.math.roundToInt
 
 private enum class OptionSheetMode {
@@ -180,6 +193,41 @@ fun SearchOptionSheet(
     }
 }
 
+@Composable
+private fun SearchOptionConfirmButton(
+    baseAnimatedFloat: State<Float>,
+    onConfirm: () -> Unit,
+) {
+    val alphaAnimatedFloat by remember {
+        derivedStateOf { 1f - baseAnimatedFloat.value }
+    }
+    val offsetYAnimatedDp by remember {
+        derivedStateOf {
+            baseAnimatedFloat.value.dp * 500 // FIXME
+        }
+    }
+
+    Row(
+        modifier = Modifier
+            .offset { IntOffset(0, offsetYAnimatedDp.roundToPx()) }
+            .alpha(alphaAnimatedFloat)
+            .background(SNUTTColors.Sky)
+            .fillMaxWidth()
+            .height(60.dp)
+            .clicks(enabled = alphaAnimatedFloat != 0f) {
+                onConfirm()
+            },
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center,
+    ) {
+        Text(
+            text = stringResource(R.string.search_option_apply_button),
+            textAlign = TextAlign.Center,
+            style = SNUTTTypography.h3.copy(fontSize = 17.sp, color = SNUTTColors.AllWhite),
+        )
+    }
+}
+
 private fun previewSheet(
     selectedTagType: TagType,
     selectedTags: List<SearchTag> = emptyList(),
@@ -204,45 +252,26 @@ private fun previewSheet(
     )
 }
 
-// 기본 상태: 정렬 기준 탭
-@Preview
+// 기본 상태: 정렬 기준 탭 (모든 탭의 골격이 동일하므로 대표 1개)
+@SnuttPreview
 @Composable
-private fun SearchOptionSheetPreview_SortCriteria() {
-    previewSheet(selectedTagType = TagType.SORT_CRITERIA)()
+private fun SearchOptionSheet_SortCriteria() {
+    SnuttPreviewSurface {
+        previewSheet(selectedTagType = TagType.SORT_CRITERIA)()
+    }
 }
 
-// 태그 선택된 상태: 분류 탭에서 "전공필수" 선택
-@Preview
+// 시간대 탭: 시간 블록 표시가 추가되어 시각적으로 큰 분기
+@SnuttPreview
 @Composable
-private fun SearchOptionSheetPreview_ClassificationSelected() {
-    previewSheet(
-        selectedTagType = TagType.CLASSIFICATION,
-        selectedTags = listOf(SearchTag.Regular(TagType.CLASSIFICATION, "전공필수")),
-    )()
-}
-
-// 학과 탭 + 최근 검색 기록 존재
-@Preview
-@Composable
-private fun SearchOptionSheetPreview_DepartmentWithRecent() {
-    previewSheet(
-        selectedTagType = TagType.DEPARTMENT,
-        recentSearchedDepartments = listOf(
-            SearchTag.Regular(TagType.DEPARTMENT, "컴퓨터공학부"),
-            SearchTag.Regular(TagType.DEPARTMENT, "전기정보공학부"),
-        ),
-    )()
-}
-
-// 시간대 탭 + 일부 시간 블록 선택됨
-@Preview
-@Composable
-private fun SearchOptionSheetPreview_TimeWithBlocks() {
-    previewSheet(
-        selectedTagType = TagType.TIME,
-        selectedTags = listOf(SearchTag.TimeSelect),
-        draggedTimeBlock = TableTrimParam.TimeBlockGridDefault.mapIndexed { dayIdx, day ->
-            day.mapIndexed { slotIdx, _ -> dayIdx == 0 && slotIdx in 4..9 }
-        },
-    )()
+private fun SearchOptionSheet_TimeWithBlocks() {
+    SnuttPreviewSurface {
+        previewSheet(
+            selectedTagType = TagType.TIME,
+            selectedTags = listOf(SearchTag.TimeSelect),
+            draggedTimeBlock = TableTrimParam.TimeBlockGridDefault.mapIndexed { dayIdx, day ->
+                day.mapIndexed { slotIdx, _ -> dayIdx == 0 && slotIdx in 4..9 }
+            },
+        )()
+    }
 }

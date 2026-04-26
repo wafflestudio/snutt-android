@@ -23,6 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.components.compose.EditText
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
@@ -81,5 +83,41 @@ fun LectureDetailItem(
             content()
         }
         Spacer(modifier = Modifier.width(20.dp))
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun LectureDetailItem_ReadOnly() {
+    SnuttPreviewSurface {
+        LectureDetailItem(
+            title = "학과",
+            value = "컴퓨터공학부",
+            enabled = false,
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun LectureDetailItem_Editable() {
+    SnuttPreviewSurface {
+        LectureDetailItem(
+            title = "강의명",
+            value = "논리설계",
+            enabled = true,
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun LectureDetailItem_Empty() {
+    SnuttPreviewSurface {
+        LectureDetailItem(
+            title = "비고",
+            value = "",
+            enabled = false,
+        )
     }
 }

@@ -27,7 +27,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
@@ -39,6 +38,8 @@ import com.wafflestudio.snutt2.ui.components.compose.LogoIcon
 import com.wafflestudio.snutt2.ui.components.compose.MoreIcon
 import com.wafflestudio.snutt2.ui.components.compose.RedDot
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
@@ -390,17 +391,59 @@ private fun FriendRequestItem(
     }
 }
 
-@Preview(showBackground = true, widthDp = 320, heightDp = 640)
+@SnuttPreview
 @Composable
-private fun FriendsDrawerContentPreview() {
-    FriendsDrawerContent(
-        uiState = PreviewData.sampleFriendsUiState,
-        onClose = {},
-        onSelectTab = {},
-        onSelectFriend = {},
-        onOpenAddFriendBottomSheet = {},
-        onOpenFriendDetail = {},
-        onAcceptFriend = {},
-        onDeclineFriend = {},
-    )
+private fun FriendsDrawer_FriendsTab() {
+    SnuttPreviewSurface {
+        FriendsDrawerContent(
+            uiState = PreviewData.sampleFriendsUiState,
+            onClose = {},
+            onSelectTab = {},
+            onSelectFriend = {},
+            onOpenAddFriendBottomSheet = {},
+            onOpenFriendDetail = {},
+            onAcceptFriend = {},
+            onDeclineFriend = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun FriendsDrawer_RequestsTab() {
+    SnuttPreviewSurface {
+        FriendsDrawerContent(
+            uiState = PreviewData.sampleFriendsUiState.copy(
+                drawerTab = FriendDrawerTab.REQUESTED,
+            ),
+            onClose = {},
+            onSelectTab = {},
+            onSelectFriend = {},
+            onOpenAddFriendBottomSheet = {},
+            onOpenFriendDetail = {},
+            onAcceptFriend = {},
+            onDeclineFriend = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun FriendsDrawer_FriendsTab_Empty() {
+    SnuttPreviewSurface {
+        FriendsDrawerContent(
+            uiState = PreviewData.sampleFriendsUiState.copy(
+                activeFriends = emptyList(),
+                requestedFriends = emptyList(),
+                selectedFriend = null,
+            ),
+            onClose = {},
+            onSelectTab = {},
+            onSelectFriend = {},
+            onOpenAddFriendBottomSheet = {},
+            onOpenFriendDetail = {},
+            onAcceptFriend = {},
+            onDeclineFriend = {},
+        )
+    }
 }

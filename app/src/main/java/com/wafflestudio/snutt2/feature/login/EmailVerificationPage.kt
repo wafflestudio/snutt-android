@@ -31,7 +31,6 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
@@ -43,6 +42,8 @@ import com.wafflestudio.snutt2.ui.components.compose.TimerValue
 import com.wafflestudio.snutt2.ui.components.compose.WebViewStyleButton
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.components.compose.rememberTimerState
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.util.toast
@@ -250,16 +251,34 @@ private fun EmailVerificationScreen(
     }
 }
 
-@Preview(showBackground = true, locale = "ko")
+@SnuttPreview
 @Composable
-private fun EmailVerificationScreenPreview() {
-    EmailVerificationScreen(
-        userEmail = "user@snu.ac.kr",
-        flowState = VerifyEmailState.AskContinue,
-        timerState = rememberTimerState(initialValue = TimerValue.Initial, durationInSecond = 180),
-        onSendCode = {},
-        onVerifyCode = {},
-        onNavigateHome = {},
-        onBackToAskContinue = {},
-    )
+private fun EmailVerificationScreen_AskContinue() {
+    SnuttPreviewSurface {
+        EmailVerificationScreen(
+            userEmail = "user@snu.ac.kr",
+            flowState = VerifyEmailState.AskContinue,
+            timerState = rememberTimerState(initialValue = TimerValue.Initial, durationInSecond = 180),
+            onSendCode = {},
+            onVerifyCode = {},
+            onNavigateHome = {},
+            onBackToAskContinue = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun EmailVerificationScreen_SendCode() {
+    SnuttPreviewSurface {
+        EmailVerificationScreen(
+            userEmail = "user@snu.ac.kr",
+            flowState = VerifyEmailState.SendCode,
+            timerState = rememberTimerState(initialValue = TimerValue.Initial, durationInSecond = 180),
+            onSendCode = {},
+            onVerifyCode = {},
+            onNavigateHome = {},
+            onBackToAskContinue = {},
+        )
+    }
 }

@@ -20,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -40,6 +39,8 @@ import com.wafflestudio.snutt2.domain.model.getString
 import com.wafflestudio.snutt2.lib.facebook.facebookLogin
 import com.wafflestudio.snutt2.ui.components.compose.CustomDialog
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.util.toast
 import kotlinx.coroutines.launch
@@ -267,25 +268,27 @@ private fun SocialLinkScreen(
     }
 }
 
-@Preview(showBackground = true)
+@SnuttPreview
 @Composable
-private fun SocialLinkScreenPreview() {
-    SocialLinkScreen(
-        uiState = SocialLinkUiState(
-            socialProviders = SocialProviders(
-                local = true,
-                facebook = false,
-                google = true,
-                kakao = false,
-                apple = false,
+private fun SocialLinkScreen_Default() {
+    SnuttPreviewSurface {
+        SocialLinkScreen(
+            uiState = SocialLinkUiState(
+                socialProviders = SocialProviders(
+                    local = true,
+                    facebook = false,
+                    google = true,
+                    kakao = false,
+                    apple = false,
+                ),
             ),
-        ),
-        onKakaoConnect = {},
-        onGoogleConnect = {},
-        onFacebookConnect = {},
-        onShowDisconnectDialog = {},
-        onDismissDisconnectDialog = {},
-        onConfirmDisconnect = {},
-        onNavigateBack = {},
-    )
+            onKakaoConnect = {},
+            onGoogleConnect = {},
+            onFacebookConnect = {},
+            onShowDisconnectDialog = {},
+            onDismissDisconnectDialog = {},
+            onConfirmDisconnect = {},
+            onNavigateBack = {},
+        )
+    }
 }

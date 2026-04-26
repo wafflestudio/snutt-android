@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
@@ -27,18 +28,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.SearchedLecture
+import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.lib.Selectable
+import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.ui.components.compose.ClockIcon
 import com.wafflestudio.snutt2.ui.components.compose.LocationIcon
 import com.wafflestudio.snutt2.ui.components.compose.RoundCheckbox
 import com.wafflestudio.snutt2.ui.components.compose.TagIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.util.formatter.getLectureTagText
@@ -231,8 +235,36 @@ fun VacancyBadge(
     )
 }
 
-@Preview
+@SnuttPreview
 @Composable
-fun VacancyStickerPreview() {
-    VacancyBadge()
+private fun VacancyListItem_HasVacancy() {
+    SnuttPreviewSurface {
+        LazyColumn {
+            item {
+                VacancyListItem(
+                    lecture = PreviewData.sampleLectures.first()
+                        .copy(wasFull = true, registrationCount = 9, quota = 10)
+                        .toDataWithState(false),
+                    editing = false,
+                    onClick = {},
+                )
+            }
+        }
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun VacancyListItem_EditMode() {
+    SnuttPreviewSurface {
+        LazyColumn {
+            item {
+                VacancyListItem(
+                    lecture = PreviewData.sampleLectures.first().toDataWithState(true),
+                    editing = true,
+                    onClick = {},
+                )
+            }
+        }
+    }
 }

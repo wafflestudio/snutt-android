@@ -33,12 +33,13 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.LectureReminderOffset
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
@@ -166,9 +167,9 @@ fun <T> SegmentedPicker(
     }
 }
 
-@Preview(showBackground = true)
+@SnuttPreview
 @Composable
-fun SegmentedPickerPreview() {
+private fun SegmentedPicker_Enabled() {
     val lectureReminderOptions = listOf(
         stringResource(R.string.settings_lecture_reminder_none),
         stringResource(R.string.settings_lecture_reminder_ten_minutes_before),
@@ -183,23 +184,25 @@ fun SegmentedPickerPreview() {
         LectureReminderOffset.TEN_MINUTES_AFTER -> lectureReminderOptions[3]
     }
 
-    Column(
-        modifier = Modifier.width(374.dp),
-    ) {
-        SegmentedPicker(
-            title = "강의 리마인더",
-            options = LectureReminderOffset.entries,
-            optionLabel = { offset -> offset.getString() },
-            selectedOption = LectureReminderOffset.entries[0],
-            onOptionSelected = { _ -> },
-            description = buildAnnotatedString { append("학기가 시작됐을 때 해당 시간에 푸시 알림을 보내드립니다.") },
-        )
+    SnuttPreviewSurface {
+        Column(
+            modifier = Modifier.width(374.dp),
+        ) {
+            SegmentedPicker(
+                title = "강의 리마인더",
+                options = LectureReminderOffset.entries,
+                optionLabel = { offset -> offset.getString() },
+                selectedOption = LectureReminderOffset.entries[0],
+                onOptionSelected = { _ -> },
+                description = buildAnnotatedString { append("학기가 시작됐을 때 해당 시간에 푸시 알림을 보내드립니다.") },
+            )
+        }
     }
 }
 
-@Preview(showBackground = true)
+@SnuttPreview
 @Composable
-fun UnabledSegmentPickerPreview() {
+private fun SegmentedPicker_Disabled() {
     val lectureReminderOptions = listOf(
         stringResource(R.string.settings_lecture_reminder_none),
         stringResource(R.string.settings_lecture_reminder_ten_minutes_before),
@@ -214,17 +217,19 @@ fun UnabledSegmentPickerPreview() {
         LectureReminderOffset.TEN_MINUTES_AFTER -> lectureReminderOptions[3]
     }
 
-    Column(
-        modifier = Modifier.width(374.dp),
-    ) {
-        SegmentedPicker(
-            title = "강의 리마인더",
-            options = LectureReminderOffset.entries,
-            optionLabel = { offset -> offset.getString() },
-            selectedOption = LectureReminderOffset.entries[0],
-            onOptionSelected = { _ -> },
-            description = buildAnnotatedString { append("최신 학기의 대표시간표 속 강의들에 적용 가능해요.") },
-            enabled = false,
-        )
+    SnuttPreviewSurface {
+        Column(
+            modifier = Modifier.width(374.dp),
+        ) {
+            SegmentedPicker(
+                title = "강의 리마인더",
+                options = LectureReminderOffset.entries,
+                optionLabel = { offset -> offset.getString() },
+                selectedOption = LectureReminderOffset.entries[0],
+                onOptionSelected = { _ -> },
+                description = buildAnnotatedString { append("최신 학기의 대표시간표 속 강의들에 적용 가능해요.") },
+                enabled = false,
+            )
+        }
     }
 }

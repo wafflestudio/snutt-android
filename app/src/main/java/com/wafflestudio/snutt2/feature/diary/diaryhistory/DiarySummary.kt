@@ -23,16 +23,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.domain.model.diary.DiaryQuestionAnswer
 import com.wafflestudio.snutt2.domain.model.diary.DiarySummary
+import com.wafflestudio.snutt2.domain.model.preview.DiaryPreviewData
 import com.wafflestudio.snutt2.feature.diary.DiaryTheme
 import com.wafflestudio.snutt2.ui.components.compose.ArrowDownIcon
 import com.wafflestudio.snutt2.ui.components.compose.TrashIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -180,76 +181,37 @@ private fun DiarySummary(
     }
 }
 
-private val previewSummary1 = DiarySummary(
-    id = "preview-id-1",
-    lectureId = "",
-    courseName = "시각디자인기초",
-    date = java.time.LocalDateTime.of(2025, 3, 20, 12, 0),
-    questionAnswers = listOf(
-        DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
-        DiaryQuestionAnswer(question = "드랍여부", answer = "안했어요"),
-        DiaryQuestionAnswer(question = "수업 첫인상", answer = "하.."),
-    ),
-    comment = "좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.",
-)
-
-private val previewSummary2 = DiarySummary(
-    id = "preview-id-2",
-    lectureId = "",
-    courseName = "배구",
-    date = java.time.LocalDateTime.of(2025, 3, 20, 12, 0),
-    questionAnswers = listOf(
-        DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
-        DiaryQuestionAnswer(question = "드랍여부", answer = "안했어요"),
-        DiaryQuestionAnswer(question = "수업 첫인상", answer = "하.."),
-    ),
-    comment = "좋아요",
-)
-
+@SnuttPreview
 @Composable
-@Preview(showBackground = true)
-fun DiarySummariesOfDayFoldedPreview() {
-    DiaryTheme {
-        DiarySummariesOfDay(LocalDate.of(2025, 3, 20), listOf(previewSummary1), false, {}, { _ -> })
+private fun DiarySummariesOfDay_Collapsed() {
+    SnuttPreviewSurface {
+        DiaryTheme {
+            DiarySummariesOfDay(
+                LocalDate.of(2025, 3, 20),
+                listOf(DiaryPreviewData.sampleDiarySummaryLongComment),
+                false,
+                {},
+                { _ -> },
+            )
+        }
     }
 }
 
+@SnuttPreview
 @Composable
-@Preview(uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES, showBackground = true, backgroundColor = 0xFF1a1a1a)
-fun DiarySummariesOfDayFoldedDarkPreview() {
-    DiaryTheme(darkTheme = true) {
-        DiarySummariesOfDay(LocalDate.of(2025, 3, 20), listOf(previewSummary1), false, {}, { _ -> })
-    }
-}
-
-@Composable
-@Preview(showBackground = true)
-fun DiarySummariesOfDayExpandedPreview() {
-    DiaryTheme {
-        DiarySummariesOfDay(LocalDate.of(2025, 3, 20), listOf(previewSummary1, previewSummary2), true, {}, { _ -> })
-    }
-}
-
-@Composable
-@Preview(uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES, showBackground = true, backgroundColor = 0xFF1a1a1a)
-fun DiarySummariesOfDayExpandedDarkPreview() {
-    DiaryTheme(darkTheme = true) {
-        DiarySummariesOfDay(LocalDate.of(2025, 3, 20), listOf(previewSummary1, previewSummary2), true, {}, { _ -> })
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DiarySummaryPreview() {
-    DiaryTheme {
-        DiarySummary(previewSummary2, {})
-    }
-}
-
-@Preview(uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES, showBackground = true, backgroundColor = 0xFF1a1a1a)
-@Composable
-fun DiarySummaryDarkPreview() {
-    DiaryTheme(darkTheme = true) {
-        DiarySummary(previewSummary2, {})
+private fun DiarySummariesOfDay_Expanded() {
+    SnuttPreviewSurface {
+        DiaryTheme {
+            DiarySummariesOfDay(
+                LocalDate.of(2025, 3, 20),
+                listOf(
+                    DiaryPreviewData.sampleDiarySummaryLongComment,
+                    DiaryPreviewData.sampleDiarySummaryShortComment,
+                ),
+                true,
+                {},
+                { _ -> },
+            )
+        }
     }
 }

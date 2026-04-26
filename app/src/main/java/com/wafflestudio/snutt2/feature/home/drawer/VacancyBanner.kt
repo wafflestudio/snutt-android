@@ -18,6 +18,8 @@ import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.components.compose.RingingAlarmIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
@@ -57,5 +59,13 @@ fun VacancyBanner(
                 ),
             )
         }
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun VacancyBanner_Default() {
+    SnuttPreviewSurface {
+        VacancyBanner(onClick = {})
     }
 }

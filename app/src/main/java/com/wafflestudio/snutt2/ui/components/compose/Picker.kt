@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -20,7 +21,10 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -124,5 +128,24 @@ fun PickerItem(modifier: Modifier, content: @Composable () -> Unit) {
         contentAlignment = Alignment.Center,
     ) {
         content()
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun Picker_HourSelection() {
+    SnuttPreviewSurface {
+        Box(modifier = Modifier.padding(20.dp)) {
+            Picker(
+                list = (0..23).toList(),
+                initialCenterIndex = 9,
+                onValueChanged = {},
+            ) { index ->
+                Text(
+                    text = "%02d".format(index),
+                    style = SNUTTTypography.body1,
+                )
+            }
+        }
     }
 }

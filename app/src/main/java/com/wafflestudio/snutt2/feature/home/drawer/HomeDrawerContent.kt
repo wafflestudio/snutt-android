@@ -21,18 +21,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.CourseBook
 import com.wafflestudio.snutt2.domain.model.TableSummary
+import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.ui.components.compose.ArrowDownIcon
 import com.wafflestudio.snutt2.ui.components.compose.ExitIcon
 import com.wafflestudio.snutt2.ui.components.compose.LogoIcon
 import com.wafflestudio.snutt2.ui.components.compose.RedDot
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.util.formatter.toFormattedString
@@ -181,42 +183,57 @@ private fun CreateTableItem(
     }
 }
 
-@Preview
+@SnuttPreview
 @Composable
-private fun HomeDrawerScreenPreview() {
-    HomeDrawerContent(
-        modifier = Modifier,
-        uiState = HomeDrawerUiState(
-            courseBookDrawerItemList = listOf(
-                CoursebookDrawerItem(
-                    courseBook = CourseBook(1, 2026),
-                    showNewCoursebookDot = false,
-                    tableList = listOf(TableSummary.Default, TableSummary.Default),
-                ).toDataWithState(true),
-                CoursebookDrawerItem(
-                    courseBook = CourseBook(1, 2025),
-                    showNewCoursebookDot = false,
-                    tableList = emptyList(),
-                ).toDataWithState(false),
-                CoursebookDrawerItem(
-                    courseBook = CourseBook(1, 2024),
-                    showNewCoursebookDot = false,
-                    tableList = emptyList(),
-                ).toDataWithState(false),
+private fun HomeDrawerContent_Default() {
+    SnuttPreviewSurface {
+        HomeDrawerContent(
+            modifier = Modifier,
+            uiState = HomeDrawerUiState(
+                courseBookDrawerItemList = listOf(
+                    // 신학기: NewCoursebook dot, 대표 시간표 + 일반/긴 제목 시간표 포함, 펼친 상태
+                    CoursebookDrawerItem(
+                        courseBook = CourseBook(1, 2026),
+                        showNewCoursebookDot = true,
+                        tableList = listOf(
+                            PreviewData.drawerPrimaryTable,
+                            PreviewData.drawerSecondaryTable,
+                            PreviewData.drawerLongTitleTable,
+                        ),
+                    ).toDataWithState(true),
+                    // 직전 학기: 시간표 있지만 접힌 상태
+                    CoursebookDrawerItem(
+                        courseBook = CourseBook(2, 2025),
+                        showNewCoursebookDot = false,
+                        tableList = listOf(PreviewData.drawerLastSemesterTable),
+                    ).toDataWithState(false),
+                    // 직전직전 학기: 비어있고 펼쳐진 상태 — CreateTableItem 노출
+                    CoursebookDrawerItem(
+                        courseBook = CourseBook(1, 2025),
+                        showNewCoursebookDot = false,
+                        tableList = emptyList(),
+                    ).toDataWithState(true),
+                    // 더 이전 학기: 비어있고 접힌 상태
+                    CoursebookDrawerItem(
+                        courseBook = CourseBook(1, 2024),
+                        showNewCoursebookDot = false,
+                        tableList = emptyList(),
+                    ).toDataWithState(false),
+                ),
+                selectedTable = PreviewData.drawerPrimaryTable,
+                homeDrawerBottomSheetType = HomeDrawerBottomSheetType.Empty,
+                dialogState = HomeDrawerUiState.DialogState.None,
             ),
-            TableSummary.Default,
-            homeDrawerBottomSheetType = HomeDrawerBottomSheetType.Empty,
-            dialogState = HomeDrawerUiState.DialogState.None,
-        ),
-        onToggleExpand = {},
-        onClickExitIcon = {},
-        onClickCreateNewTable = {},
-        onClickCreateNewTableOfCourseBook = {},
-        onSelectTable = {},
-        onClickCopyIcon = {},
-        onClickMoreIcon = {},
-        onDismissDialog = {},
-        onConfirmChangeTableTitle = { _, _ -> },
-        onConfirmDeleteTable = {},
-    )
+            onToggleExpand = {},
+            onClickExitIcon = {},
+            onClickCreateNewTable = {},
+            onClickCreateNewTableOfCourseBook = {},
+            onSelectTable = {},
+            onClickCopyIcon = {},
+            onClickMoreIcon = {},
+            onDismissDialog = {},
+            onConfirmChangeTableTitle = { _, _ -> },
+            onConfirmDeleteTable = {},
+        )
+    }
 }

@@ -19,13 +19,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.LectureReviewInfo
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.ui.components.compose.StarIcon
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 
 @Composable
@@ -74,30 +75,22 @@ internal fun LectureReviewRatingField(
     }
 }
 
-@Preview(showBackground = true, widthDp = 360, name = "reviewInfo 있음")
+@SnuttPreview
 @Composable
-private fun WithReviewInfoPreview() {
-    LectureReviewRatingField(
-        reviewInfo = PreviewData.sampleReviewInfo,
-    )
+private fun LectureReviewRatingField_WithReviewInfo() {
+    SnuttPreviewSurface {
+        LectureReviewRatingField(
+            reviewInfo = PreviewData.sampleReviewInfo,
+        )
+    }
 }
 
-@Preview(showBackground = true, widthDp = 360, name = "reviewInfo 없음")
+@SnuttPreview
 @Composable
-private fun WithoutReviewInfoPreview() {
-    LectureReviewRatingField(
-        reviewInfo = null,
-    )
-}
-
-@Preview(showBackground = true, widthDp = 360, name = "강의퍙 없음")
-@Composable
-private fun WithZeroReviewInfoPreview() {
-    LectureReviewRatingField(
-        reviewInfo = LectureReviewInfo(
-            id = "",
-            rating = null,
-            reviewCount = 0,
-        ),
-    )
+private fun LectureReviewRatingField_WithoutReviewInfo() {
+    SnuttPreviewSurface {
+        LectureReviewRatingField(
+            reviewInfo = null,
+        )
+    }
 }

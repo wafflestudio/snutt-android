@@ -27,10 +27,11 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
@@ -116,9 +117,22 @@ fun EditText(
     }
 }
 
-@Preview(showBackground = true)
+@SnuttPreview
 @Composable
-fun EditTextPreview() {
-    var text by remember { mutableStateOf("hello") }
-    EditText(value = text, onValueChange = { text = it })
+private fun EditText_Filled() {
+    SnuttPreviewSurface {
+        EditText(value = "hello", onValueChange = {})
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun EditText_EmptyWithHint() {
+    SnuttPreviewSurface {
+        EditText(
+            value = "",
+            onValueChange = {},
+            hint = "이름을 입력해주세요",
+        )
+    }
 }

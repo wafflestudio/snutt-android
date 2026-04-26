@@ -11,6 +11,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 
 @Composable
@@ -69,6 +71,17 @@ fun OpenSourceLicensePage(
             onClick = {
                 onNavigateLicenseDetail(pretendardRoute)
             },
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun OpenSourceLicensePage_Default() {
+    SnuttPreviewSurface {
+        OpenSourceLicensePage(
+            onNavigateBack = {},
+            onNavigateLicenseDetail = {},
         )
     }
 }

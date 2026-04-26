@@ -30,6 +30,8 @@ import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.components.compose.EditTextFieldValue
 import com.wafflestudio.snutt2.ui.components.compose.WebViewStyleButton
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.util.toast
@@ -120,5 +122,27 @@ fun CheckIdStep(
                 style = SNUTTTypography.h3.copy(color = if (buttonEnabled) SNUTTColors.AllWhite else SNUTTColors.VacancyGray),
             )
         }
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun CheckIdStep_Empty() {
+    SnuttPreviewSurface {
+        CheckIdStep(
+            uiState = FindPasswordViewModel.UIState.CheckId(userId = ""),
+            onSubmit = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun CheckIdStep_Filled() {
+    SnuttPreviewSurface {
+        CheckIdStep(
+            uiState = FindPasswordViewModel.UIState.CheckId(userId = "snutt_user"),
+            onSubmit = {},
+        )
     }
 }

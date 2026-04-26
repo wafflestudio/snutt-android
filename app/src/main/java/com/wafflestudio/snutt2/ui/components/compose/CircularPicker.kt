@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -23,7 +24,10 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -146,5 +150,24 @@ fun <T> CircularPicker(
                 .alpha(-(-columnHeightDp / 4 + localOffset.dp / 2) / columnHeightDp),
             content = { PickerItemContent((centerItemIndex + 2) % list.size) },
         )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun CircularPicker_HourSelection() {
+    SnuttPreviewSurface {
+        Box(modifier = Modifier.padding(20.dp)) {
+            CircularPicker(
+                list = (0..23).toList(),
+                initialCenterIndex = 9,
+                onValueChanged = {},
+            ) { index ->
+                Text(
+                    text = "%02d".format(index),
+                    style = SNUTTTypography.body1,
+                )
+            }
+        }
     }
 }

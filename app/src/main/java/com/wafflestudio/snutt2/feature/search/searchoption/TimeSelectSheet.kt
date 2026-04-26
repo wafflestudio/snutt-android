@@ -37,7 +37,6 @@ import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.wafflestudio.snutt2.R
@@ -55,6 +54,8 @@ import com.wafflestudio.snutt2.feature.home.timetable.TimetableCanvasObjects
 import com.wafflestudio.snutt2.ui.components.compose.MagicIcon
 import com.wafflestudio.snutt2.ui.components.compose.ResetIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
@@ -413,35 +414,39 @@ private fun calculateComplementBlocks(
 
 // region Preview
 
-@Preview(showBackground = true)
+@SnuttPreview
 @Composable
-private fun TimeSelectSheetPreview_Empty() {
-    TimeSelectSheet(
-        backHandlerEnabled = false,
-        initialDraggedTimeBlock = TableTrimParam.TimeBlockGridDefault,
-        currentTableLectures = listOf(PreviewData.syllabusLecture),
-        tableLectureCustomOptions = TableLectureCustom.Default,
-        onCancel = {},
-        onConfirm = {},
-    )
+private fun TimeSelectSheet_Empty() {
+    SnuttPreviewSurface {
+        TimeSelectSheet(
+            backHandlerEnabled = false,
+            initialDraggedTimeBlock = TableTrimParam.TimeBlockGridDefault,
+            currentTableLectures = listOf(PreviewData.syllabusLecture),
+            tableLectureCustomOptions = TableLectureCustom.Default,
+            onCancel = {},
+            onConfirm = {},
+        )
+    }
 }
 
-@Preview(showBackground = true)
+@SnuttPreview
 @Composable
-private fun TimeSelectSheetPreview_SomeSelected() {
+private fun TimeSelectSheet_SomeSelected() {
     val grid = TableTrimParam.TimeBlockGridDefault.mapIndexed { dayIndex, column ->
         column.mapIndexed { timeIndex, _ ->
             dayIndex in 0..2 && timeIndex in 4..7
         }
     }
-    TimeSelectSheet(
-        backHandlerEnabled = false,
-        initialDraggedTimeBlock = grid,
-        currentTableLectures = listOf(PreviewData.syllabusLecture),
-        tableLectureCustomOptions = TableLectureCustom.Default,
-        onCancel = {},
-        onConfirm = {},
-    )
+    SnuttPreviewSurface {
+        TimeSelectSheet(
+            backHandlerEnabled = false,
+            initialDraggedTimeBlock = grid,
+            currentTableLectures = listOf(PreviewData.syllabusLecture),
+            tableLectureCustomOptions = TableLectureCustom.Default,
+            onCancel = {},
+            onConfirm = {},
+        )
+    }
 }
 
 // endregion

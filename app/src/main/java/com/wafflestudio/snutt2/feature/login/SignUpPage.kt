@@ -37,7 +37,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -49,6 +48,8 @@ import com.wafflestudio.snutt2.ui.components.compose.EditText
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.ui.components.compose.WebViewStyleButton
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.util.toast
@@ -262,12 +263,14 @@ private fun SignUpScreen(
     }
 }
 
-@Preview(showBackground = true)
+@SnuttPreview
 @Composable
-private fun SignUpScreenPreview() {
-    SignUpScreen(
-        isLoading = false,
-        onSignUp = { _, _, _ -> },
-        onNavigateBack = {},
-    )
+private fun SignUpScreen_Default() {
+    SnuttPreviewSurface {
+        SignUpScreen(
+            isLoading = false,
+            onSignUp = { _, _, _ -> },
+            onNavigateBack = {},
+        )
+    }
 }

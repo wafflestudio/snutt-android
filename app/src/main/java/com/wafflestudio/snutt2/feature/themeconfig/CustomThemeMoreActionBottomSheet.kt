@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.components.compose.DuplicateIcon
@@ -18,7 +17,8 @@ import com.wafflestudio.snutt2.ui.components.compose.MoreActionItem
 import com.wafflestudio.snutt2.ui.components.compose.PaletteIcon
 import com.wafflestudio.snutt2.ui.components.compose.TimetableIcon
 import com.wafflestudio.snutt2.ui.components.compose.TrashIcon
-import com.wafflestudio.snutt2.ui.theme.SNUTTTheme
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 
 @Composable
 fun MyCustomThemeMoreActionBottomSheet(
@@ -160,10 +160,10 @@ fun BuiltInThemeClickBottomSheet(
 
 // region Previews
 
-@Preview(name = "커스텀 테마")
+@SnuttPreview
 @Composable
-private fun MyCustomThemeMoreActionBottomSheetPreview() {
-    SNUTTTheme {
+private fun MyCustomThemeMoreActionBottomSheet_Default() {
+    SnuttPreviewSurface {
         MyCustomThemeMoreActionBottomSheet(
             onClickDetail = {},
             onClickApply = {},
@@ -173,10 +173,10 @@ private fun MyCustomThemeMoreActionBottomSheetPreview() {
     }
 }
 
-@Preview(name = "테마마켓 테마")
+@SnuttPreview
 @Composable
-private fun MarketCustomThemeMoreActionBottomSheetPreview() {
-    SNUTTTheme {
+private fun MarketCustomThemeMoreActionBottomSheet_Default() {
+    SnuttPreviewSurface {
         MarketCustomThemeMoreActionBottomSheet(
             onClickDetail = {},
             onClickApply = {},
@@ -185,10 +185,10 @@ private fun MarketCustomThemeMoreActionBottomSheetPreview() {
     }
 }
 
-@Preview(name = "빌트인 테마")
+@SnuttPreview
 @Composable
-private fun BuiltInThemeClickBottomSheetPreview() {
-    SNUTTTheme {
+private fun BuiltInThemeClickBottomSheet_Default() {
+    SnuttPreviewSurface {
         BuiltInThemeClickBottomSheet(
             onClickDetail = {},
             onClickApply = {},

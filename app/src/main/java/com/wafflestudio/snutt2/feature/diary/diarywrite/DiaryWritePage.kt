@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.feature.diary.diarywrite
 
+import android.content.res.Configuration
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -33,6 +34,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -54,11 +56,14 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.domain.model.preview.DiaryPreviewData
 import com.wafflestudio.snutt2.feature.diary.DiaryTheme
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.components.compose.ExitIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.util.toast
 import kotlinx.coroutines.flow.first
@@ -201,6 +206,7 @@ private fun DiaryWriting(
     var commentText by remember {
         mutableStateOf("")
     }
+    var isMoreTextExpanded by rememberSaveable { mutableStateOf(false) }
 
     Column {
         Row(
@@ -288,6 +294,8 @@ private fun DiaryWriting(
                     onChange = { text ->
                         commentText = text
                     },
+                    isExpanded = isMoreTextExpanded,
+                    onExpandedChange = { isMoreTextExpanded = it },
                 )
 
                 Text(
@@ -421,60 +429,36 @@ private fun DiaryComplete(
     }
 }
 
+@Preview(name = "1. Light", uiMode = Configuration.UI_MODE_NIGHT_NO, locale = "ko", heightDp = 1100)
+@Preview(name = "2. Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "ko", heightDp = 1100)
 @Composable
-@Preview(heightDp = 1100)
-private fun DiaryWritingPreview() {
-    DiaryTheme {
-        DiaryWriting(
-            uiState = DiaryPreviewData.sampleWriteUiState,
-            onToggleActivitySelection = {},
-            onCompleteSelectActivities = {},
-            onRestartSelectActivities = {},
-            onToggleAnswer = { _, _ -> },
-            onSubmitDiary = {},
-            onClickBackButton = {},
-        )
+private fun DiaryWriting_InProgress() {
+    SnuttPreviewSurface {
+        DiaryTheme {
+            DiaryWriting(
+                uiState = DiaryPreviewData.sampleWriteUiState,
+                onToggleActivitySelection = {},
+                onCompleteSelectActivities = {},
+                onRestartSelectActivities = {},
+                onToggleAnswer = { _, _ -> },
+                onSubmitDiary = {},
+                onClickBackButton = {},
+            )
+        }
     }
 }
 
+@SnuttPreview
 @Composable
-@Preview(heightDp = 1100, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
-private fun DiaryWritingDarkPreview() {
-    DiaryTheme(darkTheme = true) {
-        DiaryWriting(
-            uiState = DiaryPreviewData.sampleWriteUiState,
-            onToggleActivitySelection = {},
-            onCompleteSelectActivities = {},
-            onRestartSelectActivities = {},
-            onToggleAnswer = { _, _ -> },
-            onSubmitDiary = {},
-            onClickBackButton = {},
-        )
-    }
-}
-
-@Composable
-@Preview
-private fun DiaryCompletePreview() {
-    DiaryTheme {
-        DiaryComplete(
-            uiState = DiaryWriteUiState.Complete(DiaryNextAction.WriteReview),
-            onClickGoHomeButton = {},
-            onClickWriteNextButton = {},
-            onClickWriteReviewButton = {},
-        )
-    }
-}
-
-@Composable
-@Preview(uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
-private fun DiaryCompleteDarkPreview() {
-    DiaryTheme(darkTheme = true) {
-        DiaryComplete(
-            uiState = DiaryWriteUiState.Complete(DiaryNextAction.WriteReview),
-            onClickGoHomeButton = {},
-            onClickWriteNextButton = {},
-            onClickWriteReviewButton = {},
-        )
+private fun DiaryComplete_Default() {
+    SnuttPreviewSurface {
+        DiaryTheme {
+            DiaryComplete(
+                uiState = DiaryWriteUiState.Complete(DiaryNextAction.WriteReview),
+                onClickGoHomeButton = {},
+                onClickWriteNextButton = {},
+                onClickWriteReviewButton = {},
+            )
+        }
     }
 }

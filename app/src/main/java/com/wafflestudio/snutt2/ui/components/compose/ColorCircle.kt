@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -12,6 +13,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 
 @Composable
@@ -39,5 +42,18 @@ fun ColorCircle(
                 .clip(CircleShape)
                 .background(color),
         )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun ColorCircle_SolidOnGradient() {
+    SnuttPreviewSurface {
+        Box(modifier = Modifier.padding(20.dp)) {
+            ColorCircle(
+                color = Color(0xFFCD4A2E),
+                modifier = Modifier.size(40.dp),
+            )
+        }
     }
 }

@@ -26,7 +26,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -35,10 +34,10 @@ import com.wafflestudio.snutt2.domain.model.diary.DiarySummary
 import com.wafflestudio.snutt2.domain.model.preview.DiaryPreviewData
 import com.wafflestudio.snutt2.feature.diary.DiaryTheme
 import com.wafflestudio.snutt2.ui.components.compose.ArrowBackIcon
-import com.wafflestudio.snutt2.ui.components.compose.ConfirmDialog
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.clicks
-import com.wafflestudio.snutt2.ui.theme.SNUTTTheme
+import com.wafflestudio.snutt2.ui.preview.SnuttPreview
+import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.util.formatter.toAbbvString
 import com.wafflestudio.snutt2.ui.util.toast
@@ -173,32 +172,11 @@ fun DiaryHistoryScreen(
     }
 }
 
+@SnuttPreview
 @Composable
-@Preview
-fun DiaryListPagePreview() {
-    DiaryTheme {
-        val courseBookList = DiaryPreviewData.courseBookList
-        DiaryHistoryScreen(
-            onNavigateBack = {},
-            onClickCourseBook = {},
-            onToggleExpandOfDate = {},
-            onDeleteDiary = { _ -> },
-            onDismissDialog = {},
-            onConfirmDeleteDiary = {},
-            uiState = DiaryHistoryUiState.Success(
-                courseBooks = courseBookList,
-                selectedCourseBook = courseBookList[0],
-                diarySummariesByCourseBook = mapOf(courseBookList[0] to DiaryPreviewData.diaryList),
-            ),
-        )
-    }
-}
-
-@Composable
-@Preview(uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES, heightDp = 1500)
-fun DiaryListPageDarkPreview() {
-    SNUTTTheme {
-        DiaryTheme(darkTheme = true) {
+private fun DiaryHistoryScreen_Default() {
+    SnuttPreviewSurface {
+        DiaryTheme {
             val courseBookList = DiaryPreviewData.courseBookList
             DiaryHistoryScreen(
                 onNavigateBack = {},
@@ -212,24 +190,6 @@ fun DiaryListPageDarkPreview() {
                     selectedCourseBook = courseBookList[0],
                     diarySummariesByCourseBook = mapOf(courseBookList[0] to DiaryPreviewData.diaryList),
                 ),
-            )
-        }
-    }
-}
-
-@Composable
-private fun DiaryHistoryDialogs(
-    dialogState: DiaryHistoryUiState.DialogState,
-    onDismiss: () -> Unit,
-    onConfirmDeleteDiary: (DiarySummary) -> Unit,
-) {
-    when (dialogState) {
-        DiaryHistoryUiState.DialogState.None -> {}
-        is DiaryHistoryUiState.DialogState.DeleteDiary -> {
-            ConfirmDialog(
-                onDismiss = onDismiss,
-                onConfirm = { onConfirmDeleteDiary(dialogState.diary) },
-                title = stringResource(R.string.diary_delete_confirm_message, dialogState.diary.courseName),
             )
         }
     }
