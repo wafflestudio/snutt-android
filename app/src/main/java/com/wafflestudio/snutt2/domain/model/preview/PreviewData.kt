@@ -8,6 +8,7 @@ import com.wafflestudio.snutt2.domain.model.EditingTheme
 import com.wafflestudio.snutt2.domain.model.Friend
 import com.wafflestudio.snutt2.domain.model.LectureColor
 import com.wafflestudio.snutt2.domain.model.LectureReminderOffset
+import com.wafflestudio.snutt2.domain.model.LocalLecture
 import com.wafflestudio.snutt2.domain.model.LectureReviewInfo
 import com.wafflestudio.snutt2.domain.model.LectureSession
 import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
@@ -335,6 +336,40 @@ object PreviewData {
         CourseBook(semester = 1, year = 2024),
     )
 
+    // --- HomeDrawer 프리뷰 ---
+
+    val drawerPrimaryTable = TableSummary(
+        id = "drawer_table_primary",
+        courseBook = CourseBook(semester = 1, year = 2026),
+        title = "2026-1학기 메인",
+        totalCredit = 18,
+        isPrimary = true,
+    )
+
+    val drawerSecondaryTable = TableSummary(
+        id = "drawer_table_secondary",
+        courseBook = CourseBook(semester = 1, year = 2026),
+        title = "2026-1학기 부전공 플랜",
+        totalCredit = 15,
+        isPrimary = false,
+    )
+
+    val drawerLongTitleTable = TableSummary(
+        id = "drawer_table_long_title",
+        courseBook = CourseBook(semester = 1, year = 2026),
+        title = "엄청나게 긴 시간표 이름 케이스 ellipsis 확인용 시간표",
+        totalCredit = 21,
+        isPrimary = false,
+    )
+
+    val drawerLastSemesterTable = TableSummary(
+        id = "drawer_table_last_semester",
+        courseBook = CourseBook(semester = 2, year = 2025),
+        title = "2025-2학기 시간표",
+        totalCredit = 17,
+        isPrimary = true,
+    )
+
     private val sampleFriendLecture = com.wafflestudio.snutt2.domain.model.CustomLecture(
         id = "lecture1",
         courseTitle = "컴퓨터 프로그래밍",
@@ -418,6 +453,68 @@ object PreviewData {
     val previewEditingThemeCustom = EditingTheme.fromTableTheme(previewCustomTheme1)
     val previewEditingThemeMarket = EditingTheme.fromTableTheme(previewMarketTheme)
     val previewEditingThemeBuiltIn = EditingTheme.fromTableTheme(BuiltInTheme.SNUTT)
+
+    val themeDetailSampleLectures: List<LocalLecture> = listOf(
+        CustomLecture(
+            id = "theme-preview-1",
+            courseTitle = "컴퓨터 프로그래밍",
+            instructor = "이창건",
+            credit = 3,
+            remark = "",
+            color = LectureColor.BuiltIn(0),
+            lectureSessions = listOf(
+                LectureSession(null, DayOfWeek.MONDAY, LocalTime.of(9, 0), LocalTime.of(10, 30), "302-308"),
+                LectureSession(null, DayOfWeek.WEDNESDAY, LocalTime.of(9, 0), LocalTime.of(10, 30), "302-308"),
+            ),
+        ),
+        CustomLecture(
+            id = "theme-preview-2",
+            courseTitle = "이산수학",
+            instructor = "김민수",
+            credit = 3,
+            remark = "",
+            color = LectureColor.BuiltIn(1),
+            lectureSessions = listOf(
+                LectureSession(null, DayOfWeek.TUESDAY, LocalTime.of(10, 30), LocalTime.of(12, 0), "302-208"),
+                LectureSession(null, DayOfWeek.THURSDAY, LocalTime.of(10, 30), LocalTime.of(12, 0), "302-208"),
+            ),
+        ),
+        CustomLecture(
+            id = "theme-preview-3",
+            courseTitle = "선형대수학",
+            instructor = "박지원",
+            credit = 3,
+            remark = "",
+            color = LectureColor.BuiltIn(2),
+            lectureSessions = listOf(
+                LectureSession(null, DayOfWeek.MONDAY, LocalTime.of(13, 0), LocalTime.of(14, 30), "27-220"),
+                LectureSession(null, DayOfWeek.WEDNESDAY, LocalTime.of(13, 0), LocalTime.of(14, 30), "27-220"),
+            ),
+        ),
+        CustomLecture(
+            id = "theme-preview-4",
+            courseTitle = "대학 글쓰기",
+            instructor = "최영민",
+            credit = 3,
+            remark = "",
+            color = LectureColor.BuiltIn(3),
+            lectureSessions = listOf(
+                LectureSession(null, DayOfWeek.FRIDAY, LocalTime.of(10, 0), LocalTime.of(12, 30), "3-101"),
+            ),
+        ),
+        CustomLecture(
+            id = "theme-preview-5",
+            courseTitle = "통계학",
+            instructor = "윤정남",
+            credit = 3,
+            remark = "",
+            color = LectureColor.BuiltIn(4),
+            lectureSessions = listOf(
+                LectureSession(null, DayOfWeek.TUESDAY, LocalTime.of(15, 0), LocalTime.of(16, 30), "25-103"),
+                LectureSession(null, DayOfWeek.THURSDAY, LocalTime.of(15, 0), LocalTime.of(16, 30), "25-103"),
+            ),
+        ),
+    )
 
     // --- LectureDetail 프리뷰 ---
 

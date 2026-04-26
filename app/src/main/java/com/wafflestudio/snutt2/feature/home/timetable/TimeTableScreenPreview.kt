@@ -33,27 +33,6 @@ private val baseLoadedState = TimeTableUiState.Loaded(
 
 @SnuttPreview
 @Composable
-private fun TimeTableScreen_Default() {
-    SnuttPreviewSurface {
-        TimeTableScreen(
-            uiState = baseLoadedState,
-            onClickDrawerIcon = {},
-            onClickTableTitle = {},
-            onClickTableLecturesListIcon = {},
-            onClickVacancyBanner = {},
-            onClickLectureCell = {},
-            onDismissDialog = {},
-            onConfirmChangeTableTitle = { _, _ -> },
-            onClickBookmarkIcon = {},
-            onClickAddBySearch = {},
-            onClickAddManually = {},
-            onVisitSessionlessLectureList = {},
-        )
-    }
-}
-
-@SnuttPreview
-@Composable
 private fun TimeTableScreen_AllBadgesAndBanner() {
     SnuttPreviewSurface {
         TimeTableScreen(

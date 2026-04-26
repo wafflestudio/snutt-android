@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.CourseBook
 import com.wafflestudio.snutt2.domain.model.TableSummary
+import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.ui.components.compose.ArrowDownIcon
 import com.wafflestudio.snutt2.ui.components.compose.ExitIcon
@@ -190,23 +191,36 @@ private fun HomeDrawerContent_Default() {
             modifier = Modifier,
             uiState = HomeDrawerUiState(
                 courseBookDrawerItemList = listOf(
+                    // 신학기: NewCoursebook dot, 대표 시간표 + 일반/긴 제목 시간표 포함, 펼친 상태
                     CoursebookDrawerItem(
                         courseBook = CourseBook(1, 2026),
-                        showNewCoursebookDot = false,
-                        tableList = listOf(TableSummary.Default, TableSummary.Default),
+                        showNewCoursebookDot = true,
+                        tableList = listOf(
+                            PreviewData.drawerPrimaryTable,
+                            PreviewData.drawerSecondaryTable,
+                            PreviewData.drawerLongTitleTable,
+                        ),
                     ).toDataWithState(true),
+                    // 직전 학기: 시간표 있지만 접힌 상태
+                    CoursebookDrawerItem(
+                        courseBook = CourseBook(2, 2025),
+                        showNewCoursebookDot = false,
+                        tableList = listOf(PreviewData.drawerLastSemesterTable),
+                    ).toDataWithState(false),
+                    // 직전직전 학기: 비어있고 펼쳐진 상태 — CreateTableItem 노출
                     CoursebookDrawerItem(
                         courseBook = CourseBook(1, 2025),
                         showNewCoursebookDot = false,
                         tableList = emptyList(),
-                    ).toDataWithState(false),
+                    ).toDataWithState(true),
+                    // 더 이전 학기: 비어있고 접힌 상태
                     CoursebookDrawerItem(
                         courseBook = CourseBook(1, 2024),
                         showNewCoursebookDot = false,
                         tableList = emptyList(),
                     ).toDataWithState(false),
                 ),
-                TableSummary.Default,
+                selectedTable = PreviewData.drawerPrimaryTable,
                 homeDrawerBottomSheetType = HomeDrawerBottomSheetType.Empty,
                 dialogState = HomeDrawerUiState.DialogState.None,
             ),

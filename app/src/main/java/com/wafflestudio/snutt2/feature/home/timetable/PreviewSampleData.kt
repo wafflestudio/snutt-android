@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.feature.home.timetable
 
-import com.wafflestudio.snutt2.domain.model.CustomLecture
 import com.wafflestudio.snutt2.domain.model.CustomTheme
 import com.wafflestudio.snutt2.domain.model.LectureColor
 import com.wafflestudio.snutt2.domain.model.LectureReviewInfo
@@ -98,8 +97,8 @@ internal val builtInOnlyLectures: List<LocalLecture> = listOf(
     ),
 )
 
-// BuiltIn 색인 + Custom 색 혼합 (빌트인 테마에서 일부 강의만 사용자 커스텀 색)
-internal val mixedColorLectures: List<LocalLecture> = listOf(
+// BuiltIn 위주이지만 커스텀 색상 강의가 하나 섞인 케이스 (실제 사용 패턴: 빌트인 테마 + 일부 강의에 사용자 커스텀 색 지정)
+internal val builtInWithOneCustomLecture: List<LocalLecture> = listOf(
     syllabusLecture(
         id = "1",
         courseTitle = "논리설계",
@@ -114,7 +113,7 @@ internal val mixedColorLectures: List<LocalLecture> = listOf(
         id = "2",
         courseTitle = "이산수학",
         instructor = "김민수",
-        color = LectureColor.Custom(foreground = 0xFFFFFFFF.toInt(), background = 0xFF6172E9.toInt()),
+        color = LectureColor.BuiltIn(1),
         sessions = listOf(
             LectureSession(null, DayOfWeek.TUESDAY, LocalTime.of(10, 30), LocalTime.of(12, 0), "302-208"),
             LectureSession(null, DayOfWeek.THURSDAY, LocalTime.of(10, 30), LocalTime.of(12, 0), "302-208"),
@@ -133,21 +132,20 @@ internal val mixedColorLectures: List<LocalLecture> = listOf(
         id = "4",
         courseTitle = "컴퓨터 프로그래밍",
         instructor = "홍길동",
-        color = LectureColor.Custom(foreground = 0xFF1A1A1A.toInt(), background = 0xFFFFD700.toInt()),
+        color = LectureColor.BuiltIn(3),
         sessions = listOf(
             LectureSession(null, DayOfWeek.MONDAY, LocalTime.of(9, 0), LocalTime.of(10, 15), "302-308"),
             LectureSession(null, DayOfWeek.WEDNESDAY, LocalTime.of(9, 0), LocalTime.of(10, 15), "302-308"),
         ),
     ),
-    CustomLecture(
+    // 한 강의만 사용자 커스텀 색
+    syllabusLecture(
         id = "5",
-        courseTitle = "스터디",
-        instructor = "",
-        credit = 0,
-        remark = "",
-        color = LectureColor.Custom(foreground = 0xFFFFFFFF.toInt(), background = 0xFF333333.toInt()),
-        lectureSessions = listOf(
-            LectureSession(null, DayOfWeek.MONDAY, LocalTime.of(19, 0), LocalTime.of(20, 30), "카페"),
+        courseTitle = "통계학",
+        instructor = "최수진",
+        color = LectureColor.Custom(foreground = 0xFFFFFFFF.toInt(), background = 0xFF6172E9.toInt()),
+        sessions = listOf(
+            LectureSession(null, DayOfWeek.TUESDAY, LocalTime.of(14, 0), LocalTime.of(15, 30), "25-210"),
         ),
     ),
 )

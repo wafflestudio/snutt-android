@@ -15,10 +15,11 @@ import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 @Composable
 private fun TimeTable_BuiltInTheme() {
     SnuttPreviewSurface {
-        val trimParam = builtInOnlyLectures.getFittingTrimParam(TableTrimParam.Default)
+        // 실제 사용 패턴: BuiltIn 색이 주이지만 일부 강의에 사용자가 커스텀 색을 지정한 케이스도 함께 표현
+        val trimParam = builtInWithOneCustomLecture.getFittingTrimParam(TableTrimParam.Default)
         Box(modifier = Modifier.fillMaxSize()) {
             TimeTable(
-                lectures = builtInOnlyLectures,
+                lectures = builtInWithOneCustomLecture,
                 selectedLecture = null,
                 fittedTrimParam = trimParam,
                 theme = BuiltInTheme.SNUTT,
@@ -42,26 +43,6 @@ private fun TimeTable_CustomTheme() {
                 selectedLecture = null,
                 fittedTrimParam = trimParam,
                 theme = sampleCustomTheme,
-                isDarkMode = false,
-                compactMode = false,
-                tableLectureCustomOptions = TableLectureCustom.Default,
-                touchEnabled = false,
-            )
-        }
-    }
-}
-
-@SnuttPreview
-@Composable
-private fun TimeTable_MixedColorsBuiltInAndCustom() {
-    SnuttPreviewSurface {
-        val trimParam = mixedColorLectures.getFittingTrimParam(TableTrimParam.Default)
-        Box(modifier = Modifier.fillMaxSize()) {
-            TimeTable(
-                lectures = mixedColorLectures,
-                selectedLecture = null,
-                fittedTrimParam = trimParam,
-                theme = BuiltInTheme.SNUTT,
                 isDarkMode = false,
                 compactMode = false,
                 tableLectureCustomOptions = TableLectureCustom.Default,
