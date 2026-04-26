@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
@@ -129,7 +130,10 @@ fun TimetableDropdownOverlay(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                SearchIcon(modifier = Modifier.size(22.dp))
+                SearchIcon(
+                    modifier = Modifier.size(30.dp),
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+                )
                 Text(
                     text = stringResource(R.string.home_dropdown_menu_content_add_lecture_by_search),
                     style = SNUTTTypography.h3.copy(fontWeight = FontWeight.Normal),

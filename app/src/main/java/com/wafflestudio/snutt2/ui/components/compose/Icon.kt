@@ -97,18 +97,6 @@ fun ArrowBackIcon(
 }
 
 @Composable
-fun SearchIcon(
-    modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
-) {
-    SnuttIcon(
-        id = R.drawable.ic_search_unselected,
-        modifier = modifier.size(30.dp),
-        colorFilter = colorFilter,
-    )
-}
-
-@Composable
 fun FilterIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
@@ -925,18 +913,6 @@ fun StarIcon(
 ) {
     SnuttIcon(
         id = if (filled) R.drawable.ic_star_filled else R.drawable.ic_star_outline,
-        modifier = modifier,
-        colorFilter = colorFilter,
-    )
-}
-
-@Composable
-fun ChevronIcon(
-    modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = null,
-) {
-    SnuttIcon(
-        id = R.drawable.ic_arrow_right,
         modifier = modifier,
         colorFilter = colorFilter,
     )

@@ -34,12 +34,12 @@ import com.wafflestudio.snutt2.domain.model.NotificationType
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.ui.components.compose.AlarmOnIcon
 import com.wafflestudio.snutt2.ui.components.compose.CalendarIcon
-import com.wafflestudio.snutt2.ui.components.compose.ChevronIcon
 import com.wafflestudio.snutt2.ui.components.compose.MegaphoneIcon
 import com.wafflestudio.snutt2.ui.components.compose.NotificationFriendIcon
 import com.wafflestudio.snutt2.ui.components.compose.NotificationTrashIcon
 import com.wafflestudio.snutt2.ui.components.compose.NotificationVacancyIcon
 import com.wafflestudio.snutt2.ui.components.compose.RefreshTimeIcon
+import com.wafflestudio.snutt2.ui.components.compose.RightArrowIcon
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.ui.components.compose.WarningIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
@@ -174,7 +174,10 @@ fun NotificationItem(notification: Notification, onClick: () -> Unit) {
                     )
                     if (!notification.deeplink.isNullOrEmpty()) {
                         Spacer(modifier = Modifier.width(16.dp))
-                        ChevronIcon(modifier = Modifier.size(20.dp))
+                        RightArrowIcon(
+                            modifier = Modifier.size(20.dp),
+                            colorFilter = null,
+                        )
                     }
                 }
             }
