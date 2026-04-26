@@ -12,12 +12,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
@@ -29,7 +24,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.lib.isPasswordInvalid
 import com.wafflestudio.snutt2.ui.components.compose.CustomDialog
 import com.wafflestudio.snutt2.ui.components.compose.EditText
 import com.wafflestudio.snutt2.ui.components.compose.Timer
@@ -43,31 +37,27 @@ import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
 @Composable
 fun NewPasswordStep(
-    onSubmit: (String) -> Unit,
-    showCompleteDialog: State<Boolean>,
+    uiState: FindPasswordViewModel.UIState.EnterNewPassword,
+    onNewPasswordFieldChange: (String) -> Unit,
+    onNewPasswordConfirmFieldChange: (String) -> Unit,
+    onSubmit: (timerRunning: Boolean) -> Unit,
+    onTimerExpired: () -> Unit,
+    onDismissDialog: () -> Unit,
     onComplete: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
-    val expiredAlert = stringResource(R.string.find_password_enter_password_confirm_expired_alert)
-    val confirmFailAlert = stringResource(R.string.find_password_enter_password_confirm_fail_alert)
-    val invalidPasswordAlert = stringResource(R.string.error_invalid_password)
 
-    var newPasswordField by remember { mutableStateOf("") }
-    var newPasswordConfirmField by remember { mutableStateOf("") }
-
-    var showErrorDialog by remember { mutableStateOf(false) }
-    var errorDialogTitle by remember { mutableStateOf("") }
+    val newPasswordField = uiState.newPasswordField
+    val newPasswordConfirmField = uiState.newPasswordConfirmField
+    val dialogState = uiState.dialogState
+    val isCompleteDialogShown = dialogState is FindPasswordViewModel.UIState.EnterNewPassword.NewPasswordDialogState.Complete
 
     val timerState = rememberTimerState(
         initialValue = TimerValue.Initial,
         durationInSecond = 180,
     )
-    val buttonEnabled by remember {
-        derivedStateOf {
-            timerState.isRunning && newPasswordField.isNotBlank() && newPasswordConfirmField.isNotBlank()
-        }
-    }
+    val buttonEnabled = timerState.isRunning && newPasswordField.isNotBlank() && newPasswordConfirmField.isNotBlank()
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
@@ -75,27 +65,12 @@ fun NewPasswordStep(
     }
     LaunchedEffect(timerState.currentValue) {
         if (timerState.isEnded) {
-            errorDialogTitle = expiredAlert
-            showErrorDialog = true
+            onTimerExpired()
         }
     }
-    LaunchedEffect(showCompleteDialog.value) {
-        if (showCompleteDialog.value) {
+    LaunchedEffect(isCompleteDialogShown) {
+        if (isCompleteDialogShown) {
             timerState.pause()
-        }
-    }
-
-    val validateNewPasswordAndSubmit = {
-        if (timerState.isRunning) {
-            if (newPasswordField != newPasswordConfirmField) {
-                errorDialogTitle = confirmFailAlert
-                showErrorDialog = true
-            } else if (newPasswordField.isPasswordInvalid()) {
-                errorDialogTitle = invalidPasswordAlert
-                showErrorDialog = true
-            } else {
-                onSubmit(newPasswordField)
-            }
         }
     }
 
@@ -116,7 +91,7 @@ fun NewPasswordStep(
                 .fillMaxWidth()
                 .focusRequester(focusRequester),
             value = newPasswordField,
-            onValueChange = { newPasswordField = it },
+            onValueChange = onNewPasswordFieldChange,
             hint = stringResource(R.string.find_password_enter_password_hint),
             visualTransformation = PasswordVisualTransformation(),
             keyboardActions = KeyboardActions(
@@ -159,12 +134,12 @@ fun NewPasswordStep(
         EditText(
             modifier = Modifier.fillMaxWidth(),
             value = newPasswordConfirmField,
-            onValueChange = { newPasswordConfirmField = it },
+            onValueChange = onNewPasswordConfirmFieldChange,
             hint = stringResource(R.string.find_password_enter_password_confirm_hint),
             visualTransformation = PasswordVisualTransformation(),
             keyboardActions = KeyboardActions(
                 onDone = {
-                    validateNewPasswordAndSubmit()
+                    onSubmit(timerState.isRunning)
                 },
             ),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -179,7 +154,7 @@ fun NewPasswordStep(
             modifier = Modifier.fillMaxWidth(),
             enabled = buttonEnabled,
             onClick = {
-                validateNewPasswordAndSubmit()
+                onSubmit(timerState.isRunning)
             },
         ) {
             Text(
@@ -189,11 +164,19 @@ fun NewPasswordStep(
         }
     }
 
-    if (showErrorDialog) {
+    if (dialogState is FindPasswordViewModel.UIState.EnterNewPassword.NewPasswordDialogState.Error) {
+        val errorTitle = when (dialogState.type) {
+            FindPasswordViewModel.UIState.EnterNewPassword.ErrorType.Expired ->
+                stringResource(R.string.find_password_enter_password_confirm_expired_alert)
+            FindPasswordViewModel.UIState.EnterNewPassword.ErrorType.ConfirmFail ->
+                stringResource(R.string.find_password_enter_password_confirm_fail_alert)
+            FindPasswordViewModel.UIState.EnterNewPassword.ErrorType.InvalidPassword ->
+                stringResource(R.string.error_invalid_password)
+        }
         CustomDialog(
-            title = errorDialogTitle,
+            title = errorTitle,
             onConfirm = {
-                showErrorDialog = false
+                onDismissDialog()
                 focusRequester.requestFocus()
             },
             onDismiss = {},
@@ -203,7 +186,7 @@ fun NewPasswordStep(
         }
     }
 
-    if (showCompleteDialog.value) {
+    if (isCompleteDialogShown) {
         CustomDialog(
             title = stringResource(R.string.find_password_enter_password_success_alert),
             onConfirm = onComplete,
@@ -220,8 +203,12 @@ fun NewPasswordStep(
 private fun NewPasswordStep_Default() {
     SnuttPreviewSurface {
         NewPasswordStep(
+            uiState = FindPasswordViewModel.UIState.EnterNewPassword(),
+            onNewPasswordFieldChange = {},
+            onNewPasswordConfirmFieldChange = {},
             onSubmit = {},
-            showCompleteDialog = remember { mutableStateOf(false) },
+            onTimerExpired = {},
+            onDismissDialog = {},
             onComplete = {},
         )
     }

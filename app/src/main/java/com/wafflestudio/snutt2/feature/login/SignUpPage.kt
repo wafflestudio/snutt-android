@@ -19,11 +19,7 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -73,7 +69,15 @@ fun SignUpPage(
     }
 
     SignUpScreen(
+        idField = uiState.idField,
+        passwordField = uiState.passwordField,
+        passwordConfirmField = uiState.passwordConfirmField,
+        emailField = uiState.emailField,
         isLoading = uiState.isLoading,
+        onIdFieldChange = viewModel::onIdFieldChange,
+        onPasswordFieldChange = viewModel::onPasswordFieldChange,
+        onPasswordConfirmFieldChange = viewModel::onPasswordConfirmFieldChange,
+        onEmailFieldChange = viewModel::onEmailFieldChange,
         onSignUp = viewModel::signUp,
         onNavigateBack = onNavigateBack,
     )
@@ -81,8 +85,16 @@ fun SignUpPage(
 
 @Composable
 private fun SignUpScreen(
+    idField: String,
+    passwordField: String,
+    passwordConfirmField: String,
+    emailField: String,
     isLoading: Boolean,
-    onSignUp: (id: String, email: String, password: String) -> Unit,
+    onIdFieldChange: (String) -> Unit,
+    onPasswordFieldChange: (String) -> Unit,
+    onPasswordConfirmFieldChange: (String) -> Unit,
+    onEmailFieldChange: (String) -> Unit,
+    onSignUp: (formattedEmail: String) -> Unit,
     onNavigateBack: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -94,16 +106,10 @@ private fun SignUpScreen(
     val apiServer = stringResource(R.string.api_server)
     val termsPath = stringResource(R.string.terms)
 
-    // TODO: 상태 뷰모델로 올리기
-    var idField by remember { mutableStateOf("") }
-    var passwordField by remember { mutableStateOf("") }
-    var passwordConfirmField by remember { mutableStateOf("") }
-    var emailField by remember { mutableStateOf("") }
-    val buttonEnabled by remember {
-        derivedStateOf {
-            idField.isNotEmpty() && passwordField.isNotEmpty() && passwordConfirmField.isNotEmpty() && emailField.isNotEmpty()
-        }
-    }
+    val buttonEnabled = idField.isNotEmpty() &&
+        passwordField.isNotEmpty() &&
+        passwordConfirmField.isNotEmpty() &&
+        emailField.isNotEmpty()
 
     val handleLocalSignUp = {
         val isPasswordConfirmPassed = (passwordConfirmField == passwordField)
@@ -114,7 +120,7 @@ private fun SignUpScreen(
         } else if (isPasswordConfirmPassed.not()) {
             context.toast(passwordConfirmInvalidMessage)
         } else {
-            onSignUp(idField, emailField.plus(emailForm), passwordField)
+            onSignUp(emailField.plus(emailForm))
         }
     }
 
@@ -145,7 +151,7 @@ private fun SignUpScreen(
                         )
                         EditText(
                             value = idField,
-                            onValueChange = { idField = it },
+                            onValueChange = onIdFieldChange,
                             hint = stringResource(R.string.sign_up_id_hint),
                             textStyle = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
@@ -161,7 +167,7 @@ private fun SignUpScreen(
                         )
                         EditText(
                             value = passwordField,
-                            onValueChange = { passwordField = it },
+                            onValueChange = onPasswordFieldChange,
                             hint = stringResource(R.string.sign_up_password_hint),
                             textStyle = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
@@ -178,7 +184,7 @@ private fun SignUpScreen(
                         )
                         EditText(
                             value = passwordConfirmField,
-                            onValueChange = { passwordConfirmField = it },
+                            onValueChange = onPasswordConfirmFieldChange,
                             hint = stringResource(R.string.sign_up_password_confirm_hint),
                             textStyle = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
@@ -195,7 +201,7 @@ private fun SignUpScreen(
                         )
                         EditText(
                             value = emailField,
-                            onValueChange = { emailField = it },
+                            onValueChange = onEmailFieldChange,
                             hint = stringResource(R.string.sign_up_email_input_hint),
                             textStyle = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -268,8 +274,16 @@ private fun SignUpScreen(
 private fun SignUpScreen_Default() {
     SnuttPreviewSurface {
         SignUpScreen(
+            idField = "",
+            passwordField = "",
+            passwordConfirmField = "",
+            emailField = "",
             isLoading = false,
-            onSignUp = { _, _, _ -> },
+            onIdFieldChange = {},
+            onPasswordFieldChange = {},
+            onPasswordConfirmFieldChange = {},
+            onEmailFieldChange = {},
+            onSignUp = {},
             onNavigateBack = {},
         )
     }

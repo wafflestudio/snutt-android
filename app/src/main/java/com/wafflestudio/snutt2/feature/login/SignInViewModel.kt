@@ -35,11 +35,20 @@ class SignInViewModel @Inject constructor(
     private val _uiEvent = MutableSharedFlow<SignInUiEvent>()
     val uiEvent = _uiEvent.asSharedFlow()
 
-    fun signIn(id: String, password: String) {
+    fun onIdFieldChange(value: String) {
+        _uiState.update { it.copy(idField = value) }
+    }
+
+    fun onPasswordFieldChange(value: String) {
+        _uiState.update { it.copy(passwordField = value) }
+    }
+
+    fun signIn() {
+        val state = _uiState.value
         viewModelScope.launch {
             analyticsLogger.logEvent(AnalyticsEvent.Login(LoginParameter(LoginParameter.Provider.LOCAL)))
             _uiState.update { it.copy(isLoading = true) }
-            userRepository.postSignIn(id, password)
+            userRepository.postSignIn(state.idField, state.passwordField)
                 .onSuccess {
                     refreshInitialDataUseCase()
                     _uiEvent.emit(SignInUiEvent.NavigateHome)
@@ -55,6 +64,8 @@ class SignInViewModel @Inject constructor(
 }
 
 data class SignInUiState(
+    val idField: String = "",
+    val passwordField: String = "",
     val isLoading: Boolean = false,
 )
 

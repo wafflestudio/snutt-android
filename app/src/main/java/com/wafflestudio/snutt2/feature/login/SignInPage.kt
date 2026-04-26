@@ -16,11 +16,7 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -69,7 +65,11 @@ fun SignInPage(
     }
 
     SignInScreen(
+        idField = uiState.idField,
+        passwordField = uiState.passwordField,
         isLoading = uiState.isLoading,
+        onIdFieldChange = viewModel::onIdFieldChange,
+        onPasswordFieldChange = viewModel::onPasswordFieldChange,
         onSignIn = viewModel::signIn,
         onNavigateBack = onNavigateBack,
         onNavigateFindId = onNavigateFindId,
@@ -79,18 +79,18 @@ fun SignInPage(
 
 @Composable
 private fun SignInScreen(
+    idField: String,
+    passwordField: String,
     isLoading: Boolean,
-    onSignIn: (id: String, password: String) -> Unit,
+    onIdFieldChange: (String) -> Unit,
+    onPasswordFieldChange: (String) -> Unit,
+    onSignIn: () -> Unit,
     onNavigateBack: () -> Unit,
     onNavigateFindId: () -> Unit,
     onNavigateFindPassword: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
-
-    // TODO: 상태 뷰모델로 올리기
-    var idField by remember { mutableStateOf("") }
-    var passwordField by remember { mutableStateOf("") }
-    val buttonEnabled by remember { derivedStateOf { idField.isNotEmpty() && passwordField.isNotEmpty() } }
+    val buttonEnabled = idField.isNotEmpty() && passwordField.isNotEmpty()
 
     Box {
         Column(
@@ -120,7 +120,7 @@ private fun SignInScreen(
                         )
                         EditText(
                             value = idField,
-                            onValueChange = { idField = it },
+                            onValueChange = onIdFieldChange,
                             hint = stringResource(R.string.sign_in_id_hint),
                             textStyle = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
                             keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
@@ -136,11 +136,11 @@ private fun SignInScreen(
                         )
                         EditText(
                             value = passwordField,
-                            onValueChange = { passwordField = it },
+                            onValueChange = onPasswordFieldChange,
                             hint = stringResource(R.string.sign_in_password_hint),
                             textStyle = SNUTTTypography.subtitle2.copy(color = SNUTTColors.Black900),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                            keyboardActions = KeyboardActions(onDone = { onSignIn(idField, passwordField) }),
+                            keyboardActions = KeyboardActions(onDone = { onSignIn() }),
                             visualTransformation = PasswordVisualTransformation(),
                             singleLine = true,
                         )
@@ -173,7 +173,7 @@ private fun SignInScreen(
                         .height(45.dp)
                         .fillMaxWidth(),
                     enabled = buttonEnabled,
-                    onClick = { onSignIn(idField, passwordField) },
+                    onClick = { onSignIn() },
                 ) {
                     Text(
                         text = stringResource(R.string.sign_in_sign_in_button),
@@ -203,8 +203,12 @@ private fun SignInScreen(
 private fun SignInScreen_Default() {
     SnuttPreviewSurface {
         SignInScreen(
+            idField = "",
+            passwordField = "",
             isLoading = false,
-            onSignIn = { _, _ -> },
+            onIdFieldChange = {},
+            onPasswordFieldChange = {},
+            onSignIn = {},
             onNavigateBack = {},
             onNavigateFindId = {},
             onNavigateFindPassword = {},

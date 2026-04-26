@@ -9,7 +9,11 @@ import com.wafflestudio.snutt2.domain.DisplayMessageResolver
 import com.wafflestudio.snutt2.domain.DomainError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,10 +23,18 @@ class FindIdViewModel @Inject constructor(
     private val displayMessageResolver: DisplayMessageResolver,
 ) : ViewModel() {
 
+    private val _uiState = MutableStateFlow(FindIdUiState())
+    val uiState: StateFlow<FindIdUiState> = _uiState.asStateFlow()
+
     private val _uiEvent = MutableSharedFlow<FindIdUiEvent>()
     val uiEvent = _uiEvent.asSharedFlow()
 
-    fun findIdByEmail(email: String) {
+    fun onEmailFieldChange(value: String) {
+        _uiState.update { it.copy(emailField = value) }
+    }
+
+    fun findIdByEmail() {
+        val email = _uiState.value.emailField
         viewModelScope.launch {
             userRepository.findIdByEmail(email)
                 .onSuccess {
@@ -36,6 +48,10 @@ class FindIdViewModel @Inject constructor(
         _uiEvent.emit(FindIdUiEvent.ShowToast(displayMessageResolver.getDisplayMessage(error)))
     }
 }
+
+data class FindIdUiState(
+    val emailField: String = "",
+)
 
 sealed interface FindIdUiEvent {
     data class ShowToast(val message: String) : FindIdUiEvent

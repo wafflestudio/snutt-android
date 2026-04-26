@@ -12,7 +12,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,8 +41,9 @@ import com.wafflestudio.snutt2.ui.util.toast
 @Composable
 fun EnterFullEmailStep(
     uiState: FindPasswordViewModel.UIState.EnterFullEmail,
+    onEmailFieldChange: (String) -> Unit,
     notMyEmail: () -> Unit,
-    onSubmitFullEmail: (String) -> Unit,
+    onSubmitFullEmail: () -> Unit,
 ) {
     val focusRequester = remember { FocusRequester() }
     val context = LocalContext.current
@@ -57,18 +57,14 @@ fun EnterFullEmailStep(
             ),
         )
     }
-    val buttonEnabled by remember {
-        derivedStateOf {
-            !emailField.text.isEmailInvalid()
-        }
-    }
+    val buttonEnabled = !emailField.text.isEmailInvalid()
 
     val sendIdAndRequestMaskedEmail: () -> Unit = {
         if (buttonEnabled) {
             if (emailField.text.isEmpty()) {
                 context.toast(enterIdHintMessage)
             } else {
-                onSubmitFullEmail(emailField.text)
+                onSubmitFullEmail()
             }
         }
     }
@@ -118,7 +114,10 @@ fun EnterFullEmailStep(
                 .fillMaxWidth()
                 .focusRequester(focusRequester),
             value = emailField,
-            onValueChange = { emailField = it },
+            onValueChange = {
+                emailField = it
+                onEmailFieldChange(it.text)
+            },
             hint = stringResource(R.string.find_password_check_email_enter_full_email_hint),
             keyboardActions = KeyboardActions(
                 onDone = {
@@ -174,6 +173,7 @@ private fun EnterFullEmailStep_Default() {
                 maskedEmail = "sn****@snu.ac.kr",
                 fullEmail = "",
             ),
+            onEmailFieldChange = {},
             notMyEmail = {},
             onSubmitFullEmail = {},
         )

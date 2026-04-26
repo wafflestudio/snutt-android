@@ -9,7 +9,11 @@ import com.wafflestudio.snutt2.domain.DisplayMessageResolver
 import com.wafflestudio.snutt2.domain.DomainError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,22 +23,35 @@ class EmailVerificationViewModel @Inject constructor(
     private val displayMessageResolver: DisplayMessageResolver,
 ) : ViewModel() {
 
+    private val _uiState = MutableStateFlow(EmailVerificationUiState())
+    val uiState: StateFlow<EmailVerificationUiState> = _uiState.asStateFlow()
+
     private val _uiEvent = MutableSharedFlow<EmailVerificationUiEvent>()
     val uiEvent = _uiEvent.asSharedFlow()
 
     val userEmail: String = userRepository.user.value?.email ?: ""
 
-    fun sendCodeToEmail(email: String) {
+    fun onCodeFieldChange(value: String) {
+        _uiState.update { it.copy(codeField = value) }
+    }
+
+    fun backToAskContinue() {
+        _uiState.update { it.copy(flowState = EmailVerificationUiState.FlowState.AskContinue, codeField = "") }
+    }
+
+    fun sendCodeToEmail() {
         viewModelScope.launch {
-            userRepository.sendCodeToEmail(email)
+            userRepository.sendCodeToEmail(userEmail)
                 .onSuccess {
-                    _uiEvent.emit(EmailVerificationUiEvent.CodeSent)
+                    _uiState.update { it.copy(flowState = EmailVerificationUiState.FlowState.SendCode) }
+                    _uiEvent.emit(EmailVerificationUiEvent.RestartTimer)
                 }
                 .onFailure { handleError(it) }
         }
     }
 
-    fun verifyEmailCode(code: String) {
+    fun verifyEmailCode() {
+        val code = _uiState.value.codeField
         viewModelScope.launch {
             userRepository.verifyEmailCode(code)
                 .onSuccess {
@@ -49,8 +66,15 @@ class EmailVerificationViewModel @Inject constructor(
     }
 }
 
+data class EmailVerificationUiState(
+    val flowState: FlowState = FlowState.AskContinue,
+    val codeField: String = "",
+) {
+    enum class FlowState { AskContinue, SendCode }
+}
+
 sealed interface EmailVerificationUiEvent {
     data class ShowToast(val message: String) : EmailVerificationUiEvent
-    data object CodeSent : EmailVerificationUiEvent
+    data object RestartTimer : EmailVerificationUiEvent
     data object VerificationSuccess : EmailVerificationUiEvent
 }

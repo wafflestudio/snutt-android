@@ -17,11 +17,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -33,6 +29,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.components.compose.EditText
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
@@ -48,12 +45,6 @@ import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.util.toast
 
-// TODO: 뷰모델로 로직 및 상태관리 이전하기
-private enum class VerifyEmailState {
-    AskContinue,
-    SendCode,
-}
-
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun EmailVerificationPage(
@@ -63,8 +54,8 @@ fun EmailVerificationPage(
     val context = LocalContext.current
     val keyboardManager = LocalSoftwareKeyboardController.current
     val verificationSuccessMessage = stringResource(R.string.find_password_enter_verification_code_success_alert)
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    var flowState by remember { mutableStateOf(VerifyEmailState.AskContinue) }
     // TODO: TimerState 손보기
     val timerState = rememberTimerState(initialValue = TimerValue.Initial, durationInSecond = 180)
 
@@ -72,8 +63,7 @@ fun EmailVerificationPage(
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is EmailVerificationUiEvent.ShowToast -> context.toast(event.message)
-                is EmailVerificationUiEvent.CodeSent -> {
-                    flowState = VerifyEmailState.SendCode
+                is EmailVerificationUiEvent.RestartTimer -> {
                     timerState.reset()
                     timerState.start()
                 }
@@ -90,13 +80,15 @@ fun EmailVerificationPage(
 
     EmailVerificationScreen(
         userEmail = viewModel.userEmail,
-        flowState = flowState,
+        flowState = uiState.flowState,
+        codeField = uiState.codeField,
         timerState = timerState,
-        onSendCode = { viewModel.sendCodeToEmail(it) },
-        onVerifyCode = { viewModel.verifyEmailCode(it) },
+        onCodeFieldChange = viewModel::onCodeFieldChange,
+        onSendCode = viewModel::sendCodeToEmail,
+        onVerifyCode = viewModel::verifyEmailCode,
         onNavigateHome = onNavigateHome,
         onBackToAskContinue = {
-            flowState = VerifyEmailState.AskContinue
+            viewModel.backToAskContinue()
             timerState.reset()
         },
     )
@@ -106,10 +98,12 @@ fun EmailVerificationPage(
 @Composable
 private fun EmailVerificationScreen(
     userEmail: String,
-    flowState: VerifyEmailState,
+    flowState: EmailVerificationUiState.FlowState,
+    codeField: String,
     timerState: TimerState,
-    onSendCode: (String) -> Unit,
-    onVerifyCode: (String) -> Unit,
+    onCodeFieldChange: (String) -> Unit,
+    onSendCode: () -> Unit,
+    onVerifyCode: () -> Unit,
     onNavigateHome: () -> Unit,
     onBackToAskContinue: () -> Unit,
 ) {
@@ -118,8 +112,7 @@ private fun EmailVerificationScreen(
     val emptyAlert = stringResource(R.string.find_password_enter_verification_code_empty_alert)
     val expireMessage = stringResource(R.string.find_password_enter_verification_code_expire_message)
 
-    var codeField by remember { mutableStateOf("") }
-    val buttonEnabled by remember { derivedStateOf { codeField.isNotEmpty() } }
+    val buttonEnabled = codeField.isNotEmpty()
 
     val handleEnterCode = {
         if (codeField.isEmpty()) {
@@ -127,17 +120,14 @@ private fun EmailVerificationScreen(
         } else if (timerState.isEnded) {
             context.toast(expireMessage)
         } else {
-            onVerifyCode(codeField)
+            onVerifyCode()
         }
     }
 
     val onBackPressed: () -> Unit = {
         when (flowState) {
-            VerifyEmailState.AskContinue -> onNavigateHome()
-            VerifyEmailState.SendCode -> {
-                onBackToAskContinue()
-                codeField = ""
-            }
+            EmailVerificationUiState.FlowState.AskContinue -> onNavigateHome()
+            EmailVerificationUiState.FlowState.SendCode -> onBackToAskContinue()
         }
     }
 
@@ -155,7 +145,7 @@ private fun EmailVerificationScreen(
         AnimatedContent(targetState = flowState) { targetState ->
             Column(modifier = Modifier.padding(horizontal = 25.dp)) {
                 when (targetState) {
-                    VerifyEmailState.AskContinue -> {
+                    EmailVerificationUiState.FlowState.AskContinue -> {
                         Text(
                             text = stringResource(R.string.verify_email_question_text, userEmail),
                             style = SNUTTTypography.h3,
@@ -168,7 +158,7 @@ private fun EmailVerificationScreen(
                         Spacer(modifier = Modifier.size(100.dp))
                         WebViewStyleButton(
                             modifier = Modifier.fillMaxWidth(),
-                            onClick = { onSendCode(userEmail) },
+                            onClick = { onSendCode() },
                         ) {
                             Text(
                                 text = stringResource(R.string.verify_email_ok_button),
@@ -188,7 +178,7 @@ private fun EmailVerificationScreen(
                         }
                     }
 
-                    VerifyEmailState.SendCode -> {
+                    EmailVerificationUiState.FlowState.SendCode -> {
                         Text(
                             text = stringResource(R.string.find_password_verification_code_content).format(userEmail),
                             style = SNUTTTypography.h3,
@@ -200,7 +190,7 @@ private fun EmailVerificationScreen(
                         )
                         EditText(
                             value = codeField,
-                            onValueChange = { codeField = it },
+                            onValueChange = onCodeFieldChange,
                             hint = stringResource(R.string.find_password_send_code_hint),
                             keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done, keyboardType = KeyboardType.Number),
@@ -217,7 +207,7 @@ private fun EmailVerificationScreen(
                                                 color = if (timerState.isRunning) SNUTTColors.Red else SNUTTColors.SNUTTTheme,
                                             ),
                                             modifier = Modifier.clicks {
-                                                if (timerState.isEnded) onSendCode(userEmail)
+                                                if (timerState.isEnded) onSendCode()
                                             },
                                         )
                                     }
@@ -257,8 +247,10 @@ private fun EmailVerificationScreen_AskContinue() {
     SnuttPreviewSurface {
         EmailVerificationScreen(
             userEmail = "user@snu.ac.kr",
-            flowState = VerifyEmailState.AskContinue,
+            flowState = EmailVerificationUiState.FlowState.AskContinue,
+            codeField = "",
             timerState = rememberTimerState(initialValue = TimerValue.Initial, durationInSecond = 180),
+            onCodeFieldChange = {},
             onSendCode = {},
             onVerifyCode = {},
             onNavigateHome = {},
@@ -273,8 +265,10 @@ private fun EmailVerificationScreen_SendCode() {
     SnuttPreviewSurface {
         EmailVerificationScreen(
             userEmail = "user@snu.ac.kr",
-            flowState = VerifyEmailState.SendCode,
+            flowState = EmailVerificationUiState.FlowState.SendCode,
+            codeField = "",
             timerState = rememberTimerState(initialValue = TimerValue.Initial, durationInSecond = 180),
+            onCodeFieldChange = {},
             onSendCode = {},
             onVerifyCode = {},
             onNavigateHome = {},

@@ -9,9 +9,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -52,11 +50,21 @@ fun ResetPasswordPage(
 
     ResetPasswordScreen(
         uiState = uiState,
-        onCheckEmailById = { viewModel.checkEmailById(it) },
-        onSendFullEmail = { viewModel.sendFullEmailAndRequestCode(it) },
-        onVerifyCode = { viewModel.verifyCode(it) },
-        onResetPassword = { viewModel.resetPassword(it) },
-        onCompleteDialogConfirm = { viewModel.onCompleteDialogConfirm() },
+        onIdFieldChange = viewModel::onIdFieldChange,
+        onEmailFieldChange = viewModel::onEmailFieldChange,
+        onCodeFieldChange = viewModel::onCodeFieldChange,
+        onNewPasswordFieldChange = viewModel::onNewPasswordFieldChange,
+        onNewPasswordConfirmFieldChange = viewModel::onNewPasswordConfirmFieldChange,
+        onCheckEmailById = viewModel::checkEmailById,
+        onSendFullEmail = viewModel::sendFullEmailAndRequestCode,
+        onResendVerifyCode = viewModel::resendVerifyCode,
+        onVerifyCode = viewModel::verifyCode,
+        onShowWhyNotCodeComingDialog = viewModel::showWhyNotCodeComingDialog,
+        onDismissVerifyCodeDialog = viewModel::dismissVerifyCodeDialog,
+        onValidateAndResetPassword = viewModel::validateAndResetPassword,
+        onTimerExpired = viewModel::onTimerExpired,
+        onDismissNewPasswordDialog = viewModel::dismissNewPasswordDialog,
+        onCompleteDialogConfirm = viewModel::onCompleteDialogConfirm,
         onBack = onBack,
     )
 }
@@ -64,10 +72,20 @@ fun ResetPasswordPage(
 @Composable
 private fun ResetPasswordScreen(
     uiState: FindPasswordViewModel.UIState,
-    onCheckEmailById: (String) -> Unit,
-    onSendFullEmail: (String) -> Unit,
-    onVerifyCode: (String) -> Unit,
-    onResetPassword: (String) -> Unit,
+    onIdFieldChange: (String) -> Unit,
+    onEmailFieldChange: (String) -> Unit,
+    onCodeFieldChange: (String) -> Unit,
+    onNewPasswordFieldChange: (String) -> Unit,
+    onNewPasswordConfirmFieldChange: (String) -> Unit,
+    onCheckEmailById: () -> Unit,
+    onSendFullEmail: () -> Unit,
+    onResendVerifyCode: () -> Unit,
+    onVerifyCode: () -> Unit,
+    onShowWhyNotCodeComingDialog: () -> Unit,
+    onDismissVerifyCodeDialog: () -> Unit,
+    onValidateAndResetPassword: (timerRunning: Boolean) -> Unit,
+    onTimerExpired: () -> Unit,
+    onDismissNewPasswordDialog: () -> Unit,
     onCompleteDialogConfirm: () -> Unit,
     onBack: () -> Unit,
 ) {
@@ -89,35 +107,43 @@ private fun ResetPasswordScreen(
             onBack()
         }
 
-        AnimatedContent(targetState = uiState, label = "") { state ->
+        AnimatedContent(
+            targetState = uiState,
+            contentKey = { it::class },
+            label = "",
+        ) { state ->
             when (state) {
                 is CheckId -> CheckIdStep(
                     uiState = state,
+                    onIdFieldChange = onIdFieldChange,
                     onSubmit = onCheckEmailById,
                 )
 
                 is EnterFullEmail -> EnterFullEmailStep(
                     uiState = state,
+                    onEmailFieldChange = onEmailFieldChange,
                     notMyEmail = onBack,
                     onSubmitFullEmail = onSendFullEmail,
                 )
 
                 is VerifyCode -> VerifyCodeStep(
                     uiState = state,
-                    onRequestResend = { onSendFullEmail(state.fullEmail) },
+                    onCodeFieldChange = onCodeFieldChange,
+                    onRequestResend = onResendVerifyCode,
                     onSubmit = onVerifyCode,
+                    onShowWhyNotCodeComingDialog = onShowWhyNotCodeComingDialog,
+                    onDismissDialog = onDismissVerifyCodeDialog,
                 )
 
-                is EnterNewPassword -> {
-                    val showCompleteDialog = remember(state) {
-                        derivedStateOf { state.showCompleteDialog }
-                    }
-                    NewPasswordStep(
-                        onSubmit = onResetPassword,
-                        showCompleteDialog = showCompleteDialog,
-                        onComplete = onCompleteDialogConfirm,
-                    )
-                }
+                is EnterNewPassword -> NewPasswordStep(
+                    uiState = state,
+                    onNewPasswordFieldChange = onNewPasswordFieldChange,
+                    onNewPasswordConfirmFieldChange = onNewPasswordConfirmFieldChange,
+                    onSubmit = onValidateAndResetPassword,
+                    onTimerExpired = onTimerExpired,
+                    onDismissDialog = onDismissNewPasswordDialog,
+                    onComplete = onCompleteDialogConfirm,
+                )
             }
         }
     }
@@ -129,10 +155,20 @@ private fun ResetPasswordScreen_CheckId() {
     SnuttPreviewSurface {
         ResetPasswordScreen(
             uiState = CheckId(userId = ""),
+            onIdFieldChange = {},
+            onEmailFieldChange = {},
+            onCodeFieldChange = {},
+            onNewPasswordFieldChange = {},
+            onNewPasswordConfirmFieldChange = {},
             onCheckEmailById = {},
             onSendFullEmail = {},
+            onResendVerifyCode = {},
             onVerifyCode = {},
-            onResetPassword = {},
+            onShowWhyNotCodeComingDialog = {},
+            onDismissVerifyCodeDialog = {},
+            onValidateAndResetPassword = {},
+            onTimerExpired = {},
+            onDismissNewPasswordDialog = {},
             onCompleteDialogConfirm = {},
             onBack = {},
         )
@@ -145,10 +181,20 @@ private fun ResetPasswordScreen_EnterFullEmail() {
     SnuttPreviewSurface {
         ResetPasswordScreen(
             uiState = EnterFullEmail(userId = "testuser", maskedEmail = "te****@snu.ac.kr", fullEmail = ""),
+            onIdFieldChange = {},
+            onEmailFieldChange = {},
+            onCodeFieldChange = {},
+            onNewPasswordFieldChange = {},
+            onNewPasswordConfirmFieldChange = {},
             onCheckEmailById = {},
             onSendFullEmail = {},
+            onResendVerifyCode = {},
             onVerifyCode = {},
-            onResetPassword = {},
+            onShowWhyNotCodeComingDialog = {},
+            onDismissVerifyCodeDialog = {},
+            onValidateAndResetPassword = {},
+            onTimerExpired = {},
+            onDismissNewPasswordDialog = {},
             onCompleteDialogConfirm = {},
             onBack = {},
         )
@@ -161,10 +207,20 @@ private fun ResetPasswordScreen_VerifyCode() {
     SnuttPreviewSurface {
         ResetPasswordScreen(
             uiState = VerifyCode(fullEmail = "testuser@snu.ac.kr"),
+            onIdFieldChange = {},
+            onEmailFieldChange = {},
+            onCodeFieldChange = {},
+            onNewPasswordFieldChange = {},
+            onNewPasswordConfirmFieldChange = {},
             onCheckEmailById = {},
             onSendFullEmail = {},
+            onResendVerifyCode = {},
             onVerifyCode = {},
-            onResetPassword = {},
+            onShowWhyNotCodeComingDialog = {},
+            onDismissVerifyCodeDialog = {},
+            onValidateAndResetPassword = {},
+            onTimerExpired = {},
+            onDismissNewPasswordDialog = {},
             onCompleteDialogConfirm = {},
             onBack = {},
         )
@@ -177,10 +233,20 @@ private fun ResetPasswordScreen_EnterNewPassword() {
     SnuttPreviewSurface {
         ResetPasswordScreen(
             uiState = EnterNewPassword(),
+            onIdFieldChange = {},
+            onEmailFieldChange = {},
+            onCodeFieldChange = {},
+            onNewPasswordFieldChange = {},
+            onNewPasswordConfirmFieldChange = {},
             onCheckEmailById = {},
             onSendFullEmail = {},
+            onResendVerifyCode = {},
             onVerifyCode = {},
-            onResetPassword = {},
+            onShowWhyNotCodeComingDialog = {},
+            onDismissVerifyCodeDialog = {},
+            onValidateAndResetPassword = {},
+            onTimerExpired = {},
+            onDismissNewPasswordDialog = {},
             onCompleteDialogConfirm = {},
             onBack = {},
         )

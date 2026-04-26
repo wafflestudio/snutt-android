@@ -42,10 +42,11 @@ class FindIdViewModelTest {
     // region findIdByEmail
 
     @Test
-    fun `findIdByEmail 호출 시 입력된 이메일로 repository를 호출한다`() = runTest {
+    fun `findIdByEmail 호출 시 onEmailFieldChange로 입력된 이메일로 repository를 호출한다`() = runTest {
         fakeUserRepository.findIdByEmailResult = Result.Success(Unit)
 
-        viewModel.findIdByEmail("test@snu.ac.kr")
+        viewModel.onEmailFieldChange("test@snu.ac.kr")
+        viewModel.findIdByEmail()
 
         assertEquals("test@snu.ac.kr", fakeUserRepository.findIdByEmailCalledWith)
     }
@@ -54,8 +55,10 @@ class FindIdViewModelTest {
     fun `findIdByEmail 성공 시 Success 이벤트가 발생한다`() = runTest {
         fakeUserRepository.findIdByEmailResult = Result.Success(Unit)
 
+        viewModel.onEmailFieldChange("test@snu.ac.kr")
+
         viewModel.uiEvent.test {
-            viewModel.findIdByEmail("test@snu.ac.kr")
+            viewModel.findIdByEmail()
             assertEquals(FindIdUiEvent.Success("test@snu.ac.kr"), awaitItem())
         }
     }
@@ -65,8 +68,10 @@ class FindIdViewModelTest {
         val error = Unknown(displayTitle = "", displayMessage = "존재하지 않는 이메일입니다")
         fakeUserRepository.findIdByEmailResult = Result.Fail(error)
 
+        viewModel.onEmailFieldChange("wrong@snu.ac.kr")
+
         viewModel.uiEvent.test {
-            viewModel.findIdByEmail("wrong@snu.ac.kr")
+            viewModel.findIdByEmail()
             assertEquals(FindIdUiEvent.ShowToast("존재하지 않는 이메일입니다"), awaitItem())
         }
     }
