@@ -23,6 +23,7 @@ import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.ui.components.compose.EditText
 import com.wafflestudio.snutt2.ui.components.compose.FriendHashIcon
 import com.wafflestudio.snutt2.ui.components.compose.KakaoTalkIcon
+import com.wafflestudio.snutt2.ui.components.compose.ModalBottomSheetPlaceholder
 import com.wafflestudio.snutt2.ui.components.compose.MoreActionItem
 import com.wafflestudio.snutt2.ui.components.compose.TrashIcon
 import com.wafflestudio.snutt2.ui.components.compose.WarningIcon
@@ -46,7 +47,9 @@ fun FriendsBottomSheetContent(
     onSubmitDisplayName: () -> Unit,
 ) {
     when (bottomSheetContent) {
-        is FriendBottomSheetContent.Hidden -> {}
+        is FriendBottomSheetContent.Hidden -> {
+            ModalBottomSheetPlaceholder()
+        }
 
         is FriendBottomSheetContent.RequestMethodList -> {
             AddFriendMethodListBottomSheet(
