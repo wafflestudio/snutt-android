@@ -191,7 +191,6 @@ val sampleSelectedLecture = SearchedLecture(
     reviewInfo = LectureReviewInfo("", 0.0, 0),
 )
 
-
 val previewTagTypes = listOf(
     TagType.SORT_CRITERIA,
     TagType.CLASSIFICATION,

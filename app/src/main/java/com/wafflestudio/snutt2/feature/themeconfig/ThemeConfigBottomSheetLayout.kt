@@ -9,10 +9,10 @@ import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.CustomTheme
 import com.wafflestudio.snutt2.domain.model.TableTheme
-import com.wafflestudio.snutt2.ui.preview.PreviewData
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.components.compose.ModalBottomSheetPlaceholder
+import com.wafflestudio.snutt2.ui.preview.PreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors

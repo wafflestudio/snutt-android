@@ -27,11 +27,11 @@ import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.CourseBook
 import com.wafflestudio.snutt2.domain.model.TableSummary
-import com.wafflestudio.snutt2.ui.preview.PreviewData
 import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.ui.components.compose.RedDot
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.PreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors

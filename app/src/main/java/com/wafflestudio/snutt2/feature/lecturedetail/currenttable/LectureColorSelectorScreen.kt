@@ -15,11 +15,11 @@ import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.LectureColor
-import com.wafflestudio.snutt2.ui.preview.PreviewData
 import com.wafflestudio.snutt2.feature.lecturedetail.ColorItem
 import com.wafflestudio.snutt2.feature.lecturedetail.ColorPickerDialog
 import com.wafflestudio.snutt2.feature.lecturedetail.PickerColorSection
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
+import com.wafflestudio.snutt2.ui.preview.PreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.isDarkMode

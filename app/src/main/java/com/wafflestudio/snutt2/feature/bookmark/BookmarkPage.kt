@@ -27,7 +27,6 @@ import com.wafflestudio.snutt2.domain.model.TableLectureCustom
 import com.wafflestudio.snutt2.domain.model.TableSummary
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import com.wafflestudio.snutt2.domain.model.ThemeReference
-import com.wafflestudio.snutt2.ui.preview.PreviewData
 import com.wafflestudio.snutt2.feature.home.timetable.TimeTable
 import com.wafflestudio.snutt2.feature.search.BookmarkList
 import com.wafflestudio.snutt2.feature.search.LectureState
@@ -36,6 +35,7 @@ import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.components.compose.BottomSheetDismissEffect
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
+import com.wafflestudio.snutt2.ui.preview.PreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors

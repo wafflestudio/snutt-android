@@ -39,7 +39,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.LectureReminderOffset
 import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
-import com.wafflestudio.snutt2.ui.preview.PreviewData
 import com.wafflestudio.snutt2.ui.components.compose.SegmentedPicker
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.ui.components.compose.snackbar.CustomSnackBar
@@ -47,6 +46,7 @@ import com.wafflestudio.snutt2.ui.components.compose.snackbar.CustomSnackBarDura
 import com.wafflestudio.snutt2.ui.components.compose.snackbar.CustomSnackBarHost
 import com.wafflestudio.snutt2.ui.components.compose.snackbar.CustomSnackBarHostState
 import com.wafflestudio.snutt2.ui.components.compose.snackbar.dismiss
+import com.wafflestudio.snutt2.ui.preview.PreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors

@@ -4,8 +4,8 @@ import androidx.compose.runtime.Composable
 import com.wafflestudio.snutt2.config.FeatureFlag
 import com.wafflestudio.snutt2.domain.model.LectureSession
 import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
-import com.wafflestudio.snutt2.ui.preview.PreviewData
 import com.wafflestudio.snutt2.feature.lecturedetail.LectureDetail
+import com.wafflestudio.snutt2.ui.preview.PreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 
