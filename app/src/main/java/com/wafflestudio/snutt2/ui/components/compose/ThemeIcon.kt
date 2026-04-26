@@ -22,9 +22,9 @@ import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.CustomTheme
 import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.domain.model.ThemeColor
-import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
+import com.wafflestudio.snutt2.ui.preview.ThemePreviewData
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 
@@ -311,7 +311,7 @@ private fun ThemeIcon_Builtin() {
 private fun ThemeIcon_CustomFiveColors() {
     SnuttPreviewSurface {
         ThemeIcon(
-            theme = PreviewData.previewCustomTheme1,
+            theme = ThemePreviewData.previewCustomTheme1,
             modifier = Modifier.size(80.dp),
         )
     }

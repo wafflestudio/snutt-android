@@ -33,13 +33,13 @@ import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.diary.DiaryDailyClassType
 import com.wafflestudio.snutt2.domain.model.diary.DiaryQuestion
-import com.wafflestudio.snutt2.domain.model.preview.DiaryPreviewData
 import com.wafflestudio.snutt2.feature.diary.DiaryTheme
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.anySelected
 import com.wafflestudio.snutt2.ui.components.compose.EditText
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.DiaryPreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
@@ -338,7 +338,12 @@ private fun DiaryActivitySelectSection_Selecting() {
                 onToggleActivitySelection = {},
                 onCompleteSelectActivities = {},
                 onRestartSelectActivities = {},
-                dailyClassTypes = DiaryPreviewData.sampleWriteUiStateSelecting.dailyClassTypes,
+                dailyClassTypes = DiaryPreviewData.dailyClassTypes.mapIndexed { index, dailyClassType ->
+                    Selectable(
+                        dailyClassType,
+                        index == 1 || index == 3,
+                    ) // "수업", "시험" selected
+                },
             )
         }
     }

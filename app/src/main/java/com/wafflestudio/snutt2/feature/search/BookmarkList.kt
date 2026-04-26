@@ -13,8 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.IntOffset
 import com.wafflestudio.snutt2.domain.model.SearchedLecture
-import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.lib.DataWithState
+import com.wafflestudio.snutt2.ui.preview.LecturePreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
@@ -63,7 +63,7 @@ fun BookmarkList(
 private fun BookmarkList_Loaded() {
     SnuttPreviewSurface {
         BookmarkList(
-            bookmarks = PreviewData.sampleLectures.take(3).mapIndexed { index, lecture ->
+            bookmarks = LecturePreviewData.sampleLectures.take(3).mapIndexed { index, lecture ->
                 DataWithState(
                     lecture,
                     LectureState(

@@ -46,13 +46,13 @@ import com.wafflestudio.snutt2.domain.model.LectureSyllabusInfo
 import com.wafflestudio.snutt2.domain.model.LocalLecture
 import com.wafflestudio.snutt2.domain.model.TableLectureCustom
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
-import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.domain.model.trimByTrimParam
 import com.wafflestudio.snutt2.feature.home.timetable.DrawClassTime
 import com.wafflestudio.snutt2.feature.home.timetable.DrawTableGrid
 import com.wafflestudio.snutt2.feature.home.timetable.TimetableCanvasObjects
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.LecturePreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
@@ -422,7 +422,7 @@ private fun TimeSelectSheet_Empty() {
         TimeSelectSheet(
             backHandlerEnabled = false,
             initialDraggedTimeBlock = TableTrimParam.TimeBlockGridDefault,
-            currentTableLectures = listOf(PreviewData.syllabusLecture),
+            currentTableLectures = listOf(LecturePreviewData.syllabusLecture),
             tableLectureCustomOptions = TableLectureCustom.Default,
             onCancel = {},
             onConfirm = {},
@@ -442,7 +442,7 @@ private fun TimeSelectSheet_SomeSelected() {
         TimeSelectSheet(
             backHandlerEnabled = false,
             initialDraggedTimeBlock = grid,
-            currentTableLectures = listOf(PreviewData.syllabusLecture),
+            currentTableLectures = listOf(LecturePreviewData.syllabusLecture),
             tableLectureCustomOptions = TableLectureCustom.Default,
             onCancel = {},
             onConfirm = {},

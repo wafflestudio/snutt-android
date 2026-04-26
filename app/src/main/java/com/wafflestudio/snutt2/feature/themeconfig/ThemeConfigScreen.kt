@@ -27,11 +27,11 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.config.FeatureFlag
 import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.TableTheme
-import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.ui.components.compose.BottomSheetDismissEffect
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
+import com.wafflestudio.snutt2.ui.preview.ThemePreviewData
 import com.wafflestudio.snutt2.ui.util.toast
 import kotlinx.coroutines.launch
 
@@ -150,7 +150,7 @@ private fun ThemeConfigScreen_Default() {
     SnuttPreviewSurface {
         ThemeConfigScreen(
             uiState = ThemeConfigUiState(
-                myCustomThemes = listOf(PreviewData.previewCustomTheme1, PreviewData.previewCustomTheme2),
+                myCustomThemes = listOf(ThemePreviewData.previewCustomTheme1, ThemePreviewData.previewCustomTheme2),
                 marketCustomThemes = emptyList(),
                 builtInThemes = List(6) { BuiltInTheme.fromCode(it) },
             ),

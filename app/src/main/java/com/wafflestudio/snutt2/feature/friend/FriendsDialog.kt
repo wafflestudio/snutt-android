@@ -30,10 +30,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.Friend
-import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.ui.components.compose.CustomDialog
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.FriendPreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
@@ -255,7 +255,7 @@ private fun GuideDialog(
 private fun FriendsDialog_DeleteFriend() {
     SnuttPreviewSurface {
         DeleteFriendDialog(
-            friend = PreviewData.sampleFriends.first(),
+            friend = FriendPreviewData.sampleFriends.first(),
             onDismiss = {},
             onConfirm = {},
         )
@@ -267,7 +267,7 @@ private fun FriendsDialog_DeleteFriend() {
 private fun FriendsDialog_RejectRequest() {
     SnuttPreviewSurface {
         DeclineFriendDialog(
-            friend = PreviewData.sampleRequestedFriends.first(),
+            friend = FriendPreviewData.sampleRequestedFriends.first(),
             onDismiss = {},
             onConfirm = {},
         )

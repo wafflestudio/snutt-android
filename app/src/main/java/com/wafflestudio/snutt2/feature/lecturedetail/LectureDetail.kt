@@ -25,8 +25,8 @@ import com.wafflestudio.snutt2.domain.model.LectureSession
 import com.wafflestudio.snutt2.domain.model.LectureSyllabusInfo
 import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
 import com.wafflestudio.snutt2.domain.model.TableTheme
-import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.ui.components.compose.embedmap.FoldableEmbedMap
+import com.wafflestudio.snutt2.ui.preview.LecturePreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 
@@ -195,17 +195,17 @@ fun LectureDetail(
 private fun LectureDetail_SyllabusLecture_ViewMode() {
     SnuttPreviewSurface {
         LectureDetail(
-            lecture = PreviewData.syllabusLecture,
+            lecture = LecturePreviewData.syllabusLecture,
             editMode = false,
             tableTheme = BuiltInTheme.SNUTT,
-            reviewInfo = PreviewData.sampleReviewInfo,
+            reviewInfo = LecturePreviewData.sampleReviewInfo,
             buildings = emptyList(),
             isBookmarked = true,
             vacancyRegistered = false,
             showCategoryPre2025 = true,
             disableMapFeature = true,
             showLectureReminderPicker = true,
-            lectureWithReminderOption = PreviewData.sampleReminderOption,
+            lectureWithReminderOption = LecturePreviewData.sampleReminderOption,
             enableLectureReminderPicker = true,
             showFloatingButton = true,
             onBackPressed = {},
@@ -242,17 +242,17 @@ private fun LectureDetail_SyllabusLecture_ViewMode() {
 private fun LectureDetail_SyllabusLecture_EditMode() {
     SnuttPreviewSurface {
         LectureDetail(
-            lecture = PreviewData.syllabusLecture,
+            lecture = LecturePreviewData.syllabusLecture,
             editMode = true,
             tableTheme = BuiltInTheme.SNUTT,
-            reviewInfo = PreviewData.sampleReviewInfo,
+            reviewInfo = LecturePreviewData.sampleReviewInfo,
             buildings = emptyList(),
             isBookmarked = true,
             vacancyRegistered = false,
             showCategoryPre2025 = true,
             disableMapFeature = true,
             showLectureReminderPicker = true,
-            lectureWithReminderOption = PreviewData.sampleReminderOption,
+            lectureWithReminderOption = LecturePreviewData.sampleReminderOption,
             enableLectureReminderPicker = true,
             showFloatingButton = false,
             onBackPressed = {},

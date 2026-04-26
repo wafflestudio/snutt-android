@@ -12,10 +12,10 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.Lecture
 import com.wafflestudio.snutt2.domain.model.LectureSyllabusInfo
 import com.wafflestudio.snutt2.domain.model.LocalLecture
-import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.LecturePreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
@@ -89,7 +89,7 @@ internal fun LectureDetailTopBar(
 private fun LectureDetailTopBar_SyllabusLecture_Marked() {
     SnuttPreviewSurface {
         LectureDetailTopBar(
-            lecture = PreviewData.syllabusLecture,
+            lecture = LecturePreviewData.syllabusLecture,
             editMode = false,
             isBookmarked = true,
             isVacancyRegistered = true,
@@ -106,7 +106,7 @@ private fun LectureDetailTopBar_SyllabusLecture_Marked() {
 private fun LectureDetailTopBar_SyllabusLecture_EditMode() {
     SnuttPreviewSurface {
         LectureDetailTopBar(
-            lecture = PreviewData.syllabusLecture,
+            lecture = LecturePreviewData.syllabusLecture,
             editMode = true,
             isBookmarked = false,
             isVacancyRegistered = false,
@@ -123,7 +123,7 @@ private fun LectureDetailTopBar_SyllabusLecture_EditMode() {
 private fun LectureDetailTopBar_SearchedLecture() {
     SnuttPreviewSurface {
         LectureDetailTopBar(
-            lecture = PreviewData.searchedLecture,
+            lecture = LecturePreviewData.searchedLecture,
             editMode = false,
             isBookmarked = true,
             isVacancyRegistered = true,

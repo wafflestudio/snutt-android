@@ -8,18 +8,20 @@ import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.TableLectureCustom
 import com.wafflestudio.snutt2.domain.model.TableTrimParam
 import com.wafflestudio.snutt2.domain.model.getFittingTrimParam
+import com.wafflestudio.snutt2.ui.preview.LecturePreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
+import com.wafflestudio.snutt2.ui.preview.ThemePreviewData
 
 @SnuttPreview
 @Composable
 private fun TimeTable_BuiltInTheme() {
     SnuttPreviewSurface {
         // 실제 사용 패턴: BuiltIn 색이 주이지만 일부 강의에 사용자가 커스텀 색을 지정한 케이스도 함께 표현
-        val trimParam = builtInWithOneCustomLecture.getFittingTrimParam(TableTrimParam.Default)
+        val trimParam = LecturePreviewData.builtInWithOneCustomLecture.getFittingTrimParam(TableTrimParam.Default)
         Box(modifier = Modifier.fillMaxSize()) {
             TimeTable(
-                lectures = builtInWithOneCustomLecture,
+                lectures = LecturePreviewData.builtInWithOneCustomLecture,
                 selectedLecture = null,
                 fittedTrimParam = trimParam,
                 theme = BuiltInTheme.SNUTT,
@@ -36,13 +38,13 @@ private fun TimeTable_BuiltInTheme() {
 @Composable
 private fun TimeTable_CustomTheme() {
     SnuttPreviewSurface {
-        val trimParam = builtInOnlyLectures.getFittingTrimParam(TableTrimParam.Default)
+        val trimParam = LecturePreviewData.builtInOnlyLectures.getFittingTrimParam(TableTrimParam.Default)
         Box(modifier = Modifier.fillMaxSize()) {
             TimeTable(
-                lectures = builtInOnlyLectures,
+                lectures = LecturePreviewData.builtInOnlyLectures,
                 selectedLecture = null,
                 fittedTrimParam = trimParam,
-                theme = sampleCustomTheme,
+                theme = ThemePreviewData.previewCustomTheme1,
                 isDarkMode = false,
                 compactMode = false,
                 tableLectureCustomOptions = TableLectureCustom.Default,
@@ -56,12 +58,12 @@ private fun TimeTable_CustomTheme() {
 @Composable
 private fun TimeTable_WithSelectedLecture() {
     SnuttPreviewSurface {
-        val allLectures = builtInOnlyLectures + listOf(sampleSelectedLecture)
+        val allLectures = LecturePreviewData.builtInOnlyLectures + listOf(LecturePreviewData.searchedLecture)
         val trimParam = allLectures.getFittingTrimParam(TableTrimParam.Default)
         Box(modifier = Modifier.fillMaxSize()) {
             TimeTable(
-                lectures = builtInOnlyLectures,
-                selectedLecture = sampleSelectedLecture,
+                lectures = LecturePreviewData.builtInOnlyLectures,
+                selectedLecture = LecturePreviewData.searchedLecture,
                 fittedTrimParam = trimParam,
                 theme = BuiltInTheme.SNUTT,
                 isDarkMode = false,

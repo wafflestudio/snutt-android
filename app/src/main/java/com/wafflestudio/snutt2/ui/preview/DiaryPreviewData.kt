@@ -1,12 +1,10 @@
-package com.wafflestudio.snutt2.domain.model.preview
+package com.wafflestudio.snutt2.ui.preview
 
 import com.wafflestudio.snutt2.domain.model.CourseBook
 import com.wafflestudio.snutt2.domain.model.diary.DiaryDailyClassType
 import com.wafflestudio.snutt2.domain.model.diary.DiaryQuestion
 import com.wafflestudio.snutt2.domain.model.diary.DiaryQuestionAnswer
 import com.wafflestudio.snutt2.domain.model.diary.DiarySummary
-import com.wafflestudio.snutt2.feature.diary.diarywrite.ActivitySelectionState
-import com.wafflestudio.snutt2.feature.diary.diarywrite.DiaryWriteUiState
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.toDataWithState
 import java.time.LocalDate
@@ -56,7 +54,7 @@ object DiaryPreviewData {
                 id = "diary-id-1",
                 lectureId = "aaaaa시각디자인기초",
                 courseName = "시각디자인기초",
-                date = java.time.LocalDateTime.of(2024, 3, 20, 10, 0),
+                date = LocalDateTime.of(2024, 3, 20, 10, 0),
                 questionAnswers = listOf(
                     DiaryQuestionAnswer(
                         question = "수강신청",
@@ -77,7 +75,7 @@ object DiaryPreviewData {
                 id = "diary-id-2",
                 lectureId = "bbbb배구",
                 courseName = "배구",
-                date = java.time.LocalDateTime.of(2024, 3, 20, 14, 0),
+                date = LocalDateTime.of(2024, 3, 20, 14, 0),
                 questionAnswers = listOf(
                     DiaryQuestionAnswer(
                         question = "수강신청",
@@ -101,7 +99,7 @@ object DiaryPreviewData {
                 id = "diary-id-3",
                 lectureId = "cccc시각디자인기초",
                 courseName = "시각디자인기초",
-                date = java.time.LocalDateTime.of(2024, 3, 19, 10, 0),
+                date = LocalDateTime.of(2024, 3, 19, 10, 0),
                 questionAnswers = listOf(
                     DiaryQuestionAnswer(
                         question = "수강신청",
@@ -122,7 +120,7 @@ object DiaryPreviewData {
                 id = "diary-id-4",
                 lectureId = "dddd배구",
                 courseName = "배구",
-                date = java.time.LocalDateTime.of(2024, 3, 19, 14, 0),
+                date = LocalDateTime.of(2024, 3, 19, 14, 0),
                 questionAnswers = listOf(
                     DiaryQuestionAnswer(
                         question = "수강신청",
@@ -144,7 +142,7 @@ object DiaryPreviewData {
 
     // --- DiaryWrite 프리뷰 ---
 
-    private val dailyClassTypes = listOf(
+    val dailyClassTypes = listOf(
         DiaryDailyClassType("1", "개강"),
         DiaryDailyClassType("2", "수업"),
         DiaryDailyClassType("3", "실기"),
@@ -155,7 +153,7 @@ object DiaryPreviewData {
         DiaryDailyClassType("8", "드랍"),
     )
 
-    private val selectableDailyClassTypesSelected =
+    val selectableDailyClassTypesSelected =
         dailyClassTypes.mapIndexed { index, dailyClassType ->
             Selectable(
                 dailyClassType,
@@ -356,33 +354,4 @@ object DiaryPreviewData {
             ),
         )
     }
-
-    val sampleWriteUiState = DiaryWriteUiState.Write(
-        lectureName = "컴퓨터프로그래밍",
-        activitySelectingState = ActivitySelectionState.Complete,
-        dailyClassTypes = selectableDailyClassTypesSelected,
-        questions = getQuestionsForActivities(
-            listOf("수업"),
-            "컴퓨터프로그래밍",
-        ),
-    )
-
-    val sampleWriteUiStateSelecting =
-        DiaryWriteUiState.Write(
-            lectureName = "데이터구조",
-            activitySelectingState = ActivitySelectionState.InitialSelecting,
-            dailyClassTypes = dailyClassTypes.mapIndexed { index, dailyClassType ->
-                Selectable(
-                    dailyClassType,
-                    index == 1 || index == 3,
-                ) // "수업", "시험" selected
-            },
-            questions = getQuestionsForActivities(
-                listOf(
-                    "수업",
-                    "시험",
-                ),
-                "데이터구조",
-            ),
-        )
 }

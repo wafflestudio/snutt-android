@@ -31,7 +31,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.ThemeColor
-import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.ui.components.compose.ColorBox
 import com.wafflestudio.snutt2.ui.components.compose.ColorCircle
 import com.wafflestudio.snutt2.ui.components.compose.ColorPicker
@@ -40,6 +39,7 @@ import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
+import com.wafflestudio.snutt2.ui.preview.ThemePreviewData
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
@@ -236,7 +236,7 @@ internal fun ColorPickerDialog(
 private fun ThemeColorRow_EditableExpanded() {
     SnuttPreviewSurface {
         Box(modifier = Modifier.background(MaterialTheme.colors.background)) {
-            val editableColor = PreviewData.previewEditingThemeCustom.colors[0]
+            val editableColor = ThemePreviewData.previewEditingThemeCustom.colors[0]
             ThemeColorRow(
                 index = 0,
                 isEditable = true,
@@ -259,7 +259,7 @@ private fun ThemeColorRow_EditableExpanded() {
 private fun ThemeColorRow_Readonly() {
     SnuttPreviewSurface {
         Box(modifier = Modifier.background(MaterialTheme.colors.background)) {
-            val readonlyColor = PreviewData.previewEditingThemeBuiltIn.colors[0]
+            val readonlyColor = ThemePreviewData.previewEditingThemeBuiltIn.colors[0]
             ThemeColorRow(
                 index = 0,
                 isEditable = false,

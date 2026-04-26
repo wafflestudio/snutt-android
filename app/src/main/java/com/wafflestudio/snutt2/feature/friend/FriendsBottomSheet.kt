@@ -19,11 +19,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.Friend
-import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.ui.components.compose.EditText
 import com.wafflestudio.snutt2.ui.components.compose.ModalBottomSheetPlaceholder
 import com.wafflestudio.snutt2.ui.components.compose.MoreActionItem
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
+import com.wafflestudio.snutt2.ui.preview.FriendPreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
@@ -325,7 +325,7 @@ private fun FriendAdd_NicknameInput_Filled() {
 private fun FriendDetail_ActionList() {
     SnuttPreviewSurface {
         FriendDetailBottomSheet(
-            friend = PreviewData.sampleFriends.first(),
+            friend = FriendPreviewData.sampleFriends.first(),
             onEditDisplayName = {},
             onDeleteFriend = {},
             onDismiss = {},
@@ -338,7 +338,7 @@ private fun FriendDetail_ActionList() {
 private fun DisplayNameEdit_Filled() {
     SnuttPreviewSurface {
         EditDisplayNameBottomSheet(
-            friend = PreviewData.sampleFriends.first(),
+            friend = FriendPreviewData.sampleFriends.first(),
             displayName = "김철수",
             onDisplayNameChange = {},
             onSubmit = {},
@@ -352,7 +352,7 @@ private fun DisplayNameEdit_Filled() {
 private fun DisplayNameEdit_Empty() {
     SnuttPreviewSurface {
         EditDisplayNameBottomSheet(
-            friend = PreviewData.sampleFriends[1],
+            friend = FriendPreviewData.sampleFriends[1],
             displayName = "",
             onDisplayNameChange = {},
             onSubmit = {},

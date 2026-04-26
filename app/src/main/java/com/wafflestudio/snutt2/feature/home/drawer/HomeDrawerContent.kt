@@ -27,13 +27,13 @@ import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.CourseBook
 import com.wafflestudio.snutt2.domain.model.TableSummary
-import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.ui.components.compose.RedDot
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
+import com.wafflestudio.snutt2.ui.preview.TableSummaryPreviewData
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.util.formatter.toFormattedString
@@ -201,16 +201,16 @@ private fun HomeDrawerContent_Default() {
                         courseBook = CourseBook(1, 2026),
                         showNewCoursebookDot = true,
                         tableList = listOf(
-                            PreviewData.drawerPrimaryTable,
-                            PreviewData.drawerSecondaryTable,
-                            PreviewData.drawerLongTitleTable,
+                            TableSummaryPreviewData.drawerPrimaryTable,
+                            TableSummaryPreviewData.drawerSecondaryTable,
+                            TableSummaryPreviewData.drawerLongTitleTable,
                         ),
                     ).toDataWithState(true),
                     // 직전 학기: 시간표 있지만 접힌 상태
                     CoursebookDrawerItem(
                         courseBook = CourseBook(2, 2025),
                         showNewCoursebookDot = false,
-                        tableList = listOf(PreviewData.drawerLastSemesterTable),
+                        tableList = listOf(TableSummaryPreviewData.drawerLastSemesterTable),
                     ).toDataWithState(false),
                     // 직전직전 학기: 비어있고 펼쳐진 상태 — CreateTableItem 노출
                     CoursebookDrawerItem(
@@ -225,7 +225,7 @@ private fun HomeDrawerContent_Default() {
                         tableList = emptyList(),
                     ).toDataWithState(false),
                 ),
-                selectedTable = PreviewData.drawerPrimaryTable,
+                selectedTable = TableSummaryPreviewData.drawerPrimaryTable,
                 homeDrawerBottomSheetType = HomeDrawerBottomSheetType.Empty,
                 dialogState = HomeDrawerUiState.DialogState.None,
             ),

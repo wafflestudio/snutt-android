@@ -6,9 +6,9 @@ import androidx.compose.ui.res.stringResource
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.LectureSession
 import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
-import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.feature.lecturedetail.LectureDetail
 import com.wafflestudio.snutt2.ui.components.compose.CustomDialog
+import com.wafflestudio.snutt2.ui.preview.LecturePreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
@@ -86,7 +86,7 @@ fun AddCustomLectureScreen(
 private fun AddCustomLectureScreen_Default() {
     SnuttPreviewSurface {
         AddCustomLectureScreen(
-            uiState = AddCustomLectureUiState(lecture = PreviewData.customLecture),
+            uiState = AddCustomLectureUiState(lecture = LecturePreviewData.customLecture),
             onBackPressed = {},
             onSave = {},
             onColorClick = {},

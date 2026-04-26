@@ -9,12 +9,12 @@ import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.CustomTheme
 import com.wafflestudio.snutt2.domain.model.TableTheme
-import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.components.compose.ModalBottomSheetPlaceholder
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
+import com.wafflestudio.snutt2.ui.preview.ThemePreviewData
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 
 @Composable
@@ -90,7 +90,7 @@ private fun ThemeConfigBottomSheetContent(
 private fun ThemeConfigBottomSheetContent_MyCustomTheme() {
     SnuttPreviewSurface {
         ThemeConfigBottomSheetContent(
-            bottomSheetType = ThemeConfigUiState.BottomSheetType.MyCustomThemeActions(PreviewData.previewCustomTheme1),
+            bottomSheetType = ThemeConfigUiState.BottomSheetType.MyCustomThemeActions(ThemePreviewData.previewCustomTheme1),
             onClickDetail = {},
             onClickApply = {},
             onClickDuplicate = {},
@@ -104,7 +104,7 @@ private fun ThemeConfigBottomSheetContent_MyCustomTheme() {
 private fun ThemeConfigBottomSheetContent_MarketCustomTheme() {
     SnuttPreviewSurface {
         ThemeConfigBottomSheetContent(
-            bottomSheetType = ThemeConfigUiState.BottomSheetType.MarketCustomThemeActions(PreviewData.previewMarketTheme),
+            bottomSheetType = ThemeConfigUiState.BottomSheetType.MarketCustomThemeActions(ThemePreviewData.previewMarketTheme),
             onClickDetail = {},
             onClickApply = {},
             onClickDuplicate = {},

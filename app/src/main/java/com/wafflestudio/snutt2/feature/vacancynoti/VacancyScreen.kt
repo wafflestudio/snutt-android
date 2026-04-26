@@ -61,7 +61,6 @@ import androidx.compose.ui.window.Dialog
 import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
@@ -71,6 +70,7 @@ import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.WebViewStyleButton
 import com.wafflestudio.snutt2.ui.components.compose.clicks
+import com.wafflestudio.snutt2.ui.preview.LecturePreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
@@ -699,7 +699,7 @@ private fun VacancyScreen_Registered() {
         VacancyScreen(
             uiState = VacancyUiState(
                 contentState = VacancyUiState.ContentState.Loaded(
-                    vacancyLecturesWithSelection = PreviewData.sampleLectures.map { it.toDataWithState(false) },
+                    vacancyLecturesWithSelection = LecturePreviewData.sampleLectures.map { it.toDataWithState(false) },
                 ),
             ),
             onClickBack = {},
