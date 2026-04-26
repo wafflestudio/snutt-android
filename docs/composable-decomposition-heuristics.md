@@ -42,12 +42,24 @@ preview 부착 시 어색함 또는 redundancy 가 발견됨
   │     해소: superset 분기 preview 만 유지, subset 제거
   │     사례: §3.5
   │
+  ├─ 본체에 LocalInspectionMode 분기가 박혀 있다 (preview-specific 분기)
+  │   → 본체 오염 시그널 (anti-pattern)
+  │     해소: 본질에 따라 slot 으로 hoist 또는 robustness fallback 으로 일반화
+  │     사례: §3.6
+  │
   └─ 단독 호출 시 시각이 빈 화면 또는 의도와 다름 (예: 라이트 모드 흰 화면)
       │
       ├─ 자체 시각 책임 (배경 등) 이 빠진 게 원인 — 모르고 빠뜨림
-      │   → self-contained 부재 시그널
-      │     해소: 자체 배경/시각 책임을 컴포넌트에 박는다
-      │     사례: §3.2
+      │   │
+      │   ├─ 호출자 배경이 이 컴포넌트만을 위해 깔린 것 (전용)
+      │   │   → self-contained 부재 시그널
+      │   │     해소: 자체 배경/시각 책임을 컴포넌트에 박는다
+      │   │     사례: §3.2
+      │   │
+      │   └─ 호출자 배경이 여러 자식 (다른 list item 등) 과 공유됨
+      │       → 변환 보류 시그널 (이중 dim 문제)
+      │         해소: §3.3 패턴 (preview wrapper) 으로 우회 + 큰 리팩토링은 별도 트랙
+      │         사례: §3.7
       │
       └─ 호출 컨텍스트에 의존하는 게 의도된 디자인
           → 컨텍스트 의존 컴포넌트 시그널
@@ -209,7 +221,70 @@ preview 부착 시 어색함 또는 redundancy 가 발견됨
 | 흡수 기준 | 부모가 시각 + 네비게이션 둘 다 제공 | 한 분기가 다른 분기의 시각 superset |
 | 해소 | 자식 preview 제거 | subset 분기 preview 제거 |
 
-**커밋**: (이번 commit)
+**커밋**: `2bc09a02 refactor+docs: DiaryActivitySelectSection_Completed redundant preview 제거 + 휴리스틱 §3.5`
+
+---
+
+### 3.6 production 본체에 preview-specific 분기 박힘 — `Popup` 의 `LocalInspectionMode`
+
+**시그널**: 컴포넌트 본체에 `if (LocalInspectionMode.current) { /* preview 전용 */ } else { /* production */ }`
+분기가 들어 있다.
+
+**원인** (`Popup`):
+- AsyncImage 는 preview 환경에서 이미지 로딩이 안 되어 painter 의 intrinsic
+  height 가 부풀어 다른 자식 (버튼 Row) 을 화면 밖으로 밀어냄.
+- `LocalWindowInfo.current.containerSize.width` 는 preview 환경에서 0 이라
+  계산 폭이 음수가 됨.
+- 두 문제 모두 "preview 환경에서만 깨지는" 것이라 임시방편으로 본체에
+  `LocalInspectionMode` 분기를 박았더니, **production 코드가 preview 환경을
+  의식하는 anti-pattern** 이 됨.
+
+**해소**:
+- AsyncImage 자리를 **slot 으로 hoist**: `imageContent: @Composable () -> Unit`.
+  호출자 (`HomePage`) 가 AsyncImage 를 slot 에 넘기고, preview 는 placeholder
+  Box 를 slot 에 넘김. `Popup` 본체는 image 의 본질을 모름.
+- width 는 별도로 **robustness fallback 으로 일반화**:
+  ```kotlin
+  val containerWidthDp = if (rawWidth > 0.dp) rawWidth else 360.dp
+  ```
+  preview-specific 분기가 아니라 "0 일 때 안전 처리" 라는 일반 로직.
+
+**판단 기준** (둘 중 어느 쪽이 적절한가):
+- 컴포저블의 본질적 일부(이미지·컨텐츠·시각 자체) 면 **slot 으로 hoist**.
+- 컴포넌트가 외부 환경(`LocalWindowInfo`, `LocalDensity` 등) 에서 자연스럽게
+  파생되는 값이면 **0/null 일 때 fallback** 으로 일반화.
+
+**커밋**: `712b7629 refactor: Popup 의 image 자리를 slot 으로 hoist + width fallback 일반화`
+
+---
+
+### 3.7 dim 배경이 다른 자식과 공유되는 호출 컨텍스트 — `SearchPlaceHolder` self-contained 변환 보류
+
+**시그널**: §3.2 와 동일 증상 (라이트 모드 흰 화면) 인데, 호출자가 깐 `Dim2`
+배경이 placeholder 외에도 list item 들과 공유되는 컨텍스트.
+
+**원인** (`SearchPlaceHolder`, `SearchEmptyPlaceholder`):
+- `BookmarkPlaceHolder` 와 동일한 raw color (`White700`/`White500`) 사용.
+- 호출자 `SearchScreen` 이 `Box(modifier = Modifier.background(SNUTTColors.Dim2))`
+  로 placeholder + list item 둘 다를 감쌈.
+- placeholder 만 self-contained 로 변환 (자체 `Dim2` 배경) 하면 부모의 `Dim2`
+  와 alpha 가 누적되어 **이중 dim** 으로 더 진해짐. list item 의 selection
+  highlight 의미 (§3.3) 와 시각이 혼란.
+
+**해소** (§3.2 와 다른 방향):
+- self-contained 변환 보류.
+- 대신 §3.3 패턴 적용: preview 가 호출 컨텍스트를 inline 으로 흉내 (`Box(Dim2)`
+  wrapper).
+- 호출자 책임 재배치 (list 컨테이너가 아니라 list 가 dim 책임을 갖는 식의 큰
+  리팩토링) 는 별도 트랙.
+
+**판단 기준** (§3.2 vs §3.7):
+- 호출자의 배경이 **해당 컴포넌트만을 위해** 깔린 것이면 §3.2 (self-contained
+  변환).
+- 호출자의 배경이 **여러 자식 (placeholder, list, item) 에 공유** 되는 것이면
+  §3.7 (변환 보류 + §3.3 wrapper).
+
+**커밋**: `a306a871 refactor: search preview 다듬기` (preview wrapper 부분)
 
 ---
 
@@ -234,7 +309,19 @@ preview 부착 시 어색함 또는 redundancy 가 발견됨
 논의는 됐지만 채택하지 않은 옵션도 사례에 짧게 남겨 둔다 (왜 채택 안 했는지). 같은
 시그널이 다음에 나타났을 때 의사결정의 근거가 된다.
 
-예시 (§3.3):
+### §3.3 (`SearchLectureListItem`)
 - 옵션 A (디자인 변경, self-contained): selection 시각화 재설계 비용 큼 → 보류.
 - 옵션 C (list 와 item 묶기): 큰 리팩토링 → 보류.
 - 옵션 D (preview 미부착): 시각 단서 잃는 비용이 더 큼 → 보류.
+
+### §3.6 (`Popup`)
+- 옵션 (preview 미부착): 시각 단서 잃음 + 외부 환경 의존이 의도가 아니라 기본
+  렌더 한계 → 보류.
+- 옵션 (`SnuttPreviewSurface(onInspectionFallback = ...)` 같은 인프라화): 케이스가
+  3건 이상 누적되기 전 미리 추상화 → 보류 (3-strikes rule).
+
+### §3.7 (`SearchPlaceHolder`)
+- 옵션 (self-contained 변환 + 호출자 dim 제거): list item 들도 별도로 자체 dim
+  깔아야 해서 복합 변경. selection highlight 의미와 충돌 가능 → 보류.
+- 옵션 (디자인 변경: list 컨테이너가 dim 책임을 가지는 새 컴포넌트로): 큰 리팩토링
+  → 별도 트랙.

@@ -76,6 +76,30 @@ private fun ExampleComponent_Default() {
 - `SnuttPreviewSurface` 는 `SNUTTTheme + Surface` 두 줄을 감추는 얇은 wrapper 다. 그 이상 비즈니스
   로직을 끼워 넣지 않는다. 이 wrapper 의 존재 의의는 boilerplate 제거 + theme/Surface 적용 누락 방지.
 
+### 4.1 preview 전용 인프라 (이외)
+
+`ui/preview/` 패키지에 preview 환경 한계 대응을 위한 헬퍼들이 있다:
+
+- **`FakeLazyPagingItems`** (`rememberFakeLazyPagingItems<T>(items)`):
+  paging-compose 의 `flowOf(...).collectAsLazyPagingItems()` 가 IDE preview 환경에서
+  비동기 collect 미완료로 `itemCount = 0` 이 되는 문제를 해결한다. `MutableStateFlow` 의
+  `replayCache` 가 즉시 초기값을 반환하는 점을 활용. 사용처:
+  `SearchResultList_Searched`, `SearchScreen_Searched`, `NotificationScreen_List`.
+
+이런 헬퍼는 **preview 전용**이며 production 코드에서 호출하지 않는다.
+
+### 4.2 anti-pattern: 본체에 `LocalInspectionMode` 분기 박지 말 것
+
+컴포저블 본체에 `if (LocalInspectionMode.current) { /* preview 전용 */ } else { ... }`
+분기를 넣는 것은 **production 코드가 preview 환경을 의식하는 책임 위반**이다. 대신:
+
+- 컴포저블의 본질적 일부 (이미지·컨텐츠) 는 **slot 으로 hoist** 하여 호출자가 production
+  과 preview 시 다른 것을 넘기게 한다.
+- 외부 환경 (`LocalWindowInfo`, `LocalDensity` 등) 에서 파생되는 값은 **0/null 일 때
+  fallback** 으로 일반화한다 (preview-specific 분기 아님).
+
+자세한 사례는 `composable-decomposition-heuristics.md` §3.6 (`Popup`) 참조.
+
 ---
 
 ## 5. 사이즈 / 추가 옵션 오버라이드
@@ -151,3 +175,8 @@ preview 가 사용하는 mock fixture 는 file-private 으로 두지 않고, 중
     - 화면: 화면 골격이 바뀌는 큼직한 분기만 + 그 외에는 대표 1개.
 - [ ] `@SnuttPreview` 가 부착되어 있는가?
 - [ ] `SnuttPreviewSurface { ... }` 로 컴포넌트를 감쌌는가?
+- [ ] preview 가 잘리거나 비어 보이면 — `composable-decomposition-heuristics.md` §2 진단 분기로
+      시그널 분류한 뒤 적절한 해소 패턴 적용했는가? (self-contained / wrapper / preview 제거 등)
+- [ ] file-private fixture 를 두지 않았는가? (mock 데이터 중앙화, §6)
+- [ ] 본체에 `LocalInspectionMode` 분기를 박지 않았는가? (§4.2 anti-pattern, slot/fallback 으로)
+- [ ] paging-compose 등 preview 환경에서 동작이 까다로운 라이브러리를 쓰는가? (§4.1 헬퍼 사용)
