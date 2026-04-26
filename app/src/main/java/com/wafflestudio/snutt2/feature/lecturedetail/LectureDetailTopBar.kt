@@ -103,45 +103,11 @@ private fun LectureDetailTopBar_SyllabusLecture_Marked() {
 
 @SnuttPreview
 @Composable
-private fun LectureDetailTopBar_SyllabusLecture_Unmarked() {
-    SnuttPreviewSurface {
-        LectureDetailTopBar(
-            lecture = PreviewData.syllabusLecture,
-            editMode = false,
-            isBookmarked = false,
-            isVacancyRegistered = false,
-            onBackPressed = {},
-            onEditModeToggle = {},
-            onBookmarkToggle = {},
-            onVacancyToggle = {},
-        )
-    }
-}
-
-@SnuttPreview
-@Composable
 private fun LectureDetailTopBar_SyllabusLecture_EditMode() {
     SnuttPreviewSurface {
         LectureDetailTopBar(
             lecture = PreviewData.syllabusLecture,
             editMode = true,
-            isBookmarked = false,
-            isVacancyRegistered = false,
-            onBackPressed = {},
-            onEditModeToggle = {},
-            onBookmarkToggle = {},
-            onVacancyToggle = {},
-        )
-    }
-}
-
-@SnuttPreview
-@Composable
-private fun LectureDetailTopBar_CustomLecture() {
-    SnuttPreviewSurface {
-        LectureDetailTopBar(
-            lecture = PreviewData.customLecture,
-            editMode = false,
             isBookmarked = false,
             isVacancyRegistered = false,
             onBackPressed = {},

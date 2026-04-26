@@ -321,3 +321,26 @@ private fun DayTimePickerSheetContent_Default() {
         )
     }
 }
+
+@SnuttPreview
+@Composable
+private fun DayPickerDialog_Default() {
+    SnuttPreviewSurface {
+        DayPickerDialog(
+            dayList = rememberDayList(),
+            initialDayIndex = 0,
+            onSelected = {},
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun TimePickerDialog_Default() {
+    SnuttPreviewSurface {
+        TimePickerDialog(
+            initialMinute = 9 * 60,
+            onSelected = {},
+        )
+    }
+}

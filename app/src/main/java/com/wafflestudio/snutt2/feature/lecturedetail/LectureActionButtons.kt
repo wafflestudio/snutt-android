@@ -138,17 +138,3 @@ private fun LectureActionButtons_SyllabusLecture_EditMode() {
     }
 }
 
-@SnuttPreview
-@Composable
-private fun LectureActionButtons_CustomLecture_ViewMode() {
-    SnuttPreviewSurface {
-        LectureActionButtons(
-            lecture = PreviewData.customLecture,
-            editMode = false,
-            onSyllabus = {},
-            onReview = {},
-            onDelete = {},
-            onReset = {},
-        )
-    }
-}

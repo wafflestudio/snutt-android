@@ -22,7 +22,6 @@ import com.wafflestudio.snutt2.feature.lecturedetail.PickerColorSection
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
-import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 
 @Composable
@@ -125,29 +124,6 @@ private fun LectureColorSelectorScreen_BuiltInTheme_Palette() {
                 selection = LectureColorSelectorUiState.ColorSelection.Palette(2),
                 pickerFgColor = LectureColor.Custom.Default.foreground,
                 pickerBgColor = LectureColor.Custom.Default.background,
-            ),
-            onBackPressed = {},
-            onSelectPalette = {},
-            onSelectPicker = {},
-            onOpenFgPicker = {},
-            onOpenBgPicker = {},
-            onDismissDialog = {},
-            onPickFgColor = {},
-            onPickBgColor = {},
-        )
-    }
-}
-
-@SnuttPreview
-@Composable
-private fun LectureColorSelectorScreen_BuiltInTheme_Picker() {
-    SnuttPreviewSurface {
-        LectureColorSelectorScreen(
-            uiState = LectureColorSelectorUiState.BuiltInThemeMode(
-                tableTheme = BuiltInTheme.SNUTT,
-                selection = LectureColorSelectorUiState.ColorSelection.Picker,
-                pickerFgColor = SNUTTColors.White.toArgb(),
-                pickerBgColor = 0xFF5965B2.toInt(),
             ),
             onBackPressed = {},
             onSelectPalette = {},

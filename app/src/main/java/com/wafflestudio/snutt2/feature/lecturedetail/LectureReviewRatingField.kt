@@ -95,16 +95,3 @@ private fun LectureReviewRatingField_WithoutReviewInfo() {
     }
 }
 
-@SnuttPreview
-@Composable
-private fun LectureReviewRatingField_ZeroReviewInfo() {
-    SnuttPreviewSurface {
-        LectureReviewRatingField(
-            reviewInfo = LectureReviewInfo(
-                id = "",
-                rating = null,
-                reviewCount = 0,
-            ),
-        )
-    }
-}
