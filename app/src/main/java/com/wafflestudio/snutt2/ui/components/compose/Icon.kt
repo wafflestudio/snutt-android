@@ -1,26 +1,18 @@
 package com.wafflestudio.snutt2.ui.components.compose
 
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
-import com.wafflestudio.snutt2.ui.theme.isDarkMode
 
 @Composable
 fun SnuttIcon(
@@ -167,18 +159,6 @@ fun LogoIcon(
 }
 
 @Composable
-fun ArrowUpIcon(
-    modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
-) {
-    SnuttIcon(
-        id = R.drawable.ic_arrow_up,
-        modifier = modifier,
-        colorFilter = colorFilter,
-    )
-}
-
-@Composable
 fun ArrowDownIcon(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
@@ -283,30 +263,6 @@ fun PaletteIcon(
 }
 
 @Composable
-fun PinIcon(
-    modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
-) {
-    SnuttIcon(
-        id = R.drawable.ic_pin,
-        modifier = modifier,
-        colorFilter = colorFilter,
-    )
-}
-
-@Composable
-fun PinOffIcon(
-    modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
-) {
-    SnuttIcon(
-        id = R.drawable.ic_pin_off,
-        modifier = modifier,
-        colorFilter = colorFilter,
-    )
-}
-
-@Composable
 fun TimetableIcon(
     modifier: Modifier = Modifier,
     isSelected: Boolean = false,
@@ -395,19 +351,6 @@ fun ThickReviewIcon(
 }
 
 @Composable
-fun SettingIcon(
-    modifier: Modifier = Modifier,
-    isSelected: Boolean = false,
-    colorFilter: ColorFilter? = null,
-) {
-    SnuttIcon(
-        id = if (isSelected) R.drawable.ic_setting_selected else R.drawable.ic_setting_unselected,
-        modifier = modifier,
-        colorFilter = colorFilter,
-    )
-}
-
-@Composable
 fun HorizontalMoreIcon(
     modifier: Modifier = Modifier,
     isSelected: Boolean = false,
@@ -481,45 +424,6 @@ fun SendIcon(
 }
 
 @Composable
-fun RedDot() {
-    Canvas(modifier = Modifier.size(5.dp)) {
-        drawCircle(SNUTTColors.Red)
-    }
-}
-
-@Composable
-fun RedDotWithNumber(
-    modifier: Modifier = Modifier,
-    number: Long,
-) {
-    Canvas(
-        modifier = modifier.size(16.dp),
-    ) {
-        drawCircle(
-            color = SNUTTColors.Red,
-            radius = size.minDimension / 2,
-        )
-
-        drawContext.canvas.nativeCanvas.apply {
-            val text = number.toString()
-
-            val paint = android.graphics.Paint().apply {
-                color = android.graphics.Color.WHITE
-                textAlign = android.graphics.Paint.Align.CENTER
-                isAntiAlias = true
-                textSize = size.minDimension * 0.7f
-                typeface = android.graphics.Typeface.DEFAULT_BOLD
-            }
-
-            val x = size.width / 2
-            val y = size.height / 2 - (paint.descent() + paint.ascent()) / 2
-
-            drawText(text, x, y, paint)
-        }
-    }
-}
-
-@Composable
 fun BigSearchIcon(
     modifier: Modifier = Modifier,
 ) {
@@ -548,19 +452,6 @@ fun AlarmOnIcon(
     SnuttIcon(
         id = R.drawable.tab_alarm_on,
         modifier = modifier,
-    )
-}
-
-@Composable
-fun LectureListIcon(
-    modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
-) {
-    SnuttIcon(
-        id = R.drawable.ic_lecture_list,
-        modifier = modifier,
-        colorFilter = colorFilter,
-        contentDescription = stringResource(R.string.home_timetable_drawer),
     )
 }
 
@@ -599,82 +490,6 @@ fun BookmarkIcon(
         modifier = modifier,
         colorFilter = colorFilter,
     )
-}
-
-@Composable
-fun BookmarkPageIcon(
-    modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
-) {
-    SnuttIcon(
-        id = R.drawable.ic_bookmark_page,
-        modifier = modifier.size(30.dp),
-        colorFilter = colorFilter,
-    )
-}
-
-@Composable
-fun IconWithAlertDot(
-    redDotExist: Boolean = false,
-    dotSize: Dp = 5.dp,
-    dotYOffset: Dp = 0.dp,
-    color: Color = SNUTTColors.Red,
-    content: @Composable (Modifier) -> Unit,
-) {
-    Box {
-        content(Modifier.align(Alignment.Center))
-        if (redDotExist) {
-            Canvas(
-                modifier = Modifier
-                    .size(dotSize)
-                    .align(Alignment.TopEnd)
-                    .offset(y = dotYOffset),
-            ) {
-                drawCircle(color)
-            }
-        }
-    }
-}
-
-@Composable
-fun IconWithAlertDotNumber(
-    modifier: Modifier = Modifier,
-    redDotNumber: Long = 0,
-    content: @Composable (Modifier) -> Unit,
-) {
-    Box {
-        content(Modifier.align(Alignment.Center))
-        if (redDotNumber > 0) {
-            Canvas(
-                modifier = Modifier
-                    .size(16.dp)
-                    .align(Alignment.TopEnd)
-                    .offset(x = 9.dp, y = (-5).dp),
-            ) {
-                drawCircle(
-                    color = SNUTTColors.Red,
-                    radius = size.minDimension / 2,
-                )
-
-                drawContext.canvas.nativeCanvas.apply {
-                    val text = redDotNumber.toString()
-
-                    val paint = android.graphics.Paint().apply {
-                        color = android.graphics.Color.WHITE
-                        textAlign = android.graphics.Paint.Align.CENTER
-                        isAntiAlias = true
-                        textSize = size.minDimension * 0.7f
-                        typeface = android.graphics.Typeface.DEFAULT_BOLD
-                    }
-
-                    val x = size.width / 2
-                    val y = size.height / 2 - (paint.descent() + paint.ascent()) / 2
-
-                    drawText(text, x, y, paint)
-                }
-            }
-        }
-    }
 }
 
 @Composable
@@ -884,16 +699,6 @@ fun NotificationTrashIcon(
 }
 
 @Composable
-fun CustomThemeMoreIcon(
-    modifier: Modifier = Modifier,
-) {
-    SnuttIcon(
-        id = if (isDarkMode()) R.drawable.ic_custom_theme_more_dark else R.drawable.ic_custom_theme_more,
-        modifier = modifier,
-    )
-}
-
-@Composable
 fun ArrowLeftBold(
     modifier: Modifier = Modifier,
     colorFilter: ColorFilter? = null,
@@ -952,38 +757,6 @@ fun FriendHashIcon(
         modifier = modifier,
         colorFilter = colorFilter,
     )
-}
-
-@SnuttPreview
-@Composable
-private fun RedDot_Default() {
-    SnuttPreviewSurface {
-        Box(modifier = Modifier.size(20.dp), contentAlignment = Alignment.Center) {
-            RedDot()
-        }
-    }
-}
-
-@SnuttPreview
-@Composable
-private fun RedDotWithNumber_Default() {
-    SnuttPreviewSurface {
-        Box(modifier = Modifier.size(30.dp), contentAlignment = Alignment.Center) {
-            RedDotWithNumber(number = 3)
-        }
-    }
-}
-
-@SnuttPreview
-@Composable
-private fun IconWithAlertDot_Default() {
-    SnuttPreviewSurface {
-        Box(modifier = Modifier.size(40.dp), contentAlignment = Alignment.Center) {
-            IconWithAlertDot(redDotExist = true) {
-                NotificationIcon(modifier = it.size(30.dp))
-            }
-        }
-    }
 }
 
 @SnuttPreview
