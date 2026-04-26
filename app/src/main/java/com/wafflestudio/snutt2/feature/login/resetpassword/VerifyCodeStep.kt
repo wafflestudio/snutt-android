@@ -13,11 +13,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -45,28 +41,27 @@ import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 @Composable
 fun VerifyCodeStep(
     uiState: FindPasswordViewModel.UIState.VerifyCode,
+    onCodeFieldChange: (String) -> Unit,
     onRequestResend: () -> Unit,
-    onSubmit: (String) -> Unit,
+    onSubmit: () -> Unit,
+    onShowWhyNotCodeComingDialog: () -> Unit,
+    onDismissDialog: () -> Unit,
 ) {
     val keyboardManager = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
-    var codeField by remember { mutableStateOf("") }
-    var showWhyNotCodeComingDialog by remember { mutableStateOf(false) }
+    val codeField = uiState.codeField
+    val isWhyNotCodeComingDialogShown = uiState.dialogState is FindPasswordViewModel.UIState.VerifyCode.VerifyCodeDialogState.WhyNotCodeComing
     val timerState = rememberTimerState(
         initialValue = TimerValue.Initial,
         durationInSecond = 180,
     )
-    val buttonEnabled by remember {
-        derivedStateOf {
-            codeField.length == 8 && timerState.isRunning
-        }
-    }
+    val buttonEnabled = codeField.length == 8 && timerState.isRunning
 
     LaunchedEffect(Unit) {
         timerState.start()
     }
-    LaunchedEffect(showWhyNotCodeComingDialog) {
-        if (showWhyNotCodeComingDialog.not()) {
+    LaunchedEffect(isWhyNotCodeComingDialogShown) {
+        if (!isWhyNotCodeComingDialogShown) {
             focusRequester.requestFocus()
             keyboardManager?.show()
         }
@@ -96,12 +91,12 @@ fun VerifyCodeStep(
                 .fillMaxWidth()
                 .focusRequester(focusRequester),
             value = codeField,
-            onValueChange = { codeField = it },
+            onValueChange = onCodeFieldChange,
             hint = stringResource(R.string.find_password_send_code_hint),
             keyboardActions = KeyboardActions(
                 onDone = {
                     if (buttonEnabled) {
-                        onSubmit(codeField)
+                        onSubmit()
                     }
                 },
             ),
@@ -156,7 +151,7 @@ fun VerifyCodeStep(
             modifier = Modifier.fillMaxWidth(),
             enabled = buttonEnabled,
             onClick = {
-                onSubmit(codeField)
+                onSubmit()
             },
         ) {
             Text(
@@ -172,18 +167,16 @@ fun VerifyCodeStep(
                 text = stringResource(R.string.find_password_send_code_not_coming),
                 style = SNUTTTypography.body1.copy(color = SNUTTColors.VacancyGray),
                 modifier = Modifier.clicks {
-                    showWhyNotCodeComingDialog = true
+                    onShowWhyNotCodeComingDialog()
                 },
             )
         }
     }
 
-    if (showWhyNotCodeComingDialog) {
+    if (isWhyNotCodeComingDialogShown) {
         CustomDialog(
             title = stringResource(R.string.find_password_enter_verification_code_why_not_coming),
-            onConfirm = {
-                showWhyNotCodeComingDialog = false
-            },
+            onConfirm = onDismissDialog,
             onDismiss = {},
             positiveButtonText = stringResource(R.string.common_ok),
             negativeButtonText = null,
@@ -198,8 +191,11 @@ private fun VerifyCodeStep_Default() {
     SnuttPreviewSurface {
         VerifyCodeStep(
             uiState = FindPasswordViewModel.UIState.VerifyCode(fullEmail = "snutt_user@snu.ac.kr"),
+            onCodeFieldChange = {},
             onRequestResend = {},
             onSubmit = {},
+            onShowWhyNotCodeComingDialog = {},
+            onDismissDialog = {},
         )
     }
 }

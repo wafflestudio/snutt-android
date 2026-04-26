@@ -12,11 +12,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalContext
@@ -25,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.isEmailInvalid
 import com.wafflestudio.snutt2.ui.components.compose.EditText
@@ -43,6 +40,7 @@ fun FindIdPage(
     onNavigateBack: () -> Unit,
 ) {
     val context = LocalContext.current
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val successMessageTemplate = stringResource(R.string.find_id_send_email_success_message)
 
     LaunchedEffect(Unit) {
@@ -58,14 +56,18 @@ fun FindIdPage(
     }
 
     FindIdScreen(
-        onSubmit = { email -> viewModel.findIdByEmail(email) },
+        emailField = uiState.emailField,
+        onEmailFieldChange = viewModel::onEmailFieldChange,
+        onSubmit = viewModel::findIdByEmail,
         onNavigateBack = onNavigateBack,
     )
 }
 
 @Composable
 private fun FindIdScreen(
-    onSubmit: (String) -> Unit,
+    emailField: String,
+    onEmailFieldChange: (String) -> Unit,
+    onSubmit: () -> Unit,
     onNavigateBack: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -73,9 +75,7 @@ private fun FindIdScreen(
     val enterEmailMessage = stringResource(R.string.settings_user_config_enter_email)
     val wrongEmailFormatMessage = stringResource(R.string.find_id_wrong_email_format)
 
-    // TODO: 뷰모델로 상태 옮기기
-    var emailField by remember { mutableStateOf("") }
-    val buttonEnabled by remember { derivedStateOf { emailField.isNotEmpty() } }
+    val buttonEnabled = emailField.isNotEmpty()
 
     val handleSendIdToEmail = {
         if (emailField.isEmpty()) {
@@ -83,7 +83,7 @@ private fun FindIdScreen(
         } else if (emailField.isEmailInvalid()) {
             context.toast(wrongEmailFormatMessage)
         } else {
-            onSubmit(emailField)
+            onSubmit()
         }
     }
 
@@ -110,7 +110,7 @@ private fun FindIdScreen(
             )
             EditText(
                 value = emailField,
-                onValueChange = { emailField = it },
+                onValueChange = onEmailFieldChange,
                 hint = stringResource(R.string.settings_user_config_enter_email),
                 keyboardActions = KeyboardActions(
                     onNext = { focusManager.moveFocus(FocusDirection.Down) },
@@ -141,6 +141,8 @@ private fun FindIdScreen(
 private fun FindIdScreen_Default() {
     SnuttPreviewSurface {
         FindIdScreen(
+            emailField = "",
+            onEmailFieldChange = {},
             onSubmit = {},
             onNavigateBack = {},
         )

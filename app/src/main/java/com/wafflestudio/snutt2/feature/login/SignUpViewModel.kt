@@ -34,11 +34,28 @@ class SignUpViewModel @Inject constructor(
     private val _uiEvent = MutableSharedFlow<SignUpUiEvent>()
     val uiEvent = _uiEvent.asSharedFlow()
 
-    fun signUp(id: String, email: String, password: String) {
+    fun onIdFieldChange(value: String) {
+        _uiState.update { it.copy(idField = value) }
+    }
+
+    fun onPasswordFieldChange(value: String) {
+        _uiState.update { it.copy(passwordField = value) }
+    }
+
+    fun onPasswordConfirmFieldChange(value: String) {
+        _uiState.update { it.copy(passwordConfirmField = value) }
+    }
+
+    fun onEmailFieldChange(value: String) {
+        _uiState.update { it.copy(emailField = value) }
+    }
+
+    fun signUp(formattedEmail: String) {
+        val state = _uiState.value
         viewModelScope.launch {
             analyticsLogger.logEvent(AnalyticsEvent.SignUp)
             _uiState.update { it.copy(isLoading = true) }
-            userRepository.postSignUp(id, password, email)
+            userRepository.postSignUp(state.idField, state.passwordField, formattedEmail)
                 .onSuccess {
                     refreshInitialDataUseCase()
                     _uiEvent.emit(SignUpUiEvent.NavigateEmailVerification)
@@ -54,6 +71,10 @@ class SignUpViewModel @Inject constructor(
 }
 
 data class SignUpUiState(
+    val idField: String = "",
+    val passwordField: String = "",
+    val passwordConfirmField: String = "",
+    val emailField: String = "",
     val isLoading: Boolean = false,
 )
 

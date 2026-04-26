@@ -11,7 +11,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,7 +38,8 @@ import com.wafflestudio.snutt2.ui.util.toast
 @Composable
 fun CheckIdStep(
     uiState: FindPasswordViewModel.UIState.CheckId,
-    onSubmit: (String) -> Unit,
+    onIdFieldChange: (String) -> Unit,
+    onSubmit: () -> Unit,
 ) {
     val focusRequester = remember { FocusRequester() }
     val context = LocalContext.current
@@ -53,17 +53,13 @@ fun CheckIdStep(
             ),
         )
     }
-    val buttonEnabled by remember {
-        derivedStateOf {
-            idField.text.isNotEmpty()
-        }
-    }
+    val buttonEnabled = idField.text.isNotEmpty()
 
     val sendIdAndRequestMaskedEmail = {
         if (idField.text.isEmpty()) {
             context.toast(enterIdHintMessage)
         } else {
-            onSubmit(idField.text)
+            onSubmit()
         }
     }
 
@@ -98,11 +94,14 @@ fun CheckIdStep(
                     idField = idField.copy(selection = TextRange(idField.text.length))
                 },
             value = idField,
-            onValueChange = { idField = it },
+            onValueChange = {
+                idField = it
+                onIdFieldChange(it.text)
+            },
             hint = stringResource(R.string.find_password_enter_id_hint),
             keyboardActions = KeyboardActions(
                 onDone = {
-                    onSubmit(idField.text)
+                    onSubmit()
                 },
             ),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -131,6 +130,7 @@ private fun CheckIdStep_Empty() {
     SnuttPreviewSurface {
         CheckIdStep(
             uiState = FindPasswordViewModel.UIState.CheckId(userId = ""),
+            onIdFieldChange = {},
             onSubmit = {},
         )
     }
@@ -142,6 +142,7 @@ private fun CheckIdStep_Filled() {
     SnuttPreviewSurface {
         CheckIdStep(
             uiState = FindPasswordViewModel.UIState.CheckId(userId = "snutt_user"),
+            onIdFieldChange = {},
             onSubmit = {},
         )
     }
