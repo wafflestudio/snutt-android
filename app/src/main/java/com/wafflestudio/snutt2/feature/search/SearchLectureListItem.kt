@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.feature.search
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -326,21 +327,23 @@ private fun LectureActionButton(
 @Composable
 private fun SearchLectureListItem_Collapsed() {
     SnuttPreviewSurface {
-        SearchLectureListItem(
-            lecture = PreviewData.sampleLectures.first(),
-            lectureState = LectureState(
-                selected = false,
-                contained = false,
-                isBookmarked = false,
-                isVacancyRegistered = false,
-            ),
-            onClick = {},
-            onClickDetail = {},
-            onClickReview = {},
-            onClickBookmark = {},
-            onClickVacancy = {},
-            onClickAddOrRemove = {},
-        )
+        Box(modifier = Modifier.background(SNUTTColors.Dim2)) {
+            SearchLectureListItem(
+                lecture = PreviewData.sampleLectures.first(),
+                lectureState = LectureState(
+                    selected = false,
+                    contained = false,
+                    isBookmarked = false,
+                    isVacancyRegistered = false,
+                ),
+                onClick = {},
+                onClickDetail = {},
+                onClickReview = {},
+                onClickBookmark = {},
+                onClickVacancy = {},
+                onClickAddOrRemove = {},
+            )
+        }
     }
 }
 
@@ -348,21 +351,23 @@ private fun SearchLectureListItem_Collapsed() {
 @Composable
 private fun SearchLectureListItem_Expanded() {
     SnuttPreviewSurface {
-        SearchLectureListItem(
-            lecture = PreviewData.sampleLectures.first(),
-            lectureState = LectureState(
-                selected = true,
-                contained = false,
-                isBookmarked = false,
-                isVacancyRegistered = false,
-            ),
-            onClick = {},
-            onClickDetail = {},
-            onClickReview = {},
-            onClickBookmark = {},
-            onClickVacancy = {},
-            onClickAddOrRemove = {},
-        )
+        Box(modifier = Modifier.background(SNUTTColors.Dim2)) {
+            SearchLectureListItem(
+                lecture = PreviewData.sampleLectures.first(),
+                lectureState = LectureState(
+                    selected = true,
+                    contained = false,
+                    isBookmarked = false,
+                    isVacancyRegistered = false,
+                ),
+                onClick = {},
+                onClickDetail = {},
+                onClickReview = {},
+                onClickBookmark = {},
+                onClickVacancy = {},
+                onClickAddOrRemove = {},
+            )
+        }
     }
 }
 
@@ -370,21 +375,23 @@ private fun SearchLectureListItem_Expanded() {
 @Composable
 private fun SearchLectureListItem_ExpandedContained() {
     SnuttPreviewSurface {
-        SearchLectureListItem(
-            lecture = PreviewData.sampleLectures.first(),
-            lectureState = LectureState(
-                selected = true,
-                contained = true,
-                isBookmarked = true,
-                isVacancyRegistered = true,
-            ),
-            onClick = {},
-            onClickDetail = {},
-            onClickReview = {},
-            onClickBookmark = {},
-            onClickVacancy = {},
-            onClickAddOrRemove = {},
-        )
+        Box(modifier = Modifier.background(SNUTTColors.Dim2)) {
+            SearchLectureListItem(
+                lecture = PreviewData.sampleLectures.first(),
+                lectureState = LectureState(
+                    selected = true,
+                    contained = true,
+                    isBookmarked = true,
+                    isVacancyRegistered = true,
+                ),
+                onClick = {},
+                onClickDetail = {},
+                onClickReview = {},
+                onClickBookmark = {},
+                onClickVacancy = {},
+                onClickAddOrRemove = {},
+            )
+        }
     }
 }
 
