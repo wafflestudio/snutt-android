@@ -502,8 +502,10 @@ class HomeDrawerViewModelTest {
     fun `changeTableTitle 호출 시 repository의 updateTableName을 호출한다`() = runTest {
         val summary = tableSummary(id = "t1")
         val viewModel = createViewModel()
+        viewModel.openChangeTableNameDialog(summary)
+        viewModel.onChangeTableNameTitleChange("변경된 이름")
 
-        viewModel.changeTableTitle(summary, "변경된 이름")
+        viewModel.changeTableTitle()
 
         assertEquals(summary to "변경된 이름", fakeTableRepository.updateTableNameCalledWith)
     }
@@ -512,9 +514,11 @@ class HomeDrawerViewModelTest {
     fun `changeTableTitle 성공 시 CloseBottomSheet 이벤트가 발생한다`() = runTest {
         fakeTableRepository.updateTableNameResult = Result.Success(Unit)
         val viewModel = createViewModel()
+        viewModel.openChangeTableNameDialog(tableSummary(id = "t1"))
+        viewModel.onChangeTableNameTitleChange("변경된 이름")
 
         viewModel.uiEvent.test {
-            viewModel.changeTableTitle(tableSummary(id = "t1"), "변경된 이름")
+            viewModel.changeTableTitle()
             assertEquals(HomeDrawerUiEvent.CloseBottomSheet, awaitItem())
         }
     }
@@ -525,9 +529,10 @@ class HomeDrawerViewModelTest {
         val viewModel = createViewModel()
         val summary = tableSummary(id = "t1")
         viewModel.openChangeTableNameDialog(summary)
+        viewModel.onChangeTableNameTitleChange("변경된 이름")
         val before = viewModel.uiState.value
 
-        viewModel.changeTableTitle(summary, "변경된 이름")
+        viewModel.changeTableTitle()
 
         assertEquals(
             before.copy(dialogState = HomeDrawerUiState.DialogState.None),
@@ -540,9 +545,11 @@ class HomeDrawerViewModelTest {
         fakeTableRepository.updateTableNameResult =
             Result.Fail(Unknown(displayTitle = "", displayMessage = "에러"))
         val viewModel = createViewModel()
+        viewModel.openChangeTableNameDialog(tableSummary(id = "t1"))
+        viewModel.onChangeTableNameTitleChange("변경된 이름")
 
         viewModel.uiEvent.test {
-            viewModel.changeTableTitle(tableSummary(id = "t1"), "변경된 이름")
+            viewModel.changeTableTitle()
             assertEquals(HomeDrawerUiEvent.ShowToast("에러"), awaitItem())
         }
     }

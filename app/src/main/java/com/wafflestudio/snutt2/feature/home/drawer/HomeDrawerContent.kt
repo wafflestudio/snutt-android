@@ -55,7 +55,8 @@ fun HomeDrawerContent(
     onClickCopyIcon: (TableSummary) -> Unit,
     onClickMoreIcon: (tableSummary: TableSummary) -> Unit,
     onDismissDialog: () -> Unit,
-    onConfirmChangeTableTitle: (TableSummary, String) -> Unit,
+    onChangeTableNameTitleChange: (String) -> Unit,
+    onConfirmChangeTableTitle: () -> Unit,
     onConfirmDeleteTable: (tableSummary: TableSummary) -> Unit,
 ) {
     val context = LocalContext.current
@@ -63,6 +64,7 @@ fun HomeDrawerContent(
     HomeDrawerDialogs(
         uiState = uiState,
         onDismiss = onDismissDialog,
+        onChangeTableNameTitleChange = onChangeTableNameTitleChange,
         onConfirmChangeTableTitle = onConfirmChangeTableTitle,
         onConfirmDeleteTable = onConfirmDeleteTable,
     )
@@ -232,7 +234,8 @@ private fun HomeDrawerContent_Default() {
             onClickCopyIcon = {},
             onClickMoreIcon = {},
             onDismissDialog = {},
-            onConfirmChangeTableTitle = { _, _ -> },
+            onChangeTableNameTitleChange = {},
+            onConfirmChangeTableTitle = {},
             onConfirmDeleteTable = {},
         )
     }

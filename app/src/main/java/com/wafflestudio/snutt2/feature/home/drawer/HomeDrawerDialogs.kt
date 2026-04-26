@@ -2,10 +2,6 @@ package com.wafflestudio.snutt2.feature.home.drawer
 
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.TableSummary
@@ -25,24 +21,24 @@ import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 fun HomeDrawerDialogs(
     uiState: HomeDrawerUiState,
     onDismiss: () -> Unit,
-    onConfirmChangeTableTitle: (TableSummary, String) -> Unit,
+    onChangeTableNameTitleChange: (String) -> Unit,
+    onConfirmChangeTableTitle: () -> Unit,
     onConfirmDeleteTable: (tableSummary: TableSummary) -> Unit,
 ) {
     when (uiState.dialogState) {
         HomeDrawerUiState.DialogState.None -> {}
         is HomeDrawerUiState.DialogState.ChangeTableName -> {
-            var newTitle by remember { mutableStateOf(uiState.dialogState.tableSummary.title) }
-
             CustomDialog(
                 onDismiss = onDismiss,
-                onConfirm = {
-                    onConfirmChangeTableTitle(uiState.dialogState.tableSummary, newTitle)
-                },
+                onConfirm = onConfirmChangeTableTitle,
                 title = stringResource(R.string.home_drawer_change_name_dialog_title),
                 positiveButtonText = stringResource(R.string.common_ok),
                 negativeButtonText = stringResource(R.string.common_cancel),
             ) {
-                EditText(value = newTitle, onValueChange = { newTitle = it })
+                EditText(
+                    value = uiState.dialogState.newTitle,
+                    onValueChange = onChangeTableNameTitleChange,
+                )
             }
         }
 
@@ -76,7 +72,8 @@ private fun HomeDrawerDialogs_ChangeTableName() {
                 ),
             ),
             onDismiss = {},
-            onConfirmChangeTableTitle = { _, _ -> },
+            onChangeTableNameTitleChange = {},
+            onConfirmChangeTableTitle = {},
             onConfirmDeleteTable = {},
         )
     }
@@ -93,7 +90,8 @@ private fun HomeDrawerDialogs_DeleteTable() {
                 ),
             ),
             onDismiss = {},
-            onConfirmChangeTableTitle = { _, _ -> },
+            onChangeTableNameTitleChange = {},
+            onConfirmChangeTableTitle = {},
             onConfirmDeleteTable = {},
         )
     }

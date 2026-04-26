@@ -206,6 +206,13 @@ class HomeDrawerViewModel @Inject constructor(
         }
     }
 
+    fun onChangeTableNameTitleChange(value: String) {
+        _uiState.update {
+            val dialog = it.dialogState as? HomeDrawerUiState.DialogState.ChangeTableName ?: return@update it
+            it.copy(dialogState = dialog.copy(newTitle = value))
+        }
+    }
+
     fun setPrimaryTable(tableSummary: TableSummary) {
         viewModelScope.launch {
             tableRepository.setPrimaryTable(tableSummary)
@@ -314,7 +321,10 @@ class HomeDrawerViewModel @Inject constructor(
         }
     }
 
-    fun changeTableTitle(table: TableSummary, newTitle: String) {
+    fun changeTableTitle() {
+        val dialog = _uiState.value.dialogState as? HomeDrawerUiState.DialogState.ChangeTableName ?: return
+        val table = dialog.tableSummary
+        val newTitle = dialog.newTitle
         viewModelScope.launch {
             tableRepository.updateTableName(table, newTitle)
                 .onFailure {
@@ -442,6 +452,7 @@ data class HomeDrawerUiState(
         data object None : DialogState
         data class ChangeTableName(
             val tableSummary: TableSummary,
+            val newTitle: String = tableSummary.title,
         ) : DialogState
 
         data class DeleteTable(

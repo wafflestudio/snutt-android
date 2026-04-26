@@ -151,19 +151,31 @@ class TimeTableViewModel @Inject constructor(
         }
     }
 
-    fun changeTableTitle(table: TableSummary, newTitle: String) {
+    fun onChangeTableNameTitleChange(value: String) {
+        _uiState.update { state ->
+            if (state !is TimeTableUiState.Loaded) return@update state
+            val dialog = state.dialogState as? TimeTableUiState.DialogState.ChangeTableName ?: return@update state
+            state.copy(dialogState = dialog.copy(newTitle = value))
+        }
+    }
+
+    fun changeTableTitle() {
+        val state = _uiState.value as? TimeTableUiState.Loaded ?: return
+        val dialog = state.dialogState as? TimeTableUiState.DialogState.ChangeTableName ?: return
+        val table = dialog.tableSummary
+        val newTitle = dialog.newTitle
         viewModelScope.launch {
             tableRepository.updateTableName(table, newTitle)
                 .onFailure {
                     handleError(it)
                 }.onSuccess {
-                    _uiState.update { state ->
-                        when (state) {
-                            is TimeTableUiState.Loaded -> state.copy(
+                    _uiState.update { current ->
+                        when (current) {
+                            is TimeTableUiState.Loaded -> current.copy(
                                 dialogState = TimeTableUiState.DialogState.None,
                             )
 
-                            else -> state
+                            else -> current
                         }
                     }
                 }
@@ -207,6 +219,7 @@ sealed interface TimeTableUiState {
         data object None : DialogState
         data class ChangeTableName(
             val tableSummary: TableSummary,
+            val newTitle: String = tableSummary.title,
         ) : DialogState
     }
 }
