@@ -5,8 +5,35 @@ import com.wafflestudio.snutt2.domain.model.diary.DiaryQuestionAnswer
 import com.wafflestudio.snutt2.domain.model.diary.DiarySummary
 import com.wafflestudio.snutt2.lib.toDataWithState
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 object DiaryPreviewData {
+    val sampleDiarySummaryLongComment = DiarySummary(
+        id = "preview-id-1",
+        lectureId = "",
+        courseName = "시각디자인기초",
+        date = LocalDateTime.of(2025, 3, 20, 12, 0),
+        questionAnswers = listOf(
+            DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
+            DiaryQuestionAnswer(question = "드랍여부", answer = "안했어요"),
+            DiaryQuestionAnswer(question = "수업 첫인상", answer = "하.."),
+        ),
+        comment = "좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.",
+    )
+
+    val sampleDiarySummaryShortComment = DiarySummary(
+        id = "preview-id-2",
+        lectureId = "",
+        courseName = "배구",
+        date = LocalDateTime.of(2025, 3, 20, 12, 0),
+        questionAnswers = listOf(
+            DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
+            DiaryQuestionAnswer(question = "드랍여부", answer = "안했어요"),
+            DiaryQuestionAnswer(question = "수업 첫인상", answer = "하.."),
+        ),
+        comment = "좋아요",
+    )
+
     val courseBookList = listOf(
         CourseBook(semester = 3, year = 2024),
         CourseBook(semester = 2, year = 2024),

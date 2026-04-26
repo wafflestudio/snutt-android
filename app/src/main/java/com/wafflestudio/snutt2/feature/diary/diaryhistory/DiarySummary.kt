@@ -26,8 +26,8 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.domain.model.diary.DiaryQuestionAnswer
 import com.wafflestudio.snutt2.domain.model.diary.DiarySummary
+import com.wafflestudio.snutt2.domain.model.preview.DiaryPreviewData
 import com.wafflestudio.snutt2.feature.diary.DiaryTheme
 import com.wafflestudio.snutt2.ui.components.compose.ArrowDownIcon
 import com.wafflestudio.snutt2.ui.components.compose.TrashIcon
@@ -181,38 +181,18 @@ private fun DiarySummary(
     }
 }
 
-private val previewSummary1 = DiarySummary(
-    id = "preview-id-1",
-    lectureId = "",
-    courseName = "시각디자인기초",
-    date = java.time.LocalDateTime.of(2025, 3, 20, 12, 0),
-    questionAnswers = listOf(
-        DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
-        DiaryQuestionAnswer(question = "드랍여부", answer = "안했어요"),
-        DiaryQuestionAnswer(question = "수업 첫인상", answer = "하.."),
-    ),
-    comment = "좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.좋아요.",
-)
-
-private val previewSummary2 = DiarySummary(
-    id = "preview-id-2",
-    lectureId = "",
-    courseName = "배구",
-    date = java.time.LocalDateTime.of(2025, 3, 20, 12, 0),
-    questionAnswers = listOf(
-        DiaryQuestionAnswer(question = "수강신청", answer = "널널해요"),
-        DiaryQuestionAnswer(question = "드랍여부", answer = "안했어요"),
-        DiaryQuestionAnswer(question = "수업 첫인상", answer = "하.."),
-    ),
-    comment = "좋아요",
-)
-
 @SnuttPreview
 @Composable
 private fun DiarySummariesOfDay_Collapsed() {
     SnuttPreviewSurface {
         DiaryTheme {
-            DiarySummariesOfDay(LocalDate.of(2025, 3, 20), listOf(previewSummary1), false, {}, { _ -> })
+            DiarySummariesOfDay(
+                LocalDate.of(2025, 3, 20),
+                listOf(DiaryPreviewData.sampleDiarySummaryLongComment),
+                false,
+                {},
+                { _ -> },
+            )
         }
     }
 }
@@ -222,17 +202,16 @@ private fun DiarySummariesOfDay_Collapsed() {
 private fun DiarySummariesOfDay_Expanded() {
     SnuttPreviewSurface {
         DiaryTheme {
-            DiarySummariesOfDay(LocalDate.of(2025, 3, 20), listOf(previewSummary1, previewSummary2), true, {}, { _ -> })
-        }
-    }
-}
-
-@SnuttPreview
-@Composable
-private fun DiarySummary_Default() {
-    SnuttPreviewSurface {
-        DiaryTheme {
-            DiarySummary(previewSummary2, {})
+            DiarySummariesOfDay(
+                LocalDate.of(2025, 3, 20),
+                listOf(
+                    DiaryPreviewData.sampleDiarySummaryLongComment,
+                    DiaryPreviewData.sampleDiarySummaryShortComment,
+                ),
+                true,
+                {},
+                { _ -> },
+            )
         }
     }
 }
