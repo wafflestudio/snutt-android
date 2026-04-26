@@ -15,8 +15,6 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
-import com.wafflestudio.snutt2.ui.preview.SnuttPreview
-import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.ThemeMode
 
 @Composable
@@ -64,17 +62,6 @@ private fun PersonalInformationPolicyScreen(
                     )
                 }
             },
-        )
-    }
-}
-
-@SnuttPreview
-@Composable
-private fun PersonalInformationPolicyScreen_Default() {
-    SnuttPreviewSurface {
-        PersonalInformationPolicyScreen(
-            themeMode = ThemeMode.AUTO,
-            onNavigateBack = {},
         )
     }
 }

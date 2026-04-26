@@ -295,7 +295,7 @@ private fun ThemeDetailScreen_Success() {
         ThemeDetailScreen(
             uiState = ThemeDetailUiState.Success(
                 editingTheme = PreviewData.previewEditingThemeCustom,
-                lectures = emptyList(),
+                lectures = PreviewData.themeDetailSampleLectures,
                 theme = BuiltInTheme.SNUTT,
                 previewTheme = PreviewData.previewCustomTheme1,
                 fittedTrimParam = TableTrimParam.Default,

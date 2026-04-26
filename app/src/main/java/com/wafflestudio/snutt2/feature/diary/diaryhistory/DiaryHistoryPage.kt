@@ -34,7 +34,6 @@ import com.wafflestudio.snutt2.domain.model.diary.DiarySummary
 import com.wafflestudio.snutt2.domain.model.preview.DiaryPreviewData
 import com.wafflestudio.snutt2.feature.diary.DiaryTheme
 import com.wafflestudio.snutt2.ui.components.compose.ArrowBackIcon
-import com.wafflestudio.snutt2.ui.components.compose.ConfirmDialog
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
@@ -191,24 +190,6 @@ private fun DiaryHistoryScreen_Default() {
                     selectedCourseBook = courseBookList[0],
                     diarySummariesByCourseBook = mapOf(courseBookList[0] to DiaryPreviewData.diaryList),
                 ),
-            )
-        }
-    }
-}
-
-@Composable
-private fun DiaryHistoryDialogs(
-    dialogState: DiaryHistoryUiState.DialogState,
-    onDismiss: () -> Unit,
-    onConfirmDeleteDiary: (DiarySummary) -> Unit,
-) {
-    when (dialogState) {
-        DiaryHistoryUiState.DialogState.None -> {}
-        is DiaryHistoryUiState.DialogState.DeleteDiary -> {
-            ConfirmDialog(
-                onDismiss = onDismiss,
-                onConfirm = { onConfirmDeleteDiary(dialogState.diary) },
-                title = stringResource(R.string.diary_delete_confirm_message, dialogState.diary.courseName),
             )
         }
     }

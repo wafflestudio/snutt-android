@@ -452,19 +452,3 @@ private fun TimetableConfigScreen_Default() {
         )
     }
 }
-
-@SnuttPreview
-@Composable
-private fun PoorSwitch_On() {
-    SnuttPreviewSurface {
-        PoorSwitch(state = true)
-    }
-}
-
-@SnuttPreview
-@Composable
-private fun PoorSwitch_Off() {
-    SnuttPreviewSurface {
-        PoorSwitch(state = false)
-    }
-}
