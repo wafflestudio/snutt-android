@@ -42,25 +42,16 @@ fun CreateTableBottomSheet(
     sheetState: ModalBottomSheetState,
     sheetType: HomeDrawerBottomSheetType.CreateNewTable,
     onDismiss: () -> Unit,
-    onSubmit: (courseBook: CourseBook, newTitle: String) -> Unit,
+    onTitleChange: (String) -> Unit,
+    onCourseBookChange: (CourseBook) -> Unit,
+    onSubmit: () -> Unit,
 ) {
     val context = LocalContext.current
-    var title by remember(sheetType) { mutableStateOf("") }
-    var pickedCourseBook by remember { mutableStateOf((sheetType as? HomeDrawerBottomSheetType.CreateNewTable.SelectCourseBook)?.initialCourseBook) }
+    val title = sheetType.title
 
     var clearFocusFlag by remember { mutableStateOf(false) }
     LaunchedEffect(sheetState.isVisible) {
         clearFocusFlag = sheetState.isVisible.not()
-    }
-
-    val submit = {
-        if (sheetType is HomeDrawerBottomSheetType.CreateNewTable.SpecificCourseBook) {
-            onSubmit(sheetType.courseBook, title)
-        } else {
-            pickedCourseBook?.let {
-                onSubmit(it, title)
-            }
-        }
     }
 
     Column(
@@ -89,7 +80,7 @@ fun CreateTableBottomSheet(
                     )
                 },
                 modifier = Modifier.clicks(enabled = title.isNotEmpty()) {
-                    submit()
+                    onSubmit()
                 },
             )
         }
@@ -101,13 +92,13 @@ fun CreateTableBottomSheet(
         Spacer(modifier = Modifier.height(15.dp))
         EditText(
             value = title,
-            onValueChange = { title = it },
+            onValueChange = onTitleChange,
             hint = stringResource(R.string.home_drawer_create_table_bottom_sheet_hint),
             underlineColor = SNUTTColors.SNUTTTheme,
             underlineColorFocused = SNUTTColors.SNUTTTheme,
             underlineWidth = 2.dp,
             keyboardActions = KeyboardActions(
-                onDone = { submit() },
+                onDone = { onSubmit() },
             ),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             clearFocusFlag = clearFocusFlag,
@@ -119,7 +110,7 @@ fun CreateTableBottomSheet(
                 list = sheetType.allCourseBook,
                 initialCenterIndex = sheetType.allCourseBook.indexOf(sheetType.initialCourseBook),
                 onValueChanged = { index ->
-                    pickedCourseBook = sheetType.allCourseBook[index]
+                    onCourseBookChange(sheetType.allCourseBook[index])
                 },
                 PickerItemContent = {
                     Text(
@@ -151,7 +142,9 @@ private fun CreateTableBottomSheet_SelectCourseBook() {
                 allCourseBook = sampleCourseBooks,
             ),
             onDismiss = {},
-            onSubmit = { _, _ -> },
+            onTitleChange = {},
+            onCourseBookChange = {},
+            onSubmit = {},
         )
     }
 }
@@ -168,7 +161,9 @@ private fun CreateTableBottomSheet_SpecificCourseBook() {
                 courseBook = CourseBook(semester = 1, year = 2025),
             ),
             onDismiss = {},
-            onSubmit = { _, _ -> },
+            onTitleChange = {},
+            onCourseBookChange = {},
+            onSubmit = {},
         )
     }
 }

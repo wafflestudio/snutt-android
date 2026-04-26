@@ -186,7 +186,32 @@ class HomeDrawerViewModel @Inject constructor(
         }
     }
 
-    fun createNewTable(courseBook: CourseBook, title: String) {
+    fun onCreateNewTableTitleChange(value: String) {
+        _uiState.update { state ->
+            val newSheet = when (val sheet = state.homeDrawerBottomSheetType) {
+                is HomeDrawerBottomSheetType.CreateNewTable.SelectCourseBook -> sheet.copy(title = value)
+                is HomeDrawerBottomSheetType.CreateNewTable.SpecificCourseBook -> sheet.copy(title = value)
+                else -> return@update state
+            }
+            state.copy(homeDrawerBottomSheetType = newSheet)
+        }
+    }
+
+    fun onCreateNewTableCourseBookChange(courseBook: CourseBook) {
+        _uiState.update { state ->
+            val sheet = state.homeDrawerBottomSheetType as? HomeDrawerBottomSheetType.CreateNewTable.SelectCourseBook
+                ?: return@update state
+            state.copy(homeDrawerBottomSheetType = sheet.copy(pickedCourseBook = courseBook))
+        }
+    }
+
+    fun createNewTable() {
+        val sheet = _uiState.value.homeDrawerBottomSheetType as? HomeDrawerBottomSheetType.CreateNewTable ?: return
+        val courseBook = when (sheet) {
+            is HomeDrawerBottomSheetType.CreateNewTable.SelectCourseBook -> sheet.pickedCourseBook
+            is HomeDrawerBottomSheetType.CreateNewTable.SpecificCourseBook -> sheet.courseBook
+        }
+        val title = sheet.title
         viewModelScope.launch {
             tableRepository.createAndSelectTable(
                 courseBook = courseBook,
@@ -478,13 +503,18 @@ sealed class HomeDrawerBottomSheetType {
 
     data object CreateNewTheme : HomeDrawerBottomSheetType()
     sealed class CreateNewTable : HomeDrawerBottomSheetType() {
+        abstract val title: String
+
         data class SelectCourseBook(
             val initialCourseBook: CourseBook,
             val allCourseBook: List<CourseBook>,
+            override val title: String = "",
+            val pickedCourseBook: CourseBook = initialCourseBook,
         ) : CreateNewTable()
 
         data class SpecificCourseBook(
             val courseBook: CourseBook,
+            override val title: String = "",
         ) : CreateNewTable()
     }
 
