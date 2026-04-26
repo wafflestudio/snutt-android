@@ -34,6 +34,7 @@ import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.components.compose.AnimatedLazyRow
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
+import com.wafflestudio.snutt2.ui.preview.rememberFakeLazyPagingItems
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import kotlinx.coroutines.flow.flowOf
 
@@ -169,21 +170,19 @@ private fun SearchResultList_Placeholder() {
 @SnuttPreview
 @Composable
 private fun SearchResultList_Searched() {
-    val pagingItems = flowOf(
-        PagingData.from(
-            PreviewData.sampleLectures.take(3).map {
-                DataWithState(
-                    it,
-                    LectureState(
-                        selected = false,
-                        contained = false,
-                        isBookmarked = false,
-                        isVacancyRegistered = false,
-                    ),
-                )
-            },
-        ),
-    ).collectAsLazyPagingItems()
+    val pagingItems = rememberFakeLazyPagingItems(
+        PreviewData.sampleLectures.take(3).map {
+            DataWithState(
+                it,
+                LectureState(
+                    selected = false,
+                    contained = false,
+                    isBookmarked = false,
+                    isVacancyRegistered = false,
+                ),
+            )
+        },
+    )
     SnuttPreviewSurface {
         Box(modifier = Modifier.background(SNUTTColors.Dim2)) {
             SearchResultList(

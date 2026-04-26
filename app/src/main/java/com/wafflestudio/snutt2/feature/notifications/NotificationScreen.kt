@@ -27,7 +27,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.Notification
@@ -46,11 +45,11 @@ import com.wafflestudio.snutt2.ui.components.compose.WarningIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
+import com.wafflestudio.snutt2.ui.preview.rememberFakeLazyPagingItems
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 import com.wafflestudio.snutt2.ui.util.getNotificationTime
-import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun NotificationRoute(
@@ -273,8 +272,7 @@ fun NotificationPlaceholder() {
 @SnuttPreview
 @Composable
 private fun NotificationScreen_List() {
-    val data = PagingData.from(PreviewData.sampleNotifications)
-    val pagingItems = flowOf(data).collectAsLazyPagingItems()
+    val pagingItems = rememberFakeLazyPagingItems(PreviewData.sampleNotifications)
     SnuttPreviewSurface {
         NotificationScreen(
             uiState = NotificationUiState.Success(pagingItems),

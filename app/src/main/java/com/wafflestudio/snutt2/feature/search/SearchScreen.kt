@@ -48,6 +48,7 @@ import com.wafflestudio.snutt2.ui.components.compose.clearFocusOnKeyboardDismiss
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
+import com.wafflestudio.snutt2.ui.preview.rememberFakeLazyPagingItems
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 import kotlinx.coroutines.flow.flowOf
@@ -254,21 +255,19 @@ private fun SearchScreen_Placeholder() {
 @SnuttPreview
 @Composable
 private fun SearchScreen_Searched() {
-    val pagingItems = flowOf(
-        PagingData.from(
-            PreviewData.sampleLectures.take(3).map {
-                DataWithState(
-                    it,
-                    LectureState(
-                        selected = false,
-                        contained = false,
-                        isBookmarked = false,
-                        isVacancyRegistered = false,
-                    ),
-                )
-            },
-        ),
-    ).collectAsLazyPagingItems()
+    val pagingItems = rememberFakeLazyPagingItems(
+        PreviewData.sampleLectures.take(3).map {
+            DataWithState(
+                it,
+                LectureState(
+                    selected = false,
+                    contained = false,
+                    isBookmarked = false,
+                    isVacancyRegistered = false,
+                ),
+            )
+        },
+    )
     SnuttPreviewSurface {
         SearchScreen(
             uiState = previewSearchUiState(
