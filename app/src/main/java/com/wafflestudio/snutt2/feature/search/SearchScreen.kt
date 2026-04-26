@@ -42,7 +42,6 @@ import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.feature.home.timetable.TimeTable
 import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.ui.components.compose.EditText
-import com.wafflestudio.snutt2.ui.components.compose.SearchIcon
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.clearFocusOnKeyboardDismiss
@@ -164,7 +163,8 @@ private fun RowScope.SearchTopBarContent(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        SearchIcon(
+        SnuttIcon(
+            R.drawable.ic_search_unselected,
             modifier = Modifier
                 .size(30.dp)
                 .clicks { onSearch() },

@@ -10,6 +10,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.wafflestudio.snutt2.R
 
 class SNUTTFirebaseMessagingService : FirebaseMessagingService() {
 

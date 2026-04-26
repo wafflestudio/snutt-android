@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.ui.components.compose.RingingAlarmIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
@@ -37,7 +37,8 @@ fun VacancyBanner(
             .padding(horizontal = 14.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        RingingAlarmIcon(
+        SnuttIcon(
+            R.drawable.ic_ringing_alarm_unselected,
             modifier = Modifier.size(22.dp),
         )
         Spacer(modifier = Modifier.width(8.dp))

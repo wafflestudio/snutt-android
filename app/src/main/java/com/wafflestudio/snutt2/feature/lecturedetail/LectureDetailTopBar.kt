@@ -13,8 +13,6 @@ import com.wafflestudio.snutt2.domain.model.Lecture
 import com.wafflestudio.snutt2.domain.model.LectureSyllabusInfo
 import com.wafflestudio.snutt2.domain.model.LocalLecture
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
-import com.wafflestudio.snutt2.ui.components.compose.BookmarkIcon
-import com.wafflestudio.snutt2.ui.components.compose.RingingAlarmIcon
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.clicks
@@ -55,18 +53,20 @@ internal fun LectureDetailTopBar(
         },
         actions = {
             if (lecture is LectureSyllabusInfo && !editMode) {
-                RingingAlarmIcon(
+                SnuttIcon(
+                    if (isVacancyRegistered) R.drawable.ic_ringing_alarm_selected else R.drawable.ic_ringing_alarm_unselected,
                     modifier = Modifier
                         .size(30.dp)
                         .clicks { onVacancyToggle() },
                     colorFilter = ColorFilter.tint(SNUTTColors.Black900),
-                    marked = isVacancyRegistered,
+
                 )
-                BookmarkIcon(
+                SnuttIcon(
+                    if (isBookmarked) R.drawable.ic_bookmark_selected else R.drawable.ic_bookmark_unselected,
                     modifier = Modifier
                         .size(30.dp)
                         .clicks { onBookmarkToggle() },
-                    marked = isBookmarked,
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
             }
 

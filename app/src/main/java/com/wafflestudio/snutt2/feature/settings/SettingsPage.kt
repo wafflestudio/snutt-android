@@ -25,7 +25,6 @@ import com.wafflestudio.snutt2.config.FeatureFlag
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.components.compose.CustomDialog
-import com.wafflestudio.snutt2.ui.components.compose.HorizontalMoreIcon
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
@@ -137,7 +136,8 @@ fun SettingsScreen(
                 )
             },
             navigationIcon = {
-                HorizontalMoreIcon(
+                SnuttIcon(
+                    R.drawable.ic_horizontal_more_unselected,
                     modifier = Modifier.size(30.dp),
                     colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )

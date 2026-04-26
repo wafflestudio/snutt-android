@@ -32,7 +32,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.android.webview.LoadState
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
-import com.wafflestudio.snutt2.ui.components.compose.TimetableIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
@@ -110,9 +110,10 @@ private fun WebViewErrorPage(modifier: Modifier, onRetry: () -> Unit) {
                 )
             },
             navigationIcon = {
-                TimetableIcon(
+                SnuttIcon(
+                    if (true) R.drawable.ic_timetable_selected else R.drawable.ic_timetable_unselected,
                     modifier = Modifier.size(30.dp),
-                    isSelected = true,
+
                     colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
             },

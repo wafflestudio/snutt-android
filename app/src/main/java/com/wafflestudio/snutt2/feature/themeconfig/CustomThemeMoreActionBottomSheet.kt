@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.components.compose.MoreActionItem
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
-import com.wafflestudio.snutt2.ui.components.compose.TimetableIcon
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 
@@ -45,7 +44,8 @@ fun MyCustomThemeMoreActionBottomSheet(
         )
         MoreActionItem(
             icon = {
-                TimetableIcon(
+                SnuttIcon(
+                    R.drawable.ic_timetable_unselected,
                     modifier = Modifier.size(30.dp),
                     colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
                 )
@@ -104,7 +104,8 @@ fun MarketCustomThemeMoreActionBottomSheet(
         )
         MoreActionItem(
             icon = {
-                TimetableIcon(
+                SnuttIcon(
+                    R.drawable.ic_timetable_unselected,
                     modifier = Modifier.size(30.dp),
                     colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
                 )
@@ -151,7 +152,8 @@ fun BuiltInThemeClickBottomSheet(
         )
         MoreActionItem(
             icon = {
-                TimetableIcon(
+                SnuttIcon(
+                    R.drawable.ic_timetable_unselected,
                     modifier = Modifier.size(30.dp),
                     colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
                 )

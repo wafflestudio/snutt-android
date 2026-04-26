@@ -19,7 +19,6 @@ import com.wafflestudio.snutt2.domain.model.TableSummary
 import com.wafflestudio.snutt2.domain.model.getCreditSumFromLectureList
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
-import com.wafflestudio.snutt2.ui.components.compose.BookmarkIcon
 import com.wafflestudio.snutt2.ui.components.compose.IconWithAlertDot
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
@@ -94,10 +93,12 @@ fun TimeTableScreen(
                         }
                     },
                     actions = {
-                        BookmarkIcon(
+                        SnuttIcon(
+                            R.drawable.ic_bookmark_unselected,
                             modifier = Modifier
                                 .size(30.dp)
                                 .clicks { onClickBookmarkIcon() },
+                            colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                         )
                         TimetableMoreAction(
                             onClickAddBySearch = onClickAddBySearch,
