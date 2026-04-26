@@ -8,10 +8,10 @@ import com.wafflestudio.snutt2.domain.model.EditingTheme
 import com.wafflestudio.snutt2.domain.model.Friend
 import com.wafflestudio.snutt2.domain.model.LectureColor
 import com.wafflestudio.snutt2.domain.model.LectureReminderOffset
-import com.wafflestudio.snutt2.domain.model.LocalLecture
 import com.wafflestudio.snutt2.domain.model.LectureReviewInfo
 import com.wafflestudio.snutt2.domain.model.LectureSession
 import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
+import com.wafflestudio.snutt2.domain.model.LocalLecture
 import com.wafflestudio.snutt2.domain.model.Nickname
 import com.wafflestudio.snutt2.domain.model.Notification
 import com.wafflestudio.snutt2.domain.model.NotificationType

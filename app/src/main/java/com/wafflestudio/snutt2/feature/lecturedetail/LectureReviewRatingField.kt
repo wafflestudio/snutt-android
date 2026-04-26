@@ -94,4 +94,3 @@ private fun LectureReviewRatingField_WithoutReviewInfo() {
         )
     }
 }
-

@@ -447,4 +447,3 @@ private fun FriendsDrawer_FriendsTab_Empty() {
         )
     }
 }
-

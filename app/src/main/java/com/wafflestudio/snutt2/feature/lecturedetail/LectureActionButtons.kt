@@ -137,4 +137,3 @@ private fun LectureActionButtons_SyllabusLecture_EditMode() {
         )
     }
 }
-
