@@ -21,12 +21,10 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.Friend
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.ui.components.compose.EditText
-import com.wafflestudio.snutt2.ui.components.compose.FriendHashIcon
-import com.wafflestudio.snutt2.ui.components.compose.KakaoTalkIcon
 import com.wafflestudio.snutt2.ui.components.compose.ModalBottomSheetPlaceholder
 import com.wafflestudio.snutt2.ui.components.compose.MoreActionItem
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.TrashIcon
-import com.wafflestudio.snutt2.ui.components.compose.WarningIcon
 import com.wafflestudio.snutt2.ui.components.compose.WriteIcon
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
@@ -101,7 +99,8 @@ private fun AddFriendMethodListBottomSheet(
     ) {
         MoreActionItem(
             icon = {
-                KakaoTalkIcon(
+                SnuttIcon(
+                    R.drawable.ic_kakao_talk,
                     modifier = Modifier.size(30.dp),
                     colorFilter = ColorFilter.tint(SNUTTColors.Gray600),
                 )
@@ -112,7 +111,8 @@ private fun AddFriendMethodListBottomSheet(
         }
         MoreActionItem(
             icon = {
-                FriendHashIcon(
+                SnuttIcon(
+                    R.drawable.ic_friend_hash,
                     modifier = Modifier.size(30.dp),
                     colorFilter = ColorFilter.tint(SNUTTColors.Gray600),
                 )
@@ -175,7 +175,8 @@ private fun RequestWithNicknameBottomSheet(
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            WarningIcon(
+            SnuttIcon(
+                R.drawable.ic_warning,
                 modifier = Modifier.size(18.dp),
                 colorFilter = if (nickname.isNotBlank()) ColorFilter.tint(SNUTTColors.SNUTTTheme) else null,
             )

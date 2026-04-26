@@ -34,7 +34,7 @@ import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.ui.components.compose.ArrowBackIcon
 import com.wafflestudio.snutt2.ui.components.compose.CustomDialog
 import com.wafflestudio.snutt2.ui.components.compose.RightArrowIcon
-import com.wafflestudio.snutt2.ui.components.compose.TipCloseIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
@@ -144,7 +144,8 @@ private fun GuideDialog(
                         modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 24.dp),
                     ) {
                         Spacer(modifier = Modifier.weight(1f))
-                        TipCloseIcon(
+                        SnuttIcon(
+                            R.drawable.btntipclose,
                             modifier = Modifier
                                 .size(15.dp)
                                 .clicks { onDismiss() },

@@ -19,13 +19,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.SearchTag
 import com.wafflestudio.snutt2.domain.model.TagType
 import com.wafflestudio.snutt2.lib.DataWithState
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.ui.components.compose.ExitIcon
-import com.wafflestudio.snutt2.ui.components.compose.VividCheckedIcon
-import com.wafflestudio.snutt2.ui.components.compose.VividUncheckedIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.components.compose.displayName
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
@@ -111,9 +111,9 @@ private fun SelectableTagItem(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 if (selectableTag.state) {
-                    VividCheckedIcon(modifier = Modifier.size(15.dp))
+                    SnuttIcon(R.drawable.ic_vivid_checked, modifier = Modifier.size(15.dp))
                 } else {
-                    VividUncheckedIcon(modifier = Modifier.size(15.dp))
+                    SnuttIcon(R.drawable.ic_vivid_unchecked, modifier = Modifier.size(15.dp))
                 }
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(

@@ -19,8 +19,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
-import com.wafflestudio.snutt2.ui.components.compose.CheckedIcon
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
@@ -68,7 +68,8 @@ private fun ColorModeSelectScreen(
                     onClick = { onSelectMode(ThemeMode.AUTO) },
                 ) {
                     if (themeMode == ThemeMode.AUTO) {
-                        CheckedIcon(
+                        SnuttIcon(
+                            R.drawable.checked,
                             modifier = Modifier.size(22.dp),
                             colorFilter = ColorFilter.tint(SNUTTColors.Black500),
                         )
@@ -80,7 +81,8 @@ private fun ColorModeSelectScreen(
                     onClick = { onSelectMode(ThemeMode.DARK) },
                 ) {
                     if (themeMode == ThemeMode.DARK) {
-                        CheckedIcon(
+                        SnuttIcon(
+                            R.drawable.checked,
                             modifier = Modifier.size(22.dp),
                             colorFilter = ColorFilter.tint(SNUTTColors.Black500),
                         )
@@ -92,7 +94,8 @@ private fun ColorModeSelectScreen(
                     onClick = { onSelectMode(ThemeMode.LIGHT) },
                 ) {
                     if (themeMode == ThemeMode.LIGHT) {
-                        CheckedIcon(
+                        SnuttIcon(
+                            R.drawable.checked,
                             modifier = Modifier.size(22.dp),
                             colorFilter = ColorFilter.tint(SNUTTColors.Black500),
                         )

@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.Building
 import com.wafflestudio.snutt2.ui.components.compose.ArrowDownIcon
-import com.wafflestudio.snutt2.ui.components.compose.MapIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
@@ -54,7 +54,8 @@ fun FoldableEmbedMap(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    MapIcon(
+                    SnuttIcon(
+                        R.drawable.ic_map,
                         modifier = Modifier.size(17.dp, 19.dp),
                     )
                     Text(

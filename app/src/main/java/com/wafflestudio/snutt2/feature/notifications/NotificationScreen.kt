@@ -32,16 +32,12 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.Notification
 import com.wafflestudio.snutt2.domain.model.NotificationType
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
-import com.wafflestudio.snutt2.ui.components.compose.AlarmOnIcon
-import com.wafflestudio.snutt2.ui.components.compose.CalendarIcon
-import com.wafflestudio.snutt2.ui.components.compose.MegaphoneIcon
 import com.wafflestudio.snutt2.ui.components.compose.NotificationFriendIcon
 import com.wafflestudio.snutt2.ui.components.compose.NotificationTrashIcon
 import com.wafflestudio.snutt2.ui.components.compose.NotificationVacancyIcon
-import com.wafflestudio.snutt2.ui.components.compose.RefreshTimeIcon
 import com.wafflestudio.snutt2.ui.components.compose.RightArrowIcon
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
-import com.wafflestudio.snutt2.ui.components.compose.WarningIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
@@ -189,17 +185,20 @@ fun NotificationItem(notification: Notification, onClick: () -> Unit) {
 @Composable
 fun NotificationIcon(type: NotificationType) {
     when (type) {
-        NotificationType.Warning -> WarningIcon(
+        NotificationType.Warning -> SnuttIcon(
+            R.drawable.ic_warning,
             modifier = Modifier.size(30.dp),
             colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
         )
 
-        NotificationType.Calendar -> CalendarIcon(
+        NotificationType.Calendar -> SnuttIcon(
+            R.drawable.ic_calendar,
             modifier = Modifier.size(30.dp),
             colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
         )
 
-        NotificationType.RefreshTime -> RefreshTimeIcon(
+        NotificationType.RefreshTime -> SnuttIcon(
+            R.drawable.ic_refresh_time,
             modifier = Modifier.size(30.dp),
             colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
         )
@@ -219,7 +218,8 @@ fun NotificationIcon(type: NotificationType) {
             colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
         )
 
-        NotificationType.Megaphone -> MegaphoneIcon(
+        NotificationType.Megaphone -> SnuttIcon(
+            R.drawable.ic_megaphone,
             modifier = Modifier.size(30.dp),
             colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900),
         )
@@ -233,7 +233,8 @@ fun NotificationError() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        WarningIcon(
+        SnuttIcon(
+            R.drawable.ic_warning,
             modifier = Modifier.size(40.dp),
             colorFilter = ColorFilter.tint(SNUTTColors.Gray200),
         )
@@ -254,7 +255,8 @@ fun NotificationPlaceholder() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        AlarmOnIcon(
+        SnuttIcon(
+            R.drawable.tab_alarm_on,
             modifier = Modifier.size(40.dp),
         )
         Spacer(modifier = Modifier.height(10.dp))

@@ -38,7 +38,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.android.NetworkLog
 import com.wafflestudio.snutt2.ui.components.compose.ArrowBackIcon
 import com.wafflestudio.snutt2.ui.components.compose.ArrowDownIcon
-import com.wafflestudio.snutt2.ui.components.compose.DuplicateIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
@@ -120,7 +120,8 @@ private fun NetworkLogItem(log: NetworkLog) {
                 overflow = if (expanded.not()) TextOverflow.Ellipsis else TextOverflow.Visible,
                 maxLines = if (expanded.not()) 1 else Int.MAX_VALUE,
             )
-            DuplicateIcon(
+            SnuttIcon(
+                R.drawable.ic_duplicate,
                 modifier = Modifier
                     .size(20.dp)
                     .clicks {
@@ -171,7 +172,8 @@ private fun SimpleTextToggle(
                 .padding(10.dp),
         ) {
             Text(text = content, style = SNUTTTypography.body1)
-            DuplicateIcon(
+            SnuttIcon(
+                R.drawable.ic_duplicate,
                 modifier = Modifier
                     .size(20.dp)
                     .align(Alignment.TopEnd)

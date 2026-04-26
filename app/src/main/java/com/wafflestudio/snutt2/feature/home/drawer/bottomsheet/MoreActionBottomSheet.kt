@@ -19,9 +19,8 @@ import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.TableSummary
 import com.wafflestudio.snutt2.ui.components.compose.PaletteIcon
-import com.wafflestudio.snutt2.ui.components.compose.PeopleIcon
-import com.wafflestudio.snutt2.ui.components.compose.PeopleOffIcon
 import com.wafflestudio.snutt2.ui.components.compose.ShareIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.TrashIcon
 import com.wafflestudio.snutt2.ui.components.compose.WriteIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
@@ -55,12 +54,14 @@ fun MoreActionSheet(
         MoreActionItem(
             icon = {
                 if (tableSummary.isPrimary) {
-                    PeopleOffIcon(
+                    SnuttIcon(
+                        R.drawable.ic_people_off,
                         modifier = Modifier.size(30.dp),
                         colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                     )
                 } else {
-                    PeopleIcon(
+                    SnuttIcon(
+                        R.drawable.ic_people_on,
                         modifier = Modifier.size(30.dp),
                         colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                     )

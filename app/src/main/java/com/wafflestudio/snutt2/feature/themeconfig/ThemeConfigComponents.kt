@@ -36,8 +36,7 @@ import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.feature.settings.SettingColumn
-import com.wafflestudio.snutt2.ui.components.compose.AddIcon
-import com.wafflestudio.snutt2.ui.components.compose.QuestionCircleIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.ThemeIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.components.compose.displayName
@@ -103,7 +102,8 @@ fun AddThemeItem(
                 .size(80.dp)
                 .background(color = SNUTTColors.VacancyGray, shape = RoundedCornerShape(6.dp)),
         ) {
-            AddIcon(
+            SnuttIcon(
+                R.drawable.ic_add,
                 modifier = Modifier
                     .size(30.dp)
                     .align(Alignment.Center),
@@ -166,7 +166,8 @@ internal fun ThemeGuideTexts(
     )
     Column(modifier = modifier) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            QuestionCircleIcon(
+            SnuttIcon(
+                R.drawable.ic_question_circle,
                 modifier = Modifier.size(14.dp),
                 colorFilter = ColorFilter.tint(if (isDarkMode()) SNUTTColors.DarkGray else SNUTTColors.Gray2),
             )

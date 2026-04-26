@@ -30,8 +30,8 @@ import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.lib.toDataWithState
 import com.wafflestudio.snutt2.ui.components.compose.ArrowDownIcon
 import com.wafflestudio.snutt2.ui.components.compose.ExitIcon
-import com.wafflestudio.snutt2.ui.components.compose.LogoIcon
 import com.wafflestudio.snutt2.ui.components.compose.RedDot
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
@@ -76,7 +76,7 @@ fun HomeDrawerContent(
             .padding(20.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            LogoIcon(modifier = Modifier.size(20.dp))
+            SnuttIcon(R.drawable.logo, modifier = Modifier.size(20.dp))
             Spacer(modifier = Modifier.width(10.dp))
             Text(
                 text = stringResource(R.string.sign_in_logo_title),

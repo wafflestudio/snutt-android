@@ -32,12 +32,11 @@ import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.ThemeColor
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
-import com.wafflestudio.snutt2.ui.components.compose.CloseIcon
 import com.wafflestudio.snutt2.ui.components.compose.ColorBox
 import com.wafflestudio.snutt2.ui.components.compose.ColorCircle
 import com.wafflestudio.snutt2.ui.components.compose.ColorPicker
 import com.wafflestudio.snutt2.ui.components.compose.CustomDialog
-import com.wafflestudio.snutt2.ui.components.compose.DuplicateIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
@@ -81,7 +80,8 @@ internal fun ThemeColorRow(
                 },
                 actions = {
                     if (isEditable) {
-                        DuplicateIcon(
+                        SnuttIcon(
+                            R.drawable.ic_duplicate,
                             modifier = Modifier
                                 .size(30.dp)
                                 .clicks {
@@ -94,7 +94,8 @@ internal fun ThemeColorRow(
                             ),
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        CloseIcon(
+                        SnuttIcon(
+                            R.drawable.ic_close,
                             modifier = Modifier
                                 .size(30.dp)
                                 .clicks {

@@ -28,17 +28,14 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.LectureReviewInfo
 import com.wafflestudio.snutt2.domain.model.SearchedLecture
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
-import com.wafflestudio.snutt2.ui.components.compose.AddCircleIcon
 import com.wafflestudio.snutt2.ui.components.compose.BookmarkIcon
 import com.wafflestudio.snutt2.ui.components.compose.ClockIcon
-import com.wafflestudio.snutt2.ui.components.compose.DetailIcon
 import com.wafflestudio.snutt2.ui.components.compose.LocationIcon
 import com.wafflestudio.snutt2.ui.components.compose.RemarkIcon
-import com.wafflestudio.snutt2.ui.components.compose.RemoveCircleIcon
 import com.wafflestudio.snutt2.ui.components.compose.RingingAlarmIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.StarIcon
 import com.wafflestudio.snutt2.ui.components.compose.TagIcon
-import com.wafflestudio.snutt2.ui.components.compose.ThickReviewIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
@@ -233,7 +230,8 @@ private fun LectureActionBar(
             modifier = Modifier.weight(1f),
             onClick = onClickDetail,
         ) {
-            DetailIcon(
+            SnuttIcon(
+                R.drawable.ic_detail,
                 modifier = Modifier.size(23.dp),
                 colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
             )
@@ -244,7 +242,8 @@ private fun LectureActionBar(
             modifier = Modifier.weight(1f),
             onClick = onClickReview,
         ) {
-            ThickReviewIcon(
+            SnuttIcon(
+                R.drawable.ic_review_thick,
                 modifier = Modifier.size(23.dp),
                 colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
             )
@@ -284,12 +283,14 @@ private fun LectureActionBar(
             onClick = onClickAddOrRemove,
         ) {
             if (contained) {
-                RemoveCircleIcon(
+                SnuttIcon(
+                    R.drawable.ic_remove_circle,
                     modifier = Modifier.size(23.dp),
                     colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
                 )
             } else {
-                AddCircleIcon(
+                SnuttIcon(
+                    R.drawable.ic_add_circle,
                     modifier = Modifier.size(23.dp),
                     colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
                 )

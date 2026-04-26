@@ -23,9 +23,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.wafflestudio.snutt2.ui.components.compose.PersonIcon
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.components.compose.RedDotWithNumber
 import com.wafflestudio.snutt2.ui.components.compose.RightArrowIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
@@ -147,7 +148,8 @@ private fun SettingItem_WithLeadingIconAndContent() {
         SettingItem(
             title = "내 계정",
             leadingIcon = {
-                PersonIcon(
+                SnuttIcon(
+                    R.drawable.ic_person,
                     modifier = Modifier
                         .size(22.dp)
                         .padding(end = 5.dp),

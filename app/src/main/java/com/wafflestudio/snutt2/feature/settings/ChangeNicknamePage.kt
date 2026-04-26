@@ -41,8 +41,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.components.compose.ArrowBackIcon
-import com.wafflestudio.snutt2.ui.components.compose.CloseCircleIcon
 import com.wafflestudio.snutt2.ui.components.compose.EditText
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.clearFocusOnKeyboardDismiss
 import com.wafflestudio.snutt2.ui.components.compose.clicks
@@ -200,7 +200,8 @@ private fun NicknameEditText(
             textStyle = SNUTTTypography.body1.copy(fontSize = 16.sp),
         )
         if (isFocused && value.isNotEmpty()) {
-            CloseCircleIcon(
+            SnuttIcon(
+                R.drawable.ic_close_circle,
                 modifier = Modifier
                     .size(30.dp)
                     .clicks {
