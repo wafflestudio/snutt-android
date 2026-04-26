@@ -44,7 +44,7 @@ private fun TimeTable_CustomTheme() {
                 lectures = LecturePreviewData.builtInOnlyLectures,
                 selectedLecture = null,
                 fittedTrimParam = trimParam,
-                theme = ThemePreviewData.sampleCustomTheme,
+                theme = ThemePreviewData.previewCustomTheme1,
                 isDarkMode = false,
                 compactMode = false,
                 tableLectureCustomOptions = TableLectureCustom.Default,
@@ -58,12 +58,12 @@ private fun TimeTable_CustomTheme() {
 @Composable
 private fun TimeTable_WithSelectedLecture() {
     SnuttPreviewSurface {
-        val allLectures = LecturePreviewData.builtInOnlyLectures + listOf(LecturePreviewData.sampleSelectedLecture)
+        val allLectures = LecturePreviewData.builtInOnlyLectures + listOf(LecturePreviewData.searchedLecture)
         val trimParam = allLectures.getFittingTrimParam(TableTrimParam.Default)
         Box(modifier = Modifier.fillMaxSize()) {
             TimeTable(
                 lectures = LecturePreviewData.builtInOnlyLectures,
-                selectedLecture = LecturePreviewData.sampleSelectedLecture,
+                selectedLecture = LecturePreviewData.searchedLecture,
                 fittedTrimParam = trimParam,
                 theme = BuiltInTheme.SNUTT,
                 isDarkMode = false,

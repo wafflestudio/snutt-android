@@ -336,12 +336,6 @@ object LecturePreviewData {
 
     val sampleReminderOptionDefault = LectureWithReminderOption.Default
 
-    val emptyReminderOption = LectureWithReminderOption(
-        lectureId = "",
-        lectureTitle = "",
-        lectureReminderOffset = LectureReminderOffset.NONE,
-    )
-
     // --- 시간표 색상 분기 케이스 ---
 
     private fun previewSyllabusLecture(
@@ -371,8 +365,8 @@ object LecturePreviewData {
         originalLectureId = "",
     )
 
-    // 모든 강의가 BuiltIn 색인 사용
-    val builtInOnlyLectures: List<LocalLecture> = listOf(
+    // 1~4번: BuiltIn 색 4개 강의 (두 분기 list 의 공통 부분)
+    private val baseFourBuiltInLectures: List<LocalLecture> = listOf(
         previewSyllabusLecture(
             id = "1",
             courseTitle = "논리설계",
@@ -412,6 +406,10 @@ object LecturePreviewData {
                 LectureSession(null, DayOfWeek.WEDNESDAY, LocalTime.of(9, 0), LocalTime.of(10, 15), "302-308"),
             ),
         ),
+    )
+
+    // 모든 강의가 BuiltIn 색인 사용 (sessionless 강의 1개 포함)
+    val builtInOnlyLectures: List<LocalLecture> = baseFourBuiltInLectures + listOf(
         previewSyllabusLecture(
             id = "5",
             courseTitle = "통계학",
@@ -431,47 +429,7 @@ object LecturePreviewData {
     )
 
     // BuiltIn 위주이지만 커스텀 색상 강의가 하나 섞인 케이스 (실제 사용 패턴: 빌트인 테마 + 일부 강의에 사용자 커스텀 색 지정)
-    val builtInWithOneCustomLecture: List<LocalLecture> = listOf(
-        previewSyllabusLecture(
-            id = "1",
-            courseTitle = "논리설계",
-            instructor = "이창건",
-            color = LectureColor.BuiltIn(0),
-            sessions = listOf(
-                LectureSession(null, DayOfWeek.MONDAY, LocalTime.of(14, 0), LocalTime.of(15, 15), "301-118"),
-                LectureSession(null, DayOfWeek.WEDNESDAY, LocalTime.of(14, 0), LocalTime.of(15, 15), "301-118"),
-            ),
-        ),
-        previewSyllabusLecture(
-            id = "2",
-            courseTitle = "이산수학",
-            instructor = "김민수",
-            color = LectureColor.BuiltIn(1),
-            sessions = listOf(
-                LectureSession(null, DayOfWeek.TUESDAY, LocalTime.of(10, 30), LocalTime.of(12, 0), "302-208"),
-                LectureSession(null, DayOfWeek.THURSDAY, LocalTime.of(10, 30), LocalTime.of(12, 0), "302-208"),
-            ),
-        ),
-        previewSyllabusLecture(
-            id = "3",
-            courseTitle = "대학 글쓰기 1",
-            instructor = "박지영",
-            color = LectureColor.BuiltIn(2),
-            sessions = listOf(
-                LectureSession(null, DayOfWeek.FRIDAY, LocalTime.of(9, 0), LocalTime.of(11, 0), "5-302"),
-            ),
-        ),
-        previewSyllabusLecture(
-            id = "4",
-            courseTitle = "컴퓨터 프로그래밍",
-            instructor = "홍길동",
-            color = LectureColor.BuiltIn(3),
-            sessions = listOf(
-                LectureSession(null, DayOfWeek.MONDAY, LocalTime.of(9, 0), LocalTime.of(10, 15), "302-308"),
-                LectureSession(null, DayOfWeek.WEDNESDAY, LocalTime.of(9, 0), LocalTime.of(10, 15), "302-308"),
-            ),
-        ),
-        // 한 강의만 사용자 커스텀 색
+    val builtInWithOneCustomLecture: List<LocalLecture> = baseFourBuiltInLectures + listOf(
         previewSyllabusLecture(
             id = "5",
             courseTitle = "통계학",
@@ -481,30 +439,5 @@ object LecturePreviewData {
                 LectureSession(null, DayOfWeek.TUESDAY, LocalTime.of(14, 0), LocalTime.of(15, 30), "25-210"),
             ),
         ),
-    )
-
-    // 검색 강의 선택 미리보기용
-    val sampleSelectedLecture = SearchedLecture(
-        id = "search1",
-        courseTitle = "알고리즘",
-        lectureSessions = listOf(
-            LectureSession(null, DayOfWeek.TUESDAY, LocalTime.of(14, 0), LocalTime.of(15, 30), "302-208"),
-            LectureSession(null, DayOfWeek.THURSDAY, LocalTime.of(14, 0), LocalTime.of(15, 30), "302-208"),
-        ),
-        instructor = "이정우",
-        credit = 3,
-        remark = "",
-        classification = "",
-        department = "",
-        academicYear = "",
-        courseNumber = "",
-        lectureNumber = "001",
-        category = "",
-        categoryPre2025 = "",
-        quota = 60,
-        freshmanQuota = 0,
-        registrationCount = 45,
-        wasFull = false,
-        reviewInfo = LectureReviewInfo("", 0.0, 0),
     )
 }

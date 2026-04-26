@@ -51,19 +51,6 @@ object ThemePreviewData {
         ),
     )
 
-    val sampleCustomTheme = CustomTheme(
-        id = "preview_custom_1",
-        name = "파스텔",
-        isFromMarket = false,
-        colors = listOf(
-            ThemeColor(foreground = 0xFF333333.toInt(), background = 0xFFFFB3BA.toInt()),
-            ThemeColor(foreground = 0xFF333333.toInt(), background = 0xFFBAE1FF.toInt()),
-            ThemeColor(foreground = 0xFF333333.toInt(), background = 0xFFBAFFBA.toInt()),
-            ThemeColor(foreground = 0xFF333333.toInt(), background = 0xFFFFDFBA.toInt()),
-            ThemeColor(foreground = 0xFF333333.toInt(), background = 0xFFE8BAFF.toInt()),
-        ),
-    )
-
     // --- ThemeDetail 프리뷰 ---
 
     val previewEditingThemeCustom = EditingTheme.fromTableTheme(previewCustomTheme1)
