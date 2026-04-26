@@ -115,8 +115,6 @@ fun LectureColorSelectorScreen(
     }
 }
 
-private val previewBuiltInPickerColors = LectureColor.Custom.Default
-
 @SnuttPreview
 @Composable
 private fun LectureColorSelectorScreen_BuiltInTheme_Palette() {
@@ -125,8 +123,8 @@ private fun LectureColorSelectorScreen_BuiltInTheme_Palette() {
             uiState = LectureColorSelectorUiState.BuiltInThemeMode(
                 tableTheme = BuiltInTheme.SNUTT,
                 selection = LectureColorSelectorUiState.ColorSelection.Palette(2),
-                pickerFgColor = previewBuiltInPickerColors.foreground,
-                pickerBgColor = previewBuiltInPickerColors.background,
+                pickerFgColor = LectureColor.Custom.Default.foreground,
+                pickerBgColor = LectureColor.Custom.Default.background,
             ),
             onBackPressed = {},
             onSelectPalette = {},
