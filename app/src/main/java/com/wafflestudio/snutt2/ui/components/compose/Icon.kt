@@ -103,102 +103,6 @@ fun ExitIcon(
 }
 
 @Composable
-fun TagIcon(
-    modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
-) {
-    SnuttIcon(
-        id = R.drawable.ic_tag,
-        modifier = modifier,
-        colorFilter = colorFilter,
-    )
-}
-
-@Composable
-fun ClockIcon(
-    modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
-) {
-    SnuttIcon(
-        id = R.drawable.ic_clock,
-        modifier = modifier,
-        colorFilter = colorFilter,
-    )
-}
-
-@Composable
-fun LocationIcon(
-    modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
-) {
-    SnuttIcon(
-        id = R.drawable.ic_location,
-        modifier = modifier,
-        colorFilter = colorFilter,
-    )
-}
-
-@Composable
-fun ArrowDownIcon(
-    modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
-) {
-    SnuttIcon(
-        id = R.drawable.ic_arrow_down,
-        modifier = modifier,
-        colorFilter = colorFilter,
-    )
-}
-
-@Composable
-fun WriteIcon(
-    modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
-) {
-    SnuttIcon(
-        id = R.drawable.ic_write,
-        modifier = modifier,
-        colorFilter = colorFilter,
-    )
-}
-
-@Composable
-fun WriteUnderlineIcon(
-    modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
-) {
-    SnuttIcon(
-        id = R.drawable.ic_write_underline,
-        modifier = modifier,
-        colorFilter = colorFilter,
-    )
-}
-
-@Composable
-fun TrashIcon(
-    modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
-) {
-    SnuttIcon(
-        id = R.drawable.ic_trash,
-        modifier = modifier,
-        colorFilter = colorFilter,
-    )
-}
-
-@Composable
-fun PaletteIcon(
-    modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
-) {
-    SnuttIcon(
-        id = R.drawable.ic_palette,
-        modifier = modifier,
-        colorFilter = colorFilter,
-    )
-}
-
-@Composable
 fun TimetableIcon(
     modifier: Modifier = Modifier,
     isSelected: Boolean = false,
@@ -271,31 +175,6 @@ fun BookmarkIcon(
 ) {
     SnuttIcon(
         id = if (marked) R.drawable.ic_bookmark_selected else R.drawable.ic_bookmark_unselected,
-        modifier = modifier,
-        colorFilter = colorFilter,
-    )
-}
-
-@Composable
-fun RightArrowIcon(
-    modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
-) {
-    SnuttIcon(
-        id = R.drawable.ic_arrow_right,
-        modifier = modifier,
-        colorFilter = colorFilter,
-        contentDescription = "add arrow",
-    )
-}
-
-@Composable
-fun RemarkIcon(
-    modifier: Modifier = Modifier,
-    colorFilter: ColorFilter? = ColorFilter.tint(SNUTTColors.Black900),
-) {
-    SnuttIcon(
-        id = R.drawable.ic_remark,
         modifier = modifier,
         colorFilter = colorFilter,
     )

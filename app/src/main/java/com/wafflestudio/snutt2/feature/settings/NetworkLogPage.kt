@@ -37,7 +37,6 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.lib.android.NetworkLog
 import com.wafflestudio.snutt2.ui.components.compose.ArrowBackIcon
-import com.wafflestudio.snutt2.ui.components.compose.ArrowDownIcon
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
 import com.wafflestudio.snutt2.ui.components.compose.clicks
@@ -155,10 +154,12 @@ private fun SimpleTextToggle(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(text = title, style = SNUTTTypography.subtitle1)
-        ArrowDownIcon(
+        SnuttIcon(
+            R.drawable.ic_arrow_down,
             modifier = Modifier
                 .size(15.dp)
                 .rotate(rotation),
+            colorFilter = ColorFilter.tint(SNUTTColors.Black900),
         )
     }
     AnimatedVisibility(

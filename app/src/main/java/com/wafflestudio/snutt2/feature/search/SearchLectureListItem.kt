@@ -29,13 +29,9 @@ import com.wafflestudio.snutt2.domain.model.LectureReviewInfo
 import com.wafflestudio.snutt2.domain.model.SearchedLecture
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.ui.components.compose.BookmarkIcon
-import com.wafflestudio.snutt2.ui.components.compose.ClockIcon
-import com.wafflestudio.snutt2.ui.components.compose.LocationIcon
-import com.wafflestudio.snutt2.ui.components.compose.RemarkIcon
 import com.wafflestudio.snutt2.ui.components.compose.RingingAlarmIcon
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.StarIcon
-import com.wafflestudio.snutt2.ui.components.compose.TagIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
@@ -88,7 +84,8 @@ fun SearchLectureListItem(
             }
             // 태그 + 평점
             Row(verticalAlignment = Alignment.CenterVertically) {
-                TagIcon(
+                SnuttIcon(
+                    R.drawable.ic_tag,
                     modifier = Modifier.size(15.dp),
                     colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
                 )
@@ -111,7 +108,8 @@ fun SearchLectureListItem(
             // 시간
             LectureInfoRow(
                 icon = {
-                    ClockIcon(
+                    SnuttIcon(
+                        R.drawable.ic_clock,
                         modifier = Modifier.size(15.dp),
                         colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
                     )
@@ -121,7 +119,8 @@ fun SearchLectureListItem(
             // 장소
             LectureInfoRow(
                 icon = {
-                    LocationIcon(
+                    SnuttIcon(
+                        R.drawable.ic_location,
                         modifier = Modifier.size(15.dp),
                         colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
                     )
@@ -131,7 +130,8 @@ fun SearchLectureListItem(
             // 비고
             LectureInfoRow(
                 icon = {
-                    RemarkIcon(
+                    SnuttIcon(
+                        R.drawable.ic_remark,
                         modifier = Modifier.size(15.dp),
                         colorFilter = ColorFilter.tint(SNUTTColors.AllWhite),
                     )

@@ -18,11 +18,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.TableSummary
-import com.wafflestudio.snutt2.ui.components.compose.PaletteIcon
 import com.wafflestudio.snutt2.ui.components.compose.ShareIcon
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
-import com.wafflestudio.snutt2.ui.components.compose.TrashIcon
-import com.wafflestudio.snutt2.ui.components.compose.WriteIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
@@ -47,7 +44,7 @@ fun MoreActionSheet(
             .fillMaxWidth(),
     ) {
         MoreActionItem(
-            icon = { WriteIcon(modifier = Modifier.size(30.dp)) },
+            icon = { SnuttIcon(R.drawable.ic_write, modifier = Modifier.size(30.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900)) },
             text = stringResource(R.string.home_drawer_table_title_change),
             onClick = { onClickChangeTableName(tableSummary) },
         )
@@ -88,13 +85,13 @@ fun MoreActionSheet(
             onClickShare(tableSummary)
         }
         MoreActionItem(
-            icon = { PaletteIcon(modifier = Modifier.size(30.dp)) },
+            icon = { SnuttIcon(R.drawable.ic_palette, modifier = Modifier.size(30.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900)) },
             text = stringResource(R.string.home_drawer_table_theme_change),
         ) {
             onClickSetTheme(tableSummary)
         }
         MoreActionItem(
-            icon = { TrashIcon(modifier = Modifier.size(30.dp)) },
+            icon = { SnuttIcon(R.drawable.ic_trash, modifier = Modifier.size(30.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900)) },
             text = stringResource(R.string.home_drawer_table_delete),
         ) {
             onClickDeleteTable(tableSummary)

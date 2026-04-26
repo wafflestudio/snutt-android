@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -28,7 +29,6 @@ import com.wafflestudio.snutt2.domain.model.CourseBook
 import com.wafflestudio.snutt2.domain.model.TableSummary
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.lib.toDataWithState
-import com.wafflestudio.snutt2.ui.components.compose.ArrowDownIcon
 import com.wafflestudio.snutt2.ui.components.compose.ExitIcon
 import com.wafflestudio.snutt2.ui.components.compose.RedDot
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
@@ -132,10 +132,12 @@ fun HomeDrawerContent(
                         style = SNUTTTypography.h3,
                     )
                     Spacer(modifier = Modifier.width(6.dp))
-                    ArrowDownIcon(
+                    SnuttIcon(
+                        R.drawable.ic_arrow_down,
                         modifier = Modifier
                             .size(22.dp)
                             .rotate(rotation),
+                        colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     if (courseBookDrawerItem.showNewCoursebookDot) {

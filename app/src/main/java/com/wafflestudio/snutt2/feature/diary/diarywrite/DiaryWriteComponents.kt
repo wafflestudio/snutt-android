@@ -37,8 +37,8 @@ import com.wafflestudio.snutt2.domain.model.preview.DiaryPreviewData
 import com.wafflestudio.snutt2.feature.diary.DiaryTheme
 import com.wafflestudio.snutt2.lib.Selectable
 import com.wafflestudio.snutt2.lib.anySelected
-import com.wafflestudio.snutt2.ui.components.compose.ArrowDownIcon
 import com.wafflestudio.snutt2.ui.components.compose.EditText
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
@@ -262,7 +262,8 @@ fun MoreTextItem(
                     lineHeight = 15.sp,
                 )
             }
-            ArrowDownIcon(
+            SnuttIcon(
+                R.drawable.ic_arrow_down,
                 modifier = Modifier
                     .height(24.dp)
                     .rotate(if (isExpanded) 180f else 0f),

@@ -67,7 +67,6 @@ import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.components.compose.ArrowBackIcon
 import com.wafflestudio.snutt2.ui.components.compose.CustomDialog
-import com.wafflestudio.snutt2.ui.components.compose.RightArrowIcon
 import com.wafflestudio.snutt2.ui.components.compose.SimpleTopBar
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.TopBar
@@ -608,7 +607,8 @@ fun VacancyIntroDialog(
                             )
                         }
                         if (pagerState.currentPage < 3) {
-                            RightArrowIcon(
+                            SnuttIcon(
+                                R.drawable.ic_arrow_right,
                                 modifier = Modifier
                                     .align(Alignment.CenterEnd)
                                     .size(30.dp)
@@ -618,6 +618,7 @@ fun VacancyIntroDialog(
                                         }
                                     },
                                 colorFilter = ColorFilter.tint(SNUTTColors.VacancyGray),
+                                contentDescription = "add arrow",
                             )
                         }
                     }

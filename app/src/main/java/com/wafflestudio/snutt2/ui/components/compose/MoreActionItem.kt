@@ -11,7 +11,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
@@ -56,7 +58,7 @@ fun MoreActionItem(
 private fun MoreActionItem_Enabled() {
     SnuttPreviewSurface {
         MoreActionItem(
-            icon = { TrashIcon(modifier = Modifier.size(30.dp)) },
+            icon = { SnuttIcon(R.drawable.ic_trash, modifier = Modifier.size(30.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900)) },
             text = "친구 삭제",
             onClick = {},
         )
@@ -68,7 +70,7 @@ private fun MoreActionItem_Enabled() {
 private fun MoreActionItem_Disabled() {
     SnuttPreviewSurface {
         MoreActionItem(
-            icon = { TrashIcon(modifier = Modifier.size(30.dp)) },
+            icon = { SnuttIcon(R.drawable.ic_trash, modifier = Modifier.size(30.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900)) },
             text = "친구 삭제",
             enabled = false,
             onClick = {},

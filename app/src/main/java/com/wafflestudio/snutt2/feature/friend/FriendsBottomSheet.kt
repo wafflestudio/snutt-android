@@ -24,8 +24,6 @@ import com.wafflestudio.snutt2.ui.components.compose.EditText
 import com.wafflestudio.snutt2.ui.components.compose.ModalBottomSheetPlaceholder
 import com.wafflestudio.snutt2.ui.components.compose.MoreActionItem
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
-import com.wafflestudio.snutt2.ui.components.compose.TrashIcon
-import com.wafflestudio.snutt2.ui.components.compose.WriteIcon
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
@@ -203,13 +201,13 @@ private fun FriendDetailBottomSheet(
             .padding(vertical = 12.dp),
     ) {
         MoreActionItem(
-            icon = { WriteIcon(modifier = Modifier.size(30.dp)) },
+            icon = { SnuttIcon(R.drawable.ic_write, modifier = Modifier.size(30.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900)) },
             text = stringResource(R.string.friend_display_name_title),
         ) {
             onEditDisplayName()
         }
         MoreActionItem(
-            icon = { TrashIcon(modifier = Modifier.size(30.dp)) },
+            icon = { SnuttIcon(R.drawable.ic_trash, modifier = Modifier.size(30.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900)) },
             text = stringResource(R.string.friend_delete_from_list),
         ) {
             onDeleteFriend()

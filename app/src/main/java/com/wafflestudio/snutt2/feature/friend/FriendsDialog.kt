@@ -33,7 +33,6 @@ import com.wafflestudio.snutt2.domain.model.Friend
 import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.ui.components.compose.ArrowBackIcon
 import com.wafflestudio.snutt2.ui.components.compose.CustomDialog
-import com.wafflestudio.snutt2.ui.components.compose.RightArrowIcon
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
@@ -203,7 +202,8 @@ private fun GuideDialog(
                             )
                         }
                         if (pagerState.currentPage < 4) {
-                            RightArrowIcon(
+                            SnuttIcon(
+                                R.drawable.ic_arrow_right,
                                 modifier = Modifier
                                     .align(Alignment.CenterEnd)
                                     .size(30.dp)
@@ -213,6 +213,7 @@ private fun GuideDialog(
                                         }
                                     },
                                 colorFilter = ColorFilter.tint(SNUTTColors.VacancyGray),
+                                contentDescription = "add arrow",
                             )
                         }
                     }

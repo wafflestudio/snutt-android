@@ -37,7 +37,7 @@ import com.wafflestudio.snutt2.ui.components.compose.DrawerIcon
 import com.wafflestudio.snutt2.ui.components.compose.ExitIcon
 import com.wafflestudio.snutt2.ui.components.compose.NotificationVacancyIcon
 import com.wafflestudio.snutt2.ui.components.compose.SearchIcon
-import com.wafflestudio.snutt2.ui.components.compose.WriteUnderlineIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
@@ -147,7 +147,7 @@ fun TimetableDropdownOverlay(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                WriteUnderlineIcon(modifier = Modifier.size(22.dp))
+                SnuttIcon(R.drawable.ic_write_underline, modifier = Modifier.size(22.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
                 Text(
                     text = stringResource(R.string.home_dropdown_menu_content_add_lecture_manually),
                     style = SNUTTTypography.h3.copy(fontWeight = FontWeight.Normal),

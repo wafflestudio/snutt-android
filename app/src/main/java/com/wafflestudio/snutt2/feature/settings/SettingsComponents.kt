@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.components.compose.RedDotWithNumber
-import com.wafflestudio.snutt2.ui.components.compose.RightArrowIcon
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
@@ -99,9 +98,11 @@ fun SettingItem(
         Spacer(modifier = Modifier.weight(1f))
         content()
         if (hasNextPage) {
-            RightArrowIcon(
+            SnuttIcon(
+                R.drawable.ic_arrow_right,
                 modifier = Modifier.size(22.dp),
                 colorFilter = ColorFilter.tint(SNUTTColors.Black500),
+                contentDescription = "add arrow",
             )
         }
     }

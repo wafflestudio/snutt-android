@@ -51,7 +51,6 @@ import com.wafflestudio.snutt2.domain.model.preview.PreviewData
 import com.wafflestudio.snutt2.feature.home.timetable.TimeTable
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
-import com.wafflestudio.snutt2.ui.components.compose.ArrowDownIcon
 import com.wafflestudio.snutt2.ui.components.compose.BottomSheetDismissEffect
 import com.wafflestudio.snutt2.ui.components.compose.DrawerIcon
 import com.wafflestudio.snutt2.ui.components.compose.IconWithAlertDot
@@ -595,7 +594,7 @@ private fun SemesterDropdown(
                 style = SNUTTTypography.body2.copy(color = SNUTTColors.Black900),
             )
             Spacer(modifier = Modifier.width(5.dp))
-            ArrowDownIcon(modifier = Modifier.size(15.dp))
+            SnuttIcon(R.drawable.ic_arrow_down, modifier = Modifier.size(15.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
         }
 
         DropdownMenu(

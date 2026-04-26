@@ -29,11 +29,11 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.diary.DiarySummary
 import com.wafflestudio.snutt2.domain.model.preview.DiaryPreviewData
 import com.wafflestudio.snutt2.feature.diary.DiaryTheme
-import com.wafflestudio.snutt2.ui.components.compose.ArrowDownIcon
-import com.wafflestudio.snutt2.ui.components.compose.TrashIcon
+import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -80,10 +80,12 @@ fun DiarySummariesOfDay(
                     color = DiaryTheme.colors.textSecondary,
                     modifier = Modifier.weight(1f),
                 )
-                ArrowDownIcon(
+                SnuttIcon(
+                    R.drawable.ic_arrow_down,
                     modifier = Modifier
                         .height(20.dp)
                         .rotate(if (expanded) 180f else 0f),
+                    colorFilter = ColorFilter.tint(SNUTTColors.Black900),
                 )
             }
         }
@@ -140,7 +142,8 @@ private fun DiarySummary(
                     diarySummary.courseName,
                     style = SNUTTTypography.body1.copy(color = DiaryTheme.colors.textLabel),
                 )
-                TrashIcon(
+                SnuttIcon(
+                    R.drawable.ic_trash,
                     modifier = Modifier
                         .size(28.dp, 28.dp)
                         .clicks { onClickDeleteButton() },
