@@ -155,6 +155,29 @@ private fun SelectableTagItem(
 
 @SnuttPreview
 @Composable
+private fun SearchTagsColumn_Classification() {
+    val sampleTags: List<Selectable<SearchTag>> = listOf(
+        DataWithState(SearchTag.Regular(TagType.CLASSIFICATION, "교양"), false),
+        DataWithState(SearchTag.Regular(TagType.CLASSIFICATION, "전공필수"), true),
+        DataWithState(SearchTag.Regular(TagType.CLASSIFICATION, "전공선택"), false),
+        DataWithState(SearchTag.Regular(TagType.CLASSIFICATION, "일반선택"), false),
+    )
+
+    SnuttPreviewSurface {
+        SearchTagsColumn(
+            recentSearchedDepartments = emptyList(),
+            searchTags = sampleTags,
+            selectedTimes = emptyList(),
+            onToggleTag = {},
+            onRemoveRecentSearchedDepartment = {},
+            openTimeSelectSheet = {},
+            modifier = Modifier.width(250.dp),
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
 private fun SearchTagsColumn_DepartmentWithRecent() {
     val sampleTags: List<Selectable<SearchTag>> = listOf(
         DataWithState(SearchTag.Regular(TagType.DEPARTMENT, "수리과학부"), true),

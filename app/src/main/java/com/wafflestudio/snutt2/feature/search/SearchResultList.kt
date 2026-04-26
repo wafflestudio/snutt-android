@@ -3,6 +3,8 @@ package com.wafflestudio.snutt2.feature.search
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,6 +34,7 @@ import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.components.compose.AnimatedLazyRow
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
+import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
@@ -145,19 +148,21 @@ private fun SearchResultList_Placeholder() {
     val pagingItems = flowOf(PagingData.empty<DataWithState<SearchedLecture, LectureState>>())
         .collectAsLazyPagingItems()
     SnuttPreviewSurface {
-        SearchResultList(
-            searchResultPagingItems = pagingItems,
-            searchResultListState = SearchResultListState.PLACEHOLDER,
-            selectedTags = emptyList(),
-            lazyListState = rememberLazyListState(),
-            onToggleTag = {},
-            onToggleLectureSelection = {},
-            onClickLectureDetail = {},
-            onClickReview = {},
-            onClickBookmark = {},
-            onClickVacancy = {},
-            onClickAddOrRemove = {},
-        )
+        Box(modifier = Modifier.background(SNUTTColors.Dim2)) {
+            SearchResultList(
+                searchResultPagingItems = pagingItems,
+                searchResultListState = SearchResultListState.PLACEHOLDER,
+                selectedTags = emptyList(),
+                lazyListState = rememberLazyListState(),
+                onToggleTag = {},
+                onToggleLectureSelection = {},
+                onClickLectureDetail = {},
+                onClickReview = {},
+                onClickBookmark = {},
+                onClickVacancy = {},
+                onClickAddOrRemove = {},
+            )
+        }
     }
 }
 
@@ -180,21 +185,23 @@ private fun SearchResultList_Searched() {
         ),
     ).collectAsLazyPagingItems()
     SnuttPreviewSurface {
-        SearchResultList(
-            searchResultPagingItems = pagingItems,
-            searchResultListState = SearchResultListState.SEARCHED,
-            selectedTags = listOf(
-                SearchTag.Regular(TagType.DEPARTMENT, "컴퓨터공학부"),
-                SearchTag.Regular(TagType.CLASSIFICATION, "전공선택"),
-            ),
-            lazyListState = rememberLazyListState(),
-            onToggleTag = {},
-            onToggleLectureSelection = {},
-            onClickLectureDetail = {},
-            onClickReview = {},
-            onClickBookmark = {},
-            onClickVacancy = {},
-            onClickAddOrRemove = {},
-        )
+        Box(modifier = Modifier.background(SNUTTColors.Dim2)) {
+            SearchResultList(
+                searchResultPagingItems = pagingItems,
+                searchResultListState = SearchResultListState.SEARCHED,
+                selectedTags = listOf(
+                    SearchTag.Regular(TagType.DEPARTMENT, "컴퓨터공학부"),
+                    SearchTag.Regular(TagType.CLASSIFICATION, "전공선택"),
+                ),
+                lazyListState = rememberLazyListState(),
+                onToggleTag = {},
+                onToggleLectureSelection = {},
+                onClickLectureDetail = {},
+                onClickReview = {},
+                onClickBookmark = {},
+                onClickVacancy = {},
+                onClickAddOrRemove = {},
+            )
+        }
     }
 }

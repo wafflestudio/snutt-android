@@ -63,11 +63,11 @@ fun BookmarkList(
 private fun BookmarkList_Loaded() {
     SnuttPreviewSurface {
         BookmarkList(
-            bookmarks = PreviewData.sampleLectures.take(3).map {
+            bookmarks = PreviewData.sampleLectures.take(3).mapIndexed { index, lecture ->
                 DataWithState(
-                    it,
+                    lecture,
                     LectureState(
-                        selected = false,
+                        selected = index == 0,
                         contained = false,
                         isBookmarked = true,
                         isVacancyRegistered = false,

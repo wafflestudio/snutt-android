@@ -1,6 +1,8 @@
 package com.wafflestudio.snutt2.feature.search
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -104,7 +106,9 @@ fun SearchEmptyPlaceholder(
 @Composable
 private fun SearchPlaceHolder_Default() {
     SnuttPreviewSurface {
-        SearchPlaceHolder()
+        Box(modifier = Modifier.background(SNUTTColors.Dim2)) {
+            SearchPlaceHolder()
+        }
     }
 }
 
@@ -112,6 +116,8 @@ private fun SearchPlaceHolder_Default() {
 @Composable
 private fun SearchEmptyPlaceholder_Default() {
     SnuttPreviewSurface {
-        SearchEmptyPlaceholder()
+        Box(modifier = Modifier.background(SNUTTColors.Dim2)) {
+            SearchEmptyPlaceholder()
+        }
     }
 }
