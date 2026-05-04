@@ -44,7 +44,7 @@ class LectureReminderViewModel @Inject constructor(
 
     init {
         loadInitialData()
-        pushReminderUpdate()
+        observeReminderUpdates()
     }
 
     private fun loadInitialData() {
@@ -84,7 +84,7 @@ class LectureReminderViewModel @Inject constructor(
         }
     }
 
-    private fun pushReminderUpdate() {
+    private fun observeReminderUpdates() {
         viewModelScope.launch {
             updateEvent
                 .debouncePerKey(200L) { changeEvent -> changeEvent.lectureId } // lectureId가 Key로 사용되어 lectureId가 서로 다른 변경은 debounce 없이 collect 한다.
