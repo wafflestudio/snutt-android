@@ -99,7 +99,7 @@ class LectureReminderViewModel @Inject constructor(
                         }
                         .onFailure { error ->
                             handleLectureReminderError(error)
-                            changeEvent.onFallback()
+                            rollbackLectureReminderOption(changeEvent.lectureId, changeEvent.previousOption)
                         }
                 }
                 .collect()
@@ -122,13 +122,13 @@ class LectureReminderViewModel @Inject constructor(
     }
 
     fun changeLectureReminderOption(lectureId: String, option: LectureWithReminderOption) {
-        val previousState = _lectureReminderUiState.value
+        val currentState = _lectureReminderUiState.value as? LectureReminderUiState.Success ?: return
+        val previousOption = currentState.data[lectureId] ?: return
+
         _lectureReminderUiState.update { state ->
             when (state) {
                 is LectureReminderUiState.Success -> state.copy(
-                    data = state.data.toMutableMap().apply {
-                        this[lectureId] = option
-                    },
+                    data = state.data + (lectureId to option),
                 )
 
                 else -> state
@@ -136,11 +136,19 @@ class LectureReminderViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            updateEvent.emit(
-                LectureReminderChangeEvent(lectureId, option) {
-                    _lectureReminderUiState.update { previousState }
-                },
-            )
+            updateEvent.emit(LectureReminderChangeEvent(lectureId, option, previousOption))
+        }
+    }
+
+    private fun rollbackLectureReminderOption(lectureId: String, previousOption: LectureWithReminderOption) {
+        _lectureReminderUiState.update { state ->
+            when (state) {
+                is LectureReminderUiState.Success -> state.copy(
+                    data = state.data + (lectureId to previousOption),
+                )
+
+                else -> state
+            }
         }
     }
 }
@@ -164,5 +172,5 @@ sealed interface LectureReminderUiEvent {
 private data class LectureReminderChangeEvent(
     val lectureId: String,
     val option: LectureWithReminderOption,
-    val onFallback: suspend () -> Unit,
+    val previousOption: LectureWithReminderOption,
 )
