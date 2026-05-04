@@ -55,29 +55,29 @@ class LectureReminderViewModel @Inject constructor(
                         semesterStatus.current?.year ?: semesterStatus.next.year
                     val targetSemester =
                         semesterStatus.current?.semester ?: semesterStatus.next.semester
-                    _lectureReminderUiState.emit(LectureReminderUiState.Loading)
+                    _lectureReminderUiState.update { LectureReminderUiState.Loading }
                     tableRepository.fetchTableList()
                         .onFailure {
-                            _lectureReminderUiState.emit(LectureReminderUiState.Error)
+                            _lectureReminderUiState.update { LectureReminderUiState.Error }
                             return@collectLatest
                         }
                     val resolvedPrimaryId = tableRepository.tableSummaryList.value.firstOrNull { tableSummary ->
                         tableSummary.isPrimary && tableSummary.courseBook.year == targetYear && tableSummary.courseBook.semester == targetSemester
                     }?.id ?: run {
-                        _lectureReminderUiState.emit(LectureReminderUiState.NoPrimaryTimetable)
+                        _lectureReminderUiState.update { LectureReminderUiState.NoPrimaryTimetable }
                         return@collectLatest
                     }
                     tableRepository.getTimetableReminders(resolvedPrimaryId)
                         .onSuccess { data ->
-                            _lectureReminderUiState.emit(
+                            _lectureReminderUiState.update {
                                 LectureReminderUiState.Success(
                                     data = data.lectureReminders.associateBy { it.lectureId },
                                     timetableId = data.timetableId,
-                                ),
-                            )
+                                )
+                            }
                         }
                         .onFailure {
-                            _lectureReminderUiState.emit(LectureReminderUiState.Error)
+                            _lectureReminderUiState.update { LectureReminderUiState.Error }
                         }
                 }
         }
