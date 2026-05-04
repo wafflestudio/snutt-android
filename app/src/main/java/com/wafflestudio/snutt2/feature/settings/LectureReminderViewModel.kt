@@ -43,7 +43,7 @@ class LectureReminderViewModel @Inject constructor(
 
     init {
         loadInitialData()
-        handleUpdateEvents()
+        pushReminderUpdate()
     }
 
     private fun loadInitialData() {
@@ -83,7 +83,7 @@ class LectureReminderViewModel @Inject constructor(
         }
     }
 
-    private fun handleUpdateEvents() {
+    private fun pushReminderUpdate() {
         viewModelScope.launch {
             updateEvent
                 .debouncePerKey(200L) { changeEvent -> changeEvent.lectureId } // lectureId가 Key로 사용되어 lectureId가 서로 다른 변경은 debounce 없이 collect 한다.
@@ -121,7 +121,7 @@ class LectureReminderViewModel @Inject constructor(
         }
     }
 
-    fun changeLectureReminderOption(lectureId: String, option: LectureWithReminderOption) {
+    fun updateReminderOption(lectureId: String, option: LectureWithReminderOption) {
         val currentState = _lectureReminderUiState.value as? LectureReminderUiState.Success ?: return
         val previousOption = currentState.data[lectureId] ?: return
 

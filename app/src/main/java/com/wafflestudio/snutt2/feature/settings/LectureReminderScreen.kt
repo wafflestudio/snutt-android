@@ -135,7 +135,7 @@ fun LectureReminderRoute(
             padding = padding,
             uiState = uiState,
             onClickBack = onNavigateBack,
-            onChangeReminderOption = viewModel::changeLectureReminderOption,
+            onChangeReminderOption = viewModel::updateReminderOption,
         )
     }
 }
