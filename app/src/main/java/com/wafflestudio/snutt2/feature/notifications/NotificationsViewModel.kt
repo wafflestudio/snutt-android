@@ -30,6 +30,7 @@ class NotificationsViewModel @Inject constructor(
     val uiEvent = _uiEvent.asSharedFlow()
 
     init {
+        notificationRepository.resetNotificationCount()
         viewModelScope.launch {
             notificationRepository.getNotificationListStream()
                 .cachedIn(viewModelScope)

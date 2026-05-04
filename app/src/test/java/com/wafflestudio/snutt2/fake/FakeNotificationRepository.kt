@@ -23,6 +23,10 @@ class FakeNotificationRepository : NotificationRepository {
         return fetchNotificationCountResult
     }
 
+    override fun resetNotificationCount() {
+        notificationCount.value = 0L
+    }
+
     // --- 미사용 메서드 ---
     override fun getNotificationListStream(): Flow<PagingData<Notification>> = TODO("Not used in this test")
 }
