@@ -41,8 +41,6 @@ class LectureReminderViewModel @Inject constructor(
     private val _lectureReminderUiEvent: MutableSharedFlow<LectureReminderUiEvent> = MutableSharedFlow(replay = 1)
     val lectureReminderUiEvent = _lectureReminderUiEvent.asSharedFlow()
 
-    private val currentTimetableId = MutableStateFlow("")
-
     init {
         loadInitialData()
         handleUpdateEvents()
@@ -71,8 +69,12 @@ class LectureReminderViewModel @Inject constructor(
                     }
                     tableRepository.getTimetableReminders(resolvedPrimaryId)
                         .onSuccess { data ->
-                            currentTimetableId.emit(data.timetableId)
-                            _lectureReminderUiState.emit(LectureReminderUiState.Success(data.lectureReminders.associateBy { it.lectureId }))
+                            _lectureReminderUiState.emit(
+                                LectureReminderUiState.Success(
+                                    data = data.lectureReminders.associateBy { it.lectureId },
+                                    timetableId = data.timetableId,
+                                ),
+                            )
                         }
                         .onFailure {
                             _lectureReminderUiState.emit(LectureReminderUiState.Error)
@@ -87,9 +89,11 @@ class LectureReminderViewModel @Inject constructor(
                 .debouncePerKey(200L) { changeEvent -> changeEvent.lectureId } // lectureId가 Key로 사용되어 lectureId가 서로 다른 변경은 debounce 없이 collect 한다.
                 .distinctUntilChanged()
                 .onEach { changeEvent ->
+                    val timetableId = (_lectureReminderUiState.value as? LectureReminderUiState.Success)?.timetableId
+                        ?: return@onEach
                     val lectureId = changeEvent.lectureId
                     val offset = changeEvent.option.lectureReminderOffset
-                    tableRepository.updateTimetableLectureReminder(currentTimetableId.value, lectureId, offset)
+                    tableRepository.updateTimetableLectureReminder(timetableId, lectureId, offset)
                         .onSuccess {
                             _lectureReminderUiEvent.emit(
                                 LectureReminderUiEvent.ShowSnackBarByEvent(
@@ -153,7 +157,10 @@ class LectureReminderViewModel @Inject constructor(
 sealed interface LectureReminderUiState {
     data object Loading : LectureReminderUiState
     data object Error : LectureReminderUiState
-    data class Success(val data: Map<String, LectureWithReminderOption>) : LectureReminderUiState
+    data class Success(
+        val data: Map<String, LectureWithReminderOption>,
+        val timetableId: String,
+    ) : LectureReminderUiState
     data object NoPrimaryTimetable : LectureReminderUiState
 }
 

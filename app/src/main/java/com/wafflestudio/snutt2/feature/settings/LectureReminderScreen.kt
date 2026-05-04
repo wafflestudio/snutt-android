@@ -324,7 +324,10 @@ fun LectureReminderEmpty() {
 private fun LectureReminderScreen_Success() {
     SnuttPreviewSurface {
         LectureReminderScreen(
-            uiState = LectureReminderUiState.Success(LecturePreviewData.sampleLectureReminderOptions),
+            uiState = LectureReminderUiState.Success(
+                data = LecturePreviewData.sampleLectureReminderOptions,
+                timetableId = "",
+            ),
             onClickBack = {},
             onChangeReminderOption = { _, _ -> },
         )
