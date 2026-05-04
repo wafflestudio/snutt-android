@@ -42,7 +42,6 @@ class LectureReminderViewModel @Inject constructor(
     val lectureReminderUiEvent = _lectureReminderUiEvent.asSharedFlow()
 
     private val currentTimetableId = MutableStateFlow("")
-    private val primaryTimetableId = MutableStateFlow("")
 
     init {
         loadInitialData()
@@ -78,7 +77,6 @@ class LectureReminderViewModel @Inject constructor(
                         .onFailure {
                             _lectureReminderUiState.emit(LectureReminderUiState.Error)
                         }
-                    primaryTimetableId.emit(resolvedPrimaryId)
                 }
         }
     }
