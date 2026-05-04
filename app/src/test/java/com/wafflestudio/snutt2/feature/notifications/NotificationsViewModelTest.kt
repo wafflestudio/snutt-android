@@ -37,20 +37,30 @@ class NotificationsViewModelTest {
         deeplinkParser = deeplinkParser,
     )
 
-    // region init: resetNotificationCount
+    // region onListLoadSuccess
 
     @Test
-    fun `init 시 repository의 resetNotificationCount가 호출된다`() = runTest {
+    fun `init 만으로는 repository의 resetNotificationCount가 호출되지 않는다`() = runTest {
         viewModel = createViewModel()
+
+        assertEquals(false, fakeNotificationRepository.resetNotificationCountCalled)
+    }
+
+    @Test
+    fun `onListLoadSuccess 호출 시 repository의 resetNotificationCount가 호출된다`() = runTest {
+        viewModel = createViewModel()
+
+        viewModel.onListLoadSuccess()
 
         assertEquals(true, fakeNotificationRepository.resetNotificationCountCalled)
     }
 
     @Test
-    fun `init 시 repository의 notificationCount가 0으로 초기화된다`() = runTest {
+    fun `onListLoadSuccess 호출 시 repository의 notificationCount가 0으로 초기화된다`() = runTest {
         fakeNotificationRepository.notificationCount.value = 7L
-
         viewModel = createViewModel()
+
+        viewModel.onListLoadSuccess()
 
         assertEquals(0L, fakeNotificationRepository.notificationCount.value)
     }
