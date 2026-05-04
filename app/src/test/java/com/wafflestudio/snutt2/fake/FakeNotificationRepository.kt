@@ -6,6 +6,7 @@ import com.wafflestudio.snutt2.data.notifications.NotificationRepository
 import com.wafflestudio.snutt2.domain.model.Notification
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flowOf
 
 class FakeNotificationRepository : NotificationRepository {
 
@@ -16,6 +17,8 @@ class FakeNotificationRepository : NotificationRepository {
     var fetchNotificationCountResult: Result<Unit> = Result.Success(Unit)
     var fetchNotificationCountCalled = false
         private set
+    var resetNotificationCountCalled = false
+        private set
 
     // --- 인터페이스 구현 ---
     override suspend fun fetchNotificationCount(): Result<Unit> {
@@ -24,9 +27,9 @@ class FakeNotificationRepository : NotificationRepository {
     }
 
     override fun resetNotificationCount() {
+        resetNotificationCountCalled = true
         notificationCount.value = 0L
     }
 
-    // --- 미사용 메서드 ---
-    override fun getNotificationListStream(): Flow<PagingData<Notification>> = TODO("Not used in this test")
+    override fun getNotificationListStream(): Flow<PagingData<Notification>> = flowOf(PagingData.empty())
 }
