@@ -95,16 +95,7 @@ class LectureReminderViewModel @Inject constructor(
                     val offset = changeEvent.option.lectureReminderOffset
                     tableRepository.updateTimetableLectureReminder(timetableId, lectureId, offset)
                         .onSuccess {
-                            _lectureReminderUiEvent.emit(
-                                LectureReminderUiEvent.ShowSnackBarByEvent(
-                                    when (offset) {
-                                        LectureReminderOffset.NONE -> LectureReminderEvent.LECTURE_REMINDER_UPDATE_SUCCESS_NONE
-                                        LectureReminderOffset.TEN_MINUTES_BEFORE -> LectureReminderEvent.LECTURE_REMINDER_UPDATE_SUCCESS_TEN_MINUTES_BEFORE
-                                        LectureReminderOffset.AT_START_TIME -> LectureReminderEvent.LECTURE_REMINDER_UPDATE_SUCCESS_AT_START_TIME
-                                        LectureReminderOffset.TEN_MINUTES_AFTER -> LectureReminderEvent.LECTURE_REMINDER_UPDATE_SUCCESS_TEN_MINUTES_AFTER
-                                    },
-                                ),
-                            )
+                            _lectureReminderUiEvent.emit(LectureReminderUiEvent.ShowUpdateSuccessSnackBar(offset))
                         }
                         .onFailure { error ->
                             handleLectureReminderError(error)
@@ -166,15 +157,8 @@ sealed interface LectureReminderUiState {
 
 sealed interface LectureReminderUiEvent {
     data class ShowToast(val message: String) : LectureReminderUiEvent
-    data class ShowSnackBarByEvent(val event: LectureReminderEvent) : LectureReminderUiEvent
+    data class ShowUpdateSuccessSnackBar(val offset: LectureReminderOffset) : LectureReminderUiEvent
     data object LoggedOut : LectureReminderUiEvent
-}
-
-enum class LectureReminderEvent {
-    LECTURE_REMINDER_UPDATE_SUCCESS_NONE,
-    LECTURE_REMINDER_UPDATE_SUCCESS_TEN_MINUTES_BEFORE,
-    LECTURE_REMINDER_UPDATE_SUCCESS_AT_START_TIME,
-    LECTURE_REMINDER_UPDATE_SUCCESS_TEN_MINUTES_AFTER,
 }
 
 private data class LectureReminderChangeEvent(
