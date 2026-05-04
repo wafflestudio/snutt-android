@@ -64,7 +64,7 @@ fun LectureReminderRoute(
     viewModel: LectureReminderViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
-    val uiState by viewModel.lectureReminderUiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackBarHostState = remember { CustomSnackBarHostState() }
     val hazeState = rememberHazeState()
 
@@ -73,7 +73,7 @@ fun LectureReminderRoute(
     val tenMinutesAfterMessage = stringResource(R.string.settings_lecture_reminder_update_success_ten_minutes_after)
 
     LaunchedEffect(Unit) {
-        viewModel.lectureReminderUiEvent.collect { uiEvent ->
+        viewModel.uiEvent.collect { uiEvent ->
             when (uiEvent) {
                 is LectureReminderUiEvent.ShowToast -> {
                     val message = uiEvent.message

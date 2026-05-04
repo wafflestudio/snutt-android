@@ -16,6 +16,7 @@ import com.wafflestudio.snutt2.lib.debouncePerKey
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
@@ -33,13 +34,13 @@ class LectureReminderViewModel @Inject constructor(
     private val semesterStatusRepository: SemesterStatusRepository,
     private val displayMessageResolver: DisplayMessageResolver,
 ) : ViewModel() {
-    private val _lectureReminderUiState = MutableStateFlow<LectureReminderUiState>(LectureReminderUiState.Loading)
-    val lectureReminderUiState = _lectureReminderUiState.asStateFlow()
+    private val _uiEvent = MutableSharedFlow<LectureReminderUiEvent>(replay = 1)
+    val uiEvent = _uiEvent.asSharedFlow()
+
+    private val _uiState: MutableStateFlow<LectureReminderUiState> = MutableStateFlow(LectureReminderUiState.Loading)
+    val uiState: StateFlow<LectureReminderUiState> = _uiState.asStateFlow()
 
     private val updateEvent = MutableSharedFlow<LectureReminderChangeEvent>()
-
-    private val _lectureReminderUiEvent: MutableSharedFlow<LectureReminderUiEvent> = MutableSharedFlow(replay = 1)
-    val lectureReminderUiEvent = _lectureReminderUiEvent.asSharedFlow()
 
     init {
         loadInitialData()
@@ -55,21 +56,21 @@ class LectureReminderViewModel @Inject constructor(
                         semesterStatus.current?.year ?: semesterStatus.next.year
                     val targetSemester =
                         semesterStatus.current?.semester ?: semesterStatus.next.semester
-                    _lectureReminderUiState.update { LectureReminderUiState.Loading }
+                    _uiState.update { LectureReminderUiState.Loading }
                     tableRepository.fetchTableList()
                         .onFailure {
-                            _lectureReminderUiState.update { LectureReminderUiState.Error }
+                            _uiState.update { LectureReminderUiState.Error }
                             return@collectLatest
                         }
                     val resolvedPrimaryId = tableRepository.tableSummaryList.value.firstOrNull { tableSummary ->
                         tableSummary.isPrimary && tableSummary.courseBook.year == targetYear && tableSummary.courseBook.semester == targetSemester
                     }?.id ?: run {
-                        _lectureReminderUiState.update { LectureReminderUiState.NoPrimaryTimetable }
+                        _uiState.update { LectureReminderUiState.NoPrimaryTimetable }
                         return@collectLatest
                     }
                     tableRepository.getTimetableReminders(resolvedPrimaryId)
                         .onSuccess { data ->
-                            _lectureReminderUiState.update {
+                            _uiState.update {
                                 LectureReminderUiState.Success(
                                     data = data.lectureReminders.associateBy { it.lectureId },
                                     timetableId = data.timetableId,
@@ -77,7 +78,7 @@ class LectureReminderViewModel @Inject constructor(
                             }
                         }
                         .onFailure {
-                            _lectureReminderUiState.update { LectureReminderUiState.Error }
+                            _uiState.update { LectureReminderUiState.Error }
                         }
                 }
         }
@@ -89,13 +90,13 @@ class LectureReminderViewModel @Inject constructor(
                 .debouncePerKey(200L) { changeEvent -> changeEvent.lectureId } // lectureId가 Key로 사용되어 lectureId가 서로 다른 변경은 debounce 없이 collect 한다.
                 .distinctUntilChanged()
                 .onEach { changeEvent ->
-                    val timetableId = (_lectureReminderUiState.value as? LectureReminderUiState.Success)?.timetableId
+                    val timetableId = (_uiState.value as? LectureReminderUiState.Success)?.timetableId
                         ?: return@onEach
                     val lectureId = changeEvent.lectureId
                     val offset = changeEvent.option.lectureReminderOffset
                     tableRepository.updateTimetableLectureReminder(timetableId, lectureId, offset)
                         .onSuccess {
-                            _lectureReminderUiEvent.emit(LectureReminderUiEvent.ShowUpdateSuccessSnackBar(offset))
+                            _uiEvent.emit(LectureReminderUiEvent.ShowUpdateSuccessSnackBar(offset))
                         }
                         .onFailure { error ->
                             handleLectureReminderError(error)
@@ -110,22 +111,22 @@ class LectureReminderViewModel @Inject constructor(
         val displayMessage = displayMessageResolver.getDisplayMessage(error)
         when (error) {
             is AuthError -> {
-                _lectureReminderUiEvent.emit(LectureReminderUiEvent.ShowToast(displayMessage))
+                _uiEvent.emit(LectureReminderUiEvent.ShowToast(displayMessage))
                 userRepository.postForceLogout()
-                _lectureReminderUiEvent.emit(LectureReminderUiEvent.LoggedOut)
+                _uiEvent.emit(LectureReminderUiEvent.LoggedOut)
             }
 
             else -> {
-                _lectureReminderUiEvent.emit(LectureReminderUiEvent.ShowToast(displayMessage))
+                _uiEvent.emit(LectureReminderUiEvent.ShowToast(displayMessage))
             }
         }
     }
 
     fun updateReminderOption(lectureId: String, option: LectureWithReminderOption) {
-        val currentState = _lectureReminderUiState.value as? LectureReminderUiState.Success ?: return
+        val currentState = _uiState.value as? LectureReminderUiState.Success ?: return
         val previousOption = currentState.data[lectureId] ?: return
 
-        _lectureReminderUiState.update { state ->
+        _uiState.update { state ->
             when (state) {
                 is LectureReminderUiState.Success -> state.copy(
                     data = state.data + (lectureId to option),
@@ -141,7 +142,7 @@ class LectureReminderViewModel @Inject constructor(
     }
 
     private fun rollbackLectureReminderOption(lectureId: String, previousOption: LectureWithReminderOption) {
-        _lectureReminderUiState.update { state ->
+        _uiState.update { state ->
             when (state) {
                 is LectureReminderUiState.Success -> state.copy(
                     data = state.data + (lectureId to previousOption),
