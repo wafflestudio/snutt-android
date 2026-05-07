@@ -39,6 +39,10 @@ class NotificationsViewModel @Inject constructor(
         }
     }
 
+    fun onListLoadSuccess() {
+        notificationRepository.resetNotificationCount()
+    }
+
     fun onNotificationClick(notification: Notification) {
         val action = deeplinkParser.parse(notification.deeplink ?: return) ?: return
 

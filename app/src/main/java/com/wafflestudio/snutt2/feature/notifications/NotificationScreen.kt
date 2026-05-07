@@ -55,6 +55,12 @@ fun NotificationRoute(
     val notificationList = viewModel.notificationList.collectAsLazyPagingItems()
     val notificationUiState = notificationList.notificationUiState()
 
+    val isLoadSuccess = notificationUiState is NotificationUiState.Success ||
+        notificationUiState is NotificationUiState.Empty
+    LaunchedEffect(isLoadSuccess) {
+        if (isLoadSuccess) viewModel.onListLoadSuccess()
+    }
+
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {

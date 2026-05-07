@@ -12,4 +12,6 @@ interface NotificationRepository {
     val notificationCount: StateFlow<Long>
 
     suspend fun fetchNotificationCount(): Result<Unit>
+
+    fun resetNotificationCount()
 }
