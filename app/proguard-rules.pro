@@ -5,8 +5,8 @@
 # class stored to sharedPreference after serialization
 -keep public enum com.wafflestudio.snutt2.** { *; }
 -keep class com.wafflestudio.snutt2.lib.** { *; }
--keep class com.wafflestudio.snutt2.network.dto.** { *; }
--keep class com.wafflestudio.snutt2.storage.model.** { *; }
+-keep class com.wafflestudio.snutt2.network.** { *; }
+-keep class com.wafflestudio.snutt2.storage.** { *; }
 -keep class com.wafflestudio.snutt2.domain.model.** { *; }
 
 # https://github.com/square/retrofit/issues/3751#issuecomment-1192043644
