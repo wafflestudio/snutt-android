@@ -17,18 +17,11 @@ class FakeNotificationRepository : NotificationRepository {
     var fetchNotificationCountResult: Result<Unit> = Result.Success(Unit)
     var fetchNotificationCountCalled = false
         private set
-    var resetNotificationCountCalled = false
-        private set
 
     // --- 인터페이스 구현 ---
     override suspend fun fetchNotificationCount(): Result<Unit> {
         fetchNotificationCountCalled = true
         return fetchNotificationCountResult
-    }
-
-    override fun resetNotificationCount() {
-        resetNotificationCountCalled = true
-        notificationCount.value = 0L
     }
 
     override fun getNotificationListStream(): Flow<PagingData<Notification>> = flowOf(PagingData.empty())

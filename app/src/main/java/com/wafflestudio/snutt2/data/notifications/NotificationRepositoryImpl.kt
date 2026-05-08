@@ -38,10 +38,6 @@ class NotificationRepositoryImpl @Inject constructor(private val api: SNUTTRestA
         Result.Fail(e.toDomainError())
     }
 
-    override fun resetNotificationCount() {
-        notificationCount.value = 0
-    }
-
     companion object {
         private const val NOTIFICATIONS_LOAD_PAGE_SIZE = 30
     }

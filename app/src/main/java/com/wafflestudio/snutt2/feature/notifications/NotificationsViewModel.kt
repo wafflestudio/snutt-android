@@ -40,7 +40,9 @@ class NotificationsViewModel @Inject constructor(
     }
 
     fun onListLoadSuccess() {
-        notificationRepository.resetNotificationCount()
+        viewModelScope.launch {
+            notificationRepository.fetchNotificationCount()
+        }
     }
 
     fun onNotificationClick(notification: Notification) {
