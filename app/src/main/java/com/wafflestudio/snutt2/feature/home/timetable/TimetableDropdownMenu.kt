@@ -46,6 +46,7 @@ fun TimetableMoreAction(
     onClickAddManually: () -> Unit,
     onClickTableLecturesListIcon: () -> Unit,
     onClickVacancyIcon: () -> Unit,
+    onClickLectureDiaryHistory: () -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
     val iconRotation by animateFloatAsState(
@@ -82,6 +83,7 @@ fun TimetableMoreAction(
                 onClickAddManually = onClickAddManually,
                 onClickTableLecturesListIcon = onClickTableLecturesListIcon,
                 onClickVacancyIcon = onClickVacancyIcon,
+                onClickLectureDiaryHistory = onClickLectureDiaryHistory,
             )
         }
     }
@@ -94,6 +96,7 @@ fun TimetableDropdownOverlay(
     onClickAddManually: () -> Unit,
     onClickTableLecturesListIcon: () -> Unit,
     onClickVacancyIcon: () -> Unit,
+    onClickLectureDiaryHistory: () -> Unit,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         Box(
@@ -188,6 +191,20 @@ fun TimetableDropdownOverlay(
                     style = SNUTTTypography.h3.copy(fontWeight = FontWeight.Normal),
                 )
             }
+            Row(
+                modifier = Modifier.clicks {
+                    onDismiss()
+                    onClickLectureDiaryHistory()
+                }.padding(vertical = 6.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                SnuttIcon(R.drawable.ic_diary, modifier = Modifier.size(22.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
+                Text(
+                    text = stringResource(R.string.home_dropdown_menu_content_lecture_diary_list),
+                    style = SNUTTTypography.h3.copy(fontWeight = FontWeight.Normal),
+                )
+            }
         }
     }
 }
@@ -202,6 +219,7 @@ private fun TimetableDropdownOverlay_Default() {
             onClickAddManually = {},
             onClickTableLecturesListIcon = {},
             onClickVacancyIcon = {},
+            onClickLectureDiaryHistory = {},
         )
     }
 }

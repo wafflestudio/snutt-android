@@ -179,6 +179,7 @@
     <string name="home_dropdown_menu_title_lecture_list">View as List</string>
     <string name="home_dropdown_menu_content_current_timetable_lecture_list">Current Timetable List</string>
     <string name="home_dropdown_menu_content_vacancy_lecture_list">Vacancy Alert List</string>
+    <string name="home_dropdown_menu_content_lecture_diary_list">Lecture Diary List</string>
     <string name="timetable_sessionless_lecture_list_hint">Scroll to see non-scheduled lectures.</string>
     <string name="table_delete_alert_message">Are you sure you want to delete this timetable?</string>
     <string name="notifications_app_bar_title">Notifications</string>

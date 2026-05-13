@@ -33,6 +33,7 @@ fun TimeTableScreen(
     onClickTableTitle: (tableSummary: TableSummary) -> Unit,
     onClickTableLecturesListIcon: () -> Unit,
     onClickVacancyBanner: () -> Unit,
+    onClickLectureDiaryHistory: () -> Unit,
     onClickLectureCell: (LocalLecture) -> Unit,
     onClickBookmarkIcon: () -> Unit,
     onClickAddBySearch: () -> Unit,
@@ -105,6 +106,7 @@ fun TimeTableScreen(
                             onClickAddManually = onClickAddManually,
                             onClickTableLecturesListIcon = onClickTableLecturesListIcon,
                             onClickVacancyIcon = onClickVacancyBanner,
+                            onClickLectureDiaryHistory = onClickLectureDiaryHistory,
                         )
                     },
                 )
