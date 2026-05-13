@@ -46,6 +46,7 @@ private fun TimeTableScreen_AllBadgesAndBanner() {
             onClickTableTitle = {},
             onClickTableLecturesListIcon = {},
             onClickVacancyBanner = {},
+            onClickLectureDiaryHistory = {},
             onClickLectureCell = {},
             onDismissDialog = {},
             onChangeTableNameTitleChange = {},

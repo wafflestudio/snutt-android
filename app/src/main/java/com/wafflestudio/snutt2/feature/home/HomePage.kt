@@ -197,6 +197,7 @@ private fun HomePageNewScreen(
                 onNavigateBottomSheetThemeDetail = onNavigateThemeDetail,
                 onNavigateLecturesOfTable = onNavigateLecturesOfTable,
                 onNavigateVacancyNotification = onNavigateVacancyNotification,
+                onNavigateLectureDiaryHistory = onNavigateDiaryHistory,
                 onNavigateLectureDetail = onNavigateLectureDetail,
                 onNavigateBookmark = onNavigateBookmark,
                 onNavigateSearch = { onTabSelected(HomeItem.Search) },
