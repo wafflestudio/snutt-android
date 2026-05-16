@@ -1,11 +1,10 @@
 package com.wafflestudio.snutt2.storage
 
 import com.wafflestudio.snutt2.lib.android.NetworkLog
-import com.wafflestudio.snutt2.network.dto.CourseBookDto
-import com.wafflestudio.snutt2.network.dto.SemesterStatusDto
 import com.wafflestudio.snutt2.network.dto.SimpleTableDto
 import com.wafflestudio.snutt2.network.dto.TableDto
 import com.wafflestudio.snutt2.network.dto.UserDto
+import com.wafflestudio.snutt2.storage.model.SemesterStatusLocalEntity
 import com.wafflestudio.snutt2.storage.model.TableLectureCustomData
 import com.wafflestudio.snutt2.storage.model.TableTrimParamData
 import com.wafflestudio.snutt2.storage.model.TagLocalEntity
@@ -137,16 +136,6 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val courseBooks = PrefValue<List<CourseBookDto>>(
-        prefContext,
-        PrefListValueMetaData(
-            domain = DOMAIN_SCOPE_CURRENT_VERSION,
-            key = "pref_course_books",
-            type = CourseBookDto::class.java,
-            defaultValue = listOf(),
-        ),
-    )
-
     val networkLog = PrefValue<List<NetworkLog>>(
         prefContext,
         PrefListValueMetaData(
@@ -197,12 +186,12 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val semesterStatus = PrefValue<Optional<SemesterStatusDto>>(
+    val semesterStatus = PrefValue<Optional<SemesterStatusLocalEntity>>(
         prefContext,
         PrefOptionalValueMetaData(
             domain = DOMAIN_SCOPE_LOGIN,
             key = "semester_status",
-            type = SemesterStatusDto::class.java,
+            type = SemesterStatusLocalEntity::class.java,
             defaultValue = Optional.empty(),
         ),
     )
