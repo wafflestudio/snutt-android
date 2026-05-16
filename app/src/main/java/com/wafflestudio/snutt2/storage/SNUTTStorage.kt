@@ -1,6 +1,6 @@
 package com.wafflestudio.snutt2.storage
 
-import com.wafflestudio.snutt2.lib.android.NetworkLog
+import com.wafflestudio.snutt2.storage.model.NetworkLog
 import com.wafflestudio.snutt2.storage.model.SemesterStatusLocalEntity
 import com.wafflestudio.snutt2.storage.model.SimpleTableLocalEntity
 import com.wafflestudio.snutt2.storage.model.TableLectureCustomData
