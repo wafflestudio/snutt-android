@@ -196,16 +196,16 @@ fun <ComponentName>_<분기식별자2>() { ... }
 
 ```bash
 # 최초 골든 생성 / 의도된 diff 반영
-./gradlew :app:updateStagingDebugScreenshotTest
+./gradlew :app:updateDevDebugScreenshotTest
 # 이후 검증
-./gradlew :app:validateStagingDebugScreenshotTest
+./gradlew :app:validateDevDebugScreenshotTest
 ```
 
 alpha14 에서는 골든 갱신 태스크 이름이 `update*` 이다 (구버전의 `record*` 아님).
 
 **골든 파일명에 preview config hash 가 들어간다.** `@Preview` 의 옵션(`locale`, `widthDp` 등) 이 변경되면
 파일명 hash 가 바뀌어 이전 골든이 고아(orphan) 가 된다. `update*` 는 새 골든을 추가할 뿐 이전 파일을 지우지
-않으므로, 옵션을 바꾼 뒤에는 `find app/src/screenshotTestStagingDebug/reference -name "*_<이전hash>_0.png"
+않으므로, 옵션을 바꾼 뒤에는 `find app/src/screenshotTestDevDebug/reference -name "*_<이전hash>_0.png"
 -delete` 로 수동 정리한다. 컴포저블 이름·함수명 변경 시에도 동일.
 
 이 스킬은 기본적으로 빌드까지 돌리지 않는다 (변경 단위가 작을 때 과한 비용). 사용자가 명시적으로 요청하거나
@@ -227,8 +227,8 @@ alpha14 에서는 골든 갱신 태스크 이름이 `update*` 이다 (구버전�
 - 처리한 파일 경로 (컴포저블, 테스트)
 - 도출된 의미 분기 개수와 목록 (한 줄씩, 각 분기가 어떤 시각 결과를 내는지 명시)
 - 추가/변경/삭제한 preview 항목
-- 다음 권고 액션: diff 발생이 예상되면 `./gradlew :app:validateStagingDebugScreenshotTest` 실행 후
-  `updateStagingDebugScreenshotTest` 로 골든 갱신 필요. 골든 변경이 의도된 UI 변경인지는 사람이 판단.
+- 다음 권고 액션: diff 발생이 예상되면 `./gradlew :app:validateDevDebugScreenshotTest` 실행 후
+  `updateDevDebugScreenshotTest` 로 골든 갱신 필요. 골든 변경이 의도된 UI 변경인지는 사람이 판단.
 
 ---
 

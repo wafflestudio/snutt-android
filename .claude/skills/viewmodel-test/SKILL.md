@@ -189,7 +189,7 @@ object TestFixtures {
 ## 3. 실행 검증
 
 ```bash
-./gradlew :app:testStagingDebugUnitTest --tests "*.XxxViewModelTest"
+./gradlew :app:testDevDebugUnitTest --tests "*.XxxViewModelTest"
 ```
 
 ---

@@ -37,10 +37,10 @@
 
 ### Secrets
 
-The following files are required for Staging build:
+The following files are required for Dev build:
 
-- `app/src/staging/google-services.json`
-- `app/src/staging/res/value/strings.xml`
+- `app/src/dev/google-services.json`
+- `app/src/dev/res/values/strings.xml`
 
 The following files are required for Live build:
 
