@@ -112,17 +112,6 @@
     </issue>
 
     <issue
-        id="SpUsage"
-        message="Should use &quot;`sp`&quot; instead of &quot;`dp`&quot; for text sizes"
-        errorLine1="        android:textSize=&quot;15dp&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/widget_timetable.xml"
-            line="18"
-            column="9"/>
-    </issue>
-
-    <issue
         id="UsingMaterialAndMaterial3Libraries"
         message="Using a material import while also using the material3 library"
         errorLine1="import androidx.compose.material.ModalBottomSheetLayout"
@@ -2628,56 +2617,6 @@
             file="src/main/res/layout/widget_timetable.xml"
             line="6"
             column="5"/>
-    </issue>
-
-    <issue
-        id="TypographyDashes"
-        message="Replace &quot;-&quot; with an &quot;en dash&quot; character (–, &amp;#8211;) ?"
-        errorLine1="    &lt;string name=&quot;search_result_placeholder_7&quot;>e.g. Bldg 26 / 302-208&lt;/string>"
-        errorLine2="                                               ~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-en/strings.xml"
-            line="138"
-            column="48"/>
-    </issue>
-
-    <issue
-        id="TypographyDashes"
-        message="Replace &quot;-&quot; with an &quot;en dash&quot; character (–, &amp;#8211;) ?"
-        errorLine1="    &lt;string name=&quot;search_result_placeholder_7&quot;>ex) 26동 / 302-208 / 대글2 43-1동&lt;/string>"
-        errorLine2="                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="317"
-            column="48"/>
-    </issue>
-
-    <issue
-        id="IconLocation"
-        message="Found bitmap drawable `res/drawable/facebook_login.png` in densityless folder">
-        <location
-            file="src/main/res/drawable/facebook_login.png"/>
-    </issue>
-
-    <issue
-        id="IconLocation"
-        message="Found bitmap drawable `res/drawable/google_login.png` in densityless folder">
-        <location
-            file="src/main/res/drawable/google_login.png"/>
-    </issue>
-
-    <issue
-        id="IconLocation"
-        message="Found bitmap drawable `res/drawable/ic_map_pin.png` in densityless folder">
-        <location
-            file="src/main/res/drawable/ic_map_pin.png"/>
-    </issue>
-
-    <issue
-        id="IconLocation"
-        message="Found bitmap drawable `res/drawable/kakao_login.png` in densityless folder">
-        <location
-            file="src/main/res/drawable/kakao_login.png"/>
     </issue>
 
     <issue
