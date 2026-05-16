@@ -14,6 +14,7 @@ import com.wafflestudio.snutt2.network.dto.TableDto
 import com.wafflestudio.snutt2.network.dto.ThemeDto
 import com.wafflestudio.snutt2.network.dto.TimetableDto
 import com.wafflestudio.snutt2.network.dto.parseHexColor
+import com.wafflestudio.snutt2.storage.model.SimpleTableLocalEntity
 
 // region TableDto / TimetableDto / SimpleTableDto → Table / TableSummary
 
@@ -54,6 +55,16 @@ fun SimpleTableDto.toDomain(): TableSummary = TableSummary(
     courseBook = CourseBook(semester, year),
     title = title,
     totalCredit = totalCredit ?: 0,
+    isPrimary = isPrimary,
+)
+
+fun SimpleTableDto.toLocalEntity(): SimpleTableLocalEntity = SimpleTableLocalEntity(
+    id = id,
+    year = year,
+    semester = semester,
+    title = title,
+    updatedAt = updatedAt,
+    totalCredit = totalCredit,
     isPrimary = isPrimary,
 )
 

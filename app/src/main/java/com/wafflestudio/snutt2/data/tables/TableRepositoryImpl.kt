@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.data.tables
 
 import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.data.mapper.toDomain
+import com.wafflestudio.snutt2.data.mapper.toLocalEntity
 import com.wafflestudio.snutt2.domain.model.CourseBook
 import com.wafflestudio.snutt2.domain.model.LectureReminderOffset
 import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
@@ -16,6 +17,7 @@ import com.wafflestudio.snutt2.network.dto.PutTableThemeParams
 import com.wafflestudio.snutt2.network.dto.PutTimetableLectureReminderParams
 import com.wafflestudio.snutt2.network.error.toDomainError
 import com.wafflestudio.snutt2.storage.SNUTTStorage
+import com.wafflestudio.snutt2.storage.model.toDomainModel
 import com.wafflestudio.snutt2.storage.toOptional
 import kotlinx.coroutines.ExperimentalForInheritanceCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
@@ -51,14 +53,14 @@ class TableRepositoryImpl @Inject constructor(
             private val source = snuttStorage.tableMap.asStateFlow()
 
             override val value: List<TableSummary>
-                get() = source.value.values.map { it.toDomain() }
+                get() = source.value.values.map { it.toDomainModel() }
 
             override val replayCache: List<List<TableSummary>>
                 get() = listOf(value)
 
             override suspend fun collect(collector: kotlinx.coroutines.flow.FlowCollector<List<TableSummary>>): Nothing {
-                source.collect { dtoMap ->
-                    collector.emit(dtoMap.values.map { it.toDomain() })
+                source.collect { entityMap ->
+                    collector.emit(entityMap.values.map { it.toDomainModel() })
                 }
             }
         }
@@ -81,7 +83,7 @@ class TableRepositoryImpl @Inject constructor(
     override suspend fun fetchTableList(): Result<Unit> {
         try {
             val response = api._getTableList()
-            snuttStorage.tableMap.update(response.associateBy { it.id })
+            snuttStorage.tableMap.update(response.associate { it.id to it.toLocalEntity() })
             return Result.Success(Unit)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
@@ -115,7 +117,7 @@ class TableRepositoryImpl @Inject constructor(
                 ),
             )
             // FIXME: 데이터 레이어 갈아엎을 때 이 암묵적인 동작도 어떻게 좀 하기
-            snuttStorage.tableMap.update(response.associateBy { it.id })
+            snuttStorage.tableMap.update(response.associate { it.id to it.toLocalEntity() })
             response
                 .firstOrNull { it.year == courseBook.year && it.semester == courseBook.semester && it.title == title }
                 ?.let {
@@ -135,7 +137,7 @@ class TableRepositoryImpl @Inject constructor(
                 PutTableParams(title = newTitle),
             )
             // FIXME: 데이터 레이어 갈아엎을 때 이 암묵적인 동작도 어떻게 좀 하기
-            snuttStorage.tableMap.update(response.associateBy { it.id })
+            snuttStorage.tableMap.update(response.associate { it.id to it.toLocalEntity() })
             val prev = snuttStorage.lastViewedTable.get().value
             snuttStorage.lastViewedTable.update(
                 if (prev?.id == table.id) {
@@ -173,7 +175,7 @@ class TableRepositoryImpl @Inject constructor(
 
     private suspend fun refreshTableListAndCurrentTable() {
         val tableListResponse = api._getTableList()
-        snuttStorage.tableMap.update(tableListResponse.associateBy { it.id })
+        snuttStorage.tableMap.update(tableListResponse.associate { it.id to it.toLocalEntity() })
 
         val prevTable = snuttStorage.lastViewedTable.get().value ?: return
         val currentTableResponse = api._getTableById(prevTable.id)
@@ -184,7 +186,7 @@ class TableRepositoryImpl @Inject constructor(
         try {
             val response = api._deleteTable(table.id)
             // FIXME: 데이터 레이어 수정
-            snuttStorage.tableMap.update(response.associateBy { it.id })
+            snuttStorage.tableMap.update(response.associate { it.id to it.toLocalEntity() })
 
             return Result.Success(Unit)
         } catch (e: Exception) {
@@ -195,7 +197,7 @@ class TableRepositoryImpl @Inject constructor(
     override suspend fun copyTable(table: TableSummary): Result<Unit> {
         try {
             val response = api._copyTable(table.id)
-            snuttStorage.tableMap.update(response.associateBy { it.id })
+            snuttStorage.tableMap.update(response.associate { it.id to it.toLocalEntity() })
             return Result.Success(Unit)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())

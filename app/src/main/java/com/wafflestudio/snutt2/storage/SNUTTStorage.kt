@@ -1,9 +1,9 @@
 package com.wafflestudio.snutt2.storage
 
 import com.wafflestudio.snutt2.lib.android.NetworkLog
-import com.wafflestudio.snutt2.network.dto.SimpleTableDto
 import com.wafflestudio.snutt2.network.dto.TableDto
 import com.wafflestudio.snutt2.storage.model.SemesterStatusLocalEntity
+import com.wafflestudio.snutt2.storage.model.SimpleTableLocalEntity
 import com.wafflestudio.snutt2.storage.model.TableLectureCustomData
 import com.wafflestudio.snutt2.storage.model.TableTrimParamData
 import com.wafflestudio.snutt2.storage.model.TagLocalEntity
@@ -53,13 +53,13 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val tableMap = PrefValue<Map<String, SimpleTableDto>>(
+    val tableMap = PrefValue<Map<String, SimpleTableLocalEntity>>(
         prefContext,
         PrefMapValueMetaData(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
             key = "pref_tables",
             String::class.java,
-            SimpleTableDto::class.java,
+            SimpleTableLocalEntity::class.java,
             mapOf(),
         ),
     )
