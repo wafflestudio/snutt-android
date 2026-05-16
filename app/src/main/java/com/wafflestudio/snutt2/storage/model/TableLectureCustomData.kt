@@ -1,7 +1,9 @@
 package com.wafflestudio.snutt2.storage.model
 
+import com.squareup.moshi.JsonClass
 import com.wafflestudio.snutt2.domain.model.TableLectureCustom
 
+@JsonClass(generateAdapter = true)
 data class TableLectureCustomData(
     val title: Boolean,
     val place: Boolean,

@@ -54,10 +54,11 @@ private class ErrorParsingCall<T>(
 
         if (errorBody.isNotEmpty()) {
             try {
-                return serializer.deserialize<ErrorParsedHttpException>(
+                val body = serializer.deserialize<ErrorBodyDto>(
                     errorBody,
-                    ErrorParsedHttpException::class.java,
+                    ErrorBodyDto::class.java,
                 )
+                return ErrorParsedHttpException(body)
             } catch (_: Exception) {
                 // 파싱 실패 시 HttpException 으로 fallback
             }
