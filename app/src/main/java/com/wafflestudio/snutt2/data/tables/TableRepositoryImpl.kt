@@ -18,7 +18,7 @@ import com.wafflestudio.snutt2.network.dto.PutTimetableLectureReminderParams
 import com.wafflestudio.snutt2.network.error.toDomainError
 import com.wafflestudio.snutt2.storage.SNUTTStorage
 import com.wafflestudio.snutt2.storage.model.toDomainModel
-import com.wafflestudio.snutt2.storage.toOptional
+import com.wafflestudio.snutt2.storage.model.toOptional
 import kotlinx.coroutines.ExperimentalForInheritanceCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject

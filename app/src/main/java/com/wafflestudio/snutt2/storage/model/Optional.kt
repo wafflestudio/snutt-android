@@ -1,4 +1,4 @@
-package com.wafflestudio.snutt2.storage
+package com.wafflestudio.snutt2.storage.model
 
 import com.squareup.moshi.JsonClass
 import kotlinx.coroutines.CoroutineScope

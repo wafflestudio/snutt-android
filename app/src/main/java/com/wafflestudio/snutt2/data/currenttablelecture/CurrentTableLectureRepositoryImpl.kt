@@ -15,7 +15,7 @@ import com.wafflestudio.snutt2.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.network.dto.PostLectureParams
 import com.wafflestudio.snutt2.network.error.toDomainError
 import com.wafflestudio.snutt2.storage.SNUTTStorage
-import com.wafflestudio.snutt2.storage.toOptional
+import com.wafflestudio.snutt2.storage.model.toOptional
 import javax.inject.Inject
 import javax.inject.Singleton
 

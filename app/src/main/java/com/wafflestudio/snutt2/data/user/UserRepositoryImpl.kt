@@ -36,8 +36,8 @@ import com.wafflestudio.snutt2.network.error.toDomainError
 import com.wafflestudio.snutt2.storage.SNUTTStorage
 import com.wafflestudio.snutt2.storage.model.toDomainModel
 import com.wafflestudio.snutt2.storage.model.toLocalEntity
-import com.wafflestudio.snutt2.storage.toOptional
-import com.wafflestudio.snutt2.storage.unwrap
+import com.wafflestudio.snutt2.storage.model.toOptional
+import com.wafflestudio.snutt2.storage.model.unwrap
 import com.wafflestudio.snutt2.ui.theme.ThemeMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
