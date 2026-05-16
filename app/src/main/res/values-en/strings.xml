@@ -135,7 +135,7 @@
     <string name="search_result_placeholder_4">Try searching with abbreviations.</string>
     <string name="search_result_placeholder_5">e.g. Scientific Understanding of Death → SUD</string>
     <string name="search_result_placeholder_6">Try searching by classroom location.</string>
-    <string name="search_result_placeholder_7">e.g. Bldg 26 / 302-208</string>
+    <string name="search_result_placeholder_7">e.g. Bldg 26 / 302–208</string>
     <string name="search_option_tag_type_academic_year">Academic Year</string>
     <string name="search_option_tag_type_classification">Classification</string>
     <string name="search_option_tag_type_credit">Credits</string>
