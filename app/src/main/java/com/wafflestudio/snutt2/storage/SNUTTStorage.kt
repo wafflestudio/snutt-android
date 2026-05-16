@@ -7,6 +7,7 @@ import com.wafflestudio.snutt2.storage.model.TableLectureCustomData
 import com.wafflestudio.snutt2.storage.model.TableLocalEntity
 import com.wafflestudio.snutt2.storage.model.TableTrimParamData
 import com.wafflestudio.snutt2.storage.model.TagLocalEntity
+import com.wafflestudio.snutt2.storage.model.ThemeModeLocalEntity
 import com.wafflestudio.snutt2.storage.model.UserLocalEntity
 import com.wafflestudio.snutt2.storage.pref.PrefContext
 import com.wafflestudio.snutt2.storage.pref.PrefListValueMetaData
@@ -14,7 +15,6 @@ import com.wafflestudio.snutt2.storage.pref.PrefMapValueMetaData
 import com.wafflestudio.snutt2.storage.pref.PrefOptionalValueMetaData
 import com.wafflestudio.snutt2.storage.pref.PrefValue
 import com.wafflestudio.snutt2.storage.pref.PrefValueMetaData
-import com.wafflestudio.snutt2.ui.theme.ThemeMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -106,13 +106,13 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val themeMode = PrefValue<ThemeMode>(
+    val themeMode = PrefValue<ThemeModeLocalEntity>(
         prefContext,
         PrefValueMetaData(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
             key = "theme_mode",
-            type = ThemeMode::class.java,
-            defaultValue = ThemeMode.AUTO,
+            type = ThemeModeLocalEntity::class.java,
+            defaultValue = ThemeModeLocalEntity.AUTO,
         ),
     )
 

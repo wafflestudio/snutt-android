@@ -35,6 +35,7 @@ import com.wafflestudio.snutt2.network.dto.RegisterFirebaseTokenParams
 import com.wafflestudio.snutt2.network.error.toDomainError
 import com.wafflestudio.snutt2.storage.SNUTTStorage
 import com.wafflestudio.snutt2.storage.model.toDomainModel
+import com.wafflestudio.snutt2.storage.model.toLocalEntity
 import com.wafflestudio.snutt2.storage.toOptional
 import com.wafflestudio.snutt2.storage.unwrap
 import com.wafflestudio.snutt2.ui.theme.ThemeMode
@@ -60,7 +61,8 @@ class UserRepositoryImpl @Inject constructor(
 
     override val accessToken = storage.accessToken.asStateFlow()
 
-    override val themeMode = storage.themeMode.asStateFlow()
+    override val themeMode: StateFlow<ThemeMode> = storage.themeMode.asStateFlow()
+        .map(externalScope) { it.toDomainModel() }
 
     override suspend fun postSignIn(id: String, password: String): Result<Unit> = try {
         val response = api._postSignIn(PostSignInParams(id, password))
@@ -193,7 +195,7 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun setThemeMode(mode: ThemeMode): Result<Unit> = try {
-        storage.themeMode.update(mode)
+        storage.themeMode.update(mode.toLocalEntity())
         Result.Success(Unit)
     } catch (e: Exception) {
         Result.Fail(e.toDomainError())
