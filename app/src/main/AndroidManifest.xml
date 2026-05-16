@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.wafflestudio.snutt2">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -34,10 +33,11 @@
             android:resource="@drawable/ic_notification" />
 
         <activity
-            android:name="com.wafflestudio.snutt2.RootActivity"
+            android:name=".RootActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -74,7 +74,7 @@
         </activity>
 
         <receiver
-            android:name="TimetableWidgetProvider"
+            android:name=".TimetableWidgetProvider"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -94,7 +94,7 @@
                 android:resource="@xml/filepaths" />
         </provider>
         <service
-            android:name="SNUTTFirebaseMessagingService"
+            android:name=".SNUTTFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

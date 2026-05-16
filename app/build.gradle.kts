@@ -207,7 +207,6 @@ dependencies {
 
     // Authentication
     implementation(libs.google.auth)
-    implementation(libs.google.id)
 
     // Kakao SDK
     implementation(libs.bundles.kakao)
