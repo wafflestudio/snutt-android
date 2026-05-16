@@ -1,5 +1,8 @@
 package com.wafflestudio.snutt2.feature.notifications
 
+import app.cash.turbine.test
+import com.wafflestudio.snutt2.domain.model.Notification
+import com.wafflestudio.snutt2.domain.model.NotificationType
 import com.wafflestudio.snutt2.fake.FakeNotificationRepository
 import com.wafflestudio.snutt2.navigation.DeeplinkParser
 import kotlinx.coroutines.Dispatchers
@@ -12,6 +15,7 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import java.time.LocalDateTime
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class NotificationsViewModelTest {
@@ -66,4 +70,30 @@ class NotificationsViewModelTest {
     }
 
     // endregion
+
+    // region onNotificationClick
+
+    @Test
+    fun `snutt 스킴이 아닌 deeplink 클릭 시 OpenExternalLink 이벤트가 발생한다`() = runTest {
+        viewModel = createViewModel()
+        val notification = createNotification(deeplink = "https://snutt.kr/notice")
+
+        viewModel.uiEvent.test {
+            viewModel.onNotificationClick(notification)
+            assertEquals(
+                NotificationUiEvent.OpenExternalLink("https://snutt.kr/notice"),
+                awaitItem(),
+            )
+        }
+    }
+
+    // endregion
+
+    private fun createNotification(deeplink: String?) = Notification(
+        title = "제목",
+        message = "내용",
+        createdAt = LocalDateTime.of(2026, 1, 1, 0, 0),
+        type = NotificationType.Megaphone,
+        deeplink = deeplink,
+    )
 }

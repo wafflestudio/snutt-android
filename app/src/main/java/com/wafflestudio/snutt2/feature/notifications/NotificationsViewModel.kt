@@ -70,6 +70,10 @@ class NotificationsViewModel @Inject constructor(
                 is DeeplinkAction.Friends -> {
                     _uiEvent.emit(NotificationUiEvent.NavigateToFriends)
                 }
+
+                is DeeplinkAction.External -> {
+                    _uiEvent.emit(NotificationUiEvent.OpenExternalLink(action.url))
+                }
             }
         }
     }
@@ -88,4 +92,6 @@ sealed interface NotificationUiEvent {
     ) : NotificationUiEvent
 
     data object NavigateToFriends : NotificationUiEvent
+
+    data class OpenExternalLink(val url: String) : NotificationUiEvent
 }

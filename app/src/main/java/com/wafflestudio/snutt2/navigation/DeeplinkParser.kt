@@ -18,6 +18,8 @@ sealed interface DeeplinkAction {
     ) : DeeplinkAction
 
     data object Friends : DeeplinkAction
+
+    data class External(val url: String) : DeeplinkAction
 }
 
 @Singleton
@@ -25,7 +27,7 @@ class DeeplinkParser @Inject constructor(
     @param:Named("AppScheme") private val appScheme: String,
 ) {
     fun parse(deeplink: String): DeeplinkAction? {
-        if (!deeplink.startsWith(appScheme)) return null
+        if (!deeplink.startsWith(appScheme)) return DeeplinkAction.External(deeplink)
         val uri = deeplink.toUri()
 
         return when (uri.host) {
