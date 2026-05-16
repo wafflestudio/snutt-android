@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.storage.model
 
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -12,13 +11,11 @@ import kotlin.test.assertEquals
  * 누군가 미래에 @param:Json 매핑 / 필드명 / enum value name 을 무심결에 변경하면 이 테스트가 깨져서
  * "기존 사용자 데이터 호환성이 깨졌다" 를 자동으로 알린다.
  *
- * 앱 본체와 동일하게 [KotlinJsonAdapterFactory] 기반 reflection 직렬화 (ApplicationModule.provideMoshi 와 일치).
+ * 앱 본체와 동일하게 Moshi codegen 기반 직렬화 (ApplicationModule.provideMoshi 와 일치).
  */
 class TagLocalEntitySerializationTest {
 
-    private val moshi = Moshi.Builder()
-        .add(KotlinJsonAdapterFactory())
-        .build()
+    private val moshi = Moshi.Builder().build()
     private val entityAdapter = moshi.adapter(TagLocalEntity::class.java)
 
     @Test

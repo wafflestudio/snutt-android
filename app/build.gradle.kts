@@ -165,7 +165,8 @@ dependencies {
     implementation(libs.bundles.kotlin.core)
 
     // Networking
-    implementation(libs.bundles.moshi)
+    implementation(libs.moshi)
+    ksp(libs.moshi.kotlin.codegen)
     implementation(libs.bundles.retrofit)
 
     // Dependency Injection

@@ -2,7 +2,6 @@ package com.wafflestudio.snutt2.di
 
 import android.content.Context
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.wafflestudio.snutt2.R
 import dagger.Module
 import dagger.Provides
@@ -21,9 +20,7 @@ object ApplicationModule {
 
     @Provides
     @Singleton
-    fun provideMoshi(): Moshi = Moshi.Builder()
-        .add(KotlinJsonAdapterFactory())
-        .build()
+    fun provideMoshi(): Moshi = Moshi.Builder().build()
 
     @Provides
     @Singleton

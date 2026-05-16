@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.storage.model
 
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -16,9 +15,7 @@ import kotlin.test.assertEquals
  */
 class TableLocalEntitySerializationTest {
 
-    private val moshi = Moshi.Builder()
-        .add(KotlinJsonAdapterFactory())
-        .build()
+    private val moshi = Moshi.Builder().build()
     private val entityAdapter = moshi.adapter(TableLocalEntity::class.java)
 
     @Test
