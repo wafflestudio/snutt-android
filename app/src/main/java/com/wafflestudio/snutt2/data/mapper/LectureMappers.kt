@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.data.mapper
 
 import com.wafflestudio.snutt2.domain.model.Building
+import com.wafflestudio.snutt2.domain.model.Campus
 import com.wafflestudio.snutt2.domain.model.CustomLecture
 import com.wafflestudio.snutt2.domain.model.GeoCoordinate
 import com.wafflestudio.snutt2.domain.model.Lecture
@@ -10,6 +11,7 @@ import com.wafflestudio.snutt2.domain.model.LectureSession
 import com.wafflestudio.snutt2.domain.model.LocalLecture
 import com.wafflestudio.snutt2.domain.model.SearchedLecture
 import com.wafflestudio.snutt2.domain.model.SyllabusLecture
+import com.wafflestudio.snutt2.network.dto.CampusDto
 import com.wafflestudio.snutt2.network.dto.ClassPlaceAndTimeDto
 import com.wafflestudio.snutt2.network.dto.ClassTimeDto
 import com.wafflestudio.snutt2.network.dto.ColorDto
@@ -345,7 +347,7 @@ fun SearchedLecture.toTimetableLectureDto(): TimetableLectureDto = TimetableLect
 // region LectureBuildingDto → Building
 
 fun LectureBuildingDto.toDomain(): Building = Building(
-    campus = campus,
+    campus = campus.toDomain(),
     buildingNumber = buildingNumber,
     buildingNameKor = buildingNameKor ?: "",
     buildingNameEng = buildingNameEng ?: "",
@@ -354,6 +356,12 @@ fun LectureBuildingDto.toDomain(): Building = Building(
         longitude = locationInDMS.longitude,
     ),
 )
+
+fun CampusDto.toDomain(): Campus = when (this) {
+    CampusDto.GWANAK -> Campus.GWANAK
+    CampusDto.YEONGEON -> Campus.YEONGEON
+    CampusDto.PYEONGCHANG -> Campus.PYEONGCHANG
+}
 
 // endregion
 
