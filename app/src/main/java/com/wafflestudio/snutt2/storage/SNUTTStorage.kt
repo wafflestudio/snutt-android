@@ -5,10 +5,10 @@ import com.wafflestudio.snutt2.network.dto.CourseBookDto
 import com.wafflestudio.snutt2.network.dto.SemesterStatusDto
 import com.wafflestudio.snutt2.network.dto.SimpleTableDto
 import com.wafflestudio.snutt2.network.dto.TableDto
-import com.wafflestudio.snutt2.network.dto.TagDto
 import com.wafflestudio.snutt2.network.dto.UserDto
 import com.wafflestudio.snutt2.storage.model.TableLectureCustomData
 import com.wafflestudio.snutt2.storage.model.TableTrimParamData
+import com.wafflestudio.snutt2.storage.model.TagLocalEntity
 import com.wafflestudio.snutt2.storage.pref.PrefContext
 import com.wafflestudio.snutt2.storage.pref.PrefListValueMetaData
 import com.wafflestudio.snutt2.storage.pref.PrefMapValueMetaData
@@ -147,16 +147,6 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val tags = PrefValue<List<TagDto>>(
-        prefContext,
-        PrefListValueMetaData(
-            domain = DOMAIN_SCOPE_CURRENT_VERSION,
-            key = "pref_tags",
-            type = TagDto::class.java,
-            defaultValue = listOf(),
-        ),
-    )
-
     val networkLog = PrefValue<List<NetworkLog>>(
         prefContext,
         PrefListValueMetaData(
@@ -197,12 +187,12 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val recentSearchedDepartments = PrefValue<List<TagDto>>(
+    val recentSearchedDepartments = PrefValue<List<TagLocalEntity>>(
         prefContext,
         PrefListValueMetaData(
             domain = DOMAIN_SCOPE_LOGIN,
             key = "recent_searched_departments",
-            type = TagDto::class.java,
+            type = TagLocalEntity::class.java,
             defaultValue = listOf(),
         ),
     )

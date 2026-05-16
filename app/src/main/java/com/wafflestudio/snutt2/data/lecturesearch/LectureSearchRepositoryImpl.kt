@@ -12,8 +12,9 @@ import com.wafflestudio.snutt2.domain.model.SearchTime
 import com.wafflestudio.snutt2.domain.model.SearchedLecture
 import com.wafflestudio.snutt2.domain.model.TagType
 import com.wafflestudio.snutt2.network.api.SNUTTRestApi
-import com.wafflestudio.snutt2.network.dto.TagDto
 import com.wafflestudio.snutt2.storage.SNUTTStorage
+import com.wafflestudio.snutt2.storage.model.toDomainModel
+import com.wafflestudio.snutt2.storage.model.toLocalEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -26,8 +27,8 @@ class LectureSearchRepositoryImpl @Inject constructor(
 ) : LectureSearchRepository {
 
     override val recentSearchedDepartmentTags: Flow<List<SearchTag>> =
-        storage.recentSearchedDepartments.asStateFlow().map { dtos ->
-            dtos.map { SearchTag.Regular(it.type, it.name) }
+        storage.recentSearchedDepartments.asStateFlow().map { entities ->
+            entities.map { it.toDomainModel() }
         }
 
     override fun getLectureSearchResultStream(
@@ -71,18 +72,18 @@ class LectureSearchRepositoryImpl @Inject constructor(
 
     override fun storeRecentSearchedDepartment(tag: SearchTag) {
         check(tag is SearchTag.Regular)
-        val tagDto = TagDto(tag.type, tag.name)
+        val entity = tag.toLocalEntity()
         val previousStoredTags = storage.recentSearchedDepartments.get()
         storage.recentSearchedDepartments.update(
-            (previousStoredTags.filter { it != tagDto } + tagDto).takeLast(5),
+            (previousStoredTags.filter { it != entity } + entity).takeLast(5),
         )
     }
 
     override fun removeRecentSearchedDepartment(tag: SearchTag) {
         check(tag is SearchTag.Regular)
-        val tagDto = TagDto(tag.type, tag.name)
+        val entity = tag.toLocalEntity()
         val previousStoredTags = storage.recentSearchedDepartments.get()
-        storage.recentSearchedDepartments.update(previousStoredTags - tagDto)
+        storage.recentSearchedDepartments.update(previousStoredTags - entity)
     }
 
     companion object {
