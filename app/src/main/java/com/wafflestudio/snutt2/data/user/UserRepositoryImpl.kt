@@ -11,6 +11,7 @@ import com.wafflestudio.snutt2.data.mapper.toLocalEntity
 import com.wafflestudio.snutt2.domain.Unknown
 import com.wafflestudio.snutt2.domain.model.PushPreferences
 import com.wafflestudio.snutt2.domain.model.SocialProviders
+import com.wafflestudio.snutt2.domain.model.ThemeMode
 import com.wafflestudio.snutt2.domain.model.User
 import com.wafflestudio.snutt2.lib.map
 import com.wafflestudio.snutt2.network.api.SNUTTRestApi
@@ -38,7 +39,6 @@ import com.wafflestudio.snutt2.storage.model.toDomainModel
 import com.wafflestudio.snutt2.storage.model.toLocalEntity
 import com.wafflestudio.snutt2.storage.model.toOptional
 import com.wafflestudio.snutt2.storage.model.unwrap
-import com.wafflestudio.snutt2.ui.theme.ThemeMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject

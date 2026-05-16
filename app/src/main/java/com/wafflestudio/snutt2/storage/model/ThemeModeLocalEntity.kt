@@ -1,6 +1,6 @@
 package com.wafflestudio.snutt2.storage.model
 
-import com.wafflestudio.snutt2.ui.theme.ThemeMode
+import com.wafflestudio.snutt2.domain.model.ThemeMode
 
 enum class ThemeModeLocalEntity {
     DARK,

@@ -2,21 +2,22 @@ package com.wafflestudio.snutt2.data.lecturesearch
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.wafflestudio.snutt2.data.mapper.toDto
+import com.wafflestudio.snutt2.domain.model.SearchTag
+import com.wafflestudio.snutt2.domain.model.SearchTime
 import com.wafflestudio.snutt2.domain.model.TagType
 import com.wafflestudio.snutt2.network.api.SNUTTRestApi
 import com.wafflestudio.snutt2.network.dto.LectureDto
 import com.wafflestudio.snutt2.network.dto.PostSearchQueryParams
-import com.wafflestudio.snutt2.network.dto.SearchTimeDto
-import com.wafflestudio.snutt2.network.dto.TagDto
 
 class LectureSearchPagingSource(
     private val api: SNUTTRestApi,
     year: Long,
     semester: Long,
     title: String,
-    tags: List<TagDto>,
-    times: List<SearchTimeDto>?,
-    timesToExclude: List<SearchTimeDto>?,
+    tags: List<SearchTag>,
+    times: List<SearchTime>?,
+    timesToExclude: List<SearchTime>?,
 ) : PagingSource<Long, LectureDto>() {
 
     private val queryParam: PostSearchQueryParams = PostSearchQueryParams(
@@ -29,12 +30,12 @@ class LectureSearchPagingSource(
         department = tags.extractTagString(TagType.DEPARTMENT),
         category = tags.extractTagString(TagType.CATEGORY),
         categoryPre2025 = tags.extractTagString(TagType.CATEGORY_PRE2025),
-        times = times,
-        timesToExclude = timesToExclude,
+        times = times?.map { it.toDto() },
+        timesToExclude = timesToExclude?.map { it.toDto() },
         etc = tags.mapNotNull {
             when (it) {
-                TagDto.ETC_ENG -> "E"
-                TagDto.ETC_MILITARY -> "MO"
+                SearchTag.EtcEng -> "E"
+                SearchTag.EtcMilitary -> "MO"
                 else -> null
             }
         }.ifEmpty { null },
@@ -67,7 +68,7 @@ class LectureSearchPagingSource(
             ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
     }
 
-    private fun List<TagDto>.extractTagString(type: TagType): List<String> = filter { it.type == type }.map { it.name }
+    private fun List<SearchTag>.extractTagString(type: TagType): List<String> = filterIsInstance<SearchTag.Regular>().filter { it.type == type }.map { it.name }
 
     // FIXME: 서버 인터페이스 수정 필요, 클라단에서 불필요한 컨버팅으로 보임
     private fun String.toCreditNumber(): Long = substring(0, length - 2).toLong()

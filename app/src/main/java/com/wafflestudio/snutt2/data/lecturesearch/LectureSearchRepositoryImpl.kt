@@ -4,7 +4,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.wafflestudio.snutt2.data.mapper.toDto
 import com.wafflestudio.snutt2.data.mapper.toSearchedLecture
 import com.wafflestudio.snutt2.domain.model.CourseBook
 import com.wafflestudio.snutt2.domain.model.SearchTag
@@ -48,9 +47,9 @@ class LectureSearchRepositoryImpl @Inject constructor(
                 year = courseBook.year,
                 semester = courseBook.semester,
                 title = title,
-                tags = tags.map { it.toDto() },
-                times = times?.map { it.toDto() },
-                timesToExclude = timesToExclude?.map { it.toDto() },
+                tags = tags,
+                times = times,
+                timesToExclude = timesToExclude,
             )
         },
     ).flow.map { pagingData -> pagingData.map { it.toSearchedLecture() } }
