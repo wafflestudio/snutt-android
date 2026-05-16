@@ -55,7 +55,7 @@ junit = "4.13.2"
 coroutinesTest = "1.11.0"
 turbine = "1.2.1"
 kotlinTest = "2.3.10"
-robolectric = "4.15.1"
+robolectric = "4.16.1"
 
 # Haze
 haze = "1.7.2"
