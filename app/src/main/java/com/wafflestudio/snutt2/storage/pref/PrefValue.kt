@@ -25,6 +25,10 @@ class PrefValue<T : Any> constructor(
         prefContext.putValue(metaData.domain, metaData.key, value, metaData.type)
     }
 
+    fun update(transform: (T) -> T) {
+        update(transform(get()))
+    }
+
     fun clear() {
         prefContext.removeValue(metaData.domain, metaData.key)
     }

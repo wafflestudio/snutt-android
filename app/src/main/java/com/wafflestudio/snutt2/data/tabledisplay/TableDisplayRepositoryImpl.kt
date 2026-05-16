@@ -38,16 +38,15 @@ class TableDisplayRepositoryImpl @Inject constructor(
 
     override suspend fun toggleForceFit(): Result<Unit> {
         try {
-            val prevTrimParam = storage.tableTrimParam.get()
-            storage.tableTrimParam.update(
+            storage.tableTrimParam.update { prev ->
                 TableTrimParam(
-                    dayOfWeekFrom = prevTrimParam.dayOfWeekFrom,
-                    dayOfWeekTo = prevTrimParam.dayOfWeekTo,
-                    hourFrom = prevTrimParam.hourFrom,
-                    hourTo = prevTrimParam.hourTo,
-                    forceFitLectures = prevTrimParam.forceFitLectures.not(),
-                ).toDataModel(),
-            )
+                    dayOfWeekFrom = prev.dayOfWeekFrom,
+                    dayOfWeekTo = prev.dayOfWeekTo,
+                    hourFrom = prev.hourFrom,
+                    hourTo = prev.hourTo,
+                    forceFitLectures = prev.forceFitLectures.not(),
+                ).toDataModel()
+            }
             return Result.Success(Unit)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
@@ -56,16 +55,15 @@ class TableDisplayRepositoryImpl @Inject constructor(
 
     override suspend fun setDayOfWeekRange(from: Int, to: Int): Result<Unit> {
         try {
-            val prevTrimParam = storage.tableTrimParam.get()
-            storage.tableTrimParam.update(
+            storage.tableTrimParam.update { prev ->
                 TableTrimParam(
                     dayOfWeekFrom = from,
                     dayOfWeekTo = to,
-                    hourFrom = prevTrimParam.hourFrom,
-                    hourTo = prevTrimParam.hourTo,
-                    forceFitLectures = prevTrimParam.forceFitLectures,
-                ).toDataModel(),
-            )
+                    hourFrom = prev.hourFrom,
+                    hourTo = prev.hourTo,
+                    forceFitLectures = prev.forceFitLectures,
+                ).toDataModel()
+            }
             return Result.Success(Unit)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
@@ -74,16 +72,15 @@ class TableDisplayRepositoryImpl @Inject constructor(
 
     override suspend fun setHourRange(from: Int, to: Int): Result<Unit> {
         try {
-            val prevTrimParam = storage.tableTrimParam.get()
-            storage.tableTrimParam.update(
+            storage.tableTrimParam.update { prev ->
                 TableTrimParam(
-                    dayOfWeekFrom = prevTrimParam.dayOfWeekFrom,
-                    dayOfWeekTo = prevTrimParam.dayOfWeekTo,
+                    dayOfWeekFrom = prev.dayOfWeekFrom,
+                    dayOfWeekTo = prev.dayOfWeekTo,
                     hourFrom = from,
                     hourTo = to,
-                    forceFitLectures = prevTrimParam.forceFitLectures,
-                ).toDataModel(),
-            )
+                    forceFitLectures = prev.forceFitLectures,
+                ).toDataModel()
+            }
             return Result.Success(Unit)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
@@ -92,8 +89,7 @@ class TableDisplayRepositoryImpl @Inject constructor(
 
     override suspend fun toggleCompactMode(): Result<Unit> {
         try {
-            val compactMode = storage.compactMode.get()
-            storage.compactMode.update(compactMode.not())
+            storage.compactMode.update { it.not() }
             return Result.Success(Unit)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
@@ -102,10 +98,7 @@ class TableDisplayRepositoryImpl @Inject constructor(
 
     override suspend fun toggleTitleVisible(): Result<Unit> {
         try {
-            val prevTrimParam = storage.tableLectureCustom.get()
-            storage.tableLectureCustom.update(
-                prevTrimParam.copy(title = prevTrimParam.title.not()),
-            )
+            storage.tableLectureCustom.update { it.copy(title = it.title.not()) }
             return Result.Success(Unit)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
@@ -114,10 +107,7 @@ class TableDisplayRepositoryImpl @Inject constructor(
 
     override suspend fun togglePlaceVisible(): Result<Unit> {
         try {
-            val prevTrimParam = storage.tableLectureCustom.get()
-            storage.tableLectureCustom.update(
-                prevTrimParam.copy(place = prevTrimParam.place.not()),
-            )
+            storage.tableLectureCustom.update { it.copy(place = it.place.not()) }
             return Result.Success(Unit)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
@@ -126,10 +116,7 @@ class TableDisplayRepositoryImpl @Inject constructor(
 
     override suspend fun toggleLectureNumberVisible(): Result<Unit> {
         try {
-            val prevTrimParam = storage.tableLectureCustom.get()
-            storage.tableLectureCustom.update(
-                prevTrimParam.copy(lectureNumber = prevTrimParam.lectureNumber.not()),
-            )
+            storage.tableLectureCustom.update { it.copy(lectureNumber = it.lectureNumber.not()) }
             return Result.Success(Unit)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
@@ -138,10 +125,7 @@ class TableDisplayRepositoryImpl @Inject constructor(
 
     override suspend fun toggleInstructorVisible(): Result<Unit> {
         try {
-            val prevTrimParam = storage.tableLectureCustom.get()
-            storage.tableLectureCustom.update(
-                prevTrimParam.copy(instructor = prevTrimParam.instructor.not()),
-            )
+            storage.tableLectureCustom.update { it.copy(instructor = it.instructor.not()) }
             return Result.Success(Unit)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())

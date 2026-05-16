@@ -72,17 +72,15 @@ class LectureSearchRepositoryImpl @Inject constructor(
     override fun storeRecentSearchedDepartment(tag: SearchTag) {
         check(tag is SearchTag.Regular)
         val entity = tag.toLocalEntity()
-        val previousStoredTags = storage.recentSearchedDepartments.get()
-        storage.recentSearchedDepartments.update(
-            (previousStoredTags.filter { it != entity } + entity).takeLast(5),
-        )
+        storage.recentSearchedDepartments.update { prev ->
+            (prev.filter { it != entity } + entity).takeLast(5)
+        }
     }
 
     override fun removeRecentSearchedDepartment(tag: SearchTag) {
         check(tag is SearchTag.Regular)
         val entity = tag.toLocalEntity()
-        val previousStoredTags = storage.recentSearchedDepartments.get()
-        storage.recentSearchedDepartments.update(previousStoredTags - entity)
+        storage.recentSearchedDepartments.update { it - entity }
     }
 
     companion object {

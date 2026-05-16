@@ -165,4 +165,7 @@ node_modules/
 # Kotlin compiler session files (생성 시점에 따라 git status 에 잠시 떴다 사라짐)
 .kotlin/
 
+## claude
+.claude/worktrees/
+
 # End of https://www.toptal.com/developers/gitignore/api/androidstudio
