@@ -9,6 +9,7 @@ import com.wafflestudio.snutt2.domain.model.TagType
 import com.wafflestudio.snutt2.network.api.SNUTTRestApi
 import com.wafflestudio.snutt2.network.dto.LectureDto
 import com.wafflestudio.snutt2.network.dto.PostSearchQueryParams
+import kotlinx.coroutines.CancellationException
 
 class LectureSearchPagingSource(
     private val api: SNUTTRestApi,
@@ -55,18 +56,17 @@ class LectureSearchPagingSource(
             )
             LoadResult.Page(
                 data = response,
-                prevKey = if (offset == LECTURE_SEARCH_STARTING_PAGE_INDEX) null else offset - params.loadSize,
-                nextKey = if (response.isEmpty()) null else offset + params.loadSize,
+                prevKey = null,
+                nextKey = if (response.size < params.loadSize) null else offset + response.size,
             )
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             LoadResult.Error(e)
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Long, LectureDto>): Long? = state.anchorPosition?.let { anchorPosition ->
-        state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
-            ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
-    }
+    override fun getRefreshKey(state: PagingState<Long, LectureDto>): Long? = null
 
     private fun List<SearchTag>.extractTagString(type: TagType): List<String> = filterIsInstance<SearchTag.Regular>().filter { it.type == type }.map { it.name }
 

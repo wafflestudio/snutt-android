@@ -4,6 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.wafflestudio.snutt2.network.api.SNUTTRestApi
 import com.wafflestudio.snutt2.network.dto.NotificationDto
+import kotlinx.coroutines.CancellationException
 import javax.inject.Inject
 
 class NotificationPagingSource @Inject constructor(
@@ -20,18 +21,17 @@ class NotificationPagingSource @Inject constructor(
             )
             LoadResult.Page(
                 data = response,
-                prevKey = if (offset == NOTIFICATION_STARTING_PAGE_INDEX) null else offset - params.loadSize,
-                nextKey = if (response.isEmpty()) null else offset + params.loadSize,
+                prevKey = null,
+                nextKey = if (response.size < params.loadSize) null else offset + response.size,
             )
-        } catch (exception: Exception) {
-            LoadResult.Error(exception)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            LoadResult.Error(e)
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, NotificationDto>): Int? = state.anchorPosition?.let { anchorPosition ->
-        state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
-            ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
-    }
+    override fun getRefreshKey(state: PagingState<Int, NotificationDto>): Int? = null
 
     companion object {
         const val NOTIFICATION_STARTING_PAGE_INDEX = 0
