@@ -1,7 +1,7 @@
 package com.wafflestudio.snutt2.feature.settings
 
+import com.wafflestudio.snutt2.domain.model.ThemeMode
 import com.wafflestudio.snutt2.fake.FakeUserRepository
-import com.wafflestudio.snutt2.ui.theme.ThemeMode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher

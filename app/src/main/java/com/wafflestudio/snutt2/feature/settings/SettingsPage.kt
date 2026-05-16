@@ -22,6 +22,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.config.FeatureFlag
+import com.wafflestudio.snutt2.domain.model.ThemeMode
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.components.compose.CustomDialog
@@ -31,7 +32,6 @@ import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
-import com.wafflestudio.snutt2.ui.theme.ThemeMode
 
 @Composable
 fun SettingsRoute(
@@ -184,7 +184,13 @@ fun SettingsScreen(
                     onClick = onClickThemeModeSelect,
                 ) {
                     Text(
-                        text = stringResource(uiState.themeMode.labelResId),
+                        text = stringResource(
+                            when (uiState.themeMode) {
+                                ThemeMode.DARK -> R.string.theme_mode_dark
+                                ThemeMode.LIGHT -> R.string.theme_mode_light
+                                ThemeMode.AUTO -> R.string.theme_mode_auto
+                            },
+                        ),
                         style = SNUTTTypography.body1.copy(color = SNUTTColors.Black500),
                     )
                 }

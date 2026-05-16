@@ -3,7 +3,7 @@ package com.wafflestudio.snutt2.feature.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.user.UserRepository
-import com.wafflestudio.snutt2.ui.theme.ThemeMode
+import com.wafflestudio.snutt2.domain.model.ThemeMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
