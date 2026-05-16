@@ -14,6 +14,4 @@ data class TagDto(
         val ETC_ENG: TagDto = TagDto(TagType.ETC, "영어진행 강의")
         val ETC_MILITARY: TagDto = TagDto(TagType.ETC, "군휴학 원격수업")
     }
-
-    fun toItemKey(): String = type.toString() + name
 }
