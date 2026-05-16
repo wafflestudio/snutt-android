@@ -69,12 +69,12 @@ class TableRepositoryImpl @Inject constructor(
         val prevTable = snuttStorage.lastViewedTable.get().value
             ?: return
         val response = api._getTableById(prevTable.id)
-        snuttStorage.lastViewedTable.update(response.toOptional())
+        snuttStorage.lastViewedTable.update(response.toLocalEntity().toOptional())
     }
 
     override suspend fun fetchAndSelectDefaultTable(): Result<Unit> = try {
         val response = api._getRecentTable()
-        snuttStorage.lastViewedTable.update(response.toOptional())
+        snuttStorage.lastViewedTable.update(response.toLocalEntity().toOptional())
         Result.Success(Unit)
     } catch (e: Exception) {
         Result.Fail(e.toDomainError())
@@ -92,7 +92,7 @@ class TableRepositoryImpl @Inject constructor(
 
     override suspend fun fetchAndSelectTable(id: String): Result<Unit> = try {
         val response = api._getTableById(id)
-        snuttStorage.lastViewedTable.update(response.toOptional())
+        snuttStorage.lastViewedTable.update(response.toLocalEntity().toOptional())
         Result.Success(Unit)
     } catch (e: Exception) {
         Result.Fail(e.toDomainError())
@@ -179,7 +179,7 @@ class TableRepositoryImpl @Inject constructor(
 
         val prevTable = snuttStorage.lastViewedTable.get().value ?: return
         val currentTableResponse = api._getTableById(prevTable.id)
-        snuttStorage.lastViewedTable.update(currentTableResponse.toOptional())
+        snuttStorage.lastViewedTable.update(currentTableResponse.toLocalEntity().toOptional())
     }
 
     override suspend fun deleteTable(table: TableSummary): Result<Unit> {
@@ -209,7 +209,7 @@ class TableRepositoryImpl @Inject constructor(
         val prev = snuttStorage.lastViewedTable.get().value
         snuttStorage.lastViewedTable.update(
             if (prev?.id == tableId) {
-                response.toOptional()
+                response.toLocalEntity().toOptional()
             } else {
                 prev.toOptional()
             },
@@ -224,7 +224,7 @@ class TableRepositoryImpl @Inject constructor(
         val prev = snuttStorage.lastViewedTable.get().value
         snuttStorage.lastViewedTable.update(
             if (prev?.id == tableId) {
-                response.toOptional()
+                response.toLocalEntity().toOptional()
             } else {
                 prev.toOptional()
             },

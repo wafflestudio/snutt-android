@@ -20,6 +20,10 @@ import com.wafflestudio.snutt2.network.dto.LectureReviewDto
 import com.wafflestudio.snutt2.network.dto.SnuttEvLectureIdDto
 import com.wafflestudio.snutt2.network.dto.TimetableLectureDto
 import com.wafflestudio.snutt2.network.dto.parseHexColor
+import com.wafflestudio.snutt2.storage.model.ClassTimeLocalEntity
+import com.wafflestudio.snutt2.storage.model.ColorLocalEntity
+import com.wafflestudio.snutt2.storage.model.LectureLocalEntity
+import com.wafflestudio.snutt2.storage.model.LectureReviewLocalEntity
 import java.time.DayOfWeek
 import java.time.LocalTime
 
@@ -45,7 +49,7 @@ fun LectureDto.toLocalLecture(): LocalLecture = if (lecture_id != null) {
         quota = quota,
         freshmanQuota = freshmanQuota ?: 0, // TODO
         originalLectureId = lecture_id,
-        color = colorDtoToLectureColor(colorIndex.toInt(), color),
+        color = colorToLectureColor(colorIndex.toInt(), color.fgRaw, color.bgRaw),
     )
 } else {
     CustomLecture(
@@ -55,7 +59,39 @@ fun LectureDto.toLocalLecture(): LocalLecture = if (lecture_id != null) {
         instructor = instructor,
         credit = credit,
         remark = remark,
-        color = colorDtoToLectureColor(colorIndex.toInt(), color),
+        color = colorToLectureColor(colorIndex.toInt(), color.fgRaw, color.bgRaw),
+    )
+}
+
+fun LectureLocalEntity.toLocalLecture(): LocalLecture = if (lecture_id != null) {
+    SyllabusLecture(
+        id = id,
+        courseTitle = course_title,
+        lectureSessions = class_time_json.map { it.toLectureSession() },
+        instructor = instructor,
+        credit = credit,
+        remark = remark,
+        classification = classification ?: "",
+        department = department ?: "",
+        academicYear = academic_year ?: "",
+        courseNumber = course_number ?: "",
+        lectureNumber = lecture_number ?: "",
+        category = category ?: "",
+        categoryPre2025 = categoryPre2025 ?: "",
+        quota = quota,
+        freshmanQuota = freshmanQuota ?: 0, // TODO
+        originalLectureId = lecture_id,
+        color = colorToLectureColor(colorIndex.toInt(), color.fgRaw, color.bgRaw),
+    )
+} else {
+    CustomLecture(
+        id = id,
+        courseTitle = course_title,
+        lectureSessions = class_time_json.map { it.toLectureSession() },
+        instructor = instructor,
+        credit = credit,
+        remark = remark,
+        color = colorToLectureColor(colorIndex.toInt(), color.fgRaw, color.bgRaw),
     )
 }
 
@@ -139,6 +175,53 @@ fun SearchedLecture.toLectureDto(): LectureDto = LectureDto(
         rating = reviewInfo.rating,
         reviewCount = reviewInfo.reviewCount,
     ),
+)
+
+// endregion
+
+// region LectureDto / 하위 DTO → LocalEntity (storage 저장용)
+
+fun LectureDto.toLocalEntity(): LectureLocalEntity = LectureLocalEntity(
+    id = id,
+    lecture_id = lecture_id,
+    classification = classification,
+    department = department,
+    academic_year = academic_year,
+    course_number = course_number,
+    lecture_number = lecture_number,
+    course_title = course_title,
+    credit = credit,
+    class_time_json = class_time_json.map { it.toLocalEntity() },
+    instructor = instructor,
+    quota = quota,
+    freshmanQuota = freshmanQuota,
+    remark = remark,
+    category = category,
+    categoryPre2025 = categoryPre2025,
+    colorIndex = colorIndex,
+    color = color.toLocalEntity(),
+    registrationCount = registrationCount,
+    wasFull = wasFull,
+    review = review?.toLocalEntity(),
+)
+
+fun ClassTimeDto.toLocalEntity(): ClassTimeLocalEntity = ClassTimeLocalEntity(
+    day = day,
+    place = place,
+    id = id,
+    startMinute = startMinute,
+    endMinute = endMinute,
+)
+
+fun ColorDto.toLocalEntity(): ColorLocalEntity = ColorLocalEntity(
+    fgRaw = fgRaw,
+    bgRaw = bgRaw,
+)
+
+fun LectureReviewDto.toLocalEntity(): LectureReviewLocalEntity = LectureReviewLocalEntity(
+    id = id,
+    rating = rating,
+    reviewCount = reviewCount,
 )
 
 // endregion
@@ -285,6 +368,15 @@ private fun ClassTimeDto.toLectureSession(): LectureSession = LectureSession(
     place = place,
 )
 
+private fun ClassTimeLocalEntity.toLectureSession(): LectureSession = LectureSession(
+    id = id,
+    // NOTE: DayOfWeek 는 1이 월요일이고, 우리 서버는 0이 월요일이다
+    day = DayOfWeek.of(day + 1),
+    startTime = LocalTime.ofSecondOfDay(startMinute * 60L),
+    endTime = LocalTime.ofSecondOfDay(endMinute * 60L),
+    place = place,
+)
+
 private fun ClassPlaceAndTimeDto.toLectureSession(lectureId: String): LectureSession = LectureSession(
     id = lectureId,
     // NOTE: DayOfWeek 는 1이 월요일이고, 우리 서버는 0이 월요일이다
@@ -311,10 +403,10 @@ private fun LectureSession.toClassPlaceAndTimeDto(): ClassPlaceAndTimeDto = Clas
     endMinute = endTime.hour * 60 + endTime.minute,
 )
 
-private fun colorDtoToLectureColor(colorIndex: Int, color: ColorDto): LectureColor = if (colorIndex == 0) {
+private fun colorToLectureColor(colorIndex: Int, fgRaw: String?, bgRaw: String?): LectureColor = if (colorIndex == 0) {
     LectureColor.Custom(
-        foreground = color.fgRaw?.let { parseHexColor(it) } ?: 0xFFFFFFFF.toInt(),
-        background = color.bgRaw?.let { parseHexColor(it) } ?: 0xFFFFFFFF.toInt(),
+        foreground = fgRaw?.let { parseHexColor(it) } ?: 0xFFFFFFFF.toInt(),
+        background = bgRaw?.let { parseHexColor(it) } ?: 0xFFFFFFFF.toInt(),
     )
 } else {
     LectureColor.BuiltIn(colorIndex = colorIndex - 1)

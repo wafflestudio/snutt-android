@@ -1,10 +1,10 @@
 package com.wafflestudio.snutt2.storage
 
 import com.wafflestudio.snutt2.lib.android.NetworkLog
-import com.wafflestudio.snutt2.network.dto.TableDto
 import com.wafflestudio.snutt2.storage.model.SemesterStatusLocalEntity
 import com.wafflestudio.snutt2.storage.model.SimpleTableLocalEntity
 import com.wafflestudio.snutt2.storage.model.TableLectureCustomData
+import com.wafflestudio.snutt2.storage.model.TableLocalEntity
 import com.wafflestudio.snutt2.storage.model.TableTrimParamData
 import com.wafflestudio.snutt2.storage.model.TagLocalEntity
 import com.wafflestudio.snutt2.storage.model.UserLocalEntity
@@ -76,12 +76,12 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val lastViewedTable = PrefValue<Optional<TableDto>>(
+    val lastViewedTable = PrefValue<Optional<TableLocalEntity>>(
         prefContext,
         PrefOptionalValueMetaData(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
             key = "last_tables",
-            type = TableDto::class.java,
+            type = TableLocalEntity::class.java,
             defaultValue = Optional.empty(),
         ),
     )
