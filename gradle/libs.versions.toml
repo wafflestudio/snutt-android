@@ -46,7 +46,7 @@ naverMapCompose = "1.9.0"
 
 # Misc
 androidxCore = "1.18.0"
-material = "1.13.0"
+material = "1.14.0"
 timber = "5.0.1"
 gson = "2.13.2"
 kotlinxSerialization = "1.11.0"
