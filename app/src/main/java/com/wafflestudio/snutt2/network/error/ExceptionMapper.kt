@@ -32,9 +32,9 @@ fun Exception.toDomainError(): DomainError {
         is IOException -> NetworkDisconnect("", "")
         is CancellationException -> Nothing("", "")
         is ErrorParsedHttpException -> {
-            val displayTitle = this.displayTitle ?: ""
-            val displayMessage = this.displayMessage ?: ""
-            return when (this.code) {
+            val displayTitle = this.body.displayTitle ?: ""
+            val displayMessage = this.body.displayMessage ?: ""
+            return when (this.body.code) {
                 ErrorCode.SERVER_FAULT -> ServerFault(displayTitle, displayMessage)
                 ErrorCode.NO_ADMIN_PRIVILEGE -> NoAdminPrivilege(displayTitle, displayMessage)
                 ErrorCode.WRONG_API_KEY -> WrongApiKey(displayTitle, displayMessage)
