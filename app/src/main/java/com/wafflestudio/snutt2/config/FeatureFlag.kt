@@ -1,12 +1,10 @@
 package com.wafflestudio.snutt2.config
 
-import com.wafflestudio.snutt2.BuildConfig
-
 enum class FeatureFlag(
     val isEnabled: Boolean,
 ) {
     THEME_MARKET(true),
-    LECTURE_DIARY(BuildConfig.DEBUG),
+    LECTURE_DIARY(true),
     PUSH_PREFERENCES(true),
 
     LECTURE_REMINDER(true),
