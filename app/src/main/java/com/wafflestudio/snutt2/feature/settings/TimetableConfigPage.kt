@@ -2,7 +2,6 @@ package com.wafflestudio.snutt2.feature.settings
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -29,8 +28,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -59,7 +59,6 @@ import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 import com.wafflestudio.snutt2.ui.util.toast
-import kotlinx.coroutines.launch
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -337,10 +336,17 @@ private fun RangeBar(
     }
 
     val tickPx: Float = widthPx / tickNum
+    // 드래그 중에는 Animatable 을 건드리지 않고 dragOffset 만 갱신해 MutatorMutex 경합을 피한다.
+    // 손을 뗀 뒤 단일 코루틴에서 snapTo(드래그 끝 위치로 보정) → animateTo(가까운 tick) 순으로 스냅한다.
     val barStart = remember { Animatable(initStart * tickPx) }
-    val startTick = (barStart.value / tickPx).roundToInt()
     val barEnd = remember { Animatable(initEnd * tickPx) }
-    val endTick = (barEnd.value / tickPx).roundToInt()
+    var startDragOffset by remember { mutableStateOf<Float?>(null) }
+    var endDragOffset by remember { mutableStateOf<Float?>(null) }
+
+    val startDisplay = startDragOffset ?: barStart.value
+    val endDisplay = endDragOffset ?: barEnd.value
+    val startTick = (startDisplay / tickPx).roundToInt()
+    val endTick = (endDisplay / tickPx).roundToInt()
     val black = SNUTTColors.Black600
 
     Canvas(
@@ -359,49 +365,71 @@ private fun RangeBar(
         }
         drawLine(
             color = black,
-            start = Offset(x = barStart.value, y = lineOffset),
-            end = Offset(x = barEnd.value, y = lineOffset),
+            start = Offset(x = startDisplay, y = lineOffset),
+            end = Offset(x = endDisplay, y = lineOffset),
             strokeWidth = 3.dp.toPx(),
         )
         drawCircle(
             color = black,
             radius = 6.dp.toPx(),
-            center = Offset(x = barStart.value, y = lineOffset),
+            center = Offset(x = startDisplay, y = lineOffset),
         )
         drawCircle(
             color = black,
             radius = 6.dp.toPx(),
-            center = Offset(x = barEnd.value, y = lineOffset),
+            center = Offset(x = endDisplay, y = lineOffset),
         )
     }
     Label(
-        offset = barStart,
-        widthPx = widthPx,
-        tickPx = tickPx,
+        displayOffset = startDisplay,
         labelText = labelArray[startTick],
-    ) {
-        onChange(min(startTick, endTick), max(startTick, endTick))
-    }
-    Label(offset = barEnd, widthPx = widthPx, tickPx = tickPx, labelText = labelArray[endTick]) {
-        onChange(min(startTick, endTick), max(startTick, endTick))
-    }
+        onDragDelta = { delta ->
+            val current = startDragOffset ?: barStart.value
+            startDragOffset = (current + delta).coerceIn(0f, widthPx)
+        },
+        onDragStop = {
+            val finalDrag = startDragOffset ?: barStart.value
+            val target = (finalDrag / tickPx).roundToInt() * tickPx
+            barStart.snapTo(finalDrag)
+            startDragOffset = null
+            barStart.animateTo(target)
+            val newStart = (target / tickPx).roundToInt()
+            val currentEnd = (barEnd.value / tickPx).roundToInt()
+            onChange(min(newStart, currentEnd), max(newStart, currentEnd))
+        },
+    )
+    Label(
+        displayOffset = endDisplay,
+        labelText = labelArray[endTick],
+        onDragDelta = { delta ->
+            val current = endDragOffset ?: barEnd.value
+            endDragOffset = (current + delta).coerceIn(0f, widthPx)
+        },
+        onDragStop = {
+            val finalDrag = endDragOffset ?: barEnd.value
+            val target = (finalDrag / tickPx).roundToInt() * tickPx
+            barEnd.snapTo(finalDrag)
+            endDragOffset = null
+            barEnd.animateTo(target)
+            val currentStart = (barStart.value / tickPx).roundToInt()
+            val newEnd = (target / tickPx).roundToInt()
+            onChange(min(currentStart, newEnd), max(currentStart, newEnd))
+        },
+    )
 }
 
 @Composable
 private fun Label(
-    offset: Animatable<Float, AnimationVector1D>,
-    widthPx: Float,
-    tickPx: Float,
+    displayOffset: Float,
     labelText: String,
-    onChange: () -> Unit,
+    onDragDelta: (Float) -> Unit,
+    onDragStop: suspend () -> Unit,
 ) {
-    val scope = rememberCoroutineScope()
-
     Box(
         modifier = Modifier
             .offset {
                 IntOffset(
-                    (offset.value - 13.dp.toPx()).roundToInt(),
+                    (displayOffset - 13.dp.toPx()).roundToInt(),
                     5.dp
                         .toPx()
                         .roundToInt(),
@@ -409,19 +437,8 @@ private fun Label(
             }
             .draggable(
                 orientation = Orientation.Horizontal,
-                state = rememberDraggableState { delta ->
-                    scope.launch {
-                        offset.snapTo(
-                            (offset.value + delta).coerceIn(0f, widthPx),
-                        )
-                    }
-                },
-                onDragStopped = {
-                    offset.animateTo(
-                        (offset.value / tickPx).roundToInt() * tickPx,
-                    )
-                    onChange()
-                },
+                state = rememberDraggableState(onDelta = onDragDelta),
+                onDragStopped = { onDragStop() },
             )
             .clip(CircleShape)
             .width(26.dp)
