@@ -46,11 +46,9 @@ class PopupRepositoryImpl @Inject constructor(
                 System.currentTimeMillis() + TimeUnit.DAYS.toMillis(hideDays.toLong())
             } ?: INFINITE_LONG_MILLIS
 
-            storage.shownPopupIdsAndTimestamp.update(
-                storage.shownPopupIdsAndTimestamp.get()
-                    .toMutableMap()
-                    .also { it[popup.key] = expiredDay },
-            )
+            storage.shownPopupIdsAndTimestamp.update { prev ->
+                prev.toMutableMap().also { it[popup.key] = expiredDay }
+            }
 
             _popups.value = _popups.value?.drop(1)
         }
