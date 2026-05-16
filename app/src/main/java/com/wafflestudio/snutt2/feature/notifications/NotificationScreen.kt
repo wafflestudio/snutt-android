@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.feature.notifications
 
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.wafflestudio.snutt2.R
@@ -52,6 +54,7 @@ fun NotificationRoute(
     onNavigateToBookmarkLectureDetail: (lectureId: String, year: Long, semester: Long) -> Unit,
     onNavigateToFriends: () -> Unit,
 ) {
+    val context = LocalContext.current
     val notificationList = viewModel.notificationList.collectAsLazyPagingItems()
     val notificationUiState = notificationList.notificationUiState()
 
@@ -72,6 +75,11 @@ fun NotificationRoute(
 
                 is NotificationUiEvent.NavigateToFriends ->
                     onNavigateToFriends()
+
+                is NotificationUiEvent.OpenExternalLink ->
+                    runCatching {
+                        context.startActivity(Intent(Intent.ACTION_VIEW, event.url.toUri()))
+                    }
             }
         }
     }
