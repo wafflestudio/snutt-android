@@ -628,8 +628,6 @@
     <string name="diary_delete_confirm_message">\'%s\'\n강의일기를 삭제하시겠습니까?</string>
     <string name="diary_summary_more_text_label">남기고 싶은 말</string>
 
-    <!-- Search -->
-    <string name="search_result_remark_empty">없음</string>
 <!-- Debug -->
     <string name="debug_network_log_title">네트워크 로그</string>
     <string name="debug_network_log_clear">지우기</string>

@@ -446,8 +446,6 @@
     <string name="diary_delete_confirm_message">Delete the lecture diary for \'%s\'?</string>
     <string name="diary_summary_more_text_label">Additional Notes</string>
 
-    <!-- Search -->
-    <string name="search_result_remark_empty">None</string>
 <!-- Debug -->
     <string name="debug_network_log_title">Network Log</string>
     <string name="debug_network_log_clear">Clear</string>
