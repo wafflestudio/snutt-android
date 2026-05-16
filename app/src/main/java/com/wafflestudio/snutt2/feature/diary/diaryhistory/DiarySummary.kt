@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -62,7 +63,7 @@ fun DiarySummariesOfDay(
                         style = SNUTTTypography.h3.copy(fontSize = 15.sp, color = DiaryTheme.colors.textPrimary),
                     )
                     Text(
-                        date.format(DateTimeFormatter.ofPattern("E", java.util.Locale.getDefault())),
+                        date.format(DateTimeFormatter.ofPattern("E", LocalConfiguration.current.locales[0])),
                         style = SNUTTTypography.h3.copy(fontSize = 15.sp, color = DiaryTheme.colors.textPrimary),
                     )
                 }

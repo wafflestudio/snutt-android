@@ -36,7 +36,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
@@ -331,9 +330,8 @@ private fun RangeBar(
     val localDensity = LocalDensity.current
 
     val tickNum = labelArray.size - 1
-    val widthPx = with(localDensity) {
-        (LocalConfiguration.current.screenWidthDp - 70).dp.toPx()
-    }
+    val containerWidthPx = LocalWindowInfo.current.containerSize.width
+    val widthPx = containerWidthPx - with(localDensity) { 70.dp.toPx() }
 
     val tickPx: Float = widthPx / tickNum
     // 드래그 중에는 Animatable 을 건드리지 않고 dragOffset 만 갱신해 MutatorMutex 경합을 피한다.
