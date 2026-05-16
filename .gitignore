@@ -2,6 +2,7 @@
 #Build Setting
 /app/src/live/
 /app/src/staging/
+/app/src/dev/
 # Archive files
 *.zip
 *.tgz
