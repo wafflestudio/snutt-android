@@ -1,7 +1,7 @@
 [versions]
 # Kotlin & Android
 kotlin = "2.3.21"
-androidGradle = "9.1.1"
+androidGradle = "9.2.1"
 composeScreenshot = "0.0.1-alpha14"
 
 # Build tools
