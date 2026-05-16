@@ -78,9 +78,9 @@ android {
     flavorDimensions.add("mode")
 
     productFlavors {
-        create("staging") {
+        create("dev") {
             isDefault = true
-            applicationIdSuffix = ".staging"
+            applicationIdSuffix = ".dev"
 
             val propertyVersionName = versionProps.getProperty("snuttVersionName")
             versionCode = SemVer.sementicVersionToSerializedCode(propertyVersionName).toInt()
@@ -88,7 +88,7 @@ android {
             configure<com.google.firebase.appdistribution.gradle.AppDistributionExtension> {
                 artifactType = "APK"
                 testers = "urban"
-                serviceCredentialsFile = "gcp-service-account-staging.json"
+                serviceCredentialsFile = "gcp-service-account-dev.json"
                 appId = System.getenv("FIREBASE_APP_ID")
             }
         }
