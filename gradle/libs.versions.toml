@@ -37,7 +37,6 @@ splashscreen = "1.2.0"
 # Authentication
 facebookLogin = "15.0.1"
 googleAuth = "21.5.1"
-googleId = "1.2.0"
 kakaoSDK = "2.23.2"
 
 # Maps
@@ -118,7 +117,6 @@ coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 # Authentication
 facebook-login = { module = "com.facebook.android:facebook-login", version.ref = "facebookLogin" }
 google-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "googleAuth" }
-google-id = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleId" }
 kakao-share = { module = "com.kakao.sdk:v2-share", version.ref = "kakaoSDK" }
 kakao-user = { module = "com.kakao.sdk:v2-user", version.ref = "kakaoSDK" }
 
