@@ -4,21 +4,13 @@ import android.content.Context
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.storage.model.NetworkLog
 import okhttp3.Interceptor
 import okhttp3.Response
 import okio.Buffer
 import okio.IOException
 import timber.log.Timber
 import java.nio.charset.StandardCharsets
-
-data class NetworkLog(
-    val requestMethod: String,
-    val requestUrl: String,
-    val requestHeader: String,
-    val requestBody: String,
-    val responseCode: String,
-    val responseBody: String,
-)
 
 fun Interceptor.Chain.createNewNetworkLog(
     context: Context,

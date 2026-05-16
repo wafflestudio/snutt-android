@@ -1,8 +1,5 @@
 package com.wafflestudio.snutt2.domain.model
 
-import com.squareup.moshi.JsonClass
-
-@JsonClass(generateAdapter = true)
 data class SemesterStatus(
     val current: CourseBook?,
     val next: CourseBook,

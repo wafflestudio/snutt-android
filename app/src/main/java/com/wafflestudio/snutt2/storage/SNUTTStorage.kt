@@ -1,21 +1,21 @@
 package com.wafflestudio.snutt2.storage
 
-import com.wafflestudio.snutt2.lib.android.NetworkLog
-import com.wafflestudio.snutt2.network.dto.CourseBookDto
-import com.wafflestudio.snutt2.network.dto.SemesterStatusDto
-import com.wafflestudio.snutt2.network.dto.SimpleTableDto
-import com.wafflestudio.snutt2.network.dto.TableDto
-import com.wafflestudio.snutt2.network.dto.TagDto
-import com.wafflestudio.snutt2.network.dto.UserDto
+import com.wafflestudio.snutt2.storage.model.NetworkLog
+import com.wafflestudio.snutt2.storage.model.Optional
+import com.wafflestudio.snutt2.storage.model.SemesterStatusLocalEntity
+import com.wafflestudio.snutt2.storage.model.SimpleTableLocalEntity
 import com.wafflestudio.snutt2.storage.model.TableLectureCustomData
+import com.wafflestudio.snutt2.storage.model.TableLocalEntity
 import com.wafflestudio.snutt2.storage.model.TableTrimParamData
+import com.wafflestudio.snutt2.storage.model.TagLocalEntity
+import com.wafflestudio.snutt2.storage.model.ThemeModeLocalEntity
+import com.wafflestudio.snutt2.storage.model.UserLocalEntity
 import com.wafflestudio.snutt2.storage.pref.PrefContext
 import com.wafflestudio.snutt2.storage.pref.PrefListValueMetaData
 import com.wafflestudio.snutt2.storage.pref.PrefMapValueMetaData
 import com.wafflestudio.snutt2.storage.pref.PrefOptionalValueMetaData
 import com.wafflestudio.snutt2.storage.pref.PrefValue
 import com.wafflestudio.snutt2.storage.pref.PrefValueMetaData
-import com.wafflestudio.snutt2.ui.theme.ThemeMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -44,23 +44,23 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val user = PrefValue<Optional<UserDto>>(
+    val user = PrefValue<Optional<UserLocalEntity>>(
         prefContext,
         PrefOptionalValueMetaData(
             domain = DOMAIN_SCOPE_LOGIN,
             key = "pref_user",
-            type = UserDto::class.java,
+            type = UserLocalEntity::class.java,
             defaultValue = Optional.empty(),
         ),
     )
 
-    val tableMap = PrefValue<Map<String, SimpleTableDto>>(
+    val tableMap = PrefValue<Map<String, SimpleTableLocalEntity>>(
         prefContext,
         PrefMapValueMetaData(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
             key = "pref_tables",
             String::class.java,
-            SimpleTableDto::class.java,
+            SimpleTableLocalEntity::class.java,
             mapOf(),
         ),
     )
@@ -77,12 +77,12 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val lastViewedTable = PrefValue<Optional<TableDto>>(
+    val lastViewedTable = PrefValue<Optional<TableLocalEntity>>(
         prefContext,
         PrefOptionalValueMetaData(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
             key = "last_tables",
-            type = TableDto::class.java,
+            type = TableLocalEntity::class.java,
             defaultValue = Optional.empty(),
         ),
     )
@@ -107,13 +107,13 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val themeMode = PrefValue<ThemeMode>(
+    val themeMode = PrefValue<ThemeModeLocalEntity>(
         prefContext,
         PrefValueMetaData(
             domain = DOMAIN_SCOPE_CURRENT_VERSION,
             key = "theme_mode",
-            type = ThemeMode::class.java,
-            defaultValue = ThemeMode.AUTO,
+            type = ThemeModeLocalEntity::class.java,
+            defaultValue = ThemeModeLocalEntity.AUTO,
         ),
     )
 
@@ -134,26 +134,6 @@ class SNUTTStorage @Inject constructor(
             key = "first_bookmark_alert",
             type = Boolean::class.java,
             defaultValue = true,
-        ),
-    )
-
-    val courseBooks = PrefValue<List<CourseBookDto>>(
-        prefContext,
-        PrefListValueMetaData(
-            domain = DOMAIN_SCOPE_CURRENT_VERSION,
-            key = "pref_course_books",
-            type = CourseBookDto::class.java,
-            defaultValue = listOf(),
-        ),
-    )
-
-    val tags = PrefValue<List<TagDto>>(
-        prefContext,
-        PrefListValueMetaData(
-            domain = DOMAIN_SCOPE_CURRENT_VERSION,
-            key = "pref_tags",
-            type = TagDto::class.java,
-            defaultValue = listOf(),
         ),
     )
 
@@ -197,22 +177,22 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val recentSearchedDepartments = PrefValue<List<TagDto>>(
+    val recentSearchedDepartments = PrefValue<List<TagLocalEntity>>(
         prefContext,
         PrefListValueMetaData(
             domain = DOMAIN_SCOPE_LOGIN,
             key = "recent_searched_departments",
-            type = TagDto::class.java,
+            type = TagLocalEntity::class.java,
             defaultValue = listOf(),
         ),
     )
 
-    val semesterStatus = PrefValue<Optional<SemesterStatusDto>>(
+    val semesterStatus = PrefValue<Optional<SemesterStatusLocalEntity>>(
         prefContext,
         PrefOptionalValueMetaData(
             domain = DOMAIN_SCOPE_LOGIN,
             key = "semester_status",
-            type = SemesterStatusDto::class.java,
+            type = SemesterStatusLocalEntity::class.java,
             defaultValue = Optional.empty(),
         ),
     )

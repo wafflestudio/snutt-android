@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.data.currenttablelecture
 
 import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.data.mapper.toLectureDto
+import com.wafflestudio.snutt2.data.mapper.toLocalEntity
 import com.wafflestudio.snutt2.data.mapper.toLocalLecture
 import com.wafflestudio.snutt2.domain.Unknown
 import com.wafflestudio.snutt2.domain.model.CustomLecture
@@ -14,7 +15,7 @@ import com.wafflestudio.snutt2.network.dto.PostCustomLectureParams
 import com.wafflestudio.snutt2.network.dto.PostLectureParams
 import com.wafflestudio.snutt2.network.error.toDomainError
 import com.wafflestudio.snutt2.storage.SNUTTStorage
-import com.wafflestudio.snutt2.storage.toOptional
+import com.wafflestudio.snutt2.storage.model.toOptional
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -29,7 +30,7 @@ class CurrentTableLectureRepositoryImpl @Inject constructor(
             ?: return Result.Success(Unit)
         try {
             val response = api._postAddLecture(prevTable.id, lecture.id, PostLectureParams(isForced))
-            storage.lastViewedTable.update(response.toOptional())
+            storage.lastViewedTable.update(response.toLocalEntity().toOptional())
             return Result.Success(Unit)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
@@ -41,7 +42,7 @@ class CurrentTableLectureRepositoryImpl @Inject constructor(
             ?: return Result.Success(Unit)
         try {
             val response = api._deleteLecture(prevTable.id, lecture.id)
-            storage.lastViewedTable.update(response.toOptional())
+            storage.lastViewedTable.update(response.toLocalEntity().toOptional())
             return Result.Success(Unit)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
@@ -57,7 +58,7 @@ class CurrentTableLectureRepositoryImpl @Inject constructor(
 
         return try {
             val response = api._deleteLecture(table.id, lectureId)
-            storage.lastViewedTable.update(response.toOptional())
+            storage.lastViewedTable.update(response.toLocalEntity().toOptional())
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Fail(e.toDomainError())
@@ -71,7 +72,7 @@ class CurrentTableLectureRepositoryImpl @Inject constructor(
             val params = lecture.toLectureDto().toParams()
             params.isForced = isForced
             val response = api._putLecture(prevTable.id, lecture.id, params)
-            storage.lastViewedTable.update(response.toOptional())
+            storage.lastViewedTable.update(response.toLocalEntity().toOptional())
             return Result.Success(Unit)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
@@ -83,7 +84,7 @@ class CurrentTableLectureRepositoryImpl @Inject constructor(
             ?: return Result.Fail(Unknown("", ""))
         try {
             val response = api._resetLecture(prevTable.id, lecture.id)
-            storage.lastViewedTable.update(response.toOptional())
+            storage.lastViewedTable.update(response.toLocalEntity().toOptional())
             val resetLecture = response.lectureList.find { it.id == lecture.id }!!.toLocalLecture()
             return Result.Success(resetLecture)
         } catch (e: Exception) {
@@ -97,7 +98,7 @@ class CurrentTableLectureRepositoryImpl @Inject constructor(
         return try {
             val params = lecture.toLectureDto().toParams().also { it.isForced = isForced }
             val response = api._postCustomLecture(prevTable.id, params)
-            storage.lastViewedTable.update(response.toOptional())
+            storage.lastViewedTable.update(response.toLocalEntity().toOptional())
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Fail(e.toDomainError())

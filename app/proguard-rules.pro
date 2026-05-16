@@ -2,12 +2,12 @@
 -keepattributes SourceFile,LineNumberTable        # Keep file names and line numbers.
 -keep public class * extends java.lang.Exception  # Optional: Keep custom exceptions.
 
-# class stored to sharedPreference after serialization
--keep public enum com.wafflestudio.snutt2.** { *; }
--keep class com.wafflestudio.snutt2.lib.android.NetworkLog { *; }
+# SNUTTStorage 가 Moshi reflection (KotlinJsonAdapterFactory) 으로 직렬화하는 storage 전용 모델.
+# 모든 LocalEntity / NetworkLog / Optional wrapper 가 이 패키지에 위치한다 (enum 포함).
+-keep class com.wafflestudio.snutt2.storage.model.** { *; }
+
+# Retrofit + Moshi reflection 으로 직/역직렬화되는 네트워크 DTO.
 -keep class com.wafflestudio.snutt2.network.** { *; }
--keep class com.wafflestudio.snutt2.storage.** { *; }
--keep class com.wafflestudio.snutt2.domain.model.** { *; }
 
 # https://github.com/square/retrofit/issues/3751#issuecomment-1192043644
 # Keep generic signature of Call, Response (R8 full mode strips signatures from non-kept items).

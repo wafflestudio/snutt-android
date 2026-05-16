@@ -14,6 +14,8 @@ import com.wafflestudio.snutt2.network.dto.TableDto
 import com.wafflestudio.snutt2.network.dto.ThemeDto
 import com.wafflestudio.snutt2.network.dto.TimetableDto
 import com.wafflestudio.snutt2.network.dto.parseHexColor
+import com.wafflestudio.snutt2.storage.model.SimpleTableLocalEntity
+import com.wafflestudio.snutt2.storage.model.TableLocalEntity
 
 // region TableDto / TimetableDto / SimpleTableDto → Table / TableSummary
 
@@ -56,6 +58,45 @@ fun SimpleTableDto.toDomain(): TableSummary = TableSummary(
     totalCredit = totalCredit ?: 0,
     isPrimary = isPrimary,
 )
+
+fun SimpleTableDto.toLocalEntity(): SimpleTableLocalEntity = SimpleTableLocalEntity(
+    id = id,
+    year = year,
+    semester = semester,
+    title = title,
+    updatedAt = updatedAt,
+    totalCredit = totalCredit,
+    isPrimary = isPrimary,
+)
+
+fun TableDto.toLocalEntity(): TableLocalEntity = TableLocalEntity(
+    id = id,
+    year = year,
+    semester = semester,
+    title = title,
+    lectureList = lectureList.map { it.toLocalEntity() },
+    updatedAt = updatedAt,
+    totalCredit = totalCredit,
+    theme = theme,
+    themeId = themeId,
+    isPrimary = isPrimary,
+)
+
+fun TableLocalEntity.toDomain(): Table {
+    val themeRef = themeId?.let { ThemeReference.Custom(it) }
+        ?: ThemeReference.BuiltIn(theme)
+    return Table(
+        summary = TableSummary(
+            id = id,
+            courseBook = CourseBook(semester, year),
+            title = title,
+            totalCredit = totalCredit ?: 0,
+            isPrimary = isPrimary,
+        ),
+        lectures = lectureList.map { it.toLocalLecture() },
+        themeRef = themeRef,
+    )
+}
 
 // endregion
 
