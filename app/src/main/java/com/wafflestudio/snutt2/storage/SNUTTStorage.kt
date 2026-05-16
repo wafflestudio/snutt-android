@@ -3,11 +3,11 @@ package com.wafflestudio.snutt2.storage
 import com.wafflestudio.snutt2.lib.android.NetworkLog
 import com.wafflestudio.snutt2.network.dto.SimpleTableDto
 import com.wafflestudio.snutt2.network.dto.TableDto
-import com.wafflestudio.snutt2.network.dto.UserDto
 import com.wafflestudio.snutt2.storage.model.SemesterStatusLocalEntity
 import com.wafflestudio.snutt2.storage.model.TableLectureCustomData
 import com.wafflestudio.snutt2.storage.model.TableTrimParamData
 import com.wafflestudio.snutt2.storage.model.TagLocalEntity
+import com.wafflestudio.snutt2.storage.model.UserLocalEntity
 import com.wafflestudio.snutt2.storage.pref.PrefContext
 import com.wafflestudio.snutt2.storage.pref.PrefListValueMetaData
 import com.wafflestudio.snutt2.storage.pref.PrefMapValueMetaData
@@ -43,12 +43,12 @@ class SNUTTStorage @Inject constructor(
         ),
     )
 
-    val user = PrefValue<Optional<UserDto>>(
+    val user = PrefValue<Optional<UserLocalEntity>>(
         prefContext,
         PrefOptionalValueMetaData(
             domain = DOMAIN_SCOPE_LOGIN,
             key = "pref_user",
-            type = UserDto::class.java,
+            type = UserLocalEntity::class.java,
             defaultValue = Optional.empty(),
         ),
     )

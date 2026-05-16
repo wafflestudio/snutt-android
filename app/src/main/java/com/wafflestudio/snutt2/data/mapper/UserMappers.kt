@@ -9,6 +9,8 @@ import com.wafflestudio.snutt2.network.dto.NicknameDto
 import com.wafflestudio.snutt2.network.dto.PushPreferenceDto
 import com.wafflestudio.snutt2.network.dto.PushPreferenceItemDto
 import com.wafflestudio.snutt2.network.dto.UserDto
+import com.wafflestudio.snutt2.storage.model.NicknameLocalEntity
+import com.wafflestudio.snutt2.storage.model.UserLocalEntity
 
 fun UserDto.toDomain(): User = User(
     email = email,
@@ -17,6 +19,21 @@ fun UserDto.toDomain(): User = User(
 )
 
 fun NicknameDto.toDomain(): Nickname = Nickname(nickname, tag)
+
+fun UserDto.toLocalEntity(): UserLocalEntity = UserLocalEntity(
+    isAdmin = isAdmin,
+    regDate = regDate,
+    notificationCheckedAt = notificationCheckedAt,
+    email = email,
+    localId = localId,
+    fbName = fbName,
+    nickname = nickname?.toLocalEntity(),
+)
+
+fun NicknameDto.toLocalEntity(): NicknameLocalEntity = NicknameLocalEntity(
+    nickname = nickname,
+    tag = tag,
+)
 
 fun PushPreferenceDto.toDomain(): PushPreferences {
     val map = pushPreferences.associateBy { it.type }
