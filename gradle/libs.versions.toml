@@ -15,7 +15,7 @@ moshi = "1.15.2"
 okhttp = "5.3.2"
 
 # Jetpack Compose
-composeBom = "2026.03.01"
+composeBom = "2026.05.00"
 composeMaterialNavigation = "1.11.1"
 navigation = "2.9.8"
 lifecycle = "2.10.0"
