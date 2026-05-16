@@ -89,7 +89,7 @@ jobs:
         env:
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID_STAGING }}
       - name: Slack Upload APK
-        uses: MeilCli/slack-upload-file@v3
+        uses: MeilCli/slack-upload-file@v5
         with:
           slack_token: ${{ secrets.SLACK_READ_WRITE_TOKEN }}
           channel_id: ${{ secrets.SLACK_DEPLOY_CHANNEL_ID }}
