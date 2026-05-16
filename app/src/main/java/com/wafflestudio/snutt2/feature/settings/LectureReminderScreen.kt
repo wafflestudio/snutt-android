@@ -64,7 +64,7 @@ fun LectureReminderRoute(
     viewModel: LectureReminderViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
-    val uiState by viewModel.lectureReminderUiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackBarHostState = remember { CustomSnackBarHostState() }
     val hazeState = rememberHazeState()
 
@@ -73,7 +73,7 @@ fun LectureReminderRoute(
     val tenMinutesAfterMessage = stringResource(R.string.settings_lecture_reminder_update_success_ten_minutes_after)
 
     LaunchedEffect(Unit) {
-        viewModel.lectureReminderUiEvent.collect { uiEvent ->
+        viewModel.uiEvent.collect { uiEvent ->
             when (uiEvent) {
                 is LectureReminderUiEvent.ShowToast -> {
                     val message = uiEvent.message
@@ -82,12 +82,12 @@ fun LectureReminderRoute(
                     }
                 }
 
-                is LectureReminderUiEvent.ShowSnackBarByEvent -> {
-                    val message = when (uiEvent.event) {
-                        LectureReminderEvent.LECTURE_REMINDER_UPDATE_SUCCESS_NONE -> ""
-                        LectureReminderEvent.LECTURE_REMINDER_UPDATE_SUCCESS_TEN_MINUTES_BEFORE -> tenMinutesBeforeMessage
-                        LectureReminderEvent.LECTURE_REMINDER_UPDATE_SUCCESS_AT_START_TIME -> atStartTimeMessage
-                        LectureReminderEvent.LECTURE_REMINDER_UPDATE_SUCCESS_TEN_MINUTES_AFTER -> tenMinutesAfterMessage
+                is LectureReminderUiEvent.ShowUpdateSuccessSnackBar -> {
+                    val message = when (uiEvent.offset) {
+                        LectureReminderOffset.NONE -> ""
+                        LectureReminderOffset.TEN_MINUTES_BEFORE -> tenMinutesBeforeMessage
+                        LectureReminderOffset.AT_START_TIME -> atStartTimeMessage
+                        LectureReminderOffset.TEN_MINUTES_AFTER -> tenMinutesAfterMessage
                     }
                     if (message.isNotEmpty()) {
                         launch {
@@ -135,7 +135,7 @@ fun LectureReminderRoute(
             padding = padding,
             uiState = uiState,
             onClickBack = onNavigateBack,
-            onChangeReminderOption = viewModel::changeLectureReminderOption,
+            onChangeReminderOption = viewModel::updateReminderOption,
         )
     }
 }
@@ -324,7 +324,10 @@ fun LectureReminderEmpty() {
 private fun LectureReminderScreen_Success() {
     SnuttPreviewSurface {
         LectureReminderScreen(
-            uiState = LectureReminderUiState.Success(LecturePreviewData.sampleLectureReminderOptions),
+            uiState = LectureReminderUiState.Success(
+                data = LecturePreviewData.sampleLectureReminderOptions,
+                timetableId = "",
+            ),
             onClickBack = {},
             onChangeReminderOption = { _, _ -> },
         )
