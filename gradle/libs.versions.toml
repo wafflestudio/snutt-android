@@ -1,6 +1,6 @@
 [versions]
 # Kotlin & Android
-kotlin = "2.3.20"
+kotlin = "2.3.21"
 androidGradle = "9.1.1"
 composeScreenshot = "0.0.1-alpha14"
 
