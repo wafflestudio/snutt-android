@@ -84,7 +84,7 @@ jobs:
           SLACK_USERNAME: BuildNoti
       - name: Slack Upload APK (Live)
         if: ${{ github.event.inputs.slack == 'true' && github.event.inputs.variant == 'live' }}
-        uses: MeilCli/slack-upload-file@v3
+        uses: MeilCli/slack-upload-file@v5
         with:
           slack_token: ${{ secrets.SLACK_READ_WRITE_TOKEN }}
           channel_id: ${{ secrets.SLACK_DEPLOY_CHANNEL_ID }}
@@ -94,7 +94,7 @@ jobs:
           initial_comment: 'live-release APK'
       - name: Slack Upload APK (Staging)
         if: ${{ github.event.inputs.slack == 'true' && github.event.inputs.variant == 'staging' }}
-        uses: MeilCli/slack-upload-file@v3
+        uses: MeilCli/slack-upload-file@v5
         with:
           slack_token: ${{ secrets.SLACK_READ_WRITE_TOKEN }}
           channel_id: ${{ secrets.SLACK_DEPLOY_CHANNEL_ID }}
