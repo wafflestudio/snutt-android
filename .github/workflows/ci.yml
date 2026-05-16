@@ -32,9 +32,9 @@ jobs:
       - name: Setup secrets
         uses: ./.github/actions/setup-secrets
         with:
-          variant: staging
-          google_services_json: ${{ secrets.google_services_json_staging }}
-          secrets_xml_app: ${{ secrets.secrets_xml_staging }}
+          variant: dev
+          google_services_json: ${{ secrets.google_services_json_dev }}
+          secrets_xml_app: ${{ secrets.secrets_xml_dev }}
       - name: Run ktlint
         run: ./gradlew ktlintCheck --stacktrace
       - name: Upload ktlint report
@@ -63,11 +63,11 @@ jobs:
       - name: Setup secrets
         uses: ./.github/actions/setup-secrets
         with:
-          variant: staging
-          google_services_json: ${{ secrets.google_services_json_staging }}
-          secrets_xml_app: ${{ secrets.secrets_xml_staging }}
+          variant: dev
+          google_services_json: ${{ secrets.google_services_json_dev }}
+          secrets_xml_app: ${{ secrets.secrets_xml_dev }}
       - name: Build debug APK, run unit tests, run lint
-        run: ./gradlew assembleStagingDebug testStagingDebugUnitTest lintStagingDebug --stacktrace
+        run: ./gradlew assembleDevDebug testDevDebugUnitTest lintDevDebug --stacktrace
       - name: Upload unit test report
         uses: actions/upload-artifact@v4
         if: failure()

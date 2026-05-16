@@ -3,7 +3,7 @@ description: 'Write build-time secrets (google-services.json, secrets.xml, gcp-s
 
 inputs:
   variant:
-    description: 'Product flavor: staging or live'
+    description: 'Product flavor: dev or live'
     required: true
   google_services_json:
     description: 'Contents of google-services.json for the variant'
