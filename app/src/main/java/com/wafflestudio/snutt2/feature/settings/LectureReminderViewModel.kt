@@ -34,7 +34,7 @@ class LectureReminderViewModel @Inject constructor(
     private val semesterStatusRepository: SemesterStatusRepository,
     private val displayMessageResolver: DisplayMessageResolver,
 ) : ViewModel() {
-    private val _uiEvent = MutableSharedFlow<LectureReminderUiEvent>(replay = 1)
+    private val _uiEvent = MutableSharedFlow<LectureReminderUiEvent>(replay = 0)
     val uiEvent = _uiEvent.asSharedFlow()
 
     private val _uiState: MutableStateFlow<LectureReminderUiState> = MutableStateFlow(LectureReminderUiState.Loading)
@@ -161,6 +161,7 @@ sealed interface LectureReminderUiState {
         val data: Map<String, LectureWithReminderOption>,
         val timetableId: String,
     ) : LectureReminderUiState
+
     data object NoPrimaryTimetable : LectureReminderUiState
 }
 
