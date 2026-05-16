@@ -35,7 +35,7 @@ coil = "2.7.0"
 splashscreen = "1.2.0"
 
 # Authentication
-facebookLogin = "15.0.1"
+facebookLogin = "18.2.3"
 googleAuth = "21.5.1"
 googleId = "1.2.0"
 kakaoSDK = "2.23.2"
