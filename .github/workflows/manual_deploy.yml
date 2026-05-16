@@ -5,11 +5,11 @@ on:
     inputs:
       variant:
         type: choice
-        description: 'live / staging'
+        description: 'live / dev'
         required: true
         options:
           - live
-          - staging
+          - dev
       firebase:
         type: boolean
         description: Upload artifact to Firebase
@@ -45,14 +45,14 @@ jobs:
           secrets_xml_app: ${{ secrets.secrets_xml_live }}
           gcp_service_account: ${{ secrets.app_distribution_service_account_live }}
           keystore_base64: ${{ secrets.KEYSTORE }}
-      - name: Setup secrets (Staging)
-        if: github.event.inputs.variant == 'staging'
+      - name: Setup secrets (Dev)
+        if: github.event.inputs.variant == 'dev'
         uses: ./.github/actions/setup-secrets
         with:
-          variant: staging
-          google_services_json: ${{ secrets.google_services_json_staging }}
-          secrets_xml_app: ${{ secrets.secrets_xml_staging }}
-          gcp_service_account: ${{ secrets.app_distribution_service_account_staging }}
+          variant: dev
+          google_services_json: ${{ secrets.google_services_json_dev }}
+          secrets_xml_app: ${{ secrets.secrets_xml_dev }}
+          gcp_service_account: ${{ secrets.app_distribution_service_account_dev }}
           keystore_base64: ${{ secrets.KEYSTORE }}
       - name: Build production apk (Live)
         if: github.event.inputs.variant == 'live'
@@ -61,9 +61,9 @@ jobs:
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
-      - name: Build production apk (Staging)
-        if: github.event.inputs.variant == 'staging'
-        run: ./gradlew assembleStagingRelease
+      - name: Build production apk (Dev)
+        if: github.event.inputs.variant == 'dev'
+        run: ./gradlew assembleDevRelease
         env:
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
@@ -71,9 +71,9 @@ jobs:
       - name: Upload artifact to Firebase App Distribution (Live)
         if: ${{ github.event.inputs.firebase == 'true' && github.event.inputs.variant == 'live' }}
         run: ./gradlew appDistributionUploadLiveRelease
-      - name: Upload artifact to Firebase App Distribution (Staging)
-        if: ${{ github.event.inputs.firebase == 'true' && github.event.inputs.variant == 'staging' }}
-        run: ./gradlew appDistributionUploadStagingRelease
+      - name: Upload artifact to Firebase App Distribution (Dev)
+        if: ${{ github.event.inputs.firebase == 'true' && github.event.inputs.variant == 'dev' }}
+        run: ./gradlew appDistributionUploadDevRelease
       - name: Slack Notification
         if: ${{ github.event.inputs.slack == 'true' }}
         uses: rtCamp/action-slack-notify@v2
@@ -92,13 +92,13 @@ jobs:
           file_name: 'app-live-release.apk'
           file_type: 'apk'
           initial_comment: 'live-release APK'
-      - name: Slack Upload APK (Staging)
-        if: ${{ github.event.inputs.slack == 'true' && github.event.inputs.variant == 'staging' }}
+      - name: Slack Upload APK (Dev)
+        if: ${{ github.event.inputs.slack == 'true' && github.event.inputs.variant == 'dev' }}
         uses: MeilCli/slack-upload-file@v5
         with:
           slack_token: ${{ secrets.SLACK_READ_WRITE_TOKEN }}
           channel_id: ${{ secrets.SLACK_DEPLOY_CHANNEL_ID }}
-          file_path: './app/build/outputs/apk/staging/release/app-staging-release.apk'
-          file_name: 'app-staging-release.apk'
+          file_path: './app/build/outputs/apk/dev/release/app-dev-release.apk'
+          file_name: 'app-dev-release.apk'
           file_type: 'apk'
-          initial_comment: 'staging-release APK'
+          initial_comment: 'dev-release APK'

@@ -14,9 +14,9 @@
 
 ## 현재 상태 스냅샷
 
-- `ci.yml`: `develop` PR/push 시 ktlint → assembleStagingDebug → testStagingDebugUnitTest (직렬).
-- `cd.yml`: `release-*` 브랜치의 `version.properties` 변경 시 live/staging 빌드 + Firebase + Slack.
-- `manual_deploy.yml`: `workflow_dispatch` 로 live/staging 선택 배포.
+- `ci.yml`: `develop` PR/push 시 ktlint → assembleDevDebug → testDevDebugUnitTest (직렬).
+- `cd.yml`: `release-*` 브랜치의 `version.properties` 변경 시 live/dev 빌드 + Firebase + Slack.
+- `manual_deploy.yml`: `workflow_dispatch` 로 live/dev 선택 배포.
 - Java: `ci.yml` 은 21, `cd.yml`/`manual_deploy.yml` 은 17 (불일치).
 - Gradle 캐시: `actions/setup-java` 의 `cache: gradle` 만 사용 중.
 - Secrets 주입: heredoc (`cat << EOF > ... ${{ secrets.* }} EOF`) 방식. 3개 워크플로우에 거의 동일한 블록이 중복.
@@ -38,15 +38,15 @@
 ### [x] 1-2. Secrets 셋업 composite action 추출
 
 - 현재: google-services.json / secrets.xml(app, core:network) / gcp-service-account.json / keystore 가 3개 워크플로우에 거의 동일하게 중복.
-- 할 일: `.github/actions/setup-secrets/action.yml` composite action 으로 뽑아 공통화. `variant` (staging/live) 를 입력으로 받아 분기.
+- 할 일: `.github/actions/setup-secrets/action.yml` composite action 으로 뽑아 공통화. `variant` (dev/live) 를 입력으로 받아 분기.
 - 효과: 한 곳만 수정하면 됨. 휴먼 에러 감소.
 - 결정/결과:
     - `.github/actions/setup-secrets/action.yml` composite action 신설. inputs: `variant`, `google_services_json`, `secrets_xml_app`, `gcp_service_account`(optional), `keystore_base64`(optional).
     - `ci.yml` / `cd.yml` / `manual_deploy.yml` 의 중복 secrets 셋업 블록 전부 composite action 호출 한 스텝으로 치환.
     - 내부 구현은 `env:` 로 시크릿을 스텝에 주입하고 `printf '%s' "$VAR" > ...` 로 파일에 기록. heredoc 미사용(1-5 목표가 여기서 해소 — 별도 PR 불필요).
-    - 실제 존재하지 않는 `core/network` 모듈용 secrets.xml 셋업 스텝 모두 제거. 관련 GitHub Secret (`secrets_xml_staging_core_network`, `secrets_xml_live_core_network`) 은 현재 참조되지 않음. (UI 에서 수동 제거 가능)
+    - 실제 존재하지 않는 `core/network` 모듈용 secrets.xml 셋업 스텝 모두 제거. 관련 GitHub Secret (`secrets_xml_dev_core_network`, `secrets_xml_live_core_network`) 은 현재 참조되지 않음. (UI 에서 수동 제거 가능)
     - `manual_deploy.yml` 의 `startsWith(inputs.variant, 'live')` 조건은 값이 고정 enum 이라 `== 'live'` 로 단순화.
-    - 별도 발견: `app/src/staging/res/value/strings.xml` 디렉토리 오타(`value` 단수형). Android 가 리소스로 인식 안 함. CI/CD 범위 밖이라 플래그만.
+    - 별도 발견: `app/src/dev/res/value/strings.xml` 디렉토리 오타(`value` 단수형). Android 가 리소스로 인식 안 함. CI/CD 범위 밖이라 플래그만.
 
 ### [x] 1-3. Gradle 셋업 개선
 
@@ -66,7 +66,7 @@
 - 고려: Gradle 캐시/warm-up 중복 비용과의 트레이드오프 — 병렬화해도 실제로 빨라지는지 실측 필요.
 - 결정/결과:
     - **2 job 분리** (`ktlint` / `build-and-test`). 3 job 완전 분리는 setup 오버헤드 × 3 + compile 중복으로 오히려 느려질 가능성 높음.
-    - `build-and-test` 는 `assembleStagingDebug testStagingDebugUnitTest` 를 한 번에 실행 → compile 산출물 공유.
+    - `build-and-test` 는 `assembleDevDebug testDevDebugUnitTest` 를 한 번에 실행 → compile 산출물 공유.
     - 테스트 실패 시 `./**/build/reports/tests/**` 업로드 추가.
     - 실제 병렬 효과는 첫 실행 이후 캐시가 데워진 다음에 관측 가능.
 
@@ -84,12 +84,12 @@
 ### [x] 2-1. Android Lint CI 통합
 
 - 현재: ktlint 만. Android Lint 는 돌지 않음.
-- 할 일: `./gradlew lintStagingDebug` 추가. `app/lint-baseline.xml` 도입하여 기존 경고는 baseline 처리.
+- 할 일: `./gradlew lintDevDebug` 추가. `app/lint-baseline.xml` 도입하여 기존 경고는 baseline 처리.
 - 고려: 경고 양이 많으면 baseline 으로 처음엔 가드만 세우고 점진적으로 줄인다.
 - 결정/결과:
     - 최초 실측: **86 errors / 254 warnings / 2 hints**. 일괄 수정은 이 PR 범위 밖.
     - `app/build.gradle.kts` 의 `android { ... }` 에 `lint { baseline = file("lint-baseline.xml") }` 추가, `./gradlew updateLintBaseline` 으로 baseline 생성 (app/lint-baseline.xml, 약 3700 줄).
-    - `ci.yml` 의 `build-and-test` job 이 `assembleStagingDebug testStagingDebugUnitTest lintStagingDebug` 를 한 명령으로 실행 — compile 공유.
+    - `ci.yml` 의 `build-and-test` job 이 `assembleDevDebug testDevDebugUnitTest lintDevDebug` 를 한 명령으로 실행 — compile 공유.
     - 실패 시 lint html report 업로드.
     - **후속 과제**: baseline 을 점진적으로 줄이는 작업. 별도 이슈/PR 로 단계적으로 처리해야 함. 여기선 가드만 세움.
 
@@ -123,7 +123,7 @@
 
 1. 담당자가 `develop` 에서 `release-X.Y.Z` 브랜치 분기.
 2. `version.properties` 를 `X.Y.Z-rc.1` 로 수정 → push.
-3. `cd.yml` 트리거 → live AAB(Firebase) + staging APK(Firebase + Slack) 빌드/배포.
+3. `cd.yml` 트리거 → live AAB(Firebase) + dev APK(Firebase + Slack) 빌드/배포.
 4. **(수동)** 담당자가 Play Console 에서 AAB 를 internal track 에 업로드 → 내부자 테스트 배포.
 5. QA 에서 이슈 발견 시 release 브랜치에 수정 커밋 → **담당자가 직접** `version.properties` 를 `X.Y.Z-rc.2` 로 수정 push → 3–4 반복.
 6. QA 완료 시 `version.properties` 를 `X.Y.Z` (rc 제거) 로 수정 push → live AAB 재빌드.
@@ -160,7 +160,7 @@
 - 목표: `cd.yml` 에서 AAB 빌드 후 Play Store 에 자동 업로드.
 - 구성:
     - `Gemfile` 에 `fastlane` gem 추가.
-    - `fastlane/Appfile`: `package_name` (live/staging 모두 `com.wafflestudio.snutt2.live` 등 variant suffix 포함), `json_key_file` 은 env 로 주입.
+    - `fastlane/Appfile`: `package_name` (live/dev 모두 `com.wafflestudio.snutt2.live` 등 variant suffix 포함), `json_key_file` 은 env 로 주입.
     - `fastlane/Fastfile` 에 2 개 레인 정의:
         - `upload_internal`: `aab` + `track: internal` + `release_status: completed` 로 업로드.
         - `upload_production_draft`: `aab` + `track: production` + `release_status: draft` 로 업로드.
@@ -174,7 +174,7 @@
     - Play Console 에 **이미 최초 릴리스(internal)가 manual 로 한 번은 올라가 있어야** Fastlane 이후 업로드가 동작. (Play 정책)
 - 개방된 설계 결정:
     - Fastlane metadata 관리(스크린샷/설명 텍스트 자동화)는 4-1 범위 **밖**. 일단 바이너리 업로드만.
-    - staging variant 도 Play 에 올릴지? 현재 staging 은 applicationIdSuffix `.staging` 이라 별 package. **업로드 대상은 live 만** 으로 한정. staging 은 기존대로 Firebase + Slack.
+    - dev variant 도 Play 에 올릴지? 현재 dev 은 applicationIdSuffix `.dev` 이라 별 package. **업로드 대상은 live 만** 으로 한정. dev 은 기존대로 Firebase + Slack.
 
 ### [ ] 4-2. reusable workflow 통합
 
@@ -182,11 +182,11 @@
 - 4-1 Play Store 업로드까지 합치면 로직 분량이 더 커져 중복 비용이 크다.
 - 설계:
     - `.github/workflows/_build-and-deploy.yml` (prefix `_` 는 "내부용" 관행) 을 `workflow_call` 로 정의.
-    - inputs: `variant` (live/staging), `upload_firebase` (bool), `upload_play_store` (bool), `slack_message` (string, optional).
+    - inputs: `variant` (live/dev), `upload_firebase` (bool), `upload_play_store` (bool), `slack_message` (string, optional).
     - secrets: 필요한 모든 secret을 `secrets: inherit` 로 받음.
     - 책임: Checkout → Setup Java → Setup Gradle → Setup secrets(composite) → build → Firebase(조건부) → Play Store(조건부, 4-1 기준) → Slack(조건부).
 - 호출 측:
-    - `cd.yml`: `release-*` branch + `version.properties` 변경 push → job 2개 (live / staging) 가 각각 reusable workflow 호출.
+    - `cd.yml`: `release-*` branch + `version.properties` 변경 push → job 2개 (live / dev) 가 각각 reusable workflow 호출.
     - `manual_deploy.yml`: `workflow_dispatch` → variant / firebase / play_store / slack 입력 받아 reusable workflow 호출.
     - `rc-bump.yml` (4-4): bump 후 내부적으로 reusable workflow 호출 (또는 commit push 로 cd.yml 간접 트리거).
 - 리스크: reusable workflow 의 `secrets: inherit` 는 caller repo 와 callee 가 같은 repo 에 있을 때 잘 동작. 본 레포에서는 전부 내부 파일이므로 문제 없음.

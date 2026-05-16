@@ -1,5 +1,5 @@
 ---
-description: git commit 전 항상 ktlintFormat 과 staging variant 컴파일 검증을 실행하고, lint 자동 수정 결과는 동일 commit 에 포함시킨다.
+description: git commit 전 항상 ktlintFormat 과 dev variant 컴파일 검증을 실행하고, lint 자동 수정 결과는 동일 commit 에 포함시킨다.
 alwaysApply: true
 ---
 
@@ -10,8 +10,8 @@ alwaysApply: true
 ```
 ./gradlew \
     ktlintFormat \
-    compileStagingDebugUnitTestKotlin \
-    compileStagingDebugScreenshotTestKotlin
+    compileDevDebugUnitTestKotlin \
+    compileDevDebugScreenshotTestKotlin
 ```
 
 ktlintFormat 결과로 변경이 발생하면 그 변경도 동일 commit 에 포함시킨다
@@ -26,8 +26,8 @@ ktlintFormat 결과로 변경이 발생하면 그 변경도 동일 commit 에 �
   회귀는 거의 다 잡힌다.
 - main 소스셋 컴파일만 확인하고 넘어가면 `src/test` 의 사용처는 그대로 안 잡혀
   PR push 후 CI 에서 처음 발견되는 일이 반복된다.
-- live 가 아닌 staging variant 만으로 충분하다 — CI 가 staging 을 기준으로
-  돌고, source set 차이는 staging 에서 모두 드러난다.
+- live 가 아닌 dev variant 만으로 충분하다 — CI 가 dev 을 기준으로
+  돌고, source set 차이는 dev 에서 모두 드러난다.
 
 ## How to apply
 
@@ -38,7 +38,7 @@ ktlintFormat 결과로 변경이 발생하면 그 변경도 동일 commit 에 �
    복잡 구조 등) 가 있어도 **commit 을 멈추고 사용자에게 알린다.** 자동으로
    우회하지 않는다.
 5. 시그니처 변경이 있었다면, 컴파일 외에 영향받는 테스트의 실제 실행
-   (`testStagingDebugUnitTest --tests "..."`) 까지 한 번 돌려본다.
+   (`testDevDebugUnitTest --tests "..."`) 까지 한 번 돌려본다.
 
 ## Exceptions
 

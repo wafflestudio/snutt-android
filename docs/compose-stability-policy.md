@@ -20,7 +20,7 @@
 ### 2.1 Strong Skipping이 활성화되어 있다
 
 프로젝트는 Compose Compiler의 Strong Skipping Mode를 기본 활성화 상태로 빌드된다
-(`app/build/compose_compiler/stagingDebug/app-module.json`의 `strongSkipping: true`).
+(`app/build/compose_compiler/devDebug/app-module.json`의 `strongSkipping: true`).
 
 Strong Skipping 하에서는:
 
@@ -90,14 +90,14 @@ Layout Inspector에서 발견된 Composable의 원인 파라미터를 찾거나,
 리포트 재생성:
 
 ```bash
-./gradlew :app:compileStagingDebugKotlin -PcomposeCompilerReports=true --rerun-tasks --no-configuration-cache
+./gradlew :app:compileDevDebugKotlin -PcomposeCompilerReports=true --rerun-tasks --no-configuration-cache
 ```
 
 리포트 파일:
 
 - `app/build/compose_compiler/app-classes.txt` — 클래스별 stability 추론 결과
 - `app/build/compose_compiler/app-composables.txt` — Composable 파라미터 stability
-- `app/build/compose_compiler/stagingDebug/app-module.json` — 요약 수치
+- `app/build/compose_compiler/devDebug/app-module.json` — 요약 수치
 
 특정 Composable/클래스 상세 보기:
 

@@ -56,7 +56,7 @@ jobs:
           SLACK_MESSAGE: ${{ env.MESSAGE }}
           SLACK_USERNAME: BuildNoti
 
-  build-staging:
+  build-dev:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -73,27 +73,27 @@ jobs:
       - name: Setup secrets
         uses: ./.github/actions/setup-secrets
         with:
-          variant: staging
-          google_services_json: ${{ secrets.google_services_json_staging }}
-          secrets_xml_app: ${{ secrets.secrets_xml_staging }}
-          gcp_service_account: ${{ secrets.app_distribution_service_account_staging }}
+          variant: dev
+          google_services_json: ${{ secrets.google_services_json_dev }}
+          secrets_xml_app: ${{ secrets.secrets_xml_dev }}
+          gcp_service_account: ${{ secrets.app_distribution_service_account_dev }}
           keystore_base64: ${{ secrets.KEYSTORE }}
       - name: Build production apk
-        run: ./gradlew assembleStagingRelease
+        run: ./gradlew assembleDevRelease
         env:
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
       - name: Upload artifact to Firebase App Distribution
-        run: ./gradlew appDistributionUploadStagingRelease
+        run: ./gradlew appDistributionUploadDevRelease
         env:
-          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID_STAGING }}
+          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID_DEV }}
       - name: Slack Upload APK
         uses: MeilCli/slack-upload-file@v5
         with:
           slack_token: ${{ secrets.SLACK_READ_WRITE_TOKEN }}
           channel_id: ${{ secrets.SLACK_DEPLOY_CHANNEL_ID }}
-          file_path: './app/build/outputs/apk/staging/release/app-staging-release.apk'
-          file_name: 'app-staging-release.apk'
+          file_path: './app/build/outputs/apk/dev/release/app-dev-release.apk'
+          file_name: 'app-dev-release.apk'
           file_type: 'apk'
-          initial_comment: 'staging-release APK'
+          initial_comment: 'dev-release APK'

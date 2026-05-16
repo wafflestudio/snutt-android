@@ -184,14 +184,14 @@ Skill 자체는 호출 경로와 무관하게 동일 절차를 수행한다.
 사람에게 남는 역할은 **의도 판단** 하나이다.
 
 - **골든 이미지 diff 의 의도/회귀 판단.** 시각 출력이 바뀌었을 때, 이 변경이 의도된 UI 변경인지 회귀인지는 기계도 agent 도 판단할 수 없다. diff 리포트를
-  보고 사람이 판단한 뒤 `./gradlew :app:updateStagingDebugScreenshotTest` 로 골든을 갱신한다. (alpha14 기준;
+  보고 사람이 판단한 뒤 `./gradlew :app:updateDevDebugScreenshotTest` 로 골든을 갱신한다. (alpha14 기준;
   구버전의 `record*` 아님.)
 
 이 외의 반복 작업 (preview 열거, 시그니처 맞추기 등) 은 사람이 직접 하지 않는다.
 
 ### 5.4 CI 통합 (TBD)
 
-- `validateStagingDebugScreenshotTest` 를 PR 체크에 편입하는 시점/조건은 POC 이후 별도 논의.
+- `validateDevDebugScreenshotTest` 를 PR 체크에 편입하는 시점/조건은 POC 이후 별도 논의.
 - 초기에는 로컬 실행만 하고, 골든 이미지 안정성이 확보된 후 CI 도입을 판단한다.
 - Skill 자동 호출(예: PR 리뷰 시점 훅) 은 §5.2 의 "호출 시점 open" 원칙 하에 별도 결정 사항으로 둔다.
 
