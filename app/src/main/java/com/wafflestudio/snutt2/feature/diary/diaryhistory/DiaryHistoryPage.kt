@@ -26,7 +26,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -226,7 +225,7 @@ private fun DiaryHistoryEmpty(
                 modifier = Modifier
                     .border(
                         width = 1.dp,
-                        color = Color(0xffe4e4e5),
+                        color = DiaryTheme.colors.nextActionBorder,
                         shape = RoundedCornerShape(30.dp),
                     )
                     .clicks { onClickAction() }
