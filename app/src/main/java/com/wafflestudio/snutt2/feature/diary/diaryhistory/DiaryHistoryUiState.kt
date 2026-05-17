@@ -22,7 +22,10 @@ sealed interface DiaryHistoryUiState {
 
     data object Error : DiaryHistoryUiState
     data object Loading : DiaryHistoryUiState
-    data object Empty : DiaryHistoryUiState
+
+    data class Empty(
+        val showWriteUnavailableDialog: Boolean = false,
+    ) : DiaryHistoryUiState
 }
 
 // NOTE: 각 날짜 별 expand 상태가 수정 페이지 이동 후 되돌아왔을 때도 유지되기 위해, uiState 에서 관리한다.

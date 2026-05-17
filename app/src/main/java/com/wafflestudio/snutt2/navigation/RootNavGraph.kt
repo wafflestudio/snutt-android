@@ -442,6 +442,11 @@ private fun NavGraphBuilder.settingComposables(
                         navController.popBackStack()
                     }
                 },
+                onNavigateToDiaryWrite = { lectureId, courseTitle ->
+                    navController.navigate(
+                        NavigationDestination.LectureDiaryWrite(lectureId, courseTitle),
+                    )
+                },
             )
         }
     }

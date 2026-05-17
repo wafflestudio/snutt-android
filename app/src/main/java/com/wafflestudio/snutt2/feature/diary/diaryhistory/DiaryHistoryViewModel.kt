@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.data.lecturediary.DiaryRepository
 import com.wafflestudio.snutt2.data.onFailure
 import com.wafflestudio.snutt2.data.onSuccess
+import com.wafflestudio.snutt2.data.semesterstatus.SemesterStatusRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.domain.DisplayMessageResolver
 import com.wafflestudio.snutt2.domain.model.CourseBook
@@ -27,6 +28,7 @@ import javax.inject.Inject
 class DiaryHistoryViewModel @Inject constructor(
     private val diaryRepository: DiaryRepository,
     private val userRepository: UserRepository,
+    private val semesterStatusRepository: SemesterStatusRepository,
     private val displayMessageResolver: DisplayMessageResolver,
 ) : ViewModel() {
 
@@ -41,7 +43,7 @@ class DiaryHistoryViewModel @Inject constructor(
             diaryRepository.getMyDiarySubmissions()
                 .onSuccess { courseBookDiarySubmissionsList ->
                     if (courseBookDiarySubmissionsList.isEmpty()) {
-                        _uiState.update { DiaryHistoryUiState.Empty }
+                        _uiState.update { DiaryHistoryUiState.Empty() }
                         return@onSuccess
                     }
 
@@ -143,6 +145,49 @@ class DiaryHistoryViewModel @Inject constructor(
         }
     }
 
+    fun requestDiaryWrite() {
+        val courseBook = semesterStatusRepository.semesterStatus.value
+            ?.let { it.current ?: it.next }
+
+        if (courseBook == null) {
+            showWriteUnavailableDialog()
+            return
+        }
+
+        viewModelScope.launch {
+            diaryRepository.getDiaryTargetLecture(courseBook)
+                .onSuccess { targetLecture ->
+                    _uiEvent.emit(
+                        DiaryHistoryUiEvent.NavigateToDiaryWrite(
+                            lectureId = targetLecture.lectureId,
+                            courseTitle = targetLecture.courseTitle,
+                        ),
+                    )
+                }
+                .onFailure {
+                    showWriteUnavailableDialog()
+                }
+        }
+    }
+
+    fun dismissWriteUnavailableDialog() {
+        _uiState.update { state ->
+            when (state) {
+                is DiaryHistoryUiState.Empty -> state.copy(showWriteUnavailableDialog = false)
+                else -> state
+            }
+        }
+    }
+
+    private fun showWriteUnavailableDialog() {
+        _uiState.update { state ->
+            when (state) {
+                is DiaryHistoryUiState.Empty -> state.copy(showWriteUnavailableDialog = true)
+                else -> state
+            }
+        }
+    }
+
     fun confirmDeleteDiary(diary: DiarySummary) {
         viewModelScope.launch {
             diaryRepository.removeDiarySubmission(diary)
@@ -180,4 +225,8 @@ class DiaryHistoryViewModel @Inject constructor(
 
 sealed interface DiaryHistoryUiEvent {
     data class ShowToast(val message: String) : DiaryHistoryUiEvent
+    data class NavigateToDiaryWrite(
+        val lectureId: String,
+        val courseTitle: String,
+    ) : DiaryHistoryUiEvent
 }
