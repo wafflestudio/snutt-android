@@ -445,6 +445,10 @@
     <string name="diary_write_more_text_hint">Briefly write about what you learned or felt in today\'s class.</string>
     <string name="diary_delete_confirm_message">Delete the lecture diary for \'%s\'?</string>
     <string name="diary_summary_more_text_label">Additional Notes</string>
+    <string name="diary_history_empty_title">Your lecture diary is empty.</string>
+    <string name="diary_history_empty_subtitle">Every last class of the week,\nwrite a lecture diary through push notifications!</string>
+    <string name="diary_history_empty_action">Write Lecture Diary</string>
+    <string name="diary_history_empty_no_target_lecture_dialog_title">No lectures available to write a diary.</string>
 
 <!-- Debug -->
     <string name="debug_network_log_title">Network Log</string>

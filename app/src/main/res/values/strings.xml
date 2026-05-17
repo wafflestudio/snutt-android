@@ -627,6 +627,10 @@
     <string name="diary_write_more_text_hint">오늘 수업에서 배운 내용, 느낀 점 등을 간단하게 적어보세요.</string>
     <string name="diary_delete_confirm_message">\'%s\'\n강의일기를 삭제하시겠습니까?</string>
     <string name="diary_summary_more_text_label">남기고 싶은 말</string>
+    <string name="diary_history_empty_title">강의일기장이 비어있어요.</string>
+    <string name="diary_history_empty_subtitle">매주 마지막 수업날,\n푸시알림을 통해 강의일기를 작성해보세요!</string>
+    <string name="diary_history_empty_action">강의일기 작성하기</string>
+    <string name="diary_history_empty_no_target_lecture_dialog_title">강의일기장을 작성할 수 있는 강의가 없습니다.</string>
 
 <!-- Debug -->
     <string name="debug_network_log_title">네트워크 로그</string>
