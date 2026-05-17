@@ -82,16 +82,11 @@ jobs:
           SLACK_TITLE: SNUTT Android 빌드 알림
           SLACK_MESSAGE: ${{ github.event.inputs.slack_message }}
           SLACK_USERNAME: BuildNoti
-      - name: Slack Upload APK (Live)
+      - name: Skip Slack APK Upload (Live)
         if: ${{ github.event.inputs.slack == 'true' && github.event.inputs.variant == 'live' }}
-        uses: MeilCli/slack-upload-file@v5
-        with:
-          slack_token: ${{ secrets.SLACK_READ_WRITE_TOKEN }}
-          channel_id: ${{ secrets.SLACK_DEPLOY_CHANNEL_ID }}
-          file_path: './app/build/outputs/apk/live/release/app-live-release.apk'
-          file_name: 'app-live-release.apk'
-          file_type: 'apk'
-          initial_comment: 'live-release APK'
+        run: |
+          echo "Live variant builds an AAB only (bundleLiveRelease), so there is no APK to upload to Slack."
+          echo "If you need an installable artifact for QA, run the workflow with variant=dev."
       - name: Slack Upload APK (Dev)
         if: ${{ github.event.inputs.slack == 'true' && github.event.inputs.variant == 'dev' }}
         uses: MeilCli/slack-upload-file@v5
