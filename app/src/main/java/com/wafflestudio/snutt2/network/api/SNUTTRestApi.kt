@@ -9,6 +9,7 @@ import com.wafflestudio.snutt2.network.dto.DeleteUserAccountResults
 import com.wafflestudio.snutt2.network.dto.DiaryQuestionnaireDto
 import com.wafflestudio.snutt2.network.dto.DiaryQuestionnaireRequestDto
 import com.wafflestudio.snutt2.network.dto.DiarySubmissionRequestDto
+import com.wafflestudio.snutt2.network.dto.DiaryTargetLectureDto
 import com.wafflestudio.snutt2.network.dto.GetBookmarkListResults
 import com.wafflestudio.snutt2.network.dto.GetCoursebookResults
 import com.wafflestudio.snutt2.network.dto.GetCoursebooksOfficialResults
@@ -521,6 +522,12 @@ interface SNUTTRestApi {
 
     @GET("/v1/diary/my")
     suspend fun _getMyDiarySubmissions(): GetMyDiarySubmissionsResults
+
+    @GET("/v1/diary/target")
+    suspend fun _getDiaryTargetLecture(
+        @Query("year") year: Int,
+        @Query("semester") semester: Int,
+    ): DiaryTargetLectureDto
 
     @POST("/v1/diary/questionnaire")
     suspend fun _getQuestionnaireFromActivities(

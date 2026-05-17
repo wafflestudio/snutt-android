@@ -38,3 +38,8 @@ data class CourseBookDiarySubmissions(
     val courseBook: CourseBook,
     val submissions: List<DiarySummary>,
 )
+
+data class DiaryTargetLecture(
+    val lectureId: String,
+    val courseTitle: String,
+)

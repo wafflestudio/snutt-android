@@ -2,9 +2,11 @@ package com.wafflestudio.snutt2.data.lecturediary
 
 import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.data.mapper.toDomain
+import com.wafflestudio.snutt2.domain.model.CourseBook
 import com.wafflestudio.snutt2.domain.model.diary.DiaryAnsweredQuestion
 import com.wafflestudio.snutt2.domain.model.diary.DiaryDailyClassType
 import com.wafflestudio.snutt2.domain.model.diary.DiarySummary
+import com.wafflestudio.snutt2.domain.model.diary.DiaryTargetLecture
 import com.wafflestudio.snutt2.network.api.SNUTTRestApi
 import com.wafflestudio.snutt2.network.dto.DiaryQuestionAnswerDto
 import com.wafflestudio.snutt2.network.dto.DiaryQuestionnaireRequestDto
@@ -84,6 +86,21 @@ class DiaryRepositoryImpl @Inject constructor(
     override suspend fun removeDiarySubmission(diary: DiarySummary): Result<Unit> = try {
         api._removeDiarySubmission(diary.id)
         Result.Success(Unit)
+    } catch (e: Exception) {
+        Result.Fail(e.toDomainError())
+    }
+
+    override suspend fun getDiaryTargetLecture(courseBook: CourseBook): Result<DiaryTargetLecture> = try {
+        val result = api._getDiaryTargetLecture(
+            year = courseBook.year.toInt(),
+            semester = courseBook.semester.toInt(),
+        )
+        Result.Success(
+            DiaryTargetLecture(
+                lectureId = result.lectureId,
+                courseTitle = result.courseTitle,
+            ),
+        )
     } catch (e: Exception) {
         Result.Fail(e.toDomainError())
     }
