@@ -39,7 +39,6 @@ fun ThemeMarketScreen(
         ThemeMarketWebViewContainer(
             context = context,
             accessToken = accessToken,
-            isDarkMode = isDarkMode,
         )
     }
 
@@ -53,6 +52,10 @@ fun ThemeMarketScreen(
 
     LaunchedEffect(Unit) {
         webViewContainer.openPage()
+    }
+
+    LaunchedEffect(isDarkMode) {
+        webViewContainer.applyTheme(isDarkMode)
     }
 
     Column(
