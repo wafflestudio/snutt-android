@@ -150,6 +150,7 @@
     <string name="search_tag_time_select">Select Time Slots</string>
     <string name="search_tag_etc_eng">English Courses</string>
     <string name="search_tag_etc_military">Military Leave Courses</string>
+    <string name="search_tag_etc_recommended">Recommended Courses</string>
     <string name="search_option_apply_button">Apply Filters</string>
     <string name="search_option_select_empty_time_slots">Select Empty Time Slots</string>
     <string name="search_option_select_clear_time_slots">Reset</string>

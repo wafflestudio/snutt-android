@@ -37,6 +37,7 @@ class LectureSearchPagingSource(
             when (it) {
                 SearchTag.EtcEng -> "E"
                 SearchTag.EtcMilitary -> "MO"
+                SearchTag.EtcRecommended -> "권장과목"
                 else -> null
             }
         }.ifEmpty { null },

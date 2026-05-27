@@ -11,5 +11,6 @@ fun SearchTag.displayName(): String = when (this) {
     SearchTag.TimeSelect -> stringResource(R.string.search_tag_time_select)
     SearchTag.EtcEng -> stringResource(R.string.search_tag_etc_eng)
     SearchTag.EtcMilitary -> stringResource(R.string.search_tag_etc_military)
+    SearchTag.EtcRecommended -> stringResource(R.string.search_tag_etc_recommended)
     is SearchTag.Regular -> name
 }

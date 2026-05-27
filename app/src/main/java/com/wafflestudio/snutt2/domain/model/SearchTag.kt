@@ -22,8 +22,12 @@ sealed interface SearchTag {
         override val type = TagType.ETC
     }
 
+    data object EtcRecommended : SearchTag {
+        override val type = TagType.ETC
+    }
+
     companion object {
         val timeTags = listOf(TimeEmpty, TimeSelect)
-        val etcTags = listOf(EtcEng, EtcMilitary)
+        val etcTags = listOf(EtcEng, EtcMilitary, EtcRecommended)
     }
 }
