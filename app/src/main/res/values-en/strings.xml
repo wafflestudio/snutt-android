@@ -116,6 +116,7 @@
     <string name="common_no">No</string>
     <string name="common_notification">Notification</string>
     <string name="home_drawer_table_delete">Delete Timetable</string>
+    <string name="home_drawer_delete_table_unable_alert_message">You cannot delete the last remaining timetable.</string>
     <string name="home_drawer_change_name_dialog_title">Rename</string>
     <string name="home_drawer_table_credit">(%d credits)</string>
 <string name="home_drawer_change_theme_unable_alert_message">You can only change the theme of the currently selected timetable.</string>

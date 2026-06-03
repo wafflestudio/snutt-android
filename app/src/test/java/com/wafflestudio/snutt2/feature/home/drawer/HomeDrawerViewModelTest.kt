@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.feature.home.drawer
 import app.cash.turbine.test
 import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
+import com.wafflestudio.snutt2.domain.LastTimetableNotDeletable
 import com.wafflestudio.snutt2.domain.NotSelectedTimetable
 import com.wafflestudio.snutt2.domain.Unknown
 import com.wafflestudio.snutt2.domain.model.BuiltInTheme
@@ -566,15 +567,38 @@ class HomeDrawerViewModelTest {
 
     @Test
     fun `openDeleteTableDialog 호출 시 DeleteTable 다이얼로그가 열린다`() = runTest {
+        val summary = tableSummary(id = "t1", courseBook = courseBook2025_1)
+        val other = tableSummary(id = "t2", courseBook = courseBook2025_1)
+        fakeCourseBookRepository.courseBooks.value = listOf(courseBook2025_1)
+        fakeTableRepository.tableSummaryList.value = listOf(summary, other)
         val viewModel = createViewModel()
         val before = viewModel.uiState.value
-        val summary = tableSummary(id = "t1")
 
         viewModel.openDeleteTableDialog(summary)
 
         assertEquals(
             before.copy(dialogState = HomeDrawerUiState.DialogState.DeleteTable(summary)),
             viewModel.uiState.value,
+        )
+    }
+
+    @Test
+    fun `openDeleteTableDialog 호출 시 시간표가 하나뿐이면 다이얼로그를 열지 않고 ShowToast 이벤트가 발생한다`() = runTest {
+        val summary = tableSummary(id = "t1", courseBook = courseBook2025_1)
+        fakeCourseBookRepository.courseBooks.value = listOf(courseBook2025_1)
+        fakeTableRepository.tableSummaryList.value = listOf(summary)
+        val viewModel = createViewModel()
+
+        viewModel.uiEvent.test {
+            viewModel.openDeleteTableDialog(summary)
+            assertEquals(
+                HomeDrawerUiEvent.ShowToast(LastTimetableNotDeletable.displayMessage),
+                awaitItem(),
+            )
+        }
+        assertEquals(
+            HomeDrawerUiState.DialogState.None,
+            viewModel.uiState.value.dialogState,
         )
     }
 
@@ -613,11 +637,10 @@ class HomeDrawerViewModelTest {
     @Test
     fun `deleteTable 성공 시 다이얼로그가 닫힌다`() = runTest {
         val summary = tableSummary(id = "t1", courseBook = courseBook2025_1)
+        val other = tableSummary(id = "t2", courseBook = courseBook2025_1)
         fakeCourseBookRepository.courseBooks.value = listOf(courseBook2025_1)
-        fakeTableRepository.tableSummaryList.value = listOf(summary)
-        fakeTableRepository.currentTable.value = table(
-            summary = tableSummary(id = "t2", courseBook = courseBook2025_1),
-        )
+        fakeTableRepository.tableSummaryList.value = listOf(summary, other)
+        fakeTableRepository.currentTable.value = table(summary = other)
         fakeTableRepository.deleteTableResult = Result.Success(Unit)
         val viewModel = createViewModel()
         viewModel.openDeleteTableDialog(summary)
@@ -659,6 +682,21 @@ class HomeDrawerViewModelTest {
         viewModel.deleteTable(current)
 
         assertEquals("t2", fakeTableRepository.fetchAndSelectTableCalledWith)
+    }
+
+    @Test
+    fun `deleteTable 성공 시 같은 학기의 마지막 순서 시간표를 삭제하면 직전 시간표로 전환한다`() = runTest {
+        val first = tableSummary(id = "t1", courseBook = courseBook2025_1)
+        val last = tableSummary(id = "t2", courseBook = courseBook2025_1)
+        fakeCourseBookRepository.courseBooks.value = listOf(courseBook2025_1)
+        fakeTableRepository.tableSummaryList.value = listOf(first, last)
+        fakeTableRepository.currentTable.value = table(summary = last)
+        fakeTableRepository.deleteTableResult = Result.Success(Unit)
+        val viewModel = createViewModel()
+
+        viewModel.deleteTable(last)
+
+        assertEquals("t1", fakeTableRepository.fetchAndSelectTableCalledWith)
     }
 
     @Test

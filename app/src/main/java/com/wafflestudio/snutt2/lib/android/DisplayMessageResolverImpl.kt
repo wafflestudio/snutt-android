@@ -5,6 +5,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.BookmarkLectureNotFound
 import com.wafflestudio.snutt2.domain.DisplayMessageResolver
 import com.wafflestudio.snutt2.domain.DomainError
+import com.wafflestudio.snutt2.domain.LastTimetableNotDeletable
 import com.wafflestudio.snutt2.domain.NetworkDisconnect
 import com.wafflestudio.snutt2.domain.NotSelectedTimetable
 import com.wafflestudio.snutt2.domain.TimetableLectureNotFound
@@ -27,6 +28,7 @@ class DisplayMessageResolverImpl @Inject constructor(
         is TimetableLectureNotFound -> context.getString(R.string.deeplink_page_timetable_lecture_page_not_existing_lecture)
         is BookmarkLectureNotFound -> context.getString(R.string.deeplink_page_timetable_lecture_page_not_existing_bookmark_lecture)
         is NotSelectedTimetable -> context.getString(R.string.home_drawer_change_theme_unable_alert_message)
+        is LastTimetableNotDeletable -> context.getString(R.string.home_drawer_delete_table_unable_alert_message)
         is Unknown -> error.displayMessage.takeUnless { it.isBlank() } ?: context.getString(R.string.error_unknown)
         else -> error.displayMessage
     }

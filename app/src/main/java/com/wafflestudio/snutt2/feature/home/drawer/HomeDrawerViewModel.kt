@@ -10,6 +10,7 @@ import com.wafflestudio.snutt2.data.themes.ThemeRepository
 import com.wafflestudio.snutt2.domain.DisplayMessageResolver
 import com.wafflestudio.snutt2.domain.DomainError
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
+import com.wafflestudio.snutt2.domain.LastTimetableNotDeletable
 import com.wafflestudio.snutt2.domain.NotSelectedTimetable
 import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.CourseBook
@@ -331,6 +332,18 @@ class HomeDrawerViewModel @Inject constructor(
     }
 
     fun openDeleteTableDialog(tableSummary: TableSummary) {
+        val totalTableCount =
+            _uiState.value.courseBookDrawerItemList.sumOf { it.item.tableList.size }
+        if (totalTableCount <= 1) {
+            viewModelScope.launch {
+                _uiEvent.emit(
+                    HomeDrawerUiEvent.ShowToast(
+                        displayMessageResolver.getDisplayMessage(LastTimetableNotDeletable),
+                    ),
+                )
+            }
+            return
+        }
         _uiState.update {
             it.copy(dialogState = HomeDrawerUiState.DialogState.DeleteTable(tableSummary))
         }
@@ -385,21 +398,17 @@ class HomeDrawerViewModel @Inject constructor(
                             sameCourseBookTables.filter { it.id != tableSummary.id }
 
                         val nextTableId = if (remainingSameCourseBookTables.isEmpty()) {
-                            // 같은 학기에 남은 시간표가 없으면 전체에서 선택
+                            // 같은 학기에 남은 시간표가 없으면 전체에서 선택한다.
+                            // 삭제된 자리의 다음 시간표를, 마지막을 지웠다면 직전 시간표를 선택한다.
                             val remainingAllTables =
                                 allTables.filter { it.id != tableSummary.id }
-                            if (indexInAll == allTables.size) {
-                                remainingAllTables.last().id
-                            } else {
-                                remainingAllTables[indexInAll].id
-                            }
+                            remainingAllTables.getOrNull(indexInAll)?.id
+                                ?: remainingAllTables.last().id
                         } else {
-                            // 같은 학기에 남은 시간표가 있으면 그 중에서 선택
-                            if (indexInSameCourseBook == sameCourseBookTables.size) {
-                                remainingSameCourseBookTables.last().id
-                            } else {
-                                remainingSameCourseBookTables[indexInSameCourseBook].id
-                            }
+                            // 같은 학기에 남은 시간표 중에서 선택한다.
+                            // 삭제된 자리의 다음 시간표를, 마지막을 지웠다면 직전 시간표를 선택한다.
+                            remainingSameCourseBookTables.getOrNull(indexInSameCourseBook)?.id
+                                ?: remainingSameCourseBookTables.last().id
                         }
                         tableRepository.fetchAndSelectTable(nextTableId)
                     }
