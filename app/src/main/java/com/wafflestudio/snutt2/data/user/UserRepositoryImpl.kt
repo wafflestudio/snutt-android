@@ -381,7 +381,9 @@ class UserRepositoryImpl @Inject constructor(
             FirebaseMessaging.getInstance().token.addOnCompleteListener(
                 OnCompleteListener { task ->
                     if (!task.isSuccessful) {
-                        cont.resumeWithException(RuntimeException("cannot get firebase token"))
+                        cont.resumeWithException(
+                            RuntimeException("cannot get firebase token", task.exception),
+                        )
                         return@OnCompleteListener
                     }
                     val token = task.result
