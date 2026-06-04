@@ -118,6 +118,11 @@ TimetableWidgetProvider : AppWidgetProvider() {
 
         views.setViewVisibility(R.id.placeholder, View.VISIBLE)
         views.setViewVisibility(R.id.table, View.GONE)
+
+        // 위젯 크기가 아직 확정되지 않은 경우(0) 비트맵 생성을 건너뛰고 placeholder만 노출한다.
+        // 크기가 확정되면 onUpdate/onAppWidgetOptionsChanged 가 유효한 크기로 다시 호출된다.
+        if (width <= 0 || height <= 0) return views
+
         tableRepository.currentTable.value?.let { table ->
             val tableView = TimetableView(context, compactMode)
 
