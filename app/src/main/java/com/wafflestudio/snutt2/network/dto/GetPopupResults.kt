@@ -7,6 +7,7 @@ import com.squareup.moshi.JsonClass
 data class GetPopupResults(
     @param:Json(name = "content") val popups: List<Popup>,
 ) {
+    @JsonClass(generateAdapter = true)
     data class Popup(
         @param:Json(name = "key") val key: String,
         @param:Json(name = "imageUri") val imageUri: String,
