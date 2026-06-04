@@ -133,6 +133,7 @@ class HomeDrawerViewModel @Inject constructor(
 
     fun openCreateNewTableSheet() {
         val allCourseBooks = courseBookRepository.courseBooks.value
+        if (allCourseBooks.isEmpty()) return
         _uiState.update {
             it.copy(
                 homeDrawerBottomSheetType = HomeDrawerBottomSheetType.CreateNewTable.SelectCourseBook(
