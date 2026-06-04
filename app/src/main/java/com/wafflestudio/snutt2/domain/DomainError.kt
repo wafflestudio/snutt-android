@@ -66,3 +66,11 @@ object NotSelectedTimetable : DomainError {
     //  displayMessage를 직접 참조하는 코드가 추가될 경우 문제 발생 가능. DomainError를 @StringRes 기반으로 전환 검토.
     override val displayMessage = "현재 선택된 시간표의 테마만 변경할 수 있습니다."
 }
+
+object LastTimetableNotDeletable : DomainError {
+    override val displayTitle = ""
+
+    // FIXME: 하드코딩 한국어. 실제로는 DisplayMessageResolverImpl에서 리소스로 대체되므로 사용되지 않지만,
+    //  displayMessage를 직접 참조하는 코드가 추가될 경우 문제 발생 가능. DomainError를 @StringRes 기반으로 전환 검토.
+    override val displayMessage = "하나 남은 시간표는 삭제할 수 없습니다."
+}
