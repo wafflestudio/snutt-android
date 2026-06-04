@@ -13,18 +13,22 @@ data class RemoteConfigDto(
     @param:Json(name = "disableMapFeature") val disableMapFeature: Boolean? = null,
     @param:Json(name = "notice") val noticeConfig: NoticeConfig? = null,
 ) {
+    @JsonClass(generateAdapter = true)
     data class SettingsBadgeConfig(
         @param:Json(name = "new") val new: List<String> = emptyList(),
     )
 
+    @JsonClass(generateAdapter = true)
     data class VacancyBannerConfig(
         @param:Json(name = "visible") val visible: Boolean = false,
     )
 
+    @JsonClass(generateAdapter = true)
     data class VacancyUrlConfig(
         @param:Json(name = "url") val url: String? = null,
     )
 
+    @JsonClass(generateAdapter = true)
     data class NoticeConfig(
         @param:Json(name = "visible") val visible: Boolean = false,
         @param:Json(name = "title") val title: String? = null,
