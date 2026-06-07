@@ -36,5 +36,6 @@ object SearchTagPreviewData {
         SearchTag.TimeSelect,
         SearchTag.EtcEng,
         SearchTag.EtcMilitary,
+        SearchTag.EtcRecommended,
     )
 }

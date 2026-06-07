@@ -37,6 +37,7 @@ class LectureSearchPagingSource(
             when (it) {
                 SearchTag.EtcEng -> "E"
                 SearchTag.EtcMilitary -> "MO"
+                SearchTag.EtcRecommended -> "R"
                 else -> null
             }
         }.ifEmpty { null },
