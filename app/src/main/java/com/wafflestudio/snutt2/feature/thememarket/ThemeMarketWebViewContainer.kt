@@ -24,9 +24,10 @@ import java.net.URL
 class ThemeMarketWebViewContainer(
     private val context: Context,
     private val accessToken: StateFlow<String?>,
-    private val isDarkMode: Boolean,
 ) : WebViewContainer {
     val loadState: MutableState<LoadState> = mutableStateOf(LoadState.Loading(0))
+
+    private var lastIsDarkMode: Boolean? = null
 
     @SuppressLint("SetJavaScriptEnabled")
     override val webView: WebView = WebView(context).apply {
@@ -38,6 +39,7 @@ class ThemeMarketWebViewContainer(
                 if (loadState.value != LoadState.Error) {
                     loadState.value = LoadState.Success
                 }
+                lastIsDarkMode?.let { applyThemeInternal(it) }
             }
 
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
@@ -74,6 +76,19 @@ class ThemeMarketWebViewContainer(
         webView.loadUrl(themeMarketUrl)
     }
 
+    fun applyTheme(isDarkMode: Boolean) {
+        lastIsDarkMode = isDarkMode
+        applyThemeInternal(isDarkMode)
+    }
+
+    private fun applyThemeInternal(isDarkMode: Boolean) {
+        val theme = if (isDarkMode) "dark" else "light"
+        webView.evaluateJavascript(
+            "window.changeTheme && window.changeTheme('$theme');",
+            null,
+        )
+    }
+
     private fun setCookies(host: String, accessToken: String) {
         CookieManager.getInstance().apply {
             setCookie(
@@ -99,16 +114,6 @@ class ThemeMarketWebViewContainer(
             setCookie(
                 host,
                 "x-app-type=${if (BuildConfig.DEBUG) "debug" else "release"}",
-            )
-            setCookie(
-                host,
-                "theme=${
-                    if (isDarkMode) {
-                        "dark"
-                    } else {
-                        "light"
-                    }
-                }",
             )
         }.flush()
     }
