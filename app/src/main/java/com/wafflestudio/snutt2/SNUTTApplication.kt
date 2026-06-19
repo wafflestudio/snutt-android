@@ -8,6 +8,7 @@ import android.content.IntentFilter
 import android.os.Build
 import com.kakao.sdk.common.KakaoSdk
 import com.naver.maps.map.NaverMapSdk
+import com.wafflestudio.snutt2.ui.util.toast
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
@@ -23,6 +24,9 @@ class SNUTTApplication : Application() {
         Timber.plant(Timber.DebugTree())
         NaverMapSdk.getInstance(this).client =
             NaverMapSdk.NcpKeyClient(getString(R.string.naver_map_ncp_key_id))
+        NaverMapSdk.getInstance(this).onAuthFailedListener = { exception ->
+            toast(exception.errorCode + exception.message)
+        }
     }
 
     // targerSDK 34 대응 (https://github.com/joltup/rn-fetch-blob/issues/866#issuecomment-2227436658)
