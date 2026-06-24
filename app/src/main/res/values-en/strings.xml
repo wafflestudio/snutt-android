@@ -130,7 +130,7 @@
     <string name="search_result_item_bookmark_button">Bookmark</string>
     <string name="search_result_item_vacancy_button">Vacancy</string>
     <string name="search_result_empty">No results found.</string>
-    <string name="search_result_placeholder_1">SNUTT Search Tips 🍯\n(Korean Only)</string>
+    <string name="search_result_placeholder_1">SNUTT Search Tips 🍯\n(Korean only)</string>
     <string name="search_result_placeholder_2">Try various search combinations.</string>
     <string name="search_result_placeholder_3">ex) 2학년 컴공 전필 / 경영 영강</string>
     <string name="search_result_placeholder_4">Try searching with abbreviations.</string>
