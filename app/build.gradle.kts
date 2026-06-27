@@ -42,6 +42,12 @@ android {
         targetSdk = 36
     }
 
+    androidResources {
+        // res/values-* 를 스캔해 _generated_res_locale_config 를 빌드 시 자동 생성한다.
+        // 시스템 "앱별 언어 설정"(API 33+) 노출에 사용. 지원 언어 추가 시 자동 반영된다.
+        generateLocaleConfig = true
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
