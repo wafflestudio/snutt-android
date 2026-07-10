@@ -58,6 +58,7 @@ import com.wafflestudio.snutt2.feature.settings.TeamInfoPage
 import com.wafflestudio.snutt2.feature.settings.ThemeModeSelectPage
 import com.wafflestudio.snutt2.feature.settings.TimetableConfigRoute
 import com.wafflestudio.snutt2.feature.settings.UserConfigRoute
+import com.wafflestudio.snutt2.feature.syllabus.SyllabusBottomSheetRoute
 import com.wafflestudio.snutt2.feature.tablelectures.TableLecturesRoute
 import com.wafflestudio.snutt2.feature.themeconfig.ThemeConfigRoute
 import com.wafflestudio.snutt2.feature.themeconfig.ThemeDetailRoute
@@ -118,6 +119,9 @@ internal fun NavGraphBuilder.buildRootNavGraph(
                         lectureId = lecture.id,
                     ),
                 )
+            },
+            onNavigateToSyllabus = { url ->
+                navController.navigate(NavigationDestination.Syllabus(url))
             },
         )
     }
@@ -182,6 +186,9 @@ internal fun NavGraphBuilder.buildRootNavGraph(
                     ),
                 )
             },
+            onNavigateToSyllabus = { url ->
+                navController.navigate(NavigationDestination.Syllabus(url))
+            },
         )
     }
 
@@ -197,6 +204,9 @@ internal fun NavGraphBuilder.buildRootNavGraph(
                         referrer = DetailScreenReferrer.Bookmark.encode(),
                     ),
                 )
+            },
+            onNavigateToSyllabus = { url ->
+                navController.navigate(NavigationDestination.Syllabus(url))
             },
         )
     }
@@ -237,6 +247,12 @@ internal fun NavGraphBuilder.buildRootNavGraph(
         )
     }
 
+    bottomSheet<NavigationDestination.Syllabus> {
+        SyllabusBottomSheetRoute(
+            onNavigateBack = { navController.popBackStack() },
+        )
+    }
+
     composableAnimated<NavigationDestination.DeeplinkTimetableLectureDetail>(scheme) {
         DeeplinkTimetableLectureDetailRoute(
             onNavigateBack = { navController.popBackStack() },
@@ -249,6 +265,9 @@ internal fun NavGraphBuilder.buildRootNavGraph(
                         referrer = DetailScreenReferrer.Notification.encode(),
                     ),
                 )
+            },
+            onNavigateToSyllabus = { url ->
+                navController.navigate(NavigationDestination.Syllabus(url))
             },
         )
     }
@@ -264,6 +283,9 @@ internal fun NavGraphBuilder.buildRootNavGraph(
                         referrer = DetailScreenReferrer.Bookmark.encode(),
                     ),
                 )
+            },
+            onNavigateToSyllabus = { url ->
+                navController.navigate(NavigationDestination.Syllabus(url))
             },
         )
     }
