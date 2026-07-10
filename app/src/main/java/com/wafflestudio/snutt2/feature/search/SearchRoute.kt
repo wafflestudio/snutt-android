@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.feature.search
 
-import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,7 +19,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -43,6 +41,7 @@ fun SearchRoute(
     onNavigateVacancy: () -> Unit,
     onNavigateOnboardAsOrigin: () -> Unit,
     onNavigateToReview: (SearchedLecture) -> Unit,
+    onNavigateToSyllabus: (url: String) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -90,7 +89,7 @@ fun SearchRoute(
                 }
 
                 is SearchUiEvent.OpenUrl -> {
-                    context.startActivity(Intent(Intent.ACTION_VIEW, uiEvent.url.toUri()))
+                    onNavigateToSyllabus(uiEvent.url)
                 }
 
                 is SearchUiEvent.ShowSnackBar -> {
