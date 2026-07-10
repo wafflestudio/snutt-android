@@ -93,7 +93,7 @@ android {
             versionName = propertyVersionName
             configure<com.google.firebase.appdistribution.gradle.AppDistributionExtension> {
                 artifactType = "APK"
-                groups = "android-user"
+                groups = "android-users"
                 serviceCredentialsFile = "gcp-service-account-dev.json"
                 appId = System.getenv("FIREBASE_APP_ID")
             }
