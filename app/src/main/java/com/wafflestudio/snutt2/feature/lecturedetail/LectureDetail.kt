@@ -147,14 +147,16 @@ fun LectureDetail(
                 Spacer(modifier = Modifier.height(10.dp))
 
                 // 5. 시간/장소 + 지도
-                LectureSessionListSection(
-                    sessions = lecture.lectureSessions,
-                    editMode = editMode,
-                    onEditTime = onEditTime,
-                    onLocationChange = onLocationChange,
-                    onDeleteSession = onDeleteSession,
-                    onAddSession = onAddSession,
-                )
+                AnimatedVisibility(visible = editMode || lecture.lectureSessions.isNotEmpty()) {
+                    LectureSessionListSection(
+                        sessions = lecture.lectureSessions,
+                        editMode = editMode,
+                        onEditTime = onEditTime,
+                        onLocationChange = onLocationChange,
+                        onDeleteSession = onDeleteSession,
+                        onAddSession = onAddSession,
+                    )
+                }
                 AnimatedVisibility(visible = editMode.not() && disableMapFeature.not()) {
                     FoldableEmbedMap(
                         modifier = Modifier

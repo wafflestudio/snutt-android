@@ -167,7 +167,10 @@ private fun RowScope.SearchTopBarContent(
             R.drawable.ic_search_unselected,
             modifier = Modifier
                 .size(30.dp)
-                .clicks { onSearch() },
+                .clicks {
+                    searchEditTextFocused = false
+                    onSearch()
+                },
             colorFilter = ColorFilter.tint(SNUTTColors.Black900),
         )
         EditText(
@@ -190,7 +193,16 @@ private fun RowScope.SearchTopBarContent(
             clearFocusFlag = !searchEditTextFocused,
         )
         if (searchEditTextFocused) {
-            SnuttIcon(R.drawable.ic_exit, modifier = Modifier.clicks { onClearEditText() }.size(30.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
+            SnuttIcon(
+                R.drawable.ic_exit,
+                modifier = Modifier
+                    .clicks {
+                        searchEditTextFocused = false
+                        onClearEditText()
+                    }
+                    .size(30.dp),
+                colorFilter = ColorFilter.tint(SNUTTColors.Black900),
+            )
         } else {
             SnuttIcon(R.drawable.ic_filter, modifier = Modifier.clicks { onFilter() }.size(30.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
         }

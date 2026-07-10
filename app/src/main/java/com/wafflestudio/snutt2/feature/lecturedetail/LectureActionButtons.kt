@@ -1,6 +1,8 @@
 package com.wafflestudio.snutt2.feature.lecturedetail
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,7 +39,11 @@ internal fun LectureActionButtons(
     onReset: () -> Unit,
 ) {
     // 강의계획서 + 강의평
-    AnimatedVisibility(visible = lecture is LectureSyllabusInfo && !editMode) {
+    AnimatedVisibility(
+        visible = lecture is LectureSyllabusInfo && !editMode,
+        enter = expandVertically(),
+        exit = shrinkVertically(),
+    ) {
         Column(modifier = Modifier.background(SNUTTColors.White900)) {
             LectureDetailActionButton(
                 title = stringResource(R.string.lecture_detail_syllabus_button),
@@ -54,7 +60,11 @@ internal fun LectureActionButtons(
     if (hideDeleteButton.not()) {
         when (lecture) {
             is CustomLecture -> {
-                AnimatedVisibility(visible = !editMode) {
+                AnimatedVisibility(
+                    visible = !editMode,
+                    enter = expandVertically(),
+                    exit = shrinkVertically(),
+                ) {
                     Box(modifier = Modifier.background(SNUTTColors.White900)) {
                         LectureDetailActionButton(
                             title = stringResource(R.string.lecture_detail_delete_button),
