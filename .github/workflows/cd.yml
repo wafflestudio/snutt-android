@@ -55,6 +55,13 @@ jobs:
           SLACK_TITLE: ${{ env.TITLE }}
           SLACK_MESSAGE: ${{ env.MESSAGE }}
           SLACK_USERNAME: BuildNoti
+      - name: Discord Notification
+        uses: tsickert/discord-webhook@v7.0.0
+        with:
+          webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
+          username: BuildNoti
+          embed-title: ${{ env.TITLE }}
+          embed-description: ${{ env.MESSAGE }}
 
   build-dev:
     runs-on: ubuntu-latest
@@ -97,3 +104,10 @@ jobs:
           file_name: 'app-dev-release.apk'
           file_type: 'apk'
           initial_comment: 'dev-release APK'
+      - name: Discord Upload APK
+        uses: tsickert/discord-webhook@v7.0.0
+        with:
+          webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
+          username: BuildNoti
+          content: dev-release APK
+          filename: './app/build/outputs/apk/dev/release/app-dev-release.apk'
