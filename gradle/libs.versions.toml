@@ -45,6 +45,7 @@ naverMapCompose = "1.9.0"
 
 # Misc
 androidxCore = "1.18.0"
+androidxBrowser = "1.8.0"
 material = "1.14.0"
 timber = "5.0.1"
 gson = "2.14.0"
@@ -66,6 +67,7 @@ kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref =
 
 # Android Core
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
+androidx-browser = { module = "androidx.browser:browser", version.ref = "androidxBrowser" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "splashscreen" }
 

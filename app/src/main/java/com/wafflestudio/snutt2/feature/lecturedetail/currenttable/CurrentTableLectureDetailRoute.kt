@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.feature.lecturedetail.currenttable
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ModalBottomSheetValue
@@ -12,10 +11,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
@@ -32,6 +31,8 @@ import com.wafflestudio.snutt2.ui.components.compose.snackbar.CustomSnackBarDura
 import com.wafflestudio.snutt2.ui.components.compose.snackbar.CustomSnackBarHostState
 import com.wafflestudio.snutt2.ui.components.compose.snackbar.SnackBarScaffold
 import com.wafflestudio.snutt2.ui.components.compose.snackbar.dismiss
+import com.wafflestudio.snutt2.ui.theme.isDarkMode
+import com.wafflestudio.snutt2.ui.util.openCustomTab
 import com.wafflestudio.snutt2.ui.util.toast
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
@@ -52,6 +53,7 @@ fun CurrentTableLectureDetailRoute(
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
     val uiState by vm.uiState.collectAsStateWithLifecycle()
+    val isDarkMode by rememberUpdatedState(isDarkMode())
 
     LaunchedEffect(Unit) {
         colorSelectorSavedStateHandle
@@ -122,8 +124,7 @@ fun CurrentTableLectureDetailRoute(
                 }
 
                 is CurrentTableLectureDetailUiEvent.OpenUrl -> {
-                    val intent = Intent(Intent.ACTION_VIEW, event.url.toUri())
-                    context.startActivity(intent)
+                    context.openCustomTab(event.url, isDarkMode)
                 }
 
                 is CurrentTableLectureDetailUiEvent.OpenBottomSheet -> {

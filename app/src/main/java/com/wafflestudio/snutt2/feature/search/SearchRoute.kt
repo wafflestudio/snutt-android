@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.feature.search
 
-import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,11 +15,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -31,6 +30,8 @@ import com.wafflestudio.snutt2.ui.components.compose.snackbar.CustomSnackBarDura
 import com.wafflestudio.snutt2.ui.components.compose.snackbar.CustomSnackBarHostState
 import com.wafflestudio.snutt2.ui.components.compose.snackbar.SnackBarScaffold
 import com.wafflestudio.snutt2.ui.components.compose.snackbar.dismiss
+import com.wafflestudio.snutt2.ui.theme.isDarkMode
+import com.wafflestudio.snutt2.ui.util.openCustomTab
 import com.wafflestudio.snutt2.ui.util.toast
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
@@ -51,6 +52,7 @@ fun SearchRoute(
     val vacancyFirstAddActionLabel = stringResource(R.string.vacancy_first_add_snackbar_action_label)
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val isDarkMode by rememberUpdatedState(isDarkMode())
     val queryResults = viewModel.queryResults.collectAsLazyPagingItems()
 
     val sheetState = rememberModalBottomSheetState(
@@ -90,7 +92,7 @@ fun SearchRoute(
                 }
 
                 is SearchUiEvent.OpenUrl -> {
-                    context.startActivity(Intent(Intent.ACTION_VIEW, uiEvent.url.toUri()))
+                    context.openCustomTab(uiEvent.url, isDarkMode)
                 }
 
                 is SearchUiEvent.ShowSnackBar -> {
