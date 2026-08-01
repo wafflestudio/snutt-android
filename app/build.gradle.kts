@@ -34,12 +34,12 @@ val versionProps =
 
 android {
     namespace = "com.wafflestudio.snutt2"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.wafflestudio.snutt2"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 37
     }
 
     androidResources {
@@ -93,7 +93,7 @@ android {
             versionName = propertyVersionName
             configure<com.google.firebase.appdistribution.gradle.AppDistributionExtension> {
                 artifactType = "APK"
-                testers = "urban"
+                groups = "android-users"
                 serviceCredentialsFile = "gcp-service-account-dev.json"
                 appId = System.getenv("FIREBASE_APP_ID")
             }
@@ -107,6 +107,7 @@ android {
             versionName = propertyVersionName
             configure<com.google.firebase.appdistribution.gradle.AppDistributionExtension> {
                 artifactType = "AAB"
+                groups = "android-user"
                 serviceCredentialsFile = "gcp-service-account-live.json"
                 appId = System.getenv("FIREBASE_APP_ID")
             }
