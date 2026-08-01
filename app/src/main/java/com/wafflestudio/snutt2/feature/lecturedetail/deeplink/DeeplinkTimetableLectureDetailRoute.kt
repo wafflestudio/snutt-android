@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.feature.lecturedetail.deeplink
 
-import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,7 +12,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.domain.model.BuiltInTheme
@@ -25,6 +23,7 @@ import com.wafflestudio.snutt2.logging.DetailScreenReferrer
 import com.wafflestudio.snutt2.logging.LectureDetailParameter
 import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
+import com.wafflestudio.snutt2.ui.util.openCustomTab
 import com.wafflestudio.snutt2.ui.util.toast
 
 @Composable
@@ -51,8 +50,7 @@ fun DeeplinkTimetableLectureDetailRoute(
                 }
 
                 is DeeplinkTimetableLectureDetailUiEvent.OpenUrl -> {
-                    val intent = Intent(Intent.ACTION_VIEW, event.url.toUri())
-                    context.startActivity(intent)
+                    context.openCustomTab(event.url)
                 }
             }
         }

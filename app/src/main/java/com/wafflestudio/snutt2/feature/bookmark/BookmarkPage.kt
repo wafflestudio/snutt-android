@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.feature.bookmark
 
-import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -15,7 +14,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
@@ -40,6 +38,7 @@ import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
+import com.wafflestudio.snutt2.ui.util.openCustomTab
 import com.wafflestudio.snutt2.ui.util.toast
 import kotlinx.coroutines.launch
 
@@ -83,7 +82,7 @@ fun BookmarkRoute(
                 }
 
                 is BookmarkUiEvent.OpenUrl -> {
-                    context.startActivity(Intent(Intent.ACTION_VIEW, event.url.toUri()))
+                    context.openCustomTab(event.url)
                 }
             }
         }
