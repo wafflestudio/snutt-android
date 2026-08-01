@@ -15,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -29,6 +30,7 @@ import com.wafflestudio.snutt2.ui.components.compose.snackbar.CustomSnackBarDura
 import com.wafflestudio.snutt2.ui.components.compose.snackbar.CustomSnackBarHostState
 import com.wafflestudio.snutt2.ui.components.compose.snackbar.SnackBarScaffold
 import com.wafflestudio.snutt2.ui.components.compose.snackbar.dismiss
+import com.wafflestudio.snutt2.ui.theme.isDarkMode
 import com.wafflestudio.snutt2.ui.util.openCustomTab
 import com.wafflestudio.snutt2.ui.util.toast
 import dev.chrisbanes.haze.hazeSource
@@ -50,6 +52,7 @@ fun SearchRoute(
     val vacancyFirstAddActionLabel = stringResource(R.string.vacancy_first_add_snackbar_action_label)
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val isDarkMode by rememberUpdatedState(isDarkMode())
     val queryResults = viewModel.queryResults.collectAsLazyPagingItems()
 
     val sheetState = rememberModalBottomSheetState(
@@ -89,7 +92,7 @@ fun SearchRoute(
                 }
 
                 is SearchUiEvent.OpenUrl -> {
-                    context.openCustomTab(uiEvent.url)
+                    context.openCustomTab(uiEvent.url, isDarkMode)
                 }
 
                 is SearchUiEvent.ShowSnackBar -> {

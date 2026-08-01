@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -53,6 +54,7 @@ fun BookmarkRoute(
     val scope = rememberCoroutineScope()
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val isDarkMode by rememberUpdatedState(isDarkMode())
 
     val sheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
@@ -82,7 +84,7 @@ fun BookmarkRoute(
                 }
 
                 is BookmarkUiEvent.OpenUrl -> {
-                    context.openCustomTab(event.url)
+                    context.openCustomTab(event.url, isDarkMode)
                 }
             }
         }

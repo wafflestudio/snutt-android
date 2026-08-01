@@ -9,6 +9,7 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -23,6 +24,7 @@ import com.wafflestudio.snutt2.logging.DetailScreenReferrer
 import com.wafflestudio.snutt2.logging.LectureDetailParameter
 import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
+import com.wafflestudio.snutt2.ui.theme.isDarkMode
 import com.wafflestudio.snutt2.ui.util.openCustomTab
 import com.wafflestudio.snutt2.ui.util.toast
 
@@ -35,6 +37,7 @@ fun DeeplinkTimetableLectureDetailRoute(
 ) {
     val context = LocalContext.current
     val uiState by vm.uiState.collectAsStateWithLifecycle()
+    val isDarkMode by rememberUpdatedState(isDarkMode())
 
     LaunchedEffect(Unit) {
         vm.uiEvent.collect { event ->
@@ -50,7 +53,7 @@ fun DeeplinkTimetableLectureDetailRoute(
                 }
 
                 is DeeplinkTimetableLectureDetailUiEvent.OpenUrl -> {
-                    context.openCustomTab(event.url)
+                    context.openCustomTab(event.url, isDarkMode)
                 }
             }
         }
