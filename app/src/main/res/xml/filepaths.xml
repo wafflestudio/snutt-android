@@ -3,7 +3,4 @@
     <cache-path
         name="shared_images"
         path="images/" />
-    <external-cache-path
-        name="syllabus_downloads"
-        path="syllabus/" />
 </paths>

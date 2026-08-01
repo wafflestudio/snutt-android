@@ -64,7 +64,6 @@ fun HomePageRoute(
     onNavigateNetworkLog: () -> Unit,
     onNavigateTest: () -> Unit,
     onNavigateToReview: (SearchedLecture) -> Unit,
-    onNavigateToSyllabus: (url: String) -> Unit,
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -128,7 +127,6 @@ fun HomePageRoute(
         onNavigateNetworkLog = onNavigateNetworkLog,
         onNavigateTest = onNavigateTest,
         onNavigateToReview = onNavigateToReview,
-        onNavigateToSyllabus = onNavigateToSyllabus,
         onPopupClickFewDays = viewModel::closePopupWithHiddenDays,
         onPopupClickClose = viewModel::closePopup,
         onPopupClickImage = viewModel::onPopupImageClick,
@@ -165,7 +163,6 @@ private fun HomePageNewScreen(
     onNavigateNetworkLog: () -> Unit,
     onNavigateTest: () -> Unit,
     onNavigateToReview: (SearchedLecture) -> Unit,
-    onNavigateToSyllabus: (url: String) -> Unit,
     onPopupClickFewDays: () -> Unit,
     onPopupClickClose: () -> Unit,
     onPopupClickImage: () -> Unit,
@@ -213,7 +210,6 @@ private fun HomePageNewScreen(
             onNavigateVacancy = onNavigateVacancyNotification,
             onNavigateOnboardAsOrigin = onNavigateOnboardAsOrigin,
             onNavigateToReview = onNavigateToReview,
-            onNavigateToSyllabus = onNavigateToSyllabus,
         )
 
         is HomeItem.Review -> {

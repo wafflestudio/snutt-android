@@ -173,12 +173,6 @@ sealed interface NavigationDestination {
     ) : NavigationDestination
 
     @Serializable
-    @DeepLinkPath("syllabus")
-    data class Syllabus(
-        val url: String,
-    ) : NavigationDestination
-
-    @Serializable
     @DeepLinkPath("social_link")
     data object SocialLink : NavigationDestination
 

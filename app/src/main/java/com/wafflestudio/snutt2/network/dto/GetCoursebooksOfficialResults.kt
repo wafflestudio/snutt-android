@@ -6,5 +6,4 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class GetCoursebooksOfficialResults(
     @param:Json(name = "url") val url: String,
-    @param:Json(name = "noProxyUrl") val noProxyUrl: String,
 )

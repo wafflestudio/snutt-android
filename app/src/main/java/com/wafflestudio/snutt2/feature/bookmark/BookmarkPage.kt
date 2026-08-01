@@ -1,5 +1,6 @@
 package com.wafflestudio.snutt2.feature.bookmark
 
+import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -14,6 +15,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
@@ -47,7 +49,6 @@ fun BookmarkRoute(
     onNavigateToOnboard: () -> Unit,
     onNavigateBack: () -> Unit,
     onNavigateToReview: (SearchedLecture) -> Unit,
-    onNavigateToSyllabus: (url: String) -> Unit,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -82,7 +83,7 @@ fun BookmarkRoute(
                 }
 
                 is BookmarkUiEvent.OpenUrl -> {
-                    onNavigateToSyllabus(event.url)
+                    context.startActivity(Intent(Intent.ACTION_VIEW, event.url.toUri()))
                 }
             }
         }

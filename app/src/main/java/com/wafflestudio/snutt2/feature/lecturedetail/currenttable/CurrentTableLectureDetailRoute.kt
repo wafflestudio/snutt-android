@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.feature.lecturedetail.currenttable
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ModalBottomSheetValue
@@ -14,6 +15,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
@@ -45,7 +47,6 @@ fun CurrentTableLectureDetailRoute(
     onNavigateLectureReminder: () -> Unit,
     onNavigateOnboard: () -> Unit,
     onNavigateToReview: (reviewId: String, lectureId: String) -> Unit,
-    onNavigateToSyllabus: (url: String) -> Unit,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -121,7 +122,8 @@ fun CurrentTableLectureDetailRoute(
                 }
 
                 is CurrentTableLectureDetailUiEvent.OpenUrl -> {
-                    onNavigateToSyllabus(event.url)
+                    val intent = Intent(Intent.ACTION_VIEW, event.url.toUri())
+                    context.startActivity(intent)
                 }
 
                 is CurrentTableLectureDetailUiEvent.OpenBottomSheet -> {

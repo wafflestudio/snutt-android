@@ -23,7 +23,7 @@ class LectureInfoRepositoryImpl @Inject constructor(
         lecture: LectureSyllabusInfo,
     ): Result<String> {
         try {
-            val url = api._getCoursebooksOfficial(courseBook.year, courseBook.semester, lecture.courseNumber, lecture.lectureNumber).noProxyUrl
+            val url = api._getCoursebooksOfficial(courseBook.year, courseBook.semester, lecture.courseNumber, lecture.lectureNumber).url
             return Result.Success(url)
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
