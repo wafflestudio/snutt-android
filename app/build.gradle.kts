@@ -34,12 +34,12 @@ val versionProps =
 
 android {
     namespace = "com.wafflestudio.snutt2"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.wafflestudio.snutt2"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 37
     }
 
     androidResources {
