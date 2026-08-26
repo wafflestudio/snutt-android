@@ -13,6 +13,7 @@ import com.wafflestudio.snutt2.lib.android.DisplayMessageResolverImpl
 import com.wafflestudio.snutt2.lib.android.createNewNetworkLog
 import com.wafflestudio.snutt2.lib.serializer.Serializer
 import com.wafflestudio.snutt2.network.AuthInterceptor
+import com.wafflestudio.snutt2.network.LanguageInterceptor
 import com.wafflestudio.snutt2.network.api.SNUTTRestApi
 import com.wafflestudio.snutt2.network.error.ErrorParsingCallAdapterFactory
 import com.wafflestudio.snutt2.storage.SNUTTStorage
@@ -43,11 +44,13 @@ object NetworkModule {
         @ApplicationContext context: Context,
         snuttStorage: SNUTTStorage,
         authInterceptor: AuthInterceptor,
+        languageInterceptor: LanguageInterceptor,
     ): OkHttpClient {
         val cache = Cache(File(context.cacheDir, "http"), SIZE_OF_CACHE)
         return OkHttpClient.Builder()
             .cache(cache)
             .addInterceptor(authInterceptor)
+            .addInterceptor(languageInterceptor)
             .addInterceptor { chain ->
                 val newRequest = chain.request().newBuilder()
                     .addHeader(
