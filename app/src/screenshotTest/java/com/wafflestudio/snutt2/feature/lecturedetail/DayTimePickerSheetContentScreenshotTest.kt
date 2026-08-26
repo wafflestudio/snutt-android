@@ -15,3 +15,14 @@ fun DayTimePickerSheetContent_Default() {
         onConfirm = {},
     )
 }
+
+@PreviewTest
+@Preview(showBackground = true, widthDp = 360, locale = "en")
+@Composable
+fun DayTimePickerSheetContent_English() {
+    DayTimePickerSheetContent(
+        session = LectureSession.Default,
+        onDismiss = {},
+        onConfirm = {},
+    )
+}

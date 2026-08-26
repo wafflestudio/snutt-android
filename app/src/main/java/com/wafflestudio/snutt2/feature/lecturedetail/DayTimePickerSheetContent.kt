@@ -18,8 +18,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,6 +38,7 @@ import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.util.toFormattedTimeString
 import java.time.DayOfWeek
 import java.time.LocalTime
+import java.time.format.TextStyle
 
 private sealed interface PickerDialogType {
     data object None : PickerDialogType
@@ -297,9 +298,10 @@ private fun TimePickerDialog(
 
 @Composable
 private fun rememberDayList(): List<String> {
-    val weekDays = stringArrayResource(R.array.week_days)
-    val weekDaySuffix = stringResource(R.string.settings_timetable_config_week_day)
-    return remember(weekDays, weekDaySuffix) { weekDays.map { it + weekDaySuffix } }
+    val locale = LocalConfiguration.current.locales[0]
+    return remember(locale) {
+        DayOfWeek.entries.map { day -> day.getDisplayName(TextStyle.FULL, locale) }
+    }
 }
 
 /* FIXME
