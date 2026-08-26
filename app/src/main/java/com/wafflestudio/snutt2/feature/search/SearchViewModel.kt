@@ -22,7 +22,6 @@ import com.wafflestudio.snutt2.domain.DomainError
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
 import com.wafflestudio.snutt2.domain.LectureOverlap
 import com.wafflestudio.snutt2.domain.model.Building
-import com.wafflestudio.snutt2.domain.model.BuiltInTheme
 import com.wafflestudio.snutt2.domain.model.CourseBook
 import com.wafflestudio.snutt2.domain.model.LocalLecture
 import com.wafflestudio.snutt2.domain.model.SearchTag
@@ -60,6 +59,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
@@ -92,33 +92,7 @@ class SearchViewModel @Inject constructor(
     private val _uiEvent = MutableSharedFlow<SearchUiEvent>(replay = 0)
     val uiEvent = _uiEvent.asSharedFlow()
 
-    private val _uiState: MutableStateFlow<SearchUiState> = MutableStateFlow(
-        checkNotNull(tableRepository.currentTable.value).let { table ->
-            SearchUiState(
-                courseBook = table.summary.courseBook,
-                selectedLecture = null,
-                currentTableLectures = table.lectures,
-                tableTrimParam = table.lectures.getFittingTrimParam(tableDisplayRepository.tableTrimParam.value),
-                tableLectureCustomOptions = tableDisplayRepository.tableLectureCustomOption.value,
-                tableTheme = BuiltInTheme.SNUTT,
-                isCompactMode = tableDisplayRepository.compactMode.value,
-                bookmarks = emptyList(),
-                vacancyList = vacancyRepository.vacancyLectures.value,
-                disableMapFeature = true,
-                bottomSheetType = SearchUiState.BottomSheetType.None,
-                dialogState = SearchUiState.DialogState.None,
-                searchTitle = "",
-                selectedTags = emptyList(),
-                searchResultListState = SearchResultListState.PLACEHOLDER,
-                tagTypes = emptyList(),
-                selectedTagType = TagType.SORT_CRITERIA,
-                allSearchTags = emptyList(),
-                searchTags = emptyList(),
-                recentSearchedDepartments = emptyList(),
-                draggedTimeBlock = TableTrimParam.TimeBlockGridDefault,
-            )
-        },
-    )
+    private val _uiState: MutableStateFlow<SearchUiState> = MutableStateFlow(SearchUiState())
     val uiState: StateFlow<SearchUiState> = _uiState.asStateFlow()
 
     // PagingData는 UiState에 통합 불가 - 별도 StateFlow로 유지
@@ -129,6 +103,7 @@ class SearchViewModel @Inject constructor(
                 uiState,
                 ::Pair,
             ).take(1).flatMapLatest { (table, state) ->
+                if (state.tableState !is SearchUiState.TableState.Loaded) return@flatMapLatest emptyFlow()
                 lectureSearchRepository.getLectureSearchResultStream(
                     courseBook = table.summary.courseBook,
                     title = state.searchTitle,
@@ -212,14 +187,14 @@ class SearchViewModel @Inject constructor(
             ) { table, (trimParam, lectureCustom, compact), (recentDepts, theme), (vacancy, bookmarks, disableMap), searchTags ->
                 val prevState = _uiState.value
                 val courseBook = table.summary.courseBook
-                val courseBookChanged = prevState.courseBook != courseBook
+                val courseBookChanged = (prevState.tableState as? SearchUiState.TableState.Loaded)?.courseBook != courseBook
 
                 val allTags = searchTags + etcTags + timeTags
                 val tagTypes = allTags.map { it.type }.toSet().toList()
 
                 _uiState.update { current ->
                     val selectedTagType = if (tagTypes.contains(current.selectedTagType)) current.selectedTagType else TagType.SORT_CRITERIA
-                    var next = current.copy(
+                    val tableState = SearchUiState.TableState.Loaded(
                         courseBook = courseBook,
                         currentTableLectures = table.lectures,
                         tableTrimParam = (table.lectures + listOfNotNull(current.selectedLecture))
@@ -227,6 +202,9 @@ class SearchViewModel @Inject constructor(
                         tableLectureCustomOptions = lectureCustom,
                         tableTheme = theme,
                         isCompactMode = compact,
+                    )
+                    var next = current.copy(
+                        tableState = tableState,
                         bookmarks = bookmarks,
                         vacancyList = vacancy,
                         disableMapFeature = disableMap,
@@ -239,7 +217,9 @@ class SearchViewModel @Inject constructor(
                     if (courseBookChanged) {
                         next = next.copy(
                             selectedLecture = null,
-                            tableTrimParam = table.lectures.getFittingTrimParam(trimParam),
+                            tableState = tableState.copy(
+                                tableTrimParam = table.lectures.getFittingTrimParam(trimParam),
+                            ),
                             bottomSheetType = SearchUiState.BottomSheetType.None,
                             dialogState = SearchUiState.DialogState.None,
                             searchTitle = "",
@@ -462,8 +442,7 @@ class SearchViewModel @Inject constructor(
 
     fun openLectureDetailSheet(lecture: SearchedLecture) {
         viewModelScope.launch {
-            val state = _uiState.value
-            val referrer = DetailScreenReferrer.Search(state.searchTitle)
+            val referrer = DetailScreenReferrer.Search(_uiState.value.searchTitle)
             _uiState.update { it.copy(bottomSheetType = SearchUiState.BottomSheetType.LectureDetail(lecture, referrer)) }
             _uiEvent.emit(SearchUiEvent.OpenBottomSheet)
             fetchBuildings(lecture)
@@ -522,11 +501,10 @@ class SearchViewModel @Inject constructor(
     private suspend fun query() {
         querySignal.emit(Unit)
         _uiEvent.emit(SearchUiEvent.ResetScroll)
-        val state = _uiState.value
         analyticsLogger.logEvent(
             AnalyticsEvent.SearchLecture(
                 SearchLectureParameter(
-                    query = state.searchTitle,
+                    query = _uiState.value.searchTitle,
                     quarter = tableRepository.currentTable.value?.summary?.courseBook?.semester?.toString() ?: "",
                 ),
             ),
@@ -600,34 +578,44 @@ class SearchViewModel @Inject constructor(
 }
 
 data class SearchUiState(
-    val courseBook: CourseBook,
+    // 저장된 현재 시간표가 없을 수 있으므로, Repository가 첫 시간표를 emit하기 전까지는 Loading이다.
+    val tableState: TableState = TableState.Loading,
 
-    // 시간표 표시용
-    val selectedLecture: SearchedLecture?,
-    val currentTableLectures: List<LocalLecture>,
-    val tableTrimParam: TableTrimParam,
-    val tableLectureCustomOptions: TableLectureCustom,
-    val tableTheme: TableTheme,
-    val isCompactMode: Boolean,
+    // 화면 공통 UI 상태
+    val selectedLecture: SearchedLecture? = null,
+    val bottomSheetType: BottomSheetType = BottomSheetType.None,
+    val dialogState: DialogState = DialogState.None,
 
-    // 공통
-    val bookmarks: List<SearchedLecture>,
-    val vacancyList: List<SearchedLecture>,
-    val disableMapFeature: Boolean,
-    val bottomSheetType: BottomSheetType,
-    val dialogState: DialogState,
+    // 화면 공통 데이터
+    val bookmarks: List<SearchedLecture> = emptyList(),
+    val vacancyList: List<SearchedLecture> = emptyList(),
+    val disableMapFeature: Boolean = true,
 
     // Search 관련
-    val searchTitle: String,
-    val selectedTags: List<SearchTag>,
-    val searchResultListState: SearchResultListState,
-    val tagTypes: List<TagType>,
-    val selectedTagType: TagType,
-    val allSearchTags: List<SearchTag>, // 전체 태그 (탭 전환 시 재계산용)
-    val searchTags: List<Selectable<SearchTag>>,
-    val recentSearchedDepartments: List<Selectable<SearchTag>>,
-    val draggedTimeBlock: List<List<Boolean>>,
+    val searchTitle: String = "",
+    val selectedTags: List<SearchTag> = emptyList(),
+    val searchResultListState: SearchResultListState = SearchResultListState.PLACEHOLDER,
+    val tagTypes: List<TagType> = emptyList(),
+    val selectedTagType: TagType = TagType.SORT_CRITERIA,
+    val allSearchTags: List<SearchTag> = emptyList(),
+    val searchTags: List<Selectable<SearchTag>> = emptyList(),
+    val recentSearchedDepartments: List<Selectable<SearchTag>> = emptyList(),
+    val draggedTimeBlock: List<List<Boolean>> = TableTrimParam.TimeBlockGridDefault,
 ) {
+    sealed interface TableState {
+        data object Loading : TableState
+
+        // 현재 시간표가 준비된 뒤에만 시간표 식별·표시 데이터를 제공한다.
+        data class Loaded(
+            val courseBook: CourseBook,
+            val currentTableLectures: List<LocalLecture>,
+            val tableTrimParam: TableTrimParam,
+            val tableLectureCustomOptions: TableLectureCustom,
+            val tableTheme: TableTheme,
+            val isCompactMode: Boolean,
+        ) : TableState
+    }
+
     /** 현재 열려 있는 바텀시트 타입. 열린 시트가 없으면 null. */
     val activeBottomSheet: BottomSheetType?
         get() = bottomSheetType.takeIf { it != BottomSheetType.None }

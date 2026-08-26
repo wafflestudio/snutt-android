@@ -10,13 +10,13 @@ import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
 @Composable
 fun SearchDialogs(
-    uiState: SearchUiState,
+    dialogState: SearchUiState.DialogState,
     onDismiss: () -> Unit,
     onConfirmDeleteBookmark: (SearchedLecture) -> Unit,
     onConfirmDeleteVacancy: (SearchedLecture) -> Unit,
     onConfirmAddWithOverlap: (SearchedLecture) -> Unit,
 ) {
-    when (val dialogState = uiState.dialogState) {
+    when (dialogState) {
         SearchUiState.DialogState.None -> {}
 
         is SearchUiState.DialogState.ConfirmDeleteBookmark -> {

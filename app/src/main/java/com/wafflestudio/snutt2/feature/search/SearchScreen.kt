@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -15,6 +16,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -54,6 +56,13 @@ import com.wafflestudio.snutt2.ui.theme.isDarkMode
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
+private fun SearchLoading() {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        CircularProgressIndicator()
+    }
+}
+
+@Composable
 fun SearchScreen(
     uiState: SearchUiState,
     searchResultPagingItems: LazyPagingItems<DataWithState<SearchedLecture, LectureState>>,
@@ -74,8 +83,17 @@ fun SearchScreen(
     onConfirmDeleteVacancy: (SearchedLecture) -> Unit,
     onConfirmAddWithOverlap: (SearchedLecture) -> Unit,
 ) {
+    val tableState = when (val state = uiState.tableState) {
+        SearchUiState.TableState.Loading -> {
+            SearchLoading()
+            return
+        }
+
+        is SearchUiState.TableState.Loaded -> state
+    }
+
     SearchDialogs(
-        uiState = uiState,
+        dialogState = uiState.dialogState,
         onDismiss = onDismissDialog,
         onConfirmDeleteBookmark = onConfirmDeleteBookmark,
         onConfirmDeleteVacancy = onConfirmDeleteVacancy,
@@ -102,13 +120,13 @@ fun SearchScreen(
                 .fillMaxWidth(),
         ) {
             TimeTable(
-                lectures = uiState.currentTableLectures,
+                lectures = tableState.currentTableLectures,
                 selectedLecture = uiState.selectedLecture,
-                fittedTrimParam = uiState.tableTrimParam,
-                theme = uiState.tableTheme,
+                fittedTrimParam = tableState.tableTrimParam,
+                theme = tableState.tableTheme,
                 isDarkMode = isDarkMode(),
-                compactMode = uiState.isCompactMode,
-                tableLectureCustomOptions = uiState.tableLectureCustomOptions,
+                compactMode = tableState.isCompactMode,
+                tableLectureCustomOptions = tableState.tableLectureCustomOptions,
                 touchEnabled = false,
             )
 
@@ -216,27 +234,17 @@ private fun previewSearchUiState(
     searchResultListState: SearchResultListState = SearchResultListState.PLACEHOLDER,
     selectedTags: List<SearchTag> = emptyList(),
 ): SearchUiState = SearchUiState(
-    courseBook = CourseBook(semester = 1, year = 2025),
-    selectedLecture = null,
-    currentTableLectures = emptyList(),
-    tableTrimParam = TableTrimParam.Default,
-    tableLectureCustomOptions = TableLectureCustom.Default,
-    tableTheme = BuiltInTheme.SNUTT,
-    isCompactMode = false,
-    bookmarks = emptyList(),
-    vacancyList = emptyList(),
-    disableMapFeature = true,
-    bottomSheetType = SearchUiState.BottomSheetType.None,
-    dialogState = SearchUiState.DialogState.None,
+    tableState = SearchUiState.TableState.Loaded(
+        courseBook = CourseBook(semester = 1, year = 2025),
+        currentTableLectures = emptyList(),
+        tableTrimParam = TableTrimParam.Default,
+        tableLectureCustomOptions = TableLectureCustom.Default,
+        tableTheme = BuiltInTheme.SNUTT,
+        isCompactMode = false,
+    ),
     searchTitle = searchTitle,
     selectedTags = selectedTags,
     searchResultListState = searchResultListState,
-    tagTypes = emptyList(),
-    selectedTagType = TagType.SORT_CRITERIA,
-    allSearchTags = emptyList(),
-    searchTags = emptyList(),
-    recentSearchedDepartments = emptyList(),
-    draggedTimeBlock = TableTrimParam.TimeBlockGridDefault,
 )
 
 @SnuttPreview

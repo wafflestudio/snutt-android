@@ -35,47 +35,50 @@ fun SearchBottomSheetLayout(
 
     ModalBottomSheetLayout(
         sheetContent = {
-            when (val bottomSheetType = uiState.bottomSheetType) {
-                SearchUiState.BottomSheetType.None -> {
-                    ModalBottomSheetPlaceholder()
-                }
-
-                SearchUiState.BottomSheetType.Filter -> {
-                    LaunchedEffect(Unit) {
-                        analyticsLogger.logScreen(AnalyticsScreen.SearchFilter)
+            when (val tableState = uiState.tableState) {
+                SearchUiState.TableState.Loading -> ModalBottomSheetPlaceholder()
+                is SearchUiState.TableState.Loaded -> when (val bottomSheetType = uiState.bottomSheetType) {
+                    SearchUiState.BottomSheetType.None -> {
+                        ModalBottomSheetPlaceholder()
                     }
-                    SearchOptionSheet(
-                        searchTags = uiState.searchTags,
-                        tagTypes = uiState.tagTypes,
-                        selectedTagType = uiState.selectedTagType,
-                        recentSearchedDepartments = uiState.recentSearchedDepartments,
-                        draggedTimeBlock = uiState.draggedTimeBlock,
-                        currentTableLectures = uiState.currentTableLectures,
-                        tableLectureCustomOptions = uiState.tableLectureCustomOptions,
-                        onSelectTagType = onSelectTagType,
-                        onToggleTag = onToggleTag,
-                        onRemoveRecentSearchedDepartments = onRemoveRecent,
-                        onTimeSelectCancel = onTimeSelectCancel,
-                        onTimeSelectConfirm = onTimeSelectConfirm,
-                        applyOption = applyFilter,
-                        hideBottomSheet = onDismiss,
-                    )
-                }
 
-                is SearchUiState.BottomSheetType.LectureDetail -> {
-                    SearchLectureDetailSheetContent(
-                        bottomSheetType = bottomSheetType,
-                        bookmarks = uiState.bookmarks,
-                        vacancyList = uiState.vacancyList,
-                        tableTheme = uiState.tableTheme,
-                        courseBook = uiState.courseBook,
-                        disableMapFeature = uiState.disableMapFeature,
-                        onDismiss = onDismiss,
-                        onBookmarkToggle = onBookmarkToggle,
-                        onVacancyToggle = onVacancyToggle,
-                        onSyllabus = onSyllabus,
-                        onReview = onReview,
-                    )
+                    SearchUiState.BottomSheetType.Filter -> {
+                        LaunchedEffect(Unit) {
+                            analyticsLogger.logScreen(AnalyticsScreen.SearchFilter)
+                        }
+                        SearchOptionSheet(
+                            searchTags = uiState.searchTags,
+                            tagTypes = uiState.tagTypes,
+                            selectedTagType = uiState.selectedTagType,
+                            recentSearchedDepartments = uiState.recentSearchedDepartments,
+                            draggedTimeBlock = uiState.draggedTimeBlock,
+                            currentTableLectures = tableState.currentTableLectures,
+                            tableLectureCustomOptions = tableState.tableLectureCustomOptions,
+                            onSelectTagType = onSelectTagType,
+                            onToggleTag = onToggleTag,
+                            onRemoveRecentSearchedDepartments = onRemoveRecent,
+                            onTimeSelectCancel = onTimeSelectCancel,
+                            onTimeSelectConfirm = onTimeSelectConfirm,
+                            applyOption = applyFilter,
+                            hideBottomSheet = onDismiss,
+                        )
+                    }
+
+                    is SearchUiState.BottomSheetType.LectureDetail -> {
+                        SearchLectureDetailSheetContent(
+                            bottomSheetType = bottomSheetType,
+                            bookmarks = uiState.bookmarks,
+                            vacancyList = uiState.vacancyList,
+                            tableTheme = tableState.tableTheme,
+                            courseBook = tableState.courseBook,
+                            disableMapFeature = uiState.disableMapFeature,
+                            onDismiss = onDismiss,
+                            onBookmarkToggle = onBookmarkToggle,
+                            onVacancyToggle = onVacancyToggle,
+                            onSyllabus = onSyllabus,
+                            onReview = onReview,
+                        )
+                    }
                 }
             }
         },
