@@ -19,7 +19,7 @@ interface LectureSearchRepository {
         timesToExclude: List<SearchTime>?,
     ): Flow<PagingData<SearchedLecture>>
 
-    suspend fun getSearchTags(courseBook: CourseBook): List<SearchTag>
+    fun getSearchTags(courseBook: CourseBook): Flow<List<SearchTag>>
 
     fun storeRecentSearchedDepartment(tag: SearchTag)
 
