@@ -17,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -33,6 +34,7 @@ import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
+import com.wafflestudio.snutt2.ui.util.openAppLanguageSettings
 import java.util.Locale
 
 @Composable
@@ -61,6 +63,7 @@ fun SettingsRoute(
     onNavigateOnboardAsOrigin: () -> Unit,
 ) {
     val uiState by viewModel.settingsUiState.collectAsState()
+    val context = LocalContext.current
     val language = stringResource(
         if (LocalConfiguration.current.locales[0].language == Locale.KOREAN.language) {
             R.string.settings_language_korean
@@ -85,6 +88,7 @@ fun SettingsRoute(
         onClickThemeModeSelect = onNavigateThemeModeSelect,
         onClickTimeTableConfig = onNavigateTimeTableConfig,
         onClickThemeConfig = onNavigateThemeConfig,
+        onClickLanguage = context::openAppLanguageSettings,
         onClickVacancyNotification = onNavigateVacancyNotification,
         onClickThemeMarket = onNavigateThemeMarket,
         onClickPushPreference = onNavigatePushPreference,
@@ -115,6 +119,7 @@ fun SettingsScreen(
     onClickThemeModeSelect: () -> Unit,
     onClickTimeTableConfig: () -> Unit,
     onClickThemeConfig: () -> Unit,
+    onClickLanguage: () -> Unit,
     onClickVacancyNotification: () -> Unit,
     onClickThemeMarket: () -> Unit,
     onClickPushPreference: () -> Unit,
@@ -217,8 +222,8 @@ fun SettingsScreen(
                 )
                 SettingItem(
                     title = stringResource(R.string.settings_language_title),
-                    hasNextPage = false,
                     settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
+                    onClick = onClickLanguage,
                 ) {
                     Text(
                         text = language,
@@ -364,6 +369,7 @@ private fun SettingsScreen_Default() {
             onClickThemeModeSelect = {},
             onClickTimeTableConfig = {},
             onClickThemeConfig = {},
+            onClickLanguage = {},
             onClickVacancyNotification = {},
             onClickThemeMarket = {},
             onClickPushPreference = {},

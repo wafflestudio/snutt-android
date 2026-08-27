@@ -2,6 +2,9 @@ package com.wafflestudio.snutt2.ui.util
 
 import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
+import android.os.Build
+import android.provider.Settings
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.net.toUri
@@ -12,6 +15,28 @@ fun Context.toast(message: String) {
         message,
         Toast.LENGTH_SHORT,
     ).show()
+}
+
+fun Context.openAppLanguageSettings() {
+    val packageUri = "package:$packageName".toUri()
+    val appDetailsIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, packageUri)
+    val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        Intent(Settings.ACTION_APP_LOCALE_SETTINGS, packageUri)
+    } else {
+        appDetailsIntent
+    }
+
+    try {
+        startActivity(intent)
+    } catch (_: ActivityNotFoundException) {
+        if (intent !== appDetailsIntent) {
+            try {
+                startActivity(appDetailsIntent)
+            } catch (_: ActivityNotFoundException) {
+                // 처리 가능한 설정 화면이 없는 경우 무시한다.
+            }
+        }
+    }
 }
 
 /**
