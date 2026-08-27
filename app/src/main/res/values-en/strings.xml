@@ -226,6 +226,9 @@
     <string name="settings_service_info">Terms of Service</string>
     <string name="settings_version_info">Version Info</string>
     <string name="settings_team_info">Developer Info</string>
+    <string name="settings_language_title">Language</string>
+    <string name="settings_language_korean">Korean</string>
+    <string name="settings_language_english">English</string>
     <string name="settings_logout_title">Log Out</string>
     <string name="settings_logout_message">Are you sure you want to log out?</string>
     <string name="settings_timetable_config_force_fit">Auto-fit Timetable</string>
