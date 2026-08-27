@@ -28,9 +28,13 @@ class LanguageInterceptorTest {
     }
 
     @Test
-    fun `한국어와 미지원 앱 로케일이면 ko 헤더를 주입한다`() {
+    fun `한국어 앱 로케일이면 ko 헤더를 주입한다`() {
         assertEquals("ko", interceptRequest(locale = Locale.KOREAN).header(LanguageInterceptor.HEADER_NAME))
-        assertEquals("ko", interceptRequest(locale = Locale.JAPANESE).header(LanguageInterceptor.HEADER_NAME))
+    }
+
+    @Test
+    fun `미지원 앱 로케일이면 en 헤더를 주입한다`() {
+        assertEquals("en", interceptRequest(locale = Locale.JAPANESE).header(LanguageInterceptor.HEADER_NAME))
     }
 
     @Test

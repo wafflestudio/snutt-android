@@ -16,7 +16,7 @@ class LanguageInterceptor @Inject constructor(
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val language = ConfigurationCompat.getLocales(context.resources.configuration)[0]?.language
-        val serverLanguage = if (language == Locale.ENGLISH.language) ENGLISH else KOREAN
+        val serverLanguage = if (language == Locale.KOREAN.language) KOREAN else ENGLISH
 
         val newRequest = chain.request().newBuilder()
             .header(HEADER_NAME, serverLanguage)
