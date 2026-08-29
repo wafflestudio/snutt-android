@@ -213,7 +213,7 @@ class SearchViewModel @Inject constructor(
 
                 _uiState.update { current ->
                     val selectedTags = current.selectedTags.filter {
-                        it !is SearchTag.Regular || it in allTags
+                        it !is SearchTag.Regular || it in searchTags
                     }
                     val selectedTagType = if (tagTypes.contains(current.selectedTagType)) current.selectedTagType else TagType.SORT_CRITERIA
                     var next = current.copy(
