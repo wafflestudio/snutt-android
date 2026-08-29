@@ -8,6 +8,7 @@ import android.provider.Settings
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.net.toUri
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 
 fun Context.toast(message: String) {
     Toast.makeText(
@@ -28,11 +29,13 @@ fun Context.openAppLanguageSettings() {
 
     try {
         startActivity(intent)
-    } catch (_: ActivityNotFoundException) {
+    } catch (e: ActivityNotFoundException) {
+        FirebaseCrashlytics.getInstance().recordException(e)
         if (intent !== appDetailsIntent) {
             try {
                 startActivity(appDetailsIntent)
-            } catch (_: ActivityNotFoundException) {
+            } catch (e: ActivityNotFoundException) {
+                FirebaseCrashlytics.getInstance().recordException(e)
                 // 처리 가능한 설정 화면이 없는 경우 무시한다.
             }
         }
