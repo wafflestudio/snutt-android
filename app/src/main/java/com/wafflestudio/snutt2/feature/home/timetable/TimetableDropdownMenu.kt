@@ -185,7 +185,7 @@ fun TimetableDropdownOverlay(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                SnuttIcon(R.drawable.ic_ringing_alarm_notification, modifier = Modifier.size(22.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
+                SnuttIcon(R.drawable.ic_ringing_alarm_menu, modifier = Modifier.size(22.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
                 Text(
                     text = stringResource(R.string.home_dropdown_menu_content_vacancy_lecture_list),
                     style = SNUTTTypography.h3.copy(fontWeight = FontWeight.Normal),
