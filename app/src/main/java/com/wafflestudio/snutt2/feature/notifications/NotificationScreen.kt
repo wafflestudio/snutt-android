@@ -183,7 +183,9 @@ fun NotificationItem(notification: Notification, onClick: () -> Unit) {
                         SnuttIcon(
                             R.drawable.ic_arrow_right,
                             modifier = Modifier.size(20.dp),
-                            colorFilter = null,
+                            colorFilter = ColorFilter.tint(
+                                if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900,
+                            ),
                             contentDescription = "add arrow",
                         )
                     }
