@@ -7,7 +7,7 @@ import com.wafflestudio.snutt2.data.onSuccess
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.domain.DisplayMessageResolver
 import com.wafflestudio.snutt2.domain.DomainError
-import com.wafflestudio.snutt2.domain.RefreshInitialDataUseCase
+import com.wafflestudio.snutt2.domain.InitializeHomeUseCase
 import com.wafflestudio.snutt2.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.logging.AnalyticsLogger
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,7 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
     private val userRepository: UserRepository,
-    private val refreshInitialDataUseCase: RefreshInitialDataUseCase,
+    private val initializeHomeUseCase: InitializeHomeUseCase,
     private val displayMessageResolver: DisplayMessageResolver,
     private val analyticsLogger: AnalyticsLogger,
 ) : ViewModel() {
@@ -57,8 +57,12 @@ class SignUpViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true) }
             userRepository.postSignUp(state.idField, state.passwordField, formattedEmail)
                 .onSuccess {
-                    refreshInitialDataUseCase()
-                    _uiEvent.emit(SignUpUiEvent.NavigateEmailVerification)
+                    if (initializeHomeUseCase()) {
+                        _uiEvent.emit(SignUpUiEvent.NavigateEmailVerification)
+                    } else {
+                        userRepository.performLogout()
+                        _uiState.update { it.copy(isLoading = false) }
+                    }
                 }
                 .onFailure { handleError(it) }
         }

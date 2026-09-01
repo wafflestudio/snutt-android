@@ -2,6 +2,7 @@ package com.wafflestudio.snutt2.feature.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.wafflestudio.snutt2.data.Result
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.domain.model.ThemeMode
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,4 +24,6 @@ class RootViewModel @Inject constructor(
             userRepository.registerToken()
         }
     }
+
+    suspend fun performLogout(): Result<Unit> = userRepository.performLogout()
 }

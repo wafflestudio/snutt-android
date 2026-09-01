@@ -18,7 +18,13 @@ class FakeTableRepository : TableRepository {
 
     // --- 테스트 제어용 필드 ---
     var fetchAndSelectTableResult: Result<Unit> = Result.Success(Unit)
+    val fetchAndSelectTableResults = mutableListOf<Result<Unit>>()
     var fetchAndSelectTableCalledWith: String? = null
+        private set
+
+    var fetchAndSelectDefaultTableResult: Result<Unit> = Result.Success(Unit)
+    val fetchAndSelectDefaultTableResults = mutableListOf<Result<Unit>>()
+    var fetchAndSelectDefaultTableCallCount = 0
         private set
 
     var createAndSelectTableResult: Result<Unit> = Result.Success(Unit)
@@ -66,7 +72,7 @@ class FakeTableRepository : TableRepository {
     // --- 인터페이스 구현 ---
     override suspend fun fetchAndSelectTable(id: String): Result<Unit> {
         fetchAndSelectTableCalledWith = id
-        return fetchAndSelectTableResult
+        return fetchAndSelectTableResults.removeFirstOrNull() ?: fetchAndSelectTableResult
     }
 
     override suspend fun createAndSelectTable(courseBook: CourseBook, title: String): Result<Unit> {
@@ -121,7 +127,10 @@ class FakeTableRepository : TableRepository {
 
     // --- 미사용 메서드 ---
     override suspend fun updateCurrentTable() = TODO("Not used in this test")
-    override suspend fun fetchAndSelectDefaultTable(): Result<Unit> = TODO("Not used in this test")
+    override suspend fun fetchAndSelectDefaultTable(): Result<Unit> {
+        fetchAndSelectDefaultTableCallCount += 1
+        return fetchAndSelectDefaultTableResults.removeFirstOrNull() ?: fetchAndSelectDefaultTableResult
+    }
     override suspend fun getTimetableReminders(timetableId: String): Result<TimetableLectureReminders> = TODO("Not used in this test")
     override suspend fun getTimetableLectureReminder(timetableId: String, lectureId: String): Result<LectureWithReminderOption> = TODO("Not used in this test")
     override suspend fun updateTimetableLectureReminder(timetableId: String, lectureId: String, offset: LectureReminderOffset): Result<LectureWithReminderOption> = TODO("Not used in this test")
