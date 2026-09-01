@@ -2,8 +2,9 @@ package com.wafflestudio.snutt2.domain
 
 import com.wafflestudio.snutt2.data.Result
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 import javax.inject.Inject
 
 class InitializeHomeUseCase @Inject constructor(
@@ -14,12 +15,18 @@ class InitializeHomeUseCase @Inject constructor(
     suspend operator fun invoke(): Boolean {
         val refreshJob = externalScope.launch { refreshInitialDataUseCase() }
 
-        return when (ensureCurrentTableLoadedUseCase()) {
-            is Result.Success -> true
-            is Result.Fail -> {
-                refreshJob.cancelAndJoin()
-                false
-            }
+        val canEnterHome = withTimeoutOrNull(CURRENT_TABLE_LOADING_TIMEOUT_MILLIS) {
+            ensureCurrentTableLoadedUseCase() is Result.Success
+        } ?: false
+
+        if (!canEnterHome) {
+            refreshJob.cancel()
         }
+
+        return canEnterHome
+    }
+
+    private companion object {
+        const val CURRENT_TABLE_LOADING_TIMEOUT_MILLIS = 10_000L
     }
 }
