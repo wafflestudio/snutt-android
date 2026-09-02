@@ -186,7 +186,7 @@ fun NotificationItem(notification: Notification, onClick: () -> Unit) {
                             colorFilter = ColorFilter.tint(
                                 if (isDarkMode()) SNUTTColors.Gray10 else SNUTTColors.Black900,
                             ),
-                            contentDescription = "add arrow",
+                            contentDescription = null,
                         )
                     }
                 }
