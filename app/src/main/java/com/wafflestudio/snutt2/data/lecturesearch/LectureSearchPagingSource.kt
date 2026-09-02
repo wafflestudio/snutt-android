@@ -77,10 +77,9 @@ class LectureSearchPagingSource(
 }
 
 // FIXME: 서버 인터페이스 수정 필요, 클라단에서 불필요한 컨버팅으로 보임
-internal fun String.toCreditNumber(): Long =
-    Regex("^\\s*(\\d+)")
-        .find(this)
-        ?.groupValues
-        ?.get(1)
-        ?.toLongOrNull()
-        ?: throw IllegalArgumentException("Invalid credit tag: $this")
+internal fun String.toCreditNumber(): Long = Regex("^\\s*(\\d+)")
+    .find(this)
+    ?.groupValues
+    ?.get(1)
+    ?.toLongOrNull()
+    ?: throw IllegalArgumentException("Invalid credit tag: $this")
