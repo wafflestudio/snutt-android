@@ -36,7 +36,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.FirebaseApp
 import com.wafflestudio.snutt2.config.RemoteConfig
-import com.wafflestudio.snutt2.domain.RefreshInitialDataUseCase
+import com.wafflestudio.snutt2.domain.InitializeHomeUseCase
 import com.wafflestudio.snutt2.feature.home.HomeItem
 import com.wafflestudio.snutt2.feature.settings.RootViewModel
 import com.wafflestudio.snutt2.logging.AnalyticsLogger
@@ -60,7 +60,7 @@ class RootActivity : AppCompatActivity() {
     private val rootViewModel: RootViewModel by viewModels()
 
     @Inject
-    lateinit var refreshInitialDataUseCase: RefreshInitialDataUseCase
+    lateinit var initializeHomeUseCase: InitializeHomeUseCase
 
     @Inject
     lateinit var remoteConfig: RemoteConfig
@@ -84,20 +84,22 @@ class RootActivity : AppCompatActivity() {
 
         val token = rootViewModel.accessToken.value
 
-        lifecycleScope.launch {
-            if (token.isNotEmpty()) {
-                refreshInitialDataUseCase()
-            }
-            isLoading = false
-        }
         val initialDeeplinkTab = parseHomePageDeeplink()
-        setUpContents(
-            if (token.isEmpty()) {
+        lifecycleScope.launch {
+            val startDestination = if (token.isEmpty()) {
                 NavigationDestination.Onboard
             } else {
-                NavigationDestination.Home(initialTab = initialDeeplinkTab?.toTabString())
-            },
-        )
+                if (initializeHomeUseCase()) {
+                    NavigationDestination.Home(initialTab = initialDeeplinkTab?.toTabString())
+                } else {
+                    rootViewModel.performLogout()
+                    NavigationDestination.Onboard
+                }
+            }
+
+            setUpContents(startDestination)
+            isLoading = false
+        }
         setWindowAppearance()
         if (savedInstanceState == null) {
             checkNotificationPermission()

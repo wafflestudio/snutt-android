@@ -7,7 +7,7 @@ import com.wafflestudio.snutt2.data.onSuccess
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.domain.DisplayMessageResolver
 import com.wafflestudio.snutt2.domain.DomainError
-import com.wafflestudio.snutt2.domain.RefreshInitialDataUseCase
+import com.wafflestudio.snutt2.domain.InitializeHomeUseCase
 import com.wafflestudio.snutt2.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.logging.AnalyticsLogger
 import com.wafflestudio.snutt2.logging.LoginParameter
@@ -24,7 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TutorialViewModel @Inject constructor(
     private val userRepository: UserRepository,
-    private val refreshInitialDataUseCase: RefreshInitialDataUseCase,
+    private val initializeHomeUseCase: InitializeHomeUseCase,
     private val displayMessageResolver: DisplayMessageResolver,
     private val analyticsLogger: AnalyticsLogger,
 ) : ViewModel() {
@@ -47,8 +47,7 @@ class TutorialViewModel @Inject constructor(
             analyticsLogger.logEvent(AnalyticsEvent.Login(LoginParameter(LoginParameter.Provider.FACEBOOK)))
             userRepository.postLoginFacebook(token)
                 .onSuccess {
-                    refreshInitialDataUseCase()
-                    _uiEvent.emit(TutorialUiEvent.NavigateHome)
+                    onLoginSucceeded()
                 }
                 .onFailure { handleError(it) }
         }
@@ -68,8 +67,7 @@ class TutorialViewModel @Inject constructor(
                     analyticsLogger.logEvent(AnalyticsEvent.Login(LoginParameter(LoginParameter.Provider.GOOGLE)))
                     userRepository.postLoginGoogle(googleAccessToken)
                         .onSuccess {
-                            refreshInitialDataUseCase()
-                            _uiEvent.emit(TutorialUiEvent.NavigateHome)
+                            onLoginSucceeded()
                         }
                         .onFailure { handleError(it) }
                 }
@@ -89,8 +87,7 @@ class TutorialViewModel @Inject constructor(
             analyticsLogger.logEvent(AnalyticsEvent.Login(LoginParameter(LoginParameter.Provider.KAKAO)))
             userRepository.postLoginKakao(token)
                 .onSuccess {
-                    refreshInitialDataUseCase()
-                    _uiEvent.emit(TutorialUiEvent.NavigateHome)
+                    onLoginSucceeded()
                 }
                 .onFailure { handleError(it) }
         }
@@ -99,6 +96,15 @@ class TutorialViewModel @Inject constructor(
     private suspend fun handleError(error: DomainError) {
         _uiState.update { it.copy(isLoading = false) }
         _uiEvent.emit(TutorialUiEvent.ShowToast(displayMessageResolver.getDisplayMessage(error)))
+    }
+
+    private suspend fun onLoginSucceeded() {
+        if (initializeHomeUseCase()) {
+            _uiEvent.emit(TutorialUiEvent.NavigateHome)
+        } else {
+            userRepository.performLogout()
+            _uiState.update { it.copy(isLoading = false) }
+        }
     }
 }
 
