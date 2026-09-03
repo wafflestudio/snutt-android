@@ -4,9 +4,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.snutt2.config.RemoteConfig
+import com.wafflestudio.snutt2.data.applanguage.AppLanguageRepository
 import com.wafflestudio.snutt2.data.onFailure
 import com.wafflestudio.snutt2.data.onSuccess
 import com.wafflestudio.snutt2.data.user.UserRepository
+import com.wafflestudio.snutt2.domain.model.AppLanguage
 import com.wafflestudio.snutt2.domain.model.ThemeMode
 import com.wafflestudio.snutt2.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.logging.AnalyticsLogger
@@ -23,6 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
+    private val appLanguageRepository: AppLanguageRepository,
     private val userRepository: UserRepository,
     private val analyticsLogger: AnalyticsLogger,
     private val remoteConfig: RemoteConfig,
@@ -60,20 +63,22 @@ class SettingsViewModel @Inject constructor(
     }
 
     val settingsUiState = combine(
+        appLanguageRepository.appLanguage,
         userRepository.user,
         userRepository.themeMode,
         showLogoutDialog,
         remoteConfig.settingPageNewBadgeTitles,
-    ) { user, themeMode, showLogoutDialog, settingPageNewBadgeTitles ->
+    ) { appLanguage, user, themeMode, showLogoutDialog, settingPageNewBadgeTitles ->
         if (user == null) {
-            return@combine SettingsUiState.DEFAULT
+            return@combine SettingsUiState.DEFAULT.copy(appLanguage = appLanguage)
         }
 
         SettingsUiState(
-            user.nickname?.getDisplayName() ?: "",
-            themeMode,
-            showLogoutDialog,
-            settingPageNewBadgeTitles,
+            userName = user.nickname?.getDisplayName() ?: "",
+            themeMode = themeMode,
+            showLogoutDialog = showLogoutDialog,
+            settingPageNewBadgeTitles = settingPageNewBadgeTitles,
+            appLanguage = appLanguage,
         )
     }.stateIn(viewModelScope, SharingStarted.Eagerly, SettingsUiState.DEFAULT)
 }
@@ -83,8 +88,9 @@ data class SettingsUiState(
     val themeMode: ThemeMode,
     val showLogoutDialog: Boolean,
     val settingPageNewBadgeTitles: List<String>,
+    val appLanguage: AppLanguage,
 ) {
     companion object {
-        val DEFAULT = SettingsUiState("", ThemeMode.AUTO, false, emptyList())
+        val DEFAULT = SettingsUiState("", ThemeMode.AUTO, false, emptyList(), AppLanguage.KOREAN)
     }
 }
