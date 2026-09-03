@@ -201,7 +201,13 @@ class SearchViewModel @Inject constructor(
                     .filterNotNull()
                     .distinctUntilChanged { o, n -> o.summary.courseBook == n.summary.courseBook }
                     .flatMapLatest { table ->
-                        lectureSearchRepository.getSearchTags(table.summary.courseBook)
+                        flow {
+                            try {
+                                emit(lectureSearchRepository.getSearchTags(table.summary.courseBook))
+                            } catch (_: Exception) {
+                                emit(emptyList())
+                            }
+                        }
                     },
             ) { table, (trimParam, lectureCustom, compact), (recentDepts, theme), (vacancy, bookmarks, disableMap), searchTags ->
                 val prevState = _uiState.value
@@ -212,9 +218,6 @@ class SearchViewModel @Inject constructor(
                 val tagTypes = allTags.map { it.type }.toSet().toList()
 
                 _uiState.update { current ->
-                    val selectedTags = current.selectedTags.filter {
-                        it !is SearchTag.Regular || it in searchTags
-                    }
                     val selectedTagType = if (tagTypes.contains(current.selectedTagType)) current.selectedTagType else TagType.SORT_CRITERIA
                     var next = current.copy(
                         courseBook = courseBook,
@@ -230,9 +233,8 @@ class SearchViewModel @Inject constructor(
                         tagTypes = tagTypes,
                         selectedTagType = selectedTagType,
                         allSearchTags = allTags,
-                        selectedTags = selectedTags,
-                        searchTags = buildSelectableTags(allTags, selectedTagType, selectedTags),
-                        recentSearchedDepartments = buildRecentDepts(recentDepts, allTags, selectedTags),
+                        searchTags = buildSelectableTags(allTags, selectedTagType, current.selectedTags),
+                        recentSearchedDepartments = buildRecentDepts(recentDepts, allTags, current.selectedTags),
                     )
                     if (courseBookChanged) {
                         next = next.copy(

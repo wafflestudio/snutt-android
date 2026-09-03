@@ -4,7 +4,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.wafflestudio.snutt2.data.applanguage.AppLanguageDataSource
 import com.wafflestudio.snutt2.data.mapper.toSearchedLecture
 import com.wafflestudio.snutt2.domain.model.CourseBook
 import com.wafflestudio.snutt2.domain.model.SearchTag
@@ -12,15 +11,10 @@ import com.wafflestudio.snutt2.domain.model.SearchTime
 import com.wafflestudio.snutt2.domain.model.SearchedLecture
 import com.wafflestudio.snutt2.domain.model.TagType
 import com.wafflestudio.snutt2.network.api.SNUTTRestApi
-import com.wafflestudio.snutt2.network.dto.GetTagListResults
 import com.wafflestudio.snutt2.storage.SNUTTStorage
 import com.wafflestudio.snutt2.storage.model.toDomainModel
 import com.wafflestudio.snutt2.storage.model.toLocalEntity
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -29,7 +23,6 @@ import javax.inject.Singleton
 class LectureSearchRepositoryImpl @Inject constructor(
     private val api: SNUTTRestApi,
     private val storage: SNUTTStorage,
-    private val appLanguageDataSource: AppLanguageDataSource,
 ) : LectureSearchRepository {
 
     override val recentSearchedDepartmentTags: Flow<List<SearchTag>> =
@@ -61,16 +54,19 @@ class LectureSearchRepositoryImpl @Inject constructor(
         },
     ).flow.map { pagingData -> pagingData.map { it.toSearchedLecture() } }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    override fun getSearchTags(courseBook: CourseBook): Flow<List<SearchTag>> = appLanguageDataSource.appLanguage.flatMapLatest {
-        flow {
-            emit(
-                api._getTagList(courseBook.year.toInt(), courseBook.semester.toInt())
-                    .toSearchTags(),
-            )
-        }.catch {
-            emit(emptyList())
+    override suspend fun getSearchTags(courseBook: CourseBook): List<SearchTag> {
+        val response = api._getTagList(courseBook.year.toInt(), courseBook.semester.toInt())
+        val list = mutableListOf<SearchTag>()
+        list.apply {
+            addAll(response.department.map { SearchTag.Regular(TagType.DEPARTMENT, it) })
+            addAll(response.classification.map { SearchTag.Regular(TagType.CLASSIFICATION, it) })
+            addAll(response.academicYear.map { SearchTag.Regular(TagType.ACADEMIC_YEAR, it) })
+            addAll(response.credit.map { SearchTag.Regular(TagType.CREDIT, it) })
+            addAll(response.category.map { SearchTag.Regular(TagType.CATEGORY, it) })
+            addAll(response.categoryPre2025.map { SearchTag.Regular(TagType.CATEGORY_PRE2025, it) })
+            addAll(response.sortCriteria.map { SearchTag.Regular(TagType.SORT_CRITERIA, it) })
         }
+        return list
     }
 
     override fun storeRecentSearchedDepartment(tag: SearchTag) {
@@ -90,14 +86,4 @@ class LectureSearchRepositoryImpl @Inject constructor(
     companion object {
         const val LECTURES_LOAD_PAGE_SIZE = 30
     }
-}
-
-private fun GetTagListResults.toSearchTags(): List<SearchTag> = buildList {
-    addAll(department.map { SearchTag.Regular(TagType.DEPARTMENT, it) })
-    addAll(classification.map { SearchTag.Regular(TagType.CLASSIFICATION, it) })
-    addAll(academicYear.map { SearchTag.Regular(TagType.ACADEMIC_YEAR, it) })
-    addAll(credit.map { SearchTag.Regular(TagType.CREDIT, it) })
-    addAll(category.map { SearchTag.Regular(TagType.CATEGORY, it) })
-    addAll(categoryPre2025.map { SearchTag.Regular(TagType.CATEGORY_PRE2025, it) })
-    addAll(sortCriteria.map { SearchTag.Regular(TagType.SORT_CRITERIA, it) })
 }

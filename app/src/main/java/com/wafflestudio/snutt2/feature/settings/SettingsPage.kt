@@ -16,14 +16,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.wafflestudio.snutt2.BuildConfig
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.config.FeatureFlag
-import com.wafflestudio.snutt2.domain.model.AppLanguage
 import com.wafflestudio.snutt2.domain.model.ThemeMode
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
@@ -34,7 +32,6 @@ import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
-import com.wafflestudio.snutt2.ui.util.openAppLanguageSettings
 
 @Composable
 fun SettingsRoute(
@@ -62,7 +59,6 @@ fun SettingsRoute(
     onNavigateOnboardAsOrigin: () -> Unit,
 ) {
     val uiState by viewModel.settingsUiState.collectAsState()
-    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         viewModel.logoutFinishedUiEvent.collect {
@@ -79,7 +75,6 @@ fun SettingsRoute(
         onClickThemeModeSelect = onNavigateThemeModeSelect,
         onClickTimeTableConfig = onNavigateTimeTableConfig,
         onClickThemeConfig = onNavigateThemeConfig,
-        onClickLanguage = context::openAppLanguageSettings,
         onClickVacancyNotification = onNavigateVacancyNotification,
         onClickThemeMarket = onNavigateThemeMarket,
         onClickPushPreference = onNavigatePushPreference,
@@ -109,7 +104,6 @@ fun SettingsScreen(
     onClickThemeModeSelect: () -> Unit,
     onClickTimeTableConfig: () -> Unit,
     onClickThemeConfig: () -> Unit,
-    onClickLanguage: () -> Unit,
     onClickVacancyNotification: () -> Unit,
     onClickThemeMarket: () -> Unit,
     onClickPushPreference: () -> Unit,
@@ -210,21 +204,6 @@ fun SettingsScreen(
                     settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
                     onClick = onClickThemeConfig,
                 )
-                SettingItem(
-                    title = stringResource(R.string.settings_language_title),
-                    settingPageNewBadgeTitles = uiState.settingPageNewBadgeTitles,
-                    onClick = onClickLanguage,
-                ) {
-                    Text(
-                        text = stringResource(
-                            when (uiState.appLanguage) {
-                                AppLanguage.KOREAN -> R.string.settings_language_korean
-                                AppLanguage.ENGLISH -> R.string.settings_language_english
-                            },
-                        ),
-                        style = SNUTTTypography.body1.copy(color = SNUTTColors.Black500),
-                    )
-                }
             }
             SettingColumn {
                 SettingItem(
@@ -356,14 +335,13 @@ fun SettingsScreen(
 private fun SettingsScreen_Default() {
     SnuttPreviewSurface {
         SettingsScreen(
-            uiState = SettingsUiState("양주현", ThemeMode.DARK, false, listOf("빈자리 알림"), AppLanguage.KOREAN),
+            uiState = SettingsUiState("양주현", ThemeMode.DARK, false, listOf("빈자리 알림")),
             uncheckedNotifications = 0L,
             onClickUserConfig = {},
             onClickNotification = {},
             onClickThemeModeSelect = {},
             onClickTimeTableConfig = {},
             onClickThemeConfig = {},
-            onClickLanguage = {},
             onClickVacancyNotification = {},
             onClickThemeMarket = {},
             onClickPushPreference = {},

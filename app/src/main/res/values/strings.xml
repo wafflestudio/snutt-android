@@ -407,9 +407,6 @@
     <string name="settings_service_info">서비스 약관</string>
     <string name="settings_version_info">버전 정보</string>
     <string name="settings_team_info">개발자 정보</string>
-    <string name="settings_language_title">언어</string>
-    <string name="settings_language_korean">한국어</string>
-    <string name="settings_language_english">영어</string>
     <string name="settings_logout_title">로그아웃</string>
     <string name="settings_logout_message">로그아웃 하시겠습니까?</string>
     <string name="settings_timetable_config_force_fit">시간표 자동 정렬</string>
