@@ -37,15 +37,20 @@ jobs:
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
       - name: Upload artifact to Firebase App Distribution
-        run: ./gradlew appDistributionUploadLiveRelease
-        env:
-          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID_LIVE }}
+        id: firebase-distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID_LIVE }}
+          serviceCredentialsFile: ./gcp-service-account-live.json
+          groups: android-user
+          file: ./app/build/outputs/bundle/liveRelease/app-live-release.aab
       - name: Set Message
         run: |
           PROPERTY=$(head -n 1 version.properties)
           VERSION="${PROPERTY/snuttVersionName=}"
           TITLE="SNUTT Android 빌드 알림"
           MESSAGE="${VERSION} 빌드 완료"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "TITLE=$TITLE" >> $GITHUB_ENV
           echo "MESSAGE=$MESSAGE" >> $GITHUB_ENV
       - name: Slack Notification
@@ -55,13 +60,29 @@ jobs:
           SLACK_TITLE: ${{ env.TITLE }}
           SLACK_MESSAGE: ${{ env.MESSAGE }}
           SLACK_USERNAME: BuildNoti
+      - name: Prepare Discord notification
+        id: discord-message
+        env:
+          VERSION: ${{ env.VERSION }}
+          FIREBASE_CONSOLE_URI: ${{ steps.firebase-distribution.outputs.FIREBASE_CONSOLE_URI }}
+        run: |
+          {
+            echo 'content<<EOF'
+            echo "**SNUTT Android 빌드 알림**"
+            echo "${VERSION} Live 빌드 완료"
+            echo
+            if [ -n "$FIREBASE_CONSOLE_URI" ]; then
+              echo "[Firebase 배포 정보]($FIREBASE_CONSOLE_URI)"
+            fi
+            echo "[빌드 로그](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})"
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
       - name: Discord Notification
         uses: tsickert/discord-webhook@v7.0.0
         with:
           webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
           username: BuildNoti
-          embed-title: ${{ env.TITLE }}
-          embed-description: ${{ env.MESSAGE }}
+          content: ${{ steps.discord-message.outputs.content }}
 
   build-dev:
     runs-on: ubuntu-latest
@@ -92,9 +113,13 @@ jobs:
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
       - name: Upload artifact to Firebase App Distribution
-        run: ./gradlew appDistributionUploadDevRelease
-        env:
-          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID_DEV }}
+        id: firebase-distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID_DEV }}
+          serviceCredentialsFile: ./gcp-service-account-dev.json
+          groups: android-users
+          file: ./app/build/outputs/apk/dev/release/app-dev-release.apk
       - name: Slack Upload APK
         uses: MeilCli/slack-upload-file@v5
         with:
@@ -104,10 +129,36 @@ jobs:
           file_name: 'app-dev-release.apk'
           file_type: 'apk'
           initial_comment: 'dev-release APK'
-      - name: Discord Upload APK
+      - name: Prepare Discord notification
+        id: discord-message
+        env:
+          TESTING_URI: ${{ steps.firebase-distribution.outputs.TESTING_URI }}
+          BINARY_DOWNLOAD_URI: ${{ steps.firebase-distribution.outputs.BINARY_DOWNLOAD_URI }}
+          FIREBASE_CONSOLE_URI: ${{ steps.firebase-distribution.outputs.FIREBASE_CONSOLE_URI }}
+        run: |
+          PROPERTY=$(head -n 1 version.properties)
+          VERSION="${PROPERTY/snuttVersionName=}"
+
+          {
+            echo 'content<<EOF'
+            echo "**SNUTT Android 빌드 알림**"
+            echo "${VERSION} Dev 빌드 완료"
+            echo
+            if [ -n "$TESTING_URI" ]; then
+              echo "[APK 설치하기]($TESTING_URI)"
+            fi
+            if [ -n "$BINARY_DOWNLOAD_URI" ]; then
+              echo "[직접 다운로드 — 1시간 유효]($BINARY_DOWNLOAD_URI)"
+            fi
+            if [ -n "$FIREBASE_CONSOLE_URI" ]; then
+              echo "[Firebase 배포 정보]($FIREBASE_CONSOLE_URI)"
+            fi
+            echo "[빌드 로그](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})"
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
+      - name: Discord Notification
         uses: tsickert/discord-webhook@v7.0.0
         with:
           webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
           username: BuildNoti
-          content: dev-release APK
-          filename: './app/build/outputs/apk/dev/release/app-dev-release.apk'
+          content: ${{ steps.discord-message.outputs.content }}
