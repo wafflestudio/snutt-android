@@ -18,7 +18,7 @@ data class LectureDto(
     @param:Json(name = "class_time_json") val class_time_json: List<ClassTimeDto> = emptyList(),
     @param:Json(name = "instructor") val instructor: String = "",
     @param:Json(name = "quota") val quota: Long = 0,
-    @param:Json(name = "freshmanQuota") val freshmanQuota: Long?,
+    @param:Json(name = "freshman_quota") val freshmanQuota: Long?,
     @param:Json(name = "remark") val remark: String = "",
     @param:Json(name = "category") val category: String?,
     @param:Json(name = "categoryPre2025") val categoryPre2025: String?,
