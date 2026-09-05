@@ -71,15 +71,10 @@ class LectureSearchPagingSource(
 
     private fun List<SearchTag>.extractTagString(type: TagType): List<String> = filterIsInstance<SearchTag.Regular>().filter { it.type == type }.map { it.name }
 
+    // FIXME: 서버 인터페이스 수정 필요, 클라단에서 불필요한 컨버팅으로 보임
+    private fun String.toCreditNumber(): Long = substring(0, length - 2).toLong()
+
     companion object {
         const val LECTURE_SEARCH_STARTING_PAGE_INDEX: Long = 0
     }
 }
-
-// FIXME: 서버 인터페이스 수정 필요, 클라단에서 불필요한 컨버팅으로 보임
-internal fun String.toCreditNumber(): Long = Regex("^\\s*(\\d+)")
-    .find(this)
-    ?.groupValues
-    ?.get(1)
-    ?.toLongOrNull()
-    ?: throw IllegalArgumentException("Invalid credit tag: $this")
