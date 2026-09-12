@@ -4,8 +4,6 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -82,9 +80,6 @@ class RootActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         FirebaseApp.initializeApp(this)
-        Handler(Looper.getMainLooper()).postDelayed({
-            throw IllegalStateException("Crashlytics test crash: invalid startup state")
-        }, 3_000)
         parseDeeplinkExtra()
 
         val token = rootViewModel.accessToken.value

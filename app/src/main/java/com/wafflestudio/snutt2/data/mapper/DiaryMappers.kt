@@ -7,12 +7,12 @@ import com.wafflestudio.snutt2.domain.model.diary.DiaryQuestion
 import com.wafflestudio.snutt2.domain.model.diary.DiaryQuestionAnswer
 import com.wafflestudio.snutt2.domain.model.diary.DiarySummary
 import com.wafflestudio.snutt2.lib.Selectable
-import com.wafflestudio.snutt2.lib.getLocalDateTimeFromString
 import com.wafflestudio.snutt2.network.dto.DiaryDailyClassTypeDto
 import com.wafflestudio.snutt2.network.dto.DiaryQuestionDto
 import com.wafflestudio.snutt2.network.dto.DiaryShortQuestionReplyDto
 import com.wafflestudio.snutt2.network.dto.DiarySubmissionSummaryDto
 import com.wafflestudio.snutt2.network.dto.DiarySubmissionsOfYearSemesterDto
+import java.time.LocalDateTime
 
 fun DiaryQuestionDto.toDomain(): DiaryQuestion = DiaryQuestion(
     id = id,
@@ -34,7 +34,7 @@ fun DiarySubmissionSummaryDto.toDomain(): DiarySummary = DiarySummary(
     id = id,
     lectureId = lectureId,
     courseName = courseTitle,
-    date = getLocalDateTimeFromString(date),
+    date = LocalDateTime.parse(date),
     questionAnswers = shortQuestionReplies.map { it.toDomain() },
     comment = comment.ifBlank { null },
 )
