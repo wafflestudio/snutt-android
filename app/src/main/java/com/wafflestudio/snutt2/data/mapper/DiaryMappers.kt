@@ -7,12 +7,12 @@ import com.wafflestudio.snutt2.domain.model.diary.DiaryQuestion
 import com.wafflestudio.snutt2.domain.model.diary.DiaryQuestionAnswer
 import com.wafflestudio.snutt2.domain.model.diary.DiarySummary
 import com.wafflestudio.snutt2.lib.Selectable
-import com.wafflestudio.snutt2.lib.getLocalDateTimeFromString
 import com.wafflestudio.snutt2.network.dto.DiaryDailyClassTypeDto
 import com.wafflestudio.snutt2.network.dto.DiaryQuestionDto
 import com.wafflestudio.snutt2.network.dto.DiaryShortQuestionReplyDto
 import com.wafflestudio.snutt2.network.dto.DiarySubmissionSummaryDto
 import com.wafflestudio.snutt2.network.dto.DiarySubmissionsOfYearSemesterDto
+import com.wafflestudio.snutt2.lib.getLocalDateTimeFromString
 
 fun DiaryQuestionDto.toDomain(): DiaryQuestion = DiaryQuestion(
     id = id,
