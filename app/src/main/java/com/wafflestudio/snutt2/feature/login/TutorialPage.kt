@@ -103,6 +103,7 @@ fun TutorialPage(
                 is TutorialUiEvent.LaunchGoogleSignIn -> {
                     val authorizationRequest = AuthorizationRequest.builder()
                         .setRequestedScopes(listOf(Scope("email")))
+                        .setPrompt(AuthorizationRequest.Prompt.SELECT_ACCOUNT)
                         .requestOfflineAccess(clientId)
                         .build()
                     Identity.getAuthorizationClient(activityContext)
