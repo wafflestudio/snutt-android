@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.feature.review.components
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewCenteredSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
@@ -37,7 +37,7 @@ fun ReviewLectureListItem(
         modifier = modifier
             .fillMaxWidth()
             .height(75.dp)
-            .clickable(onClick = onClick)
+            .clicks(onClick = onClick)
             .padding(vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
@@ -48,17 +48,19 @@ fun ReviewLectureListItem(
         )
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
             Row(horizontalArrangement = Arrangement.spacedBy(2.dp), verticalAlignment = Alignment.CenterVertically) {
-                if (rating != null) {
-                    Image(
-                        painter = painterResource(R.drawable.ic_star_filled),
-                        contentDescription = null,
-                        colorFilter = ColorFilter.tint(SNUTTColors.Yellow),
-                        modifier = Modifier.size(14.dp),
-                    )
-                }
+                Image(
+                    painter = painterResource(R.drawable.ic_star_filled),
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(if (rating == null) SNUTTColors.TextAssistive else SNUTTColors.Yellow),
+                    modifier = Modifier.size(14.dp),
+                )
                 Text(
                     text = rating?.let { "%.1f".format(it) } ?: "(-)",
-                    style = SNUTTTypography.body1.copy(fontSize = 14.sp, fontWeight = FontWeight.Medium, color = SNUTTColors.Black900),
+                    style = SNUTTTypography.body1.copy(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = if (rating == null) SNUTTColors.TextMed else SNUTTColors.Black900,
+                    ),
                 )
                 if (rating != null) {
                     Text(

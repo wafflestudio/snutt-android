@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,6 +26,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.ui.components.compose.EditText
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewCenteredSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
@@ -52,7 +52,7 @@ fun ReviewTextInput(
     }
 
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        BasicTextField(
+        EditText(
             value = text,
             onValueChange = onTextChange,
             modifier = Modifier
@@ -63,15 +63,10 @@ fun ReviewTextInput(
                 .background(SNUTTColors.White900, RoundedCornerShape(6.dp))
                 .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 4.dp),
             textStyle = SNUTTTypography.body1.copy(color = SNUTTColors.Black900),
-            decorationBox = { innerTextField ->
-                if (text.isEmpty() && !focused) {
-                    Text(
-                        text = placeholder,
-                        style = SNUTTTypography.body1.copy(color = SNUTTColors.Gray30),
-                    )
-                }
-                innerTextField()
-            },
+            hint = if (focused) null else placeholder,
+            hintTextColor = SNUTTColors.Gray30,
+            hintTextStyle = SNUTTTypography.body1,
+            underlineEnabled = false,
         )
 
         Text(

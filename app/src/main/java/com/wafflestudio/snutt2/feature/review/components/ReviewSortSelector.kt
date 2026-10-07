@@ -1,6 +1,5 @@
 package com.wafflestudio.snutt2.feature.review.components
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -13,6 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewCenteredSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
@@ -44,7 +44,7 @@ private fun ReviewSortOption(label: String, selected: Boolean, onClick: () -> Un
     val selectedColor = SNUTTColors.TextPlain
     val unselectedColor = SNUTTColors.TextAssistive
     Row(
-        modifier = Modifier.clickable(onClick = onClick).padding(2.dp),
+        modifier = Modifier.clicks(onClick = onClick).padding(2.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {

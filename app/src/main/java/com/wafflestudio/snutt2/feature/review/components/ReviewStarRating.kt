@@ -3,6 +3,7 @@ package com.wafflestudio.snutt2.feature.review.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
@@ -17,7 +18,7 @@ import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewCenteredSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
-import kotlin.math.ceil
+import kotlin.math.floor
 
 @Composable
 fun ReviewStarRating(
@@ -25,16 +26,19 @@ fun ReviewStarRating(
     onRatingChange: ((Float) -> Unit)?,
     modifier: Modifier = Modifier,
     starSize: Dp = 28.dp,
+    starSpacing: Dp = 0.dp,
 ) {
     Row(
         modifier = modifier.then(
             if (onRatingChange != null) {
-                Modifier.pointerInput(onRatingChange, starSize) {
+                Modifier.pointerInput(onRatingChange, starSize, starSpacing) {
                     awaitEachGesture {
                         val down = awaitFirstDown()
 
                         fun updateRating(positionX: Float) {
-                            val halfStars = ceil(positionX / (starSize.toPx() / 2)).toInt().coerceIn(1, 10)
+                            val starIndex = floor(positionX / (starSize + starSpacing).toPx()).toInt().coerceIn(0, 4)
+                            val positionInStar = positionX - starIndex * (starSize + starSpacing).toPx()
+                            val halfStars = (starIndex * 2 + if (positionInStar < starSize.toPx() / 2) 1 else 2).coerceIn(1, 10)
                             onRatingChange(halfStars / 2f)
                         }
 
@@ -49,6 +53,7 @@ fun ReviewStarRating(
                 Modifier
             },
         ),
+        horizontalArrangement = Arrangement.spacedBy(starSpacing),
     ) {
         repeat(5) { index ->
             when {

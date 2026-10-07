@@ -16,9 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewCenteredSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
@@ -26,10 +28,10 @@ import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
 @Composable
 fun ReviewMetricRow(
-    grade: Float,
-    usefulness: Float,
-    teaching: Float,
-    ease: Float,
+    grade: Float?,
+    usefulness: Float?,
+    teaching: Float?,
+    ease: Float?,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -41,22 +43,22 @@ fun ReviewMetricRow(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        ReviewMetric("성적", grade)
+        ReviewMetric(stringResource(R.string.review_metric_grade), grade)
         ReviewMetricDivider()
-        ReviewMetric("유익함", usefulness)
+        ReviewMetric(stringResource(R.string.review_metric_usefulness), usefulness)
         ReviewMetricDivider()
-        ReviewMetric("강의력", teaching)
+        ReviewMetric(stringResource(R.string.review_metric_teaching), teaching)
         ReviewMetricDivider()
-        ReviewMetric("널널함", ease)
+        ReviewMetric(stringResource(R.string.review_metric_ease), ease)
     }
 }
 
 @Composable
-private fun ReviewMetric(label: String, value: Float) {
+private fun ReviewMetric(label: String, value: Float?) {
     Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
         Text(text = label, style = SNUTTTypography.body2.copy(fontSize = 13.sp, color = SNUTTColors.TextAlternative))
         Text(
-            text = "%.1f".format(value),
+            text = value?.let { "%.1f".format(it) } ?: "-",
             style = SNUTTTypography.body1.copy(fontWeight = FontWeight.Medium, color = SNUTTColors.DarkMintText),
         )
     }

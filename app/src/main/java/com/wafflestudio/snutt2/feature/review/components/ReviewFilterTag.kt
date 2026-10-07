@@ -3,7 +3,6 @@ package com.wafflestudio.snutt2.feature.review.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
@@ -20,6 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewCenteredSurface
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
@@ -38,7 +38,7 @@ fun ReviewFilterTag(
             .height(30.dp)
             .background(Color(0x0f00b8b0), shape)
             .border(0.5.dp, Color(0xff00b8b0), shape)
-            .clickable(onClick = onRemove)
+            .clicks(onClick = onRemove)
             .padding(start = 14.dp, end = 9.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically,

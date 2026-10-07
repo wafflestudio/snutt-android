@@ -33,8 +33,7 @@ fun ReviewCard(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(SNUTTColors.White900)
-            .padding(top = 4.dp),
+            .background(SNUTTColors.White900),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Column {
@@ -88,6 +87,7 @@ private fun ReviewCard_Overview() {
             likeCount = 12,
             liked = false,
             onLikeClick = {},
+            modifier = Modifier.padding(horizontal = 20.dp).padding(top = 4.dp),
         )
     }
 }
