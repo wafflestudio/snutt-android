@@ -1,8 +1,12 @@
 package com.wafflestudio.snutt2.ui.preview
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.wafflestudio.snutt2.ui.theme.SNUTTTheme
 
@@ -14,5 +18,14 @@ annotation class SnuttPreview
 fun SnuttPreviewSurface(content: @Composable () -> Unit) {
     SNUTTTheme {
         Surface(content = content)
+    }
+}
+
+@Composable
+fun SnuttPreviewCenteredSurface(content: @Composable () -> Unit) {
+    SnuttPreviewSurface {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            content()
+        }
     }
 }

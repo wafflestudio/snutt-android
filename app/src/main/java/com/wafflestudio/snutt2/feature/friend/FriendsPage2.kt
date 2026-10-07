@@ -3,7 +3,6 @@ package com.wafflestudio.snutt2.feature.friend
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,8 +18,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.DrawerValue
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.ModalDrawer
@@ -30,8 +27,6 @@ import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -54,6 +49,7 @@ import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.components.compose.BottomSheetDismissEffect
 import com.wafflestudio.snutt2.ui.components.compose.IconWithAlertDot
+import com.wafflestudio.snutt2.ui.components.compose.SemesterDropdown
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.FriendPreviewData
@@ -63,7 +59,6 @@ import com.wafflestudio.snutt2.ui.preview.TableSummaryPreviewData
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
 import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
-import com.wafflestudio.snutt2.ui.util.formatter.toFormattedString
 import com.wafflestudio.snutt2.ui.util.toast
 import kotlinx.coroutines.launch
 
@@ -574,57 +569,6 @@ private fun FriendsLoadedScreen(
     )
 }
 
-@Composable
-private fun SemesterDropdown(
-    courseBooks: List<com.wafflestudio.snutt2.domain.model.CourseBook>,
-    selectedCourseBook: com.wafflestudio.snutt2.domain.model.CourseBook?,
-    onSelectCourseBook: (com.wafflestudio.snutt2.domain.model.CourseBook) -> Unit,
-) {
-    val context = LocalContext.current
-    var expanded by remember { mutableStateOf(false) }
-
-    Box {
-        Row(
-            modifier = Modifier
-                .border(
-                    width = 1.dp,
-                    color = SNUTTColors.Gray200,
-                    shape = RoundedCornerShape(4.dp),
-                )
-                .clicks { expanded = true }
-                .padding(horizontal = 10.dp, vertical = 6.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                text = selectedCourseBook?.toFormattedString(context) ?: "",
-                style = SNUTTTypography.body2.copy(color = SNUTTColors.Black900),
-            )
-            Spacer(modifier = Modifier.width(5.dp))
-            SnuttIcon(R.drawable.ic_arrow_down, modifier = Modifier.size(15.dp), colorFilter = ColorFilter.tint(SNUTTColors.Black900))
-        }
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-        ) {
-            courseBooks.forEach { courseBook ->
-                DropdownMenuItem(
-                    onClick = {
-                        onSelectCourseBook(courseBook)
-                        expanded = false
-                    },
-                ) {
-                    Text(
-                        text = courseBook.toFormattedString(context),
-                        style = SNUTTTypography.body2.copy(color = SNUTTColors.Black900),
-                    )
-                }
-            }
-        }
-    }
-}
-
 private val sampleFriendsUiStateLoaded = FriendsUiState.Loaded(
     activeFriends = FriendPreviewData.sampleFriends,
     requestedFriends = FriendPreviewData.sampleRequestedFriends,
@@ -782,18 +726,6 @@ private fun FriendsPage_Error() {
             onConfirmDeleteFriend = {},
             onConfirmDeclineFriend = {},
             onShowGuideDialog = {},
-        )
-    }
-}
-
-@SnuttPreview
-@Composable
-private fun SemesterDropdown_Default() {
-    SnuttPreviewSurface {
-        SemesterDropdown(
-            courseBooks = TableSummaryPreviewData.sampleCourseBooks,
-            selectedCourseBook = TableSummaryPreviewData.sampleCourseBooks.first(),
-            onSelectCourseBook = {},
         )
     }
 }
