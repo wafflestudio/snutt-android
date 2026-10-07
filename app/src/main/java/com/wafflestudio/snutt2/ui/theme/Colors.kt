@@ -54,7 +54,7 @@ object SNUTTColors {
     val Colors.TextAlternative @Composable get() = if (isLight) Color(0xff8a898e) else Color(0xffb3b3b3)
     val TextAlternative @Composable get() = MaterialTheme.colors.TextAlternative
 
-    val Colors.TextPlain @Composable get() = if (isLight) Color(0xff505050) else Color(0xffdadada)
+    val Colors.TextPlain @Composable get() = if (isLight) Color(0xff505050) else Color(0xffffffff)
     val TextPlain @Composable get() = MaterialTheme.colors.TextPlain
 
     val Colors.TextAssistive @Composable get() = if (isLight) Color(0xffc4c4c4) else Color(0xffb3b3b3)
@@ -63,8 +63,11 @@ object SNUTTColors {
     val Colors.TextMed @Composable get() = if (isLight) Color(0xffa6a6a6) else Color(0xff8a898e)
     val TextMed @Composable get() = MaterialTheme.colors.TextMed
 
-    val Colors.BackgroundLight @Composable get() = if (isLight) Color(0xfff7f7f7) else Color(0xff3d3d3d)
+    val Colors.BackgroundLight @Composable get() = if (isLight) Color(0xfff7f7f7) else Color(0xff3c3c3c)
     val BackgroundLight @Composable get() = MaterialTheme.colors.BackgroundLight
+
+    val Colors.SearchClear @Composable get() = if (isLight) Color(0xff8a898e) else Color(0xff777777)
+    val SearchClear @Composable get() = MaterialTheme.colors.SearchClear
 
     val Colors.LineBorder @Composable get() = if (isLight) Color(0xffe4e4e5) else Color(0xff3d3d3d)
     val LineBorder @Composable get() = MaterialTheme.colors.LineBorder

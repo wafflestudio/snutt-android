@@ -19,6 +19,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.ColorFilter
@@ -48,6 +49,7 @@ fun ReviewSearchField(
 ) {
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
+    val shape = RoundedCornerShape(12.dp)
 
     LaunchedEffect(isSearching) {
         if (isSearching) {
@@ -60,7 +62,8 @@ fun ReviewSearchField(
         modifier = modifier
             .fillMaxWidth()
             .height(40.dp)
-            .background(SNUTTColors.BackgroundLight, RoundedCornerShape(12.dp))
+            .clip(shape)
+            .background(SNUTTColors.BackgroundLight)
             .then(if (isSearching) Modifier else Modifier.clickable(onClick = onSearchClick))
             .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -69,7 +72,7 @@ fun ReviewSearchField(
         Image(
             painter = painterResource(if (isSearching) R.drawable.ic_arrow_back else R.drawable.ic_search_unselected),
             contentDescription = if (isSearching) stringResource(R.string.review_search_back) else null,
-            colorFilter = ColorFilter.tint(if (isSearching) SNUTTColors.TextAlternative else SNUTTColors.Gray30),
+            colorFilter = ColorFilter.tint(if (isSearching) SNUTTColors.TextAlternative else SNUTTColors.TextMed),
             modifier = Modifier
                 .size(if (isSearching) 24.dp else 20.dp)
                 .then(if (isSearching) Modifier.clickable(onClick = onBackClick) else Modifier),
@@ -91,13 +94,14 @@ fun ReviewSearchField(
                 Image(
                     painter = painterResource(R.drawable.ic_close_circle),
                     contentDescription = stringResource(R.string.review_search_clear),
+                    colorFilter = ColorFilter.tint(SNUTTColors.SearchClear),
                     modifier = Modifier.size(20.dp).clickable(onClick = onClearClick),
                 )
             }
         } else {
             Text(
                 text = stringResource(R.string.review_search_placeholder),
-                style = SNUTTTypography.body1.copy(fontSize = 16.sp, color = SNUTTColors.Gray30),
+                style = SNUTTTypography.body1.copy(fontSize = 16.sp, color = SNUTTColors.TextMed),
                 modifier = Modifier.weight(1f),
             )
         }
