@@ -61,6 +61,11 @@ fun HomePageRoute(
     onNavigateNetworkLog: () -> Unit,
     onNavigateTest: () -> Unit,
     onNavigateToReview: (SearchedLecture) -> Unit,
+    onNavigateReviewSearch: () -> Unit,
+    onNavigateReviewAll: () -> Unit,
+    onNavigateReviewMy: () -> Unit,
+    onNavigateReviewDetail: (String) -> Unit,
+    onNavigateReviewWrite: (String) -> Unit,
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -114,6 +119,11 @@ fun HomePageRoute(
         onNavigateNetworkLog = onNavigateNetworkLog,
         onNavigateTest = onNavigateTest,
         onNavigateToReview = onNavigateToReview,
+        onNavigateReviewSearch = onNavigateReviewSearch,
+        onNavigateReviewAll = onNavigateReviewAll,
+        onNavigateReviewMy = onNavigateReviewMy,
+        onNavigateReviewDetail = onNavigateReviewDetail,
+        onNavigateReviewWrite = onNavigateReviewWrite,
         onPopupClickFewDays = viewModel::closePopupWithHiddenDays,
         onPopupClickClose = viewModel::closePopup,
         onPopupClickImage = viewModel::onPopupImageClick,
@@ -149,6 +159,11 @@ private fun HomePageNewScreen(
     onNavigateNetworkLog: () -> Unit,
     onNavigateTest: () -> Unit,
     onNavigateToReview: (SearchedLecture) -> Unit,
+    onNavigateReviewSearch: () -> Unit,
+    onNavigateReviewAll: () -> Unit,
+    onNavigateReviewMy: () -> Unit,
+    onNavigateReviewDetail: (String) -> Unit,
+    onNavigateReviewWrite: (String) -> Unit,
     onPopupClickFewDays: () -> Unit,
     onPopupClickClose: () -> Unit,
     onPopupClickImage: () -> Unit,
@@ -198,7 +213,14 @@ private fun HomePageNewScreen(
             onNavigateToReview = onNavigateToReview,
         )
 
-        HomeItem.Review -> ReviewRoute(bottomBar = bottomBar)
+        HomeItem.Review -> ReviewRoute(
+            bottomBar = bottomBar,
+            onNavigateSearch = onNavigateReviewSearch,
+            onNavigateAll = onNavigateReviewAll,
+            onNavigateMy = onNavigateReviewMy,
+            onNavigateDetail = onNavigateReviewDetail,
+            onNavigateWrite = onNavigateReviewWrite,
+        )
 
         HomeItem.Friends -> FriendsRoute(bottomBar = bottomBar)
 

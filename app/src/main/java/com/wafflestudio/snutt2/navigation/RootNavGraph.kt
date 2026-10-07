@@ -29,6 +29,8 @@ import com.wafflestudio.snutt2.feature.bookmark.BookmarkRoute
 import com.wafflestudio.snutt2.feature.debug.TestRoute
 import com.wafflestudio.snutt2.feature.diary.diaryhistory.DiaryHistoryRoute
 import com.wafflestudio.snutt2.feature.diary.diarywrite.DiaryWriteRoute
+import com.wafflestudio.snutt2.feature.home.BottomNavigation
+import com.wafflestudio.snutt2.feature.home.HomeItem
 import com.wafflestudio.snutt2.feature.home.HomePageRoute
 import com.wafflestudio.snutt2.feature.lecturedetail.currenttable.AddCustomLectureRoute
 import com.wafflestudio.snutt2.feature.lecturedetail.currenttable.CurrentTableLectureDetailRoute
@@ -43,7 +45,11 @@ import com.wafflestudio.snutt2.feature.login.SignUpPage
 import com.wafflestudio.snutt2.feature.login.TutorialPage
 import com.wafflestudio.snutt2.feature.login.resetpassword.ResetPasswordPage
 import com.wafflestudio.snutt2.feature.notifications.NotificationRoute
-import com.wafflestudio.snutt2.feature.review.ReviewRoute
+import com.wafflestudio.snutt2.feature.review.ReviewAllRoute
+import com.wafflestudio.snutt2.feature.review.ReviewDetailRoute
+import com.wafflestudio.snutt2.feature.review.ReviewMyRoute
+import com.wafflestudio.snutt2.feature.review.ReviewSearchRoute
+import com.wafflestudio.snutt2.feature.review.ReviewWriteRoute
 import com.wafflestudio.snutt2.feature.settings.AppReportPage
 import com.wafflestudio.snutt2.feature.settings.ChangeNicknamePage
 import com.wafflestudio.snutt2.feature.settings.LectureReminderRoute
@@ -119,6 +125,11 @@ internal fun NavGraphBuilder.buildRootNavGraph(
                     ),
                 )
             },
+            onNavigateReviewSearch = { navController.navigate(NavigationDestination.ReviewSearch) },
+            onNavigateReviewAll = { navController.navigate(NavigationDestination.ReviewAll) },
+            onNavigateReviewMy = { navController.navigate(NavigationDestination.ReviewMy) },
+            onNavigateReviewDetail = { reviewId -> navController.navigate(NavigationDestination.Review(reviewId)) },
+            onNavigateReviewWrite = { reviewId -> navController.navigate(NavigationDestination.ReviewWrite(reviewId = reviewId)) },
         )
     }
 
@@ -231,8 +242,40 @@ internal fun NavGraphBuilder.buildRootNavGraph(
         )
     }
 
-    bottomSheet<NavigationDestination.Review> {
-        ReviewRoute()
+    bottomSheet<NavigationDestination.Review> { backStackEntry ->
+        val review = backStackEntry.toRoute<NavigationDestination.Review>()
+        ReviewDetailRoute(
+            onNavigateBack = { navController.popBackStack() },
+            onNavigateWrite = {
+                navController.navigate(NavigationDestination.ReviewWrite(review.reviewId, review.lectureId))
+            },
+        )
+    }
+
+    composableAnimated<NavigationDestination.ReviewSearch>(scheme) {
+        ReviewSearchRoute(
+            onNavigateBack = { navController.popBackStack() },
+            onNavigateDetail = { reviewId -> navController.navigate(NavigationDestination.Review(reviewId)) },
+            bottomBar = { ReviewTabBottomBar(navController) },
+        )
+    }
+
+    composableAnimated<NavigationDestination.ReviewAll>(scheme) {
+        ReviewAllRoute(
+            onNavigateSearch = { navController.navigate(NavigationDestination.ReviewSearch) },
+            onNavigateDetail = { reviewId -> navController.navigate(NavigationDestination.Review(reviewId)) },
+        )
+    }
+
+    composableAnimated<NavigationDestination.ReviewMy>(scheme) {
+        ReviewMyRoute(
+            onNavigateBack = { navController.popBackStack() },
+            bottomBar = { ReviewTabBottomBar(navController) },
+        )
+    }
+
+    composableAnimated<NavigationDestination.ReviewWrite>(scheme) {
+        ReviewWriteRoute(onNavigateBack = { navController.popBackStack() })
     }
 
     composableAnimated<NavigationDestination.DeeplinkTimetableLectureDetail>(scheme) {
@@ -522,6 +565,17 @@ private fun NavGraphBuilder.settingComposables(
             )
         }
     }
+}
+
+@Composable
+private fun ReviewTabBottomBar(navController: NavController) {
+    BottomNavigation(
+        pageState = HomeItem.Review,
+        uncheckedNotificationExist = false,
+        onUpdatePageState = { tab ->
+            navController.navigateAsOrigin(NavigationDestination.Home(initialTab = tab.toTabString()))
+        },
+    )
 }
 
 internal inline fun <reified T : NavigationDestination> NavGraphBuilder.composableAnimated(

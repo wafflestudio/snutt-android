@@ -173,6 +173,18 @@ sealed interface NavigationDestination {
     ) : NavigationDestination
 
     @Serializable
+    data object ReviewSearch : NavigationDestination
+
+    @Serializable
+    data object ReviewAll : NavigationDestination
+
+    @Serializable
+    data object ReviewMy : NavigationDestination
+
+    @Serializable
+    data class ReviewWrite(val reviewId: String = "", val lectureId: String = "") : NavigationDestination
+
+    @Serializable
     @DeepLinkPath("social_link")
     data object SocialLink : NavigationDestination
 
