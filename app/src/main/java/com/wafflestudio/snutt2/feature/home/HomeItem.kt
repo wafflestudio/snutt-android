@@ -4,7 +4,7 @@ sealed class HomeItem {
 
     object Timetable : HomeItem()
     object Search : HomeItem()
-    data class Review(val landingPage: String? = null) : HomeItem()
+    object Review : HomeItem()
     object Friends : HomeItem()
     object Settings : HomeItem()
 
@@ -20,7 +20,7 @@ sealed class HomeItem {
         fun fromTabString(value: String?): HomeItem? = when (value) {
             "timetable" -> Timetable
             "search" -> Search
-            "review" -> Review()
+            "review" -> Review
             "friends" -> Friends
             "settings" -> Settings
             else -> null

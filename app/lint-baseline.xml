@@ -1533,50 +1533,6 @@
     <issue
         id="UsingMaterialAndMaterial3Libraries"
         message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.Button"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/wafflestudio/snutt2/feature/reviews/ReviewPage.kt"
-            line="17"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.ButtonDefaults"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/wafflestudio/snutt2/feature/reviews/ReviewPage.kt"
-            line="18"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.LinearProgressIndicator"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/wafflestudio/snutt2/feature/reviews/ReviewPage.kt"
-            line="19"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
-        errorLine1="import androidx.compose.material.Text"
-        errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/wafflestudio/snutt2/feature/reviews/ReviewPage.kt"
-            line="20"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="UsingMaterialAndMaterial3Libraries"
-        message="Using a material import while also using the material3 library"
         errorLine1="import androidx.compose.material.ModalBottomSheetValue"
         errorLine2="       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location

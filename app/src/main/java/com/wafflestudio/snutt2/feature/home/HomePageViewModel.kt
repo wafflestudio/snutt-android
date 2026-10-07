@@ -10,7 +10,6 @@ import com.wafflestudio.snutt2.data.notifications.NotificationRepository
 import com.wafflestudio.snutt2.data.popup.PopupRepository
 import com.wafflestudio.snutt2.data.tabledisplay.TableDisplayRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
-import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.domain.model.LocalLecture
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -36,7 +35,6 @@ class HomePageViewModel @Inject constructor(
     private val notificationRepository: NotificationRepository,
     private val tableRepository: TableRepository,
     private val tableDisplayRepository: TableDisplayRepository,
-    private val userRepository: UserRepository,
     private val popupRepository: PopupRepository,
 ) : ViewModel() {
 
@@ -49,8 +47,6 @@ class HomePageViewModel @Inject constructor(
 
     private val _uiEvent = MutableSharedFlow<HomePageUiEvent>()
     val uiEvent: SharedFlow<HomePageUiEvent> = _uiEvent.asSharedFlow()
-
-    val accessToken: StateFlow<String> = userRepository.accessToken
 
     init {
         viewModelScope.launch {

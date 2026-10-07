@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -27,14 +26,12 @@ import com.wafflestudio.snutt2.domain.model.SearchedLecture
 import com.wafflestudio.snutt2.feature.friend.FriendsRoute
 import com.wafflestudio.snutt2.feature.home.drawer.TimeTableRoute
 import com.wafflestudio.snutt2.feature.home.popups.Popup
-import com.wafflestudio.snutt2.feature.reviews.ReviewPage
-import com.wafflestudio.snutt2.feature.reviews.ReviewWebViewContainer
+import com.wafflestudio.snutt2.feature.reviews.ReviewRoute
 import com.wafflestudio.snutt2.feature.search.SearchRoute
 import com.wafflestudio.snutt2.feature.settings.SettingsRoute
 import com.wafflestudio.snutt2.logging.compose.PopupLoggingEffect
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.theme.SNUTTColors
-import com.wafflestudio.snutt2.ui.theme.isDarkMode
 
 @Composable
 fun HomePageRoute(
@@ -68,15 +65,6 @@ fun HomePageRoute(
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val isDarkMode = isDarkMode()
-
-    // FIXME: 강의평 탭의 웹뷰를 미리 로딩하기 위해 상위에서 관리하고 있는데, 더 좋은 방법은 없을까?
-    val reviewWebViewContainer =
-        remember { ReviewWebViewContainer(context, viewModel.accessToken, isDarkMode) }
-    LaunchedEffect((uiState.currentTab as? HomeItem.Review)?.landingPage) {
-        reviewWebViewContainer.openPage((uiState.currentTab as? HomeItem.Review)?.landingPage)
-    }
-
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
@@ -100,7 +88,6 @@ fun HomePageRoute(
 
     HomePageNewScreen(
         uiState = uiState,
-        reviewWebViewContainer = reviewWebViewContainer,
         onTabSelected = viewModel::updateTab,
         onNavigateLectureDetail = viewModel::onNavigateLectureDetail,
         onNavigateAddLecture = onNavigateAddLecture,
@@ -136,7 +123,6 @@ fun HomePageRoute(
 @Composable
 private fun HomePageNewScreen(
     uiState: HomePageUiState,
-    reviewWebViewContainer: ReviewWebViewContainer,
     onTabSelected: (HomeItem) -> Unit,
     onNavigateLectureDetail: (LocalLecture) -> Unit,
     onNavigateAddLecture: () -> Unit,
@@ -212,13 +198,7 @@ private fun HomePageNewScreen(
             onNavigateToReview = onNavigateToReview,
         )
 
-        is HomeItem.Review -> {
-            ReviewPage(
-                bottomBar = bottomBar,
-                reviewWebViewContainer = reviewWebViewContainer,
-                onBack = { onTabSelected(HomeItem.Timetable) },
-            )
-        }
+        HomeItem.Review -> ReviewRoute(bottomBar = bottomBar)
 
         HomeItem.Friends -> FriendsRoute(bottomBar = bottomBar)
 
