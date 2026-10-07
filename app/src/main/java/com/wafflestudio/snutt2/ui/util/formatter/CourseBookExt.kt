@@ -4,7 +4,13 @@ import android.content.Context
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.CourseBook
 
-fun CourseBook.toFormattedString(context: Context): String {
+// 2026년 2학기
+fun CourseBook.toFormattedString(context: Context): String = formatYearSemester(context, year)
+
+// 26년 2학기
+fun CourseBook.toShortYearFormattedString(context: Context): String = formatYearSemester(context, year % 100)
+
+private fun CourseBook.formatYearSemester(context: Context, displayYear: Long): String {
     val semesterStr = when (this.semester) {
         1L -> context.getString(R.string.course_book_spring_semster)
         2L -> context.getString(R.string.course_book_summer_semester)
@@ -12,7 +18,7 @@ fun CourseBook.toFormattedString(context: Context): String {
         4L -> context.getString(R.string.course_book_winter)
         else -> "-"
     }
-    return context.getString(R.string.course_book_year_semester_format, this.year, semesterStr)
+    return context.getString(R.string.course_book_year_semester_format, displayYear, semesterStr)
 }
 
 fun CourseBook.toAbbvString(context: Context): String {

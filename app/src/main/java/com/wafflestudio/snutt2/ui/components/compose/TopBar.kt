@@ -21,6 +21,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.ui.preview.SnuttPreview
@@ -97,6 +98,7 @@ fun TopBar(
 @Composable
 fun CenteredTopBar(
     modifier: Modifier = Modifier,
+    height: Dp = 56.dp,
     title: @Composable RowScope.() -> Unit = {},
     navigationIcon: @Composable RowScope.() -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
@@ -106,7 +108,7 @@ fun CenteredTopBar(
         modifier = modifier
             .background(color = MaterialTheme.colors.primary)
             .fillMaxWidth()
-            .height(56.dp)
+            .height(height)
             .drawWithCache {
                 onDrawWithContent {
                     drawLine(
