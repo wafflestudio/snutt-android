@@ -26,7 +26,7 @@ import com.wafflestudio.snutt2.domain.model.SearchedLecture
 import com.wafflestudio.snutt2.feature.friend.FriendsRoute
 import com.wafflestudio.snutt2.feature.home.drawer.TimeTableRoute
 import com.wafflestudio.snutt2.feature.home.popups.Popup
-import com.wafflestudio.snutt2.feature.reviews.ReviewRoute
+import com.wafflestudio.snutt2.feature.review.ReviewRoute
 import com.wafflestudio.snutt2.feature.search.SearchRoute
 import com.wafflestudio.snutt2.feature.settings.SettingsRoute
 import com.wafflestudio.snutt2.logging.compose.PopupLoggingEffect

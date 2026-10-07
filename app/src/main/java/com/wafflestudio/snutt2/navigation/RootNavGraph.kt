@@ -43,7 +43,7 @@ import com.wafflestudio.snutt2.feature.login.SignUpPage
 import com.wafflestudio.snutt2.feature.login.TutorialPage
 import com.wafflestudio.snutt2.feature.login.resetpassword.ResetPasswordPage
 import com.wafflestudio.snutt2.feature.notifications.NotificationRoute
-import com.wafflestudio.snutt2.feature.reviews.ReviewRoute
+import com.wafflestudio.snutt2.feature.review.ReviewRoute
 import com.wafflestudio.snutt2.feature.settings.AppReportPage
 import com.wafflestudio.snutt2.feature.settings.ChangeNicknamePage
 import com.wafflestudio.snutt2.feature.settings.LectureReminderRoute
