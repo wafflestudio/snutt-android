@@ -33,7 +33,7 @@ class LectureInfoRepositoryImpl @Inject constructor(
     override suspend fun getReviewInfo(lecture: SyllabusLecture): Result<LectureReviewInfo?> {
         try {
             val dto = api._getLectureReviewSummary(lecture.originalLectureId)
-            return Result.Success(LectureReviewInfo(id = dto.id, rating = dto.rating, reviewCount = dto.reviewCount ?: 0))
+            return Result.Success(LectureReviewInfo(courseId = dto.id, rating = dto.rating, reviewCount = dto.reviewCount ?: 0))
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
         }

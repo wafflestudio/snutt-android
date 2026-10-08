@@ -116,7 +116,7 @@ fun LectureDto.toSearchedLecture(): SearchedLecture = SearchedLecture(
     registrationCount = registrationCount,
     wasFull = wasFull,
     reviewInfo = LectureReviewInfo(
-        id = review?.id ?: "",
+        courseId = review?.id ?: "",
         rating = review?.rating,
         reviewCount = review?.reviewCount ?: 0,
     ),
@@ -173,7 +173,7 @@ fun SearchedLecture.toLectureDto(): LectureDto = LectureDto(
     registrationCount = registrationCount,
     wasFull = wasFull,
     review = LectureReviewDto(
-        id = reviewInfo.id,
+        id = reviewInfo.courseId,
         rating = reviewInfo.rating,
         reviewCount = reviewInfo.reviewCount,
     ),
@@ -283,7 +283,7 @@ fun TimetableLectureDto.toSearchedLecture(): SearchedLecture = SearchedLecture(
     registrationCount = 0L,
     wasFull = false,
     reviewInfo = LectureReviewInfo(
-        id = snuttEvLecture?.evLectureId?.toString() ?: "",
+        courseId = snuttEvLecture?.evLectureId?.toString() ?: "",
         rating = 0.0,
         reviewCount = 0,
     ),
@@ -335,8 +335,8 @@ fun SearchedLecture.toTimetableLectureDto(): TimetableLectureDto = TimetableLect
     categoryPre2025 = categoryPre2025,
     colorIndex = 0,
     color = null,
-    snuttEvLecture = if (reviewInfo.id.isNotEmpty()) {
-        SnuttEvLectureIdDto(evLectureId = reviewInfo.id.toLongOrNull() ?: 0L)
+    snuttEvLecture = if (reviewInfo.courseId.isNotEmpty()) {
+        SnuttEvLectureIdDto(evLectureId = reviewInfo.courseId.toLongOrNull() ?: 0L)
     } else {
         null
     },

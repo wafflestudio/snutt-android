@@ -8,6 +8,20 @@
 - **강의평 작성**: 강의평 작성 화면에서 `수강 학기 선택 -> 총평 및 세부 평가 -> 강의 리뷰 작성 -> 작성 완료`의 흐름으로 진행
 - **내 강의평 조회**: 강의평 메인 화면에서 `나의 강의평`을 클릭해 내가 작성한 강의평을 확인 가능
 
+## ID 계약
+
+강의평 상세 화면은 **강좌 하나에 달린 강의평 목록**을 보여준다. 개별 강의평 하나를 보여주는 화면이 아니다. [v2 API](https://snutt-api-dev.wafflestudio.com/v3/api-docs/v2)는 여러 학기의 강의를 묶는 `Course`, 특정 학기의 `Lecture`, 사용자가 작성한 `Evaluation`을 구분한다.
+
+| 대상 | 앱의 필드 | 의미와 용도 |
+| --- | --- | --- |
+| 강좌 ID | `EvaluatedCourse.courseId: Long`, `LectureReviewInfo.courseId: String` | **같은 v2 `Course.id`**를 나타낸다. 강좌 상세와 강의평 목록 조회에 사용한다. `LectureReviewInfo`는 기존 응답의 `evLectureId`를 문자열로 보관하며, 빈 문자열은 ID가 없는 상태다. |
+| 학기별 강의 ID | v2 `Lecture.id: Long` | 해당 학기에 개설된 강의의 ID. 강의평 작성 API의 `lectureId`에 사용한다. 강좌 상세 응답의 `lectures`에서 선택한 학기에 맞는 강의를 정해야 한다. |
+| 개별 강의평 ID | `LectureReview.id: Long` | v2 `Evaluation.id`. 좋아요·신고·수정·삭제 등 개별 강의평 대상 작업에 사용한다. 강좌 상세의 ID와 다르다. |
+
+`evLectureId`와 v2 `courseId`의 대응은 [기존 검색 응답의 서버 매핑](https://github.com/wafflestudio/snutt-v2/blob/develop/v1compat/src/main/kotlin/com/wafflestudio/snutt/v1compat/snutt/V1CompatLectureSearchController.kt#L84-L90) 및 [강좌의 호환 응답 매핑](https://github.com/wafflestudio/snutt-v2/blob/develop/v1compat/src/main/kotlin/com/wafflestudio/snutt/v1compat/snutt/dto/LegacyLectureDtos.kt#L96)에서 확인했다. 이 계약은 **현재 서버에서 받은 값**에 대한 것이며, `evLectureId`를 개별 강의평 ID로 해석해서는 안 된다.
+
+앱의 `Lecture.id: String`은 v2의 학기별 `Lecture.id: Long`과 타입도 다르고, 데이터 출처에 따라 의미도 다르다. 검색 결과에서 만든 `SearchedLecture.id`는 검색 강의 ID지만, 시간표 DTO에서 만든 `SearchedLecture.id`와 `SyllabusLecture.id`는 시간표 항목 ID다. `SyllabusLecture.originalLectureId`는 원래 강의 ID를 별도로 보관한다. 따라서 강의평 작성 시 임의의 `Lecture.id`를 v2 작성 API의 `lectureId`로 바로 전달하지 말고, 선택한 `CourseBook`에 대응하는 강의 ID를 확인해야 한다.
+
 ---
 
 ## 유저 시나리오

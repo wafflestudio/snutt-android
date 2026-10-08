@@ -96,7 +96,7 @@ object LecturePreviewData {
             freshmanQuota = 0,
             registrationCount = 10,
             wasFull = false,
-            reviewInfo = LectureReviewInfo(id = "49367", rating = null, reviewCount = 0),
+            reviewInfo = LectureReviewInfo(courseId = "49367", rating = null, reviewCount = 0),
         ),
         SearchedLecture(
             id = "6896f0a272111e64aa138f8c",
@@ -118,7 +118,7 @@ object LecturePreviewData {
             freshmanQuota = 0,
             registrationCount = 0,
             wasFull = false,
-            reviewInfo = LectureReviewInfo(id = "43308", rating = null, reviewCount = 0),
+            reviewInfo = LectureReviewInfo(courseId = "43308", rating = null, reviewCount = 0),
         ),
         SearchedLecture(
             id = "6896f0a372111e64aa138f8d",
@@ -140,7 +140,7 @@ object LecturePreviewData {
             freshmanQuota = 0,
             registrationCount = 0,
             wasFull = false,
-            reviewInfo = LectureReviewInfo(id = "59313", rating = null, reviewCount = 0),
+            reviewInfo = LectureReviewInfo(courseId = "59313", rating = null, reviewCount = 0),
         ),
         SearchedLecture(
             id = "6896f0a572111e64aa138f8e",
@@ -163,7 +163,7 @@ object LecturePreviewData {
             freshmanQuota = 0,
             registrationCount = 0,
             wasFull = false,
-            reviewInfo = LectureReviewInfo(id = "47436", rating = null, reviewCount = 0),
+            reviewInfo = LectureReviewInfo(courseId = "47436", rating = null, reviewCount = 0),
         ),
         SearchedLecture(
             id = "6896f0a772111e64aa138f8f",
@@ -185,7 +185,7 @@ object LecturePreviewData {
             freshmanQuota = 0,
             registrationCount = 0,
             wasFull = false,
-            reviewInfo = LectureReviewInfo(id = "47797", rating = null, reviewCount = 0),
+            reviewInfo = LectureReviewInfo(courseId = "47797", rating = null, reviewCount = 0),
         ),
         SearchedLecture(
             id = "6896f0bf72111e64aa138f90",
@@ -207,7 +207,7 @@ object LecturePreviewData {
             freshmanQuota = 0,
             registrationCount = 0,
             wasFull = false,
-            reviewInfo = LectureReviewInfo(id = "", rating = null, reviewCount = 0),
+            reviewInfo = LectureReviewInfo(courseId = "", rating = null, reviewCount = 0),
         ),
         SearchedLecture(
             id = "6896f10272111e64aa138f91",
@@ -230,7 +230,7 @@ object LecturePreviewData {
             freshmanQuota = 0,
             registrationCount = 0,
             wasFull = false,
-            reviewInfo = LectureReviewInfo(id = "", rating = null, reviewCount = 0),
+            reviewInfo = LectureReviewInfo(courseId = "", rating = null, reviewCount = 0),
         ),
     )
 
@@ -278,7 +278,7 @@ object LecturePreviewData {
         freshmanQuota = 20,
         registrationCount = 45,
         wasFull = false,
-        reviewInfo = LectureReviewInfo(id = "12345", rating = 4.2, reviewCount = 38),
+        reviewInfo = LectureReviewInfo(courseId = "12345", rating = 4.2, reviewCount = 38),
     )
 
     val builtInColorLecture = SyllabusLecture(
@@ -305,7 +305,7 @@ object LecturePreviewData {
     )
 
     val sampleReviewInfo = LectureReviewInfo(
-        id = "review1",
+        courseId = "12345",
         rating = 4.2,
         reviewCount = 38,
     )

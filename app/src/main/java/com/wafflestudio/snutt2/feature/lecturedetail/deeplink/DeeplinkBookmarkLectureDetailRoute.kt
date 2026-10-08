@@ -116,7 +116,7 @@ fun DeeplinkBookmarkLectureDetailRoute(
                     onAddSession = {},
                     onSyllabus = vm::openSyllabus,
                     onReview = {
-                        onNavigateToReview(state.lecture.reviewInfo.id, state.lecture.id)
+                        onNavigateToReview(state.lecture.reviewInfo.courseId, state.lecture.id)
                     },
                     onDelete = {},
                     onReset = {},

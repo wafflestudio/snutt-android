@@ -1,7 +1,7 @@
 package com.wafflestudio.snutt2.domain.model
 
 data class LectureReviewInfo(
-    val id: String,
+    val courseId: String,
     val rating: Double?,
     val reviewCount: Int,
 ) {

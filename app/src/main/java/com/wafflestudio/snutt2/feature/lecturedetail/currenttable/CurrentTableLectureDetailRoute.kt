@@ -208,7 +208,7 @@ fun CurrentTableLectureDetailRoute(
                 onAddSession = vm::addSession,
                 onSyllabus = vm::openSyllabus,
                 onReview = {
-                    uiState.reviewInfo?.id?.let { reviewId ->
+                    uiState.reviewInfo?.courseId?.let { reviewId ->
                         onNavigateToReview(reviewId, vm.getLoggingLectureId())
                     }
                 },

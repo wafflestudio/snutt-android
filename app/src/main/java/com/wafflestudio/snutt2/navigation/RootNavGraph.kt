@@ -120,7 +120,7 @@ internal fun NavGraphBuilder.buildRootNavGraph(
             onNavigateToReview = { lecture ->
                 navController.navigate(
                     NavigationDestination.Review(
-                        reviewId = lecture.reviewInfo.id,
+                        reviewId = lecture.reviewInfo.courseId,
                         lectureId = lecture.id,
                     ),
                 )
@@ -203,7 +203,7 @@ internal fun NavGraphBuilder.buildRootNavGraph(
             onNavigateToReview = { lecture ->
                 navController.navigate(
                     NavigationDestination.Review(
-                        reviewId = lecture.reviewInfo.id,
+                        reviewId = lecture.reviewInfo.courseId,
                         lectureId = lecture.id,
                         referrer = DetailScreenReferrer.Bookmark.encode(),
                     ),

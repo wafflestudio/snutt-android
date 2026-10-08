@@ -28,7 +28,7 @@ object ReviewPreviewData {
         freshmanQuota = 0,
         registrationCount = 0,
         wasFull = false,
-        reviewInfo = LectureReviewInfo(id = "", rating = 3.0, reviewCount = 3),
+        reviewInfo = LectureReviewInfo(courseId = "1", rating = 3.0, reviewCount = 3),
     )
 
     val course = EvaluatedCourse(
@@ -68,8 +68,17 @@ object ReviewPreviewData {
 
     val searchResults = listOf(
         course,
-        course.copy(courseId = 2, lecture = lecture.copy(courseTitle = "인공지능과 생활", instructor = "교수님"), averageRating = null, reviewCount = 0),
-        course.copy(courseId = 3, lecture = lecture.copy(courseTitle = "인공지능", instructor = "교수명"), averageRating = 4.6),
+        course.copy(
+            courseId = 2,
+            lecture = lecture.copy(courseTitle = "인공지능과 생활", instructor = "교수님", reviewInfo = lecture.reviewInfo.copy(courseId = "2")),
+            averageRating = null,
+            reviewCount = 0,
+        ),
+        course.copy(
+            courseId = 3,
+            lecture = lecture.copy(courseTitle = "인공지능", instructor = "교수명", reviewInfo = lecture.reviewInfo.copy(courseId = "3")),
+            averageRating = 4.6,
+        ),
     )
 
     val semesterGroups = linkedMapOf(

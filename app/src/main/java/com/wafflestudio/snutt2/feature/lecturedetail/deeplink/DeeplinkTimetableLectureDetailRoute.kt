@@ -122,7 +122,7 @@ fun DeeplinkTimetableLectureDetailRoute(
                     onAddSession = {},
                     onSyllabus = vm::openSyllabus,
                     onReview = {
-                        state.reviewInfo?.id?.let { reviewId ->
+                        state.reviewInfo?.courseId?.let { reviewId ->
                             onNavigateToReview(reviewId, loggingLectureId)
                         }
                     },

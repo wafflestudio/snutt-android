@@ -73,7 +73,7 @@ object TestFixtures {
         freshmanQuota = 0,
         registrationCount = registrationCount,
         wasFull = wasFull,
-        reviewInfo = LectureReviewInfo(id = "", rating = null, reviewCount = 0),
+        reviewInfo = LectureReviewInfo(courseId = "", rating = null, reviewCount = 0),
     )
 
     val lecture1 = searchedLecture(id = "lec-1", courseTitle = "컴퓨터개론")
