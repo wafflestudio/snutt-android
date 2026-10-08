@@ -4,7 +4,9 @@ import com.wafflestudio.snutt2.domain.model.CourseBook
 
 data class LectureReview(
     val id: Long,
-    val course: EvaluatedCourse,
+    val courseId: Long,
+    val courseTitle: String,
+    val instructor: String,
     val courseBook: CourseBook,
     val rating: Double,
     val metrics: ReviewMetrics,

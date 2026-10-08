@@ -26,7 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.domain.model.review.EvaluatedCourse
+import com.wafflestudio.snutt2.domain.model.review.ReviewedCourse
 import com.wafflestudio.snutt2.feature.review.components.ReviewFilterTag
 import com.wafflestudio.snutt2.feature.review.components.ReviewLectureListItem
 import com.wafflestudio.snutt2.feature.review.components.ReviewSearchField
@@ -60,7 +60,7 @@ fun ReviewSearchRoute(
 @Composable
 fun ReviewSearchScreen(
     query: String,
-    results: List<EvaluatedCourse>,
+    results: List<ReviewedCourse>,
     filters: List<String>,
     onQueryChange: (String) -> Unit,
     onBackClick: () -> Unit,
@@ -110,8 +110,8 @@ fun ReviewSearchScreen(
                 item { Divider(thickness = 0.5.dp, color = SNUTTColors.LineLight) }
                 items(results) { course ->
                     ReviewLectureListItem(
-                        title = course.lecture.courseTitle,
-                        professor = course.lecture.instructor,
+                        title = course.title,
+                        professor = course.instructor,
                         rating = course.averageRating,
                         reviewCount = course.reviewCount.toInt(),
                         onClick = { onResultClick(course.courseId.toString()) },

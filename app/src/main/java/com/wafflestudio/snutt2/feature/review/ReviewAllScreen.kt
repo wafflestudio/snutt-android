@@ -97,15 +97,15 @@ fun ReviewAllScreen(
             }
             items(reviews) { review ->
                 ReviewCard(
-                    title = review.course.lecture.courseTitle,
-                    professor = review.course.lecture.instructor,
+                    title = review.courseTitle,
+                    professor = review.instructor,
                     rating = review.rating.toFloat(),
                     content = review.content,
                     semester = review.courseBook.toShortYearFormattedString(LocalContext.current),
                     likeCount = review.likeCount.toInt(),
                     liked = review.isLiked,
                     onLikeClick = { onLikeClick(review.id.toString()) },
-                    modifier = Modifier.padding(horizontal = 20.dp).padding(top = 4.dp).clicks { onReviewClick(review.course.courseId.toString()) },
+                    modifier = Modifier.padding(horizontal = 20.dp).padding(top = 4.dp).clicks { onReviewClick(review.courseId.toString()) },
                 )
                 Spacer(Modifier.height(12.dp))
                 Divider(modifier = Modifier.padding(horizontal = 20.dp), thickness = 0.5.dp, color = SNUTTColors.LineLight)

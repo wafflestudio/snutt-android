@@ -25,7 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.domain.model.review.EvaluatedCourse
+import com.wafflestudio.snutt2.domain.model.review.ReviewedCourse
 import com.wafflestudio.snutt2.domain.model.review.LectureReview
 import com.wafflestudio.snutt2.feature.review.components.ReviewCard
 import com.wafflestudio.snutt2.feature.review.components.ReviewDetailedCard
@@ -49,7 +49,7 @@ import com.wafflestudio.snutt2.ui.util.formatter.toShortYearFormattedString
 @Composable
 fun ReviewHomeScreen(
     reviews: List<LectureReview>,
-    courses: List<EvaluatedCourse>,
+    courses: List<ReviewedCourse>,
     reviewsByCourse: Map<Long, List<LectureReview>>,
     filters: List<String>,
     semesterTitle: String,
@@ -102,15 +102,15 @@ fun ReviewHomeScreen(
             items(reviews) { review ->
                 Spacer(Modifier.height(12.dp))
                 ReviewCard(
-                    title = review.course.lecture.courseTitle,
-                    professor = review.course.lecture.instructor,
+                    title = review.courseTitle,
+                    professor = review.instructor,
                     rating = review.rating.toFloat(),
                     content = review.content,
                     semester = review.courseBook.toShortYearFormattedString(LocalContext.current),
                     likeCount = review.likeCount.toInt(),
                     liked = review.isLiked,
                     onLikeClick = { onLikeClick(review.id.toString()) },
-                    modifier = Modifier.padding(horizontal = 20.dp).padding(top = 4.dp).clicks { onReviewClick(review.course.courseId.toString()) },
+                    modifier = Modifier.padding(horizontal = 20.dp).padding(top = 4.dp).clicks { onReviewClick(review.courseId.toString()) },
                 )
                 Spacer(Modifier.height(12.dp))
                 Divider(modifier = Modifier.padding(horizontal = 20.dp), color = SNUTTColors.LineLight, thickness = 0.5.dp)
@@ -175,8 +175,8 @@ fun ReviewHomeScreen(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         ReviewLectureListItem(
-                            title = course.lecture.courseTitle,
-                            professor = course.lecture.instructor,
+                            title = course.title,
+                            professor = course.instructor,
                             rating = course.averageRating,
                             reviewCount = course.reviewCount.toInt(),
                             onClick = { onReviewClick(course.courseId.toString()) },
@@ -207,7 +207,10 @@ private fun ReviewHomeScreen_Default() {
         ReviewHomeScreen(
             reviews = ReviewPreviewData.reviews,
             courses = ReviewPreviewData.searchResults,
-            reviewsByCourse = mapOf(ReviewPreviewData.searchResults.first().courseId to ReviewPreviewData.reviews),
+            reviewsByCourse = mapOf(
+                1L to listOf(ReviewPreviewData.reviews[0]),
+                2L to listOf(ReviewPreviewData.reviews[1]),
+            ),
             filters = listOf("1학년", "디자인과", "3학점", "2학점"),
             semesterTitle = "25년 2학기 수강한 강의",
             sortOrder = ReviewSortOrder.RECOMMENDED,

@@ -86,9 +86,9 @@ fun ReviewMyScreen(
                             modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
                             verticalArrangement = Arrangement.spacedBy(4.dp),
                         ) {
-                            Text(review.course.lecture.courseTitle, style = SNUTTTypography.h4.copy(fontSize = 15.sp))
+                            Text(review.courseTitle, style = SNUTTTypography.h4.copy(fontSize = 15.sp))
                             Text(
-                                review.course.lecture.instructor,
+                                review.instructor,
                                 style = SNUTTTypography.body2.copy(fontSize = 13.sp, color = SNUTTColors.TextAlternative),
                             )
                         }

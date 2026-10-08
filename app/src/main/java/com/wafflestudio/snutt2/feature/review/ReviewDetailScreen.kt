@@ -25,8 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.domain.model.LectureSyllabusInfo
-import com.wafflestudio.snutt2.domain.model.review.EvaluatedCourse
+import com.wafflestudio.snutt2.domain.model.review.ReviewedCourse
 import com.wafflestudio.snutt2.domain.model.review.LectureReview
 import com.wafflestudio.snutt2.feature.review.components.ReviewDetailedCard
 import com.wafflestudio.snutt2.feature.review.components.ReviewEmptyReviewPrompt
@@ -64,7 +63,7 @@ fun ReviewDetailRoute(
 
 @Composable
 fun ReviewDetailScreen(
-    course: EvaluatedCourse?,
+    course: ReviewedCourse?,
     reviews: List<LectureReview>,
     sortOrder: ReviewSortOrder,
     onBackClick: () -> Unit,
@@ -89,13 +88,16 @@ fun ReviewDetailScreen(
         if (course != null) {
             Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)) {
                 Spacer(Modifier.height(32.dp))
-                Text(course.lecture.courseTitle, style = SNUTTTypography.h2.copy(fontSize = 18.sp), maxLines = 1)
+                Text(course.title, style = SNUTTTypography.h2.copy(fontSize = 18.sp), maxLines = 1)
                 Spacer(Modifier.height(4.dp))
-                Text(course.lecture.instructor, style = SNUTTTypography.body1.copy(color = SNUTTColors.TextAlternative))
+                Text(course.instructor, style = SNUTTTypography.body1.copy(color = SNUTTColors.TextAlternative))
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    listOf((course.lecture as? LectureSyllabusInfo)?.department.orEmpty(), (course.lecture as? LectureSyllabusInfo)?.category.orEmpty(), stringResource(R.string.review_credits, course.lecture.credit))
-                        .filter { it.isNotBlank() }.joinToString(" · "),
+                    listOfNotNull(
+                        course.department?.takeIf { it.isNotBlank() },
+                        course.category?.takeIf { it.isNotBlank() },
+                        course.credit?.let { stringResource(R.string.review_credits, it) },
+                    ).joinToString(" · "),
                     style = SNUTTTypography.body2.copy(fontSize = 13.sp, color = SNUTTColors.TextAlternative),
                 )
                 Spacer(Modifier.height(28.dp))
@@ -142,7 +144,7 @@ fun ReviewDetailScreen(
                 if (reviews.isEmpty() && course != null) {
                     item {
                         ReviewEmptyReviewPrompt(
-                            courseTitle = course.lecture.courseTitle,
+                            courseTitle = course.title,
                             onClick = onWriteClick,
                             modifier = Modifier.padding(horizontal = 20.dp),
                         )

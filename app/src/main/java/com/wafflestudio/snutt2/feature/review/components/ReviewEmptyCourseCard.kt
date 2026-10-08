@@ -24,8 +24,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
-import com.wafflestudio.snutt2.domain.model.SearchedLecture
-import com.wafflestudio.snutt2.domain.model.review.EvaluatedCourse
+import com.wafflestudio.snutt2.domain.model.review.ReviewedCourse
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
 import com.wafflestudio.snutt2.ui.preview.ReviewPreviewData
@@ -36,7 +35,7 @@ import com.wafflestudio.snutt2.ui.theme.SNUTTTypography
 
 @Composable
 fun ReviewEmptyCourseCard(
-    course: EvaluatedCourse,
+    course: ReviewedCourse,
     onCourseClick: () -> Unit,
     onWriteClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -48,8 +47,8 @@ fun ReviewEmptyCourseCard(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             ReviewLectureListItem(
-                title = course.lecture.courseTitle,
-                professor = course.lecture.instructor,
+                title = course.title,
+                professor = course.instructor,
                 rating = null,
                 reviewCount = 0,
                 onClick = onCourseClick,
@@ -57,7 +56,7 @@ fun ReviewEmptyCourseCard(
             )
             ReviewWriteButton(onClick = onWriteClick, cornerRadius = 4.dp)
         }
-        ReviewEmptyReviewPrompt(course.lecture.courseTitle, onClick = onWriteClick)
+        ReviewEmptyReviewPrompt(course.title, onClick = onWriteClick)
     }
 }
 
@@ -103,7 +102,7 @@ fun ReviewEmptyReviewPrompt(
 private fun ReviewEmptyCourseCard_Default() {
     SnuttPreviewCenteredSurface {
         ReviewEmptyCourseCard(
-            course = ReviewPreviewData.course.copy(lecture = (ReviewPreviewData.course.lecture as SearchedLecture).copy(courseTitle = "죽음의 과학적 이해", instructor = "교수명"), averageRating = null, reviewCount = 0),
+            course = ReviewPreviewData.course.copy(title = "죽음의 과학적 이해", instructor = "교수명", averageRating = null, reviewCount = 0, averageMetrics = null),
             onCourseClick = {},
             onWriteClick = {},
             modifier = Modifier.padding(horizontal = 20.dp),

@@ -14,7 +14,7 @@
 
 | 대상 | 앱의 필드 | 의미와 용도 |
 | --- | --- | --- |
-| 강좌 ID | `EvaluatedCourse.courseId: Long`, `LectureReviewInfo.courseId: String` | **같은 v2 `Course.id`**를 나타낸다. 강좌 상세와 강의평 목록 조회에 사용한다. `LectureReviewInfo`는 기존 응답의 `evLectureId`를 문자열로 보관하며, 빈 문자열은 ID가 없는 상태다. |
+| 강좌 ID | `ReviewedCourse.courseId: Long`, `LectureReviewInfo.courseId: String` | **같은 v2 `Course.id`**를 나타낸다. 강좌 상세와 강의평 목록 조회에 사용한다. `LectureReviewInfo`는 기존 응답의 `evLectureId`를 문자열로 보관하며, 빈 문자열은 ID가 없는 상태다. |
 | 학기별 강의 ID | v2 `Lecture.id: Long` | 해당 학기에 개설된 강의의 ID. 강의평 작성 API의 `lectureId`에 사용한다. 강좌 상세 응답의 `lectures`에서 선택한 학기에 맞는 강의를 정해야 한다. |
 | 개별 강의평 ID | `LectureReview.id: Long` | v2 `Evaluation.id`. 좋아요·신고·수정·삭제 등 개별 강의평 대상 작업에 사용한다. 강좌 상세의 ID와 다르다. |
 

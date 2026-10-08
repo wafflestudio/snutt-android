@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.CourseBook
-import com.wafflestudio.snutt2.domain.model.review.EvaluatedCourse
+import com.wafflestudio.snutt2.domain.model.review.ReviewedCourse
 import com.wafflestudio.snutt2.feature.review.components.ReviewStarRating
 import com.wafflestudio.snutt2.feature.review.components.ReviewSubmitButton
 import com.wafflestudio.snutt2.feature.review.components.ReviewTextInput
@@ -71,7 +71,7 @@ fun ReviewWriteRoute(onNavigateBack: () -> Unit) {
 
 @Composable
 fun ReviewWriteScreen(
-    course: EvaluatedCourse?,
+    course: ReviewedCourse?,
     courseBooks: List<CourseBook>,
     selectedCourseBook: CourseBook?,
     ratings: ReviewWriteRatings,
@@ -101,9 +101,9 @@ fun ReviewWriteScreen(
         Column(modifier = Modifier.weight(1f).verticalScroll(rememberScrollState())) {
             if (course != null) {
                 Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 24.dp)) {
-                    Text(course.lecture.courseTitle, style = SNUTTTypography.h2.copy(fontSize = 17.sp))
+                    Text(course.title, style = SNUTTTypography.h2.copy(fontSize = 17.sp))
                     Spacer(Modifier.height(4.dp))
-                    Text(course.lecture.instructor, style = SNUTTTypography.body1.copy(color = SNUTTColors.TextAlternative))
+                    Text(course.instructor, style = SNUTTTypography.body1.copy(color = SNUTTColors.TextAlternative))
                 }
             }
             Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp).background(SNUTTColors.White900, RoundedCornerShape(12.dp))) {
