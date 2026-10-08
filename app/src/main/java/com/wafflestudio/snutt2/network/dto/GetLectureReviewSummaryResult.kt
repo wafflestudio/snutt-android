@@ -1,3 +1,3 @@
 package com.wafflestudio.snutt2.network.dto
 
-typealias GetLectureReviewSummaryResult = LectureReviewDto
+typealias GetLectureReviewSummaryResult = LectureReviewSummaryDto

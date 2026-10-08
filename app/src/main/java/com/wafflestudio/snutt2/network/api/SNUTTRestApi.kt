@@ -90,6 +90,22 @@ import com.wafflestudio.snutt2.network.dto.RegisterFirebaseTokenParams
 import com.wafflestudio.snutt2.network.dto.RegisterFirebaseTokenResults
 import com.wafflestudio.snutt2.network.dto.ResetLectureResults
 import com.wafflestudio.snutt2.network.dto.TimetableLectureReminderDto
+import com.wafflestudio.snutt2.network.dto.review.CourseIdLookupDto
+import com.wafflestudio.snutt2.network.dto.review.CourseReviewSummaryDto
+import com.wafflestudio.snutt2.network.dto.review.CourseSearchPageDto
+import com.wafflestudio.snutt2.network.dto.review.CourseWithSemesterLecturesDto
+import com.wafflestudio.snutt2.network.dto.review.LatestTakenCoursesDto
+import com.wafflestudio.snutt2.network.dto.review.MyCourseReviewsDto
+import com.wafflestudio.snutt2.network.dto.review.PatchReviewParams
+import com.wafflestudio.snutt2.network.dto.review.PostReviewParams
+import com.wafflestudio.snutt2.network.dto.review.PostReviewReportParams
+import com.wafflestudio.snutt2.network.dto.review.PostReviewReportResults
+import com.wafflestudio.snutt2.network.dto.review.PostReviewResults
+import com.wafflestudio.snutt2.network.dto.review.ReviewTagGroupDto
+import com.wafflestudio.snutt2.network.dto.review.ReviewWithCourseIdDto
+import com.wafflestudio.snutt2.network.dto.review.ReviewWithCourseIdPageDto
+import com.wafflestudio.snutt2.network.dto.review.ReviewWithCourseBriefPageDto
+import com.wafflestudio.snutt2.network.dto.review.SearchTagGroupsDto
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -538,4 +554,102 @@ interface SNUTTRestApi {
     suspend fun _removeDiarySubmission(
         @Path("id") id: String,
     ): OkResponseDto
+
+    @GET("/ev/v1/lectures")
+    suspend fun _searchCoursesForReview(
+        @Query("query") query: String? = null,
+        @Query("page") page: Int? = null,
+        @Query("tags") tags: List<Long>? = null,
+    ): CourseSearchPageDto
+
+    @GET("/ev/v1/lectures/{courseId}/semester-lectures")
+    suspend fun _getCourseWithSemesterLectures(
+        @Path("courseId") courseId: Long,
+    ): CourseWithSemesterLecturesDto
+
+    @GET("/ev/v1/lectures/{courseId}/evaluation-summary")
+    suspend fun _getCourseReviewSummary(
+        @Path("courseId") courseId: Long,
+    ): CourseReviewSummaryDto
+
+    @GET("/ev/v1/lectures/{courseId}/evaluations")
+    suspend fun _getCourseReviews(
+        @Path("courseId") courseId: Long,
+        @Query("cursor") cursor: String? = null,
+        @Query("sort") sort: String? = null,
+        @Query("year") year: Int? = null,
+        @Query("semester") semester: Int? = null,
+    ): ReviewWithCourseIdPageDto
+
+    @GET("/ev/v1/lectures/{courseId}/evaluations/users/me")
+    suspend fun _getMyReviewsForCourse(
+        @Path("courseId") courseId: Long,
+    ): MyCourseReviewsDto
+
+    @GET("/ev/v1/evaluations/me")
+    suspend fun _getMyReviews(
+        @Query("cursor") cursor: String? = null,
+    ): ReviewWithCourseBriefPageDto
+
+    @GET("/ev/v1/evaluations/{evaluationId}")
+    suspend fun _getReview(
+        @Path("evaluationId") reviewId: Long,
+    ): ReviewWithCourseIdDto
+
+    @POST("/ev/v1/semester-lectures/{semesterLectureId}/evaluations")
+    suspend fun _postReview(
+        @Path("semesterLectureId") semesterLectureId: Long,
+        @Body request: PostReviewParams,
+    ): PostReviewResults
+
+    @PATCH("/ev/v1/evaluations/{evaluationId}")
+    suspend fun _patchReview(
+        @Path("evaluationId") reviewId: Long,
+        @Body request: PatchReviewParams,
+    ): ReviewWithCourseIdDto
+
+    @DELETE("/ev/v1/evaluations/{evaluationId}")
+    suspend fun _deleteReview(
+        @Path("evaluationId") reviewId: Long,
+    )
+
+    @POST("/ev/v1/evaluations/{evaluationId}/likes")
+    suspend fun _postReviewLike(
+        @Path("evaluationId") reviewId: Long,
+    )
+
+    @DELETE("/ev/v1/evaluations/{evaluationId}/likes")
+    suspend fun _deleteReviewLike(
+        @Path("evaluationId") reviewId: Long,
+    )
+
+    @POST("/ev/v1/evaluations/{evaluationId}/report")
+    suspend fun _postReviewReport(
+        @Path("evaluationId") reviewId: Long,
+        @Body request: PostReviewReportParams,
+    ): PostReviewReportResults
+
+    @GET("/ev/v1/tags/search")
+    suspend fun _getCourseSearchTags(): SearchTagGroupsDto
+
+    @GET("/ev/v1/tags/main")
+    suspend fun _getMainReviewTags(): ReviewTagGroupDto
+
+    @GET("/ev/v1/tags/main/{tagId}/evaluations")
+    suspend fun _getReviewsByTag(
+        @Path("tagId") tagId: Long,
+        @Query("cursor") cursor: String? = null,
+    ): ReviewWithCourseBriefPageDto
+
+    @GET("/ev/v1/users/me/lectures/latest")
+    suspend fun _getLatestTakenCourses(
+        @Query("filter") filter: String? = null,
+    ): LatestTakenCoursesDto
+
+    @GET("/ev/v1/lectures/id")
+    suspend fun _getCourseIdByLecture(
+        @Query("semesterLectureSnuttId") semesterLectureSnuttId: String,
+        @Query("course_number") courseNumber: String,
+        @Query("instructor") instructor: String,
+    ): CourseIdLookupDto
 }

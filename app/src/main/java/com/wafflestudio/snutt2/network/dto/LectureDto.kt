@@ -26,7 +26,7 @@ data class LectureDto(
     @param:Json(name = "color") val color: ColorDto = ColorDto(),
     @param:Json(name = "registrationCount") val registrationCount: Long = 0,
     @param:Json(name = "wasFull") val wasFull: Boolean = false,
-    @param:Json(name = "snuttEvLecture") val review: LectureReviewDto? = null,
+    @param:Json(name = "snuttEvLecture") val review: LectureReviewSummaryDto? = null,
 ) {
 
     val isCustom: Boolean

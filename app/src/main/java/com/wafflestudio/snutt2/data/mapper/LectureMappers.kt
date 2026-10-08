@@ -18,7 +18,7 @@ import com.wafflestudio.snutt2.network.dto.ColorDto
 import com.wafflestudio.snutt2.network.dto.ColorSetDto
 import com.wafflestudio.snutt2.network.dto.LectureBuildingDto
 import com.wafflestudio.snutt2.network.dto.LectureDto
-import com.wafflestudio.snutt2.network.dto.LectureReviewDto
+import com.wafflestudio.snutt2.network.dto.LectureReviewSummaryDto
 import com.wafflestudio.snutt2.network.dto.SnuttEvLectureIdDto
 import com.wafflestudio.snutt2.network.dto.TimetableLectureDto
 import com.wafflestudio.snutt2.network.dto.parseHexColor
@@ -172,7 +172,7 @@ fun SearchedLecture.toLectureDto(): LectureDto = LectureDto(
     color = ColorDto(),
     registrationCount = registrationCount,
     wasFull = wasFull,
-    review = LectureReviewDto(
+    review = LectureReviewSummaryDto(
         id = reviewInfo.courseId,
         rating = reviewInfo.rating,
         reviewCount = reviewInfo.reviewCount,
@@ -220,7 +220,7 @@ fun ColorDto.toLocalEntity(): ColorLocalEntity = ColorLocalEntity(
     bgRaw = bgRaw,
 )
 
-fun LectureReviewDto.toLocalEntity(): LectureReviewLocalEntity = LectureReviewLocalEntity(
+fun LectureReviewSummaryDto.toLocalEntity(): LectureReviewLocalEntity = LectureReviewLocalEntity(
     id = id,
     rating = rating,
     reviewCount = reviewCount,
