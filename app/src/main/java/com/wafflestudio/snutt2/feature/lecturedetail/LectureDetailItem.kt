@@ -77,7 +77,6 @@ fun LectureDetailItem(
             text = title,
             style = SNUTTTypography.body1.copy(color = SNUTTColors.Black600),
             modifier = Modifier.width(88.dp),
-            maxLines = 1,
         )
         Box(modifier = Modifier.weight(1f)) {
             content()
@@ -117,6 +116,18 @@ private fun LectureDetailItem_Empty() {
         LectureDetailItem(
             title = "비고",
             value = "",
+            enabled = false,
+        )
+    }
+}
+
+@SnuttPreview
+@Composable
+private fun LectureDetailItem_LongTitle() {
+    SnuttPreviewSurface {
+        LectureDetailItem(
+            title = "Lecture Number",
+            value = "001",
             enabled = false,
         )
     }
