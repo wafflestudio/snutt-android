@@ -112,16 +112,7 @@ fun LectureDetail(
                 Spacer(modifier = Modifier.height(10.dp))
 
                 // 2. 강의 리마인더
-                AnimatedVisibility(visible = showLectureReminderPicker && !editMode) {
-                    Column {
-                        LectureReminderSection(
-                            lectureWithReminderOption = lectureWithReminderOption,
-                            enableLectureReminderPicker = enableLectureReminderPicker,
-                            onReminderOptionChange = onReminderOptionChange,
-                        )
-                        Spacer(modifier = Modifier.height(10.dp))
-                    }
-                }
+                LectureReminderSection()
 
                 // 3. 강의 평점
                 AnimatedVisibility(visible = lecture is LectureSyllabusInfo && !editMode) {

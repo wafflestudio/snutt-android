@@ -471,14 +471,7 @@ private fun NavGraphBuilder.settingComposables(
         )
     }
     composableAnimated<NavigationDestination.LectureReminder>(scheme) {
-        LectureReminderRoute(
-            onNavigateBack = {
-                if (navController.currentDestination?.hasRoute(NavigationDestination.LectureReminder::class) == true) {
-                    navController.popBackStack()
-                }
-            },
-            onNavigateOnboard = { navController.navigateAsOrigin(NavigationDestination.Onboard) },
-        )
+        LectureReminderRoute()
     }
     composableAnimated<NavigationDestination.ThemeMarket>(scheme) {
         ThemeMarketRoute(

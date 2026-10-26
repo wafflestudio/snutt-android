@@ -10,14 +10,12 @@ import com.wafflestudio.snutt2.data.currenttablelecture.CurrentTableLectureRepos
 import com.wafflestudio.snutt2.data.lectureinfo.LectureInfoRepository
 import com.wafflestudio.snutt2.data.onFailure
 import com.wafflestudio.snutt2.data.onSuccess
-import com.wafflestudio.snutt2.data.semesterstatus.SemesterStatusRepository
 import com.wafflestudio.snutt2.data.tables.TableRepository
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.data.vacancynoti.VacancyRepository
 import com.wafflestudio.snutt2.domain.AuthError
 import com.wafflestudio.snutt2.domain.DisplayMessageResolver
 import com.wafflestudio.snutt2.domain.DomainError
-import com.wafflestudio.snutt2.domain.EOF
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
 import com.wafflestudio.snutt2.domain.LectureOverlap
 import com.wafflestudio.snutt2.domain.model.Building
@@ -26,13 +24,10 @@ import com.wafflestudio.snutt2.domain.model.CourseBook
 import com.wafflestudio.snutt2.domain.model.CustomLecture
 import com.wafflestudio.snutt2.domain.model.Lecture
 import com.wafflestudio.snutt2.domain.model.LectureColor
-import com.wafflestudio.snutt2.domain.model.LectureReminderOffset
 import com.wafflestudio.snutt2.domain.model.LectureReviewInfo
 import com.wafflestudio.snutt2.domain.model.LectureSession
-import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
 import com.wafflestudio.snutt2.domain.model.LocalLecture
 import com.wafflestudio.snutt2.domain.model.SyllabusLecture
-import com.wafflestudio.snutt2.domain.model.TableSummary
 import com.wafflestudio.snutt2.domain.model.TableTheme
 import com.wafflestudio.snutt2.logging.AddToBookmarkParameter
 import com.wafflestudio.snutt2.logging.AddToVacancyParameter
@@ -61,7 +56,6 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
     private val lectureInfoRepository: LectureInfoRepository,
     private val tableRepository: TableRepository,
     private val vacancyRepository: VacancyRepository,
-    private val semesterStatusRepository: SemesterStatusRepository,
     private val userRepository: UserRepository,
     private val remoteConfig: RemoteConfig,
     private val displayMessageResolver: DisplayMessageResolver,
@@ -96,13 +90,11 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
         viewModelScope.launch {
             val reviewInfoDeferred = async { fetchReviewInfo(originalLecture) }
             val buildingsDeferred = async { fetchBuildings(originalLecture) }
-            val reminderDeferred = async { fetchLectureReminder(originalLecture, table.summary) }
             val bookmarkDeferred = async { fetchBookmarkState(courseBook) }
             val vacancyDeferred = async { fetchVacancyState() }
 
             val reviewInfo = reviewInfoDeferred.await()
             val buildings = buildingsDeferred.await()
-            val reminderState = reminderDeferred.await()
             val isBookmarked = bookmarkDeferred.await()
             val vacancyRegistered = vacancyDeferred.await()
 
@@ -112,9 +104,6 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
                     buildings = buildings,
                     isBookmarked = isBookmarked,
                     vacancyRegistered = vacancyRegistered,
-                    showLectureReminderPicker = reminderState.showPicker,
-                    lectureWithReminderOption = reminderState.option,
-                    enableLectureReminderPicker = reminderState.enablePicker,
                 )
             }
         }
@@ -472,68 +461,6 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
 
     // endregion
 
-    // region 리마인더
-
-    fun changeLectureReminderOption(option: LectureWithReminderOption) {
-        _uiState.update { it.copy(lectureWithReminderOption = option) }
-        viewModelScope.launch { putLectureReminder(option) }
-    }
-
-    private data class ReminderState(
-        val showPicker: Boolean = false,
-        val enablePicker: Boolean = false,
-        val option: LectureWithReminderOption = LectureWithReminderOption.Default,
-    )
-
-    private suspend fun fetchLectureReminder(lecture: Lecture, baseTable: TableSummary): ReminderState {
-        if (!shouldFetchReminder(lecture, baseTable)) return ReminderState()
-
-        var state = ReminderState()
-        tableRepository.getTimetableLectureReminder(baseTable.id, lecture.id)
-            .onSuccess { data ->
-                state = ReminderState(
-                    showPicker = true,
-                    enablePicker = baseTable.isPrimary,
-                    option = data,
-                )
-            }
-            .onFailure { error ->
-                when (error) {
-                    is AuthError -> handleError(error)
-                    is EOF -> {
-                        state = ReminderState(
-                            showPicker = true,
-                            enablePicker = baseTable.isPrimary,
-                            option = LectureWithReminderOption.Default.copy(lectureId = lecture.id),
-                        )
-                    }
-
-                    else -> handleError(error)
-                }
-            }
-        return state
-    }
-
-    private fun shouldFetchReminder(lecture: Lecture, baseTable: TableSummary): Boolean {
-        if (lecture.lectureSessions.isEmpty()) return false
-        val semesterStatus = semesterStatusRepository.semesterStatus.value ?: return false
-        return semesterStatus.isActiveSemester(baseTable.courseBook)
-    }
-
-    private suspend fun putLectureReminder(option: LectureWithReminderOption) {
-        tableRepository.updateTimetableLectureReminder(
-            timetableId = tableId,
-            lectureId = option.lectureId,
-            offset = option.lectureReminderOffset,
-        ).onSuccess {
-            _uiEvent.emit(CurrentTableLectureDetailUiEvent.ReminderUpdateSuccess(option.lectureReminderOffset))
-        }.onFailure { error ->
-            handleReminderError(error, false)
-        }
-    }
-
-    // endregion
-
     // region 데이터 fetch
 
     private suspend fun fetchReviewInfo(lecture: Lecture): LectureReviewInfo? {
@@ -593,25 +520,6 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
         }
     }
 
-    private suspend fun handleReminderError(error: DomainError, isTablePrimary: Boolean) {
-        when (error) {
-            is AuthError -> handleError(error)
-
-            is EOF -> {
-                val defaultOption = LectureWithReminderOption.Default.copy(lectureId = originalLecture.id)
-                _uiState.update {
-                    it.copy(
-                        showLectureReminderPicker = true,
-                        enableLectureReminderPicker = isTablePrimary,
-                        lectureWithReminderOption = defaultOption,
-                    )
-                }
-            }
-
-            else -> handleError(error)
-        }
-    }
-
     // endregion
 }
 
@@ -627,9 +535,6 @@ data class CurrentTableLectureDetailUiState(
     val vacancyRegistered: Boolean = false,
     val showCategoryPre2025: Boolean = false,
     val disableMapFeature: Boolean = false,
-    val showLectureReminderPicker: Boolean = false,
-    val lectureWithReminderOption: LectureWithReminderOption = LectureWithReminderOption.Default,
-    val enableLectureReminderPicker: Boolean = false,
     val dialogState: DialogState = DialogState.None,
     val sheetType: SheetType = SheetType.None,
 ) {
@@ -650,7 +555,6 @@ data class CurrentTableLectureDetailUiState(
 
 sealed interface CurrentTableLectureDetailUiEvent {
     data class ShowToast(val message: String) : CurrentTableLectureDetailUiEvent
-    data class ReminderUpdateSuccess(val offset: LectureReminderOffset) : CurrentTableLectureDetailUiEvent
     data class OpenUrl(val url: String) : CurrentTableLectureDetailUiEvent
     data object OpenBottomSheet : CurrentTableLectureDetailUiEvent
     data object CloseBottomSheet : CurrentTableLectureDetailUiEvent

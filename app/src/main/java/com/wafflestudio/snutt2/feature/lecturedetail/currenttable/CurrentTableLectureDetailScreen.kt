@@ -1,7 +1,6 @@
 package com.wafflestudio.snutt2.feature.lecturedetail.currenttable
 
 import androidx.compose.runtime.Composable
-import com.wafflestudio.snutt2.config.FeatureFlag
 import com.wafflestudio.snutt2.domain.model.LectureSession
 import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
 import com.wafflestudio.snutt2.feature.lecturedetail.LectureDetail
@@ -63,9 +62,9 @@ fun CurrentTableLectureDetailScreen(
         vacancyRegistered = uiState.vacancyRegistered,
         showCategoryPre2025 = uiState.showCategoryPre2025,
         disableMapFeature = uiState.disableMapFeature,
-        showLectureReminderPicker = uiState.showLectureReminderPicker && FeatureFlag.LECTURE_REMINDER.isEnabled,
-        lectureWithReminderOption = uiState.lectureWithReminderOption,
-        enableLectureReminderPicker = uiState.enableLectureReminderPicker,
+        showLectureReminderPicker = false,
+        lectureWithReminderOption = LectureWithReminderOption.Default,
+        enableLectureReminderPicker = false,
         showFloatingButton = false,
         onBackPressed = onBackPressed,
         onEditModeToggle = onEditModeToggle,
