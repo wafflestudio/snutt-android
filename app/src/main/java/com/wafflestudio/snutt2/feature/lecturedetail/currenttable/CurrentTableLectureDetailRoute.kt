@@ -1,10 +1,8 @@
 package com.wafflestudio.snutt2.feature.lecturedetail.currenttable
 
-import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.SnackbarResult
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,9 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.domain.model.LectureColor
-import com.wafflestudio.snutt2.domain.model.LectureReminderOffset
 import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.DetailScreenReferrer
 import com.wafflestudio.snutt2.logging.LectureDetailParameter
@@ -27,10 +23,8 @@ import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.navigation.NavigationDestination
 import com.wafflestudio.snutt2.navigation.observeResult
 import com.wafflestudio.snutt2.ui.components.compose.BottomSheetDismissEffect
-import com.wafflestudio.snutt2.ui.components.compose.snackbar.CustomSnackBarDuration
 import com.wafflestudio.snutt2.ui.components.compose.snackbar.CustomSnackBarHostState
 import com.wafflestudio.snutt2.ui.components.compose.snackbar.SnackBarScaffold
-import com.wafflestudio.snutt2.ui.components.compose.snackbar.dismiss
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 import com.wafflestudio.snutt2.ui.util.openCustomTab
 import com.wafflestudio.snutt2.ui.util.toast
@@ -84,43 +78,11 @@ fun CurrentTableLectureDetailRoute(
 
     BottomSheetDismissEffect(sheetState, vm::onSheetDismissed)
 
-    @SuppressLint("LocalContextGetResourceValueCall")
     LaunchedEffect(Unit) {
         vm.uiEvent.collect { event ->
             when (event) {
                 is CurrentTableLectureDetailUiEvent.ShowToast -> {
                     if (event.message.isNotEmpty()) context.toast(event.message)
-                }
-
-                is CurrentTableLectureDetailUiEvent.ReminderUpdateSuccess -> {
-                    val message = when (event.offset) {
-                        LectureReminderOffset.NONE -> ""
-                        LectureReminderOffset.TEN_MINUTES_BEFORE ->
-                            context.getString(R.string.settings_lecture_reminder_update_success_ten_minutes_before)
-
-                        LectureReminderOffset.AT_START_TIME ->
-                            context.getString(R.string.settings_lecture_reminder_update_success_at_start_time)
-
-                        LectureReminderOffset.TEN_MINUTES_AFTER ->
-                            context.getString(R.string.settings_lecture_reminder_update_success_ten_minutes_after)
-                    }
-                    if (message.isNotEmpty()) {
-                        launch {
-                            snackBarHostState.currentSnackBarData.dismiss()
-                            val result = snackBarHostState.showSnackBar(
-                                message = message,
-                                actionLabel = context.getString(R.string.lecture_detail_lecture_reminder_snackbar_navigate),
-                                duration = CustomSnackBarDuration(
-                                    fadeIn = 500L,
-                                    inBetween = 3000L,
-                                    fadeOut = 500L,
-                                ),
-                            )
-                            if (result == SnackbarResult.ActionPerformed) {
-                                onNavigateLectureReminder()
-                            }
-                        }
-                    }
                 }
 
                 is CurrentTableLectureDetailUiEvent.OpenUrl -> {
@@ -191,7 +153,7 @@ fun CurrentTableLectureDetailRoute(
                 onColorClick = {
                     onNavigateColorSelector(uiState.lecture.color)
                 },
-                onReminderOptionChange = vm::changeLectureReminderOption,
+                onReminderOptionChange = {},
                 onCreditChange = vm::editCredit,
                 onDepartmentChange = vm::editDepartment,
                 onAcademicYearChange = vm::editAcademicYear,
