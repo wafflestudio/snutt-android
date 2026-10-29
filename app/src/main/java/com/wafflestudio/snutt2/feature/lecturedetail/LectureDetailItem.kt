@@ -1,10 +1,12 @@
 package com.wafflestudio.snutt2.feature.lecturedetail
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -18,7 +20,9 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.Hyphens
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wafflestudio.snutt2.R
@@ -75,8 +79,11 @@ fun LectureDetailItem(
         Spacer(modifier = Modifier.width(20.dp))
         Text(
             text = title,
-            style = SNUTTTypography.body1.copy(color = SNUTTColors.Black600),
-            modifier = Modifier.width(88.dp),
+            style = SNUTTTypography.body1.copy(
+                color = SNUTTColors.Black600,
+                hyphens = Hyphens.Auto,
+            ),
+            modifier = Modifier.width(88.dp).padding(end = 8.dp),
         )
         Box(modifier = Modifier.weight(1f)) {
             content()
@@ -128,6 +135,19 @@ private fun LectureDetailItem_LongTitle() {
         LectureDetailItem(
             title = "Lecture Number",
             value = "001",
+            enabled = false,
+        )
+    }
+}
+
+@Preview(name = "1. Light (English)", uiMode = Configuration.UI_MODE_NIGHT_NO, locale = "en", showSystemUi = true)
+@Preview(name = "2. Dark (English)", uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "en", showSystemUi = true)
+@Composable
+private fun LectureDetailItem_LongWordTitle() {
+    SnuttPreviewSurface {
+        LectureDetailItem(
+            title = "Classification",
+            value = "전공필수",
             enabled = false,
         )
     }
