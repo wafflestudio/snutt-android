@@ -7,7 +7,7 @@ object ErrorCode {
 
     const val LECTURE_TIME_OVERLAP = 0x300C
     const val INVALID_EMAIL = 0x300F
-    const val PAST_SEMESTER = 0x9C58
+    const val LECTURE_TIME_MISSING = 0x9C58 // 40024: 과목에 수업 시간 정보가 없음
     const val DISABLED_FEATURE = 0x9C59
     // Client-Side 에러 코드 (추후 추가)
 

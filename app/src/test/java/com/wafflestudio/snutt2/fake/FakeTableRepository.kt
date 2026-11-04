@@ -9,6 +9,7 @@ import com.wafflestudio.snutt2.domain.model.Table
 import com.wafflestudio.snutt2.domain.model.TableSummary
 import com.wafflestudio.snutt2.domain.model.TimetableLectureReminders
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.CompletableDeferred
 
 class FakeTableRepository : TableRepository {
 
@@ -59,6 +60,21 @@ class FakeTableRepository : TableRepository {
 
     var fetchTableListResult: Result<Unit> = Result.Success(Unit)
     var fetchTableListCalled = false
+        private set
+    var fetchTableListCallCount = 0
+        private set
+    var fetchTableListDeferred: CompletableDeferred<Result<Unit>>? = null
+
+    var getTimetableRemindersResult: Result<TimetableLectureReminders> = Result.Success(
+        TimetableLectureReminders("", emptyList()),
+    )
+    var getTimetableRemindersHandler: (suspend (String) -> Result<TimetableLectureReminders>)? = null
+    var getTimetableRemindersCalls: List<String> = emptyList()
+        private set
+
+    var updateTimetableLectureReminderResult: Result<LectureWithReminderOption> = Result.Success(LectureWithReminderOption.Default)
+    var updateTimetableLectureReminderHandler: (suspend (String, String, LectureReminderOffset) -> Result<LectureWithReminderOption>)? = null
+    var updateTimetableLectureReminderCalls: List<Triple<String, String, LectureReminderOffset>> = emptyList()
         private set
 
     var updateTableThemeBuiltInResult: Result<Unit> = Result.Success(Unit)
@@ -112,7 +128,8 @@ class FakeTableRepository : TableRepository {
 
     override suspend fun fetchTableList(): Result<Unit> {
         fetchTableListCalled = true
-        return fetchTableListResult
+        fetchTableListCallCount++
+        return fetchTableListDeferred?.await() ?: fetchTableListResult
     }
 
     override suspend fun updateTableTheme(tableId: String, code: Int): Result<Unit> {
@@ -131,7 +148,13 @@ class FakeTableRepository : TableRepository {
         fetchAndSelectDefaultTableCallCount += 1
         return fetchAndSelectDefaultTableResults.removeFirstOrNull() ?: fetchAndSelectDefaultTableResult
     }
-    override suspend fun getTimetableReminders(timetableId: String): Result<TimetableLectureReminders> = TODO("Not used in this test")
+    override suspend fun getTimetableReminders(timetableId: String): Result<TimetableLectureReminders> {
+        getTimetableRemindersCalls = getTimetableRemindersCalls + timetableId
+        return getTimetableRemindersHandler?.invoke(timetableId) ?: getTimetableRemindersResult
+    }
     override suspend fun getTimetableLectureReminder(timetableId: String, lectureId: String): Result<LectureWithReminderOption> = TODO("Not used in this test")
-    override suspend fun updateTimetableLectureReminder(timetableId: String, lectureId: String, offset: LectureReminderOffset): Result<LectureWithReminderOption> = TODO("Not used in this test")
+    override suspend fun updateTimetableLectureReminder(timetableId: String, lectureId: String, offset: LectureReminderOffset): Result<LectureWithReminderOption> {
+        updateTimetableLectureReminderCalls = updateTimetableLectureReminderCalls + Triple(timetableId, lectureId, offset)
+        return updateTimetableLectureReminderHandler?.invoke(timetableId, lectureId, offset) ?: updateTimetableLectureReminderResult
+    }
 }

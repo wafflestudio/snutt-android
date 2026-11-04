@@ -132,6 +132,7 @@ android {
             isIncludeAndroidResources = true
         }
     }
+
 }
 
 composeCompiler {

@@ -11,11 +11,14 @@ import com.wafflestudio.snutt2.data.lectureinfo.LectureInfoRepository
 import com.wafflestudio.snutt2.data.onFailure
 import com.wafflestudio.snutt2.data.onSuccess
 import com.wafflestudio.snutt2.data.tables.TableRepository
+import com.wafflestudio.snutt2.data.semesterstatus.SemesterStatusRepository
+import com.wafflestudio.snutt2.config.FeatureFlag
 import com.wafflestudio.snutt2.data.user.UserRepository
 import com.wafflestudio.snutt2.data.vacancynoti.VacancyRepository
 import com.wafflestudio.snutt2.domain.AuthError
 import com.wafflestudio.snutt2.domain.DisplayMessageResolver
 import com.wafflestudio.snutt2.domain.DomainError
+import com.wafflestudio.snutt2.domain.EOF
 import com.wafflestudio.snutt2.domain.GetCurrentTableThemeUseCase
 import com.wafflestudio.snutt2.domain.LectureOverlap
 import com.wafflestudio.snutt2.domain.model.Building
@@ -24,6 +27,8 @@ import com.wafflestudio.snutt2.domain.model.CourseBook
 import com.wafflestudio.snutt2.domain.model.CustomLecture
 import com.wafflestudio.snutt2.domain.model.Lecture
 import com.wafflestudio.snutt2.domain.model.LectureColor
+import com.wafflestudio.snutt2.domain.model.LectureReminderOffset
+import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
 import com.wafflestudio.snutt2.domain.model.LectureReviewInfo
 import com.wafflestudio.snutt2.domain.model.LectureSession
 import com.wafflestudio.snutt2.domain.model.LocalLecture
@@ -61,6 +66,7 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
     private val displayMessageResolver: DisplayMessageResolver,
     private val getCurrentTableThemeUseCase: GetCurrentTableThemeUseCase,
     private val analyticsLogger: AnalyticsLogger,
+    private val semesterStatusRepository: SemesterStatusRepository,
 ) : ViewModel() {
 
     private val table = checkNotNull(tableRepository.currentTable.value)
@@ -73,6 +79,9 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(
         CurrentTableLectureDetailUiState(
             lecture = originalLecture,
+            lectureWithReminderOption = LectureWithReminderOption(
+                lectureId, originalLecture.courseTitle, LectureReminderOffset.NONE,
+            ),
             showCategoryPre2025 = (courseBook.year * 10 + courseBook.semester) > 20250L,
         ),
     )
@@ -84,6 +93,12 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
     init {
         loadSecondaryData()
         observeThemeAndConfig()
+        viewModelScope.launch {
+            if (semesterStatusRepository.semesterStatus.value == null) {
+                semesterStatusRepository.fetchSemesterStatus().onFailure { handleError(it) }
+            }
+            fetchReminder()
+        }
     }
 
     private fun loadSecondaryData() {
@@ -114,11 +129,17 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
             combine(
                 getCurrentTableThemeUseCase(),
                 remoteConfig.disableMapFeature,
-            ) { tableTheme, disableMapFeature ->
+                semesterStatusRepository.semesterStatus,
+                tableRepository.tableSummaryList,
+            ) { tableTheme, disableMapFeature, semesterStatus, tables ->
+                val summary = tables.find { it.id == tableId } ?: table.summary
                 _uiState.update { state ->
                     state.copy(
                         tableTheme = tableTheme,
                         disableMapFeature = disableMapFeature,
+                        showLectureReminderPicker = FeatureFlag.LECTURE_REMINDER.isEnabled &&
+                            semesterStatus?.isActiveSemester(summary.courseBook) == true,
+                        isPrimaryTable = summary.isPrimary,
                     )
                 }
             }.collect()
@@ -126,6 +147,68 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
     }
 
     // region 편집 모드 전환
+
+    private suspend fun fetchReminder() {
+        if (_uiState.value.lecture !is SyllabusLecture) return
+        if (_uiState.value.lecture.lectureSessions.isEmpty()) {
+            _uiState.update {
+                it.copy(
+                    lectureWithReminderOption = LectureWithReminderOption(
+                        lectureId, it.lecture.courseTitle, LectureReminderOffset.NONE,
+                    ),
+                    isReminderLoaded = true,
+                )
+            }
+            return
+        }
+        when (val result = tableRepository.getTimetableLectureReminder(tableId, lectureId)) {
+            is Result.Success -> _uiState.update {
+                it.copy(lectureWithReminderOption = result.data, isReminderLoaded = true)
+            }
+            is Result.Fail -> {
+                // 기존 서버에서 미설정 강의의 단건 조회는 빈 응답을 반환할 수 있다.
+                if (result.error is EOF) {
+                    _uiState.update {
+                        it.copy(
+                            lectureWithReminderOption = LectureWithReminderOption(
+                                lectureId, it.lecture.courseTitle, LectureReminderOffset.NONE,
+                            ),
+                            isReminderLoaded = true,
+                        )
+                    }
+                } else {
+                    handleError(result.error)
+                }
+            }
+        }
+    }
+
+    fun changeReminderOption(reminder: LectureWithReminderOption) {
+        val state = _uiState.value
+        if (!state.showLectureReminderPicker || state.editMode || !state.isReminderLoaded ||
+            state.lecture !is SyllabusLecture || state.lecture.lectureSessions.isEmpty() ||
+            state.isReminderSaving || reminder.lectureId != lectureId ||
+            reminder.lectureReminderOffset == state.lectureWithReminderOption.lectureReminderOffset
+        ) return
+
+        _uiState.update { it.copy(isReminderSaving = true) }
+        viewModelScope.launch {
+            when (val result = tableRepository.updateTimetableLectureReminder(
+                tableId, lectureId, reminder.lectureReminderOffset,
+            )) {
+                is Result.Success -> {
+                    _uiState.update {
+                        it.copy(lectureWithReminderOption = result.data, isReminderSaving = false)
+                    }
+                    _uiEvent.emit(CurrentTableLectureDetailUiEvent.ReminderUpdated(result.data.lectureReminderOffset))
+                }
+                is Result.Fail -> {
+                    _uiState.update { it.copy(isReminderSaving = false) }
+                    handleError(result.error)
+                }
+            }
+        }
+    }
 
     fun toggleEditMode() {
         val state = _uiState.value
@@ -135,7 +218,8 @@ class CurrentTableLectureDetailViewModel @Inject constructor(
                 currentTableLectureRepository.updateLecture(state.lecture, isForced = false)
                     .onSuccess {
                         originalLecture = state.lecture
-                        _uiState.update { state.copy(editMode = false) }
+                        _uiState.update { it.copy(editMode = false) }
+                        fetchReminder()
                     }
                     .onFailure { error ->
                         when (error) {
@@ -535,6 +619,11 @@ data class CurrentTableLectureDetailUiState(
     val vacancyRegistered: Boolean = false,
     val showCategoryPre2025: Boolean = false,
     val disableMapFeature: Boolean = false,
+    val showLectureReminderPicker: Boolean = false,
+    val lectureWithReminderOption: LectureWithReminderOption = LectureWithReminderOption.Default,
+    val isPrimaryTable: Boolean = false,
+    val isReminderLoaded: Boolean = false,
+    val isReminderSaving: Boolean = false,
     val dialogState: DialogState = DialogState.None,
     val sheetType: SheetType = SheetType.None,
 ) {
@@ -554,6 +643,7 @@ data class CurrentTableLectureDetailUiState(
 }
 
 sealed interface CurrentTableLectureDetailUiEvent {
+    data class ReminderUpdated(val offset: LectureReminderOffset) : CurrentTableLectureDetailUiEvent
     data class ShowToast(val message: String) : CurrentTableLectureDetailUiEvent
     data class OpenUrl(val url: String) : CurrentTableLectureDetailUiEvent
     data object OpenBottomSheet : CurrentTableLectureDetailUiEvent

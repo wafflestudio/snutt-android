@@ -25,6 +25,7 @@ import com.wafflestudio.snutt2.domain.model.LectureSession
 import com.wafflestudio.snutt2.domain.model.LectureSyllabusInfo
 import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
 import com.wafflestudio.snutt2.domain.model.TableTheme
+import com.wafflestudio.snutt2.domain.model.SyllabusLecture
 import com.wafflestudio.snutt2.ui.components.compose.embedmap.FoldableEmbedMap
 import com.wafflestudio.snutt2.ui.preview.LecturePreviewData
 import com.wafflestudio.snutt2.ui.preview.SnuttPreviewSurface
@@ -45,6 +46,7 @@ fun LectureDetail(
     showLectureReminderPicker: Boolean,
     lectureWithReminderOption: LectureWithReminderOption,
     enableLectureReminderPicker: Boolean,
+    showReminderPrimaryTableGuide: Boolean = false,
     showFloatingButton: Boolean,
     hideDeleteButton: Boolean = false,
     onBackPressed: () -> Unit,
@@ -112,7 +114,17 @@ fun LectureDetail(
                 Spacer(modifier = Modifier.height(10.dp))
 
                 // 2. 강의 리마인더
-                LectureReminderSection()
+                AnimatedVisibility(
+                    visible = showLectureReminderPicker && !editMode &&
+                        lecture is SyllabusLecture && lecture.lectureSessions.isNotEmpty(),
+                ) {
+                    LectureReminderSection(
+                        reminder = lectureWithReminderOption,
+                        enabled = enableLectureReminderPicker,
+                        showPrimaryTableGuide = showReminderPrimaryTableGuide,
+                        onOptionChange = onReminderOptionChange,
+                    )
+                }
 
                 // 3. 강의 평점
                 AnimatedVisibility(visible = lecture is LectureSyllabusInfo && !editMode) {

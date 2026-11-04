@@ -8,11 +8,11 @@ import com.wafflestudio.snutt2.domain.EOF
 import com.wafflestudio.snutt2.domain.InvalidId
 import com.wafflestudio.snutt2.domain.InvalidPassword
 import com.wafflestudio.snutt2.domain.LectureOverlap
+import com.wafflestudio.snutt2.domain.LectureTimeMissing
 import com.wafflestudio.snutt2.domain.NetworkDisconnect
 import com.wafflestudio.snutt2.domain.NoAdminPrivilege
 import com.wafflestudio.snutt2.domain.NoUserToken
 import com.wafflestudio.snutt2.domain.Nothing
-import com.wafflestudio.snutt2.domain.PastSemester
 import com.wafflestudio.snutt2.domain.ServerFault
 import com.wafflestudio.snutt2.domain.Unknown
 import com.wafflestudio.snutt2.domain.UsedEmail
@@ -46,7 +46,7 @@ fun Exception.toDomainError(): DomainError {
                 ErrorCode.DUPLICATE_ID -> DuplicateId(displayTitle, displayMessage)
                 ErrorCode.USED_EMAIL -> UsedEmail(displayTitle, displayMessage)
                 ErrorCode.WRONG_PASSWORD -> WrongPassword(displayTitle, displayMessage)
-                ErrorCode.PAST_SEMESTER -> PastSemester(displayTitle, displayMessage)
+                ErrorCode.LECTURE_TIME_MISSING -> LectureTimeMissing(displayTitle, displayMessage)
                 ErrorCode.DISABLED_FEATURE -> DisabledFeature(displayTitle, displayMessage)
                 ErrorCode.LECTURE_TIME_OVERLAP -> LectureOverlap(displayTitle, displayMessage)
                 else -> Unknown(displayTitle, displayMessage)

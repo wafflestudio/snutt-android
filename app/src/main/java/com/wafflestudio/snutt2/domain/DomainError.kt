@@ -44,7 +44,7 @@ data class DuplicateId(override val displayTitle: String, override val displayMe
     AddLocalIdError
 data class UsedEmail(override val displayTitle: String, override val displayMessage: String) : SignupError
 data class WrongPassword(override val displayTitle: String, override val displayMessage: String) : ChangePasswordError
-data class PastSemester(override val displayTitle: String, override val displayMessage: String) : LectureReminderError
+data class LectureTimeMissing(override val displayTitle: String, override val displayMessage: String) : LectureReminderError
 data class DisabledFeature(override val displayTitle: String, override val displayMessage: String) : VacancyError
 
 // 3. Local Errors (클라이언트에서 처리하는 에러)

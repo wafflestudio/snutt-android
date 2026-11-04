@@ -24,6 +24,9 @@ import com.wafflestudio.snutt2.navigation.NavigationDestination
 import com.wafflestudio.snutt2.navigation.observeResult
 import com.wafflestudio.snutt2.ui.components.compose.BottomSheetDismissEffect
 import com.wafflestudio.snutt2.ui.components.compose.snackbar.CustomSnackBarHostState
+import com.wafflestudio.snutt2.ui.components.compose.snackbar.CustomSnackBarDuration
+import com.wafflestudio.snutt2.R
+import com.wafflestudio.snutt2.domain.model.LectureReminderOffset
 import com.wafflestudio.snutt2.ui.components.compose.snackbar.SnackBarScaffold
 import com.wafflestudio.snutt2.ui.theme.isDarkMode
 import com.wafflestudio.snutt2.ui.util.openCustomTab
@@ -81,6 +84,25 @@ fun CurrentTableLectureDetailRoute(
     LaunchedEffect(Unit) {
         vm.uiEvent.collect { event ->
             when (event) {
+                is CurrentTableLectureDetailUiEvent.ReminderUpdated -> {
+                    val messageId = when (event.offset) {
+                        LectureReminderOffset.NONE -> null
+                        LectureReminderOffset.TEN_MINUTES_BEFORE ->
+                            R.string.settings_lecture_reminder_update_success_ten_minutes_before
+                        LectureReminderOffset.AT_START_TIME ->
+                            R.string.settings_lecture_reminder_update_success_at_start_time
+                        LectureReminderOffset.TEN_MINUTES_AFTER ->
+                            R.string.settings_lecture_reminder_update_success_ten_minutes_after
+                    }
+                    if (messageId != null) {
+                        scope.launch {
+                            snackBarHostState.showSnackBar(
+                                message = context.getString(messageId),
+                                duration = CustomSnackBarDuration(500L, 3000L, 500L),
+                            )
+                        }
+                    }
+                }
                 is CurrentTableLectureDetailUiEvent.ShowToast -> {
                     if (event.message.isNotEmpty()) context.toast(event.message)
                 }
@@ -153,7 +175,7 @@ fun CurrentTableLectureDetailRoute(
                 onColorClick = {
                     onNavigateColorSelector(uiState.lecture.color)
                 },
-                onReminderOptionChange = {},
+                onReminderOptionChange = vm::changeReminderOption,
                 onCreditChange = vm::editCredit,
                 onDepartmentChange = vm::editDepartment,
                 onAcademicYearChange = vm::editAcademicYear,

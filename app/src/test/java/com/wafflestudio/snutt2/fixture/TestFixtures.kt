@@ -7,6 +7,9 @@ import com.wafflestudio.snutt2.domain.model.CustomTheme
 import com.wafflestudio.snutt2.domain.model.GeoCoordinate
 import com.wafflestudio.snutt2.domain.model.LectureColor
 import com.wafflestudio.snutt2.domain.model.LectureReviewInfo
+import com.wafflestudio.snutt2.domain.model.LectureReminderOffset
+import com.wafflestudio.snutt2.domain.model.LectureWithReminderOption
+import com.wafflestudio.snutt2.domain.model.SemesterStatus
 import com.wafflestudio.snutt2.domain.model.SearchedLecture
 import com.wafflestudio.snutt2.domain.model.SyllabusLecture
 import com.wafflestudio.snutt2.domain.model.Table
@@ -15,6 +18,14 @@ import com.wafflestudio.snutt2.domain.model.ThemeColor
 import com.wafflestudio.snutt2.domain.model.ThemeReference
 
 object TestFixtures {
+
+    fun semesterStatus(current: CourseBook?, next: CourseBook) = SemesterStatus(current, next)
+
+    fun lectureReminder(id: String, title: String, offset: LectureReminderOffset) = LectureWithReminderOption(
+        lectureId = id,
+        lectureTitle = title,
+        lectureReminderOffset = offset,
+    )
 
     // --- CourseBook ---
 

@@ -238,16 +238,19 @@ class TableRepositoryImpl @Inject constructor(
         try {
             val timetableReminders = api._getTimetableReminders(timetableId)
             val reminderTable = api._getTableById(timetableId)
-            val lecturesWithReminderOption = timetableReminders.map { it.toDomain() }
-            val result = reminderTable.lectureList.map { lecture ->
-                val matchingOption = lecturesWithReminderOption.find { it.lectureId == lecture.id }
-                LectureWithReminderOption(
-                    lectureId = lecture.id,
-                    lectureTitle = lecture.course_title,
-                    lectureReminderOffset = matchingOption?.lectureReminderOffset
-                        ?: LectureReminderOffset.NONE,
-                )
-            }
+            val remindersByLectureId = timetableReminders
+                .map { it.toDomain() }
+                .associateBy { it.lectureId }
+            val result = reminderTable.lectureList
+                .filter { it.class_time_json.isNotEmpty() }
+                .map { lecture ->
+                    LectureWithReminderOption(
+                        lectureId = lecture.id,
+                        lectureTitle = lecture.course_title,
+                        lectureReminderOffset = remindersByLectureId[lecture.id]?.lectureReminderOffset
+                            ?: LectureReminderOffset.NONE,
+                    )
+                }
             return Result.Success(TimetableLectureReminders(timetableId, result))
         } catch (e: Exception) {
             return Result.Fail(e.toDomainError())
