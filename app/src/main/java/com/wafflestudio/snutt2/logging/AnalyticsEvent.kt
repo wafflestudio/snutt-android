@@ -2,17 +2,18 @@ package com.wafflestudio.snutt2.logging
 
 import android.os.Bundle
 
-sealed class AnalyticsEvent {
-    data class Login(val parameter: LoginParameter) : AnalyticsEvent()
-    data object Logout : AnalyticsEvent()
-    data object SignUp : AnalyticsEvent()
-    data class SearchLecture(val parameter: SearchLectureParameter) : AnalyticsEvent()
-    data class AddToBookmark(val parameter: AddToBookmarkParameter) : AnalyticsEvent()
-    data class AddToTimetable(val parameter: AddToTimetableParameter) : AnalyticsEvent()
-    data class AddToVacancy(val parameter: AddToVacancyParameter) : AnalyticsEvent()
-    data object DiaryFirstSectionDone : AnalyticsEvent()
-    data object DiarySubmitted : AnalyticsEvent()
-    data class DiaryAfterSubmit(val parameter: DiaryAfterSubmitParameter) : AnalyticsEvent()
+// 분석용 이름은 난독화와 클래스 이름 변경의 영향을 받지 않도록 고정한다.
+sealed class AnalyticsEvent(val eventName: String) {
+    data class Login(val parameter: LoginParameter) : AnalyticsEvent("login")
+    data object Logout : AnalyticsEvent("logout")
+    data object SignUp : AnalyticsEvent("sign_up")
+    data class SearchLecture(val parameter: SearchLectureParameter) : AnalyticsEvent("search_lecture")
+    data class AddToBookmark(val parameter: AddToBookmarkParameter) : AnalyticsEvent("add_to_bookmark")
+    data class AddToTimetable(val parameter: AddToTimetableParameter) : AnalyticsEvent("add_to_timetable")
+    data class AddToVacancy(val parameter: AddToVacancyParameter) : AnalyticsEvent("add_to_vacancy")
+    data object DiaryFirstSectionDone : AnalyticsEvent("diary_first_section_done")
+    data object DiarySubmitted : AnalyticsEvent("diary_submitted")
+    data class DiaryAfterSubmit(val parameter: DiaryAfterSubmitParameter) : AnalyticsEvent("diary_after_submit")
 
     fun getExtraParameters(): Bundle = when (this) {
         is Login -> parameter.toBundle()

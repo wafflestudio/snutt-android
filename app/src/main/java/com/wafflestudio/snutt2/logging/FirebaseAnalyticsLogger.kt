@@ -17,7 +17,7 @@ class FirebaseAnalyticsLogger @Inject constructor(
      * 이벤트를 기록한다.
      */
     override fun logEvent(event: AnalyticsEvent) {
-        val eventName = event::class.simpleName?.toSnakeCase() ?: return
+        val eventName = event.eventName
         val parameters = event.getExtraParameters()
 
         logEvent(eventName, parameters)
@@ -30,7 +30,7 @@ class FirebaseAnalyticsLogger @Inject constructor(
      * 따라서 추가 매개변수는 [logEvent] 메서드를 사용하여 중복 기록합니다.
      */
     override fun logScreen(screen: AnalyticsScreen) {
-        val screenName = screen::class.simpleName?.toSnakeCase() ?: return
+        val screenName = screen.screenName
         val parameters = Bundle().apply {
             putString(FirebaseAnalytics.Param.SCREEN_NAME, screenName)
             putString(FirebaseAnalytics.Param.SCREEN_CLASS, screenName)
@@ -47,8 +47,6 @@ class FirebaseAnalyticsLogger @Inject constructor(
         firebaseAnalytics.logEvent(eventName, parameters)
         logLocalTrace("[AnalyticsEvent] $eventName recorded with $parameters.")
     }
-
-    private fun String.toSnakeCase(): String = replace(Regex("([a-z])([A-Z])"), "$1_$2").lowercase()
 
     private fun logLocalTrace(message: String) {
         Timber.d(message)
