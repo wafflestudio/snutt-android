@@ -184,7 +184,7 @@ fun DiaryQuestionItem(
                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                     ),
                     modifier = Modifier
-                        .padding(8.dp)
+                        .padding(horizontal = 4.dp, vertical = 8.dp)
                         .clicks {
                             onChange(index)
                         }
