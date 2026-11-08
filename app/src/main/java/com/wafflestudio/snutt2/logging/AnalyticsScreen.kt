@@ -2,47 +2,51 @@ package com.wafflestudio.snutt2.logging
 
 import android.os.Bundle
 
-sealed class AnalyticsScreen {
-    data object TimetableHome : AnalyticsScreen()
-    data object TimetableMenu : AnalyticsScreen()
-    data object TimetableShare : AnalyticsScreen()
-    data object LectureCreate : AnalyticsScreen()
-    data class LectureDetail(val parameter: LectureDetailParameter) : AnalyticsScreen()
-    data object LectureList : AnalyticsScreen()
-    data class LectureSyllabus(val parameter: LectureSyllabusParameter) : AnalyticsScreen()
+/**
+ * [name] 은 Firebase Analytics 에 기록되는 이름이다. 클래스명에서 유도하면 R8 난독화 시 이름이 바뀌므로
+ * 반드시 문자열로 명시한다. 기존 BigQuery 데이터와 이어지도록 한 번 정한 값은 바꾸지 않는다.
+ */
+sealed class AnalyticsScreen(val name: String) {
+    data object TimetableHome : AnalyticsScreen("timetable_home")
+    data object TimetableMenu : AnalyticsScreen("timetable_menu")
+    data object TimetableShare : AnalyticsScreen("timetable_share")
+    data object LectureCreate : AnalyticsScreen("lecture_create")
+    data class LectureDetail(val parameter: LectureDetailParameter) : AnalyticsScreen("lecture_detail")
+    data object LectureList : AnalyticsScreen("lecture_list")
+    data class LectureSyllabus(val parameter: LectureSyllabusParameter) : AnalyticsScreen("lecture_syllabus")
 
-    data object SearchHome : AnalyticsScreen()
-    data object SearchEmpty : AnalyticsScreen()
-    data object SearchList : AnalyticsScreen()
-    data object SearchFilter : AnalyticsScreen()
+    data object SearchHome : AnalyticsScreen("search_home")
+    data object SearchEmpty : AnalyticsScreen("search_empty")
+    data object SearchList : AnalyticsScreen("search_list")
+    data object SearchFilter : AnalyticsScreen("search_filter")
 
-    data object Bookmark : AnalyticsScreen()
+    data object Bookmark : AnalyticsScreen("bookmark")
 
-    data object ReviewHome : AnalyticsScreen()
-    data class ReviewDetail(val parameter: ReviewDetailParameter) : AnalyticsScreen()
+    data object ReviewHome : AnalyticsScreen("review_home")
+    data class ReviewDetail(val parameter: ReviewDetailParameter) : AnalyticsScreen("review_detail")
 
-    data object Friends : AnalyticsScreen()
+    data object Friends : AnalyticsScreen("friends")
 
-    data object SettingsHome : AnalyticsScreen()
-    data object SettingsAccount : AnalyticsScreen()
-    data object SettingsTimetable : AnalyticsScreen()
-    data object SettingsColorScheme : AnalyticsScreen()
-    data object SettingsSupport : AnalyticsScreen()
-    data object SettingsDevelopers : AnalyticsScreen()
+    data object SettingsHome : AnalyticsScreen("settings_home")
+    data object SettingsAccount : AnalyticsScreen("settings_account")
+    data object SettingsTimetable : AnalyticsScreen("settings_timetable")
+    data object SettingsColorScheme : AnalyticsScreen("settings_color_scheme")
+    data object SettingsSupport : AnalyticsScreen("settings_support")
+    data object SettingsDevelopers : AnalyticsScreen("settings_developers")
 
-    data object ThemeHome : AnalyticsScreen()
-    data object ThemeBasicDetail : AnalyticsScreen()
-    data object ThemeCustomNew : AnalyticsScreen()
-    data object ThemeCustomEdit : AnalyticsScreen()
-    data object ThemeDownloaded : AnalyticsScreen()
-    data object ThemePreview : AnalyticsScreen()
+    data object ThemeHome : AnalyticsScreen("theme_home")
+    data object ThemeBasicDetail : AnalyticsScreen("theme_basic_detail")
+    data object ThemeCustomNew : AnalyticsScreen("theme_custom_new")
+    data object ThemeCustomEdit : AnalyticsScreen("theme_custom_edit")
+    data object ThemeDownloaded : AnalyticsScreen("theme_downloaded")
+    data object ThemePreview : AnalyticsScreen("theme_preview")
 
-    data object DiaryWrite : AnalyticsScreen()
-    data object Vacancy : AnalyticsScreen()
-    data object Popup : AnalyticsScreen()
+    data object DiaryWrite : AnalyticsScreen("diary_write")
+    data object Vacancy : AnalyticsScreen("vacancy")
+    data object Popup : AnalyticsScreen("popup")
 
-    data object Login : AnalyticsScreen()
-    data object Onboard : AnalyticsScreen()
+    data object Login : AnalyticsScreen("login")
+    data object Onboard : AnalyticsScreen("onboard")
 
     fun getExtraParameters(): Bundle? = when (this) {
         is LectureDetail -> parameter.toBundle()
