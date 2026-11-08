@@ -2,17 +2,21 @@ package com.wafflestudio.snutt2.logging
 
 import android.os.Bundle
 
-sealed class AnalyticsEvent {
-    data class Login(val parameter: LoginParameter) : AnalyticsEvent()
-    data object Logout : AnalyticsEvent()
-    data object SignUp : AnalyticsEvent()
-    data class SearchLecture(val parameter: SearchLectureParameter) : AnalyticsEvent()
-    data class AddToBookmark(val parameter: AddToBookmarkParameter) : AnalyticsEvent()
-    data class AddToTimetable(val parameter: AddToTimetableParameter) : AnalyticsEvent()
-    data class AddToVacancy(val parameter: AddToVacancyParameter) : AnalyticsEvent()
-    data object DiaryFirstSectionDone : AnalyticsEvent()
-    data object DiarySubmitted : AnalyticsEvent()
-    data class DiaryAfterSubmit(val parameter: DiaryAfterSubmitParameter) : AnalyticsEvent()
+/**
+ * [name] 은 Firebase Analytics 에 기록되는 이름이다. 클래스명에서 유도하면 R8 난독화 시 이름이 바뀌므로
+ * 반드시 문자열로 명시한다. 기존 BigQuery 데이터와 이어지도록 한 번 정한 값은 바꾸지 않는다.
+ */
+sealed class AnalyticsEvent(val name: String) {
+    data class Login(val parameter: LoginParameter) : AnalyticsEvent("login")
+    data object Logout : AnalyticsEvent("logout")
+    data object SignUp : AnalyticsEvent("sign_up")
+    data class SearchLecture(val parameter: SearchLectureParameter) : AnalyticsEvent("search_lecture")
+    data class AddToBookmark(val parameter: AddToBookmarkParameter) : AnalyticsEvent("add_to_bookmark")
+    data class AddToTimetable(val parameter: AddToTimetableParameter) : AnalyticsEvent("add_to_timetable")
+    data class AddToVacancy(val parameter: AddToVacancyParameter) : AnalyticsEvent("add_to_vacancy")
+    data object DiaryFirstSectionDone : AnalyticsEvent("diary_first_section_done")
+    data object DiarySubmitted : AnalyticsEvent("diary_submitted")
+    data class DiaryAfterSubmit(val parameter: DiaryAfterSubmitParameter) : AnalyticsEvent("diary_after_submit")
 
     fun getExtraParameters(): Bundle = when (this) {
         is Login -> parameter.toBundle()
