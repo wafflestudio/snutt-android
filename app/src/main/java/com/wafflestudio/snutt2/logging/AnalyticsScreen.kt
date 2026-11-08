@@ -88,10 +88,9 @@ data class LectureSyllabusParameter(
 
 data class DiaryWriteParameter(
     val referrer: DiaryWriteReferrer,
-    val pushId: String?,
 ) {
     fun toBundle(): Bundle = Bundle().apply {
-        putDiaryWriteSource(referrer, pushId)
+        putString("referrer", referrer.value)
     }
 }
 
@@ -106,11 +105,6 @@ enum class DiaryWriteReferrer(val value: String) {
         /** referrer 가 없는 진입(딥링크)은 푸시로 간주한다. */
         fun decode(value: String?): DiaryWriteReferrer = entries.firstOrNull { it.value == value } ?: PUSH
     }
-}
-
-internal fun Bundle.putDiaryWriteSource(referrer: DiaryWriteReferrer, pushId: String?) {
-    putString("referrer", referrer.value)
-    pushId?.let { putString("push_id", it) }
 }
 
 sealed class DetailScreenReferrer {

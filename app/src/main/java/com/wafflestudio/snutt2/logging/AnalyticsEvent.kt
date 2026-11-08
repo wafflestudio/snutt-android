@@ -17,6 +17,7 @@ sealed class AnalyticsEvent(val name: String) {
     data object DiaryFirstSectionDone : AnalyticsEvent("diary_first_section_done")
     data class DiarySubmitted(val parameter: DiarySubmittedParameter) : AnalyticsEvent("diary_submitted")
     data class DiaryWriteExit(val parameter: DiaryWriteExitParameter) : AnalyticsEvent("diary_write_exit")
+    data class PushOpen(val parameter: PushOpenParameter) : AnalyticsEvent("push_open")
     data class DiaryAfterSubmit(val parameter: DiaryAfterSubmitParameter) : AnalyticsEvent("diary_after_submit")
 
     fun getExtraParameters(): Bundle = when (this) {
@@ -28,6 +29,7 @@ sealed class AnalyticsEvent(val name: String) {
         is DiaryAfterSubmit -> parameter.toBundle()
         is DiarySubmitted -> parameter.toBundle()
         is DiaryWriteExit -> parameter.toBundle()
+        is PushOpen -> parameter.toBundle()
         else -> Bundle()
     }
 }
@@ -106,6 +108,7 @@ data class DiaryAfterSubmitParameter(
 
 /**
  * @param activityTypeIds 선택한 활동(DiaryDailyClassType)의 서버 id. 표시 이름은 바뀔 수 있으므로 id 를 기록한다.
+ *   Firebase 파라미터 값은 100자에서 잘리므로 개수는 activity_count 로 따로 기록한다.
  * @param hasComment 코멘트 작성 여부. 코멘트 본문은 기록하지 않는다.
  * @param elapsedSec 작성 화면 진입 후 제출 성공까지 걸린 시간(초).
  */
@@ -114,13 +117,13 @@ data class DiarySubmittedParameter(
     val hasComment: Boolean,
     val elapsedSec: Long,
     val referrer: DiaryWriteReferrer,
-    val pushId: String?,
 ) {
     fun toBundle(): Bundle = Bundle().apply {
         putString("activity_types", activityTypeIds.joinToString(","))
+        putLong("activity_count", activityTypeIds.size.toLong())
         putString("has_comment", hasComment.toString())
         putLong("elapsed_sec", elapsedSec)
-        putDiaryWriteSource(referrer, pushId)
+        putString("referrer", referrer.value)
     }
 }
 
@@ -132,7 +135,6 @@ data class DiaryWriteExitParameter(
     val step: Step,
     val elapsedSec: Long,
     val referrer: DiaryWriteReferrer,
-    val pushId: String?,
 ) {
     enum class Step(val value: String) {
         ACTIVITY("activity"),
@@ -142,7 +144,42 @@ data class DiaryWriteExitParameter(
     fun toBundle(): Bundle = Bundle().apply {
         putString("step", step.value)
         putLong("elapsed_sec", elapsedSec)
-        putDiaryWriteSource(referrer, pushId)
+        putString("referrer", referrer.value)
+    }
+}
+
+/**
+ * 알림을 눌러 앱이 열렸을 때 기록한다. 알림 종류와 무관하게 공통으로 쓴다.
+ *
+ * @param pushId 서버가 FCM data 의 `push_id` 로 보내는 발송 회차 식별자. 구 서버/구 푸시에는 없다.
+ * @param pushType 서버가 FCM data 의 `push_type` 으로 보내는 알림 종류. 구 서버/구 푸시에는 없다.
+ * @param path url_scheme 의 host/path. 강의명 등이 담길 수 있는 query 는 제외한다.
+ */
+data class PushOpenParameter(
+    val pushId: String?,
+    val pushType: String?,
+    val path: String?,
+) {
+    fun toBundle(): Bundle = Bundle().apply {
+        pushId?.let { putString("push_id", it) }
+        pushType?.let { putString("push_type", it) }
+        path?.let { putString("path", it) }
+    }
+
+    companion object {
+        fun of(urlScheme: String?, pushId: String?, pushType: String?) = PushOpenParameter(
+            pushId = pushId?.takeIf { it.isNotBlank() },
+            pushType = pushType?.takeIf { it.isNotBlank() },
+            path = urlScheme?.let(::extractPath),
+        )
+
+        /** `snutt://diary?lectureId=..` -> `diary`, `https://host/a/b?x=1#y` -> `host/a/b` */
+        internal fun extractPath(urlScheme: String): String? = urlScheme
+            .substringAfter("://")
+            .substringBefore('?')
+            .substringBefore('#')
+            .trimEnd('/')
+            .takeIf { it.isNotBlank() }
     }
 }
 

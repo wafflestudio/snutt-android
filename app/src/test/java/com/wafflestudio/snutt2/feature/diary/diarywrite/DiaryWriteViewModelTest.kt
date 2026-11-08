@@ -58,7 +58,6 @@ class DiaryWriteViewModelTest {
 
     private fun createViewModel(
         referrer: String?,
-        pushId: String?,
     ) = DiaryWriteViewModel(
         diaryRepository = fakeDiaryRepository,
         userRepository = fakeUserRepository,
@@ -67,7 +66,6 @@ class DiaryWriteViewModelTest {
                 "lectureId" to "lecture-1",
                 "courseTitle" to "컴퓨터프로그래밍",
                 "referrer" to referrer,
-                "push_id" to pushId,
             ),
         ),
         displayMessageResolver = fakeDisplayMessageResolver,
@@ -85,21 +83,21 @@ class DiaryWriteViewModelTest {
     // region analyticsScreen
 
     @Test
-    fun `nav argument 의 referrer 와 push_id 로 화면 파라미터를 만든다`() {
-        val viewModel = createViewModel(referrer = "next", pushId = "diary-20261014-1900")
+    fun `nav argument 의 referrer 로 화면 파라미터를 만든다`() {
+        val viewModel = createViewModel(referrer = "next")
 
         assertEquals(
-            AnalyticsScreen.DiaryWrite(DiaryWriteParameter(DiaryWriteReferrer.NEXT, "diary-20261014-1900")),
+            AnalyticsScreen.DiaryWrite(DiaryWriteParameter(DiaryWriteReferrer.NEXT)),
             viewModel.analyticsScreen,
         )
     }
 
     @Test
     fun `referrer 가 없으면 push 진입으로 간주한다`() {
-        val viewModel = createViewModel(referrer = null, pushId = null)
+        val viewModel = createViewModel(referrer = null)
 
         assertEquals(
-            AnalyticsScreen.DiaryWrite(DiaryWriteParameter(DiaryWriteReferrer.PUSH, null)),
+            AnalyticsScreen.DiaryWrite(DiaryWriteParameter(DiaryWriteReferrer.PUSH)),
             viewModel.analyticsScreen,
         )
     }
@@ -115,7 +113,7 @@ class DiaryWriteViewModelTest {
             Result.Success(listOf(diaryClassTypeLecture, diaryClassTypeExam, diaryClassTypePresentation))
         fakeDiaryRepository.getQuestionnaireResult = Result.Success(questionnaire(nextLectureId = null))
         fakeDiaryRepository.submitDiaryResult = Result.Success(Unit)
-        val viewModel = createViewModel(referrer = "push", pushId = "diary-20261014-1900")
+        val viewModel = createViewModel(referrer = "push")
         viewModel.toggleActivitySelection(0)
         viewModel.toggleActivitySelection(2)
         viewModel.completeActivitySelection()
@@ -136,7 +134,6 @@ class DiaryWriteViewModelTest {
                         hasComment = true,
                         elapsedSec = 95,
                         referrer = DiaryWriteReferrer.PUSH,
-                        pushId = "diary-20261014-1900",
                     ),
                 ),
             ),
@@ -149,7 +146,7 @@ class DiaryWriteViewModelTest {
         fakeDiaryRepository.getDailyClassTypesResult = Result.Success(listOf(diaryClassTypeLecture, diaryClassTypeExam))
         fakeDiaryRepository.getQuestionnaireResult = Result.Success(questionnaire(nextLectureId = null))
         fakeDiaryRepository.submitDiaryResult = Result.Success(Unit)
-        val viewModel = createViewModel(referrer = "history", pushId = null)
+        val viewModel = createViewModel(referrer = "history")
         viewModel.toggleActivitySelection(1)
         viewModel.completeActivitySelection()
         viewModel.toggleAnswer(questionIndex = 0, answerIndex = 0)
@@ -167,7 +164,6 @@ class DiaryWriteViewModelTest {
                         hasComment = false,
                         elapsedSec = 30,
                         referrer = DiaryWriteReferrer.HISTORY,
-                        pushId = null,
                     ),
                 ),
             ),
@@ -180,7 +176,7 @@ class DiaryWriteViewModelTest {
         fakeDiaryRepository.getDailyClassTypesResult = Result.Success(listOf(diaryClassTypeLecture))
         fakeDiaryRepository.getQuestionnaireResult = Result.Success(questionnaire(nextLectureId = null))
         fakeDiaryRepository.submitDiaryResult = Result.Fail(ServerFault("서버 오류", "잠시 후 다시 시도해주세요"))
-        val viewModel = createViewModel(referrer = "push", pushId = "diary-20261014-1900")
+        val viewModel = createViewModel(referrer = "push")
         viewModel.toggleActivitySelection(0)
         viewModel.completeActivitySelection()
         viewModel.toggleAnswer(questionIndex = 0, answerIndex = 0)
@@ -198,7 +194,7 @@ class DiaryWriteViewModelTest {
     @Test
     fun `활동 선택을 완료하기 전에 나가면 step=activity 로 diary_write_exit 를 기록한다`() = runTest {
         fakeDiaryRepository.getDailyClassTypesResult = Result.Success(listOf(diaryClassTypeLecture, diaryClassTypeExam))
-        val viewModel = createViewModel(referrer = "push", pushId = "diary-20261014-1900")
+        val viewModel = createViewModel(referrer = "push")
         viewModel.toggleActivitySelection(0)
         testTimeSource += 12.seconds
 
@@ -211,7 +207,6 @@ class DiaryWriteViewModelTest {
                         step = DiaryWriteExitParameter.Step.ACTIVITY,
                         elapsedSec = 12,
                         referrer = DiaryWriteReferrer.PUSH,
-                        pushId = "diary-20261014-1900",
                     ),
                 ),
             ),
@@ -223,7 +218,7 @@ class DiaryWriteViewModelTest {
     fun `질문 단계에서 나가면 step=questions 로 diary_write_exit 를 기록한다`() = runTest {
         fakeDiaryRepository.getDailyClassTypesResult = Result.Success(listOf(diaryClassTypeLecture, diaryClassTypeExam))
         fakeDiaryRepository.getQuestionnaireResult = Result.Success(questionnaire(nextLectureId = null))
-        val viewModel = createViewModel(referrer = "next", pushId = null)
+        val viewModel = createViewModel(referrer = "next")
         viewModel.toggleActivitySelection(1)
         viewModel.completeActivitySelection()
         testTimeSource += 48.seconds
@@ -238,7 +233,6 @@ class DiaryWriteViewModelTest {
                         step = DiaryWriteExitParameter.Step.QUESTIONS,
                         elapsedSec = 48,
                         referrer = DiaryWriteReferrer.NEXT,
-                        pushId = null,
                     ),
                 ),
             ),
@@ -250,7 +244,7 @@ class DiaryWriteViewModelTest {
     fun `질문 단계 진입 후 활동을 다시 고르는 중에 나가도 step=questions 로 기록한다`() = runTest {
         fakeDiaryRepository.getDailyClassTypesResult = Result.Success(listOf(diaryClassTypeLecture, diaryClassTypeExam))
         fakeDiaryRepository.getQuestionnaireResult = Result.Success(questionnaire(nextLectureId = null))
-        val viewModel = createViewModel(referrer = "history", pushId = null)
+        val viewModel = createViewModel(referrer = "history")
         viewModel.toggleActivitySelection(0)
         viewModel.completeActivitySelection()
         viewModel.toggleActivitySelection(1) // Complete -> ReSelecting
@@ -266,7 +260,6 @@ class DiaryWriteViewModelTest {
                         step = DiaryWriteExitParameter.Step.QUESTIONS,
                         elapsedSec = 60,
                         referrer = DiaryWriteReferrer.HISTORY,
-                        pushId = null,
                     ),
                 ),
             ),
@@ -277,7 +270,7 @@ class DiaryWriteViewModelTest {
     @Test
     fun `여러 번 나가기를 호출해도 diary_write_exit 는 한 번만 기록한다`() = runTest {
         fakeDiaryRepository.getDailyClassTypesResult = Result.Success(listOf(diaryClassTypeLecture))
-        val viewModel = createViewModel(referrer = "push", pushId = null)
+        val viewModel = createViewModel(referrer = "push")
         testTimeSource += 5.seconds
 
         viewModel.onExitWithoutSubmit()
@@ -290,7 +283,6 @@ class DiaryWriteViewModelTest {
                         step = DiaryWriteExitParameter.Step.ACTIVITY,
                         elapsedSec = 5,
                         referrer = DiaryWriteReferrer.PUSH,
-                        pushId = null,
                     ),
                 ),
             ),
@@ -303,7 +295,7 @@ class DiaryWriteViewModelTest {
         fakeDiaryRepository.getDailyClassTypesResult = Result.Success(listOf(diaryClassTypeLecture))
         fakeDiaryRepository.getQuestionnaireResult = Result.Success(questionnaire(nextLectureId = "lecture-2"))
         fakeDiaryRepository.submitDiaryResult = Result.Success(Unit)
-        val viewModel = createViewModel(referrer = "push", pushId = "diary-20261014-1900")
+        val viewModel = createViewModel(referrer = "push")
         viewModel.toggleActivitySelection(0)
         viewModel.completeActivitySelection()
         viewModel.toggleAnswer(questionIndex = 0, answerIndex = 0)
@@ -318,7 +310,7 @@ class DiaryWriteViewModelTest {
     @Test
     fun `나가기 호출 시 Return 이벤트가 발생한다`() = runTest {
         fakeDiaryRepository.getDailyClassTypesResult = Result.Success(listOf(diaryClassTypeLecture))
-        val viewModel = createViewModel(referrer = "push", pushId = null)
+        val viewModel = createViewModel(referrer = "push")
 
         viewModel.uiEvent.test {
             viewModel.onExitWithoutSubmit()

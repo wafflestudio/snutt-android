@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -39,7 +40,9 @@ import com.wafflestudio.snutt2.config.RemoteConfig
 import com.wafflestudio.snutt2.domain.InitializeHomeUseCase
 import com.wafflestudio.snutt2.feature.home.HomeItem
 import com.wafflestudio.snutt2.feature.settings.RootViewModel
+import com.wafflestudio.snutt2.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.logging.AnalyticsLogger
+import com.wafflestudio.snutt2.logging.PushOpenParameter
 import com.wafflestudio.snutt2.logging.compose.LocalAnalyticsLogger
 import com.wafflestudio.snutt2.navigation.NavigationDestination
 import com.wafflestudio.snutt2.navigation.buildRootNavGraph
@@ -80,6 +83,9 @@ class RootActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         FirebaseApp.initializeApp(this)
+        if (savedInstanceState == null) {
+            logPushOpen()
+        }
         parseDeeplinkExtra()
 
         val token = rootViewModel.accessToken.value
@@ -215,6 +221,28 @@ class RootActivity : AppCompatActivity() {
         }
     }
 
+    // 알림을 눌러 열린 경우에만 push_open 을 기록한다. 두 경로 모두 RootActivity 를 새로 띄우므로 onCreate 에서 한 번 처리한다.
+    // - 포그라운드(onMessageReceived): SNUTTFirebaseMessagingService 가 url_scheme/push_id/push_type extra 를 넣는다.
+    // - 백그라운드(시스템 트레이): FCM 이 data 키들을 그대로 extra 로 넣고, google.message_id 도 함께 넣는다.
+    // 재생성(savedInstanceState != null)과 최근 앱 목록에서 같은 intent 로 다시 여는 경우는 제외해 중복 기록을 막는다.
+    private fun logPushOpen() {
+        if (intent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY != 0) return
+        val extras = intent.extras ?: return
+        val isFromNotification = extras.containsKey(URL_SCHEME) ||
+            extras.containsKey(SNUTTFirebaseMessagingService.PUSH_ID) ||
+            extras.containsKey(FCM_MESSAGE_ID)
+        if (!isFromNotification) return
+        analyticsLogger.logEvent(
+            AnalyticsEvent.PushOpen(
+                PushOpenParameter.of(
+                    urlScheme = extras.getString(URL_SCHEME),
+                    pushId = extras.getString(SNUTTFirebaseMessagingService.PUSH_ID),
+                    pushType = extras.getString(SNUTTFirebaseMessagingService.PUSH_TYPE),
+                ),
+            ),
+        )
+    }
+
     // NOTE(@JuTaK): intent 에 담긴 초기 정보로 최초 랜딩할 탭을 결정한다.
     private fun parseHomePageDeeplink(): HomeItem? {
         // 예시: snutt://friends
@@ -256,5 +284,6 @@ class RootActivity : AppCompatActivity() {
 
     companion object {
         const val URL_SCHEME = "url_scheme"
+        private const val FCM_MESSAGE_ID = "google.message_id"
     }
 }

@@ -49,9 +49,8 @@ class DiaryWriteViewModel @Inject constructor(
     private val courseTitle: String
         get() = savedStateHandle.get<String>("courseTitle") ?: ""
     private val referrer: DiaryWriteReferrer = DiaryWriteReferrer.decode(savedStateHandle.get<String>("referrer"))
-    private val pushId: String? = savedStateHandle.get<String>("push_id")
 
-    val analyticsScreen = AnalyticsScreen.DiaryWrite(DiaryWriteParameter(referrer, pushId))
+    val analyticsScreen = AnalyticsScreen.DiaryWrite(DiaryWriteParameter(referrer))
 
     private val enteredAt = timeSource.markNow()
     private var isExitLogged = false
@@ -170,7 +169,6 @@ class DiaryWriteViewModel @Inject constructor(
                                 hasComment = state.commentText.isNotBlank(),
                                 elapsedSec = elapsedSec(),
                                 referrer = referrer,
-                                pushId = pushId,
                             ),
                         ),
                     )
@@ -206,7 +204,6 @@ class DiaryWriteViewModel @Inject constructor(
                         step = step,
                         elapsedSec = elapsedSec(),
                         referrer = referrer,
-                        pushId = pushId,
                     ),
                 ),
             )
