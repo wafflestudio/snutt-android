@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.navigation
 
 import com.wafflestudio.snutt2.domain.model.LectureColor
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -150,6 +151,10 @@ sealed interface NavigationDestination {
     data class LectureDiaryWrite(
         val lectureId: String = "",
         val courseTitle: String = "",
+        // DiaryWriteReferrer.value. 앱 내 진입은 명시하고, 값이 없는 딥링크(푸시) 진입은 "push" 로 본다.
+        val referrer: String = "push",
+        // 푸시 딥링크의 push_id 쿼리 파라미터. 앱 내 진입과 push_id 가 없는 구 푸시는 null.
+        @SerialName("push_id") val pushId: String? = null,
     ) : NavigationDestination
 
     @Serializable

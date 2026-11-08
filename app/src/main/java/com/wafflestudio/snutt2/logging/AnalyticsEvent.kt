@@ -15,7 +15,8 @@ sealed class AnalyticsEvent(val name: String) {
     data class AddToTimetable(val parameter: AddToTimetableParameter) : AnalyticsEvent("add_to_timetable")
     data class AddToVacancy(val parameter: AddToVacancyParameter) : AnalyticsEvent("add_to_vacancy")
     data object DiaryFirstSectionDone : AnalyticsEvent("diary_first_section_done")
-    data object DiarySubmitted : AnalyticsEvent("diary_submitted")
+    data class DiarySubmitted(val parameter: DiarySubmittedParameter) : AnalyticsEvent("diary_submitted")
+    data class DiaryWriteExit(val parameter: DiaryWriteExitParameter) : AnalyticsEvent("diary_write_exit")
     data class DiaryAfterSubmit(val parameter: DiaryAfterSubmitParameter) : AnalyticsEvent("diary_after_submit")
 
     fun getExtraParameters(): Bundle = when (this) {
@@ -25,6 +26,8 @@ sealed class AnalyticsEvent(val name: String) {
         is AddToTimetable -> parameter.toBundle()
         is AddToVacancy -> parameter.toBundle()
         is DiaryAfterSubmit -> parameter.toBundle()
+        is DiarySubmitted -> parameter.toBundle()
+        is DiaryWriteExit -> parameter.toBundle()
         else -> Bundle()
     }
 }
@@ -98,6 +101,48 @@ data class DiaryAfterSubmitParameter(
 
     fun toBundle(): Bundle = Bundle().apply {
         putString("action", action.name.lowercase())
+    }
+}
+
+/**
+ * @param activityTypeIds 선택한 활동(DiaryDailyClassType)의 서버 id. 표시 이름은 바뀔 수 있으므로 id 를 기록한다.
+ * @param hasComment 코멘트 작성 여부. 코멘트 본문은 기록하지 않는다.
+ * @param elapsedSec 작성 화면 진입 후 제출 성공까지 걸린 시간(초).
+ */
+data class DiarySubmittedParameter(
+    val activityTypeIds: List<String>,
+    val hasComment: Boolean,
+    val elapsedSec: Long,
+    val referrer: DiaryWriteReferrer,
+    val pushId: String?,
+) {
+    fun toBundle(): Bundle = Bundle().apply {
+        putString("activity_types", activityTypeIds.joinToString(","))
+        putString("has_comment", hasComment.toString())
+        putLong("elapsed_sec", elapsedSec)
+        putDiaryWriteSource(referrer, pushId)
+    }
+}
+
+/**
+ * @param step 이탈 시점의 단계. 활동 선택을 한 번도 완료하지 않았으면 [Step.ACTIVITY], 질문 단계에 도달했으면 [Step.QUESTIONS].
+ * @param elapsedSec 작성 화면 진입 후 이탈까지 걸린 시간(초).
+ */
+data class DiaryWriteExitParameter(
+    val step: Step,
+    val elapsedSec: Long,
+    val referrer: DiaryWriteReferrer,
+    val pushId: String?,
+) {
+    enum class Step(val value: String) {
+        ACTIVITY("activity"),
+        QUESTIONS("questions"),
+    }
+
+    fun toBundle(): Bundle = Bundle().apply {
+        putString("step", step.value)
+        putLong("elapsed_sec", elapsedSec)
+        putDiaryWriteSource(referrer, pushId)
     }
 }
 

@@ -17,7 +17,12 @@ import com.wafflestudio.snutt2.lib.toggleIndex
 import com.wafflestudio.snutt2.lib.unselectExcept
 import com.wafflestudio.snutt2.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.logging.AnalyticsLogger
+import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.DiaryAfterSubmitParameter
+import com.wafflestudio.snutt2.logging.DiarySubmittedParameter
+import com.wafflestudio.snutt2.logging.DiaryWriteExitParameter
+import com.wafflestudio.snutt2.logging.DiaryWriteParameter
+import com.wafflestudio.snutt2.logging.DiaryWriteReferrer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,6 +33,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.TimeSource
 
 @HiltViewModel
 class DiaryWriteViewModel @Inject constructor(
@@ -36,11 +42,19 @@ class DiaryWriteViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val displayMessageResolver: DisplayMessageResolver,
     private val analyticsLogger: AnalyticsLogger,
+    timeSource: TimeSource,
 ) : ViewModel() {
     private val lectureId: String
         get() = savedStateHandle.get<String>("lectureId") ?: ""
     private val courseTitle: String
         get() = savedStateHandle.get<String>("courseTitle") ?: ""
+    private val referrer: DiaryWriteReferrer = DiaryWriteReferrer.decode(savedStateHandle.get<String>("referrer"))
+    private val pushId: String? = savedStateHandle.get<String>("push_id")
+
+    val analyticsScreen = AnalyticsScreen.DiaryWrite(DiaryWriteParameter(referrer, pushId))
+
+    private val enteredAt = timeSource.markNow()
+    private var isExitLogged = false
 
     private val _uiState =
         MutableStateFlow<DiaryWriteUiState>(DiaryWriteUiState.Loading)
@@ -130,7 +144,6 @@ class DiaryWriteViewModel @Inject constructor(
     }
 
     fun saveDiaryWrite() {
-        analyticsLogger.logEvent(AnalyticsEvent.DiarySubmitted)
         val state = _uiState.value as? DiaryWriteUiState.Write ?: return
         val selectedDailyClassTypes = state.dailyClassTypes
             .filter { it.isSelected() }
@@ -150,6 +163,17 @@ class DiaryWriteViewModel @Inject constructor(
                 comment = state.commentText,
             )
                 .onSuccess {
+                    analyticsLogger.logEvent(
+                        AnalyticsEvent.DiarySubmitted(
+                            DiarySubmittedParameter(
+                                activityTypeIds = selectedDailyClassTypes.map { it.id },
+                                hasComment = state.commentText.isNotBlank(),
+                                elapsedSec = elapsedSec(),
+                                referrer = referrer,
+                                pushId = pushId,
+                            ),
+                        ),
+                    )
                     val nextLecture = state.nextLecture
                     val nextAction = if (nextLecture != null) {
                         DiaryNextAction.WriteNext(nextLecture.lectureId, nextLecture.courseTitle)
@@ -162,6 +186,32 @@ class DiaryWriteViewModel @Inject constructor(
                     handleDiaryWriteError(error)
                 }
         }
+    }
+
+    /**
+     * 작성 화면을 닫는다. 제출 전(Write 상태)에 닫는 경우에만 이탈 로그를 한 번 남긴다.
+     */
+    fun onExitWithoutSubmit() {
+        val state = _uiState.value
+        if (state is DiaryWriteUiState.Write && !isExitLogged) {
+            isExitLogged = true
+            val step = if (state.activitySelectingState == ActivitySelectionState.InitialSelecting) {
+                DiaryWriteExitParameter.Step.ACTIVITY
+            } else {
+                DiaryWriteExitParameter.Step.QUESTIONS
+            }
+            analyticsLogger.logEvent(
+                AnalyticsEvent.DiaryWriteExit(
+                    DiaryWriteExitParameter(
+                        step = step,
+                        elapsedSec = elapsedSec(),
+                        referrer = referrer,
+                        pushId = pushId,
+                    ),
+                ),
+            )
+        }
+        viewModelScope.launch { _uiEvent.emit(DiaryWriteUiEvent.Return) }
     }
 
     fun completeActivitySelection() {
@@ -220,6 +270,8 @@ class DiaryWriteViewModel @Inject constructor(
         analyticsLogger.logEvent(AnalyticsEvent.DiaryAfterSubmit(DiaryAfterSubmitParameter(DiaryAfterSubmitParameter.Action.HOME)))
         viewModelScope.launch { _uiEvent.emit(DiaryWriteUiEvent.NavigateHome) }
     }
+
+    private fun elapsedSec(): Long = enteredAt.elapsedNow().inWholeSeconds
 
     private suspend fun handleDiaryWriteError(error: DomainError) {
         val displayMessage =

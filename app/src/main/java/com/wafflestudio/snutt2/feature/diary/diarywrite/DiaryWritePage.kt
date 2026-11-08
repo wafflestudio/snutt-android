@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.feature.diary.diarywrite
 
 import android.content.res.Configuration
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -57,7 +58,6 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.feature.diary.DiaryTheme
-import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
@@ -81,6 +81,10 @@ fun DiaryWriteRoute(
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    BackHandler(enabled = uiState is DiaryWriteUiState.Write) {
+        viewModel.onExitWithoutSubmit()
+    }
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { uiEvent ->
@@ -120,7 +124,7 @@ fun DiaryWriteRoute(
 
     DiaryTheme {
         DiaryWriteScreen(
-            modifier = modifier.logImpression(AnalyticsScreen.DiaryWrite),
+            modifier = modifier.logImpression(viewModel.analyticsScreen),
             uiState = uiState,
             onToggleActivitySelection = viewModel::toggleActivitySelection,
             onCompleteSelectActivities = viewModel::completeActivitySelection,
@@ -132,7 +136,7 @@ fun DiaryWriteRoute(
             onToggleAnswer = viewModel::toggleAnswer,
             onCommentTextChange = viewModel::onCommentTextChange,
             onSubmitDiary = viewModel::saveDiaryWrite,
-            onClickBackButton = onNavigateBack,
+            onClickBackButton = viewModel::onExitWithoutSubmit,
             onClickWriteNextButton = viewModel::writeNextDiary,
             onClickWriteReviewButton = viewModel::goReview,
             onClickGoHomeButton = viewModel::goHome,
