@@ -25,7 +25,7 @@ class AnalyticsNameTest {
         AnalyticsEvent.DiaryFirstSectionDone,
         AnalyticsEvent.DiarySubmitted(DiarySubmittedParameter(listOf("id"), false, 0, DiaryWriteReferrer.PUSH)),
         AnalyticsEvent.DiaryWriteExit(DiaryWriteExitParameter(DiaryWriteExitParameter.Step.ACTIVITY, 0, DiaryWriteReferrer.PUSH)),
-        AnalyticsEvent.PushOpen(PushOpenParameter("id", "diary", "diary")),
+        AnalyticsEvent.PushOpen(PushOpenParameter("id", "diary")),
         AnalyticsEvent.DiaryAfterSubmit(DiaryAfterSubmitParameter(DiaryAfterSubmitParameter.Action.NEXT)),
     )
 

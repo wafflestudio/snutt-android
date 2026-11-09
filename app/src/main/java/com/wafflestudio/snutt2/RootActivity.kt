@@ -222,7 +222,7 @@ class RootActivity : AppCompatActivity() {
     }
 
     // 알림을 눌러 열린 경우에만 push_open 을 기록한다. 두 경로 모두 RootActivity 를 새로 띄우므로 onCreate 에서 한 번 처리한다.
-    // - 포그라운드(onMessageReceived): SNUTTFirebaseMessagingService 가 url_scheme/push_id/push_type extra 를 넣는다.
+    // - 포그라운드(onMessageReceived): SNUTTFirebaseMessagingService 가 url_scheme/push_id extra 를 넣는다.
     // - 백그라운드(시스템 트레이): FCM 이 data 키들을 그대로 extra 로 넣고, google.message_id 도 함께 넣는다.
     // 재생성(savedInstanceState != null)과 최근 앱 목록에서 같은 intent 로 다시 여는 경우는 제외해 중복 기록을 막는다.
     private fun logPushOpen() {
@@ -237,7 +237,6 @@ class RootActivity : AppCompatActivity() {
                 PushOpenParameter.of(
                     urlScheme = extras.getString(URL_SCHEME),
                     pushId = extras.getString(SNUTTFirebaseMessagingService.PUSH_ID),
-                    pushType = extras.getString(SNUTTFirebaseMessagingService.PUSH_TYPE),
                 ),
             ),
         )

@@ -152,24 +152,21 @@ data class DiaryWriteExitParameter(
  * 알림을 눌러 앱이 열렸을 때 기록한다. 알림 종류와 무관하게 공통으로 쓴다.
  *
  * @param pushId 서버가 FCM data 의 `push_id` 로 보내는 발송 회차 식별자. 구 서버/구 푸시에는 없다.
- * @param pushType 서버가 FCM data 의 `push_type` 으로 보내는 알림 종류. 구 서버/구 푸시에는 없다.
+ *   알림 종류는 서버 BigQuery `push_history` 와 push_id 로 조인해서 본다.
  * @param path url_scheme 의 host/path. 강의명 등이 담길 수 있는 query 는 제외한다.
  */
 data class PushOpenParameter(
     val pushId: String?,
-    val pushType: String?,
     val path: String?,
 ) {
     fun toBundle(): Bundle = Bundle().apply {
         pushId?.let { putString("push_id", it) }
-        pushType?.let { putString("push_type", it) }
         path?.let { putString("path", it) }
     }
 
     companion object {
-        fun of(urlScheme: String?, pushId: String?, pushType: String?) = PushOpenParameter(
+        fun of(urlScheme: String?, pushId: String?) = PushOpenParameter(
             pushId = pushId?.takeIf { it.isNotBlank() },
-            pushType = pushType?.takeIf { it.isNotBlank() },
             path = urlScheme?.let(::extractPath),
         )
 
