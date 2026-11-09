@@ -221,7 +221,7 @@ class RootActivity : AppCompatActivity() {
         }
     }
 
-    // 포그라운드 알림은 SNUTTFirebaseMessagingService 가, 트레이 알림은 FCM 이 data 키와 google.message_id 를 extra 로 넣는다.
+    // 트레이 알림은 FCM 이 data 키와 google.message_id 를 extra 로 넣는다.
     private fun logPushOpen() {
         // 최근 앱 목록에서 다시 열면 같은 intent 가 재전달되어 중복 기록된다.
         if (intent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY != 0) return

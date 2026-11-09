@@ -59,7 +59,7 @@ class SNUTTFirebaseMessagingService : FirebaseMessagingService() {
             putExtra(RootActivity.URL_SCHEME, route)
             pushId?.let { putExtra(PUSH_ID, it) }
         }
-        // requestCode 가 같으면 이전 알림의 PendingIntent(extras)가 재사용되므로 알림마다 고유한 값을 쓴다.
+        // requestCode 가 같으면 이전 알림의 extras 가 재사용된다.
         val notificationId = System.currentTimeMillis().toInt()
         val pendingIntent = PendingIntent.getActivity(
             this,
@@ -81,7 +81,6 @@ class SNUTTFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     companion object {
-        // 서버가 모든 푸시의 FCM data 에 넣는 키
         const val PUSH_ID = "push_id"
     }
 }

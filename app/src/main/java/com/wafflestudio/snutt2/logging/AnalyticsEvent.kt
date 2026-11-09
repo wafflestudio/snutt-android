@@ -109,7 +109,7 @@ data class DiaryAfterSubmitParameter(
 /**
  * @param activityTypeIds 선택한 활동(DiaryDailyClassType)의 서버 id. 표시 이름은 바뀔 수 있으므로 id 를 기록한다.
  *   Firebase 파라미터 값은 100자에서 잘리므로 개수는 activity_count 로 따로 기록한다.
- * @param hasComment 코멘트 작성 여부. 코멘트 본문은 기록하지 않는다.
+ * @param hasComment 코멘트 본문은 기록하지 않는다.
  * @param elapsedSec 작성 화면 진입 후 제출 성공까지 걸린 시간(초).
  */
 data class DiarySubmittedParameter(
@@ -149,8 +149,7 @@ data class DiaryWriteExitParameter(
 }
 
 /**
- * @param pushId 서버가 FCM data 의 `push_id` 로 보내는 발송 회차 식별자. 구 서버/구 푸시에는 없다.
- *   알림 종류는 서버 BigQuery `push_history` 와 push_id 로 조인해서 본다.
+ * @param pushId 구 서버 푸시에는 없다. 알림 종류는 서버 BigQuery `push_history` 와 조인해서 본다.
  * @param path url_scheme 의 host/path. 강의명 등이 담길 수 있는 query 는 제외한다.
  */
 data class PushOpenParameter(
