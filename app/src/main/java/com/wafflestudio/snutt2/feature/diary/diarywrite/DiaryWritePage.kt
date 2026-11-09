@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2.feature.diary.diarywrite
 
 import android.content.res.Configuration
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -82,6 +83,10 @@ fun DiaryWriteRoute(
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    BackHandler(enabled = uiState is DiaryWriteUiState.Write) {
+        viewModel.onExitWithoutSubmit()
+    }
+
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { uiEvent ->
             when (uiEvent) {
@@ -120,7 +125,8 @@ fun DiaryWriteRoute(
 
     DiaryTheme {
         DiaryWriteScreen(
-            modifier = modifier.logImpression(AnalyticsScreen.DiaryWrite),
+            modifier = modifier,
+            analyticsScreen = viewModel.analyticsScreen,
             uiState = uiState,
             onToggleActivitySelection = viewModel::toggleActivitySelection,
             onCompleteSelectActivities = viewModel::completeActivitySelection,
@@ -132,7 +138,7 @@ fun DiaryWriteRoute(
             onToggleAnswer = viewModel::toggleAnswer,
             onCommentTextChange = viewModel::onCommentTextChange,
             onSubmitDiary = viewModel::saveDiaryWrite,
-            onClickBackButton = onNavigateBack,
+            onClickBackButton = viewModel::onExitWithoutSubmit,
             onClickWriteNextButton = viewModel::writeNextDiary,
             onClickWriteReviewButton = viewModel::goReview,
             onClickGoHomeButton = viewModel::goHome,
@@ -143,6 +149,7 @@ fun DiaryWriteRoute(
 @Composable
 private fun DiaryWriteScreen(
     modifier: Modifier = Modifier,
+    analyticsScreen: AnalyticsScreen,
     uiState: DiaryWriteUiState,
     onToggleActivitySelection: (activityIndex: Int) -> Unit,
     onCompleteSelectActivities: () -> Unit,
@@ -166,8 +173,9 @@ private fun DiaryWriteScreen(
             onClickGoHomeButton,
         )
 
+        // 완료 화면에서 진입 로그가 다시 찍히지 않도록 작성 화면에만 단다.
         is DiaryWriteUiState.Write -> DiaryWriting(
-            modifier,
+            modifier.logImpression(analyticsScreen),
             uiState,
             onToggleActivitySelection,
             onCompleteSelectActivities,

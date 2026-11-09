@@ -64,6 +64,7 @@ import com.wafflestudio.snutt2.feature.themeconfig.ThemeDetailRoute
 import com.wafflestudio.snutt2.feature.thememarket.ThemeMarketRoute
 import com.wafflestudio.snutt2.feature.vacancynoti.VacancyRoute
 import com.wafflestudio.snutt2.logging.DetailScreenReferrer
+import com.wafflestudio.snutt2.logging.DiaryWriteReferrer
 import kotlin.reflect.typeOf
 
 internal fun NavGraphBuilder.buildRootNavGraph(
@@ -426,7 +427,11 @@ private fun NavGraphBuilder.settingComposables(
                 },
                 onNavigateNextDiaryWrite = { lectureId, courseTitle ->
                     navController.navigate(
-                        NavigationDestination.LectureDiaryWrite(lectureId, courseTitle),
+                        NavigationDestination.LectureDiaryWrite(
+                            lectureId = lectureId,
+                            courseTitle = courseTitle,
+                            referrer = DiaryWriteReferrer.NEXT.value,
+                        ),
                     ) {
                         popUpTo<NavigationDestination.LectureDiaryWrite> {
                             inclusive = true
@@ -444,7 +449,11 @@ private fun NavGraphBuilder.settingComposables(
                 },
                 onNavigateToDiaryWrite = { lectureId, courseTitle ->
                     navController.navigate(
-                        NavigationDestination.LectureDiaryWrite(lectureId, courseTitle),
+                        NavigationDestination.LectureDiaryWrite(
+                            lectureId = lectureId,
+                            courseTitle = courseTitle,
+                            referrer = DiaryWriteReferrer.HISTORY.value,
+                        ),
                     )
                 },
             )

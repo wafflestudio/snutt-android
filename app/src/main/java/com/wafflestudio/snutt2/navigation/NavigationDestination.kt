@@ -150,6 +150,8 @@ sealed interface NavigationDestination {
     data class LectureDiaryWrite(
         val lectureId: String = "",
         val courseTitle: String = "",
+        // DiaryWriteReferrer.value
+        val referrer: String = "push",
     ) : NavigationDestination
 
     @Serializable

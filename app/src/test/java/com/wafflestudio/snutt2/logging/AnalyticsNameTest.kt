@@ -23,7 +23,9 @@ class AnalyticsNameTest {
         AnalyticsEvent.AddToTimetable(AddToTimetableParameter("id", null, lectureAction)),
         AnalyticsEvent.AddToVacancy(AddToVacancyParameter("id", lectureAction)),
         AnalyticsEvent.DiaryFirstSectionDone,
-        AnalyticsEvent.DiarySubmitted,
+        AnalyticsEvent.DiarySubmitted(DiarySubmittedParameter(listOf("id"), false, 0, DiaryWriteReferrer.PUSH)),
+        AnalyticsEvent.DiaryWriteExit(DiaryWriteExitParameter(DiaryWriteExitParameter.Step.ACTIVITY, 0, DiaryWriteReferrer.PUSH)),
+        AnalyticsEvent.PushOpen(PushOpenParameter("id", "diary")),
         AnalyticsEvent.DiaryAfterSubmit(DiaryAfterSubmitParameter(DiaryAfterSubmitParameter.Action.NEXT)),
     )
 
@@ -55,7 +57,8 @@ class AnalyticsNameTest {
         AnalyticsScreen.ThemeCustomEdit,
         AnalyticsScreen.ThemeDownloaded,
         AnalyticsScreen.ThemePreview,
-        AnalyticsScreen.DiaryWrite,
+        AnalyticsScreen.DiaryWrite(DiaryWriteParameter(DiaryWriteReferrer.PUSH)),
+        AnalyticsScreen.DiaryHistory,
         AnalyticsScreen.Vacancy,
         AnalyticsScreen.Popup,
         AnalyticsScreen.Login,

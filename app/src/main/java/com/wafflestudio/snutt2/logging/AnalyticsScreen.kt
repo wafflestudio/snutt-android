@@ -41,7 +41,8 @@ sealed class AnalyticsScreen(val name: String) {
     data object ThemeDownloaded : AnalyticsScreen("theme_downloaded")
     data object ThemePreview : AnalyticsScreen("theme_preview")
 
-    data object DiaryWrite : AnalyticsScreen("diary_write")
+    data class DiaryWrite(val parameter: DiaryWriteParameter) : AnalyticsScreen("diary_write")
+    data object DiaryHistory : AnalyticsScreen("diary_history")
     data object Vacancy : AnalyticsScreen("vacancy")
     data object Popup : AnalyticsScreen("popup")
 
@@ -52,6 +53,7 @@ sealed class AnalyticsScreen(val name: String) {
         is LectureDetail -> parameter.toBundle()
         is ReviewDetail -> parameter.toBundle()
         is LectureSyllabus -> parameter.toBundle()
+        is DiaryWrite -> parameter.toBundle()
         else -> null
     }
 }
@@ -81,6 +83,27 @@ data class LectureSyllabusParameter(
 ) {
     fun toBundle(): Bundle = Bundle().apply {
         putString("lecture_id", lectureId)
+    }
+}
+
+data class DiaryWriteParameter(
+    val referrer: DiaryWriteReferrer,
+) {
+    fun toBundle(): Bundle = Bundle().apply {
+        putString("referrer", referrer.value)
+    }
+}
+
+/** [value] 는 Firebase 에 기록되는 값이자 navigation argument 값이다. */
+enum class DiaryWriteReferrer(val value: String) {
+    PUSH("push"),
+    HISTORY("history"),
+    NEXT("next"),
+    ;
+
+    companion object {
+        // referrer 가 없는 진입은 딥링크(푸시)다.
+        fun decode(value: String?): DiaryWriteReferrer = entries.firstOrNull { it.value == value } ?: PUSH
     }
 }
 
