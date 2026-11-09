@@ -150,7 +150,7 @@ sealed interface NavigationDestination {
     data class LectureDiaryWrite(
         val lectureId: String = "",
         val courseTitle: String = "",
-        // DiaryWriteReferrer.value. 앱 내 진입은 명시하고, 값이 없는 딥링크(푸시) 진입은 "push" 로 본다.
+        // DiaryWriteReferrer.value
         val referrer: String = "push",
     ) : NavigationDestination
 

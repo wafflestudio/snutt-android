@@ -186,9 +186,6 @@ class DiaryWriteViewModel @Inject constructor(
         }
     }
 
-    /**
-     * 작성 화면을 닫는다. 제출 전(Write 상태)에 닫는 경우에만 이탈 로그를 한 번 남긴다.
-     */
     fun onExitWithoutSubmit() {
         val state = _uiState.value
         if (state is DiaryWriteUiState.Write && !isExitLogged) {

@@ -94,7 +94,7 @@ data class DiaryWriteParameter(
     }
 }
 
-/** 강의일기 작성 화면에 진입한 경로. [value] 는 Firebase 에 기록되는 값이자 navigation argument 값이다. */
+/** [value] 는 Firebase 에 기록되는 값이자 navigation argument 값이다. */
 enum class DiaryWriteReferrer(val value: String) {
     PUSH("push"),
     HISTORY("history"),
@@ -102,7 +102,7 @@ enum class DiaryWriteReferrer(val value: String) {
     ;
 
     companion object {
-        /** referrer 가 없는 진입(딥링크)은 푸시로 간주한다. */
+        // referrer 가 없는 진입은 딥링크(푸시)다.
         fun decode(value: String?): DiaryWriteReferrer = entries.firstOrNull { it.value == value } ?: PUSH
     }
 }

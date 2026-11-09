@@ -81,7 +81,7 @@ class SNUTTFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     companion object {
-        // 서버가 모든 푸시의 FCM data 에 넣는 키. 백그라운드 알림은 같은 키로 RootActivity intent extra 에 들어온다.
+        // 서버가 모든 푸시의 FCM data 에 넣는 키
         const val PUSH_ID = "push_id"
     }
 }
