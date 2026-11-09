@@ -58,6 +58,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wafflestudio.snutt2.R
 import com.wafflestudio.snutt2.feature.diary.DiaryTheme
+import com.wafflestudio.snutt2.logging.AnalyticsScreen
 import com.wafflestudio.snutt2.logging.compose.logImpression
 import com.wafflestudio.snutt2.ui.components.compose.SnuttIcon
 import com.wafflestudio.snutt2.ui.components.compose.clicks
@@ -124,7 +125,8 @@ fun DiaryWriteRoute(
 
     DiaryTheme {
         DiaryWriteScreen(
-            modifier = modifier.logImpression(viewModel.analyticsScreen),
+            modifier = modifier,
+            analyticsScreen = viewModel.analyticsScreen,
             uiState = uiState,
             onToggleActivitySelection = viewModel::toggleActivitySelection,
             onCompleteSelectActivities = viewModel::completeActivitySelection,
@@ -147,6 +149,7 @@ fun DiaryWriteRoute(
 @Composable
 private fun DiaryWriteScreen(
     modifier: Modifier = Modifier,
+    analyticsScreen: AnalyticsScreen,
     uiState: DiaryWriteUiState,
     onToggleActivitySelection: (activityIndex: Int) -> Unit,
     onCompleteSelectActivities: () -> Unit,
@@ -170,8 +173,9 @@ private fun DiaryWriteScreen(
             onClickGoHomeButton,
         )
 
+        // 완료 화면에서 진입 로그가 다시 찍히지 않도록 작성 화면에만 단다.
         is DiaryWriteUiState.Write -> DiaryWriting(
-            modifier,
+            modifier.logImpression(analyticsScreen),
             uiState,
             onToggleActivitySelection,
             onCompleteSelectActivities,

@@ -24,6 +24,7 @@ import com.wafflestudio.snutt2.logging.DiaryWriteExitParameter
 import com.wafflestudio.snutt2.logging.DiaryWriteParameter
 import com.wafflestudio.snutt2.logging.DiaryWriteReferrer
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -54,6 +55,7 @@ class DiaryWriteViewModel @Inject constructor(
 
     private val enteredAt = timeSource.markNow()
     private var isExitLogged = false
+    private var submitJob: Job? = null
 
     private val _uiState =
         MutableStateFlow<DiaryWriteUiState>(DiaryWriteUiState.Loading)
@@ -143,6 +145,7 @@ class DiaryWriteViewModel @Inject constructor(
     }
 
     fun saveDiaryWrite() {
+        if (submitJob?.isActive == true) return
         val state = _uiState.value as? DiaryWriteUiState.Write ?: return
         val selectedDailyClassTypes = state.dailyClassTypes
             .filter { it.isSelected() }
@@ -154,7 +157,7 @@ class DiaryWriteViewModel @Inject constructor(
                 answerIndex = answerIndex,
             )
         }
-        viewModelScope.launch {
+        submitJob = viewModelScope.launch {
             diaryRepository.submitDiary(
                 lectureId = lectureId,
                 dailyClassTypes = selectedDailyClassTypes,

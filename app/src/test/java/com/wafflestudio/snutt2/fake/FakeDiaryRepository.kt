@@ -9,6 +9,7 @@ import com.wafflestudio.snutt2.domain.model.diary.DiaryAnsweredQuestion
 import com.wafflestudio.snutt2.domain.model.diary.DiaryDailyClassType
 import com.wafflestudio.snutt2.domain.model.diary.DiarySummary
 import com.wafflestudio.snutt2.domain.model.diary.DiaryTargetLecture
+import kotlinx.coroutines.CompletableDeferred
 
 class FakeDiaryRepository : DiaryRepository {
 
@@ -20,6 +21,11 @@ class FakeDiaryRepository : DiaryRepository {
         Result.Success(DiaryQuestionnaireData(courseTitle = "", questions = emptyList(), nextLectureId = null, nextLectureTitle = null))
 
     var submitDiaryResult: Result<Unit> = Result.Success(Unit)
+
+    var submitDiaryGate: CompletableDeferred<Unit>? = null
+
+    var submitDiaryCallCount = 0
+        private set
 
     // endregion
 
@@ -35,7 +41,11 @@ class FakeDiaryRepository : DiaryRepository {
         dailyClassTypes: List<DiaryDailyClassType>,
         questionAnswers: List<DiaryAnsweredQuestion>,
         comment: String,
-    ): Result<Unit> = submitDiaryResult
+    ): Result<Unit> {
+        submitDiaryCallCount++
+        submitDiaryGate?.await()
+        return submitDiaryResult
+    }
 
     override suspend fun getMyDiarySubmissions(): Result<List<CourseBookDiarySubmissions>> = TODO("Not used in this test")
 

@@ -19,6 +19,7 @@ import com.wafflestudio.snutt2.logging.DiarySubmittedParameter
 import com.wafflestudio.snutt2.logging.DiaryWriteExitParameter
 import com.wafflestudio.snutt2.logging.DiaryWriteParameter
 import com.wafflestudio.snutt2.logging.DiaryWriteReferrer
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -185,6 +186,26 @@ class DiaryWriteViewModelTest {
         viewModel.saveDiaryWrite()
 
         assertEquals(emptyList<AnalyticsEvent>(), fakeAnalyticsLogger.loggedEvents)
+    }
+
+    @Test
+    fun `제출 응답 전에 다시 제출하면 무시한다`() = runTest {
+        fakeDiaryRepository.getDailyClassTypesResult = Result.Success(listOf(diaryClassTypeLecture))
+        fakeDiaryRepository.getQuestionnaireResult = Result.Success(questionnaire(nextLectureId = null))
+        val gate = CompletableDeferred<Unit>()
+        fakeDiaryRepository.submitDiaryGate = gate
+        val viewModel = createViewModel(referrer = "push")
+        viewModel.toggleActivitySelection(0)
+        viewModel.completeActivitySelection()
+        viewModel.toggleAnswer(questionIndex = 0, answerIndex = 0)
+        fakeAnalyticsLogger.loggedEvents.clear()
+
+        viewModel.saveDiaryWrite()
+        viewModel.saveDiaryWrite()
+        gate.complete(Unit)
+
+        assertEquals(1, fakeDiaryRepository.submitDiaryCallCount)
+        assertEquals(1, fakeAnalyticsLogger.loggedEvents.count { it is AnalyticsEvent.DiarySubmitted })
     }
 
     // endregion
