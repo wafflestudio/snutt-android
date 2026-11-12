@@ -7,14 +7,28 @@ import com.wafflestudio.snutt2.domain.model.CustomTheme
 import com.wafflestudio.snutt2.domain.model.GeoCoordinate
 import com.wafflestudio.snutt2.domain.model.LectureColor
 import com.wafflestudio.snutt2.domain.model.LectureReviewInfo
+import com.wafflestudio.snutt2.domain.model.Notification
+import com.wafflestudio.snutt2.domain.model.NotificationType
 import com.wafflestudio.snutt2.domain.model.SearchedLecture
 import com.wafflestudio.snutt2.domain.model.SyllabusLecture
 import com.wafflestudio.snutt2.domain.model.Table
 import com.wafflestudio.snutt2.domain.model.TableSummary
 import com.wafflestudio.snutt2.domain.model.ThemeColor
 import com.wafflestudio.snutt2.domain.model.ThemeReference
+import java.time.LocalDateTime
 
 object TestFixtures {
+
+    fun notification(
+        title: String = "알림 제목",
+        deeplink: String? = null,
+    ) = Notification(
+        title = title,
+        message = "알림 내용",
+        createdAt = LocalDateTime.of(2026, 1, 1, 0, 0),
+        type = NotificationType.Megaphone,
+        deeplink = deeplink,
+    )
 
     // --- CourseBook ---
 

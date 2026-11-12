@@ -33,12 +33,14 @@ import com.wafflestudio.snutt2.fixture.TestFixtures.tableSummary
 import com.wafflestudio.snutt2.lib.toDataWithState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -97,6 +99,116 @@ class BookmarkViewModelTest {
         displayMessageResolver = fakeDisplayMessageResolver,
         analyticsLogger = fakeAnalyticsLogger,
     )
+
+    // region source: currentTable courseBook
+
+    @Test
+    fun `fetches bookmarks for the new semester when semester changes`() = runTest {
+        val nextCourseBook = courseBook2025_1.copy(semester = 2)
+        fakeTableRepository.currentTable.value = table(summary = tableSummary(courseBook = courseBook2025_1))
+        fakeTableDisplayRepository.tableTrimParam.value = TableTrimParam(1, 5, 10, 20, false)
+        fakeTableDisplayRepository.tableLectureCustomOption.value = TableLectureCustom(true, false, true, false)
+        fakeTableDisplayRepository.compactMode.value = true
+        fakeThemeRepository.customThemes.value = emptyList()
+        fakeNotificationRepository.notificationCount.value = 5L
+        fakeRemoteConfig.disableMapFeature.value = false
+        fakeVacancyRepository.vacancyLectures.value = emptyList()
+        fakeVacancyRepository.fetchVacancyLecturesResult = Result.Success(Unit)
+        fakeBookmarkRepository.fetchBookmarksResult = Result.Success(emptyList())
+        fakeBookmarkRepository.bookmarks.value = mapOf(courseBook2025_1 to listOf(lecture1), nextCourseBook to listOf(lecture2))
+        createViewModel()
+
+        fakeTableRepository.currentTable.value = table(summary = tableSummary(courseBook = nextCourseBook))
+
+        assertEquals(listOf(courseBook2025_1, nextCourseBook), fakeBookmarkRepository.fetchBookmarksCalls)
+    }
+
+    @Test
+    fun `does not refetch bookmarks when timetable changes within the same semester`() = runTest {
+        val nextCourseBook = courseBook2025_1.copy(semester = 2)
+        fakeTableRepository.currentTable.value = table(summary = tableSummary(courseBook = courseBook2025_1))
+        fakeTableDisplayRepository.tableTrimParam.value = TableTrimParam(1, 5, 10, 20, false)
+        fakeTableDisplayRepository.tableLectureCustomOption.value = TableLectureCustom(true, false, true, false)
+        fakeTableDisplayRepository.compactMode.value = true
+        fakeThemeRepository.customThemes.value = emptyList()
+        fakeNotificationRepository.notificationCount.value = 5L
+        fakeRemoteConfig.disableMapFeature.value = false
+        fakeVacancyRepository.vacancyLectures.value = emptyList()
+        fakeVacancyRepository.fetchVacancyLecturesResult = Result.Success(Unit)
+        fakeBookmarkRepository.fetchBookmarksResult = Result.Success(emptyList())
+        fakeBookmarkRepository.bookmarks.value = mapOf(courseBook2025_1 to listOf(lecture1), nextCourseBook to listOf(lecture2))
+        createViewModel()
+
+        fakeTableRepository.currentTable.value = table(summary = tableSummary(id = "another-table", courseBook = courseBook2025_1))
+
+        assertEquals(listOf(courseBook2025_1), fakeBookmarkRepository.fetchBookmarksCalls)
+    }
+
+    @Test
+    fun `shows bookmarks for the new semester when semester changes`() = runTest {
+        val nextCourseBook = courseBook2025_1.copy(semester = 2)
+        fakeTableRepository.currentTable.value = table(summary = tableSummary(courseBook = courseBook2025_1))
+        fakeTableDisplayRepository.tableTrimParam.value = TableTrimParam(1, 5, 10, 20, false)
+        fakeTableDisplayRepository.tableLectureCustomOption.value = TableLectureCustom(true, false, true, false)
+        fakeTableDisplayRepository.compactMode.value = true
+        fakeThemeRepository.customThemes.value = emptyList()
+        fakeNotificationRepository.notificationCount.value = 5L
+        fakeRemoteConfig.disableMapFeature.value = false
+        fakeVacancyRepository.vacancyLectures.value = emptyList()
+        fakeVacancyRepository.fetchVacancyLecturesResult = Result.Success(Unit)
+        fakeBookmarkRepository.fetchBookmarksResult = Result.Success(emptyList())
+        fakeBookmarkRepository.bookmarks.value = mapOf(courseBook2025_1 to listOf(lecture1), nextCourseBook to listOf(lecture2))
+        val viewModel = createViewModel()
+        val before = viewModel.uiState.value as BookmarkUiState.Success
+        val nextTable = table(summary = tableSummary(courseBook = nextCourseBook))
+
+        fakeTableRepository.currentTable.value = nextTable
+
+        assertEquals(
+            before.copy(
+                currentTable = nextTable,
+                bookmarkList = listOf(
+                    lecture2.toDataWithState(
+                        LectureState(selected = false, contained = false, isBookmarked = true, isVacancyRegistered = false),
+                    ),
+                ),
+            ),
+            viewModel.uiState.value,
+        )
+    }
+
+    @Test
+    fun `cancels the previous fetch when semester changes`() = runTest {
+        val nextCourseBook = courseBook2025_1.copy(semester = 2)
+        fakeTableRepository.currentTable.value = table(summary = tableSummary(courseBook = courseBook2025_1))
+        fakeTableDisplayRepository.tableTrimParam.value = TableTrimParam(1, 5, 10, 20, false)
+        fakeTableDisplayRepository.tableLectureCustomOption.value = TableLectureCustom(true, false, true, false)
+        fakeTableDisplayRepository.compactMode.value = true
+        fakeThemeRepository.customThemes.value = emptyList()
+        fakeNotificationRepository.notificationCount.value = 5L
+        fakeRemoteConfig.disableMapFeature.value = false
+        fakeVacancyRepository.vacancyLectures.value = emptyList()
+        fakeVacancyRepository.fetchVacancyLecturesResult = Result.Success(Unit)
+        fakeBookmarkRepository.fetchBookmarksResult = Result.Success(emptyList())
+        fakeBookmarkRepository.bookmarks.value = mapOf(courseBook2025_1 to listOf(lecture1), nextCourseBook to listOf(lecture2))
+        var previousFetchCancelled = false
+        fakeBookmarkRepository.fetchBookmarksHook = { courseBook ->
+            if (courseBook == courseBook2025_1) {
+                try {
+                    awaitCancellation()
+                } finally {
+                    previousFetchCancelled = true
+                }
+            }
+        }
+        createViewModel()
+
+        fakeTableRepository.currentTable.value = table(summary = tableSummary(courseBook = nextCourseBook))
+
+        assertTrue(previousFetchCancelled)
+    }
+
+    // endregion
 
     // region init
 

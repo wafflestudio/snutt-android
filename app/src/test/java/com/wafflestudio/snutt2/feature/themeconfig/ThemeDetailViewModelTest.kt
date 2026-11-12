@@ -164,6 +164,33 @@ class ThemeDetailViewModelTest {
     }
 
     @Test
+    fun `unknown built-in theme code initializes the default theme`() = runTest {
+        fakeTableRepository.currentTable.value = table(
+            summary = tableSummary(id = "table-1"),
+            themeRef = ThemeReference.BuiltIn(0),
+        )
+        fakeTableDisplayRepository.tableTrimParam.value = TableTrimParam.Default
+        fakeTableDisplayRepository.tableLectureCustomOption.value = TableLectureCustom.Default
+        fakeTableDisplayRepository.compactMode.value = false
+
+        val viewModel = createViewModel(themeCode = 999)
+
+        val editingTheme = EditingTheme.fromTableTheme(BuiltInTheme.SNUTT)
+        assertEquals(
+            ThemeDetailUiState.Success(
+                editingTheme = editingTheme,
+                lectures = emptyList(),
+                theme = BuiltInTheme.SNUTT,
+                previewTheme = editingTheme.toTableTheme(),
+                fittedTrimParam = TableTrimParam.Default,
+                tableLectureCustomOptions = TableLectureCustom.Default,
+                compactMode = false,
+            ),
+            viewModel.uiState.value,
+        )
+    }
+
+    @Test
     fun `currentTable이 null이면 Loading 상태를 유지한다`() = runTest {
         fakeTableRepository.currentTable.value = null
 
@@ -588,6 +615,227 @@ class ThemeDetailViewModelTest {
             ),
             viewModel.uiState.value,
         )
+    }
+
+    // endregion
+
+    // region showFgColorPicker
+
+    @Test
+    fun `showFgColorPicker displays a dialog with the supplied arguments`() = runTest {
+        val theme = customTheme(id = "picker-theme", colors = listOf(ThemeColor(11, 22)))
+        fakeThemeRepository.getThemeResult = theme
+        fakeTableRepository.currentTable.value = table(
+            summary = tableSummary(id = "table-1"),
+            themeRef = ThemeReference.BuiltIn(0),
+        )
+        fakeTableDisplayRepository.tableTrimParam.value = TableTrimParam.Default
+        fakeTableDisplayRepository.tableLectureCustomOption.value = TableLectureCustom.Default
+        fakeTableDisplayRepository.compactMode.value = false
+        val viewModel = createViewModel(themeId = "picker-theme")
+        val before = viewModel.uiState.value as ThemeDetailUiState.Success
+
+        viewModel.showFgColorPicker(0, 11, 22)
+
+        assertEquals(
+            before.copy(dialogState = ThemeDetailUiState.DialogState.FgColorPicker(0, 11, 22)),
+            viewModel.uiState.value,
+        )
+    }
+
+    // endregion
+
+    // region showBgColorPicker
+
+    @Test
+    fun `showBgColorPicker displays a dialog with the supplied arguments`() = runTest {
+        val theme = customTheme(id = "picker-theme", colors = listOf(ThemeColor(11, 22)))
+        fakeThemeRepository.getThemeResult = theme
+        fakeTableRepository.currentTable.value = table(
+            summary = tableSummary(id = "table-1"),
+            themeRef = ThemeReference.BuiltIn(0),
+        )
+        fakeTableDisplayRepository.tableTrimParam.value = TableTrimParam.Default
+        fakeTableDisplayRepository.tableLectureCustomOption.value = TableLectureCustom.Default
+        fakeTableDisplayRepository.compactMode.value = false
+        val viewModel = createViewModel(themeId = "picker-theme")
+        val before = viewModel.uiState.value as ThemeDetailUiState.Success
+
+        viewModel.showBgColorPicker(0, 11, 22)
+
+        assertEquals(
+            before.copy(dialogState = ThemeDetailUiState.DialogState.BgColorPicker(0, 11, 22)),
+            viewModel.uiState.value,
+        )
+    }
+
+    // endregion
+
+    // region dismissColorPicker
+
+    @Test
+    fun `dismissing the foreground color picker only closes the dialog`() = runTest {
+        val theme = customTheme(id = "picker-theme", colors = listOf(ThemeColor(11, 22)))
+        fakeThemeRepository.getThemeResult = theme
+        fakeTableRepository.currentTable.value = table(
+            summary = tableSummary(id = "table-1"),
+            themeRef = ThemeReference.BuiltIn(0),
+        )
+        fakeTableDisplayRepository.tableTrimParam.value = TableTrimParam.Default
+        fakeTableDisplayRepository.tableLectureCustomOption.value = TableLectureCustom.Default
+        fakeTableDisplayRepository.compactMode.value = false
+        val viewModel = createViewModel(themeId = "picker-theme")
+        viewModel.showFgColorPicker(0, 11, 22)
+        val before = viewModel.uiState.value as ThemeDetailUiState.Success
+
+        viewModel.dismissColorPicker()
+
+        assertEquals(before.copy(dialogState = ThemeDetailUiState.DialogState.None), viewModel.uiState.value)
+    }
+
+    @Test
+    fun `dismissing the background color picker only closes the dialog`() = runTest {
+        val theme = customTheme(id = "picker-theme", colors = listOf(ThemeColor(11, 22)))
+        fakeThemeRepository.getThemeResult = theme
+        fakeTableRepository.currentTable.value = table(
+            summary = tableSummary(id = "table-1"),
+            themeRef = ThemeReference.BuiltIn(0),
+        )
+        fakeTableDisplayRepository.tableTrimParam.value = TableTrimParam.Default
+        fakeTableDisplayRepository.tableLectureCustomOption.value = TableLectureCustom.Default
+        fakeTableDisplayRepository.compactMode.value = false
+        val viewModel = createViewModel(themeId = "picker-theme")
+        viewModel.showBgColorPicker(0, 11, 22)
+        val before = viewModel.uiState.value as ThemeDetailUiState.Success
+
+        viewModel.dismissColorPicker()
+
+        assertEquals(before.copy(dialogState = ThemeDetailUiState.DialogState.None), viewModel.uiState.value)
+    }
+
+    // endregion
+
+    // region confirmColorPicker
+
+    @Test
+    fun `confirming foreground color updates the selected color and preview and closes the dialog`() = runTest {
+        val theme = customTheme(id = "picker-theme", colors = listOf(ThemeColor(1, 2), ThemeColor(11, 22)))
+        fakeThemeRepository.getThemeResult = theme
+        fakeTableRepository.currentTable.value = table(
+            summary = tableSummary(id = "table-1"),
+            themeRef = ThemeReference.BuiltIn(0),
+        )
+        fakeTableDisplayRepository.tableTrimParam.value = TableTrimParam.Default
+        fakeTableDisplayRepository.tableLectureCustomOption.value = TableLectureCustom.Default
+        fakeTableDisplayRepository.compactMode.value = false
+        val viewModel = createViewModel(themeId = "picker-theme")
+        viewModel.showFgColorPicker(1, 11, 22)
+        val before = viewModel.uiState.value as ThemeDetailUiState.Success
+
+        viewModel.confirmColorPicker(33)
+
+        val expectedTheme = before.editingTheme.copy(
+            colors = listOf(
+                before.editingTheme.colors[0],
+                ThemeColor(33, 22).toDataWithState(before.editingTheme.colors[1].state),
+            ),
+        )
+        assertEquals(
+            before.copy(
+                editingTheme = expectedTheme,
+                previewTheme = expectedTheme.toTableTheme(),
+                dialogState = ThemeDetailUiState.DialogState.None,
+            ),
+            viewModel.uiState.value,
+        )
+    }
+
+    @Test
+    fun `confirming background color updates the selected color and preview and closes the dialog`() = runTest {
+        val theme = customTheme(id = "picker-theme", colors = listOf(ThemeColor(1, 2), ThemeColor(11, 22)))
+        fakeThemeRepository.getThemeResult = theme
+        fakeTableRepository.currentTable.value = table(
+            summary = tableSummary(id = "table-1"),
+            themeRef = ThemeReference.BuiltIn(0),
+        )
+        fakeTableDisplayRepository.tableTrimParam.value = TableTrimParam.Default
+        fakeTableDisplayRepository.tableLectureCustomOption.value = TableLectureCustom.Default
+        fakeTableDisplayRepository.compactMode.value = false
+        val viewModel = createViewModel(themeId = "picker-theme")
+        viewModel.showBgColorPicker(1, 11, 22)
+        val before = viewModel.uiState.value as ThemeDetailUiState.Success
+
+        viewModel.confirmColorPicker(33)
+
+        val expectedTheme = before.editingTheme.copy(
+            colors = listOf(
+                before.editingTheme.colors[0],
+                ThemeColor(11, 33).toDataWithState(before.editingTheme.colors[1].state),
+            ),
+        )
+        assertEquals(
+            before.copy(
+                editingTheme = expectedTheme,
+                previewTheme = expectedTheme.toTableTheme(),
+                dialogState = ThemeDetailUiState.DialogState.None,
+            ),
+            viewModel.uiState.value,
+        )
+    }
+
+    @Test
+    fun `confirming without an open color picker leaves state unchanged`() = runTest {
+        val theme = customTheme(id = "picker-theme", colors = listOf(ThemeColor(11, 22)))
+        fakeThemeRepository.getThemeResult = theme
+        fakeTableRepository.currentTable.value = table(
+            summary = tableSummary(id = "table-1"),
+            themeRef = ThemeReference.BuiltIn(0),
+        )
+        fakeTableDisplayRepository.tableTrimParam.value = TableTrimParam.Default
+        fakeTableDisplayRepository.tableLectureCustomOption.value = TableLectureCustom.Default
+        fakeTableDisplayRepository.compactMode.value = false
+        val viewModel = createViewModel(themeId = "picker-theme")
+        val before = viewModel.uiState.value
+
+        viewModel.confirmColorPicker(33)
+
+        assertEquals(before, viewModel.uiState.value)
+    }
+
+    @Test
+    fun `confirming a built-in theme color preserves the theme and closes the picker`() = runTest {
+        fakeTableRepository.currentTable.value = table(
+            summary = tableSummary(id = "table-1"),
+            themeRef = ThemeReference.BuiltIn(0),
+        )
+        fakeTableDisplayRepository.tableTrimParam.value = TableTrimParam.Default
+        fakeTableDisplayRepository.tableLectureCustomOption.value = TableLectureCustom.Default
+        fakeTableDisplayRepository.compactMode.value = false
+        val viewModel = createViewModel(themeCode = BuiltInTheme.SNUTT.code)
+        viewModel.showFgColorPicker(0, 11, 22)
+        val before = viewModel.uiState.value as ThemeDetailUiState.Success
+
+        viewModel.confirmColorPicker(33)
+
+        assertEquals(before.copy(dialogState = ThemeDetailUiState.DialogState.None), viewModel.uiState.value)
+    }
+
+    @Test
+    fun `color picker actions leave loading state unchanged`() = runTest {
+        fakeTableRepository.currentTable.value = null
+        val viewModel = createViewModel()
+
+        viewModel.showFgColorPicker(0, 11, 22)
+        assertEquals(ThemeDetailUiState.Loading, viewModel.uiState.value)
+
+        viewModel.showBgColorPicker(0, 11, 22)
+        assertEquals(ThemeDetailUiState.Loading, viewModel.uiState.value)
+
+        viewModel.dismissColorPicker()
+        assertEquals(ThemeDetailUiState.Loading, viewModel.uiState.value)
+
+        viewModel.confirmColorPicker(33)
+        assertEquals(ThemeDetailUiState.Loading, viewModel.uiState.value)
     }
 
     // endregion
