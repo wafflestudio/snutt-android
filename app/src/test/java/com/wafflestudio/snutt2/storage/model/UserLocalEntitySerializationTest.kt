@@ -14,6 +14,32 @@ class UserLocalEntitySerializationTest {
     private val entityAdapter = moshi.adapter(UserLocalEntity::class.java)
 
     @Test
+    fun `serialized user retains existing JSON field names`() {
+        val user = UserLocalEntity(
+            isAdmin = true,
+            regDate = "2023-01-01",
+            notificationCheckedAt = "2024-05-01",
+            email = "alice@snutt.kr",
+            localId = "alice",
+            fbName = "Alice",
+            nickname = NicknameLocalEntity(nickname = "Alice", tag = "1234"),
+        )
+
+        assertEquals(
+            mapOf(
+                "isAdmin" to true,
+                "regDate" to "2023-01-01",
+                "notificationCheckedAt" to "2024-05-01",
+                "email" to "alice@snutt.kr",
+                "localId" to "alice",
+                "fbName" to "Alice",
+                "nickname" to mapOf("nickname" to "Alice", "tag" to "1234"),
+            ),
+            entityAdapter.toJsonValue(user),
+        )
+    }
+
+    @Test
     fun `legacy JSON deserializes into equivalent UserLocalEntity`() {
         val fixtures = listOf(
             """{"isAdmin":false,"regDate":"2023-01-01","notificationCheckedAt":"2024-05-01","email":"a@b.com","localId":"alice","fbName":"Alice","nickname":{"nickname":"앨리스","tag":"1234"}}""" to

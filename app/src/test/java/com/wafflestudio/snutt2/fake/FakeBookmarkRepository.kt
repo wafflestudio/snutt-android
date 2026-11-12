@@ -15,6 +15,9 @@ class FakeBookmarkRepository : BookmarkRepository {
 
     // --- 테스트 제어용 필드 ---
     var fetchBookmarksResult: Result<List<SearchedLecture>> = Result.Success(emptyList())
+    var fetchBookmarksHook: suspend (CourseBook) -> Unit = {}
+    private val _fetchBookmarksCalls = mutableListOf<CourseBook>()
+    val fetchBookmarksCalls: List<CourseBook> get() = _fetchBookmarksCalls.toList()
 
     var addBookmarkResult: Result<Unit> = Result.Success(Unit)
     var addBookmarkCalledWith: Pair<CourseBook, Lecture>? = null
@@ -28,7 +31,11 @@ class FakeBookmarkRepository : BookmarkRepository {
         private set
 
     // --- 인터페이스 구현 ---
-    override suspend fun fetchBookmarks(courseBook: CourseBook): Result<List<SearchedLecture>> = fetchBookmarksResult
+    override suspend fun fetchBookmarks(courseBook: CourseBook): Result<List<SearchedLecture>> {
+        _fetchBookmarksCalls.add(courseBook)
+        fetchBookmarksHook(courseBook)
+        return fetchBookmarksResult
+    }
 
     override suspend fun addBookmark(courseBook: CourseBook, lecture: Lecture): Result<Unit> {
         addBookmarkCalledWith = courseBook to lecture

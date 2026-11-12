@@ -9,7 +9,7 @@
 - **기본형은 stdlib `List<T>`**. 선제적으로 `ImmutableList`/`PersistentList`로 전환하지 않는다.
 - **실측으로 확인된 병목**에 한해, 원인을 분석한 뒤 최소 침습적으로 대응한다.
 - 실측은 두 경로를 병행한다: (a) Layout Inspector — 유저 주도 발견 (b) recompose 카운터 테스트 — 가설 검증 및 회귀 방지.
-- 추가로, **핵심 불변식을 지키는 최소한의 방어 테스트**를 상시 유지한다(§3.5). StrongSkipping 활성 상태·주요 타입의 equals 정합성을 자동으로 지켜 주는 정도에 그친다.
+- 추가로, **핵심 불변식을 지키는 최소한의 방어 테스트**를 상시 유지한다(§3.5). StrongSkipping 활성 상태와 주요 타입의 파라미터 비교 동작을 검증하는 정도에 그친다.
 
 이 방침은 아래 배경에서 나온다.
 
@@ -24,7 +24,7 @@
 
 Strong Skipping 하에서는:
 
-- **unstable 파라미터도 `equals()` 비교로 skip된다.** 과거처럼 "unstable이면 항상 recompose"가 아니다.
+- **unstable 파라미터는 참조 동일성(`===`)으로, stable 파라미터는 `equals()`로 비교하여 skip한다.** 과거처럼 "unstable이면 항상 recompose"가 아니다.
 - 따라서 Compiler 리포트의 `inferredUnstableClasses` 수치와 실제 recompose 발생 여부의 상관이 크게 약해졌다.
 - 결과적으로 "unstable 클래스 수를 줄이는 것" 자체는 최종 KPI가 아니다.
 
@@ -49,9 +49,9 @@ Strong Skipping 하에서는:
 리포트상 가장 의심스러운 체인이었던 `LectureSession`(`LocalTime` 보유 → unstable)이 `SearchedLecture`/`LocalLecture`의 `lectureSessions` 필드를 타고 `TimeTable(lectures: List<LocalLecture>)` 같은 hot path 파라미터까지 전파되는 케이스를 검증 (`app/src/test/java/com/wafflestudio/snutt2/compose/stability/LectureSessionsSkipTest.kt`).
 
 - 같은 `List` 참조 재전달 시 → skip 통과 (identity)
-- 새 인스턴스지만 내용 동일한 `List` 전달 시 → skip 통과 (StrongSkipping의 equals 경로)
+- 새 인스턴스지만 내용 동일한 `List` 전달 시 → 재조합 (unstable 파라미터의 참조 비교)
 
-**결론**: 현재 프로젝트 조건에서 `LectureSession`에 `@Immutable`을 부착하거나 관련 리스트를 `ImmutableList`로 전환할 필요 없음. StrongSkipping + data class auto-equals만으로 skip이 충분히 일어남. 테스트는 회귀 방지용으로 보존된다.
+**결론**: 같은 리스트 참조를 재사용하면 skip되지만, 내용이 같아도 새 리스트를 전달하면 재조합된다. 최적화 여부는 실제 병목을 확인한 뒤 판단한다. 테스트는 회귀 방지용으로 보존된다.
 
 ### 2.4 `@Immutable` 어노테이션 vs 타입 교체
 
@@ -160,7 +160,8 @@ private fun Consumer(input: SomeType, counter: RecomposeCounter) {
 **주의 / 설계 포인트**
 
 - **카운터는 람다가 아니라 `@Stable` 클래스 인스턴스로 넘긴다.** `var count = 0`을 캡처하는 람다는 stable로 추론되지 않아 부모 recompose마다 새 인스턴스가 생성되고, 테스트하려는 skip 자체를 깨뜨린다.
-- `waitForIdle()`로 Composition이 안정될 때까지 기다린 뒤 baseline을 찍고 delta로 비교한다.
+- `waitForIdle()`로 Composition이 안정될 때까지 기다린 뒤 baseline을 찍고 delta로 비교한다. 부모 카운터도 확인하여 실제 재조합이 발생했는지 검증한다.
+- 값이 같은 새 인스턴스로 상태를 교체할 때는 `referentialEqualityPolicy()`를 사용한다. 기본 structural equality 정책은 교체 자체를 억제할 수 있다.
 - 테스트 작성 전에 **가설**이 명확해야 한다 ("X 상태 변경 시 Y Composable은 skip돼야 한다"). 가설 없는 탐색은 Layout Inspector가 적합.
 
 ### 3.4 자동 워크플로
@@ -193,9 +194,9 @@ Layout Inspector는 이 루프에 없는, 사용자 체감 문제가 먼저 발�
 
 **구성 (상한 3–5건)**:
 
-1. **StrongSkipping 스모크 테스트 (1건, 필수)** — unstable 클래스 인스턴스를 값이 같은 새 인스턴스로 교체했을 때 consumer Composable이 skip되는지 검증. StrongSkipping 플래그가 꺼지거나 Compose 컴파일러가 예상과 달리 동작하면 이 테스트 하나가 먼저 깨진다.
+1. **StrongSkipping 스모크 테스트 (1건, 필수)** — unstable 클래스 인스턴스를 같은 참조를 다시 전달하면 skip하고 값이 같은 새 인스턴스를 전달하면 재조합하는지 검증. StrongSkipping 플래그가 꺼지거나 Compose 컴파일러가 예상과 달리 동작하면 이 테스트 하나가 먼저 깨진다.
 2. **대표 타입 skip 테스트 (2–3건)** — 프로젝트의 skip 전략을 대표하는 **hot path 타입** 한 건씩:
-    - UiState data class (예: `HomeDrawerUiState`) — auto-equals 정합성 보장
+    - UiState data class (예: `HomeDrawerUiState`) — unstable 파라미터의 참조 비교 검증
     - 핵심 unstable 도메인 모델의 리스트 전달 (예: `LectureSessionsSkipTest` — `List<LectureSession>`)
     - Sealed/`@Immutable` 타입 대표 1건 (예: `DialogState` 계열)
 
@@ -306,7 +307,7 @@ CI에서 §3.5의 canary 테스트가 실패
     │   → 컴파일러 플래그·버전·빌드 구성 변경 의심. 먼저 확인.
     │
     └─ 대표 타입 테스트 실패
-        → 해당 타입의 equals 깨짐 / @Immutable 제거 / 필드 추가 등 회귀
+        → 해당 타입의 stability 변경 / @Immutable 제거 / 필드 추가 등 회귀
         → 진입점 A의 "카운트 비정상" 이후와 동일하게 처리
 ```
 
