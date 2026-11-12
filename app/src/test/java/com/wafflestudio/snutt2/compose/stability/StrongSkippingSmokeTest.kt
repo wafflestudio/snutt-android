@@ -4,6 +4,7 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.referentialEqualityPolicy
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import org.junit.Rule
 import org.junit.Test
@@ -12,33 +13,42 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import kotlin.test.assertEquals
 
-// StrongSkipping 활성 여부를 검증하는 스모크.
-// UnstableSnapshot은 var 필드 때문에 unstable로 추론된다.
-// StrongSkipping이 살아있으면 "새 인스턴스지만 equals()가 같은 경우" consumer가 skip된다.
-// 이 테스트가 실패하면 컴파일러 플래그·버전·빌드 구성 회귀를 먼저 의심한다.
+// Strong Skipping은 unstable 파라미터를 참조 동일성으로 비교한다.
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
 class StrongSkippingSmokeTest {
     @get:Rule val composeRule = createComposeRule()
 
     @Test
-    fun `new but equal unstable instance is skipped via equals under StrongSkipping`() {
+    fun `same unstable instance skips and equal new instance recomposes`() {
         val counter = RecomposeCounter()
-        val state = mutableStateOf(UnstableSnapshot(id = "a", value = 1))
+        val parentCounter = RecomposeCounter()
+        val trigger = mutableStateOf(0)
+        val state = mutableStateOf(UnstableSnapshot(id = "a", value = 1), referentialEqualityPolicy())
 
         composeRule.setContent {
+            trigger.value
+            SideEffect { parentCounter.increment() }
             Consumer(snapshot = state.value, counter = counter)
         }
         composeRule.waitForIdle()
         val baseline = counter.count
 
+        val parentBaseline = parentCounter.count
+
+        trigger.value++
+        composeRule.waitForIdle()
+        assertEquals(parentBaseline + 1, parentCounter.count)
+        assertEquals(baseline, counter.count)
+
         state.value = UnstableSnapshot(id = "a", value = 1)
         composeRule.waitForIdle()
 
+        assertEquals(parentBaseline + 2, parentCounter.count)
         assertEquals(
-            expected = baseline,
+            expected = baseline + 1,
             actual = counter.count,
-            message = "StrongSkipping이 꺼졌거나 손상되었습니다. new-but-equal unstable 인스턴스는 skip되어야 합니다.",
+            message = "값이 같더라도 새 unstable 인스턴스는 재조합되어야 합니다.",
         )
     }
 }

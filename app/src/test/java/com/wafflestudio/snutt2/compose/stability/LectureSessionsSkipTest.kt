@@ -4,6 +4,7 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.referentialEqualityPolicy
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import com.wafflestudio.snutt2.domain.model.LectureSession
 import org.junit.Rule
@@ -23,20 +24,24 @@ class LectureSessionsSkipTest {
     @Test
     fun `parent state change skips consumer that takes same List reference`() {
         val counter = RecomposeCounter()
+        val parentCounter = RecomposeCounter()
         val triggerState = mutableStateOf(0)
         val fixedSessions = newSessions()
 
         composeRule.setContent {
             @Suppress("UNUSED_VARIABLE")
             val t = triggerState.value
+            SideEffect { parentCounter.increment() }
             LectureSessionsConsumer(sessions = fixedSessions, counter = counter)
         }
         composeRule.waitForIdle()
         val baseline = counter.count
+        val parentBaseline = parentCounter.count
 
         triggerState.value = 1
         composeRule.waitForIdle()
 
+        assertEquals(parentBaseline + 1, parentCounter.count)
         assertEquals(
             expected = baseline,
             actual = counter.count,
@@ -45,23 +50,27 @@ class LectureSessionsSkipTest {
     }
 
     @Test
-    fun `new but equal List LectureSession triggers skip via equals under StrongSkipping`() {
+    fun `new but equal List LectureSession recomposes under StrongSkipping`() {
         val counter = RecomposeCounter()
-        val sessionsState = mutableStateOf(newSessions())
+        val parentCounter = RecomposeCounter()
+        val sessionsState = mutableStateOf(newSessions(), referentialEqualityPolicy())
 
         composeRule.setContent {
+            SideEffect { parentCounter.increment() }
             LectureSessionsConsumer(sessions = sessionsState.value, counter = counter)
         }
         composeRule.waitForIdle()
         val baseline = counter.count
+        val parentBaseline = parentCounter.count
 
         sessionsState.value = newSessions()
         composeRule.waitForIdle()
 
+        assertEquals(parentBaseline + 1, parentCounter.count)
         assertEquals(
-            expected = baseline,
+            expected = baseline + 1,
             actual = counter.count,
-            message = "new-but-equal List should skip via equals() under StrongSkipping",
+            message = "new-but-equal unstable List should recompose due to a different reference",
         )
     }
 
