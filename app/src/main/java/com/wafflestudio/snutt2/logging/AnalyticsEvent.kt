@@ -110,30 +110,25 @@ data class DiaryAfterSubmitParameter(
  * @param activityTypeIds 선택한 활동(DiaryDailyClassType)의 서버 id. 표시 이름은 바뀔 수 있으므로 id 를 기록한다.
  *   Firebase 파라미터 값은 100자에서 잘리므로 개수는 activity_count 로 따로 기록한다.
  * @param hasComment 코멘트 본문은 기록하지 않는다.
- * @param elapsedSec 작성 화면 진입 후 제출 성공까지 걸린 시간(초).
  */
 data class DiarySubmittedParameter(
     val activityTypeIds: List<String>,
     val hasComment: Boolean,
-    val elapsedSec: Long,
     val referrer: DiaryWriteReferrer,
 ) {
     fun toBundle(): Bundle = Bundle().apply {
         putString("activity_types", activityTypeIds.joinToString(","))
         putLong("activity_count", activityTypeIds.size.toLong())
         putString("has_comment", hasComment.toString())
-        putLong("elapsed_sec", elapsedSec)
         putString("referrer", referrer.value)
     }
 }
 
 /**
  * @param step 이탈 시점의 단계. 활동 선택을 한 번도 완료하지 않았으면 [Step.ACTIVITY], 질문 단계에 도달했으면 [Step.QUESTIONS].
- * @param elapsedSec 작성 화면 진입 후 이탈까지 걸린 시간(초).
  */
 data class DiaryWriteExitParameter(
     val step: Step,
-    val elapsedSec: Long,
     val referrer: DiaryWriteReferrer,
 ) {
     enum class Step(val value: String) {
@@ -143,7 +138,6 @@ data class DiaryWriteExitParameter(
 
     fun toBundle(): Bundle = Bundle().apply {
         putString("step", step.value)
-        putLong("elapsed_sec", elapsedSec)
         putString("referrer", referrer.value)
     }
 }
