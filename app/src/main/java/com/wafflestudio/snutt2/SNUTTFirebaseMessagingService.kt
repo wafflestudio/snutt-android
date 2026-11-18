@@ -29,11 +29,16 @@ class SNUTTFirebaseMessagingService : FirebaseMessagingService() {
         val path = remoteMessage.data["url_scheme"]
             ?: remoteMessage.notification?.clickAction
             ?: ""
-        showNotification(title, body, path)
+        showNotification(
+            title = title,
+            body = body,
+            route = path,
+            pushId = remoteMessage.data[PUSH_ID],
+        )
     }
 
     @OptIn(ExperimentalAnimationApi::class)
-    private fun showNotification(title: String, body: String, route: String) {
+    private fun showNotification(title: String, body: String, route: String, pushId: String?) {
         val channelId = "fcm_default_channel"
         val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -51,13 +56,16 @@ class SNUTTFirebaseMessagingService : FirebaseMessagingService() {
 
         val intent = Intent(this, RootActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            putExtra("url_scheme", route)
+            putExtra(RootActivity.URL_SCHEME, route)
+            pushId?.let { putExtra(PUSH_ID, it) }
         }
+        // requestCode 가 같으면 이전 알림의 extras 가 재사용된다.
+        val notificationId = System.currentTimeMillis().toInt()
         val pendingIntent = PendingIntent.getActivity(
             this,
-            0,
+            notificationId,
             intent,
-            PendingIntent.FLAG_IMMUTABLE,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
 
         val notification = NotificationCompat.Builder(this, channelId)
@@ -69,6 +77,10 @@ class SNUTTFirebaseMessagingService : FirebaseMessagingService() {
             .setContentIntent(pendingIntent)
             .build()
 
-        nm.notify(System.currentTimeMillis().toInt(), notification)
+        nm.notify(notificationId, notification)
+    }
+
+    companion object {
+        const val PUSH_ID = "push_id"
     }
 }

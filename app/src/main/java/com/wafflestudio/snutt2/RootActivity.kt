@@ -1,6 +1,7 @@
 package com.wafflestudio.snutt2
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -39,7 +40,9 @@ import com.wafflestudio.snutt2.config.RemoteConfig
 import com.wafflestudio.snutt2.domain.InitializeHomeUseCase
 import com.wafflestudio.snutt2.feature.home.HomeItem
 import com.wafflestudio.snutt2.feature.settings.RootViewModel
+import com.wafflestudio.snutt2.logging.AnalyticsEvent
 import com.wafflestudio.snutt2.logging.AnalyticsLogger
+import com.wafflestudio.snutt2.logging.PushOpenParameter
 import com.wafflestudio.snutt2.logging.compose.LocalAnalyticsLogger
 import com.wafflestudio.snutt2.navigation.NavigationDestination
 import com.wafflestudio.snutt2.navigation.buildRootNavGraph
@@ -80,6 +83,9 @@ class RootActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         FirebaseApp.initializeApp(this)
+        if (savedInstanceState == null) {
+            logPushOpen()
+        }
         parseDeeplinkExtra()
 
         val token = rootViewModel.accessToken.value
@@ -215,6 +221,25 @@ class RootActivity : AppCompatActivity() {
         }
     }
 
+    // 트레이 알림은 FCM 이 data 키와 google.message_id 를 extra 로 넣는다.
+    private fun logPushOpen() {
+        // 최근 앱 목록에서 다시 열면 같은 intent 가 재전달되어 중복 기록된다.
+        if (intent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY != 0) return
+        val extras = intent.extras ?: return
+        val isFromNotification = extras.containsKey(URL_SCHEME) ||
+            extras.containsKey(SNUTTFirebaseMessagingService.PUSH_ID) ||
+            extras.containsKey(FCM_MESSAGE_ID)
+        if (!isFromNotification) return
+        analyticsLogger.logEvent(
+            AnalyticsEvent.PushOpen(
+                PushOpenParameter.of(
+                    urlScheme = extras.getString(URL_SCHEME),
+                    pushId = extras.getString(SNUTTFirebaseMessagingService.PUSH_ID),
+                ),
+            ),
+        )
+    }
+
     // NOTE(@JuTaK): intent 에 담긴 초기 정보로 최초 랜딩할 탭을 결정한다.
     private fun parseHomePageDeeplink(): HomeItem? {
         // 예시: snutt://friends
@@ -256,5 +281,6 @@ class RootActivity : AppCompatActivity() {
 
     companion object {
         const val URL_SCHEME = "url_scheme"
+        private const val FCM_MESSAGE_ID = "google.message_id"
     }
 }

@@ -13,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import javax.inject.Named
 import javax.inject.Singleton
+import kotlin.time.TimeSource
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -29,4 +30,7 @@ object ApplicationModule {
     @Provides
     @Named("AppScheme")
     fun provideAppScheme(@ApplicationContext context: Context): String = context.getString(R.string.scheme)
+
+    @Provides
+    fun provideTimeSource(): TimeSource = TimeSource.Monotonic
 }
