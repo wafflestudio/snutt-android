@@ -13,6 +13,9 @@ import com.wafflestudio.snutt2.domain.model.Table
 import com.wafflestudio.snutt2.domain.model.TableSummary
 import com.wafflestudio.snutt2.domain.model.ThemeColor
 import com.wafflestudio.snutt2.domain.model.ThemeReference
+import com.wafflestudio.snutt2.domain.model.diary.DiaryDailyClassType
+import com.wafflestudio.snutt2.domain.model.diary.DiaryQuestion
+import com.wafflestudio.snutt2.lib.Selectable
 
 object TestFixtures {
 
@@ -137,4 +140,25 @@ object TestFixtures {
     // --- ThemeColor ---
 
     fun themeColor(fg: Int = 0xFFFFFFFF.toInt(), bg: Int = 0xFF000000.toInt()) = ThemeColor(fg, bg)
+
+    // --- Diary ---
+
+    fun diaryDailyClassType(
+        id: String = "class-type-1",
+        name: String = "수업",
+    ) = DiaryDailyClassType(id = id, name = name)
+
+    val diaryClassTypeLecture = diaryDailyClassType(id = "class-type-lecture", name = "수업")
+    val diaryClassTypeExam = diaryDailyClassType(id = "class-type-exam", name = "시험")
+    val diaryClassTypePresentation = diaryDailyClassType(id = "class-type-presentation", name = "발표")
+
+    fun diaryQuestion(
+        id: String = "question-1",
+        question: String = "수업은 어땠나요?",
+        answers: List<String> = listOf("좋았어요", "보통이에요", "별로예요"),
+    ) = DiaryQuestion(
+        id = id,
+        question = question,
+        selectableAnswers = answers.map { Selectable(it, false) },
+    )
 }
