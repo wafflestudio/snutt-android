@@ -34,7 +34,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.time.TimeSource
 
 @HiltViewModel
 class DiaryWriteViewModel @Inject constructor(
@@ -43,7 +42,6 @@ class DiaryWriteViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val displayMessageResolver: DisplayMessageResolver,
     private val analyticsLogger: AnalyticsLogger,
-    timeSource: TimeSource,
 ) : ViewModel() {
     private val lectureId: String
         get() = savedStateHandle.get<String>("lectureId") ?: ""
@@ -53,7 +51,6 @@ class DiaryWriteViewModel @Inject constructor(
 
     val analyticsScreen = AnalyticsScreen.DiaryWrite(DiaryWriteParameter(referrer))
 
-    private val enteredAt = timeSource.markNow()
     private var isExitLogged = false
     private var submitJob: Job? = null
 
@@ -170,8 +167,7 @@ class DiaryWriteViewModel @Inject constructor(
                             DiarySubmittedParameter(
                                 activityTypeIds = selectedDailyClassTypes.map { it.id },
                                 hasComment = state.commentText.isNotBlank(),
-                                elapsedSec = elapsedSec(),
-                                referrer = referrer,
+                                                                referrer = referrer,
                             ),
                         ),
                     )
@@ -202,8 +198,7 @@ class DiaryWriteViewModel @Inject constructor(
                 AnalyticsEvent.DiaryWriteExit(
                     DiaryWriteExitParameter(
                         step = step,
-                        elapsedSec = elapsedSec(),
-                        referrer = referrer,
+                                                referrer = referrer,
                     ),
                 ),
             )
@@ -267,8 +262,6 @@ class DiaryWriteViewModel @Inject constructor(
         analyticsLogger.logEvent(AnalyticsEvent.DiaryAfterSubmit(DiaryAfterSubmitParameter(DiaryAfterSubmitParameter.Action.HOME)))
         viewModelScope.launch { _uiEvent.emit(DiaryWriteUiEvent.NavigateHome) }
     }
-
-    private fun elapsedSec(): Long = enteredAt.elapsedNow().inWholeSeconds
 
     private suspend fun handleDiaryWriteError(error: DomainError) {
         val displayMessage =

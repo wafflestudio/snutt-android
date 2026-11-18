@@ -30,8 +30,6 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import kotlin.time.Duration.Companion.seconds
-import kotlin.time.TestTimeSource
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DiaryWriteViewModelTest {
@@ -40,7 +38,6 @@ class DiaryWriteViewModelTest {
     private lateinit var fakeUserRepository: FakeUserRepository
     private lateinit var fakeDisplayMessageResolver: FakeDisplayMessageResolver
     private lateinit var fakeAnalyticsLogger: FakeAnalyticsLogger
-    private lateinit var testTimeSource: TestTimeSource
 
     @Before
     fun setup() {
@@ -49,7 +46,6 @@ class DiaryWriteViewModelTest {
         fakeUserRepository = FakeUserRepository()
         fakeDisplayMessageResolver = FakeDisplayMessageResolver()
         fakeAnalyticsLogger = FakeAnalyticsLogger()
-        testTimeSource = TestTimeSource()
     }
 
     @After
@@ -71,7 +67,6 @@ class DiaryWriteViewModelTest {
         ),
         displayMessageResolver = fakeDisplayMessageResolver,
         analyticsLogger = fakeAnalyticsLogger,
-        timeSource = testTimeSource,
     )
 
     private fun questionnaire(nextLectureId: String?) = DiaryQuestionnaireData(
@@ -108,7 +103,7 @@ class DiaryWriteViewModelTest {
     // region saveDiaryWrite
 
     @Test
-    fun `제출 성공 시 선택한 활동 id, 코멘트 여부, 경과 시간, 진입 경로를 담아 diary_submitted 를 기록한다`() = runTest {
+    fun `제출 성공 시 선택한 활동 id, 코멘트 여부, 진입 경로를 담아 diary_submitted 를 기록한다`() = runTest {
         // Given: 3개 활동 중 수업·발표를 선택하고 질문에 답한 뒤 코멘트를 작성한 상태
         fakeDiaryRepository.getDailyClassTypesResult =
             Result.Success(listOf(diaryClassTypeLecture, diaryClassTypeExam, diaryClassTypePresentation))
@@ -120,7 +115,6 @@ class DiaryWriteViewModelTest {
         viewModel.completeActivitySelection()
         viewModel.toggleAnswer(questionIndex = 0, answerIndex = 1)
         viewModel.onCommentTextChange("과제가 어려웠다")
-        testTimeSource += 95.seconds
         fakeAnalyticsLogger.loggedEvents.clear()
 
         // When
@@ -133,7 +127,6 @@ class DiaryWriteViewModelTest {
                     DiarySubmittedParameter(
                         activityTypeIds = listOf("class-type-lecture", "class-type-presentation"),
                         hasComment = true,
-                        elapsedSec = 95,
                         referrer = DiaryWriteReferrer.PUSH,
                     ),
                 ),
@@ -152,7 +145,6 @@ class DiaryWriteViewModelTest {
         viewModel.completeActivitySelection()
         viewModel.toggleAnswer(questionIndex = 0, answerIndex = 0)
         viewModel.onCommentTextChange("   ")
-        testTimeSource += 30.seconds
         fakeAnalyticsLogger.loggedEvents.clear()
 
         viewModel.saveDiaryWrite()
@@ -163,7 +155,6 @@ class DiaryWriteViewModelTest {
                     DiarySubmittedParameter(
                         activityTypeIds = listOf("class-type-exam"),
                         hasComment = false,
-                        elapsedSec = 30,
                         referrer = DiaryWriteReferrer.HISTORY,
                     ),
                 ),
@@ -217,7 +208,6 @@ class DiaryWriteViewModelTest {
         fakeDiaryRepository.getDailyClassTypesResult = Result.Success(listOf(diaryClassTypeLecture, diaryClassTypeExam))
         val viewModel = createViewModel(referrer = "push")
         viewModel.toggleActivitySelection(0)
-        testTimeSource += 12.seconds
 
         viewModel.onExitWithoutSubmit()
 
@@ -226,7 +216,6 @@ class DiaryWriteViewModelTest {
                 AnalyticsEvent.DiaryWriteExit(
                     DiaryWriteExitParameter(
                         step = DiaryWriteExitParameter.Step.ACTIVITY,
-                        elapsedSec = 12,
                         referrer = DiaryWriteReferrer.PUSH,
                     ),
                 ),
@@ -242,7 +231,6 @@ class DiaryWriteViewModelTest {
         val viewModel = createViewModel(referrer = "next")
         viewModel.toggleActivitySelection(1)
         viewModel.completeActivitySelection()
-        testTimeSource += 48.seconds
         fakeAnalyticsLogger.loggedEvents.clear()
 
         viewModel.onExitWithoutSubmit()
@@ -252,7 +240,6 @@ class DiaryWriteViewModelTest {
                 AnalyticsEvent.DiaryWriteExit(
                     DiaryWriteExitParameter(
                         step = DiaryWriteExitParameter.Step.QUESTIONS,
-                        elapsedSec = 48,
                         referrer = DiaryWriteReferrer.NEXT,
                     ),
                 ),
@@ -269,7 +256,6 @@ class DiaryWriteViewModelTest {
         viewModel.toggleActivitySelection(0)
         viewModel.completeActivitySelection()
         viewModel.toggleActivitySelection(1) // Complete -> ReSelecting
-        testTimeSource += 60.seconds
         fakeAnalyticsLogger.loggedEvents.clear()
 
         viewModel.onExitWithoutSubmit()
@@ -279,7 +265,6 @@ class DiaryWriteViewModelTest {
                 AnalyticsEvent.DiaryWriteExit(
                     DiaryWriteExitParameter(
                         step = DiaryWriteExitParameter.Step.QUESTIONS,
-                        elapsedSec = 60,
                         referrer = DiaryWriteReferrer.HISTORY,
                     ),
                 ),
@@ -292,7 +277,6 @@ class DiaryWriteViewModelTest {
     fun `여러 번 나가기를 호출해도 diary_write_exit 는 한 번만 기록한다`() = runTest {
         fakeDiaryRepository.getDailyClassTypesResult = Result.Success(listOf(diaryClassTypeLecture))
         val viewModel = createViewModel(referrer = "push")
-        testTimeSource += 5.seconds
 
         viewModel.onExitWithoutSubmit()
         viewModel.onExitWithoutSubmit()
@@ -302,7 +286,6 @@ class DiaryWriteViewModelTest {
                 AnalyticsEvent.DiaryWriteExit(
                     DiaryWriteExitParameter(
                         step = DiaryWriteExitParameter.Step.ACTIVITY,
-                        elapsedSec = 5,
                         referrer = DiaryWriteReferrer.PUSH,
                     ),
                 ),
